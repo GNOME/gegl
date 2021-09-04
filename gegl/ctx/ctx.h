@@ -1,3 +1,4 @@
+/* ctx git commit: 4d729cd */
 /* 
  * ctx.h is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -74,6 +75,8 @@ enum _CtxPixelFormat
   CTX_FORMAT_CMYK8,  //15
   CTX_FORMAT_CMYKA8, //16 
   CTX_FORMAT_CMYKAF, //17
+  CTX_FORMAT_YUV420, //18
+  CTX_FORMAT_RGBA8_SEPARATE_ALPHA, // 19
 };
 typedef enum   _CtxPixelFormat CtxPixelFormat;
 
@@ -296,6 +299,14 @@ void ctx_define_texture (Ctx *ctx,
                          char       *ret_eid);
 
 void
+ctx_source_transform (Ctx *ctx, float a, float b,  // hscale, hskew
+                      float c, float d,  // vskew,  vscale
+                      float e, float f);  // htran,  vtran
+typedef struct _CtxMatrix     CtxMatrix;
+void
+ctx_source_transform_matrix (Ctx *ctx, CtxMatrix *matrix);
+
+void
 ctx_get_image_data (Ctx *ctx, int sx, int sy, int sw, int sh,
                     CtxPixelFormat format, int dst_stride,
                     uint8_t *dst_data);
@@ -428,25 +439,43 @@ int      ctx_unichar_to_utf8 (uint32_t  ch, uint8_t  *dest);
 
 typedef enum
 {
-  CTX_FILL_RULE_EVEN_ODD,
-  CTX_FILL_RULE_WINDING
+  CTX_FILL_RULE_WINDING,
+  CTX_FILL_RULE_EVEN_ODD
 } CtxFillRule;
 
 typedef enum
 {
-  CTX_COMPOSITE_SOURCE_OVER,
-  CTX_COMPOSITE_COPY,
-  CTX_COMPOSITE_SOURCE_IN,
-  CTX_COMPOSITE_SOURCE_OUT,
-  CTX_COMPOSITE_SOURCE_ATOP,
-  CTX_COMPOSITE_CLEAR,
+#if 0
+  CTX_COMPOSITE_SOURCE_OVER      = 0,
+  CTX_COMPOSITE_COPY             = 32,
+  CTX_COMPOSITE_SOURCE_IN        = 64,
+  CTX_COMPOSITE_SOURCE_OUT       = 96,
+  CTX_COMPOSITE_SOURCE_ATOP      = 128,
+  CTX_COMPOSITE_CLEAR            = 160,
 
-  CTX_COMPOSITE_DESTINATION_OVER,
-  CTX_COMPOSITE_DESTINATION,
-  CTX_COMPOSITE_DESTINATION_IN,
-  CTX_COMPOSITE_DESTINATION_OUT,
-  CTX_COMPOSITE_DESTINATION_ATOP,
-  CTX_COMPOSITE_XOR,
+  CTX_COMPOSITE_DESTINATION_OVER = 192,
+  CTX_COMPOSITE_DESTINATION      = 224,
+  CTX_COMPOSITE_DESTINATION_IN   = 256,
+  CTX_COMPOSITE_DESTINATION_OUT  = 288,
+  CTX_COMPOSITE_DESTINATION_ATOP = 320,
+  CTX_COMPOSITE_XOR              = 352,
+
+  CTX_COMPOSITE_ALL              = (32+64+128+256)
+#else
+  CTX_COMPOSITE_SOURCE_OVER      =0,
+  CTX_COMPOSITE_COPY             ,
+  CTX_COMPOSITE_SOURCE_IN        ,
+  CTX_COMPOSITE_SOURCE_OUT       ,
+  CTX_COMPOSITE_SOURCE_ATOP      ,
+  CTX_COMPOSITE_CLEAR            ,
+
+  CTX_COMPOSITE_DESTINATION_OVER ,
+  CTX_COMPOSITE_DESTINATION      ,
+  CTX_COMPOSITE_DESTINATION_IN   ,
+  CTX_COMPOSITE_DESTINATION_OUT  ,
+  CTX_COMPOSITE_DESTINATION_ATOP ,
+  CTX_COMPOSITE_XOR              ,
+#endif
 } CtxCompositingMode;
 
 typedef enum
@@ -918,7 +947,6 @@ typedef enum
                          //    data can be a string with a name,
                          //    icc data or perhaps our own serialization
                          //    of profile data
-  CTX_EDGE_FLIPPED     = '`', // x0 y0 x1 y1 - s16
   CTX_REL_ARC_TO       = 'a', // x1 y1 x2 y2 radius
   CTX_CLIP             = 'b',
   CTX_REL_CURVE_TO     = 'c', // cx1 cy1 cx2 cy2 x y
@@ -948,13 +976,16 @@ typedef enum
   CTX_CLOSE_PATH       = 'z', //
   CTX_START_GROUP      = '{',
   CTX_END_GROUP        = '}',
-  CTX_EDGE             = ',',
+  CTX_SOURCE_TRANSFORM = '`',
+
+  CTX_EDGE             = '&',                        // will not occur in commandstream
+  CTX_EDGE_FLIPPED     = '^', // x0 y0 x1 y1 - s16   // thus these use reserved entries as code
 
   /* though expressed as two chars in serialization we have
    * dedicated byte commands for the setters to keep the dispatch
    * simpler. There is no need for these to be human readable thus we go >128
    *
-   * unused:        !&<=>?:.=/\
+   * unused:        !&<=>?:.=/\`,
    * reserved:      '"&   #  %^@
    */
 
@@ -1613,11 +1644,11 @@ typedef enum
 
 enum _CtxAntialias
 {
-  CTX_ANTIALIAS_DEFAULT,
+  CTX_ANTIALIAS_DEFAULT, // fast - suitable for realtime UI
   CTX_ANTIALIAS_NONE, // non-antialiased
-  CTX_ANTIALIAS_FAST, // aa 3
-  CTX_ANTIALIAS_GOOD, // aa 5
-  CTX_ANTIALIAS_BEST  // aa 17
+  CTX_ANTIALIAS_FAST, // aa 3    // deprected or is default equal to this now?
+  CTX_ANTIALIAS_GOOD, // aa 5    // this should perhaps still be 5?
+  CTX_ANTIALIAS_BEST  // aa 17   // accurate-suitable for saved assets
 };
 typedef enum _CtxAntialias CtxAntialias;
 
@@ -1709,7 +1740,7 @@ ctx_parser_set_size (CtxParser *parser,
                      float      cell_width,
                      float      cell_height);
 
-void ctx_parser_feed_byte (CtxParser *parser, int byte);
+void ctx_parser_feed_bytes (CtxParser *parser, const char *data, int count);
 
 int
 ctx_get_contents (const char     *path,
@@ -1727,8 +1758,62 @@ int
 ctx_base642bin (const char    *ascii,
                 int           *length,
                 unsigned char *bin);
+
+
+struct
+  _CtxMatrix
+{
+  float m[3][2];
+};
+
+void ctx_apply_matrix (Ctx *ctx, CtxMatrix *matrix);
+void ctx_matrix_apply_transform (const CtxMatrix *m, float *x, float *y);
+void ctx_matrix_invert (CtxMatrix *m);
+void ctx_matrix_identity (CtxMatrix *matrix);
+void ctx_matrix_scale (CtxMatrix *matrix, float x, float y);
+void ctx_matrix_rotate (CtxMatrix *matrix, float angle);
+void ctx_matrix_multiply (CtxMatrix       *result,
+                          const CtxMatrix *t,
+                          const CtxMatrix *s);
+
+
+
+
 float ctx_term_get_cell_width (Ctx *ctx);
 float ctx_term_get_cell_height (Ctx *ctx);
+
+
+
+
+
+#if 1 // CTX_VT
+
+typedef struct _VT VT;
+void vt_feed_keystring  (VT *vt, CtxEvent *event, const char *str);
+void vt_paste           (VT *vt, const char *str);
+char *vt_get_selection  (VT *vt);
+long vt_rev             (VT *vt);
+int  vt_has_blink       (VT *vt);
+
+int  ctx_clients_need_redraw   (Ctx *ctx);
+void ctx_clients_handle_events (Ctx *ctx);
+
+
+typedef struct _CtxBuffer CtxBuffer;
+CtxBuffer *ctx_buffer_new_for_data (void *data, int width, int height,
+                                    int stride,
+                                    CtxPixelFormat pixel_format,
+                                    void (*freefunc) (void *pixels, void *user_data),
+                                    void *user_data);
+
+
+
+
+
+
+
+#endif
+
 
 #ifndef CTX_CODEC_CHAR
 //#define CTX_CODEC_CHAR '\035'
@@ -1747,6 +1832,13 @@ float ctx_term_get_cell_height (Ctx *ctx);
 #endif
 #ifndef __CTX_H__
 #define __CTX_H__
+#ifndef _DEFAULT_SOURCE
+#define _DEFAULT_SOURCE
+#endif
+#ifndef _XOPEN_SOURCE
+#define _XOPEN_SOURCE 600
+#endif
+
 #ifndef CTX_STRING_H
 #define CTX_STRING_H
 
@@ -1762,6 +1854,7 @@ struct _CtxString
 
 CtxString   *ctx_string_new_with_size  (const char *initial, int initial_size);
 CtxString   *ctx_string_new            (const char *initial);
+char       *ctx_string_dissolve       (CtxString *string);
 void        ctx_string_free           (CtxString *string, int freealloc);
 const char *ctx_string_get            (CtxString *string);
 uint32_t    ctx_string_get_unichar    (CtxString *string, int pos);
@@ -4171,9 +4264,12 @@ static inline CtxList *ctx_list_find_custom (CtxList *list,
 #endif
 
 
-#define CTX_RASTERIZER_AA_SLOPE_LIMIT3    (13424/CTX_SUBDIV/15)
-#define CTX_RASTERIZER_AA_SLOPE_LIMIT5    (20425/CTX_SUBDIV/15)
-#define CTX_RASTERIZER_AA_SLOPE_LIMIT15   (50425/CTX_SUBDIV/15)
+#define CTX_RASTERIZER_AA_SLOPE_LIMIT3          (65536/CTX_SUBDIV/15)
+#define CTX_RASTERIZER_AA_SLOPE_LIMIT3_FAST_AA  (65536/CTX_SUBDIV/15)
+//#define CTX_RASTERIZER_AA_SLOPE_LIMIT3_FAST_AA (120536/CTX_SUBDIV/15)
+//#define CTX_RASTERIZER_AA_SLOPE_LIMIT3_FAST_AA (105000/CTX_SUBDIV/15)
+#define CTX_RASTERIZER_AA_SLOPE_LIMIT5         (140425/CTX_SUBDIV/15)
+#define CTX_RASTERIZER_AA_SLOPE_LIMIT15        (260425/CTX_SUBDIV/15)
 
 /* subpixel-aa coordinates used in BITPACKing of drawlist
  *
@@ -4181,7 +4277,7 @@ static inline CtxList *ctx_list_find_custom (CtxList *list,
  */
 #ifndef CTX_SUBDIV
 #define CTX_SUBDIV   8  //  max framebufer width 4095
-//#define CTX_SUBDIV    10  //  max framebufer width 3250
+//#define CTX_SUBDIV  10  //  max framebufer width 3250
 //#define CTX_SUBDIV  16  //  max framebufer width 2047
 //#define CTX_SUBDIV  24  //  max framebufer width 1350
 //#define CTX_SUBDIV  32  //  max framebufer width 1023
@@ -4217,11 +4313,11 @@ static inline CtxList *ctx_list_find_custom (CtxList *list,
 /* size (in pixels, w*h) that we cache rasterization for
  */
 #ifndef CTX_SHAPE_CACHE_DIM
-#define CTX_SHAPE_CACHE_DIM      (16*16)
+#define CTX_SHAPE_CACHE_DIM      (16*8)
 #endif
 
 #ifndef CTX_SHAPE_CACHE_MAX_DIM
-#define CTX_SHAPE_CACHE_MAX_DIM  32
+#define CTX_SHAPE_CACHE_MAX_DIM  20
 #endif
 
 /* maximum number of entries in shape cache
@@ -4276,12 +4372,6 @@ static inline CtxList *ctx_list_find_custom (CtxList *list,
 #define CTX_GRADIENTS             1
 #endif
 
-/* some optinal micro-optimizations that are known to increase code size
- */
-#ifndef CTX_SORTING_NETWORKS
-#define CTX_SORTING_NETWORKS         1
-#endif
-
 #ifndef CTX_ALIGNED_STRUCTS
 #define CTX_ALIGNED_STRUCTS       1
 #endif
@@ -4291,7 +4381,15 @@ static inline CtxList *ctx_list_find_custom (CtxList *list,
 #endif
 
 #ifndef CTX_FONTS_FROM_FILE
-#define CTX_FONTS_FROM_FILE 1
+#define CTX_FONTS_FROM_FILE  0
+#endif
+
+#ifndef CTX_GET_CONTENTS
+#if CTX_FONTS_FROM_FILE
+#define CTX_GET_CONTENTS    1
+#else
+#define CTX_GET_CONTENTS    0
+#endif
 #endif
 
 #ifndef CTX_FORMATTER
@@ -4308,6 +4406,10 @@ static inline CtxList *ctx_list_find_custom (CtxList *list,
 
 #ifndef CTX_XML
 #define CTX_XML             1
+#endif
+
+#ifndef CTX_VT
+#define CTX_VT              0
 #endif
 
 /* when ctx_math is defined, which it is by default, we use ctx' own
@@ -4369,7 +4471,7 @@ static inline CtxList *ctx_list_find_custom (CtxList *list,
 /* whether we dither or not for gradients
  */
 #ifndef CTX_DITHER
-#define CTX_DITHER 1
+#define CTX_DITHER 0
 #endif
 
 /*  only source-over clear and copy will work, the API still
@@ -4387,7 +4489,8 @@ static inline CtxList *ctx_list_find_custom (CtxList *list,
 #define CTX_FORCE_INLINES               1
 #endif
 
-/* create one-off inlined inner loop for normal blend mode
+/* create one-off inlined inner loop for normal blend mode (for floating point,
+ * for RGBA8 manual loops overrrides
  */
 #ifndef CTX_INLINED_NORMAL     
 #define CTX_INLINED_NORMAL      1
@@ -4401,24 +4504,11 @@ static inline CtxList *ctx_list_find_custom (CtxList *list,
 #define CTX_BRAILLE_TEXT        0
 #endif
 
-/* including immintrin.h triggers building of AVX2 code paths, if - like
- * sometimes when including SDL one does want it at all do a
- * #define CTX_AVX2 0  before including ctx.h for implementation.
- */
-#ifndef CTX_AVX2
-#ifdef _IMMINTRIN_H_INCLUDED
-#define CTX_AVX2         1
-#else
-#define CTX_AVX2         0
-#endif
-#endif
-
-/* Build code paths for grayscale rasterization, normally this is handled
- * by the RGBA8 codepaths; on microcontrollers with eink this might be
- * a better option.
+/* Build code paths for grayscale rasterization, this makes clipping
+ * faster.
  */
 #ifndef CTX_NATIVE_GRAYA8
-#define CTX_NATIVE_GRAYA8       0
+#define CTX_NATIVE_GRAYA8       1
 #endif
 
 /* enable CMYK rasterization targets
@@ -4443,7 +4533,7 @@ static inline CtxList *ctx_list_find_custom (CtxList *list,
 #endif
 
 #ifndef CTX_ENABLE_FLOAT
-#define CTX_ENABLE_FLOAT 0
+#define CTX_ENABLE_FLOAT        0
 #endif
 
 /* by default ctx includes all pixel formats, on microcontrollers
@@ -4452,6 +4542,10 @@ static inline CtxList *ctx_list_find_custom (CtxList *list,
  * manually add CTX_ENABLE_ flags for each of them.
  */
 #if CTX_LIMIT_FORMATS
+#if CTX_NATIVE_GRAYA8
+#define CTX_ENABLE_GRAYA8               1
+#define CTX_ENABLE_GRAY8                1
+#endif
 #else
 
 #define CTX_ENABLE_GRAY1                1
@@ -4473,6 +4567,7 @@ static inline CtxList *ctx_list_find_custom (CtxList *list,
 #undef CTX_ENABLE_FLOAT
 #endif
 #define CTX_ENABLE_FLOAT                1
+#define CTX_ENABLE_YUV420               1
 
 #if CTX_ENABLE_CMYK
 #define CTX_ENABLE_CMYK8                1
@@ -4523,6 +4618,9 @@ static inline CtxList *ctx_list_find_custom (CtxList *list,
 #define CTX_BABL 0
 #endif
 
+#ifndef CTX_ALWAYS_USE_NEAREST_FOR_SCALE1
+#define CTX_ALWAYS_USE_NEAREST_FOR_SCALE1 1
+#endif
 
 /* force add format if we have shape cache */
 #if CTX_SHAPE_CACHE
@@ -4616,7 +4714,11 @@ static inline CtxList *ctx_list_find_custom (CtxList *list,
 
 #define CTX_PI                              3.141592653589793f
 #ifndef CTX_RASTERIZER_MAX_CIRCLE_SEGMENTS
-#define CTX_RASTERIZER_MAX_CIRCLE_SEGMENTS  120
+#define CTX_RASTERIZER_MAX_CIRCLE_SEGMENTS  400
+#endif
+
+#ifndef CTX_MAX_FRAMEBUFFER_WIDTH
+#define CTX_MAX_FRAMEBUFFER_WIDTH 2560
 #endif
 
 #ifndef CTX_MAX_FONTS
@@ -4658,11 +4760,9 @@ static inline CtxList *ctx_list_find_custom (CtxList *list,
 
 
 #define CTX_RASTERIZER_EDGE_MULTIPLIER  1024
-
-#ifndef CTX_COMPOSITE_SUFFIX
-#define CTX_COMPOSITE_SUFFIX(symbol)     symbol##_default
-#endif
-
+                                        // increasing this to 2048
+                                        // removes artifacts in top half of res-diagram -
+                                        // but reduces maximum available buffer width
 #ifndef CTX_IMPLEMENTATION
 #define CTX_IMPLEMENTATION 0
 #else
@@ -4716,7 +4816,7 @@ static inline CtxList *ctx_list_find_custom (CtxList *list,
 #endif
 
 #ifndef CTX_AUDIO
-#define CTX_AUDIO 1
+#define CTX_AUDIO 0
 #endif
 
 #ifndef CTX_TILED
@@ -4727,13 +4827,17 @@ static inline CtxList *ctx_list_find_custom (CtxList *list,
 #endif
 #endif
 
+#ifndef CTX_THREADS
 #if CTX_FB
 #define CTX_THREADS 1
 #else
 #define CTX_THREADS 0
 #endif
+#endif
 
-
+#if CTX_THREADS
+#include <threads.h>
+#endif
  /* Copyright (C) 2020 Øyvind Kolås <pippin@gimp.org>
  */
 
@@ -4755,10 +4859,10 @@ int ctx_a85len (const char *src, int count);
 
 
 #define CTX_CLAMP(val,min,max) ((val)<(min)?(min):(val)>(max)?(max):(val))
-static inline int   ctx_mini (int a, int b)     { if (a < b) return a; return b; }
-static inline float ctx_minf (float a, float b) { if (a < b) return a; return b; }
-static inline int   ctx_maxi (int a, int b)     { if (a > b) return a; return b; }
-static inline float ctx_maxf (float a, float b) { if (a > b) return a; return b; }
+static inline int   ctx_mini (int a, int b)     { return (a < b) * a + (a >= b) * b; }
+static inline float ctx_minf (float a, float b) { return (a < b) * a + (a >= b) * b; }
+static inline int   ctx_maxi (int a, int b)     { return (a > b) * a + (a <= b) * b; }
+static inline float ctx_maxf (float a, float b) { return (a > b) * a + (a <= b) * b; }
 
 
 typedef enum CtxOutputmode
@@ -4809,6 +4913,39 @@ ctx_invsqrtf (float x)
   x *= (1.5f - xhalf * x * x);
   x *= (1.5f - xhalf * x * x); //repeating Newton-Raphson step for higher precision
   return x;
+}
+
+static inline float
+ctx_invsqrtf_fast (float x)
+{
+  void *foo = &x;
+//float xhalf = 0.5f * x;
+  int i=* (int *) foo;
+  void *bar = &i;
+  i = 0x5f3759df - (i >> 1);
+  x = * (float *) bar;
+//x *= (1.5f - xhalf * x * x);
+  return x;
+}
+
+CTX_INLINE static float ctx_sqrtf (float a)
+{
+  return 1.0f/ctx_invsqrtf (a);
+}
+
+CTX_INLINE static float ctx_sqrtf_fast (float a)
+{
+  return 1.0f/ctx_invsqrtf_fast (a);
+}
+
+CTX_INLINE static float ctx_hypotf (float a, float b)
+{
+  return ctx_sqrtf (ctx_pow2 (a)+ctx_pow2 (b) );
+}
+
+CTX_INLINE static float ctx_hypotf_fast (float a, float b)
+{
+  return ctx_sqrtf_fast (ctx_pow2 (a)+ctx_pow2 (b) );
 }
 
 CTX_INLINE static float
@@ -4892,15 +5029,6 @@ static inline float ctx_atan2f (float y, float x)
   return atan;
 }
 
-CTX_INLINE static float ctx_sqrtf (float a)
-{
-  return 1.0f/ctx_invsqrtf (a);
-}
-
-CTX_INLINE static float ctx_hypotf (float a, float b)
-{
-  return ctx_sqrtf (ctx_pow2 (a)+ctx_pow2 (b) );
-}
 
 static inline float ctx_atanf (float a)
 {
@@ -4935,7 +5063,7 @@ static inline float
 ctx_expf (float x)
 {
   union { uint32_t i; float f; } v =
-    { (1 << 23) * (x + 183.1395965) };
+    {  (uint32_t)( (1 << 23) * (x + 183.1395965f)) };
   return v.f;
 }
 
@@ -4965,14 +5093,11 @@ static inline float _ctx_parse_float (const char *str, char **endptr)
 const char *ctx_get_string (Ctx *ctx, uint64_t hash);
 void ctx_set_string (Ctx *ctx, uint64_t hash, const char *value);
 typedef struct _CtxColor CtxColor;
-typedef struct _CtxBuffer CtxBuffer;
 
-typedef struct _CtxMatrix     CtxMatrix;
-struct
-  _CtxMatrix
-{
-  float m[3][2];
-};
+void
+ctx_matrix_translate (CtxMatrix *matrix, float x, float y);
+
+
 void ctx_get_matrix (Ctx *ctx, CtxMatrix *matrix);
 
 int ctx_color (Ctx *ctx, const char *string);
@@ -4992,17 +5117,6 @@ int ctx_utf8_len (const unsigned char first_byte);
 void ctx_user_to_device          (Ctx *ctx, float *x, float *y);
 void ctx_user_to_device_distance (Ctx *ctx, float *x, float *y);
 const char *ctx_utf8_skip (const char *s, int utf8_length);
-void ctx_apply_matrix (Ctx *ctx, CtxMatrix *matrix);
-void ctx_matrix_apply_transform (const CtxMatrix *m, float *x, float *y);
-void ctx_matrix_invert (CtxMatrix *m);
-void ctx_matrix_identity (CtxMatrix *matrix);
-void ctx_matrix_scale (CtxMatrix *matrix, float x, float y);
-void ctx_matrix_rotate (CtxMatrix *matrix, float angle);
-void ctx_matrix_multiply (CtxMatrix       *result,
-                          const CtxMatrix *t,
-                          const CtxMatrix *s);
-void
-ctx_matrix_translate (CtxMatrix *matrix, float x, float y);
 int ctx_is_set_now (Ctx *ctx, uint64_t hash);
 void ctx_set_size (Ctx *ctx, int width, int height);
 
@@ -5014,12 +5128,15 @@ static inline float ctx_matrix_get_scale (CtxMatrix *matrix)
                          ctx_fabsf (matrix->m[1][1]) ) );
 }
 
-#if CTX_FONTS_FROM_FILE
-int   ctx_load_font_ttf_file (const char *name, const char *path);
+#if CTX_GET_CONTENTS
 int
 _ctx_file_get_contents (const char     *path,
                         unsigned char **contents,
                         long           *length);
+#endif
+
+#if CTX_FONTS_FROM_FILE
+int   ctx_load_font_ttf_file (const char *name, const char *path);
 #endif
 
 #endif
@@ -5159,6 +5276,8 @@ _ctx_file_get_contents (const char     *path,
 #define CTX_newPath 	TOKENHASH(23510545975776)
 #define CTX_new_state 	TOKENHASH(16912954280416)
 #define CTX_none 	TOKENHASH(492640)
+#define CTX_nonzero     TOKENHASH(37865948256)
+#define CTX_non_zero    TOKENHASH(1211709359200)
 #define CTX_normal 	TOKENHASH(946840672)
 #define CTX_quad_to 	TOKENHASH(37986115046)
 #define CTX_quadTo 	TOKENHASH(1233857682918)
@@ -5214,6 +5333,7 @@ _ctx_file_get_contents (const char     *path,
 #define CTX_sourceOut 	TOKENHASH(7371294932695718)
 #define CTX_source_out 	TOKENHASH(3851660580666474)
 #define CTX_sourceOver 	TOKENHASH(7584784067385004)
+#define CTX_sourceTransform TOKENHASH(7515321363744130)
 #define CTX_source_over 	TOKENHASH(8690648756484770)
 #define CTX_square 	TOKENHASH(511950058)
 #define CTX_start 	TOKENHASH(47455658)
@@ -5508,6 +5628,7 @@ struct _CtxGradient
 struct _CtxSource
 {
   int type;
+  CtxMatrix  set_transform;
   CtxMatrix  transform;
   union
   {
@@ -5516,8 +5637,6 @@ struct _CtxSource
     {
       uint8_t rgba[4]; // shares data with set color
       uint8_t pad;
-      float x0;
-      float y0;
       CtxBuffer *buffer;
     } texture;
     struct
@@ -5869,7 +5988,7 @@ struct _Ctx
 };
 
 
-void ctx_process (Ctx *ctx, CtxEntry *entry);
+static void ctx_process (Ctx *ctx, CtxEntry *entry);
 CtxBuffer *ctx_buffer_new (int width, int height,
                            CtxPixelFormat pixel_format);
 void ctx_buffer_free (CtxBuffer *buffer);
@@ -5877,10 +5996,10 @@ void ctx_buffer_free (CtxBuffer *buffer);
 void
 ctx_state_gradient_clear_stops (CtxState *state);
 
-void ctx_interpret_style         (CtxState *state, CtxEntry *entry, void *data);
-void ctx_interpret_transforms    (CtxState *state, CtxEntry *entry, void *data);
-void ctx_interpret_pos           (CtxState *state, CtxEntry *entry, void *data);
-void ctx_interpret_pos_transform (CtxState *state, CtxEntry *entry, void *data);
+static inline void ctx_interpret_style         (CtxState *state, CtxEntry *entry, void *data);
+static inline void ctx_interpret_transforms    (CtxState *state, CtxEntry *entry, void *data);
+static inline void ctx_interpret_pos           (CtxState *state, CtxEntry *entry, void *data);
+static inline void ctx_interpret_pos_transform (CtxState *state, CtxEntry *entry, void *data);
 
 struct _CtxInternalFsEntry
 {
@@ -5913,14 +6032,14 @@ struct _CtxPixelFormatInfo
 };
 
 
-static void
+static inline void
 _ctx_user_to_device (CtxState *state, float *x, float *y);
 static void
 _ctx_user_to_device_distance (CtxState *state, float *x, float *y);
 static void ctx_state_init (CtxState *state);
-void
+static inline void
 ctx_interpret_pos_bare (CtxState *state, CtxEntry *entry, void *data);
-void
+static inline void
 ctx_drawlist_deinit (CtxDrawlist *drawlist);
 
 CtxPixelFormatInfo *
@@ -5939,17 +6058,6 @@ ctx_utf8_to_unichar (const char *input);
 
 
 typedef struct _CtxHasher CtxHasher;
-
-typedef struct CtxEdge
-{
-#if CTX_ALIGNED_STRUCTS==1
-  uint32_t index;
-#else
-  uint16_t index;
-#endif
-  int32_t  val;     /* the center-line intersection      */
-  int32_t  delta;
-} CtxEdge;
 
 typedef void (*CtxFragment) (CtxRasterizer *rasterizer, float x, float y, void *out, int count, float dx, float dy);
 
@@ -5976,6 +6084,13 @@ struct _CtxShapeCache
 
 typedef struct _CtxShapeCache CtxShapeCache;
 
+typedef enum {
+   CTX_COV_PATH_FALLBACK =0,
+   CTX_COV_PATH_OVER,
+   CTX_COV_PATH_COPY,
+   CTX_COV_PATH_COPY_FRAGMENT,
+   CTX_COV_PATH_OVER_FRAGMENT
+} CtxCovPath;
 
 struct _CtxRasterizer
 {
@@ -5986,51 +6101,45 @@ struct _CtxRasterizer
      would be yet another refinement on top.
    */
 
-#if CTX_ENABLE_SHADOW_BLUR
-  float      kernel[CTX_MAX_GAUSSIAN_KERNEL_DIM];
-#endif
 
-  int        aa;          // level of vertical aa
-  int        active_edges;
-  int        active_edges2;
-  int        pending_edges;   // this-scanline
-  int        ending_edges;    // count of edges ending this scanline
-  int        edge_pos;         // where we're at in iterating all edges
-  CtxEdge    edges[CTX_MAX_EDGES];
+#define CTX_COMPOSITE_ARGUMENTS CtxRasterizer *rasterizer, uint8_t * __restrict__ dst, uint8_t * __restrict__ src, int x0, uint8_t * __restrict__ coverage, int count
+  void (*comp_op)(CTX_COMPOSITE_ARGUMENTS);
+  CtxFragment fragment;
+  Ctx       *ctx;
+  CtxState  *state;
+  void      *buf;
+  int fast_aa;
+  CtxCovPath  comp;
+  float      x;  // < redundant? use state instead?
+  float      y;
 
-  int        scanline;
+  unsigned int aa;          // level of vertical aa
+  int prev_active_edges;
+  int active_edges;
+  int pending_edges;
+  int ending_edges;
+  int edge_pos;         // where we're at in iterating all edges
+  unsigned int needs_aa3; // count of how many edges implies antialiasing
+  unsigned int needs_aa5; // count of how many edges implies antialiasing
+  unsigned int needs_aa15; // count of how many edges implies antialiasing
+  int        horizontal_edges;
+
+  int scanline;
   int        scan_min;
   int        scan_max;
   int        col_min;
   int        col_max;
 
-  CtxDrawlist edge_list;
 
-  CtxState  *state;
-  Ctx       *ctx;
-  Ctx       *texture_source; /* normally same as ctx */
-
-  void      *buf;
-
-
-#if CTX_COMPOSITING_GROUPS
-  void      *saved_buf; // when group redirected
-  CtxBuffer *group[CTX_GROUP_MAX];
-#endif
-
-
-  float      x;  // < redundant? use state instead?
-  float      y;
+  int        inner_x;
+  int        inner_y;
 
   float      first_x;
   float      first_y;
-  int8_t     needs_aa3; // count of how many edges implies antialiasing
-  int8_t     needs_aa5; // count of how many edges implies antialiasing
-  int8_t     needs_aa15; // count of how many edges implies antialiasing
+  int        uses_transforms;
   int        has_shape:2;
   int        has_prev:2;
   int        preserve:1;
-  int        uses_transforms:1;
 
   int16_t    blit_x;
   int16_t    blit_y;
@@ -6039,6 +6148,14 @@ struct _CtxRasterizer
   int16_t    blit_stride;
 
   CtxPixelFormatInfo *format;
+  Ctx       *texture_source; /* normally same as ctx */
+
+  int edges[CTX_MAX_EDGES]; // integer position in edge array
+  CtxDrawlist edge_list;
+
+
+
+
 
 #if CTX_ENABLE_SHADOW_BLUR
   int in_shadow;
@@ -6047,18 +6164,23 @@ struct _CtxRasterizer
   int shadow_x;
   int shadow_y;
 
-  CtxFragment         fragment;
   int swap_red_green;
   uint8_t             color[4*5];
 
-#define CTX_COMPOSITE_ARGUMENTS CtxRasterizer *rasterizer, uint8_t * __restrict__ dst, uint8_t * __restrict__ src, int x0, uint8_t * __restrict__ coverage, int count
+  int clip_rectangle;
 
-  void (*comp_op)(CTX_COMPOSITE_ARGUMENTS);
 #if CTX_ENABLE_CLIP
   CtxBuffer *clip_buffer;
 #endif
 
-  int clip_rectangle;
+
+#if CTX_COMPOSITING_GROUPS
+  void      *saved_buf; // when group redirected
+  CtxBuffer *group[CTX_GROUP_MAX];
+#endif
+#if CTX_ENABLE_SHADOW_BLUR
+  float      kernel[CTX_MAX_GAUSSIAN_KERNEL_DIM];
+#endif
 
 #if CTX_SHAPE_CACHE
   CtxShapeCache shape_cache;
@@ -6211,11 +6333,11 @@ static void ctx_color_set_graya (CtxState *state, CtxColor *color, float gray, f
 
 int ctx_color_model_get_components (CtxColorModel model);
 
-void ctx_state_set (CtxState *state, uint64_t key, float value);
+static void ctx_state_set (CtxState *state, uint64_t key, float value);
 static void
 ctx_matrix_set (CtxMatrix *matrix, float a, float b, float c, float d, float e, float f);
 static void ctx_font_setup ();
-float ctx_state_get (CtxState *state, uint64_t hash);
+static float ctx_state_get (CtxState *state, uint64_t hash);
 
 #if CTX_RASTERIZER
 
@@ -6288,12 +6410,6 @@ ctx_rasterizer_set_pixel (CtxRasterizer *rasterizer,
                           uint8_t b,
                           uint8_t a);
 static void
-ctx_rasterizer_rectangle (CtxRasterizer *rasterizer,
-                          float x,
-                          float y,
-                          float width,
-                          float height);
-static void
 ctx_rasterizer_round_rectangle (CtxRasterizer *rasterizer, float x, float y, float width, float height, float corner_radius);
 
 #endif
@@ -6323,6 +6439,70 @@ CTX_INLINE static uint8_t ctx_lerp_u8 (uint8_t v0, uint8_t v1, uint8_t dx)
   return ( ( ( ( (v0) <<8) + (dx) * ( (v1) - (v0) ) ) ) >>8);
 #endif
 }
+
+CTX_INLINE static uint32_t ctx_lerp_RGBA8 (const uint32_t v0, const uint32_t v1, const uint8_t dx)
+{
+#if 0
+  char bv0[4];
+  char bv1[4];
+  char res[4];
+  memcpy (&bv0[0], &v0, 4);
+  memcpy (&bv1[0], &v1, 4);
+  for (int c = 0; c < 4; c++)
+    res [c] = ctx_lerp_u8 (bv0[c], bv1[c], dx);
+  return ((uint32_t*)(&res[0]))[0];
+#else
+  const uint32_t cov = dx;
+  const uint32_t si_ga = (v1 & 0xff00ff00);
+  const uint32_t si_rb = v1 & 0x00ff00ff;
+  const uint32_t di_rb = v0 & 0x00ff00ff;
+  const uint32_t d_rb = si_rb - di_rb;
+  const uint32_t di_ga = v0 & 0xff00ff00;
+  const uint32_t d_ga = (si_ga >>8) - (di_ga>>8);
+  return
+     (((di_rb + ((0xff00ff + d_rb * cov)>>8)) & 0x00ff00ff)) |
+     (((di_ga + (0xff00ff + d_ga * cov))      & 0xff00ff00));
+
+#endif
+}
+
+CTX_INLINE static void ctx_lerp_RGBA8_split (const uint32_t v0, const uint32_t v1, const uint8_t dx,
+                                             uint32_t *dest_ga, uint32_t *dest_rb)
+{
+  const uint32_t cov = dx;
+  const uint32_t si_ga = (v1 & 0xff00ff00);
+  const uint32_t si_rb = v1 & 0x00ff00ff;
+  const uint32_t di_rb = v0 & 0x00ff00ff;
+  const uint32_t di_ga = v0 & 0xff00ff00;
+  const uint32_t d_rb = si_rb - di_rb;
+  const uint32_t d_ga = (si_ga >>8) - (di_ga >> 8);
+  *dest_rb = (((di_rb + ((0xff00ff + d_rb * cov)>>8)) & 0x00ff00ff));
+  *dest_ga = (((di_ga + (0xff00ff + d_ga * cov))      & 0xff00ff00));
+}
+
+CTX_INLINE static uint32_t ctx_lerp_RGBA8_merge (uint32_t di_ga, uint32_t di_rb, uint32_t si_ga, uint32_t si_rb, const uint8_t dx)
+{
+  const uint32_t cov = dx;
+  const uint32_t d_rb = si_rb - di_rb;
+  const uint32_t d_ga = (si_ga - di_ga) >> 8;
+  return
+     (((di_rb + ((0xff00ff + d_rb * cov)>>8)) & 0x00ff00ff))  |
+      ((di_ga + ((0xff00ff + d_ga * cov)      & 0xff00ff00)));
+}
+
+CTX_INLINE static uint32_t ctx_lerp_RGBA8_2 (const uint32_t v0, uint32_t si_ga, uint32_t si_rb, const uint8_t dx)
+{
+  const uint32_t cov = dx;
+  const uint32_t di_ga = ( v0 & 0xff00ff00);
+  const uint32_t di_rb = v0 & 0x00ff00ff;
+  const uint32_t d_rb = si_rb - di_rb;
+  const uint32_t d_ga = si_ga - (di_ga>>8);
+  return
+     (((di_rb + ((0xff00ff + d_rb * cov)>>8)) & 0x00ff00ff)) |
+     (((di_ga + (0xff00ff + d_ga * cov))      & 0xff00ff00));
+}
+
+
 
 CTX_INLINE static float
 ctx_lerpf (float v0, float v1, float dx)
@@ -6420,12 +6600,20 @@ struct _CtxTiled
 #endif
 };
 
-void
+static void
 _ctx_texture_prepare_color_management (CtxRasterizer *rasterizer,
                                       CtxBuffer     *buffer);
 
 #endif
 
+
+uint64_t    thash              (const char *utf8);
+const char *thash_decode       (uint64_t hash);
+uint64_t    ctx_strhash        (const char *str);
+CtxColor   *ctx_color_new      (void);
+int         ctx_get_int        (Ctx *ctx, uint64_t hash);
+int         ctx_get_is_set     (Ctx *ctx, uint64_t hash);
+Ctx        *ctx_new_for_buffer (CtxBuffer *buffer);
 
 #if CTX_IMPLEMENTATION
 
@@ -7326,7 +7514,7 @@ int ctx_a85dec (const char *src, char *dst, int count)
   {
     p = src[i];
     val *= 85;
-    if (p == '~')
+    if (CTX_UNLIKELY(p == '~'))
     {
       break;
     }
@@ -7344,10 +7532,10 @@ int ctx_a85dec (const char *src, char *dst, int count)
       k = 0;
     }
 #endif
-    else if (p >= '!' && p <= 'u')
+    else if (CTX_LIKELY(p >= '!' && p <= 'u'))
     {
       val += p-'!';
-      if (k % 5 == 4)
+      if (CTX_UNLIKELY (k % 5 == 4))
       {
          for (int j = 0; j < 4; j++)
          {
@@ -7360,7 +7548,7 @@ int ctx_a85dec (const char *src, char *dst, int count)
     }
     // we treat all other chars as whitespace
   }
-  if (p != '~')
+  if (CTX_LIKELY (p != '~'))
   { 
     val *= 85;
   }
@@ -7385,7 +7573,7 @@ int ctx_a85dec (const char *src, char *dst, int count)
   return out_len;
 }
 
-#if 0
+#if 1
 int ctx_a85len (const char *src, int count)
 {
   int out_len = 0;
@@ -7492,8 +7680,8 @@ typedef struct EncodeUtf5 {
   uint32_t current;
 } EncodeUtf5;
 
-void thash_encode_utf5 (const char *input, int inlen,
-                   char *output, int *r_outlen)
+static void thash_encode_utf5 (const char *input, int inlen,
+                               char *output, int *r_outlen)
 {
   uint32_t offset = THASH_START_OFFSET;
 
@@ -7590,7 +7778,7 @@ void thash_encode_utf5 (const char *input, int inlen,
   *r_outlen = len;
 }
 
-uint64_t _thash (const char *utf8)
+static inline uint64_t _thash (const char *utf8)
 {
   char encoded[4096]="";
   int  encoded_len=0;
@@ -7649,7 +7837,6 @@ static int interned_compare (const void *a, const void *b)
   return 0;
 }
 
-
 uint64_t thash (const char *utf8)
 {
   uint64_t hash = _thash (utf8);
@@ -7683,7 +7870,9 @@ uint64_t thash (const char *utf8)
   }
   return hash;
 }
-uint64_t ctx_strhash(const char *str, int ignored) { return thash (str);}
+uint64_t ctx_strhash(const char *str) {
+  return thash (str);
+}
 
 typedef struct ThashUtf5Dec {
   int      is_utf5;
@@ -7708,7 +7897,7 @@ static void thash_decode_utf5_append_unichar_as_utf8 (uint32_t unichar, void *wr
   data->buf[data->length]=0;
 }
 
-void thash_decode_utf5 (ThashUtf5Dec *dec, uint8_t in)
+static void thash_decode_utf5 (ThashUtf5Dec *dec, uint8_t in)
 {
   if (dec->is_utf5)
   {
@@ -7750,7 +7939,7 @@ void thash_decode_utf5 (ThashUtf5Dec *dec, uint8_t in)
   }
 }
 
-void thash_decode_utf5_bytes (int is_utf5, 
+static void thash_decode_utf5_bytes (int is_utf5, 
                         const unsigned char *input, int inlen,
                         char *output, int *r_outlen)
 {
@@ -8040,6 +8229,109 @@ ctx_base642bin (const char    *ascii,
     *length= outputno;
   return outputno;
 }
+#include <stdio.h>
+#include <string.h>
+
+static int ctx_yenc (const char *src, char *dst, int count)
+{
+  int out_len = 0;
+  for (int i = 0; i < count; i ++)
+  {
+    int o = (src[i] + 42) % 256;
+    switch (o)
+    {
+      case 0x00: //null
+      case 0x20: //space// but better safe
+      case 0x0A: //lf   // than sorry
+      case 0x0D: //cr
+      case 0x09: //tab  // not really needed
+      case 0x10: //datalink escape (used by ctx)
+      case 0x11: //xoff
+      case 0x13: //xon
+      case 0x1b: //
+      case 0xff: //
+      case 0x3D: //=
+        dst[out_len++] = '=';
+        o = (o + 64) % 256;
+        /* FALLTHROUGH */
+      default:
+        dst[out_len++] = o;
+        break;
+    }
+  }
+  dst[out_len]=0;
+  return out_len;
+}
+
+static int ctx_ydec (const char *tmp_src, char *dst, int count)
+{
+  const char *src = tmp_src;
+#if 0
+  if (tmp_src == dst)
+  {
+    src = malloc (count);
+    memcpy (src, tmp_src, count);
+  }
+#endif
+  int out_len = 0;
+  for (int i = 0; i < count; i ++)
+  {
+    int o = src[i];
+    switch (o)
+    {
+      case '=':
+        i++;
+        o = src[i];
+        if (o == 'y')
+        {
+          dst[out_len]=0;
+#if 0
+          if (tmp_src == dst) free (src);
+#endif
+          return out_len;
+        }
+        o = (o-42-64) % 256;
+        dst[out_len++] = o;
+        break;
+      case '\n':
+      case '\e':
+      case '\r':
+      case '\0':
+        break;
+      default:
+        o = (o-42) % 256;
+        dst[out_len++] = o;
+        break;
+    }
+  }
+  dst[out_len]=0;
+#if 0
+  if (tmp_src == dst) free (src);
+#endif
+  return out_len;
+}
+
+#if 0
+int main (){
+  char *input="this is a testæøåÅØ'''\"!:_asdac\n\r";
+  char  encoded[256]="";
+  char  decoded[256]="";
+  int   in_len = strlen (input);
+  int   out_len;
+  int   dec_len;
+
+  printf ("input: %s\n", input);
+
+  out_len = ctx_yenc (input, encoded, in_len);
+  printf ("encoded: %s\n", encoded);
+
+  dec_len = ydec (encoded, encoded, out_len);
+
+  printf ("decoded: %s\n", encoded);
+
+  return 0;
+}
+#endif
 #ifndef CTX_DRAWLIST_H
 #define CTX_DRAWLIST_H
 
@@ -8068,7 +8360,7 @@ int ctx_drawlist_add_data (CtxDrawlist *drawlist, const void *data, int length);
 
 static CtxEntry
 ctx_void (CtxCode code);
-static CtxEntry
+static inline CtxEntry
 ctx_f (CtxCode code, float x, float y);
 static CtxEntry
 ctx_u32 (CtxCode code, uint32_t x, uint32_t y);
@@ -8085,7 +8377,7 @@ ctx_u8 (CtxCode code,
         uint8_t e, uint8_t f, uint8_t g, uint8_t h);
 
 #define CTX_PROCESS_VOID(cmd) do {\
-  CtxEntry command = ctx_void (cmd); \
+  CtxEntry command = {cmd};\
   ctx_process (ctx, &command);}while(0) \
 
 #define CTX_PROCESS_F(cmd, x, y) do {\
@@ -8125,6 +8417,19 @@ ctx_process_cmd_str_float (Ctx *ctx, CtxCode code, const char *string, float arg
 static void
 ctx_process_cmd_str_with_len (Ctx *ctx, CtxCode code, const char *string, uint32_t arg0, uint32_t arg1, int len);
 
+#pragma pack(push,1)
+typedef struct 
+CtxSegment {
+  uint16_t code;
+  union {
+   int16_t s16[4];
+   uint32_t u32[2];
+  } data;
+  int32_t val;
+  int32_t delta;
+} CtxSegment;
+#pragma pack(pop)
+
 #endif
 
 #ifndef __CTX_UTIL_H
@@ -8160,7 +8465,7 @@ static int ctx_str_is_number (const char *str)
   return 0;
 }
 
-#if CTX_FONTS_FROM_FILE
+#if CTX_GET_CONTENTS
 
 typedef struct CtxFileContent
 {
@@ -8266,6 +8571,7 @@ __ctx_file_get_contents (const char     *path,
 #endif
 
 
+
 static inline int
 ctx_conts_for_entry (CtxEntry *entry)
 {
@@ -8283,6 +8589,7 @@ ctx_conts_for_entry (CtxEntry *entry)
       case CTX_CURVE_TO:
       case CTX_REL_CURVE_TO:
       case CTX_APPLY_TRANSFORM:
+      case CTX_SOURCE_TRANSFORM:
       case CTX_COLOR:
       case CTX_ROUND_RECTANGLE:
       case CTX_SHADOW_COLOR:
@@ -8311,7 +8618,6 @@ ctx_conts_for_entry (CtxEntry *entry)
           int pix_len = entry[2 + eid_len + 1].data.u32[1];
           return eid_len + pix_len + 2 + 1;
         }
-
       default:
         return 0;
     }
@@ -8413,7 +8719,7 @@ ctx_iterator_next (CtxIterator *iterator)
 #if CTX_BITPACK
   int expand_bitpack = iterator->flags & CTX_ITERATOR_EXPAND_BITPACK;
 again:
-  if (iterator->bitpack_length)
+  if (CTX_UNLIKELY(iterator->bitpack_length))
     {
       ret = &iterator->bitpack_command[iterator->bitpack_pos];
       iterator->bitpack_pos += (ctx_conts_for_entry (ret) + 1);
@@ -8426,7 +8732,7 @@ again:
 #endif
   ret = _ctx_iterator_next (iterator);
 #if CTX_BITPACK
-  if (ret && expand_bitpack)
+  if (CTX_UNLIKELY(ret && expand_bitpack))
     switch ((CtxCode)(ret->code))
       {
         case CTX_REL_CURVE_TO_REL_LINE_TO:
@@ -8512,6 +8818,7 @@ again:
         case CTX_CURVE_TO:
         case CTX_REL_CURVE_TO:
         case CTX_APPLY_TRANSFORM:
+        case CTX_SOURCE_TRANSFORM:
         case CTX_ROUND_RECTANGLE:
         case CTX_TEXT:
         case CTX_STROKE_TEXT:
@@ -8592,14 +8899,15 @@ static void ctx_drawlist_compact (CtxDrawlist *drawlist);
 static void
 ctx_drawlist_resize (CtxDrawlist *drawlist, int desired_size)
 {
+  int flags=drawlist->flags;
 #if CTX_DRAWLIST_STATIC
-  if (drawlist->flags & CTX_DRAWLIST_EDGE_LIST)
+  if (flags & CTX_DRAWLIST_EDGE_LIST)
     {
-      static CtxEntry sbuf[CTX_MAX_EDGE_LIST_SIZE];
-      drawlist->entries = &sbuf[0];
+      static CtxSegment sbuf[CTX_MAX_EDGE_LIST_SIZE];
+      drawlist->entries = (CtxEntry*)&sbuf[0];
       drawlist->size = CTX_MAX_EDGE_LIST_SIZE;
     }
-  else if (drawlist->flags & CTX_DRAWLIST_CURRENT_PATH)
+  else if (flags & CTX_DRAWLIST_CURRENT_PATH)
     {
       static CtxEntry sbuf[CTX_MAX_EDGE_LIST_SIZE];
       drawlist->entries = &sbuf[0];
@@ -8616,47 +8924,49 @@ ctx_drawlist_resize (CtxDrawlist *drawlist, int desired_size)
   int new_size = desired_size;
   int min_size = CTX_MIN_JOURNAL_SIZE;
   int max_size = CTX_MAX_JOURNAL_SIZE;
-  if ((drawlist->flags & CTX_DRAWLIST_EDGE_LIST))
+  if ((flags & CTX_DRAWLIST_EDGE_LIST))
     {
       min_size = CTX_MIN_EDGE_LIST_SIZE;
       max_size = CTX_MAX_EDGE_LIST_SIZE;
     }
-  else if (drawlist->flags & CTX_DRAWLIST_CURRENT_PATH)
+  else if (flags & CTX_DRAWLIST_CURRENT_PATH)
     {
       min_size = CTX_MIN_EDGE_LIST_SIZE;
       max_size = CTX_MAX_EDGE_LIST_SIZE;
     }
   else
     {
+#if 0
       ctx_drawlist_compact (drawlist);
+#endif
     }
 
-  if (new_size < drawlist->size)
+  if (CTX_UNLIKELY(new_size < drawlist->size))
     { return; }
-  if (drawlist->size == max_size)
+  if (CTX_UNLIKELY(drawlist->size == max_size))
     { return; }
-  if (new_size < min_size)
-    { new_size = min_size; }
-  if (new_size < drawlist->count)
-    { new_size = drawlist->count + 4; }
-  if (new_size >= max_size)
-    { new_size = max_size; }
+  new_size = ctx_maxi (new_size, min_size);
+  //if (new_size < drawlist->count)
+  //  { new_size = drawlist->count + 4; }
+  new_size = ctx_mini (new_size, max_size);
   if (new_size != drawlist->size)
     {
-      //fprintf (stderr, "growing drawlist %p %i to %d from %d\n", drawlist, drawlist->flags, new_size, drawlist->size);
+      int item_size = sizeof (CtxEntry);
+      if (flags & CTX_DRAWLIST_EDGE_LIST) item_size = sizeof (CtxSegment);
+      //fprintf (stderr, "growing drawlist %p %i to %d from %d\n", drawlist, flags, new_size, drawlist->size);
   if (drawlist->entries)
     {
       //printf ("grow %p to %d from %d\n", drawlist, new_size, drawlist->size);
-      CtxEntry *ne =  (CtxEntry *) malloc (sizeof (CtxEntry) * new_size);
-      memcpy (ne, drawlist->entries, drawlist->size * sizeof (CtxEntry) );
+      CtxEntry *ne =  (CtxEntry *) malloc (item_size * new_size);
+      memcpy (ne, drawlist->entries, drawlist->size * item_size );
       free (drawlist->entries);
       drawlist->entries = ne;
-      //drawlist->entries = (CtxEntry*)malloc (drawlist->entries, sizeof (CtxEntry) * new_size);
+      //drawlist->entries = (CtxEntry*)malloc (drawlist->entries, item_size * new_size);
     }
   else
     {
       //fprintf (stderr, "allocating for %p %d\n", drawlist, new_size);
-      drawlist->entries = (CtxEntry *) malloc (sizeof (CtxEntry) * new_size);
+      drawlist->entries = (CtxEntry *) malloc (item_size * new_size);
     }
   drawlist->size = new_size;
     }
@@ -8664,34 +8974,105 @@ ctx_drawlist_resize (CtxDrawlist *drawlist, int desired_size)
 #endif
 }
 
-static int
+static void
+ctx_edgelist_resize (CtxDrawlist *drawlist, int desired_size)
+{
+#if CTX_DRAWLIST_STATIC
+    {
+      static CtxSegment sbuf[CTX_MAX_EDGE_LIST_SIZE];
+      drawlist->entries = (CtxEntry*)&sbuf[0];
+      drawlist->size = CTX_MAX_EDGE_LIST_SIZE;
+    }
+#else
+  int new_size = desired_size;
+  int min_size = CTX_MIN_JOURNAL_SIZE;
+  int max_size = CTX_MAX_JOURNAL_SIZE;
+    {
+      min_size = CTX_MIN_EDGE_LIST_SIZE;
+      max_size = CTX_MAX_EDGE_LIST_SIZE;
+    }
+
+  if (CTX_UNLIKELY(drawlist->size == max_size))
+    { return; }
+  new_size = ctx_maxi (new_size, min_size);
+  //if (new_size < drawlist->count)
+  //  { new_size = drawlist->count + 4; }
+  new_size = ctx_mini (new_size, max_size);
+  if (new_size != drawlist->size)
+    {
+      int item_size = item_size = sizeof (CtxSegment);
+      //fprintf (stderr, "growing drawlist %p %i to %d from %d\n", drawlist, flags, new_size, drawlist->size);
+  if (drawlist->entries)
+    {
+      //printf ("grow %p to %d from %d\n", drawlist, new_size, drawlist->size);
+      CtxEntry *ne =  (CtxEntry *) malloc (item_size * new_size);
+      memcpy (ne, drawlist->entries, drawlist->size * item_size );
+      free (drawlist->entries);
+      drawlist->entries = ne;
+      //drawlist->entries = (CtxEntry*)malloc (drawlist->entries, item_size * new_size);
+    }
+  else
+    {
+      //fprintf (stderr, "allocating for %p %d\n", drawlist, new_size);
+      drawlist->entries = (CtxEntry *) malloc (item_size * new_size);
+    }
+  drawlist->size = new_size;
+    }
+  //fprintf (stderr, "drawlist %p is %d\n", drawlist, drawlist->size);
+#endif
+}
+
+
+static inline int
 ctx_drawlist_add_single (CtxDrawlist *drawlist, CtxEntry *entry)
 {
   int max_size = CTX_MAX_JOURNAL_SIZE;
   int ret = drawlist->count;
-  if (drawlist->flags & CTX_DRAWLIST_EDGE_LIST)
+  int flags = drawlist->flags;
+  if (CTX_LIKELY((flags & CTX_DRAWLIST_EDGE_LIST ||
+       flags & CTX_DRAWLIST_CURRENT_PATH)))
     {
       max_size = CTX_MAX_EDGE_LIST_SIZE;
     }
-  else if (drawlist->flags & CTX_DRAWLIST_CURRENT_PATH)
-    {
-      max_size = CTX_MAX_EDGE_LIST_SIZE;
-    }
-  if (drawlist->flags & CTX_DRAWLIST_DOESNT_OWN_ENTRIES)
+  if (CTX_UNLIKELY(flags & CTX_DRAWLIST_DOESNT_OWN_ENTRIES))
     {
       return ret;
     }
-  if (ret + 1024 >= drawlist->size - 40)
+  if (CTX_UNLIKELY(ret + 64 >= drawlist->size - 40))
     {
       int new_ = CTX_MAX (drawlist->size * 2, ret + 1024);
       ctx_drawlist_resize (drawlist, new_);
     }
 
-  if (drawlist->count >= max_size - 20)
+  if (CTX_UNLIKELY(drawlist->count >= max_size - 20))
     {
       return 0;
     }
-  drawlist->entries[drawlist->count] = *entry;
+  if ((flags & CTX_DRAWLIST_EDGE_LIST))
+    ((CtxSegment*)(drawlist->entries))[drawlist->count] = *(CtxSegment*)entry;
+  else
+    drawlist->entries[drawlist->count] = *entry;
+  ret = drawlist->count;
+  drawlist->count++;
+  return ret;
+}
+
+static inline int
+ctx_edgelist_add_single (CtxDrawlist *drawlist, CtxEntry *entry)
+{
+  int max_size = CTX_MAX_EDGE_LIST_SIZE;
+  int ret = drawlist->count;
+  if ((ret + 64 >= drawlist->size - 40))
+    {
+      int new_ = CTX_MAX (drawlist->size * 2, ret + 1024);
+      ctx_edgelist_resize (drawlist, new_);
+    }
+
+  if (CTX_UNLIKELY(drawlist->count >= max_size - 20))
+    {
+      return 0;
+    }
+  ((CtxSegment*)(drawlist->entries))[drawlist->count] = *(CtxSegment*)entry;
   ret = drawlist->count;
   drawlist->count++;
   return ret;
@@ -8703,7 +9084,7 @@ ctx_add_single (Ctx *ctx, void *entry)
   return ctx_drawlist_add_single (&ctx->drawlist, (CtxEntry *) entry);
 }
 
-static int
+static inline int
 ctx_drawlist_add_entry (CtxDrawlist *drawlist, CtxEntry *entry)
 {
   int length = ctx_conts_for_entry (entry) + 1;
@@ -8770,7 +9151,7 @@ int ctx_set_drawlist (Ctx *ctx, void *data, int length)
     {
       return -1;
     }
-  if (length % 9) return -1;
+  if (CTX_UNLIKELY(length % 9)) return -1;
   ctx_drawlist_resize (drawlist, length/9);
   memcpy (drawlist->entries, data, length);
   drawlist->count = length / 9;
@@ -8790,7 +9171,7 @@ const CtxEntry *ctx_get_drawlist (Ctx *ctx)
 int
 ctx_add_data (Ctx *ctx, void *data, int length)
 {
-  if (length % sizeof (CtxEntry) )
+  if (CTX_UNLIKELY(length % sizeof (CtxEntry) ))
     {
       //ctx_log("err\n");
       return -1;
@@ -8818,14 +9199,14 @@ int ctx_drawlist_add_data (CtxDrawlist *drawlist, const void *data, int length)
   entry.data.u32[0] = 0;
   entry.data.u32[1] = 0;
   int ret = ctx_drawlist_add_single (drawlist, &entry);
-  if (!data) { return -1; }
+  if (CTX_UNLIKELY(!data)) { return -1; }
   int length_in_blocks;
   if (length <= 0) { length = strlen ( (char *) data) + 1; }
   length_in_blocks = length / sizeof (CtxEntry);
   length_in_blocks += (length % sizeof (CtxEntry) ) ?1:0;
   if (drawlist->count + length_in_blocks + 4 > drawlist->size)
     { ctx_drawlist_resize (drawlist, drawlist->count * 1.2 + length_in_blocks + 32); }
-  if (drawlist->count >= drawlist->size)
+  if (CTX_UNLIKELY(drawlist->count >= drawlist->size))
     { return -1; }
   drawlist->count += length_in_blocks;
   drawlist->entries[ret].data.u32[0] = length;
@@ -8845,20 +9226,19 @@ int ctx_drawlist_add_data (CtxDrawlist *drawlist, const void *data, int length)
   return ret;
 }
 
-static CtxEntry
+static inline CtxEntry
 ctx_void (CtxCode code)
 {
   CtxEntry command;
   command.code = code;
-  command.data.u32[0] = 0;
-  command.data.u32[1] = 0;
   return command;
 }
 
-static CtxEntry
+static inline CtxEntry
 ctx_f (CtxCode code, float x, float y)
 {
-  CtxEntry command = ctx_void (code);
+  CtxEntry command;
+  command.code = code;
   command.data.f[0] = x;
   command.data.f[1] = y;
   return command;
@@ -8887,7 +9267,20 @@ ctx_s32 (CtxCode code, int32_t x, int32_t y)
 static inline CtxEntry
 ctx_s16 (CtxCode code, int x0, int y0, int x1, int y1)
 {
-  CtxEntry command = ctx_void (code);
+  CtxEntry command;
+  command.code = code;
+  command.data.s16[0] = x0;
+  command.data.s16[1] = y0;
+  command.data.s16[2] = x1;
+  command.data.s16[3] = y1;
+  return command;
+}
+
+static inline CtxSegment
+ctx_segment_s16 (CtxCode code, int x0, int y0, int x1, int y1)
+{
+  CtxSegment command;
+  command.code = code;
   command.data.s16[0] = x0;
   command.data.s16[1] = y0;
   command.data.s16[2] = x1;
@@ -8900,7 +9293,8 @@ ctx_u8 (CtxCode code,
         uint8_t a, uint8_t b, uint8_t c, uint8_t d,
         uint8_t e, uint8_t f, uint8_t g, uint8_t h)
 {
-  CtxEntry command = ctx_void (code);
+  CtxEntry command;
+  command.code = code;
   command.data.u8[0] = a;
   command.data.u8[1] = b;
   command.data.u8[2] = c;
@@ -8913,7 +9307,7 @@ ctx_u8 (CtxCode code,
 }
 
 #define CTX_PROCESS_VOID(cmd) do {\
-  CtxEntry command = ctx_void (cmd); \
+  CtxEntry command = {cmd};\
   ctx_process (ctx, &command);}while(0) \
 
 #define CTX_PROCESS_F(cmd, x, y) do {\
@@ -9295,20 +9689,36 @@ uint8_t *ctx_define_texture_pixel_data (CtxEntry *entry)
 {
   return &entry[2 + 1 + 1 + ctx_conts_for_entry (&entry[2])].data.u8[0];
 }
+
 #ifndef __CTX_TRANSFORM
 #define __CTX_TRANSFORM
 
-static void
+static inline void
+_ctx_matrix_apply_transform (const CtxMatrix *m, float *x, float *y)
+{
+  float x_in = *x;
+  float y_in = *y;
+  *x = ( (x_in * m->m[0][0]) + (y_in * m->m[1][0]) + m->m[2][0]);
+  *y = ( (y_in * m->m[1][1]) + (x_in * m->m[0][1]) + m->m[2][1]);
+}
+
+void
+ctx_matrix_apply_transform (const CtxMatrix *m, float *x, float *y)
+{
+  _ctx_matrix_apply_transform (m, x, y);
+}
+
+static inline void
 _ctx_user_to_device (CtxState *state, float *x, float *y)
 {
-  ctx_matrix_apply_transform (&state->gstate.transform, x, y);
+  _ctx_matrix_apply_transform (&state->gstate.transform, x, y);
 }
 
 static void
 _ctx_user_to_device_distance (CtxState *state, float *x, float *y)
 {
   const CtxMatrix *m = &state->gstate.transform;
-  ctx_matrix_apply_transform (m, x, y);
+  _ctx_matrix_apply_transform (m, x, y);
   *x -= m->m[2][0];
   *y -= m->m[2][1];
 }
@@ -9333,8 +9743,8 @@ ctx_matrix_set (CtxMatrix *matrix, float a, float b, float c, float d, float e, 
   matrix->m[2][1] = f;
 }
 
-void
-ctx_matrix_identity (CtxMatrix *matrix)
+static inline void
+_ctx_matrix_identity (CtxMatrix *matrix)
 {
   matrix->m[0][0] = 1.0f;
   matrix->m[0][1] = 0.0f;
@@ -9345,9 +9755,15 @@ ctx_matrix_identity (CtxMatrix *matrix)
 }
 
 void
-ctx_matrix_multiply (CtxMatrix       *result,
-                     const CtxMatrix *t,
-                     const CtxMatrix *s)
+ctx_matrix_identity (CtxMatrix *matrix)
+{
+  _ctx_matrix_identity (matrix);
+}
+
+static void
+_ctx_matrix_multiply (CtxMatrix       *result,
+                      const CtxMatrix *t,
+                      const CtxMatrix *s)
 {
   CtxMatrix r;
   r.m[0][0] = t->m[0][0] * s->m[0][0] + t->m[0][1] * s->m[1][0];
@@ -9359,6 +9775,13 @@ ctx_matrix_multiply (CtxMatrix       *result,
   *result = r;
 }
 
+void
+ctx_matrix_multiply (CtxMatrix       *result,
+                     const CtxMatrix *t,
+                     const CtxMatrix *s)
+{
+  _ctx_matrix_multiply (result, t, s);
+}
 
 void
 ctx_matrix_translate (CtxMatrix *matrix, float x, float y)
@@ -9370,7 +9793,7 @@ ctx_matrix_translate (CtxMatrix *matrix, float x, float y)
   transform.m[1][1] = 1.0f;
   transform.m[2][0] = x;
   transform.m[2][1] = y;
-  ctx_matrix_multiply (matrix, &transform, matrix);
+  _ctx_matrix_multiply (matrix, &transform, matrix);
 }
 
 void
@@ -9383,7 +9806,7 @@ ctx_matrix_scale (CtxMatrix *matrix, float x, float y)
   transform.m[1][1] = y;
   transform.m[2][0] = 0.0f;
   transform.m[2][1] = 0.0f;
-  ctx_matrix_multiply (matrix, &transform, matrix);
+  _ctx_matrix_multiply (matrix, &transform, matrix);
 }
 
 void
@@ -9398,7 +9821,7 @@ ctx_matrix_rotate (CtxMatrix *matrix, float angle)
   transform.m[1][1] = val_cos;
   transform.m[2][0] =     0.0f;
   transform.m[2][1] = 0.0f;
-  ctx_matrix_multiply (matrix, &transform, matrix);
+  _ctx_matrix_multiply (matrix, &transform, matrix);
 }
 
 #if 0
@@ -9413,7 +9836,7 @@ ctx_matrix_skew_x (CtxMatrix *matrix, float angle)
   transform.m[1][1] = 1.0f;
   transform.m[2][0] =    0.0f;
   transform.m[2][1] = 0.0f;
-  ctx_matrix_multiply (matrix, &transform, matrix);
+  _ctx_matrix_multiply (matrix, &transform, matrix);
 }
 
 static void
@@ -9427,7 +9850,7 @@ ctx_matrix_skew_y (CtxMatrix *matrix, float angle)
   transform.m[1][1] = 1.0f;
   transform.m[2][0] =    0.0f;
   transform.m[2][1] = 0.0f;
-  ctx_matrix_multiply (matrix, &transform, matrix);
+  _ctx_matrix_multiply (matrix, &transform, matrix);
 }
 #endif
 
@@ -9437,6 +9860,8 @@ ctx_identity (Ctx *ctx)
 {
   CTX_PROCESS_VOID (CTX_IDENTITY);
 }
+
+
 
 void
 ctx_apply_transform (Ctx *ctx, float a, float b,  // hscale, hskew
@@ -9463,6 +9888,29 @@ ctx_get_transform  (Ctx *ctx, float *a, float *b,
   if (d) { *d = ctx->state.gstate.transform.m[1][1]; }
   if (e) { *e = ctx->state.gstate.transform.m[2][0]; }
   if (f) { *f = ctx->state.gstate.transform.m[2][1]; }
+}
+
+void
+ctx_source_transform (Ctx *ctx, float a, float b,  // hscale, hskew
+                      float c, float d,  // vskew,  vscale
+                      float e, float f)  // htran,  vtran
+{
+  CtxEntry command[3]=
+  {
+    ctx_f (CTX_SOURCE_TRANSFORM, a, b),
+    ctx_f (CTX_CONT,             c, d),
+    ctx_f (CTX_CONT,             e, f)
+  };
+  ctx_process (ctx, command);
+}
+
+void
+ctx_source_transform_matrix (Ctx *ctx, CtxMatrix *matrix)
+{
+  ctx_source_transform (ctx,
+    matrix->m[0][0], matrix->m[0][1],
+    matrix->m[1][0], matrix->m[1][1],
+    matrix->m[2][0], matrix->m[2][1]);
 }
 
 void ctx_apply_matrix (Ctx *ctx, CtxMatrix *matrix)
@@ -9533,14 +9981,6 @@ ctx_matrix_invert (CtxMatrix *m)
   m->m[2][1] = (t.m[0][1] * t.m[2][0] - t.m[0][0] * t.m[2][1]) * invdet ;
 }
 
-void
-ctx_matrix_apply_transform (const CtxMatrix *m, float *x, float *y)
-{
-  float x_in = *x;
-  float y_in = *y;
-  *x = ( (x_in * m->m[0][0]) + (y_in * m->m[1][0]) + m->m[2][0]);
-  *y = ( (y_in * m->m[1][1]) + (x_in * m->m[0][1]) + m->m[2][1]);
-}
 
 
 #endif
@@ -9589,7 +10029,7 @@ inline static float ctx_u8_to_float (uint8_t val_u8)
 float ctx_u8_float[256];
 #endif
 
-CtxColor *ctx_color_new ()
+CtxColor *ctx_color_new (void)
 {
   CtxColor *color = (CtxColor*)ctx_calloc (sizeof (CtxColor), 1);
   return color;
@@ -9845,7 +10285,9 @@ static void ctx_color_get_drgba (CtxState *state, CtxColor *color, float *out)
   out[3] = color->alpha;
 }
 
-void ctx_color_get_rgba (CtxState *state, CtxColor *color, float *out)
+
+static inline void
+_ctx_color_get_rgba (CtxState *state, CtxColor *color, float *out)
 {
 #if CTX_ENABLE_CM
   if (! (color->valid & CTX_VALID_RGBA) )
@@ -9866,6 +10308,12 @@ void ctx_color_get_rgba (CtxState *state, CtxColor *color, float *out)
   ctx_color_get_drgba (state, color, out);
 #endif
 }
+
+void ctx_color_get_rgba (CtxState *state, CtxColor *color, float *out)
+{
+  _ctx_color_get_rgba (state, color, out);
+}
+
 
 
 float ctx_float_color_rgb_to_gray (CtxState *state, const float *rgb)
@@ -9938,8 +10386,8 @@ static void ctx_color_get_cmyka_u8 (CtxState *state, CtxColor *color, uint8_t *o
 #endif
 #endif
 
-void
-ctx_color_get_rgba8 (CtxState *state, CtxColor *color, uint8_t *out)
+static inline void
+_ctx_color_get_rgba8 (CtxState *state, CtxColor *color, uint8_t *out)
 {
   if (! (color->valid & CTX_VALID_RGBA_U8) )
     {
@@ -9953,6 +10401,12 @@ ctx_color_get_rgba8 (CtxState *state, CtxColor *color, uint8_t *out)
   out[1] = color->rgba[1];
   out[2] = color->rgba[2];
   out[3] = color->rgba[3];
+}
+
+void
+ctx_color_get_rgba8 (CtxState *state, CtxColor *color, uint8_t *out)
+{
+  _ctx_color_get_rgba8 (state, color, out);
 }
 
 void ctx_color_get_graya_u8 (CtxState *state, CtxColor *color, uint8_t *out)
@@ -10378,7 +10832,7 @@ mrg_color_parse_hex (CtxState *ctxstate, CtxColor *color, const char *color_stri
 int ctx_color_set_from_string (Ctx *ctx, CtxColor *color, const char *string)
 {
   int i;
-  uint64_t hash = ctx_strhash (string, 0);
+  uint64_t hash = ctx_strhash (string);
 //  ctx_color_set_rgba (&(ctx->state), color, 0.4,0.1,0.9,1.0);
 //  return 0;
     //rgba[0], rgba[1], rgba[2], rgba[3]);
@@ -10595,7 +11049,7 @@ void ctx_gradient_add_stop_string
 //  userRGB - settable at any time, stored in save|restore 
 //  texture - set as the space of data on subsequent 
 
-float ctx_state_get (CtxState *state, uint64_t hash)
+static float ctx_state_get (CtxState *state, uint64_t hash)
 {
   for (int i = state->gstate.keydb_pos-1; i>=0; i--)
     {
@@ -10605,7 +11059,7 @@ float ctx_state_get (CtxState *state, uint64_t hash)
   return -0.0;
 }
 
-void ctx_state_set (CtxState *state, uint64_t key, float value)
+static void ctx_state_set (CtxState *state, uint64_t key, float value)
 {
   if (key != CTX_new_state)
     {
@@ -10791,21 +11245,4935 @@ int ctx_is_set_now (Ctx *ctx, uint64_t hash)
 {
   return ctx_is_set (ctx, hash);
 }
-#if CTX_RASTERIZER
 
-void ctx_compositor_setup_default (CtxRasterizer *rasterizer);
+#if CTX_COMPOSITE
+
+#define CTX_REFERENCE 0
+
+
+#define CTX_RGBA8_R_SHIFT  0
+#define CTX_RGBA8_G_SHIFT  8
+#define CTX_RGBA8_B_SHIFT  16
+#define CTX_RGBA8_A_SHIFT  24
+
+#define CTX_RGBA8_R_MASK   (0xff << CTX_RGBA8_R_SHIFT)
+#define CTX_RGBA8_G_MASK   (0xff << CTX_RGBA8_G_SHIFT)
+#define CTX_RGBA8_B_MASK   (0xff << CTX_RGBA8_B_SHIFT)
+#define CTX_RGBA8_A_MASK   (0xff << CTX_RGBA8_A_SHIFT)
+
+#define CTX_RGBA8_RB_MASK  (CTX_RGBA8_R_MASK | CTX_RGBA8_B_MASK)
+#define CTX_RGBA8_GA_MASK  (CTX_RGBA8_G_MASK | CTX_RGBA8_A_MASK)
+
+
+CTX_INLINE static void
+ctx_RGBA8_associate_alpha (uint8_t *u8)
+{
+#if 1
+  uint32_t val = *((uint32_t*)(u8));
+  uint8_t a = u8[3];
+  uint32_t g = (((val & CTX_RGBA8_G_MASK) * a) >> 8) & CTX_RGBA8_G_MASK;
+  uint32_t rb =(((val & CTX_RGBA8_RB_MASK) * a) >> 8) & CTX_RGBA8_RB_MASK;
+  *((uint32_t*)(u8)) = g|rb|(a << CTX_RGBA8_A_SHIFT);
+#else
+  uint32_t a = u8[3];
+  u8[0] = (u8[0] * a + 255) >> 8;
+  u8[1] = (u8[1] * a + 255) >> 8;
+  u8[2] = (u8[2] * a + 255) >> 8;
+#endif
+}
+
+CTX_INLINE static void
+ctx_RGBA8_associate_alpha_probably_opaque (uint8_t *u8)
+{
+  uint32_t val = *((uint32_t*)(u8));
+  uint32_t a = val>>24;//u8[3];
+  //if (CTX_UNLIKELY(a==0))
+  //   *((uint32_t*)(u8)) = 0;
+  if (CTX_UNLIKELY(a!=255))
+  {
+     uint32_t g = (((val & CTX_RGBA8_G_MASK) * a) >> 8) & CTX_RGBA8_G_MASK;
+     uint32_t rb =(((val & CTX_RGBA8_RB_MASK) * a) >> 8) & CTX_RGBA8_RB_MASK;
+     *((uint32_t*)(u8)) = g|rb|(a << CTX_RGBA8_A_SHIFT);
+  }
+}
+
+CTX_INLINE static uint32_t ctx_bi_RGBA8 (uint32_t isrc00, uint32_t isrc01, uint32_t isrc10, uint32_t isrc11, uint8_t dx, uint8_t dy)
+{
+#if 0
+#if 0
+  uint8_t ret[4];
+  uint8_t *src00 = (uint8_t*)&isrc00;
+  uint8_t *src10 = (uint8_t*)&isrc10;
+  uint8_t *src01 = (uint8_t*)&isrc01;
+  uint8_t *src11 = (uint8_t*)&isrc11;
+  for (int c = 0; c < 4; c++)
+  {
+    ret[c] = ctx_lerp_u8 (ctx_lerp_u8 (src00[c], src01[c], dx),
+                         ctx_lerp_u8 (src10[c], src11[c], dx), dy);
+  }
+  return  ((uint32_t*)&ret[0])[0];
+#else
+  return ctx_lerp_RGBA8 (ctx_lerp_RGBA8 (isrc00, isrc01, dx),
+                         ctx_lerp_RGBA8 (isrc10, isrc11, dx), dy);
+#endif
+#else
+  uint32_t s0_ga, s0_rb, s1_ga, s1_rb;
+  ctx_lerp_RGBA8_split (isrc00, isrc01, dx, &s0_ga, &s0_rb);
+  ctx_lerp_RGBA8_split (isrc10, isrc11, dx, &s1_ga, &s1_rb);
+  return ctx_lerp_RGBA8_merge (s0_ga, s0_rb, s1_ga, s1_rb, dy);
+#endif
+}
+
+#if CTX_GRADIENTS
+#if CTX_GRADIENT_CACHE
+static uint8_t ctx_gradient_cache_u8[CTX_GRADIENT_CACHE_ELEMENTS][4];
+extern int ctx_gradient_cache_valid;
+
+
+inline static int ctx_grad_index (float v)
+{
+  int ret = v * (CTX_GRADIENT_CACHE_ELEMENTS - 1) + 0.5f;
+  ret = ctx_maxi (0, ret);
+  ret = ctx_mini (CTX_GRADIENT_CACHE_ELEMENTS-1, ret);
+  return ret;
+}
+
+inline static int ctx_grad_index_i (int v)
+{
+  v = v >> 8;
+  return ctx_maxi (0, ctx_mini (CTX_GRADIENT_CACHE_ELEMENTS-1, v));
+}
+
+
+//static void
+//ctx_gradient_cache_reset (void)
+//{
+//  ctx_gradient_cache_valid = 0;
+//}
+#endif
+
+
+CTX_INLINE static void
+_ctx_fragment_gradient_1d_RGBA8 (CtxRasterizer *rasterizer, float x, float y, uint8_t *rgba)
+{
+  float v = x;
+  CtxGradient *g = &rasterizer->state->gradient;
+  if (v < 0) { v = 0; }
+  if (v > 1) { v = 1; }
+
+  if (g->n_stops == 0)
+    {
+      rgba[0] = rgba[1] = rgba[2] = v * 255;
+      rgba[3] = 255;
+      return;
+    }
+  CtxGradientStop *stop      = NULL;
+  CtxGradientStop *next_stop = &g->stops[0];
+  CtxColor *color;
+  for (int s = 0; s < g->n_stops; s++)
+    {
+      stop      = &g->stops[s];
+      next_stop = &g->stops[s+1];
+      if (s + 1 >= g->n_stops) { next_stop = NULL; }
+      if (v >= stop->pos && next_stop && v < next_stop->pos)
+        { break; }
+      stop = NULL;
+      next_stop = NULL;
+    }
+  if (stop == NULL && next_stop)
+    {
+      color = & (next_stop->color);
+    }
+  else if (stop && next_stop == NULL)
+    {
+      color = & (stop->color);
+    }
+  else if (stop && next_stop)
+    {
+      uint8_t stop_rgba[4];
+      uint8_t next_rgba[4];
+      ctx_color_get_rgba8 (rasterizer->state, & (stop->color), stop_rgba);
+      ctx_color_get_rgba8 (rasterizer->state, & (next_stop->color), next_rgba);
+      int dx = (v - stop->pos) * 255 / (next_stop->pos - stop->pos);
+#if 1
+      ((uint32_t*)rgba)[0] = ctx_lerp_RGBA8 (((uint32_t*)stop_rgba)[0],
+                                             ((uint32_t*)next_rgba)[0], dx);
+#else
+      for (int c = 0; c < 4; c++)
+        { rgba[c] = ctx_lerp_u8 (stop_rgba[c], next_rgba[c], dx); }
+#endif
+      ctx_RGBA8_associate_alpha (rgba);
+      return;
+    }
+  else
+    {
+      color = & (g->stops[g->n_stops-1].color);
+    }
+  ctx_color_get_rgba8 (rasterizer->state, color, rgba);
+  if (rasterizer->swap_red_green)
+  {
+    uint8_t tmp = rgba[0];
+    rgba[0] = rgba[2];
+    rgba[2] = tmp;
+  }
+  ctx_RGBA8_associate_alpha (rgba);
+}
+
+#if CTX_GRADIENT_CACHE
+static void
+ctx_gradient_cache_prime (CtxRasterizer *rasterizer);
+#endif
+
+CTX_INLINE static void
+ctx_fragment_gradient_1d_RGBA8 (CtxRasterizer *rasterizer, float x, float y, uint8_t *rgba)
+{
+#if CTX_GRADIENT_CACHE
+  *((uint32_t*)rgba) = *((uint32_t*)(&ctx_gradient_cache_u8[ctx_grad_index(x)][0]));
+#else
+ _ctx_fragment_gradient_1d_RGBA8 (rasterizer, x, y, rgba);
+#endif
+}
+#endif
+
+CTX_INLINE static void
+ctx_u8_associate_alpha (int components, uint8_t *u8)
+{
+  for (int c = 0; c < components-1; c++)
+    u8[c] = (u8[c] * u8[components-1] + 255)>>8;
+}
+
+#if CTX_GRADIENTS
+#if CTX_GRADIENT_CACHE
+static void
+ctx_gradient_cache_prime (CtxRasterizer *rasterizer)
+{
+  if (ctx_gradient_cache_valid)
+    return;
+  for (int u = 0; u < CTX_GRADIENT_CACHE_ELEMENTS; u++)
+  {
+    float v = u / (CTX_GRADIENT_CACHE_ELEMENTS - 1.0f);
+    _ctx_fragment_gradient_1d_RGBA8 (rasterizer, v, 0.0f, &ctx_gradient_cache_u8[u][0]);
+    //*((uint32_t*)(&ctx_gradient_cache_u8_a[u][0]))= *((uint32_t*)(&ctx_gradient_cache_u8[u][0]));
+    //memcpy(&ctx_gradient_cache_u8_a[u][0], &ctx_gradient_cache_u8[u][0], 4);
+    //ctx_RGBA8_associate_alpha (&ctx_gradient_cache_u8_a[u][0]);
+  }
+  ctx_gradient_cache_valid = 1;
+}
+#endif
+
+CTX_INLINE static void
+ctx_fragment_gradient_1d_GRAYA8 (CtxRasterizer *rasterizer, float x, float y, uint8_t *rgba)
+{
+  float v = x;
+  CtxGradient *g = &rasterizer->state->gradient;
+  if (v < 0) { v = 0; }
+  if (v > 1) { v = 1; }
+  if (g->n_stops == 0)
+    {
+      rgba[0] = rgba[1] = rgba[2] = v * 255;
+      rgba[1] = 255;
+      return;
+    }
+  CtxGradientStop *stop      = NULL;
+  CtxGradientStop *next_stop = &g->stops[0];
+  CtxColor *color;
+  for (int s = 0; s < g->n_stops; s++)
+    {
+      stop      = &g->stops[s];
+      next_stop = &g->stops[s+1];
+      if (s + 1 >= g->n_stops) { next_stop = NULL; }
+      if (v >= stop->pos && next_stop && v < next_stop->pos)
+        { break; }
+      stop = NULL;
+      next_stop = NULL;
+    }
+  if (stop == NULL && next_stop)
+    {
+      color = & (next_stop->color);
+    }
+  else if (stop && next_stop == NULL)
+    {
+      color = & (stop->color);
+    }
+  else if (stop && next_stop)
+    {
+      uint8_t stop_rgba[4];
+      uint8_t next_rgba[4];
+      ctx_color_get_graya_u8 (rasterizer->state, & (stop->color), stop_rgba);
+      ctx_color_get_graya_u8 (rasterizer->state, & (next_stop->color), next_rgba);
+      int dx = (v - stop->pos) * 255 / (next_stop->pos - stop->pos);
+      for (int c = 0; c < 2; c++)
+        { rgba[c] = ctx_lerp_u8 (stop_rgba[c], next_rgba[c], dx); }
+      return;
+    }
+  else
+    {
+      color = & (g->stops[g->n_stops-1].color);
+    }
+  ctx_color_get_graya_u8 (rasterizer->state, color, rgba);
+}
+
+CTX_INLINE static void
+ctx_fragment_gradient_1d_RGBAF (CtxRasterizer *rasterizer, float v, float y, float *rgba)
+{
+  CtxGradient *g = &rasterizer->state->gradient;
+  if (v < 0) { v = 0; }
+  if (v > 1) { v = 1; }
+  if (g->n_stops == 0)
+    {
+      rgba[0] = rgba[1] = rgba[2] = v;
+      rgba[3] = 1.0;
+      return;
+    }
+  CtxGradientStop *stop      = NULL;
+  CtxGradientStop *next_stop = &g->stops[0];
+  CtxColor *color;
+  for (int s = 0; s < g->n_stops; s++)
+    {
+      stop      = &g->stops[s];
+      next_stop = &g->stops[s+1];
+      if (s + 1 >= g->n_stops) { next_stop = NULL; }
+      if (v >= stop->pos && next_stop && v < next_stop->pos)
+        { break; }
+      stop = NULL;
+      next_stop = NULL;
+    }
+  if (stop == NULL && next_stop)
+    {
+      color = & (next_stop->color);
+    }
+  else if (stop && next_stop == NULL)
+    {
+      color = & (stop->color);
+    }
+  else if (stop && next_stop)
+    {
+      float stop_rgba[4];
+      float next_rgba[4];
+      ctx_color_get_rgba (rasterizer->state, & (stop->color), stop_rgba);
+      ctx_color_get_rgba (rasterizer->state, & (next_stop->color), next_rgba);
+      int dx = (v - stop->pos) / (next_stop->pos - stop->pos);
+      for (int c = 0; c < 4; c++)
+        { rgba[c] = ctx_lerpf (stop_rgba[c], next_rgba[c], dx); }
+      return;
+    }
+  else
+    {
+      color = & (g->stops[g->n_stops-1].color);
+    }
+  ctx_color_get_rgba (rasterizer->state, color, rgba);
+}
+#endif
+
+static void
+ctx_fragment_image_RGBA8 (CtxRasterizer *rasterizer, float x, float y, void *out, int count, float dx, float dy)
+{
+  uint8_t *rgba = (uint8_t *) out;
+  CtxSource *g = &rasterizer->state->gstate.source_fill;
+  CtxBuffer *buffer = g->texture.buffer->color_managed;
+  ctx_assert (rasterizer);
+  ctx_assert (g);
+  ctx_assert (buffer);
+
+  for (int i = 0; i < count; i ++)
+  {
+
+  int u = x;
+  int v = y;
+  int width = buffer->width;
+  int height = buffer->height;
+  if ( u < 0 || v < 0 ||
+       u >= width ||
+       v >= height)
+    {
+      *((uint32_t*)(rgba)) = 0;
+    }
+  else
+    {
+      int bpp = buffer->format->bpp/8;
+      if (rasterizer->state->gstate.image_smoothing)
+      {
+      uint8_t *src00 = (uint8_t *) buffer->data;
+      src00 += v * buffer->stride + u * bpp;
+      uint8_t *src01 = src00;
+      if ( u + 1 < width)
+      {
+        src01 = src00 + bpp;
+      }
+      uint8_t *src11 = src01;
+      uint8_t *src10 = src00;
+      if ( v + 1 < height)
+      {
+        src10 = src00 + buffer->stride;
+        src11 = src01 + buffer->stride;
+      }
+      float dx = (x-(int)(x)) * 255.9;
+      float dy = (y-(int)(y)) * 255.9;
+
+      switch (bpp)
+      {
+      case 1:
+        rgba[0] = rgba[1] = rgba[2] = ctx_lerp_u8 (ctx_lerp_u8 (src00[0], src01[0], dx),
+                               ctx_lerp_u8 (src10[0], src11[0], dx), dy);
+        rgba[3] = 255;
+        break;
+      case 2:
+        rgba[0] = rgba[1] = rgba[2] = ctx_lerp_u8 (ctx_lerp_u8 (src00[0], src01[0], dx),
+                               ctx_lerp_u8 (src10[0], src11[0], dx), dy);
+        rgba[3] = ctx_lerp_u8 (ctx_lerp_u8 (src00[1], src01[1], dx),
+                               ctx_lerp_u8 (src10[1], src11[1], dx), dy);
+        break;
+      case 3:
+      for (int c = 0; c < bpp; c++)
+        { rgba[c] = ctx_lerp_u8 (ctx_lerp_u8 (src00[c], src01[c], dx),
+                                 ctx_lerp_u8 (src10[c], src11[c], dx), dy);
+                
+        }
+        rgba[3]=255;
+        break;
+      break;
+      case 4:
+      for (int c = 0; c < bpp; c++)
+        { rgba[c] = ctx_lerp_u8 (ctx_lerp_u8 (src00[c], src01[c], dx),
+                                 ctx_lerp_u8 (src10[c], src11[c], dx), dy);
+                
+        }
+      }
+      }
+      else
+      {
+      uint8_t *src = (uint8_t *) buffer->data;
+      src += v * buffer->stride + u * bpp;
+      switch (bpp)
+        {
+          case 1:
+            for (int c = 0; c < 3; c++)
+              { rgba[c] = src[0]; }
+            rgba[3] = 255;
+            break;
+          case 2:
+            for (int c = 0; c < 3; c++)
+              { rgba[c] = src[0]; }
+            rgba[3] = src[1];
+            break;
+          case 3:
+            for (int c = 0; c < 3; c++)
+              { rgba[c] = src[c]; }
+            rgba[3] = 255;
+            break;
+          case 4:
+            for (int c = 0; c < 4; c++)
+              { rgba[c] = src[c]; }
+            break;
+        }
+      }
+      if (rasterizer->swap_red_green)
+      {
+        uint8_t tmp = rgba[0];
+        rgba[0] = rgba[2];
+        rgba[2] = tmp;
+      }
+    }
+    ctx_RGBA8_associate_alpha_probably_opaque (rgba); // XXX: really?
+    rgba += 4;
+    x += dx;
+    y += dy;
+  }
+}
+
+#if CTX_DITHER
+static inline int ctx_dither_mask_a (int x, int y, int c, int divisor)
+{
+  /* https://pippin.gimp.org/a_dither/ */
+  return ( ( ( ( (x + c * 67) + y * 236) * 119) & 255 )-127) / divisor;
+}
+
+inline static void
+ctx_dither_rgba_u8 (uint8_t *rgba, int x, int y, int dither_red_blue, int dither_green)
+{
+  if (dither_red_blue == 0)
+    { return; }
+  for (int c = 0; c < 3; c ++)
+    {
+      int val = rgba[c] + ctx_dither_mask_a (x, y, 0, c==1?dither_green:dither_red_blue);
+      rgba[c] = CTX_CLAMP (val, 0, 255);
+    }
+}
+
+inline static void
+ctx_dither_graya_u8 (uint8_t *rgba, int x, int y, int dither_red_blue, int dither_green)
+{
+  if (dither_red_blue == 0)
+    { return; }
+  for (int c = 0; c < 1; c ++)
+    {
+      int val = rgba[c] + ctx_dither_mask_a (x, y, 0, dither_red_blue);
+      rgba[c] = CTX_CLAMP (val, 0, 255);
+    }
+}
+#endif
+
+CTX_INLINE static void
+ctx_RGBA8_deassociate_alpha (const uint8_t *in, uint8_t *out)
+{
+    uint32_t val = *((uint32_t*)(in));
+    int a = val >> CTX_RGBA8_A_SHIFT;
+    if (a)
+    {
+    if (a ==255)
+    {
+      *((uint32_t*)(out)) = val;
+    } else
+    {
+      uint32_t g = (((val & CTX_RGBA8_G_MASK) * 255 / a) >> 8) & CTX_RGBA8_G_MASK;
+      uint32_t rb =(((val & CTX_RGBA8_RB_MASK) * 255 / a) >> 8) & CTX_RGBA8_RB_MASK;
+      *((uint32_t*)(out)) = g|rb|(a << CTX_RGBA8_A_SHIFT);
+    }
+    }
+    else
+    {
+      *((uint32_t*)(out)) = 0;
+    }
+}
+
+CTX_INLINE static void
+ctx_u8_deassociate_alpha (int components, const uint8_t *in, uint8_t *out)
+{
+  if (in[components-1])
+  {
+    if (in[components-1] != 255)
+    for (int c = 0; c < components-1; c++)
+      out[c] = (in[c] * 255) / in[components-1];
+    else
+    for (int c = 0; c < components-1; c++)
+      out[c] = in[c];
+    out[components-1] = in[components-1];
+  }
+  else
+  {
+  for (int c = 0; c < components; c++)
+    out[c] = 0;
+  }
+}
+
+CTX_INLINE static void
+ctx_float_associate_alpha (int components, float *rgba)
+{
+  float alpha = rgba[components-1];
+  for (int c = 0; c < components-1; c++)
+    rgba[c] *= alpha;
+}
+
+CTX_INLINE static void
+ctx_float_deassociate_alpha (int components, float *rgba, float *dst)
+{
+  float ralpha = rgba[components-1];
+  if (ralpha != 0.0) ralpha = 1.0/ralpha;
+
+  for (int c = 0; c < components-1; c++)
+    dst[c] = (rgba[c] * ralpha);
+  dst[components-1] = rgba[components-1];
+}
+
+CTX_INLINE static void
+ctx_RGBAF_associate_alpha (float *rgba)
+{
+  ctx_float_associate_alpha (4, rgba);
+}
+
+CTX_INLINE static void
+ctx_RGBAF_deassociate_alpha (float *rgba, float *dst)
+{
+  ctx_float_deassociate_alpha (4, rgba, dst);
+}
+
+
+static inline void ctx_swap_red_green_u8 (void *data)
+{
+  uint8_t *rgba = (uint8_t*)data;
+  uint8_t tmp = rgba[0];
+  rgba[0] = rgba[2];
+  rgba[2] = tmp;
+}
+
+static void
+ctx_fragment_swap_red_green_u8 (void *out, int count)
+{
+  uint8_t *rgba = (uint8_t*)out;
+  for (int x = 0; x < count; x++)
+  {
+    ctx_swap_red_green_u8 (rgba);
+    rgba += 4;
+  }
+}
+
+/**** rgb8 ***/
+
+static void
+ctx_fragment_image_rgb8_RGBA8_box (CtxRasterizer *rasterizer,
+                                   float x,
+                                   float y,
+                                   void *out, int count, float dx, float dy)
+{
+  uint8_t *rgba = (uint8_t *) out;
+  CtxSource *g = &rasterizer->state->gstate.source_fill;
+  CtxBuffer *buffer = g->texture.buffer->color_managed;
+  int width = buffer->width;
+  int height = buffer->height;
+
+  for (int i = 0; i < count; i++)
+  {
+
+  int u = x;
+  int v = y;
+  if ( u < 0 || v < 0 ||
+       u >= width ||
+       v >= height)
+    {
+      *((uint32_t*)(rgba))= 0;
+    }
+  else
+    {
+      int bpp = 3;
+      rgba[3]=255;
+      float factor = ctx_matrix_get_scale (&rasterizer->state->gstate.transform);
+          int dim = (1.0 / factor) / 2;
+          uint64_t sum[4]={0,0,0,0};
+          int count = 0;
+          for (int ou = - dim; ou < dim; ou++)
+          for (int ov = - dim; ov < dim; ov++)
+          {
+            uint8_t *src = (uint8_t *) buffer->data;
+
+            if (v+ov >= 0 && u+ou >=0 && u + ou < width && v + ov < height)
+            {
+              int o = (v+ov) * width + (u + ou);
+              src += o * bpp;
+
+              for (int c = 0; c < bpp; c++)
+                sum[c] += src[c];
+              count ++;
+            }
+          }
+          if (count)
+          {
+            int recip = 65536/count;
+            for (int c = 0; c < bpp; c++)
+              rgba[c] = sum[c] * recip >> 16;
+          }
+          ctx_RGBA8_associate_alpha_probably_opaque (rgba);
+    }
+    rgba += 4;
+    x += dx;
+    y += dy;
+  }
+#if CTX_DITHER
+//ctx_dither_rgba_u8 (rgba, x, y, rasterizer->format->dither_red_blue,
+//                    rasterizer->format->dither_green);
+#endif
+}
+
+static void
+ctx_fragment_image_rgb8_RGBA8_box_swap_red_green (CtxRasterizer *rasterizer,
+                                  float x,
+                                  float y,
+                                  void *out, int count, float dx, float dy)
+{
+  ctx_fragment_image_rgb8_RGBA8_box (rasterizer, x, y, out, count, dx, dy);
+  ctx_fragment_swap_red_green_u8 (out, count);
+}
+
+static void
+ctx_fragment_image_rgb8_RGBA8_bi (CtxRasterizer *rasterizer,
+                                  float x,
+                                  float y,
+                                  void *out, int count, float dx, float dy)
+{
+  uint8_t *rgba = (uint8_t *) out;
+
+  CtxSource *g = &rasterizer->state->gstate.source_fill;
+  CtxBuffer *buffer = g->texture.buffer->color_managed;
+  int width = buffer->width;
+  int height = buffer->height;
+
+  for (int i = 0; i < count; i++)
+  {
+
+  int u = x;
+  int v = y;
+  if ( u < 0 || v < 0 ||
+       u >= width ||
+       v >= height)
+    {
+      *((uint32_t*)(rgba))= 0;
+    }
+  else
+    {
+      int bpp = 3;
+      rgba[3]=255;
+      uint8_t *src00 = (uint8_t *) buffer->data;
+      int stride = buffer->stride;
+      src00 += v * stride + u * bpp;
+      uint8_t *src01 = src00;
+      if ( u + 1 < width)
+      {
+        src01 = src00 + bpp;
+      }
+      uint8_t *src11 = src01;
+      uint8_t *src10 = src00;
+      if ( v + 1 < height)
+      {
+        src10 = src00 + stride;
+        src11 = src01 + stride;
+      }
+      float dx = (x-(int)(x)) * 255.9f;
+      float dy = (y-(int)(y)) * 255.9f;
+      for (int c = 0; c < bpp; c++)
+      {
+        rgba[c] = ctx_lerp_u8 (ctx_lerp_u8 (src00[c], src01[c], dx),
+                               ctx_lerp_u8 (src10[c], src11[c], dx), dy);
+      }
+      ctx_RGBA8_associate_alpha_probably_opaque (rgba);
+    }
+    x += dx;
+    y += dy;
+    rgba += 4;
+  }
+#if CTX_DITHER
+//ctx_dither_rgba_u8 (rgba, x, y, rasterizer->format->dither_red_blue,
+//                    rasterizer->format->dither_green);
+#endif
+}
+
+static void
+ctx_fragment_image_rgb8_RGBA8_bi_swap_red_green (CtxRasterizer *rasterizer,
+                                  float x,
+                                  float y,
+                                  void *out, int count, float dx, float dy)
+{
+  ctx_fragment_image_rgb8_RGBA8_bi (rasterizer, x, y, out, count, dx, dy);
+  ctx_fragment_swap_red_green_u8 (out, count);
+}
+
+static CTX_INLINE void
+ctx_fragment_image_rgb8_RGBA8_nearest (CtxRasterizer *rasterizer,
+                                       float x,
+                                       float y,
+                                       void *out, int count, float dx, float dy)
+{
+  CtxSource *g = &rasterizer->state->gstate.source_fill;
+  CtxBuffer *buffer = g->texture.buffer;
+  if (buffer->color_managed)
+   buffer = buffer->color_managed;
+  uint8_t *rgba = (uint8_t *) out;
+  uint8_t *src = (uint8_t *) buffer->data;
+  int bwidth = buffer->width;
+  int bheight = buffer->height;
+  int stride = buffer->stride;
+
+  x += 0.5f;
+  y += 0.5f;
+
+  if (CTX_UNLIKELY (dy == 0.0f && dx > 0.999f && dx < 1.001f))
+  {
+    int v = y;
+    int u = x;
+  
+    if (v < buffer->height && v > 0)
+    {
+      int o = v * stride + u * 3;
+      int i;
+      for (i = 0; i < count && u < bwidth && u <0; i++)
+      {
+        *((uint32_t*)(rgba))= 0;
+        rgba += 4;
+        o += 3;
+        u+=1;
+      }
+
+      for (; i < count && u < bwidth; i++)
+      {
+        rgba[0] = src[o];
+        rgba[1] = src[o+1];
+        rgba[2] = src[o+2]; 
+        rgba[3]=255;
+        rgba += 4;
+        o += 3;
+        u+=1;
+      }
+      for (; i < count; i++)
+      {
+        *((uint32_t*)(rgba))= 0;
+        rgba += 4;
+      }
+    }
+    else
+    {
+      for (int i = 0; i < count; i++)
+      {
+        *((uint32_t*)(rgba))= 0;
+        rgba+=4;
+      }
+    }
+  }
+  else
+  {
+    int u = x;
+    int v = y;
+    int i;
+    for (i = 0; i < count && u < bwidth && u <0; i++)
+    {
+      u = x;
+      v = y;;
+      *((uint32_t*)(rgba))= 0;
+      x += dx;
+      y += dy;
+      rgba += 4;
+    }
+    for (; i < count && u < bwidth; i++)
+    {
+      u = x;
+      v = y;
+    if (CTX_UNLIKELY(v < 0 || v >= bheight))
+      {
+        *((uint32_t*)(rgba))= 0;
+      }
+    else
+      {
+        int o = v * stride + u * 3;
+        rgba[0] = src[o];
+        rgba[1] = src[o+1];
+        rgba[2] = src[o+2]; 
+        rgba[3]=255;
+      }
+  
+      rgba += 4;
+      x += dx;
+      y += dy;
+    }
+      for (; i < count; i++)
+      {
+        *((uint32_t*)(rgba))= 0;
+        rgba += 4;
+      }
+  }
+#if CTX_DITHER
+  //ctx_dither_rgba_u8 (rgba, x, y, rasterizer->format->dither_red_blue,
+  //                    rasterizer->format->dither_green);
+#endif
+}
+
+
+static CTX_INLINE void
+ctx_fragment_image_rgb8_RGBA8_nearest_swap_red_green (CtxRasterizer *rasterizer,
+                                                      float x,
+                                                      float y,
+                                                      void *out, int count, float dx, float dy)
+{
+  ctx_fragment_image_rgb8_RGBA8_nearest (rasterizer, x, y, out, count, dx, dy);
+  ctx_fragment_swap_red_green_u8 (out, count);
+}
+
+static void
+ctx_fragment_image_rgb8_RGBA8 (CtxRasterizer *rasterizer,
+                               float x,
+                               float y,
+                               void *out, int count, float dx, float dy)
+{
+  if (rasterizer->state->gstate.image_smoothing)
+  {
+    float factor = ctx_matrix_get_scale (&rasterizer->state->gstate.transform);
+    if (factor <= 0.50f)
+    {
+      if (rasterizer->swap_red_green)
+        ctx_fragment_image_rgb8_RGBA8_box_swap_red_green (rasterizer, x, y, out, count, dx, dy);
+      else
+        ctx_fragment_image_rgb8_RGBA8_box (rasterizer, x, y, out, count, dx, dy);
+    }
+#if CTX_ALWAYS_USE_NEAREST_FOR_SCALE1
+    else if (factor > 0.99f && factor < 1.01f)
+    {
+      // XXX missing translate test
+      if (rasterizer->swap_red_green)
+        ctx_fragment_image_rgb8_RGBA8_nearest_swap_red_green (rasterizer, x, y, out, count, dx, dy);
+      else
+        ctx_fragment_image_rgb8_RGBA8_nearest (rasterizer, x, y, out, count, dx, dy);
+    }
+#endif
+    else
+    {
+      if (rasterizer->swap_red_green)
+        ctx_fragment_image_rgb8_RGBA8_bi_swap_red_green (rasterizer, x, y, out, count, dx, dy);
+      else
+        ctx_fragment_image_rgb8_RGBA8_bi (rasterizer, x, y, out, count, dx, dy);
+    }
+  }
+  else
+  {
+    if (rasterizer->swap_red_green)
+      ctx_fragment_image_rgb8_RGBA8_nearest_swap_red_green (rasterizer, x, y, out, count, dx, dy);
+    else
+      ctx_fragment_image_rgb8_RGBA8_nearest (rasterizer, x, y, out, count, dx, dy);
+  }
+#if CTX_DITHER
+  {
+  uint8_t *rgba = (uint8_t*)out;
+  ctx_dither_rgba_u8 (rgba, x, y, rasterizer->format->dither_red_blue,
+                      rasterizer->format->dither_green);
+  }
+#endif
+}
+
+
+/************** rgba8 */
+
+static void
+ctx_fragment_image_rgba8_RGBA8_box (CtxRasterizer *rasterizer,
+                                    float x,
+                                    float y,
+                                    void *out, int count, float dx, float dy)
+{
+  uint8_t *rgba = (uint8_t *) out;
+  CtxSource *g = &rasterizer->state->gstate.source_fill;
+  CtxBuffer *buffer = g->texture.buffer->color_managed;
+
+  for (int i = 0; i < count; i ++)
+  {
+
+  int u = x;
+  int v = y;
+  if ( u < 0 || v < 0 ||
+       u >= buffer->width ||
+       v >= buffer->height)
+    {
+      *((uint32_t*)(rgba))= 0;
+    }
+  else
+    {
+      int bpp = 4;
+      float factor = ctx_matrix_get_scale (&rasterizer->state->gstate.transform);
+          int dim = (1.0 / factor) / 2;
+          uint64_t sum[4]={0,0,0,0};
+          int count = 0;
+          int width = buffer->width;
+          int height = buffer->height;
+          for (int ou = - dim; ou < dim; ou++)
+          for (int ov = - dim; ov < dim; ov++)
+          {
+
+            if (v+ov >= 0 && u+ou >=0 && u + ou < width && v + ov < height)
+            {
+              int o = (v+ov) * width + (u + ou);
+              uint8_t *src = (uint8_t *) buffer->data + o * bpp;
+
+              for (int c = 0; c < bpp; c++)
+                sum[c] += src[c];
+              count ++;
+            }
+          }
+          if (count)
+          {
+            int recip = 65536/count;
+            for (int c = 0; c < bpp; c++)
+              rgba[c] = sum[c]*recip>>16;
+          }
+          ctx_RGBA8_associate_alpha_probably_opaque (rgba);
+    }
+    rgba += 4;
+    x += dx;
+    y += dy;
+  }
+#if CTX_DITHER
+//ctx_dither_rgba_u8 (rgba, x, y, rasterizer->format->dither_red_blue,
+//                    rasterizer->format->dither_green);
+#endif
+}
+
+
+static void
+ctx_fragment_image_rgba8_RGBA8_nearest (CtxRasterizer *rasterizer,
+                                        float x,
+                                        float y,
+                                        void *out, int count, float dx, float dy)
+{
+  CtxSource *g = &rasterizer->state->gstate.source_fill;
+  CtxBuffer *buffer = g->texture.buffer;
+  if (buffer->color_managed)
+    buffer = buffer->color_managed;
+  int ideltax = dx * 65536;
+  int ideltay = dy * 65536;
+  uint32_t *src = (uint32_t *) buffer->data;
+  uint32_t *dst = (uint32_t*)out;
+  int bwidth  = buffer->width;
+  int bheight = buffer->height;
+  x += 0.5f;
+  y += 0.5f;
+
+#if 1
+  if (CTX_UNLIKELY(ideltay == 0 && ideltax == 65536))
+  {
+    int i = 0;
+    int u = x;
+    int v = y;
+    if (!(v >= 0 && v < bheight))
+    {
+      for (i = 0 ; i < count; i++)
+        *dst++ = 0;
+      return;
+    }
+    src += bwidth * v + u;
+    while (count && !(u >= 0))
+    {
+      *dst++ = 0;
+      src ++;
+      u++;
+      count--;
+    }
+    int limit = ctx_mini (count, bwidth - u);
+    if (limit>0)
+    {
+      memcpy (dst, src, limit * 4);
+      dst += limit;
+      i = limit;
+    }
+    for (;i < count; i++)
+      *dst++ = 0;
+    return;
+  }
+#endif
+
+  {
+    int i = 0;
+    float u1 = x + dx * (count-1);
+    float v1 = y + dy * (count-1);
+    uint32_t *edst = ((uint32_t*)out)+count;
+    for (; i < count; )
+    {
+      if ((u1 < 0.0f || v1 < 0.0f || u1 >= bwidth || v1 >= bheight))
+      {
+        *edst-- = 0;
+        count --;
+        u1 -= dx;
+        v1 -= dy;
+      }
+      else break;
+    }
+
+
+    for (i = 0; i < count; i ++)
+    {
+      if ((x < 0.0f || y < 0.0f || x >= bwidth || y >= bheight))
+      {
+        *dst = 0;
+        dst++;
+        x += dx;
+        y += dy;
+      }
+      else break;
+    }
+
+
+    uint32_t ix = x * 65536;
+    uint32_t iy = y * 65536;
+
+    for (; i < count; i ++)
+    {
+      *dst = src[(iy>>16) * bwidth + (ix>>16)];
+      ix += ideltax;
+      iy += ideltay;
+      dst++;
+    }
+  }
+}
+
+
+
+static void
+ctx_fragment_image_rgba8_RGBA8_bi (CtxRasterizer *rasterizer,
+                                   float x,
+                                   float y,
+                                   void *out, int count, float dx, float dy)
+{
+  uint8_t *rgba = (uint8_t *) out;
+  float ox = (x-(int)(x));
+  float oy = (y-(int)(y));
+
+  CtxSource *g = &rasterizer->state->gstate.source_fill;
+  CtxBuffer *buffer = g->texture.buffer->color_managed;
+  const int bwidth = buffer->width;
+  const int bheight = buffer->height;
+  int i = 0;
+
+  if (dy == 0.0f && dx > 0.0f)
+  {
+    if ((dx > 0.99f && dx < 1.01f && 
+         ox < 0.01 && oy < 0.01) || y < 0 || y > bheight-1)
+    {
+      /* TODO: this could have been rigged up in composite_setup */
+      ctx_fragment_image_rgba8_RGBA8_nearest (rasterizer,
+                                   x, y, out, count, dx, dy);
+      return;
+    }
+    x+=1; // XXX off by one somewhere? ,, needed for alignment with nearest
+
+    uint32_t *data = ((uint32_t*)buffer->data);
+    uint32_t yi = y * 65536;
+    uint32_t xi = x * 65536;
+    int xi_delta = dx * 65536;
+
+    for (i= 0; i < count; i ++)
+    {
+      int u = xi >> 16;
+      if ( u  < 0 || u >= bwidth-1)
+      {
+        *((uint32_t*)(rgba))= 0;
+        xi += xi_delta;
+        rgba += 4;
+      }
+      else
+        break;
+    }
+
+  int loaded = -4;
+  uint32_t s0_ga = 0, s0_rb = 0, s1_ga = 0, s1_rb = 0;
+ 
+  int v = yi >> 16;
+  data += bwidth * v;
+  int dv = (yi >> 8) & 0xff;
+
+  int u = xi >> 16;
+
+  uint32_t *ndata = data;
+  if (v < bheight-1) ndata += bwidth;
+
+  uint32_t *src0 = data, *src1 = ndata;
+
+
+  if (xi_delta == 65536 && u < bwidth -1)
+  {
+    int du = (xi >> 8);
+
+    src0 = data + u;
+    src1 = ndata + u;
+    ctx_lerp_RGBA8_split (src0[0],src1[0], dv, &s1_ga, &s1_rb);
+
+    int limit = bwidth-u;
+    limit = ctx_mini(count,limit);
+
+    for (; i < limit; i ++)
+    {
+      s0_ga = s1_ga;
+      s0_rb = s1_rb;
+      ctx_lerp_RGBA8_split (src0[1],src1[1], dv, &s1_ga, &s1_rb);
+      ((uint32_t*)(&rgba[0]))[0] = 
+      ctx_lerp_RGBA8_merge (s0_ga, s0_rb, s1_ga, s1_rb, du);
+      rgba += 4;
+      u++;
+      src0 ++;
+      src1 ++;
+    }
+  }
+  else
+  {
+
+  for (; i < count; i ++)
+  {
+    if (CTX_UNLIKELY(u >= bwidth-1))
+    {
+      break;
+    }
+    else if (CTX_LIKELY(loaded + 1 == u))
+    {
+      s0_ga = s1_ga;
+      s0_rb = s1_rb;
+      ctx_lerp_RGBA8_split (src0[1],src1[1], dv, &s1_ga, &s1_rb);
+      src0 ++;
+      src1 ++;
+    }
+    else if (loaded != u)
+    {
+      src0 = data + u;
+      src1 = ndata + u;
+      ctx_lerp_RGBA8_split (src0[0],src1[0], dv, &s0_ga, &s0_rb);
+      ctx_lerp_RGBA8_split (src0[1],src1[1], dv, &s1_ga, &s1_rb);
+    }
+    loaded = u;
+    ((uint32_t*)(&rgba[0]))[0] = 
+      ctx_lerp_RGBA8_merge (s0_ga, s0_rb, s1_ga, s1_rb, (xi>>8));
+    xi += xi_delta;
+    rgba += 4;
+    u = xi >> 16;
+  }
+  }
+
+  }
+  else
+  {
+    uint32_t *data = ((uint32_t*)buffer->data);
+    for (i= 0; i < count; i ++)
+    {
+      int u = x;
+      int v = y;
+      int ut = x + 1.5;
+      int vt = y + 1.5;
+      if ( ut  <= 0 || vt  <= 0 || u >= buffer->width || v >= buffer->height)
+      {
+        *((uint32_t*)(rgba))= 0;
+      }
+      else
+        break;
+      x += dx;
+      y += dy;
+      rgba += 4;
+    }
+
+  uint32_t yi = y * 65536;
+  uint32_t xi = x * 65536;
+
+  int yi_delta = dy * 65536;
+  int xi_delta = dx * 65536;
+
+  int loaded = -4;
+  uint32_t *src00=data;
+  uint32_t *src01=data;
+  uint32_t *src10=data;
+  uint32_t *src11=data;
+
+  int u = xi >> 16;
+  int v = yi >> 16;
+  int offset = bwidth * v + u;
+
+  for (; i < count; i ++)
+  {
+  if (CTX_UNLIKELY(
+       u >= buffer->width ||
+       v  <= -65536 ||
+       u  <= -65536 ||
+       v >= buffer->height))
+    {
+      break;
+    }
+#if 1
+  else if (CTX_UNLIKELY(u < 0 || v < 0)) // default to next sample down and to right
+  {
+      int got_prev_pix = (u >= 0);
+      int got_prev_row = (v>=0);
+      src11 = data  + offset + bwidth + 1;
+      src10 = src11 - got_prev_pix;
+      src01 = src11 - bwidth * got_prev_row;
+      src00 = src10 - bwidth * got_prev_row;
+  }
+#endif
+#if 1
+  else if (loaded + 1 == offset)
+  {
+      src00++;
+      src01++;
+      src10++;
+      src11++;
+  }
+#endif
+  else if (loaded != offset)
+  {
+      int next_row = ( v + 1 < bheight) * bwidth;
+      int next_pix = (u + 1 < bwidth);
+      src00 = data  + offset;
+      src01 = src00 + next_pix;
+      src10 = src00 + next_row;
+      src11 = src01 + next_row;
+  }
+    loaded = offset;
+    ((uint32_t*)(&rgba[0]))[0] = ctx_bi_RGBA8 (*src00,*src01,*src10,*src11, (xi>>8),(yi>>8)); // the argument type does the & 0xff
+    xi += xi_delta;
+    yi += yi_delta;
+    rgba += 4;
+
+    u = xi >> 16;
+    v = yi >> 16;
+    offset = bwidth * v + u;
+  }
+  }
+
+  for (; i < count; i ++)
+  {
+    *((uint32_t*)(rgba))= 0;
+    rgba += 4;
+  }
+}
+
+#define ctx_clampi(val,min,max) \
+     ctx_mini (ctx_maxi ((val), (min)), (max))
+
+static inline uint32_t ctx_yuv_to_rgba32 (uint8_t y, uint8_t u, uint8_t v)
+{
+  int cy  = ((y - 16) * 76309) >> 16;
+  int cr  = (v - 128);
+  int cb  = (u - 128);
+  int red = cy + ((cr * 104597) >> 16);
+  int green = cy - ((cb * 25674 + cr * 53278) >> 16);
+  int blue = cy + ((cb * 132201) >> 16);
+  return  ctx_clampi (red, 0, 255) |
+          (ctx_clampi (green, 0, 255) << 8) |
+          (ctx_clampi (blue, 0, 255) << 16) |
+          (0xff << 24);
+}
+
+static void
+ctx_fragment_image_yuv420_RGBA8_nearest (CtxRasterizer *rasterizer,
+                                         float x,
+                                         float y,
+                                         void *out, int count, float dx, float dy)
+{
+  uint8_t *rgba = (uint8_t *) out;
+  CtxSource *g = &rasterizer->state->gstate.source_fill;
+  CtxBuffer *buffer = g->texture.buffer;
+  if (buffer->color_managed)
+    buffer = buffer->color_managed;
+  uint8_t *src = (uint8_t *) buffer->data;
+  int bwidth  = buffer->width;
+  int bheight = buffer->height;
+  int bwidth_div_2  = bwidth/2;
+  int bheight_div_2  = bheight/2;
+  x += 0.5f;
+  y += 0.5f;
+
+  {
+    int i = 0;
+
+    for (; i < count; i ++)
+    {
+      int u = x;
+      int v = y;
+      if ((u < 0 || v < 0 || u >= bwidth || v >= bheight))
+      {
+        *((uint32_t*)(rgba))= 0;
+      }
+      else
+      {
+        break;
+      }
+      x += dx;
+      y += dy;
+      rgba += 4;
+    }
+
+    uint32_t u_offset = bheight * bwidth;
+    uint32_t v_offset = u_offset + bheight_div_2 * bwidth_div_2;
+    if (rasterizer->swap_red_green)
+    {
+      v_offset = bheight * bwidth;
+      u_offset = v_offset + bheight_div_2 * bwidth_div_2;
+    }
+
+    int ix = x * 65536;
+    int iy = y * 65536;
+
+    int ideltax = dx * 65536;
+    int ideltay = dy * 65536;
+
+    for (; i < count; i ++)
+    {
+      int u = ix >> 16;
+      int v = iy >> 16;
+      if (u >= 0 && v >= 0 && u < bwidth && v < bheight)
+      {
+        uint32_t y  = v * bwidth + u;
+        uint32_t uv = (v / 2) * bwidth_div_2 + (u / 2);
+
+        *((uint32_t*)(rgba))= ctx_yuv_to_rgba32 (src[y],
+                        //127, 127);
+                        src[u_offset+uv], src[v_offset+uv]);
+        //ctx_RGBA8_associate_alpha_probably_opaque (rgba);
+#if CTX_DITHER
+       ctx_dither_rgba_u8 (rgba, x, y, rasterizer->format->dither_red_blue,
+                           rasterizer->format->dither_green);
+#endif
+      }
+      else
+      {
+        break;
+      }
+      ix += ideltax;
+      iy += ideltay;
+      rgba += 4;
+    }
+
+    for (; i < count; i++)
+    {
+      *((uint32_t*)(rgba))= 0;
+      rgba += 4;
+    }
+  }
+}
+
+static void
+ctx_fragment_image_rgba8_RGBA8_box_swap_red_green (CtxRasterizer *rasterizer,
+                                    float x,
+                                    float y,
+                                    void *out, int count, float dx, float dy)
+{
+  ctx_fragment_image_rgba8_RGBA8_box (rasterizer, x, y, out, count, dx, dy);
+  ctx_fragment_swap_red_green_u8 (out, count);
+}
+
+static void
+ctx_fragment_image_rgba8_RGBA8_bi_swap_red_green (CtxRasterizer *rasterizer,
+                                    float x,
+                                    float y,
+                                    void *out, int count, float dx, float dy)
+{
+  ctx_fragment_image_rgba8_RGBA8_bi (rasterizer, x, y, out, count, dx, dy);
+  ctx_fragment_swap_red_green_u8 (out, count);
+}
+
+static void
+ctx_fragment_image_rgba8_RGBA8_nearest_swap_red_green (CtxRasterizer *rasterizer,
+                                    float x,
+                                    float y,
+                                    void *out, int count, float dx, float dy)
+{
+  ctx_fragment_image_rgba8_RGBA8_nearest (rasterizer, x, y, out, count, dx, dy);
+  ctx_fragment_swap_red_green_u8 (out, count);
+}
+
+static void
+ctx_fragment_image_rgba8_RGBA8 (CtxRasterizer *rasterizer,
+                                float x,
+                                float y,
+                                void *out, int count, float dx, float dy)
+{
+  if (rasterizer->state->gstate.image_smoothing)
+  {
+    float factor = ctx_matrix_get_scale (&rasterizer->state->gstate.transform);
+    if (factor <= 0.50f)
+    {
+      if (rasterizer->swap_red_green)
+        ctx_fragment_image_rgba8_RGBA8_box_swap_red_green (rasterizer, x, y, out, count, dx, dy);
+      else
+        ctx_fragment_image_rgba8_RGBA8_box (rasterizer, x, y, out, count, dx, dy);
+    }
+#if CTX_ALWAYS_USE_NEAREST_FOR_SCALE1
+    else if (factor > 0.99f && factor < 1.01f)
+    {
+      // XXX: also verify translate == 0 for this fast path to be valid
+      if (rasterizer->swap_red_green)
+        ctx_fragment_image_rgba8_RGBA8_nearest_swap_red_green (rasterizer, x, y, out, count, dx, dy);
+      else
+        ctx_fragment_image_rgba8_RGBA8_nearest (rasterizer, x, y, out, count, dx, dy);
+    }
+#endif
+    else
+    {
+      if (rasterizer->swap_red_green)
+        ctx_fragment_image_rgba8_RGBA8_bi_swap_red_green (rasterizer, x, y, out, count, dx, dy);
+      else
+        ctx_fragment_image_rgba8_RGBA8_bi (rasterizer, x, y, out, count, dx, dy);
+    }
+  }
+  else
+  {
+    if (rasterizer->swap_red_green)
+      ctx_fragment_image_rgba8_RGBA8_nearest_swap_red_green (rasterizer, x, y, out, count, dx, dy);
+    else
+      ctx_fragment_image_rgba8_RGBA8_nearest (rasterizer, x, y, out, count, dx, dy);
+  }
+  //ctx_fragment_swap_red_green_u8 (out, count);
+#if CTX_DITHER
+  uint8_t *rgba = (uint8_t*)out;
+  ctx_dither_rgba_u8 (rgba, x, y, rasterizer->format->dither_red_blue,
+                      rasterizer->format->dither_green);
+#endif
+}
+
+static void
+ctx_fragment_image_gray1_RGBA8 (CtxRasterizer *rasterizer, float x, float y, void *out, int count, float dx, float dy)
+{
+  uint8_t *rgba = (uint8_t *) out;
+  CtxSource *g = &rasterizer->state->gstate.source_fill;
+  CtxBuffer *buffer = g->texture.buffer;
+  ctx_assert (rasterizer);
+  ctx_assert (g);
+  ctx_assert (buffer);
+  for (int i = 0; i < count; i ++)
+  {
+  int u = x;
+  int v = y;
+  if ( u < 0 || v < 0 ||
+       u >= buffer->width ||
+       v >= buffer->height)
+    {
+      rgba[0] = rgba[1] = rgba[2] = rgba[3] = 0;
+    }
+  else
+    {
+      uint8_t *src = (uint8_t *) buffer->data;
+      src += v * buffer->stride + u / 8;
+      if (*src & (1<< (u & 7) ) )
+        {
+          rgba[0] = rgba[1] = rgba[2] = rgba[3] = 0;
+        }
+      else
+        {
+          for (int c = 0; c < 4; c++)
+            { rgba[c] = 255;
+            }//g->texture.rgba[c];
+            //}
+        }
+    }
+
+    rgba += 4;
+    x += dx;
+    y += dy;
+  }
+}
+
+#if CTX_GRADIENTS
+static void
+ctx_fragment_radial_gradient_RGBA8 (CtxRasterizer *rasterizer, float x, float y, void *out, int count, float dx, float dy)
+{
+  uint8_t *rgba = (uint8_t *) out;
+  CtxSource *g = &rasterizer->state->gstate.source_fill;
+  for (int i = 0; i <  count; i ++)
+  {
+    float v = (ctx_hypotf_fast (g->radial_gradient.x0 - x, g->radial_gradient.y0 - y) -
+              g->radial_gradient.r0) * (g->radial_gradient.rdelta);
+#if CTX_GRADIENT_CACHE
+    uint32_t *rgbap = (uint32_t*)&ctx_gradient_cache_u8[ctx_grad_index(v)][0];
+    *((uint32_t*)rgba) = *rgbap;
+#else
+    ctx_fragment_gradient_1d_RGBA8 (rasterizer, v, 0.0, rgba);
+#endif
+#if CTX_DITHER
+    ctx_dither_rgba_u8 (rgba, x, y, rasterizer->format->dither_red_blue,
+                        rasterizer->format->dither_green);
+#endif
+    rgba += 4;
+    x += dx;
+    y += dy;
+  }
+}
+
+static void
+ctx_fragment_linear_gradient_RGBA8 (CtxRasterizer *rasterizer, float x, float y, void *out, int count, float dx, float dy)
+{
+#if 0
+  uint8_t *rgba = (uint8_t *) out;
+  CtxSource *g = &rasterizer->state->gstate.source_fill;
+  for (int i = 0; i <  count; i ++)
+  {
+  float v = ( ( (g->linear_gradient.dx * x + g->linear_gradient.dy * y) /
+                g->linear_gradient.length) -
+              g->linear_gradient.start) * (g->linear_gradient.rdelta);
+#if CTX_GRADIENT_CACHE
+  uint32_t*rgbap = ((uint32_t*)(&ctx_gradient_cache_u8[ctx_grad_index(v)][0]));
+  *((uint32_t*)rgba) = *rgbap;
+#else
+  _ctx_fragment_gradient_1d_RGBA8 (rasterizer, v, 1.0, rgba);
+#endif
+#if CTX_DITHER
+  ctx_dither_rgba_u8 (rgba, x, y, rasterizer->format->dither_red_blue,
+                      rasterizer->format->dither_green);
+#endif
+    rgba += 4;
+    x += dx;
+    y += dy;
+  }
+#else
+  uint8_t *rgba = (uint8_t *) out;
+
+  CtxSource *g = &rasterizer->state->gstate.source_fill;
+  float u0 = x; float v0 = y;
+  float ud = dx; float vd = dy;
+  float linear_gradient_rdelta = g->linear_gradient.rdelta;
+  float linear_gradient_length = g->linear_gradient.length;
+  float linear_gradient_length_recip = 1.0f/linear_gradient_length;
+  float linear_gradient_dx = g->linear_gradient.dx *linear_gradient_length_recip * linear_gradient_rdelta;
+  float linear_gradient_dy = g->linear_gradient.dy *linear_gradient_length_recip * linear_gradient_rdelta;
+  float linear_gradient_start = g->linear_gradient.start * linear_gradient_rdelta;
+
+#if CTX_DITHER
+  int dither_red_blue = rasterizer->format->dither_red_blue;
+  int dither_green = rasterizer->format->dither_green;
+#endif
+
+  u0 *= linear_gradient_dx;
+  v0 *= linear_gradient_dy;
+  ud *= linear_gradient_dx;
+  vd *= linear_gradient_dy;
+
+#if CTX_GRADIENT_CACHE
+  int vv = ((u0 + v0) - linear_gradient_start) * (CTX_GRADIENT_CACHE_ELEMENTS-1) * 256;
+  int ud_plus_vd = (ud + vd) * (CTX_GRADIENT_CACHE_ELEMENTS-1) * 256;
+#else
+  float vv = ((u0 + v0) - linear_gradient_start);
+  float ud_plus_vd = (ud + vd);
+#endif
+
+  for (int x = 0; x < count ; x++)
+  {
+#if CTX_GRADIENT_CACHE
+  uint32_t*rgbap = ((uint32_t*)(&ctx_gradient_cache_u8[ctx_grad_index_i (vv)][0]));
+  *((uint32_t*)rgba) = *rgbap;
+#else
+  _ctx_fragment_gradient_1d_RGBA8 (rasterizer, vv, 1.0, rgba);
+#endif
+#if CTX_DITHER
+      ctx_dither_rgba_u8 (rgba, u0, v0, dither_red_blue, dither_green);
+#endif
+    rgba+= 4;
+    vv += ud_plus_vd;
+  }
+#endif
+}
+
+#endif
+
+static void
+ctx_fragment_color_RGBA8 (CtxRasterizer *rasterizer, float x, float y, void *out, int count, float dx, float dy)
+{
+  uint8_t *rgba_out = (uint8_t *) out;
+  CtxSource *g = &rasterizer->state->gstate.source_fill;
+  _ctx_color_get_rgba8 (rasterizer->state, &g->color, rgba_out);
+  ctx_RGBA8_associate_alpha (rgba_out);
+  if (rasterizer->swap_red_green)
+  {
+    int tmp = rgba_out[0];
+    rgba_out[0] = rgba_out[2];
+    rgba_out[2] = tmp;
+  }
+  for (int i = 1; i < count; i++, rgba_out+=4)
+    memcpy (rgba_out + count * 4, rgba_out, 4);
+}
+#if CTX_ENABLE_FLOAT
+
+#if CTX_GRADIENTS
+static void
+ctx_fragment_linear_gradient_RGBAF (CtxRasterizer *rasterizer, float x, float y, void *out, int count, float dx, float dy)
+{
+  float *rgba = (float *) out;
+  CtxSource *g = &rasterizer->state->gstate.source_fill;
+  for (int i = 0; i < count; i++)
+  {
+    float v = ( ( (g->linear_gradient.dx * x + g->linear_gradient.dy * y) /
+                  g->linear_gradient.length) -
+                g->linear_gradient.start) * (g->linear_gradient.rdelta);
+    ctx_fragment_gradient_1d_RGBAF (rasterizer, v, 1.0f, rgba);
+    x += dx;
+    y += dy;
+    rgba += 4;
+  }
+}
+
+static void
+ctx_fragment_radial_gradient_RGBAF (CtxRasterizer *rasterizer, float x, float y, void *out, int count, float dx, float dy)
+{
+  float *rgba = (float *) out;
+  CtxSource *g = &rasterizer->state->gstate.source_fill;
+  for (int i = 0; i < count; i++)
+  {
+  float v = ctx_hypotf (g->radial_gradient.x0 - x, g->radial_gradient.y0 - y);
+        v = (v - g->radial_gradient.r0) * (g->radial_gradient.rdelta);
+  ctx_fragment_gradient_1d_RGBAF (rasterizer, v, 0.0f, rgba);
+    x+=dx;
+    y+=dy;
+    rgba +=4;
+  }
+}
+#endif
+
+
+static void
+ctx_fragment_color_RGBAF (CtxRasterizer *rasterizer, float x, float y, void *out, int count, float dx, float dy)
+{
+  float *rgba = (float *) out;
+  for (int i = 0; i < count; i++)
+  {
+    CtxSource *g = &rasterizer->state->gstate.source_fill;
+    ctx_color_get_rgba (rasterizer->state, &g->color, rgba);
+    for (int c = 0; c < 3; c++)
+      rgba[c] *= rgba[3];
+    rgba += 4;
+  }
+}
+
+static void ctx_fragment_image_RGBAF (CtxRasterizer *rasterizer, float x, float y, void *out, int count, float dx, float dy)
+{
+  float *outf = (float *) out;
+  uint8_t rgba[4];
+  CtxGState *gstate = &rasterizer->state->gstate;
+  CtxBuffer *buffer = gstate->source_fill.texture.buffer;
+  switch (buffer->format->bpp)
+    {
+      case 1:  ctx_fragment_image_gray1_RGBA8 (rasterizer, x, y, rgba, count, dx, dy); break;
+      case 24: ctx_fragment_image_rgb8_RGBA8 (rasterizer, x, y, rgba, count, dx, dy);  break;
+      case 32: ctx_fragment_image_rgba8_RGBA8 (rasterizer, x, y, rgba, count, dx, dy); break;
+      default: ctx_fragment_image_RGBA8 (rasterizer, x, y, rgba, count, dx, dy);       break;
+    }
+  for (int c = 0; c < 4 * count; c ++) { outf[c] = ctx_u8_to_float (rgba[c]); }
+}
+
+static CtxFragment ctx_rasterizer_get_fragment_RGBAF (CtxRasterizer *rasterizer)
+{
+  CtxGState *gstate = &rasterizer->state->gstate;
+  switch (gstate->source_fill.type)
+    {
+      case CTX_SOURCE_TEXTURE:         return ctx_fragment_image_RGBAF;
+      case CTX_SOURCE_COLOR:           return ctx_fragment_color_RGBAF;
+#if CTX_GRADIENTS
+      case CTX_SOURCE_LINEAR_GRADIENT: return ctx_fragment_linear_gradient_RGBAF;
+      case CTX_SOURCE_RADIAL_GRADIENT: return ctx_fragment_radial_gradient_RGBAF;
+#endif
+    }
+  return ctx_fragment_color_RGBAF;
+}
+#endif
+
+static CtxFragment ctx_rasterizer_get_fragment_RGBA8 (CtxRasterizer *rasterizer)
+{
+  CtxGState *gstate = &rasterizer->state->gstate;
+  CtxBuffer *buffer = gstate->source_fill.texture.buffer;
+  switch (gstate->source_fill.type)
+    {
+      case CTX_SOURCE_TEXTURE:
+        if (!buffer || !buffer->format)
+          return ctx_fragment_color_RGBA8;
+
+        if (buffer->format->pixel_format == CTX_FORMAT_YUV420)
+        {
+          return ctx_fragment_image_yuv420_RGBA8_nearest;
+        }
+        else
+        switch (buffer->format->bpp)
+          {
+            case 1:  return ctx_fragment_image_gray1_RGBA8;
+            case 24: 
+              {
+                if (gstate->image_smoothing)
+                {
+                  float factor = ctx_matrix_get_scale (&gstate->transform);
+                          //fprintf (stderr, "{%.3f}", factor);
+                  if (factor < 0.5f)
+                  {
+                    if (rasterizer->swap_red_green)
+                      return ctx_fragment_image_rgb8_RGBA8_box_swap_red_green;
+                    return ctx_fragment_image_rgb8_RGBA8_box;
+                  }
+#if CTX_ALWAYS_USE_NEAREST_FOR_SCALE1
+                  else if (factor > 0.99f && factor < 1.01f)
+                  {
+                    if (rasterizer->swap_red_green)
+                      return ctx_fragment_image_rgb8_RGBA8_nearest_swap_red_green;
+                    return ctx_fragment_image_rgb8_RGBA8_nearest;
+                  }
+#endif
+                  else
+                  {
+                    if (rasterizer->swap_red_green)
+                      return ctx_fragment_image_rgb8_RGBA8_bi_swap_red_green;
+                    return ctx_fragment_image_rgb8_RGBA8_bi;
+                  }
+                }
+                else
+                {
+                  if (rasterizer->swap_red_green)
+                    return ctx_fragment_image_rgb8_RGBA8_nearest_swap_red_green;
+                  return ctx_fragment_image_rgb8_RGBA8_nearest;
+                }
+              }
+              break;
+            case 32:
+              {
+                if (gstate->image_smoothing)
+                {
+                  float factor = ctx_matrix_get_scale (&gstate->transform);
+                          //fprintf (stderr, "[%.3f]", factor);
+                  if (factor < 0.5f)
+                  {
+                    if (rasterizer->swap_red_green)
+                      return ctx_fragment_image_rgba8_RGBA8_box_swap_red_green;
+                    return ctx_fragment_image_rgba8_RGBA8_box;
+                  }
+#if CTX_ALWAYS_USE_NEAREST_FOR_SCALE1
+                  else if (factor > 0.99f && factor < 1.01f)
+                  {
+                    if (rasterizer->swap_red_green)
+                      return ctx_fragment_image_rgba8_RGBA8_nearest_swap_red_green;
+                    return ctx_fragment_image_rgba8_RGBA8_nearest;
+                  }
+#endif
+                  else
+                  {
+                    if (rasterizer->swap_red_green)
+                      return ctx_fragment_image_rgba8_RGBA8_bi_swap_red_green;
+                    return ctx_fragment_image_rgba8_RGBA8_bi;
+                  }
+                }
+                else
+                {
+                  if (rasterizer->swap_red_green)
+                    return ctx_fragment_image_rgba8_RGBA8_nearest_swap_red_green;
+                  return ctx_fragment_image_rgba8_RGBA8_nearest;
+                }
+              }
+            default: return ctx_fragment_image_RGBA8;
+          }
+      case CTX_SOURCE_COLOR:           return ctx_fragment_color_RGBA8;
+#if CTX_GRADIENTS
+      case CTX_SOURCE_LINEAR_GRADIENT: return ctx_fragment_linear_gradient_RGBA8;
+      case CTX_SOURCE_RADIAL_GRADIENT: return ctx_fragment_radial_gradient_RGBA8;
+#endif
+    }
+  return ctx_fragment_color_RGBA8;
+}
+
+static void
+ctx_init_uv (CtxRasterizer *rasterizer,
+             int x0, int count,
+             float *u0, float *v0, float *ud, float *vd)
+{
+  CtxGState *gstate = &rasterizer->state->gstate;
+  *u0 = x0;
+  *v0 = rasterizer->scanline / 15;//rasterizer->aa;
+  float u1 = *u0 + count;
+  float v1 = *v0;
+
+  _ctx_matrix_apply_transform (&gstate->source_fill.transform, u0, v0);
+  _ctx_matrix_apply_transform (&gstate->source_fill.transform, &u1, &v1);
+
+  *ud = (u1-*u0) / (count);
+  *vd = (v1-*v0) / (count);
+}
+
+
+static void
+ctx_u8_copy_normal (int components, CTX_COMPOSITE_ARGUMENTS)
+{
+  if (CTX_UNLIKELY(rasterizer->fragment))
+    {
+      float u0 = 0; float v0 = 0;
+      float ud = 0; float vd = 0;
+      ctx_init_uv (rasterizer, x0, count, &u0, &v0, &ud, &vd);
+      while (count--)
+      {
+        uint8_t cov = *coverage;
+        if (CTX_UNLIKELY(cov == 0))
+        {
+          u0+=ud;
+          v0+=vd;
+        }
+        else
+        {
+          rasterizer->fragment (rasterizer, u0, v0, src, 1, ud, vd);
+          u0+=ud;
+          v0+=vd;
+          if (cov == 255)
+          {
+            for (int c = 0; c < components; c++)
+              dst[c] = src[c];
+          }
+          else
+          {
+            uint8_t rcov = 255 - cov;
+            for (int c = 0; c < components; c++)
+              { dst[c] = (src[c]*cov + dst[c]*rcov)/255; }
+          }
+        }
+        dst += components;
+        coverage ++;
+      }
+      return;
+    }
+
+  while (count--)
+  {
+    uint8_t cov = *coverage;
+    uint8_t rcov = 255-cov;
+    for (int c = 0; c < components; c++)
+      { dst[c] = (src[c]*cov+dst[c]*rcov)/255; }
+    dst += components;
+    coverage ++;
+  }
+}
+
+static void
+ctx_u8_clear_normal (int components, CTX_COMPOSITE_ARGUMENTS)
+{
+  while (count--)
+  {
+    uint8_t cov = *coverage;
+    for (int c = 0; c < components; c++)
+      { dst[c] = (dst[c] * (256-cov)) >> 8; }
+    coverage ++;
+    dst += components;
+  }
+}
+
+typedef enum {
+  CTX_PORTER_DUFF_0,
+  CTX_PORTER_DUFF_1,
+  CTX_PORTER_DUFF_ALPHA,
+  CTX_PORTER_DUFF_1_MINUS_ALPHA,
+} CtxPorterDuffFactor;
+
+#define  \
+ctx_porter_duff_factors(mode, foo, bar)\
+{\
+  switch (mode)\
+  {\
+     case CTX_COMPOSITE_SOURCE_ATOP:\
+        f_s = CTX_PORTER_DUFF_ALPHA;\
+        f_d = CTX_PORTER_DUFF_1_MINUS_ALPHA;\
+      break;\
+     case CTX_COMPOSITE_DESTINATION_ATOP:\
+        f_s = CTX_PORTER_DUFF_1_MINUS_ALPHA;\
+        f_d = CTX_PORTER_DUFF_ALPHA;\
+      break;\
+     case CTX_COMPOSITE_DESTINATION_IN:\
+        f_s = CTX_PORTER_DUFF_0;\
+        f_d = CTX_PORTER_DUFF_ALPHA;\
+      break;\
+     case CTX_COMPOSITE_DESTINATION:\
+        f_s = CTX_PORTER_DUFF_0;\
+        f_d = CTX_PORTER_DUFF_1;\
+       break;\
+     case CTX_COMPOSITE_SOURCE_OVER:\
+        f_s = CTX_PORTER_DUFF_1;\
+        f_d = CTX_PORTER_DUFF_1_MINUS_ALPHA;\
+       break;\
+     case CTX_COMPOSITE_DESTINATION_OVER:\
+        f_s = CTX_PORTER_DUFF_1_MINUS_ALPHA;\
+        f_d = CTX_PORTER_DUFF_1;\
+       break;\
+     case CTX_COMPOSITE_XOR:\
+        f_s = CTX_PORTER_DUFF_1_MINUS_ALPHA;\
+        f_d = CTX_PORTER_DUFF_1_MINUS_ALPHA;\
+       break;\
+     case CTX_COMPOSITE_DESTINATION_OUT:\
+        f_s = CTX_PORTER_DUFF_0;\
+        f_d = CTX_PORTER_DUFF_1_MINUS_ALPHA;\
+       break;\
+     case CTX_COMPOSITE_SOURCE_OUT:\
+        f_s = CTX_PORTER_DUFF_1_MINUS_ALPHA;\
+        f_d = CTX_PORTER_DUFF_0;\
+       break;\
+     case CTX_COMPOSITE_SOURCE_IN:\
+        f_s = CTX_PORTER_DUFF_ALPHA;\
+        f_d = CTX_PORTER_DUFF_0;\
+       break;\
+     case CTX_COMPOSITE_COPY:\
+        f_s = CTX_PORTER_DUFF_1;\
+        f_d = CTX_PORTER_DUFF_1_MINUS_ALPHA;\
+       break;\
+     default:\
+     case CTX_COMPOSITE_CLEAR:\
+        f_s = CTX_PORTER_DUFF_0;\
+        f_d = CTX_PORTER_DUFF_0;\
+       break;\
+  }\
+}
+
+static void
+ctx_u8_source_over_normal_color (int components,
+                                 CtxRasterizer         *rasterizer,
+                                 uint8_t * __restrict__ dst,
+                                 uint8_t * __restrict__ src,
+                                 int                    x0,
+                                 uint8_t * __restrict__ coverage,
+                                 int                    count)
+{
+  uint8_t tsrc[5];
+  *((uint32_t*)tsrc) = *((uint32_t*)src);
+
+  while (count--)
+  {
+    for (int c = 0; c < components; c++)
+      //dst[c] =  ((tsrc[c] * *coverage)>>8) + (dst[c] * (((65536)-(tsrc[components-1] * *coverage)))>>16);
+      dst[c] =  ((((tsrc[c] * *coverage)) + (dst[c] * (((255)-(((255+(tsrc[components-1] * *coverage))>>8))))))>>8);
+    coverage ++;
+    dst+=components;
+  }
+}
+
+static void
+ctx_u8_source_copy_normal_color (int components, CTX_COMPOSITE_ARGUMENTS)
+{
+  while (count--)
+  {
+    for (int c = 0; c < components; c++)
+      dst[c] =  ctx_lerp_u8(dst[c],src[c],coverage[0]);
+    coverage ++;
+    dst+=components;
+  }
+}
+
+static inline void
+ctx_RGBA8_source_over_normal_buf (CTX_COMPOSITE_ARGUMENTS, uint8_t *tsrc)
+{
+  while (count--)
+  {
+     uint32_t si_ga = ((*((uint32_t*)tsrc)) & 0xff00ff00) >> 8;
+     uint32_t si_rb = (*((uint32_t*)tsrc)) & 0x00ff00ff;
+//     uint32_t di_ga = ((*((uint32_t*)dst)) & 0xff00ff00) >> 8;
+//     uint32_t di_rb = (*((uint32_t*)dst)) & 0x00ff00ff;
+     uint32_t si_a  = si_ga >> 16;
+     uint32_t cov = *coverage;
+     uint32_t racov = (255-((255+si_a*cov)>>8));
+     *((uint32_t*)(dst)) =
+
+     (((si_rb*cov+0xff00ff+(((*((uint32_t*)(dst)))&0x00ff00ff)*racov))>>8)&0x00ff00ff)|
+     ((si_ga*cov+0xff00ff+((((*((uint32_t*)(dst)))&0xff00ff00)>>8)*racov))&0xff00ff00);
+
+     coverage ++;
+     tsrc += 4;
+     dst  += 4;
+  }
+}
+
+static inline void
+ctx_RGBA8_source_over_normal_full_cov_buf (CTX_COMPOSITE_ARGUMENTS, uint8_t *tsrc)
+{
+  while (count--)
+  {
+     uint32_t si_ga = ((*((uint32_t*)tsrc)) & 0xff00ff00) >> 8;
+     uint32_t si_rb = (*((uint32_t*)tsrc)) & 0x00ff00ff;
+     uint32_t si_a  = si_ga >> 16;
+     uint32_t racov = (255-si_a);
+     *((uint32_t*)(dst)) =
+     (((si_rb*255+0xff00ff+(((*((uint32_t*)(dst)))&0x00ff00ff)*racov))>>8)&0x00ff00ff)|
+     ((si_ga*255+0xff00ff+((((*((uint32_t*)(dst)))&0xff00ff00)>>8)*racov))&0xff00ff00);
+     tsrc += 4;
+     dst  += 4;
+  }
+}
+
+static void
+ctx_RGBA8_source_copy_normal_buf (CTX_COMPOSITE_ARGUMENTS, uint8_t *tsrc)
+{
+  while (count--)
+  {
+    ((uint32_t*)dst)[0]=ctx_lerp_RGBA8 (((uint32_t*)dst)[0],
+                                        ((uint32_t*)tsrc)[0], coverage[0]);
+    coverage ++;
+    tsrc += 4;
+    dst  += 4;
+  }
+}
+
+static void
+ctx_RGBA8_source_over_normal_fragment (CTX_COMPOSITE_ARGUMENTS)
+{
+  float u0 = 0; float v0 = 0;
+  float ud = 0; float vd = 0;
+  ctx_init_uv (rasterizer, x0, count, &u0, &v0, &ud, &vd);
+  uint8_t _tsrc[4 * (count)];
+  rasterizer->fragment (rasterizer, u0, v0, &_tsrc[0], count, ud, vd);
+  ctx_RGBA8_source_over_normal_buf (rasterizer,
+                       dst, src, x0, coverage, count, &_tsrc[0]);
+}
+
+static inline void
+ctx_RGBA8_source_over_normal_full_cov_fragment (CTX_COMPOSITE_ARGUMENTS)
+{
+  float u0 = 0; float v0 = 0;
+  float ud = 0; float vd = 0;
+  ctx_init_uv (rasterizer, x0, count, &u0, &v0, &ud, &vd);
+  uint8_t _tsrc[4 * (count)];
+  rasterizer->fragment (rasterizer, u0, v0, &_tsrc[0], count, ud, vd);
+  ctx_RGBA8_source_over_normal_full_cov_buf (rasterizer,
+                       dst, src, x0, coverage, count, &_tsrc[0]);
+}
+
+static void
+ctx_RGBA8_source_copy_normal_fragment (CTX_COMPOSITE_ARGUMENTS)
+{
+  float u0 = 0; float v0 = 0;
+  float ud = 0; float vd = 0;
+  ctx_init_uv (rasterizer, x0, count, &u0, &v0, &ud, &vd);
+  uint8_t _tsrc[4 * (count)];
+  rasterizer->fragment (rasterizer, u0, v0, &_tsrc[0], count, ud, vd);
+  ctx_RGBA8_source_copy_normal_buf (rasterizer,
+                       dst, src, x0, coverage, count, &_tsrc[0]);
+}
+
+
+static void
+ctx_RGBA8_source_over_normal_color (CTX_COMPOSITE_ARGUMENTS)
+{
+#if CTX_REFERENCE
+  ctx_u8_source_over_normal_color (4, rasterizer, dst, src, x0, coverage, count);
+#else
+  uint32_t si_ga = ((uint32_t*)rasterizer->color)[1];
+  uint32_t si_rb = ((uint32_t*)rasterizer->color)[2];
+  uint32_t si_a  = si_ga >> 16;
+
+  while (count--)
+  {
+     uint32_t cov   = *coverage++;
+     uint32_t rcov  = (((255+si_a * cov)>>8))^255;
+     uint32_t di    = *((uint32_t*)dst);
+     uint32_t di_ga = ((di & 0xff00ff00) >> 8);
+     uint32_t di_rb = (di & 0x00ff00ff);
+     *((uint32_t*)(dst)) =
+     (((si_rb * cov + 0xff00ff + di_rb * rcov) & 0xff00ff00) >> 8)  |
+      ((si_ga * cov + 0xff00ff + di_ga * rcov) & 0xff00ff00);
+     dst+=4;
+  }
+#endif
+}
+
+static void
+ctx_RGBA8_source_copy_normal_color (CTX_COMPOSITE_ARGUMENTS)
+{
+#if CTX_REFERENCE
+  ctx_u8_source_copy_normal_color (4, rasterizer, dst, src, x0, coverage, count);
+#else
+  uint32_t si_ga = ((uint32_t*)rasterizer->color)[1];
+  uint32_t si_rb = ((uint32_t*)rasterizer->color)[2];
+
+  while (count--)
+  {
+     uint32_t cov   = *coverage++;
+     uint32_t di    = *((uint32_t*)dst);
+     uint32_t di_ga = (di & 0xff00ff00);
+     uint32_t di_rb = (di & 0x00ff00ff);
+
+     uint32_t d_rb  = si_rb - di_rb;
+     uint32_t d_ga  = si_ga - (di_ga>>8);
+
+     *((uint32_t*)(dst)) =
+
+     (((di_rb + ((d_rb * cov)>>8)) & 0x00ff00ff))  |
+      ((di_ga + ((d_ga * cov)      & 0xff00ff00)));
+     dst +=4;
+  }
+#endif
+}
+
+static void
+ctx_RGBA8_clear_normal (CTX_COMPOSITE_ARGUMENTS)
+{
+  ctx_u8_clear_normal (4, rasterizer, dst, src, x0, coverage, count);
+}
+
+static void
+ctx_u8_blend_normal (int components, uint8_t * __restrict__ dst, uint8_t *src, uint8_t *blended, int count)
+{
+  for (int j = 0; j < count; j++)
+  {
+  switch (components)
+  {
+     case 3:
+       ((uint8_t*)(blended))[2] = ((uint8_t*)(src))[2];
+       *((uint16_t*)(blended)) = *((uint16_t*)(src));
+       break;
+     case 2:
+       *((uint16_t*)(blended)) = *((uint16_t*)(src));
+       break;
+     case 5:
+       *((uint32_t*)(blended)) = *((uint32_t*)(src));
+       ((uint8_t*)(blended))[4] = ((uint8_t*)(src))[4];
+       break;
+     case 4:
+       *((uint32_t*)(blended)) = *((uint32_t*)(src));
+       break;
+     default:
+       {
+        for (int i = 0; i<components;i++)
+           blended[i] = src[i];
+       }
+       break;
+  }
+    blended+=components;
+    src+=components;
+  }
+}
+
+/* branchless 8bit add that maxes out at 255 */
+static inline uint8_t ctx_sadd8(uint8_t a, uint8_t b)
+{
+  uint16_t s = (uint16_t)a+b;
+  return -(s>>8) | (uint8_t)s;
+}
+
+#if CTX_BLENDING_AND_COMPOSITING
+
+#define ctx_u8_blend_define(name, CODE) \
+static void \
+ctx_u8_blend_##name (int components, uint8_t * __restrict__ dst, uint8_t *src, uint8_t *blended, int count)\
+{\
+  for (int j = 0; j < count; j++) { \
+  uint8_t *s=src; uint8_t b[components];\
+  ctx_u8_deassociate_alpha (components, dst, b);\
+    CODE;\
+  blended[components-1] = src[components-1];\
+  ctx_u8_associate_alpha (components, blended);\
+  src += components;\
+  dst += components;\
+  blended += components;\
+  }\
+}
+
+#define ctx_u8_blend_define_seperable(name, CODE) \
+        ctx_u8_blend_define(name, for (int c = 0; c < components-1; c++) { CODE ;}) \
+
+ctx_u8_blend_define_seperable(multiply,     blended[c] = (b[c] * s[c])/255;)
+ctx_u8_blend_define_seperable(screen,       blended[c] = s[c] + b[c] - (s[c] * b[c])/255;)
+ctx_u8_blend_define_seperable(overlay,      blended[c] = b[c] < 127 ? (s[c] * b[c])/255 :
+                                                         s[c] + b[c] - (s[c] * b[c])/255;)
+ctx_u8_blend_define_seperable(darken,       blended[c] = ctx_mini (b[c], s[c]))
+ctx_u8_blend_define_seperable(lighten,      blended[c] = ctx_maxi (b[c], s[c]))
+ctx_u8_blend_define_seperable(color_dodge,  blended[c] = b[c] == 0 ? 0 :
+                                     s[c] == 255 ? 255 : ctx_mini(255, (255 * b[c]) / (255-s[c])))
+ctx_u8_blend_define_seperable(color_burn,   blended[c] = b[c] == 1 ? 1 :
+                                     s[c] == 0 ? 0 : 255 - ctx_mini(255, (255*(255 - b[c])) / s[c]))
+ctx_u8_blend_define_seperable(hard_light,   blended[c] = s[c] < 127 ? (b[c] * s[c])/255 :
+                                                          b[c] + s[c] - (b[c] * s[c])/255;)
+ctx_u8_blend_define_seperable(difference,   blended[c] = (b[c] - s[c]))
+ctx_u8_blend_define_seperable(divide,       blended[c] = s[c]?(255 * b[c]) / s[c]:0)
+ctx_u8_blend_define_seperable(addition,     blended[c] = ctx_sadd8 (s[c], b[c]))
+ctx_u8_blend_define_seperable(subtract,     blended[c] = ctx_maxi(0, s[c]-b[c]))
+ctx_u8_blend_define_seperable(exclusion,    blended[c] = b[c] + s[c] - 2 * (b[c] * s[c]/255))
+ctx_u8_blend_define_seperable(soft_light,
+  if (s[c] <= 255/2)
+  {
+    blended[c] = b[c] - (255 - 2 * s[c]) * b[c] * (255 - b[c]) / (255 * 255);
+  }
+  else
+  {
+    int d;
+    if (b[c] <= 255/4)
+      d = (((16 * b[c] - 12 * 255)/255 * b[c] + 4 * 255) * b[c])/255;
+    else
+      d = ctx_sqrtf(b[c]/255.0) * 255.4;
+    blended[c] = (b[c] + (2 * s[c] - 255) * (d - b[c]))/255;
+  }
+)
+
+static int ctx_int_get_max (int components, int *c)
+{
+  int max = 0;
+  for (int i = 0; i < components - 1; i ++)
+  {
+    if (c[i] > max) max = c[i];
+  }
+  return max;
+}
+
+static int ctx_int_get_min (int components, int *c)
+{
+  int min = 400;
+  for (int i = 0; i < components - 1; i ++)
+  {
+    if (c[i] < min) min = c[i];
+  }
+  return min;
+}
+
+static int ctx_int_get_lum (int components, int *c)
+{
+  switch (components)
+  {
+    case 3:
+    case 4:
+            return CTX_CSS_RGB_TO_LUMINANCE(c);
+    case 1:
+    case 2:
+            return c[0];
+            break;
+    default:
+       {
+         int sum = 0;
+         for (int i = 0; i < components - 1; i ++)
+         {
+           sum += c[i];
+         }
+         return sum / (components - 1);
+       }
+            break;
+  }
+}
+
+static int ctx_u8_get_lum (int components, uint8_t *c)
+{
+  switch (components)
+  {
+    case 3:
+    case 4:
+            return CTX_CSS_RGB_TO_LUMINANCE(c);
+    case 1:
+    case 2:
+            return c[0];
+            break;
+    default:
+       {
+         int sum = 0;
+         for (int i = 0; i < components - 1; i ++)
+         {
+           sum += c[i];
+         }
+         return sum / (components - 1);
+       }
+            break;
+  }
+}
+static int ctx_u8_get_sat (int components, uint8_t *c)
+{
+  switch (components)
+  {
+    case 3:
+    case 4:
+            { int r = c[0];
+              int g = c[1];
+              int b = c[2];
+              return ctx_maxi(r, ctx_maxi(g,b)) - ctx_mini(r,ctx_mini(g,b));
+            }
+            break;
+    case 1:
+    case 2:
+            return 0.0;
+            break;
+    default:
+       {
+         int min = 1000;
+         int max = -1000;
+         for (int i = 0; i < components - 1; i ++)
+         {
+           if (c[i] < min) min = c[i];
+           if (c[i] > max) max = c[i];
+         }
+         return max-min;
+       }
+       break;
+  }
+}
+
+static void ctx_u8_set_lum (int components, uint8_t *c, uint8_t lum)
+{
+  int d = lum - ctx_u8_get_lum (components, c);
+  int tc[components];
+  for (int i = 0; i < components - 1; i++)
+  {
+    tc[i] = c[i] + d;
+  }
+
+  int l = ctx_int_get_lum (components, tc);
+  int n = ctx_int_get_min (components, tc);
+  int x = ctx_int_get_max (components, tc);
+
+  if (n < 0 && l!=n)
+  {
+    for (int i = 0; i < components - 1; i++)
+      tc[i] = l + (((tc[i] - l) * l) / (l-n));
+  }
+
+  if (x > 255 && x!=l)
+  {
+    for (int i = 0; i < components - 1; i++)
+      tc[i] = l + (((tc[i] - l) * (255 - l)) / (x-l));
+  }
+  for (int i = 0; i < components - 1; i++)
+    c[i] = tc[i];
+}
+
+static void ctx_u8_set_sat (int components, uint8_t *c, uint8_t sat)
+{
+  int max = 0, mid = 1, min = 2;
+  
+  if (c[min] > c[mid]){int t = min; min = mid; mid = t;}
+  if (c[mid] > c[max]){int t = mid; mid = max; max = t;}
+  if (c[min] > c[mid]){int t = min; min = mid; mid = t;}
+
+  if (c[max] > c[min])
+  {
+    c[mid] = ((c[mid]-c[min]) * sat) / (c[max] - c[min]);
+    c[max] = sat;
+  }
+  else
+  {
+    c[mid] = c[max] = 0;
+  }
+  c[min] = 0;
+}
+
+ctx_u8_blend_define(color,
+  for (int i = 0; i < components; i++)
+    blended[i] = s[i];
+  ctx_u8_set_lum(components, blended, ctx_u8_get_lum (components, s));
+)
+
+ctx_u8_blend_define(hue,
+  int in_sat = ctx_u8_get_sat(components, b);
+  int in_lum = ctx_u8_get_lum(components, b);
+  for (int i = 0; i < components; i++)
+    blended[i] = s[i];
+  ctx_u8_set_sat(components, blended, in_sat);
+  ctx_u8_set_lum(components, blended, in_lum);
+)
+
+ctx_u8_blend_define(saturation,
+  int in_sat = ctx_u8_get_sat(components, s);
+  int in_lum = ctx_u8_get_lum(components, b);
+  for (int i = 0; i < components; i++)
+    blended[i] = b[i];
+  ctx_u8_set_sat(components, blended, in_sat);
+  ctx_u8_set_lum(components, blended, in_lum);
+)
+
+ctx_u8_blend_define(luminosity,
+  int in_lum = ctx_u8_get_lum(components, s);
+  for (int i = 0; i < components; i++)
+    blended[i] = b[i];
+  ctx_u8_set_lum(components, blended, in_lum);
+)
+#endif
+
+CTX_INLINE static void
+ctx_u8_blend (int components, CtxBlend blend, uint8_t * __restrict__ dst, uint8_t *src, uint8_t *blended, int count)
+{
+#if CTX_BLENDING_AND_COMPOSITING
+  switch (blend)
+  {
+    case CTX_BLEND_NORMAL:      ctx_u8_blend_normal      (components, dst, src, blended, count); break;
+    case CTX_BLEND_MULTIPLY:    ctx_u8_blend_multiply    (components, dst, src, blended, count); break;
+    case CTX_BLEND_SCREEN:      ctx_u8_blend_screen      (components, dst, src, blended, count); break;
+    case CTX_BLEND_OVERLAY:     ctx_u8_blend_overlay     (components, dst, src, blended, count); break;
+    case CTX_BLEND_DARKEN:      ctx_u8_blend_darken      (components, dst, src, blended, count); break;
+    case CTX_BLEND_LIGHTEN:     ctx_u8_blend_lighten     (components, dst, src, blended, count); break;
+    case CTX_BLEND_COLOR_DODGE: ctx_u8_blend_color_dodge (components, dst, src, blended, count); break;
+    case CTX_BLEND_COLOR_BURN:  ctx_u8_blend_color_burn  (components, dst, src, blended, count); break;
+    case CTX_BLEND_HARD_LIGHT:  ctx_u8_blend_hard_light  (components, dst, src, blended, count); break;
+    case CTX_BLEND_SOFT_LIGHT:  ctx_u8_blend_soft_light  (components, dst, src, blended, count); break;
+    case CTX_BLEND_DIFFERENCE:  ctx_u8_blend_difference  (components, dst, src, blended, count); break;
+    case CTX_BLEND_EXCLUSION:   ctx_u8_blend_exclusion   (components, dst, src, blended, count); break;
+    case CTX_BLEND_COLOR:       ctx_u8_blend_color       (components, dst, src, blended, count); break;
+    case CTX_BLEND_HUE:         ctx_u8_blend_hue         (components, dst, src, blended, count); break;
+    case CTX_BLEND_SATURATION:  ctx_u8_blend_saturation  (components, dst, src, blended, count); break;
+    case CTX_BLEND_LUMINOSITY:  ctx_u8_blend_luminosity  (components, dst, src, blended, count); break;
+    case CTX_BLEND_ADDITION:    ctx_u8_blend_addition    (components, dst, src, blended, count); break;
+    case CTX_BLEND_DIVIDE:      ctx_u8_blend_divide      (components, dst, src, blended, count); break;
+    case CTX_BLEND_SUBTRACT:    ctx_u8_blend_subtract    (components, dst, src, blended, count); break;
+  }
+#else
+  switch (blend)
+  {
+    default:                    ctx_u8_blend_normal      (components, dst, src, blended, count); break;
+  }
+
+#endif
+}
+
+CTX_INLINE static void
+__ctx_u8_porter_duff (CtxRasterizer         *rasterizer,
+                     int                    components,
+                     uint8_t *              dst,
+                     uint8_t *              src,
+                     int                    x0,
+                     uint8_t * __restrict__ coverage,
+                     int                    count,
+                     CtxCompositingMode     compositing_mode,
+                     CtxFragment            fragment,
+                     CtxBlend               blend)
+{
+  CtxPorterDuffFactor f_s, f_d;
+  ctx_porter_duff_factors (compositing_mode, &f_s, &f_d);
+  CtxGState *gstate = &rasterizer->state->gstate;
+  uint8_t global_alpha_u8 = gstate->global_alpha_u8;
+  uint8_t tsrc[components * count];
+  int src_step = 0;
+
+  if (gstate->source_fill.type == CTX_SOURCE_COLOR)
+  {
+    src = &tsrc[0];
+    fragment (rasterizer, 0, 0, src, 1, 0, 0);
+    if (blend != CTX_BLEND_NORMAL)
+      ctx_u8_blend (components, blend, dst, src, src, 1);
+  }
+  else
+  {
+    float u0 = 0; float v0 = 0;
+    float ud = 0; float vd = 0;
+    src = &tsrc[0];
+
+    ctx_init_uv (rasterizer, x0, count, &u0, &v0, &ud, &vd);
+    fragment (rasterizer, u0, v0, src, count, ud, vd);
+    if (blend != CTX_BLEND_NORMAL)
+      ctx_u8_blend (components, blend, dst, src, src, count);
+    src_step = components;
+  }
+
+  while (count--)
+  {
+    uint32_t cov = *coverage;
+
+    if (CTX_UNLIKELY(global_alpha_u8 != 255))
+      cov = (cov * global_alpha_u8 + 255) >> 8;
+
+    uint8_t csrc[components];
+    for (int c = 0; c < components; c++)
+      csrc[c] = (src[c] * cov + 255) >> 8;
+
+    for (int c = 0; c < components; c++)
+    {
+      uint32_t res = 0;
+#if 1
+      switch (f_s)
+      {
+        case CTX_PORTER_DUFF_0:             break;
+        case CTX_PORTER_DUFF_1:             res += (csrc[c] ); break;
+        case CTX_PORTER_DUFF_ALPHA:         res += (csrc[c] * dst[components-1] + 255) >> 8; break;
+        case CTX_PORTER_DUFF_1_MINUS_ALPHA: res += (csrc[c] * (256-dst[components-1])) >> 8; break;
+      }
+      switch (f_d)
+      {
+        case CTX_PORTER_DUFF_0: break;
+        case CTX_PORTER_DUFF_1:             res += dst[c]; break;
+        case CTX_PORTER_DUFF_ALPHA:         res += (dst[c] * csrc[components-1] + 255) >> 8; break;
+        case CTX_PORTER_DUFF_1_MINUS_ALPHA: res += (dst[c] * (256-csrc[components-1])) >> 8; break;
+      }
+#else
+      switch (f_s)
+      {
+        case CTX_PORTER_DUFF_0:             break;
+        case CTX_PORTER_DUFF_1:             res += (csrc[c] ); break;
+        case CTX_PORTER_DUFF_ALPHA:         res += (csrc[c] * dst[components-1])/255; break;
+        case CTX_PORTER_DUFF_1_MINUS_ALPHA: res += (csrc[c] * (255-dst[components-1]))/255; break;
+      }
+      switch (f_d)
+      {
+        case CTX_PORTER_DUFF_0: break;
+        case CTX_PORTER_DUFF_1:             res += dst[c]; break;
+        case CTX_PORTER_DUFF_ALPHA:         res += (dst[c] * csrc[components-1])/255; break;
+        case CTX_PORTER_DUFF_1_MINUS_ALPHA: res += (dst[c] * (255-csrc[components-1]))/255; break;
+      }
+#endif
+      dst[c] = res;
+    }
+    coverage ++;
+    src+=src_step;
+    dst+=components;
+  }
+}
+
+CTX_INLINE static void
+_ctx_u8_porter_duff (CtxRasterizer         *rasterizer,
+                     int                    components,
+                     uint8_t *              dst,
+                     uint8_t * __restrict__ src,
+                     int                    x0,
+                     uint8_t *              coverage,
+                     int                    count,
+                     CtxCompositingMode     compositing_mode,
+                     CtxFragment            fragment,
+                     CtxBlend               blend)
+{
+  __ctx_u8_porter_duff (rasterizer, components, dst, src, x0, coverage, count, compositing_mode, fragment, blend);
+}
+
+#define _ctx_u8_porter_duffs(comp_format, components, source, fragment, blend) \
+   switch (rasterizer->state->gstate.compositing_mode) \
+   { \
+     case CTX_COMPOSITE_SOURCE_ATOP: \
+      _ctx_u8_porter_duff (rasterizer, components, dst, src, x0, coverage, count, \
+        CTX_COMPOSITE_SOURCE_ATOP, fragment, blend);\
+      break;\
+     case CTX_COMPOSITE_DESTINATION_ATOP:\
+      _ctx_u8_porter_duff (rasterizer, components, dst, src, x0, coverage, count,\
+        CTX_COMPOSITE_DESTINATION_ATOP, fragment, blend);\
+      break;\
+     case CTX_COMPOSITE_DESTINATION_IN:\
+      _ctx_u8_porter_duff (rasterizer, components, dst, src, x0, coverage, count,\
+        CTX_COMPOSITE_DESTINATION_IN, fragment, blend);\
+      break;\
+     case CTX_COMPOSITE_DESTINATION:\
+      _ctx_u8_porter_duff (rasterizer, components, dst, src, x0, coverage, count,\
+        CTX_COMPOSITE_DESTINATION, fragment, blend);\
+       break;\
+     case CTX_COMPOSITE_SOURCE_OVER:\
+      _ctx_u8_porter_duff (rasterizer, components, dst, src, x0, coverage, count,\
+        CTX_COMPOSITE_SOURCE_OVER, fragment, blend);\
+       break;\
+     case CTX_COMPOSITE_DESTINATION_OVER:\
+      _ctx_u8_porter_duff (rasterizer, components, dst, src, x0, coverage, count,\
+        CTX_COMPOSITE_DESTINATION_OVER, fragment, blend);\
+       break;\
+     case CTX_COMPOSITE_XOR:\
+      _ctx_u8_porter_duff (rasterizer, components, dst, src, x0, coverage, count,\
+        CTX_COMPOSITE_XOR, fragment, blend);\
+       break;\
+     case CTX_COMPOSITE_DESTINATION_OUT:\
+       _ctx_u8_porter_duff (rasterizer, components, dst, src, x0, coverage, count,\
+        CTX_COMPOSITE_DESTINATION_OUT, fragment, blend);\
+       break;\
+     case CTX_COMPOSITE_SOURCE_OUT:\
+       _ctx_u8_porter_duff (rasterizer, components, dst, src, x0, coverage, count,\
+        CTX_COMPOSITE_SOURCE_OUT, fragment, blend);\
+       break;\
+     case CTX_COMPOSITE_SOURCE_IN:\
+       _ctx_u8_porter_duff (rasterizer, components, dst, src, x0, coverage, count,\
+        CTX_COMPOSITE_SOURCE_IN, fragment, blend);\
+       break;\
+     case CTX_COMPOSITE_COPY:\
+       _ctx_u8_porter_duff (rasterizer, components, dst, src, x0, coverage, count,\
+        CTX_COMPOSITE_COPY, fragment, blend);\
+       break;\
+     case CTX_COMPOSITE_CLEAR:\
+       _ctx_u8_porter_duff (rasterizer, components, dst, src, x0, coverage, count,\
+        CTX_COMPOSITE_CLEAR, fragment, blend);\
+       break;\
+   }
+
+/* generating one function per compositing_mode would be slightly more efficient,
+ * but on embedded targets leads to slightly more code bloat,
+ * here we trade off a slight amount of performance
+ */
+#define ctx_u8_porter_duff(comp_format, components, source, fragment, blend) \
+static void \
+ctx_##comp_format##_porter_duff_##source (CTX_COMPOSITE_ARGUMENTS) \
+{ \
+  _ctx_u8_porter_duffs(comp_format, components, source, fragment, blend);\
+}
+
+ctx_u8_porter_duff(RGBA8, 4,generic, rasterizer->fragment, rasterizer->state->gstate.blend_mode)
+//ctx_u8_porter_duff(comp_name, components,color_##blend_name,  NULL, blend_mode)
+
+static void
+ctx_RGBA8_nop (CTX_COMPOSITE_ARGUMENTS)
+{
+}
+
+
+static void
+ctx_setup_RGBA8 (CtxRasterizer *rasterizer)
+{
+  CtxGState *gstate = &rasterizer->state->gstate;
+  int components       = 4;
+  rasterizer->fragment = ctx_rasterizer_get_fragment_RGBA8 (rasterizer);
+  rasterizer->comp_op  = ctx_RGBA8_porter_duff_generic;
+  rasterizer->comp = CTX_COV_PATH_FALLBACK;
+
+  int blend_mode       = gstate->blend_mode;
+  int compositing_mode = gstate->compositing_mode;
+
+  if (gstate->source_fill.type == CTX_SOURCE_COLOR)
+    {
+      ctx_fragment_color_RGBA8 (rasterizer, 0,0, rasterizer->color, 1, 0,0);
+      if (gstate->global_alpha_u8 != 255)
+      {
+        for (int c = 0; c < 4; c ++)
+          rasterizer->color[c] = (rasterizer->color[c] * gstate->global_alpha_u8 + 255)>>8;
+      }
+      uint32_t src_pix    = ((uint32_t*)rasterizer->color)[0];
+      uint32_t si_ga      = (src_pix & 0xff00ff00) >> 8;
+      uint32_t si_rb      = src_pix & 0x00ff00ff;
+      uint32_t si_ga_full = si_ga * 255;
+      uint32_t si_rb_full = si_rb * 255;
+//      uint32_t si_a       = si_ga >> 16;
+
+      ((uint32_t*)rasterizer->color)[1] = si_ga;
+      ((uint32_t*)rasterizer->color)[2] = si_rb;
+      ((uint32_t*)rasterizer->color)[3] = si_ga_full;
+      ((uint32_t*)rasterizer->color)[4] = si_rb_full;
+
+      if (blend_mode == CTX_BLEND_NORMAL &&
+           compositing_mode == CTX_COMPOSITE_COPY)
+      {
+        rasterizer->comp_op = ctx_RGBA8_source_copy_normal_color;
+        rasterizer->comp = CTX_COV_PATH_COPY;
+      }
+      else if (blend_mode == CTX_BLEND_NORMAL &&
+          compositing_mode == CTX_COMPOSITE_SOURCE_OVER)
+     {
+       if (rasterizer->color[components-1] == 255)
+       {
+        rasterizer->comp_op = ctx_RGBA8_source_copy_normal_color;
+        rasterizer->comp = CTX_COV_PATH_COPY;
+       }
+       else
+       {
+        rasterizer->comp_op = ctx_RGBA8_source_over_normal_color;
+        rasterizer->comp = CTX_COV_PATH_OVER;
+       }
+     }
+     else if (compositing_mode == CTX_COMPOSITE_CLEAR)
+     {
+       rasterizer->comp_op = ctx_RGBA8_clear_normal;
+     }
+  }
+  else if (blend_mode == CTX_BLEND_NORMAL &&
+           compositing_mode == CTX_COMPOSITE_SOURCE_OVER)
+  {
+     rasterizer->comp_op = ctx_RGBA8_source_over_normal_fragment;
+     rasterizer->comp = CTX_COV_PATH_OVER_FRAGMENT;
+  }
+  else if (blend_mode == CTX_BLEND_NORMAL &&
+           compositing_mode == CTX_COMPOSITE_COPY)
+  {
+     rasterizer->comp_op = ctx_RGBA8_source_copy_normal_fragment;
+     rasterizer->comp = CTX_COV_PATH_COPY_FRAGMENT;
+  }
+}
+
+static void
+ctx_composite_convert (CTX_COMPOSITE_ARGUMENTS)
+{
+  uint8_t pixels[count * rasterizer->format->ebpp];
+  rasterizer->format->to_comp (rasterizer, x0, dst, &pixels[0], count);
+  rasterizer->comp_op (rasterizer, &pixels[0], rasterizer->color, x0, coverage, count);
+  rasterizer->format->from_comp (rasterizer, x0, &pixels[0], dst, count);
+}
+
+#if CTX_ENABLE_FLOAT
+static void
+ctx_float_copy_normal (int components, CTX_COMPOSITE_ARGUMENTS)
+{
+  float *dstf = (float*)dst;
+  float *srcf = (float*)src;
+  float u0 = 0; float v0 = 0;
+  float ud = 0; float vd = 0;
+
+  ctx_init_uv (rasterizer, x0, count, &u0, &v0, &ud, &vd);
+
+  while (count--)
+  {
+    uint8_t cov = *coverage;
+    float covf = ctx_u8_to_float (cov);
+    for (int c = 0; c < components; c++)
+      dstf[c] = dstf[c]*(1.0-covf) + srcf[c]*covf;
+    dstf += components;
+    coverage ++;
+  }
+}
+
+static void
+ctx_float_clear_normal (int components, CTX_COMPOSITE_ARGUMENTS)
+{
+  float *dstf = (float*)dst;
+  while (count--)
+  {
+#if 0
+    uint8_t cov = *coverage;
+    if (cov == 0)
+    {
+    }
+    else if (cov == 255)
+    {
+#endif
+      switch (components)
+      {
+        case 2:
+          ((uint64_t*)(dst))[0] = 0;
+          break;
+        case 4:
+          ((uint64_t*)(dst))[0] = 0;
+          ((uint64_t*)(dst))[1] = 0;
+          break;
+        default:
+          for (int c = 0; c < components; c++)
+            dstf[c] = 0.0f;
+      }
+#if 0
+    }
+    else
+    {
+      float ralpha = 1.0 - ctx_u8_to_float (cov);
+      for (int c = 0; c < components; c++)
+        { dstf[c] = (dstf[c] * ralpha); }
+    }
+    coverage ++;
+#endif
+    dstf += components;
+  }
+}
+
+
+static void
+ctx_float_source_over_normal_color (int components, CTX_COMPOSITE_ARGUMENTS)
+{
+  float *dstf = (float*)dst;
+  float *srcf = (float*)src;
+  while (count--)
+  {
+    uint8_t cov = *coverage;
+    float fcov = ctx_u8_to_float (cov);
+    float ralpha = 1.0f - fcov * srcf[components-1];
+    for (int c = 0; c < components-1; c++)
+      dstf[c] = (srcf[c]*fcov + dstf[c] * ralpha);
+    coverage ++;
+    dstf+= components;
+  }
+}
+
+static void
+ctx_float_source_copy_normal_color (int components, CTX_COMPOSITE_ARGUMENTS)
+{
+  float *dstf = (float*)dst;
+  float *srcf = (float*)src;
+
+  while (count--)
+  {
+    uint8_t cov = *coverage;
+    float fcov = ctx_u8_to_float (cov);
+    float ralpha = 1.0f - fcov;
+    for (int c = 0; c < components-1; c++)
+      dstf[c] = (srcf[c]*fcov + dstf[c] * ralpha);
+    coverage ++;
+    dstf+= components;
+  }
+}
+
+inline static void
+ctx_float_blend_normal (int components, float *dst, float *src, float *blended)
+{
+  float a = src[components-1];
+  for (int c = 0; c <  components - 1; c++)
+    blended[c] = src[c] * a;
+  blended[components-1]=a;
+}
+
+static float ctx_float_get_max (int components, float *c)
+{
+  float max = -1000.0f;
+  for (int i = 0; i < components - 1; i ++)
+  {
+    if (c[i] > max) max = c[i];
+  }
+  return max;
+}
+
+static float ctx_float_get_min (int components, float *c)
+{
+  float min = 400.0;
+  for (int i = 0; i < components - 1; i ++)
+  {
+    if (c[i] < min) min = c[i];
+  }
+  return min;
+}
+
+static float ctx_float_get_lum (int components, float *c)
+{
+  switch (components)
+  {
+    case 3:
+    case 4:
+            return CTX_CSS_RGB_TO_LUMINANCE(c);
+    case 1:
+    case 2:
+            return c[0];
+            break;
+    default:
+       {
+         float sum = 0;
+         for (int i = 0; i < components - 1; i ++)
+         {
+           sum += c[i];
+         }
+         return sum / (components - 1);
+       }
+  }
+}
+
+static float ctx_float_get_sat (int components, float *c)
+{
+  switch (components)
+  {
+    case 3:
+    case 4:
+            { float r = c[0];
+              float g = c[1];
+              float b = c[2];
+              return ctx_maxf(r, ctx_maxf(g,b)) - ctx_minf(r,ctx_minf(g,b));
+            }
+            break;
+    case 1:
+    case 2: return 0.0;
+            break;
+    default:
+       {
+         float min = 1000;
+         float max = -1000;
+         for (int i = 0; i < components - 1; i ++)
+         {
+           if (c[i] < min) min = c[i];
+           if (c[i] > max) max = c[i];
+         }
+         return max-min;
+       }
+  }
+}
+
+static void ctx_float_set_lum (int components, float *c, float lum)
+{
+  float d = lum - ctx_float_get_lum (components, c);
+  float tc[components];
+  for (int i = 0; i < components - 1; i++)
+  {
+    tc[i] = c[i] + d;
+  }
+
+  float l = ctx_float_get_lum (components, tc);
+  float n = ctx_float_get_min (components, tc);
+  float x = ctx_float_get_max (components, tc);
+
+  if (n < 0.0f && l != n)
+  {
+    for (int i = 0; i < components - 1; i++)
+      tc[i] = l + (((tc[i] - l) * l) / (l-n));
+  }
+
+  if (x > 1.0f && x != l)
+  {
+    for (int i = 0; i < components - 1; i++)
+      tc[i] = l + (((tc[i] - l) * (1.0f - l)) / (x-l));
+  }
+  for (int i = 0; i < components - 1; i++)
+    c[i] = tc[i];
+}
+
+static void ctx_float_set_sat (int components, float *c, float sat)
+{
+  int max = 0, mid = 1, min = 2;
+  
+  if (c[min] > c[mid]){int t = min; min = mid; mid = t;}
+  if (c[mid] > c[max]){int t = mid; mid = max; max = t;}
+  if (c[min] > c[mid]){int t = min; min = mid; mid = t;}
+
+  if (c[max] > c[min])
+  {
+    c[mid] = ((c[mid]-c[min]) * sat) / (c[max] - c[min]);
+    c[max] = sat;
+  }
+  else
+  {
+    c[mid] = c[max] = 0.0f;
+  }
+  c[min] = 0.0f;
+
+}
+
+#define ctx_float_blend_define(name, CODE) \
+static void \
+ctx_float_blend_##name (int components, float * __restrict__ dst, float *src, float *blended)\
+{\
+  float *s = src; float b[components];\
+  ctx_float_deassociate_alpha (components, dst, b);\
+    CODE;\
+  blended[components-1] = s[components-1];\
+  ctx_float_associate_alpha (components, blended);\
+}
+
+#define ctx_float_blend_define_seperable(name, CODE) \
+        ctx_float_blend_define(name, for (int c = 0; c < components-1; c++) { CODE ;}) \
+
+ctx_float_blend_define_seperable(multiply,    blended[c] = (b[c] * s[c]);)
+ctx_float_blend_define_seperable(screen,      blended[c] = b[c] + s[c] - (b[c] * s[c]);)
+ctx_float_blend_define_seperable(overlay,     blended[c] = b[c] < 0.5f ? (s[c] * b[c]) :
+                                                          s[c] + b[c] - (s[c] * b[c]);)
+ctx_float_blend_define_seperable(darken,      blended[c] = ctx_minf (b[c], s[c]))
+ctx_float_blend_define_seperable(lighten,     blended[c] = ctx_maxf (b[c], s[c]))
+ctx_float_blend_define_seperable(color_dodge, blended[c] = (b[c] == 0.0f) ? 0.0f :
+                                     s[c] == 1.0f ? 1.0f : ctx_minf(1.0f, (b[c]) / (1.0f-s[c])))
+ctx_float_blend_define_seperable(color_burn,  blended[c] = (b[c] == 1.0f) ? 1.0f :
+                                     s[c] == 0.0f ? 0.0f : 1.0f - ctx_minf(1.0f, ((1.0f - b[c])) / s[c]))
+ctx_float_blend_define_seperable(hard_light,  blended[c] = s[c] < 0.f ? (b[c] * s[c]) :
+                                                          b[c] + s[c] - (b[c] * s[c]);)
+ctx_float_blend_define_seperable(difference,  blended[c] = (b[c] - s[c]))
+
+ctx_float_blend_define_seperable(divide,      blended[c] = s[c]?(b[c]) / s[c]:0.0f)
+ctx_float_blend_define_seperable(addition,    blended[c] = s[c]+b[c])
+ctx_float_blend_define_seperable(subtract,    blended[c] = s[c]-b[c])
+
+ctx_float_blend_define_seperable(exclusion,   blended[c] = b[c] + s[c] - 2.0f * b[c] * s[c])
+ctx_float_blend_define_seperable(soft_light,
+  if (s[c] <= 0.5f)
+  {
+    blended[c] = b[c] - (1.0f - 2.0f * s[c]) * b[c] * (1.0f - b[c]);
+  }
+  else
+  {
+    int d;
+    if (b[c] <= 255/4)
+      d = (((16 * b[c] - 12.0f) * b[c] + 4.0f) * b[c]);
+    else
+      d = ctx_sqrtf(b[c]);
+    blended[c] = (b[c] + (2.0f * s[c] - 1.0f) * (d - b[c]));
+  }
+)
+
+
+ctx_float_blend_define(color,
+  for (int i = 0; i < components; i++)
+    blended[i] = s[i];
+  ctx_float_set_lum(components, blended, ctx_float_get_lum (components, s));
+)
+
+ctx_float_blend_define(hue,
+  float in_sat = ctx_float_get_sat(components, b);
+  float in_lum = ctx_float_get_lum(components, b);
+  for (int i = 0; i < components; i++)
+    blended[i] = s[i];
+  ctx_float_set_sat(components, blended, in_sat);
+  ctx_float_set_lum(components, blended, in_lum);
+)
+
+ctx_float_blend_define(saturation,
+  float in_sat = ctx_float_get_sat(components, s);
+  float in_lum = ctx_float_get_lum(components, b);
+  for (int i = 0; i < components; i++)
+    blended[i] = b[i];
+  ctx_float_set_sat(components, blended, in_sat);
+  ctx_float_set_lum(components, blended, in_lum);
+)
+
+ctx_float_blend_define(luminosity,
+  float in_lum = ctx_float_get_lum(components, s);
+  for (int i = 0; i < components; i++)
+    blended[i] = b[i];
+  ctx_float_set_lum(components, blended, in_lum);
+)
+
+inline static void
+ctx_float_blend (int components, CtxBlend blend, float * __restrict__ dst, float *src, float *blended)
+{
+  switch (blend)
+  {
+    case CTX_BLEND_NORMAL:      ctx_float_blend_normal      (components, dst, src, blended); break;
+    case CTX_BLEND_MULTIPLY:    ctx_float_blend_multiply    (components, dst, src, blended); break;
+    case CTX_BLEND_SCREEN:      ctx_float_blend_screen      (components, dst, src, blended); break;
+    case CTX_BLEND_OVERLAY:     ctx_float_blend_overlay     (components, dst, src, blended); break;
+    case CTX_BLEND_DARKEN:      ctx_float_blend_darken      (components, dst, src, blended); break;
+    case CTX_BLEND_LIGHTEN:     ctx_float_blend_lighten     (components, dst, src, blended); break;
+    case CTX_BLEND_COLOR_DODGE: ctx_float_blend_color_dodge (components, dst, src, blended); break;
+    case CTX_BLEND_COLOR_BURN:  ctx_float_blend_color_burn  (components, dst, src, blended); break;
+    case CTX_BLEND_HARD_LIGHT:  ctx_float_blend_hard_light  (components, dst, src, blended); break;
+    case CTX_BLEND_SOFT_LIGHT:  ctx_float_blend_soft_light  (components, dst, src, blended); break;
+    case CTX_BLEND_DIFFERENCE:  ctx_float_blend_difference  (components, dst, src, blended); break;
+    case CTX_BLEND_EXCLUSION:   ctx_float_blend_exclusion   (components, dst, src, blended); break;
+    case CTX_BLEND_COLOR:       ctx_float_blend_color       (components, dst, src, blended); break;
+    case CTX_BLEND_HUE:         ctx_float_blend_hue         (components, dst, src, blended); break;
+    case CTX_BLEND_SATURATION:  ctx_float_blend_saturation  (components, dst, src, blended); break;
+    case CTX_BLEND_LUMINOSITY:  ctx_float_blend_luminosity  (components, dst, src, blended); break;
+    case CTX_BLEND_ADDITION:    ctx_float_blend_addition    (components, dst, src, blended); break;
+    case CTX_BLEND_SUBTRACT:    ctx_float_blend_subtract    (components, dst, src, blended); break;
+    case CTX_BLEND_DIVIDE:      ctx_float_blend_divide      (components, dst, src, blended); break;
+  }
+}
+
+/* this is the grunt working function, when inlined code-path elimination makes
+ * it produce efficient code.
+ */
+CTX_INLINE static void
+ctx_float_porter_duff (CtxRasterizer         *rasterizer,
+                       int                    components,
+                       uint8_t * __restrict__ dst,
+                       uint8_t * __restrict__ src,
+                       int                    x0,
+                       uint8_t * __restrict__ coverage,
+                       int                    count,
+                       CtxCompositingMode     compositing_mode,
+                       CtxFragment            fragment,
+                       CtxBlend               blend)
+{
+  float *dstf = (float*)dst;
+
+  CtxPorterDuffFactor f_s, f_d;
+  ctx_porter_duff_factors (compositing_mode, &f_s, &f_d);
+  uint8_t global_alpha_u8 = rasterizer->state->gstate.global_alpha_u8;
+  float   global_alpha_f = rasterizer->state->gstate.global_alpha_f;
+  
+  {
+    float tsrc[components];
+    float u0 = 0; float v0 = 0;
+    float ud = 0; float vd = 0;
+
+    ctx_init_uv (rasterizer, x0, count, &u0, &v0, &ud, &vd);
+
+    while (count--)
+    {
+      uint8_t cov = *coverage;
+#if 1
+      if (
+        CTX_UNLIKELY((compositing_mode == CTX_COMPOSITE_DESTINATION_OVER && dst[components-1] == 1.0f)||
+        (cov == 0 && (compositing_mode == CTX_COMPOSITE_SOURCE_OVER ||
+        compositing_mode == CTX_COMPOSITE_XOR               ||
+        compositing_mode == CTX_COMPOSITE_DESTINATION_OUT   ||
+        compositing_mode == CTX_COMPOSITE_SOURCE_ATOP      
+        ))))
+      {
+        u0 += ud;
+        v0 += vd;
+        coverage ++;
+        dstf+=components;
+        continue;
+      }
+#endif
+
+      fragment (rasterizer, u0, v0, tsrc, 1, ud, vd);
+      if (blend != CTX_BLEND_NORMAL)
+        ctx_float_blend (components, blend, dstf, tsrc, tsrc);
+      u0 += ud;
+      v0 += vd;
+      float covf = ctx_u8_to_float (cov);
+
+      if (global_alpha_u8 != 255)
+        covf = covf * global_alpha_f;
+
+      if (covf != 1.0f)
+      {
+        for (int c = 0; c < components; c++)
+          tsrc[c] *= covf;
+      }
+
+      for (int c = 0; c < components; c++)
+      {
+        float res;
+        /* these switches and this whole function is written to be
+         * inlined when compiled when the enum values passed in are
+         * constants.
+         */
+        switch (f_s)
+        {
+          case CTX_PORTER_DUFF_0: res = 0.0f; break;
+          case CTX_PORTER_DUFF_1:             res = (tsrc[c]); break;
+          case CTX_PORTER_DUFF_ALPHA:         res = (tsrc[c] *       dstf[components-1]); break;
+          case CTX_PORTER_DUFF_1_MINUS_ALPHA: res = (tsrc[c] * (1.0f-dstf[components-1])); break;
+        }
+        switch (f_d)
+        {
+          case CTX_PORTER_DUFF_0: dstf[c] = res; break;
+          case CTX_PORTER_DUFF_1:             dstf[c] = res + (dstf[c]); break;
+          case CTX_PORTER_DUFF_ALPHA:         dstf[c] = res + (dstf[c] *       tsrc[components-1]); break;
+          case CTX_PORTER_DUFF_1_MINUS_ALPHA: dstf[c] = res + (dstf[c] * (1.0f-tsrc[components-1])); break;
+        }
+      }
+      coverage ++;
+      dstf     +=components;
+    }
+  }
+}
+
+/* generating one function per compositing_mode would be slightly more efficient,
+ * but on embedded targets leads to slightly more code bloat,
+ * here we trade off a slight amount of performance
+ */
+#define ctx_float_porter_duff(compformat, components, source, fragment, blend) \
+static void \
+ctx_##compformat##_porter_duff_##source (CTX_COMPOSITE_ARGUMENTS) \
+{ \
+   switch (rasterizer->state->gstate.compositing_mode) \
+   { \
+     case CTX_COMPOSITE_SOURCE_ATOP: \
+      ctx_float_porter_duff (rasterizer, components, dst, src, x0, coverage, count, \
+        CTX_COMPOSITE_SOURCE_ATOP, fragment, blend);\
+      break;\
+     case CTX_COMPOSITE_DESTINATION_ATOP:\
+      ctx_float_porter_duff (rasterizer, components, dst, src, x0, coverage, count,\
+        CTX_COMPOSITE_DESTINATION_ATOP, fragment, blend);\
+      break;\
+     case CTX_COMPOSITE_DESTINATION_IN:\
+      ctx_float_porter_duff (rasterizer, components, dst, src, x0, coverage, count,\
+        CTX_COMPOSITE_DESTINATION_IN, fragment, blend);\
+      break;\
+     case CTX_COMPOSITE_DESTINATION:\
+      ctx_float_porter_duff (rasterizer, components, dst, src, x0, coverage, count,\
+        CTX_COMPOSITE_DESTINATION, fragment, blend);\
+       break;\
+     case CTX_COMPOSITE_SOURCE_OVER:\
+      ctx_float_porter_duff (rasterizer, components, dst, src, x0, coverage, count,\
+        CTX_COMPOSITE_SOURCE_OVER, fragment, blend);\
+       break;\
+     case CTX_COMPOSITE_DESTINATION_OVER:\
+      ctx_float_porter_duff (rasterizer, components, dst, src, x0, coverage, count,\
+        CTX_COMPOSITE_DESTINATION_OVER, fragment, blend);\
+       break;\
+     case CTX_COMPOSITE_XOR:\
+      ctx_float_porter_duff (rasterizer, components, dst, src, x0, coverage, count,\
+        CTX_COMPOSITE_XOR, fragment, blend);\
+       break;\
+     case CTX_COMPOSITE_DESTINATION_OUT:\
+       ctx_float_porter_duff (rasterizer, components, dst, src, x0, coverage, count,\
+        CTX_COMPOSITE_DESTINATION_OUT, fragment, blend);\
+       break;\
+     case CTX_COMPOSITE_SOURCE_OUT:\
+       ctx_float_porter_duff (rasterizer, components, dst, src, x0, coverage, count,\
+        CTX_COMPOSITE_SOURCE_OUT, fragment, blend);\
+       break;\
+     case CTX_COMPOSITE_SOURCE_IN:\
+       ctx_float_porter_duff (rasterizer, components, dst, src, x0, coverage, count,\
+        CTX_COMPOSITE_SOURCE_IN, fragment, blend);\
+       break;\
+     case CTX_COMPOSITE_COPY:\
+       ctx_float_porter_duff (rasterizer, components, dst, src, x0, coverage, count,\
+        CTX_COMPOSITE_COPY, fragment, blend);\
+       break;\
+     case CTX_COMPOSITE_CLEAR:\
+       ctx_float_porter_duff (rasterizer, components, dst, src, x0, coverage, count,\
+        CTX_COMPOSITE_CLEAR, fragment, blend);\
+       break;\
+   }\
+}
+#endif
+
+#if CTX_ENABLE_RGBAF
+
+ctx_float_porter_duff(RGBAF, 4,color,   rasterizer->fragment, rasterizer->state->gstate.blend_mode)
+ctx_float_porter_duff(RGBAF, 4,generic, rasterizer->fragment, rasterizer->state->gstate.blend_mode)
+
+#if CTX_INLINED_NORMAL
+#if CTX_GRADIENTS
+ctx_float_porter_duff(RGBAF, 4,linear_gradient, ctx_fragment_linear_gradient_RGBAF, rasterizer->state->gstate.blend_mode)
+ctx_float_porter_duff(RGBAF, 4,radial_gradient, ctx_fragment_radial_gradient_RGBAF, rasterizer->state->gstate.blend_mode)
+#endif
+ctx_float_porter_duff(RGBAF, 4,image,           ctx_fragment_image_RGBAF,           rasterizer->state->gstate.blend_mode)
+
+
+#if CTX_GRADIENTS
+#define ctx_float_porter_duff_blend(comp_name, components, blend_mode, blend_name)\
+ctx_float_porter_duff(comp_name, components,color_##blend_name,            rasterizer->fragment,                               blend_mode)\
+ctx_float_porter_duff(comp_name, components,generic_##blend_name,          rasterizer->fragment,               blend_mode)\
+ctx_float_porter_duff(comp_name, components,linear_gradient_##blend_name,  ctx_fragment_linear_gradient_RGBA8, blend_mode)\
+ctx_float_porter_duff(comp_name, components,radial_gradient_##blend_name,  ctx_fragment_radial_gradient_RGBA8, blend_mode)\
+ctx_float_porter_duff(comp_name, components,image_##blend_name,            ctx_fragment_image_RGBAF,           blend_mode)
+#else
+#define ctx_float_porter_duff_blend(comp_name, components, blend_mode, blend_name)\
+ctx_float_porter_duff(comp_name, components,color_##blend_name,            rasterizer->fragment,                               blend_mode)\
+ctx_float_porter_duff(comp_name, components,generic_##blend_name,          rasterizer->fragment,               blend_mode)\
+ctx_float_porter_duff(comp_name, components,image_##blend_name,            ctx_fragment_image_RGBAF,           blend_mode)
+#endif
+
+ctx_float_porter_duff_blend(RGBAF, 4, CTX_BLEND_NORMAL, normal)
+
+
+static void
+ctx_RGBAF_copy_normal (CTX_COMPOSITE_ARGUMENTS)
+{
+  ctx_float_copy_normal (4, rasterizer, dst, src, x0, coverage, count);
+}
+
+static void
+ctx_RGBAF_clear_normal (CTX_COMPOSITE_ARGUMENTS)
+{
+  ctx_float_clear_normal (4, rasterizer, dst, src, x0, coverage, count);
+}
+
+#if 1
+static void
+ctx_RGBAF_source_over_normal_color (CTX_COMPOSITE_ARGUMENTS)
+{
+  ctx_float_source_over_normal_color (4, rasterizer, dst, rasterizer->color, x0, coverage, count);
+}
+#endif
+#endif
+
+static void
+ctx_setup_RGBAF (CtxRasterizer *rasterizer)
+{
+  CtxGState *gstate = &rasterizer->state->gstate;
+  int components = 4;
+  rasterizer->fragment = ctx_rasterizer_get_fragment_RGBAF (rasterizer);
+  rasterizer->comp = CTX_COV_PATH_FALLBACK;
+#if 1
+  if (gstate->source_fill.type == CTX_SOURCE_COLOR)
+    {
+      rasterizer->comp_op = ctx_RGBAF_porter_duff_color;
+      ctx_fragment_color_RGBAF (rasterizer, 0,0, rasterizer->color, 1, 0,0);
+      if (gstate->global_alpha_u8 != 255)
+        for (int c = 0; c < components; c ++)
+          ((float*)rasterizer->color)[c] *= gstate->global_alpha_f;
+    }
+  else
+#endif
+  {
+    rasterizer->comp_op = ctx_RGBAF_porter_duff_generic;
+  }
+
+#if CTX_INLINED_NORMAL
+  if (gstate->compositing_mode == CTX_COMPOSITE_CLEAR)
+    rasterizer->comp_op = ctx_RGBAF_clear_normal;
+  else
+    switch (gstate->blend_mode)
+    {
+      case CTX_BLEND_NORMAL:
+        if (gstate->compositing_mode == CTX_COMPOSITE_COPY)
+        {
+          rasterizer->comp_op = ctx_RGBAF_copy_normal;
+        }
+        else if (gstate->global_alpha_u8 == 0)
+        {
+          rasterizer->comp_op = ctx_RGBA8_nop;
+        }
+        else
+        switch (gstate->source_fill.type)
+        {
+          case CTX_SOURCE_COLOR:
+            if (gstate->compositing_mode == CTX_COMPOSITE_SOURCE_OVER)
+            {
+              rasterizer->comp_op = ctx_RGBAF_source_over_normal_color;
+            }
+            else
+            {
+              rasterizer->comp_op = ctx_RGBAF_porter_duff_color_normal;
+            }
+            break;
+#if CTX_GRADIENTS
+          case CTX_SOURCE_LINEAR_GRADIENT:
+            rasterizer->comp_op = ctx_RGBAF_porter_duff_linear_gradient_normal;
+            break;
+          case CTX_SOURCE_RADIAL_GRADIENT:
+            rasterizer->comp_op = ctx_RGBAF_porter_duff_radial_gradient_normal;
+            break;
+#endif
+          case CTX_SOURCE_TEXTURE:
+            rasterizer->comp_op = ctx_RGBAF_porter_duff_image_normal;
+            break;
+          default:
+            rasterizer->comp_op = ctx_RGBAF_porter_duff_generic_normal;
+            break;
+        }
+        break;
+      default:
+        switch (gstate->source_fill.type)
+        {
+          case CTX_SOURCE_COLOR:
+            rasterizer->comp_op = ctx_RGBAF_porter_duff_color;
+            //rasterizer->fragment = NULL;
+            break;
+#if CTX_GRADIENTS
+          case CTX_SOURCE_LINEAR_GRADIENT:
+            rasterizer->comp_op = ctx_RGBAF_porter_duff_linear_gradient;
+            break;
+          case CTX_SOURCE_RADIAL_GRADIENT:
+            rasterizer->comp_op = ctx_RGBAF_porter_duff_radial_gradient;
+            break;
+#endif
+          case CTX_SOURCE_TEXTURE:
+            rasterizer->comp_op = ctx_RGBAF_porter_duff_image;
+            break;
+          default:
+            rasterizer->comp_op = ctx_RGBAF_porter_duff_generic;
+            break;
+        }
+        break;
+    }
+#endif
+}
+
+#endif
+#if CTX_ENABLE_GRAYAF
+
+#if CTX_GRADIENTS
+static void
+ctx_fragment_linear_gradient_GRAYAF (CtxRasterizer *rasterizer, float x, float y, void *out, int count, float dx, float dy)
+{
+  float rgba[4];
+  CtxSource *g = &rasterizer->state->gstate.source_fill;
+  for (int i = 0 ; i < count; i++)
+  {
+  float v = ( ( (g->linear_gradient.dx * x + g->linear_gradient.dy * y) /
+                g->linear_gradient.length) -
+              g->linear_gradient.start) * (g->linear_gradient.rdelta);
+  ctx_fragment_gradient_1d_RGBAF (rasterizer, v, 1.0, rgba);
+  ((float*)out)[0] = ctx_float_color_rgb_to_gray (rasterizer->state, rgba);
+  ((float*)out)[1] = rgba[3];
+     out = ((float*)(out)) + 2;
+     x += dx;
+     y += dy;
+  }
+}
+
+static void
+ctx_fragment_radial_gradient_GRAYAF (CtxRasterizer *rasterizer, float x, float y, void *out, int count, float dx, float dy)
+{
+  float rgba[4];
+  CtxSource *g = &rasterizer->state->gstate.source_fill;
+  for (int i = 0; i < count; i ++)
+  {
+  float v = 0.0f;
+  if ((g->radial_gradient.r1-g->radial_gradient.r0) > 0.0f)
+    {
+      v = ctx_hypotf (g->radial_gradient.x0 - x, g->radial_gradient.y0 - y);
+      v = (v - g->radial_gradient.r0) / (g->radial_gradient.rdelta);
+    }
+  ctx_fragment_gradient_1d_RGBAF (rasterizer, v, 0.0, rgba);
+  ((float*)out)[0] = ctx_float_color_rgb_to_gray (rasterizer->state, rgba);
+  ((float*)out)[1] = rgba[3];
+     out = ((float*)(out)) + 2;
+     x += dx;
+     y += dy;
+  }
+}
+#endif
+
+static void
+ctx_fragment_color_GRAYAF (CtxRasterizer *rasterizer, float x, float y, void *out, int count, float dx, float dy)
+{
+  CtxSource *g = &rasterizer->state->gstate.source_fill;
+  for (int i = 0; i < count; i++)
+  {
+     ctx_color_get_graya (rasterizer->state, &g->color, (float*)out);
+     out = ((float*)(out)) + 2;
+     x += dx;
+     y += dy;
+  }
+}
+
+static void ctx_fragment_image_GRAYAF (CtxRasterizer *rasterizer, float x, float y, void *out, int count, float dx, float dy)
+{
+  uint8_t rgba[4];
+  float rgbaf[4];
+  CtxGState *gstate = &rasterizer->state->gstate;
+  CtxBuffer *buffer = gstate->source_fill.texture.buffer;
+  switch (buffer->format->bpp)
+    {
+      case 1:  ctx_fragment_image_gray1_RGBA8 (rasterizer, x, y, rgba, count, dx, dy); break;
+      case 24: ctx_fragment_image_rgb8_RGBA8 (rasterizer, x, y, rgba, count, dx, dy);  break;
+      case 32: ctx_fragment_image_rgba8_RGBA8 (rasterizer, x, y, rgba, count, dx, dy); break;
+      default: ctx_fragment_image_RGBA8 (rasterizer, x, y, rgba, count, dx, dy);       break;
+    }
+  for (int c = 0; c < 2 * count; c ++) { 
+    rgbaf[c] = ctx_u8_to_float (rgba[c]);
+    ((float*)out)[0] = ctx_float_color_rgb_to_gray (rasterizer->state, rgbaf);
+    ((float*)out)[1] = rgbaf[3];
+    out = ((float*)out) + 2;
+  }
+}
+
+static CtxFragment ctx_rasterizer_get_fragment_GRAYAF (CtxRasterizer *rasterizer)
+{
+  CtxGState *gstate = &rasterizer->state->gstate;
+  switch (gstate->source_fill.type)
+    {
+      case CTX_SOURCE_TEXTURE:           return ctx_fragment_image_GRAYAF;
+      case CTX_SOURCE_COLOR:           return ctx_fragment_color_GRAYAF;
+#if CTX_GRADIENTS
+      case CTX_SOURCE_LINEAR_GRADIENT: return ctx_fragment_linear_gradient_GRAYAF;
+      case CTX_SOURCE_RADIAL_GRADIENT: return ctx_fragment_radial_gradient_GRAYAF;
+#endif
+    }
+  return ctx_fragment_color_GRAYAF;
+}
+
+ctx_float_porter_duff(GRAYAF, 2,color,   rasterizer->fragment, rasterizer->state->gstate.blend_mode)
+ctx_float_porter_duff(GRAYAF, 2,generic, rasterizer->fragment, rasterizer->state->gstate.blend_mode)
+
+#if CTX_INLINED_NORMAL
+ctx_float_porter_duff(GRAYAF, 2,color_normal,   rasterizer->fragment, CTX_BLEND_NORMAL)
+ctx_float_porter_duff(GRAYAF, 2,generic_normal, rasterizer->fragment, CTX_BLEND_NORMAL)
+
+static void
+ctx_GRAYAF_copy_normal (CTX_COMPOSITE_ARGUMENTS)
+{
+  ctx_float_copy_normal (2, rasterizer, dst, src, x0, coverage, count);
+}
+
+static void
+ctx_GRAYAF_clear_normal (CTX_COMPOSITE_ARGUMENTS)
+{
+  ctx_float_clear_normal (2, rasterizer, dst, src, x0, coverage, count);
+}
+
+static void
+ctx_GRAYAF_source_copy_normal_color (CTX_COMPOSITE_ARGUMENTS)
+{
+  ctx_float_source_copy_normal_color (2, rasterizer, dst, rasterizer->color, x0, coverage, count);
+}
+#endif
+
+static void
+ctx_setup_GRAYAF (CtxRasterizer *rasterizer)
+{
+  CtxGState *gstate = &rasterizer->state->gstate;
+  int components = 2;
+  rasterizer->fragment = ctx_rasterizer_get_fragment_GRAYAF (rasterizer);
+  rasterizer->comp = CTX_COV_PATH_FALLBACK;
+  if (gstate->source_fill.type == CTX_SOURCE_COLOR)
+    {
+      rasterizer->comp_op = ctx_GRAYAF_porter_duff_color;
+  //  rasterizer->fragment = NULL;
+      ctx_color_get_rgba (rasterizer->state, &gstate->source_fill.color, (float*)rasterizer->color);
+      if (gstate->global_alpha_u8 != 255)
+        for (int c = 0; c < components; c ++)
+          ((float*)rasterizer->color)[c] *= gstate->global_alpha_f;
+    }
+  else
+  {
+    rasterizer->comp_op = ctx_GRAYAF_porter_duff_generic;
+  }
+
+#if CTX_INLINED_NORMAL
+  if (gstate->compositing_mode == CTX_COMPOSITE_CLEAR)
+    rasterizer->comp_op = ctx_GRAYAF_clear_normal;
+  else
+    switch (gstate->blend_mode)
+    {
+      case CTX_BLEND_NORMAL:
+        if (gstate->compositing_mode == CTX_COMPOSITE_COPY)
+        {
+          rasterizer->comp_op = ctx_GRAYAF_copy_normal;
+        }
+        else if (gstate->global_alpha_u8 == 0)
+          rasterizer->comp_op = ctx_RGBA8_nop;
+        else
+        switch (gstate->source_fill.type)
+        {
+          case CTX_SOURCE_COLOR:
+            if (gstate->compositing_mode == CTX_COMPOSITE_SOURCE_OVER)
+            {
+              if (((float*)rasterizer->color)[components-1] == 0.0f)
+                rasterizer->comp_op = ctx_RGBA8_nop;
+#if 1
+              else //if (((float*)rasterizer->color)[components-1] == 0.0f)
+                rasterizer->comp_op = ctx_GRAYAF_source_copy_normal_color;
+#endif
+              //else
+          //      rasterizer->comp_op = ctx_GRAYAF_porter_duff_color_normal;
+//            rasterizer->fragment = NULL;
+            }
+            else
+            {
+              rasterizer->comp_op = ctx_GRAYAF_porter_duff_color_normal;
+//            rasterizer->fragment = NULL;
+            }
+            break;
+          default:
+            rasterizer->comp_op = ctx_GRAYAF_porter_duff_generic_normal;
+            break;
+        }
+        break;
+      default:
+        switch (gstate->source_fill.type)
+        {
+          case CTX_SOURCE_COLOR:
+            rasterizer->comp_op = ctx_GRAYAF_porter_duff_color;
+//          rasterizer->fragment = NULL;
+            break;
+          default:
+            rasterizer->comp_op = ctx_GRAYAF_porter_duff_generic;
+            break;
+        }
+        break;
+    }
+#endif
+}
+
+#endif
+#if CTX_ENABLE_GRAYF
+
+static void
+ctx_composite_GRAYF (CTX_COMPOSITE_ARGUMENTS)
+{
+  float *dstf = (float*)dst;
+
+  float temp[count*2];
+  for (int i = 0; i < count; i++)
+  {
+    temp[i*2] = dstf[i];
+    temp[i*2+1] = 1.0f;
+  }
+  rasterizer->comp_op (rasterizer, (uint8_t*)temp, rasterizer->color, x0, coverage, count);
+  for (int i = 0; i < count; i++)
+  {
+    dstf[i] = temp[i*2];
+  }
+}
+
+#endif
+#if CTX_ENABLE_BGRA8
+
+inline static void
+ctx_swap_red_green (uint8_t *rgba)
+{
+  uint32_t *buf  = (uint32_t *) rgba;
+  uint32_t  orig = *buf;
+  uint32_t  green_alpha = (orig & 0xff00ff00);
+  uint32_t  red_blue    = (orig & 0x00ff00ff);
+  uint32_t  red         = red_blue << 16;
+  uint32_t  blue        = red_blue >> 16;
+  *buf = green_alpha | red | blue;
+}
+
+static void
+ctx_BGRA8_to_RGBA8 (CtxRasterizer *rasterizer, int x, const void *buf, uint8_t *rgba, int count)
+{
+  uint32_t *srci = (uint32_t *) buf;
+  uint32_t *dsti = (uint32_t *) rgba;
+  while (count--)
+    {
+      uint32_t val = *srci++;
+      ctx_swap_red_green ( (uint8_t *) &val);
+      *dsti++      = val;
+    }
+}
+
+static void
+ctx_RGBA8_to_BGRA8 (CtxRasterizer *rasterizer, int x, const uint8_t *rgba, void *buf, int count)
+{
+  ctx_BGRA8_to_RGBA8 (rasterizer, x, rgba, (uint8_t *) buf, count);
+}
+
+static void
+ctx_composite_BGRA8 (CTX_COMPOSITE_ARGUMENTS)
+{
+  // for better performance, this could be done without a pre/post conversion,
+  // by swapping R and B of source instead... as long as it is a color instead
+  // of gradient or image
+  //
+  //
+  uint8_t pixels[count * 4];
+  ctx_BGRA8_to_RGBA8 (rasterizer, x0, dst, &pixels[0], count);
+  rasterizer->comp_op (rasterizer, &pixels[0], rasterizer->color, x0, coverage, count);
+  ctx_BGRA8_to_RGBA8  (rasterizer, x0, &pixels[0], dst, count);
+}
+
+
+#endif
+#if CTX_ENABLE_CMYKAF
+
+static void
+ctx_fragment_other_CMYKAF (CtxRasterizer *rasterizer, float x, float y, void *out, int count, float dx, float dy)
+{
+  float *cmyka = (float*)out;
+  float _rgba[4 * count];
+  float *rgba = &_rgba[0];
+  CtxGState *gstate = &rasterizer->state->gstate;
+  switch (gstate->source_fill.type)
+    {
+      case CTX_SOURCE_TEXTURE:
+        ctx_fragment_image_RGBAF (rasterizer, x, y, rgba, count, dx, dy);
+        break;
+      case CTX_SOURCE_COLOR:
+        ctx_fragment_color_RGBAF (rasterizer, x, y, rgba, count, dx, dy);
+        break;
+#if CTX_GRADIENTS
+      case CTX_SOURCE_LINEAR_GRADIENT:
+        ctx_fragment_linear_gradient_RGBAF (rasterizer, x, y, rgba, count, dx, dy);
+        break;
+      case CTX_SOURCE_RADIAL_GRADIENT:
+        ctx_fragment_radial_gradient_RGBAF (rasterizer, x, y, rgba, count, dx, dy);
+        break;
+#endif
+      default:
+        rgba[0]=rgba[1]=rgba[2]=rgba[3]=0.0f;
+        break;
+    }
+  for (int i = 0; i < count; i++)
+  {
+    cmyka[4]=rgba[3];
+    ctx_rgb_to_cmyk (rgba[0], rgba[1], rgba[2], &cmyka[0], &cmyka[1], &cmyka[2], &cmyka[3]);
+    cmyka += 5;
+    rgba += 4;
+  }
+}
+
+static void
+ctx_fragment_color_CMYKAF (CtxRasterizer *rasterizer, float x, float y, void *out, int count, float dx, float dy)
+{
+  CtxGState *gstate = &rasterizer->state->gstate;
+  float *cmyka = (float*)out;
+  float cmyka_in[5];
+  ctx_color_get_cmyka (rasterizer->state, &gstate->source_fill.color, cmyka_in);
+  for (int i = 0; i < count; i++)
+  {
+    for (int c = 0; c < 4; c ++)
+    {
+      cmyka[c] = (1.0f - cmyka_in[c]);
+    }
+    cmyka[4] = cmyka_in[4];
+    cmyka += 5;
+  }
+}
+
+static CtxFragment ctx_rasterizer_get_fragment_CMYKAF (CtxRasterizer *rasterizer)
+{
+  CtxGState *gstate = &rasterizer->state->gstate;
+  switch (gstate->source_fill.type)
+    {
+      case CTX_SOURCE_COLOR:
+        return ctx_fragment_color_CMYKAF;
+    }
+  return ctx_fragment_other_CMYKAF;
+}
+
+ctx_float_porter_duff (CMYKAF, 5,color,           rasterizer->fragment, rasterizer->state->gstate.blend_mode)
+ctx_float_porter_duff (CMYKAF, 5,generic,         rasterizer->fragment, rasterizer->state->gstate.blend_mode)
+
+#if CTX_INLINED_NORMAL
+ctx_float_porter_duff (CMYKAF, 5,color_normal,            rasterizer->fragment, CTX_BLEND_NORMAL)
+ctx_float_porter_duff (CMYKAF, 5,generic_normal,          rasterizer->fragment, CTX_BLEND_NORMAL)
+
+static void
+ctx_CMYKAF_copy_normal (CTX_COMPOSITE_ARGUMENTS)
+{
+  ctx_float_copy_normal (5, rasterizer, dst, src, x0, coverage, count);
+}
+
+static void
+ctx_CMYKAF_clear_normal (CTX_COMPOSITE_ARGUMENTS)
+{
+  ctx_float_clear_normal (5, rasterizer, dst, src, x0, coverage, count);
+}
+
+static void
+ctx_CMYKAF_source_copy_normal_color (CTX_COMPOSITE_ARGUMENTS)
+{
+  ctx_float_source_copy_normal_color (5, rasterizer, dst, rasterizer->color, x0, coverage, count);
+}
+#endif
+
+static void
+ctx_setup_CMYKAF (CtxRasterizer *rasterizer)
+{
+  CtxGState *gstate = &rasterizer->state->gstate;
+  int components = 5;
+  rasterizer->fragment = ctx_rasterizer_get_fragment_CMYKAF (rasterizer);
+  rasterizer->comp = CTX_COV_PATH_FALLBACK;
+  if (gstate->source_fill.type == CTX_SOURCE_COLOR)
+    {
+      rasterizer->comp_op = ctx_CMYKAF_porter_duff_color;
+      rasterizer->comp_op = ctx_CMYKAF_porter_duff_generic;
+ //     rasterizer->fragment = NULL;
+      ctx_color_get_cmyka (rasterizer->state, &gstate->source_fill.color, (float*)rasterizer->color);
+      if (gstate->global_alpha_u8 != 255)
+        ((float*)rasterizer->color)[components-1] *= gstate->global_alpha_f;
+    }
+  else
+  {
+    rasterizer->comp_op = ctx_CMYKAF_porter_duff_generic;
+  }
+
+#if CTX_INLINED_NORMAL
+  if (gstate->compositing_mode == CTX_COMPOSITE_CLEAR)
+    rasterizer->comp_op = ctx_CMYKAF_clear_normal;
+#if 1
+  else
+    switch (gstate->blend_mode)
+    {
+      case CTX_BLEND_NORMAL:
+        if (gstate->compositing_mode == CTX_COMPOSITE_COPY)
+        {
+          rasterizer->comp_op = ctx_CMYKAF_copy_normal;
+        }
+        else if (gstate->global_alpha_u8 == 0)
+          rasterizer->comp_op = ctx_RGBA8_nop;
+        else
+        switch (gstate->source_fill.type)
+        {
+          case CTX_SOURCE_COLOR:
+            if (gstate->compositing_mode == CTX_COMPOSITE_SOURCE_OVER)
+            {
+              if (((float*)rasterizer->color)[components-1] == 0.0f)
+                rasterizer->comp_op = ctx_RGBA8_nop;
+#if 1
+              else //if (((float*)rasterizer->color)[components-1] == 1.0f)
+                rasterizer->comp_op = ctx_CMYKAF_source_copy_normal_color;
+   //           else
+   //             rasterizer->comp_op = ctx_CMYKAF_porter_duff_color_normal;
+              rasterizer->fragment = NULL;
+#endif
+            }
+            else
+            {
+              rasterizer->comp_op = ctx_CMYKAF_porter_duff_color_normal;
+   //         rasterizer->fragment = NULL;
+            }
+            break;
+          default:
+            rasterizer->comp_op = ctx_CMYKAF_porter_duff_generic_normal;
+            break;
+        }
+        break;
+      default:
+        switch (gstate->source_fill.type)
+        {
+          case CTX_SOURCE_COLOR:
+            rasterizer->comp_op = ctx_CMYKAF_porter_duff_color;
+    //      rasterizer->fragment = NULL;
+            break;
+          default:
+            rasterizer->comp_op = ctx_CMYKAF_porter_duff_generic;
+            break;
+        }
+        break;
+    }
+#endif
+#endif
+}
+
+#endif
+#if CTX_ENABLE_CMYKA8
+
+static void
+ctx_CMYKA8_to_CMYKAF (CtxRasterizer *rasterizer, uint8_t *src, float *dst, int count)
+{
+  for (int i = 0; i < count; i ++)
+    {
+      for (int c = 0; c < 4; c ++)
+        { dst[c] = ctx_u8_to_float ( (255-src[c]) ); }
+      dst[4] = ctx_u8_to_float (src[4]);
+      for (int c = 0; c < 4; c++)
+        { dst[c] *= dst[4]; }
+      src += 5;
+      dst += 5;
+    }
+}
+static void
+ctx_CMYKAF_to_CMYKA8 (CtxRasterizer *rasterizer, float *src, uint8_t *dst, int count)
+{
+  for (int i = 0; i < count; i ++)
+    {
+      int a = ctx_float_to_u8 (src[4]);
+      if (a != 0 && a != 255)
+      {
+        float recip = 1.0f/src[4];
+        for (int c = 0; c < 4; c++)
+        {
+          dst[c] = ctx_float_to_u8 (1.0f - src[c] * recip);
+        }
+      }
+      else
+      {
+        for (int c = 0; c < 4; c++)
+          dst[c] = 255 - ctx_float_to_u8 (src[c]);
+      }
+      dst[4]=a;
+
+      src += 5;
+      dst += 5;
+    }
+}
+
+static void
+ctx_composite_CMYKA8 (CTX_COMPOSITE_ARGUMENTS)
+{
+  float pixels[count * 5];
+  ctx_CMYKA8_to_CMYKAF (rasterizer, dst, &pixels[0], count);
+  rasterizer->comp_op (rasterizer, (uint8_t *) &pixels[0], rasterizer->color, x0, coverage, count);
+  ctx_CMYKAF_to_CMYKA8 (rasterizer, &pixels[0], dst, count);
+}
+
+#endif
+#if CTX_ENABLE_CMYK8
+
+static void
+ctx_CMYK8_to_CMYKAF (CtxRasterizer *rasterizer, uint8_t *src, float *dst, int count)
+{
+  for (int i = 0; i < count; i ++)
+    {
+      dst[0] = ctx_u8_to_float (255-src[0]);
+      dst[1] = ctx_u8_to_float (255-src[1]);
+      dst[2] = ctx_u8_to_float (255-src[2]);
+      dst[3] = ctx_u8_to_float (255-src[3]);
+      dst[4] = 1.0f;
+      src += 4;
+      dst += 5;
+    }
+}
+static void
+ctx_CMYKAF_to_CMYK8 (CtxRasterizer *rasterizer, float *src, uint8_t *dst, int count)
+{
+  for (int i = 0; i < count; i ++)
+    {
+      float c = src[0];
+      float m = src[1];
+      float y = src[2];
+      float k = src[3];
+      float a = src[4];
+      if (a != 0.0f && a != 1.0f)
+        {
+          float recip = 1.0f/a;
+          c *= recip;
+          m *= recip;
+          y *= recip;
+          k *= recip;
+        }
+      c = 1.0 - c;
+      m = 1.0 - m;
+      y = 1.0 - y;
+      k = 1.0 - k;
+      dst[0] = ctx_float_to_u8 (c);
+      dst[1] = ctx_float_to_u8 (m);
+      dst[2] = ctx_float_to_u8 (y);
+      dst[3] = ctx_float_to_u8 (k);
+      src += 5;
+      dst += 4;
+    }
+}
+
+static void
+ctx_composite_CMYK8 (CTX_COMPOSITE_ARGUMENTS)
+{
+  float pixels[count * 5];
+  ctx_CMYK8_to_CMYKAF (rasterizer, dst, &pixels[0], count);
+  rasterizer->comp_op (rasterizer, (uint8_t *) &pixels[0], src, x0, coverage, count);
+  ctx_CMYKAF_to_CMYK8 (rasterizer, &pixels[0], dst, count);
+}
+#endif
+
+#if CTX_ENABLE_RGB8
+
+inline static void
+ctx_RGB8_to_RGBA8 (CtxRasterizer *rasterizer, int x, const void *buf, uint8_t *rgba, int count)
+{
+  const uint8_t *pixel = (const uint8_t *) buf;
+  while (count--)
+    {
+      rgba[0] = pixel[0];
+      rgba[1] = pixel[1];
+      rgba[2] = pixel[2];
+      rgba[3] = 255;
+      pixel+=3;
+      rgba +=4;
+    }
+}
+
+inline static void
+ctx_RGBA8_to_RGB8 (CtxRasterizer *rasterizer, int x, const uint8_t *rgba, void *buf, int count)
+{
+  uint8_t *pixel = (uint8_t *) buf;
+  while (count--)
+    {
+      pixel[0] = rgba[0];
+      pixel[1] = rgba[1];
+      pixel[2] = rgba[2];
+      pixel+=3;
+      rgba +=4;
+    }
+}
+
+#endif
+#if CTX_ENABLE_GRAY1
+
+#if CTX_NATIVE_GRAYA8
+inline static void
+ctx_GRAY1_to_GRAYA8 (CtxRasterizer *rasterizer, int x, const void *buf, uint8_t *rgba, int count)
+{
+  const uint8_t *pixel = (uint8_t *) buf;
+  while (count--)
+    {
+      rgba[0] = 255 * (*pixel & (1<< (x&7) ) );
+      rgba[1] = 255;
+      pixel+= ( (x&7) ==7);
+      x++;
+      rgba +=2;
+    }
+}
+
+inline static void
+ctx_GRAYA8_to_GRAY1 (CtxRasterizer *rasterizer, int x, const uint8_t *rgba, void *buf, int count)
+{
+  uint8_t *pixel = (uint8_t *) buf;
+  *pixel = 0;
+  while (count--)
+    {
+      int gray = rgba[0];
+      //gray += ctx_dither_mask_a (x, rasterizer->scanline/aa, 0, 127);
+      if (gray >= 127)
+        {
+          *pixel = *pixel | ((1<< (x&7) ) * (gray >= 127));
+        }
+#if 0
+      else
+      {
+          *pixel = *pixel & (~ (1<< (x&7) ) );
+      }
+#endif
+      if ( (x&7) ==7)
+        { pixel+=1;
+          if(count>0)*pixel = 0;
+        }
+      x++;
+      rgba +=2;
+    }
+}
+
+#else
+
+inline static void
+ctx_GRAY1_to_RGBA8 (CtxRasterizer *rasterizer, int x, const void *buf, uint8_t *rgba, int count)
+{
+  const uint8_t *pixel = (uint8_t *) buf;
+  while (count--)
+    {
+      *((uint32_t*)(rgba))=0xff000000 + 0x00ffffff * ((*pixel & (1<< (x&7) ) )!=0);
+      pixel+= ( (x&7) ==7);
+      x++;
+      rgba +=4;
+    }
+}
+
+inline static void
+ctx_RGBA8_to_GRAY1 (CtxRasterizer *rasterizer, int x, const uint8_t *rgba, void *buf, int count)
+{
+  uint8_t *pixel = (uint8_t *) buf;
+  *pixel = 0;
+  while (count--)
+    {
+      int gray = ctx_u8_color_rgb_to_gray (rasterizer->state, rgba);
+      //gray += ctx_dither_mask_a (x, rasterizer->scanline/aa, 0, 127);
+      if (gray <= 127)
+        {
+          //*pixel = *pixel & (~ (1<< (x&7) ) );
+        }
+      else
+        {
+          *pixel = *pixel | (1<< (x&7) );
+        }
+      if ( (x&7) ==7)
+        { pixel+=1;
+          if(count>0)*pixel = 0;
+        }
+      x++;
+      rgba +=4;
+    }
+}
+#endif
+
+#endif
+#if CTX_ENABLE_GRAY2
+
+#if CTX_NATIVE_GRAYA8
+inline static void
+ctx_GRAY2_to_GRAYA8 (CtxRasterizer *rasterizer, int x, const void *buf, uint8_t *rgba, int count)
+{
+  const uint8_t *pixel = (uint8_t *) buf;
+  while (count--)
+    {
+      int val = (*pixel & (3 << ( (x & 3) <<1) ) ) >> ( (x&3) <<1);
+      val <<= 6;
+      rgba[0] = val;
+      rgba[1] = 255;
+      if ( (x&3) ==3)
+        { pixel+=1; }
+      x++;
+      rgba +=2;
+    }
+}
+
+inline static void
+ctx_GRAYA8_to_GRAY2 (CtxRasterizer *rasterizer, int x, const uint8_t *rgba, void *buf, int count)
+{
+  uint8_t *pixel = (uint8_t *) buf;
+  while (count--)
+    {
+      int val = rgba[0];
+      val >>= 6;
+      *pixel = *pixel & (~ (3 << ( (x&3) <<1) ) );
+      *pixel = *pixel | ( (val << ( (x&3) <<1) ) );
+      if ( (x&3) ==3)
+        { pixel+=1; }
+      x++;
+      rgba +=2;
+    }
+}
+#else
+
+inline static void
+ctx_GRAY2_to_RGBA8 (CtxRasterizer *rasterizer, int x, const void *buf, uint8_t *rgba, int count)
+{
+  const uint8_t *pixel = (uint8_t *) buf;
+  while (count--)
+    {
+      int val = (*pixel & (3 << ( (x & 3) <<1) ) ) >> ( (x&3) <<1);
+      val <<= 6;
+      rgba[0] = val;
+      rgba[1] = val;
+      rgba[2] = val;
+      rgba[3] = 255;
+      if ( (x&3) ==3)
+        { pixel+=1; }
+      x++;
+      rgba +=4;
+    }
+}
+
+inline static void
+ctx_RGBA8_to_GRAY2 (CtxRasterizer *rasterizer, int x, const uint8_t *rgba, void *buf, int count)
+{
+  uint8_t *pixel = (uint8_t *) buf;
+  while (count--)
+    {
+      int val = ctx_u8_color_rgb_to_gray (rasterizer->state, rgba);
+      val >>= 6;
+      *pixel = *pixel & (~ (3 << ( (x&3) <<1) ) );
+      *pixel = *pixel | ( (val << ( (x&3) <<1) ) );
+      if ( (x&3) ==3)
+        { pixel+=1; }
+      x++;
+      rgba +=4;
+    }
+}
+#endif
+
+#endif
+#if CTX_ENABLE_GRAY4
+
+#if CTX_NATIVE_GRAYA8
+inline static void
+ctx_GRAY4_to_GRAYA8 (CtxRasterizer *rasterizer, int x, const void *buf, uint8_t *rgba, int count)
+{
+  const uint8_t *pixel = (uint8_t *) buf;
+  while (count--)
+    {
+      int val = (*pixel & (15 << ( (x & 1) <<2) ) ) >> ( (x&1) <<2);
+      val <<= 4;
+      rgba[0] = val;
+      rgba[1] = 255;
+      if ( (x&1) ==1)
+        { pixel+=1; }
+      x++;
+      rgba +=2;
+    }
+}
+
+inline static void
+ctx_GRAYA8_to_GRAY4 (CtxRasterizer *rasterizer, int x, const uint8_t *rgba, void *buf, int count)
+{
+  uint8_t *pixel = (uint8_t *) buf;
+  while (count--)
+    {
+      int val = rgba[0];
+      val >>= 4;
+      *pixel = *pixel & (~ (15 << ( (x&1) <<2) ) );
+      *pixel = *pixel | ( (val << ( (x&1) <<2) ) );
+      if ( (x&1) ==1)
+        { pixel+=1; }
+      x++;
+      rgba +=2;
+    }
+}
+#else
+inline static void
+ctx_GRAY4_to_RGBA8 (CtxRasterizer *rasterizer, int x, const void *buf, uint8_t *rgba, int count)
+{
+  const uint8_t *pixel = (uint8_t *) buf;
+  while (count--)
+    {
+      int val = (*pixel & (15 << ( (x & 1) <<2) ) ) >> ( (x&1) <<2);
+      val <<= 4;
+      rgba[0] = val;
+      rgba[1] = val;
+      rgba[2] = val;
+      rgba[3] = 255;
+      if ( (x&1) ==1)
+        { pixel+=1; }
+      x++;
+      rgba +=4;
+    }
+}
+
+inline static void
+ctx_RGBA8_to_GRAY4 (CtxRasterizer *rasterizer, int x, const uint8_t *rgba, void *buf, int count)
+{
+  uint8_t *pixel = (uint8_t *) buf;
+  while (count--)
+    {
+      int val = ctx_u8_color_rgb_to_gray (rasterizer->state, rgba);
+      val >>= 4;
+      *pixel = *pixel & (~ (15 << ( (x&1) <<2) ) );
+      *pixel = *pixel | ( (val << ( (x&1) <<2) ) );
+      if ( (x&1) ==1)
+        { pixel+=1; }
+      x++;
+      rgba +=4;
+    }
+}
+#endif
+
+#endif
+#if CTX_ENABLE_GRAY8
+
+#if CTX_NATIVE_GRAYA8
+inline static void
+ctx_GRAY8_to_GRAYA8 (CtxRasterizer *rasterizer, int x, const void *buf, uint8_t *rgba, int count)
+{
+  const uint8_t *pixel = (uint8_t *) buf;
+  while (count--)
+    {
+      rgba[0] = pixel[0];
+      rgba[1] = 255;
+      pixel+=1;
+      rgba +=2;
+    }
+}
+
+inline static void
+ctx_GRAYA8_to_GRAY8 (CtxRasterizer *rasterizer, int x, const uint8_t *rgba, void *buf, int count)
+{
+  uint8_t *pixel = (uint8_t *) buf;
+  while (count--)
+    {
+      pixel[0] = rgba[0];
+      pixel+=1;
+      rgba +=2;
+    }
+}
+#else
+inline static void
+ctx_GRAY8_to_RGBA8 (CtxRasterizer *rasterizer, int x, const void *buf, uint8_t *rgba, int count)
+{
+  const uint8_t *pixel = (uint8_t *) buf;
+  while (count--)
+    {
+      rgba[0] = pixel[0];
+      rgba[1] = pixel[0];
+      rgba[2] = pixel[0];
+      rgba[3] = 255;
+      pixel+=1;
+      rgba +=4;
+    }
+}
+
+inline static void
+ctx_RGBA8_to_GRAY8 (CtxRasterizer *rasterizer, int x, const uint8_t *rgba, void *buf, int count)
+{
+  uint8_t *pixel = (uint8_t *) buf;
+  for (int i = 0; i < count; i ++)
+    {
+      pixel[i] = ctx_u8_color_rgb_to_gray (rasterizer->state, rgba + i * 4);
+    }
+}
+#endif
+
+#endif
+#if CTX_ENABLE_GRAYA8
+
+inline static void
+ctx_GRAYA8_to_RGBA8 (CtxRasterizer *rasterizer, int x, const void *buf, uint8_t *rgba, int count)
+{
+  const uint8_t *pixel = (const uint8_t *) buf;
+  while (count--)
+    {
+      rgba[0] = pixel[0];
+      rgba[1] = pixel[0];
+      rgba[2] = pixel[0];
+      rgba[3] = pixel[1];
+      pixel+=2;
+      rgba +=4;
+    }
+}
+
+inline static void
+ctx_RGBA8_to_GRAYA8 (CtxRasterizer *rasterizer, int x, const uint8_t *rgba, void *buf, int count)
+{
+  uint8_t *pixel = (uint8_t *) buf;
+  while (count--)
+    {
+      pixel[0] = ctx_u8_color_rgb_to_gray (rasterizer->state, rgba);
+      pixel[1] = rgba[3];
+      pixel+=2;
+      rgba +=4;
+    }
+}
+
+#if CTX_NATIVE_GRAYA8
+CTX_INLINE static void ctx_rgba_to_graya_u8 (CtxState *state, uint8_t *in, uint8_t *out)
+{
+  out[0] = ctx_u8_color_rgb_to_gray (state, in);
+  out[1] = in[3];
+}
+
+#if CTX_GRADIENTS
+static void
+ctx_fragment_linear_gradient_GRAYA8 (CtxRasterizer *rasterizer, float x, float y, void *out, int count, float dx, float dy)
+{
+  CtxSource *g = &rasterizer->state->gstate.source_fill;
+        uint8_t *dst = (uint8_t*)out;
+  for (int i = 0; i < count;i ++)
+  {
+  float v = ( ( (g->linear_gradient.dx * x + g->linear_gradient.dy * y) /
+                g->linear_gradient.length) -
+              g->linear_gradient.start) * (g->linear_gradient.rdelta);
+  {
+    uint8_t rgba[4];
+    ctx_fragment_gradient_1d_RGBA8 (rasterizer, v, 1.0, rgba);
+    ctx_rgba_to_graya_u8 (rasterizer->state, rgba, dst);
+   
+  }
+
+
+#if CTX_DITHER
+  ctx_dither_graya_u8 ((uint8_t*)dst, x, y, rasterizer->format->dither_red_blue,
+                      rasterizer->format->dither_green);
+#endif
+  dst += 2;
+  x += dx;
+  y += dy;
+  }
+}
+
+#if 0
+static void
+ctx_fragment_radial_gradient_RGBA8 (CtxRasterizer *rasterizer, float x, float y, void *out)
+{
+  uint8_t *rgba = (uint8_t *) out;
+  CtxSource *g = &rasterizer->state->gstate.source_fill;
+  float v = (ctx_hypotf (g->radial_gradient.x0 - x, g->radial_gradient.y0 - y) -
+              g->radial_gradient.r0) * (g->radial_gradient.rdelta);
+  ctx_fragment_gradient_1d_RGBA8 (rasterizer, v, 0.0, rgba);
+#if CTX_DITHER
+  ctx_dither_rgba_u8 (rgba, x, y, rasterizer->format->dither_red_blue,
+                      rasterizer->format->dither_green);
+#endif
+}
+#endif
+
+
+static void
+ctx_fragment_radial_gradient_GRAYA8 (CtxRasterizer *rasterizer, float x, float y, void *out, int count, float dx, float dy)
+{
+        uint8_t *dst = (uint8_t*)out;
+  for (int i = 0; i < count;i ++)
+  {
+  CtxSource *g = &rasterizer->state->gstate.source_fill;
+  float v = (ctx_hypotf (g->radial_gradient.x0 - x, g->radial_gradient.y0 - y) -
+              g->radial_gradient.r0) * (g->radial_gradient.rdelta);
+  {
+    uint8_t rgba[4];
+    ctx_fragment_gradient_1d_RGBA8 (rasterizer, v, 1.0, rgba);
+    ctx_rgba_to_graya_u8 (rasterizer->state, rgba, dst);
+  }
+#if CTX_DITHER
+  ctx_dither_graya_u8 ((uint8_t*)dst, x, y, rasterizer->format->dither_red_blue,
+                      rasterizer->format->dither_green);
+#endif
+  dst += 2;
+  x += dx;
+  y += dy;
+  }
+}
+#endif
+
+static void
+ctx_fragment_color_GRAYA8 (CtxRasterizer *rasterizer, float x, float y, void *out, int count, float dx, float dy)
+{
+  CtxSource *g = &rasterizer->state->gstate.source_fill;
+  uint16_t *dst = (uint16_t*)out;
+  uint16_t pix;
+  ctx_color_get_graya_u8 (rasterizer->state, &g->color, (void*)&pix);
+  for (int i = 0; i <count; i++)
+  {
+    dst[i]=pix;
+  }
+}
+
+static void ctx_fragment_image_GRAYA8 (CtxRasterizer *rasterizer, float x, float y, void *out, int count, float dx, float dy)
+{
+  uint8_t rgba[4*count];
+  CtxGState *gstate = &rasterizer->state->gstate;
+  CtxBuffer *buffer = gstate->source_fill.texture.buffer;
+  switch (buffer->format->bpp)
+    {
+      case 1:  ctx_fragment_image_gray1_RGBA8 (rasterizer, x, y, rgba, count, dx, dy); break;
+      case 24: ctx_fragment_image_rgb8_RGBA8 (rasterizer, x, y, rgba, count, dx, dy);  break;
+      case 32: ctx_fragment_image_rgba8_RGBA8 (rasterizer, x, y, rgba, count, dx, dy); break;
+      default: ctx_fragment_image_RGBA8 (rasterizer, x, y, rgba, count, dx, dy);       break;
+    }
+  for (int i = 0; i < count; i++)
+    ctx_rgba_to_graya_u8 (rasterizer->state, &rgba[i*4], &((uint8_t*)out)[i*2]);
+}
+
+static CtxFragment ctx_rasterizer_get_fragment_GRAYA8 (CtxRasterizer *rasterizer)
+{
+  CtxGState *gstate = &rasterizer->state->gstate;
+  switch (gstate->source_fill.type)
+    {
+      case CTX_SOURCE_TEXTURE:           return ctx_fragment_image_GRAYA8;
+      case CTX_SOURCE_COLOR:           return ctx_fragment_color_GRAYA8;
+#if CTX_GRADIENTS
+      case CTX_SOURCE_LINEAR_GRADIENT: return ctx_fragment_linear_gradient_GRAYA8;
+      case CTX_SOURCE_RADIAL_GRADIENT: return ctx_fragment_radial_gradient_GRAYA8;
+#endif
+    }
+  return ctx_fragment_color_GRAYA8;
+}
+
+//ctx_u8_porter_duff(GRAYA8, 2,color,   rasterizer->fragment, rasterizer->state->gstate.blend_mode)
+ctx_u8_porter_duff(GRAYA8, 2,generic, rasterizer->fragment, rasterizer->state->gstate.blend_mode)
+
+#if CTX_INLINED_NORMAL
+//ctx_u8_porter_duff(GRAYA8, 2,color_normal,   rasterizer->fragment, CTX_BLEND_NORMAL)
+ctx_u8_porter_duff(GRAYA8, 2,generic_normal, rasterizer->fragment, CTX_BLEND_NORMAL)
+
+static void
+ctx_GRAYA8_copy_normal (CTX_COMPOSITE_ARGUMENTS)
+{
+  ctx_u8_copy_normal (2, rasterizer, dst, src, x0, coverage, count);
+}
+
+static void
+ctx_GRAYA8_clear_normal (CTX_COMPOSITE_ARGUMENTS)
+{
+  ctx_u8_clear_normal (2, rasterizer, dst, src, x0, coverage, count);
+}
+
+static void
+ctx_GRAYA8_source_over_normal_color (CTX_COMPOSITE_ARGUMENTS)
+{
+  ctx_u8_source_over_normal_color (2, rasterizer, dst, rasterizer->color, x0, coverage, count);
+}
+
+static void
+ctx_GRAYA8_source_copy_normal_color (CTX_COMPOSITE_ARGUMENTS)
+{
+  ctx_u8_source_copy_normal_color (2, rasterizer, dst, rasterizer->color, x0, coverage, count);
+}
+#endif
+
+inline static int
+ctx_is_opaque_color (CtxRasterizer *rasterizer)
+{
+  CtxGState *gstate = &rasterizer->state->gstate;
+  if (gstate->global_alpha_u8 != 255)
+    return 0;
+  if (gstate->source_fill.type == CTX_SOURCE_COLOR)
+  {
+    uint8_t ga[2];
+    ctx_color_get_graya_u8 (rasterizer->state, &gstate->source_fill.color, ga);
+    return ga[1] == 255;
+  }
+  return 0;
+}
+
+static void
+ctx_setup_GRAYA8 (CtxRasterizer *rasterizer)
+{
+  CtxGState *gstate = &rasterizer->state->gstate;
+  int components = 2;
+  rasterizer->fragment = ctx_rasterizer_get_fragment_GRAYA8 (rasterizer);
+  rasterizer->comp_op  = ctx_GRAYA8_porter_duff_generic;
+  rasterizer->comp = CTX_COV_PATH_FALLBACK;
+  if (gstate->source_fill.type == CTX_SOURCE_COLOR)
+    {
+      ctx_fragment_color_GRAYA8 (rasterizer, 0,0, rasterizer->color, 1, 0,0);
+      if (gstate->global_alpha_u8 != 255)
+        for (int c = 0; c < components; c ++)
+          rasterizer->color[c] = (rasterizer->color[c] * gstate->global_alpha_u8)/255;
+    }
+
+#if CTX_INLINED_NORMAL
+  if (gstate->compositing_mode == CTX_COMPOSITE_CLEAR)
+    rasterizer->comp_op = ctx_GRAYA8_clear_normal;
+  else
+    switch (gstate->blend_mode)
+    {
+      case CTX_BLEND_NORMAL:
+        if (gstate->compositing_mode == CTX_COMPOSITE_COPY)
+        {
+          rasterizer->comp_op = ctx_GRAYA8_copy_normal;
+        }
+        else if (gstate->global_alpha_u8 == 0)
+          rasterizer->comp_op = ctx_RGBA8_nop;
+        else
+        switch (gstate->source_fill.type)
+        {
+          case CTX_SOURCE_COLOR:
+            if (gstate->compositing_mode == CTX_COMPOSITE_SOURCE_OVER)
+            {
+              if (rasterizer->color[components-1] == 0)
+                rasterizer->comp_op = ctx_RGBA8_nop;
+              else if (rasterizer->color[components-1] == 255)
+                rasterizer->comp_op = ctx_GRAYA8_source_copy_normal_color;
+              else
+                rasterizer->comp_op = ctx_GRAYA8_source_over_normal_color;
+            }
+            else
+            {
+              rasterizer->comp_op = ctx_GRAYA8_porter_duff_generic_normal;
+            }
+            break;
+          default:
+            rasterizer->comp_op = ctx_GRAYA8_porter_duff_generic_normal;
+            break;
+        }
+        break;
+      default:
+        rasterizer->comp_op = ctx_GRAYA8_porter_duff_generic;
+        break;
+    }
+#endif
+}
+#endif
+
+#endif
+#if CTX_ENABLE_RGB332
+
+inline static void
+ctx_332_unpack (uint8_t pixel,
+                uint8_t *red,
+                uint8_t *green,
+                uint8_t *blue)
+{
+  *blue   = (pixel & 3) <<6;
+  *green = ( (pixel >> 2) & 7) <<5;
+  *red   = ( (pixel >> 5) & 7) <<5;
+  if (*blue > 223)  { *blue  = 255; }
+  if (*green > 223) { *green = 255; }
+  if (*red > 223)   { *red   = 255; }
+}
+
+static inline uint8_t
+ctx_332_pack (uint8_t red,
+              uint8_t green,
+              uint8_t blue)
+{
+  uint8_t c  = (red >> 5) << 5;
+  c |= (green >> 5) << 2;
+  c |= (blue >> 6);
+  return c;
+}
+
+static inline void
+ctx_RGB332_to_RGBA8 (CtxRasterizer *rasterizer, int x, const void *buf, uint8_t *rgba, int count)
+{
+  const uint8_t *pixel = (uint8_t *) buf;
+  while (count--)
+    {
+      ctx_332_unpack (*pixel, &rgba[0], &rgba[1], &rgba[2]);
+#if CTX_RGB332_ALPHA
+      if (rgba[0]==255 && rgba[2] == 255 && rgba[1]==0)
+        { rgba[3] = 0; }
+      else
+#endif
+        { rgba[3] = 255; }
+      pixel+=1;
+      rgba +=4;
+    }
+}
+
+static inline void
+ctx_RGBA8_to_RGB332 (CtxRasterizer *rasterizer, int x, const uint8_t *rgba, void *buf, int count)
+{
+  uint8_t *pixel = (uint8_t *) buf;
+  while (count--)
+    {
+#if CTX_RGB332_ALPHA
+      if (rgba[3]==0)
+        { pixel[0] = ctx_332_pack (255, 0, 255); }
+      else
+#endif
+        { pixel[0] = ctx_332_pack (rgba[0], rgba[1], rgba[2]); }
+      pixel+=1;
+      rgba +=4;
+    }
+}
+
+#endif
+#if CTX_ENABLE_RGB565 | CTX_ENABLE_RGB565_BYTESWAPPED
+
+static inline void
+ctx_565_unpack (const uint16_t pixel,
+                uint8_t *red,
+                uint8_t *green,
+                uint8_t *blue,
+                const int byteswap)
+{
+  uint16_t byteswapped;
+  if (byteswap)
+    { byteswapped = (pixel>>8) | (pixel<<8); }
+  else
+    { byteswapped  = pixel; }
+  *blue   =  (byteswapped & 31) <<3;
+  *green = ( (byteswapped>>5) & 63) <<2;
+  *red   = ( (byteswapped>>11) & 31) <<3;
+#if 0
+  if (*blue > 248) { *blue = 255; }
+  if (*green > 248) { *green = 255; }
+  if (*red > 248) { *red = 255; }
+#endif
+}
+
+static inline uint32_t
+ctx_565_unpack_32 (const uint16_t pixel,
+                   const int byteswap)
+{
+  uint16_t byteswapped;
+  if (byteswap)
+    { byteswapped = (pixel>>8) | (pixel<<8); }
+  else
+    { byteswapped  = pixel; }
+  uint8_t blue   = (byteswapped & 31) <<3;
+  uint8_t green = ( (byteswapped>>5) & 63) <<2;
+  uint8_t red   = ( (byteswapped>>11) & 31) <<3;
+#if 0
+  if (*blue > 248) { *blue = 255; }
+  if (*green > 248) { *green = 255; }
+  if (*red > 248) { *red = 255; }
+#endif
+  return red +  (green << 8) + (blue << 16) + (0xff << 24);
+}
+
+static inline uint16_t
+ctx_565_pack (const uint8_t  red,
+              const uint8_t  green,
+              const uint8_t  blue,
+              const int      byteswap)
+{
+  uint32_t c = (red >> 3) << 11;
+  c |= (green >> 2) << 5;
+  c |= blue >> 3;
+  if (byteswap)
+    { return (c>>8) | (c<<8); } /* swap bytes */
+  return c;
+}
+
+static inline uint16_t
+ctx_888_to_565 (uint32_t in, int byteswap)
+{
+  uint8_t *rgb=(uint8_t*)(&in);
+  return ctx_565_pack (rgb[0],rgb[1],rgb[2], byteswap);
+}
+
+static inline uint32_t
+ctx_565_to_888 (uint16_t in, int byteswap)
+{
+  uint32_t ret = 0;
+  uint8_t *rgba=(uint8_t*)&ret;
+  ctx_565_unpack (in,
+                  &rgba[0],
+                  &rgba[1],
+                  &rgba[2],
+                  byteswap);
+  return ret;
+}
+
+#endif
+#if CTX_ENABLE_RGB565
+
+
+static inline void
+ctx_RGB565_to_RGBA8 (CtxRasterizer *rasterizer, int x, const void *buf, uint8_t *rgba, int count)
+{
+  const uint16_t *pixel = (uint16_t *) buf;
+  while (count--)
+    {
+      ((uint32_t*)(rgba))[0] = ctx_565_unpack_32 (*pixel, 0);
+#if CTX_RGB565_ALPHA
+      if (rgba[0]==255 && rgba[2] == 255 && rgba[1]==0)
+        { rgba[3] = 0; }
+#endif
+      pixel+=1;
+      rgba +=4;
+    }
+}
+
+static inline void
+ctx_RGBA8_to_RGB565 (CtxRasterizer *rasterizer, int x, const uint8_t *rgba, void *buf, int count)
+{
+  uint16_t *pixel = (uint16_t *) buf;
+  while (count--)
+    {
+#if CTX_RGB565_ALPHA
+      if (rgba[3]==0)
+        { pixel[0] = ctx_565_pack (255, 0, 255, 0); }
+      else
+#endif
+        { pixel[0] = ctx_565_pack (rgba[0], rgba[1], rgba[2], 0); }
+      pixel+=1;
+      rgba +=4;
+    }
+}
+
+static void
+ctx_RGBA8_source_over_normal_color (CTX_COMPOSITE_ARGUMENTS);
+static void
+ctx_RGBA8_source_copy_normal_color (CTX_COMPOSITE_ARGUMENTS);
+
+static void
+ctx_composite_RGB565 (CTX_COMPOSITE_ARGUMENTS)
+{
+#if 0
+  if (CTX_LIKELY(rasterizer->comp_op == ctx_RGBA8_source_over_normal_color))
+  {
+     int byteswap = 0;
+     uint32_t si    = *((uint32_t*)(src));
+     uint16_t si_16 = ctx_888_to_565 (si, byteswap);
+     uint32_t sval  = (si_16 & ( (31 << 11 ) | 31));
+     uint32_t sg = (si_16 & (63 << 5)) >> 5;
+     uint32_t si_a = si >> (24 + 3);
+     while (count--)
+     {
+        uint32_t di_16 = *((uint16_t*)(dst));
+        uint32_t cov = (*coverage) >> 3;
+        uint32_t racov = (32-((31+si_a*cov)>>5));
+        uint32_t dval = (di_16 & ( (31 << 11 ) | 31));
+        uint32_t dg = (di_16 >> 5) & 63; // faster outside than
+                                         // remerged as part of dval
+        *((uint16_t*)(dst)) =
+                ((               
+                  (((sval * cov) + (dval * racov)) >> 5)
+                 ) & ((31 << 11 )|31)) |
+                  ((((sg * cov) + (dg * racov)) & 63) );
+
+     }
+     return;
+  }
+#endif
+  uint8_t pixels[count * 4];
+  ctx_RGB565_to_RGBA8 (rasterizer, x0, dst, &pixels[0], count);
+  rasterizer->comp_op (rasterizer, &pixels[0], rasterizer->color, x0, coverage, count);
+  ctx_RGBA8_to_RGB565 (rasterizer, x0, &pixels[0], dst, count);
+}
+#endif
+#if CTX_ENABLE_RGB565_BYTESWAPPED
+
+static inline void
+ctx_RGB565_BS_to_RGBA8 (CtxRasterizer *rasterizer, int x, const void *buf, uint8_t *rgba, int count)
+{
+  const uint16_t *pixel = (uint16_t *) buf;
+  while (count--)
+    {
+      //ctx_565_unpack (*pixel, &rgba[0], &rgba[1], &rgba[2], 1);
+      ((uint32_t*)(rgba))[0] = ctx_565_unpack_32 (*pixel, 1);
+#if CTX_RGB565_ALPHA
+      if (rgba[0]==255 && rgba[2] == 255 && rgba[1]==0)
+        { rgba[3] = 0; }
+      else
+        { rgba[3] = 255; }
+#endif
+      pixel+=1;
+      rgba +=4;
+    }
+}
+
+static inline void
+ctx_RGBA8_to_RGB565_BS (CtxRasterizer *rasterizer, int x, const uint8_t *rgba, void *buf, int count)
+{
+  uint16_t *pixel = (uint16_t *) buf;
+  while (count--)
+    {
+#if CTX_RGB565_ALPHA
+      if (rgba[3]==0)
+        { pixel[0] = ctx_565_pack (255, 0, 255, 1); }
+      else
+#endif
+        { pixel[0] = ctx_565_pack (rgba[0], rgba[1], rgba[2], 1); }
+      pixel+=1;
+      rgba +=4;
+    }
+}
+
+static void
+ctx_composite_RGB565_BS (CTX_COMPOSITE_ARGUMENTS)
+{
+  uint8_t pixels[count * 4];
+  ctx_RGB565_BS_to_RGBA8 (rasterizer, x0, dst, &pixels[0], count);
+  rasterizer->comp_op (rasterizer, &pixels[0], rasterizer->color, x0, coverage, count);
+  ctx_RGBA8_to_RGB565_BS (rasterizer, x0, &pixels[0], dst, count);
+}
+#endif
+
+static CtxPixelFormatInfo ctx_pixel_formats[]=
+{
+#if CTX_ENABLE_RGBA8
+  {
+    CTX_FORMAT_RGBA8, 4, 32, 4, 0, 0, CTX_FORMAT_RGBA8,
+    NULL, NULL, NULL, ctx_setup_RGBA8
+  },
+#endif
+#if CTX_ENABLE_BGRA8
+  {
+    CTX_FORMAT_BGRA8, 4, 32, 4, 0, 0, CTX_FORMAT_RGBA8,
+    ctx_BGRA8_to_RGBA8, ctx_RGBA8_to_BGRA8, ctx_composite_BGRA8, ctx_setup_RGBA8,
+  },
+#endif
+#if CTX_ENABLE_GRAYF
+  {
+    CTX_FORMAT_GRAYF, 1, 32, 4 * 2, 0, 0, CTX_FORMAT_GRAYAF,
+    NULL, NULL, ctx_composite_GRAYF, ctx_setup_GRAYAF,
+  },
+#endif
+#if CTX_ENABLE_GRAYAF
+  {
+    CTX_FORMAT_GRAYAF, 2, 64, 4 * 2, 0, 0, CTX_FORMAT_GRAYAF,
+    NULL, NULL, NULL, ctx_setup_GRAYAF,
+  },
+#endif
+#if CTX_ENABLE_RGBAF
+  {
+    CTX_FORMAT_RGBAF, 4, 128, 4 * 4, 0, 0, CTX_FORMAT_RGBAF,
+    NULL, NULL, NULL, ctx_setup_RGBAF,
+  },
+#endif
+#if CTX_ENABLE_RGB8
+  {
+    CTX_FORMAT_RGB8, 3, 24, 4, 0, 0, CTX_FORMAT_RGBA8,
+    ctx_RGB8_to_RGBA8, ctx_RGBA8_to_RGB8, ctx_composite_convert, ctx_setup_RGBA8,
+  },
+#endif
+#if CTX_ENABLE_GRAY1
+  {
+#if CTX_NATIVE_GRAYA8
+    CTX_FORMAT_GRAY1, 1, 1, 2, 1, 1, CTX_FORMAT_GRAYA8,
+    ctx_GRAY1_to_GRAYA8, ctx_GRAYA8_to_GRAY1, ctx_composite_convert, ctx_setup_GRAYA8,
+#else
+    CTX_FORMAT_GRAY1, 1, 1, 4, 1, 1, CTX_FORMAT_RGBA8,
+    ctx_GRAY1_to_RGBA8, ctx_RGBA8_to_GRAY1, ctx_composite_convert, ctx_setup_RGBA8,
+#endif
+  },
+#endif
+#if CTX_ENABLE_GRAY2
+  {
+#if CTX_NATIVE_GRAYA8
+    CTX_FORMAT_GRAY2, 1, 2, 2, 4, 4, CTX_FORMAT_GRAYA8,
+    ctx_GRAY2_to_GRAYA8, ctx_GRAYA8_to_GRAY2, ctx_composite_convert, ctx_setup_GRAYA8,
+#else
+    CTX_FORMAT_GRAY2, 1, 2, 4, 4, 4, CTX_FORMAT_RGBA8,
+    ctx_GRAY2_to_RGBA8, ctx_RGBA8_to_GRAY2, ctx_composite_convert, ctx_setup_RGBA8,
+#endif
+  },
+#endif
+#if CTX_ENABLE_GRAY4
+  {
+#if CTX_NATIVE_GRAYA8
+    CTX_FORMAT_GRAY4, 1, 4, 2, 16, 16, CTX_FORMAT_GRAYA8,
+    ctx_GRAY4_to_GRAYA8, ctx_GRAYA8_to_GRAY4, ctx_composite_convert, ctx_setup_GRAYA8,
+#else
+    CTX_FORMAT_GRAY4, 1, 4, 4, 16, 16, CTX_FORMAT_GRAYA8,
+    ctx_GRAY4_to_RGBA8, ctx_RGBA8_to_GRAY4, ctx_composite_convert, ctx_setup_RGBA8,
+#endif
+  },
+#endif
+#if CTX_ENABLE_GRAY8
+  {
+#if CTX_NATIVE_GRAYA8
+    CTX_FORMAT_GRAY8, 1, 8, 2, 0, 0, CTX_FORMAT_GRAYA8,
+    ctx_GRAY8_to_GRAYA8, ctx_GRAYA8_to_GRAY8, ctx_composite_convert, ctx_setup_GRAYA8,
+#else
+    CTX_FORMAT_GRAY8, 1, 8, 4, 0, 0, CTX_FORMAT_RGBA8,
+    ctx_GRAY8_to_RGBA8, ctx_RGBA8_to_GRAY8, ctx_composite_convert, ctx_setup_RGBA8,
+#endif
+  },
+#endif
+#if CTX_ENABLE_GRAYA8
+  {
+#if CTX_NATIVE_GRAYA8
+    CTX_FORMAT_GRAYA8, 2, 16, 2, 0, 0, CTX_FORMAT_GRAYA8,
+    ctx_GRAYA8_to_RGBA8, ctx_RGBA8_to_GRAYA8, NULL, ctx_setup_GRAYA8,
+#else
+    CTX_FORMAT_GRAYA8, 2, 16, 4, 0, 0, CTX_FORMAT_RGBA8,
+    ctx_GRAYA8_to_RGBA8, ctx_RGBA8_to_GRAYA8, ctx_composite_convert, ctx_setup_RGBA8,
+#endif
+  },
+#endif
+#if CTX_ENABLE_RGB332
+  {
+    CTX_FORMAT_RGB332, 3, 8, 4, 10, 12, CTX_FORMAT_RGBA8,
+    ctx_RGB332_to_RGBA8, ctx_RGBA8_to_RGB332,
+    ctx_composite_convert, ctx_setup_RGBA8,
+  },
+#endif
+#if CTX_ENABLE_RGB565
+  {
+    CTX_FORMAT_RGB565, 3, 16, 4, 32, 64, CTX_FORMAT_RGBA8,
+    ctx_RGB565_to_RGBA8, ctx_RGBA8_to_RGB565,
+    ctx_composite_RGB565, ctx_setup_RGBA8,
+  },
+#endif
+#if CTX_ENABLE_RGB565_BYTESWAPPED
+  {
+    CTX_FORMAT_RGB565_BYTESWAPPED, 3, 16, 4, 32, 64, CTX_FORMAT_RGBA8,
+    ctx_RGB565_BS_to_RGBA8,
+    ctx_RGBA8_to_RGB565_BS,
+    ctx_composite_RGB565_BS, ctx_setup_RGBA8,
+  },
+#endif
+#if CTX_ENABLE_CMYKAF
+  {
+    CTX_FORMAT_CMYKAF, 5, 160, 4 * 5, 0, 0, CTX_FORMAT_CMYKAF,
+    NULL, NULL, NULL, ctx_setup_CMYKAF,
+  },
+#endif
+#if CTX_ENABLE_CMYKA8
+  {
+    CTX_FORMAT_CMYKA8, 5, 40, 4 * 5, 0, 0, CTX_FORMAT_CMYKAF,
+    NULL, NULL, ctx_composite_CMYKA8, ctx_setup_CMYKAF,
+  },
+#endif
+#if CTX_ENABLE_CMYK8
+  {
+    CTX_FORMAT_CMYK8, 5, 32, 4 * 5, 0, 0, CTX_FORMAT_CMYKAF,
+    NULL, NULL, ctx_composite_CMYK8, ctx_setup_CMYKAF,
+  },
+#endif
+#if CTX_ENABLE_YUV420
+  {
+    CTX_FORMAT_YUV420, 1, 8, 4, 0, 0, CTX_FORMAT_RGBA8,
+    NULL, NULL, ctx_composite_convert, ctx_setup_RGBA8,
+  },
+#endif
+  {
+    CTX_FORMAT_NONE
+  }
+};
+
+
+CtxPixelFormatInfo *
+ctx_pixel_format_info (CtxPixelFormat format)
+{
+  for (unsigned int i = 0; ctx_pixel_formats[i].pixel_format; i++)
+    {
+      if (ctx_pixel_formats[i].pixel_format == format)
+        {
+          return &ctx_pixel_formats[i];
+        }
+    }
+  return NULL;
+}
+
+#endif
+#if CTX_RASTERIZER
+#define CTX_AA_HALFSTEP2   (CTX_FULL_AA/2)
+#define CTX_AA_HALFSTEP    ((CTX_FULL_AA/2)+1)
+
+static void
+ctx_gradient_cache_prime (CtxRasterizer *rasterizer);
+
+static inline void
+_ctx_setup_compositor (CtxRasterizer *rasterizer)
+{
+  if (CTX_UNLIKELY (rasterizer->comp_op==0))
+  {
+    rasterizer->format->setup (rasterizer);
+#if CTX_GRADIENTS
+#if CTX_GRADIENT_CACHE
+  switch (rasterizer->state->gstate.source_fill.type)
+  {
+    case CTX_SOURCE_LINEAR_GRADIENT:
+    case CTX_SOURCE_RADIAL_GRADIENT:
+      ctx_gradient_cache_prime (rasterizer);
+      break;
+    case CTX_SOURCE_TEXTURE:
+
+      _ctx_matrix_multiply (&rasterizer->state->gstate.source_fill.transform,
+                            &rasterizer->state->gstate.source_fill.set_transform,
+                            &rasterizer->state->gstate.transform);
+
+      ctx_matrix_invert (&rasterizer->state->gstate.source_fill.transform);
+
+      if (!rasterizer->state->gstate.source_fill.texture.buffer->color_managed)
+        _ctx_texture_prepare_color_management (rasterizer,
+        rasterizer->state->gstate.source_fill.texture.buffer);
+      break;
+  }
+#endif
+#endif
+  }
+}
 
 #define CTX_FULL_AA 15
 inline static void
 ctx_rasterizer_apply_coverage (CtxRasterizer *rasterizer,
-                               uint8_t * __restrict__ dst,
-                               int            x,
-                               uint8_t * __restrict__ coverage,
-                               int            count)
+                               uint8_t * dst,
+                               int       x,
+                               uint8_t * coverage,
+                               int       count)
 {
-  if (rasterizer->format->apply_coverage)
+  if (CTX_UNLIKELY(rasterizer->format->apply_coverage))
     rasterizer->format->apply_coverage(rasterizer, dst, rasterizer->color, x, coverage, count);
   else
+    /* it is faster to dispatch in this condition, than using a shared
+     * direct trampoline
+     */
     rasterizer->comp_op (rasterizer, dst, rasterizer->color, x, coverage, count);
 }
 
@@ -10824,22 +16192,33 @@ ctx_rasterizer_gradient_add_stop (CtxRasterizer *rasterizer, float pos, float *r
     { gradient->n_stops++; }
 }
 
-static int ctx_rasterizer_add_point (CtxRasterizer *rasterizer, int x1, int y1)
+static inline int ctx_rasterizer_add_point (CtxRasterizer *rasterizer, int x1, int y1)
 {
-  CtxEntry entry = {CTX_EDGE, {{0},}};
-  if (y1 < rasterizer->scan_min)
-    { rasterizer->scan_min = y1; }
-  if (y1 > rasterizer->scan_max)
-    { rasterizer->scan_max = y1; }
+  CtxSegment entry = {CTX_EDGE, {{0},}};
+  rasterizer->scan_min = ctx_mini (y1, rasterizer->scan_min);
+  rasterizer->scan_max = ctx_maxi (y1, rasterizer->scan_max);
 
-  if (x1 < rasterizer->col_min)
-    { rasterizer->col_min = x1; }
-  if (x1 > rasterizer->col_max)
-    { rasterizer->col_max = x1; }
+  rasterizer->col_min = ctx_mini (x1, rasterizer->col_min);
+  rasterizer->col_max = ctx_maxi (x1, rasterizer->col_max);
+
+  entry.data.s16[0]=rasterizer->inner_x;
+  entry.data.s16[1]=rasterizer->inner_y;
 
   entry.data.s16[2]=x1;
   entry.data.s16[3]=y1;
-  return ctx_drawlist_add_single (&rasterizer->edge_list, &entry);
+
+  rasterizer->inner_x = x1;
+  rasterizer->inner_y = y1;
+#if 0
+  if (entry.data.s16[3] < entry.data.s16[1])
+  {
+    entry = ctx_segment_s16 (CTX_EDGE_FLIPPED,
+                            entry.data.s16[2], entry.data.s16[3],
+                            entry.data.s16[0], entry.data.s16[1]);
+  }
+#endif
+
+  return ctx_edgelist_add_single (&rasterizer->edge_list, (CtxEntry*)&entry);
 }
 
 #if 0
@@ -10860,14 +16239,14 @@ int   _ctx_shape_cache_enabled = 1;
 
 //static CtxShapeCache ctx_cache = {{NULL,}, 0};
 
-static long ctx_shape_cache_hits = 0;
+static long ctx_shape_cache_hits   = 0;
 static long ctx_shape_cache_misses = 0;
 
 
 /* this returns the buffer to use for rendering, it always
    succeeds..
  */
-static CtxShapeEntry *ctx_shape_entry_find (CtxRasterizer *rasterizer, uint32_t hash, int width, int height)
+static inline CtxShapeEntry *ctx_shape_entry_find (CtxRasterizer *rasterizer, uint32_t hash, int width, int height)
 {
   /* use both some high and some low bits  */
   int entry_no = ( (hash >> 10) ^ (hash & 1023) ) % CTX_SHAPE_CACHE_ENTRIES;
@@ -10935,10 +16314,11 @@ static CtxShapeEntry *ctx_shape_entry_find (CtxRasterizer *rasterizer, uint32_t 
 
 static uint32_t ctx_rasterizer_poly_to_hash (CtxRasterizer *rasterizer)
 {
-  int16_t x = 0;
-  int16_t y = 0;
+  int x = 0;
+  int y = 0;
 
-  CtxEntry *entry = &rasterizer->edge_list.entries[0];
+  CtxSegment *entry = (CtxSegment*)&rasterizer->edge_list.entries[0];
+
   int ox = entry->data.s16[2];
   int oy = entry->data.s16[3];
   uint32_t hash = rasterizer->edge_list.count;
@@ -10947,7 +16327,7 @@ static uint32_t ctx_rasterizer_poly_to_hash (CtxRasterizer *rasterizer)
   hash += oy; //(oy % CTX_RASTERIZER_AA);
   for (int i = 0; i < rasterizer->edge_list.count; i++)
     {
-      CtxEntry *entry = &rasterizer->edge_list.entries[i];
+      CtxSegment *entry = &(((CtxSegment*)(rasterizer->edge_list.entries)))[i];
       x = entry->data.s16[2];
       y = entry->data.s16[3];
       int dx = x-ox;
@@ -10964,37 +16344,28 @@ static uint32_t ctx_rasterizer_poly_to_hash (CtxRasterizer *rasterizer)
 
 static uint32_t ctx_rasterizer_poly_to_edges (CtxRasterizer *rasterizer)
 {
-  int16_t x = 0;
-  int16_t y = 0;
-  if (rasterizer->edge_list.count == 0)
+  int x = 0;
+  int y = 0;
+  int count = rasterizer->edge_list.count;
+  if (CTX_UNLIKELY (count == 0))
      return 0;
+  CtxSegment *entry = (CtxSegment*)&rasterizer->edge_list.entries[0];
 #if CTX_SHAPE_CACHE
-  CtxEntry *entry = &rasterizer->edge_list.entries[0];
+#if 1
   int ox = entry->data.s16[2];
   int oy = entry->data.s16[3];
+#endif
   uint32_t hash = rasterizer->edge_list.count;
-  hash = (ox % CTX_SUBDIV);
+  hash = (ox & CTX_SUBDIV);
   hash *= CTX_SHAPE_CACHE_PRIME1;
-  hash += (oy % CTX_FULL_AA);
+  hash += (oy & CTX_SUBDIV);
 #endif
-  for (int i = 0; i < rasterizer->edge_list.count; i++)
+  //CtxSegment *entry = &(((CtxSegment*)(rasterizer->edge_list.entries)))[0];
+  for (int i = 0; i < count; i++)
     {
-      CtxEntry *entry = &rasterizer->edge_list.entries[i];
-      if (entry->code == CTX_NEW_EDGE)
-        {
-          entry->code = CTX_EDGE;
 #if CTX_SHAPE_CACHE
-          hash *= CTX_SHAPE_CACHE_PRIME2;
-#endif
-        }
-      else
-        {
-          entry->data.s16[0] = x;
-          entry->data.s16[1] = y;
-        }
       x = entry->data.s16[2];
       y = entry->data.s16[3];
-#if CTX_SHAPE_CACHE
       int dx = x-ox;
       int dy = y-oy;
       ox = x;
@@ -11004,12 +16375,15 @@ static uint32_t ctx_rasterizer_poly_to_edges (CtxRasterizer *rasterizer)
       hash *= CTX_SHAPE_CACHE_PRIME4;
       hash += dy;
 #endif
+#if 1
       if (entry->data.s16[3] < entry->data.s16[1])
         {
-          *entry = ctx_s16 (CTX_EDGE_FLIPPED,
+          *entry = ctx_segment_s16 (CTX_EDGE_FLIPPED,
                             entry->data.s16[2], entry->data.s16[3],
                             entry->data.s16[0], entry->data.s16[1]);
         }
+#endif
+      entry++;
     }
 #if CTX_SHAPE_CACHE
   return hash;
@@ -11018,7 +16392,7 @@ static uint32_t ctx_rasterizer_poly_to_edges (CtxRasterizer *rasterizer)
 #endif
 }
 
-static void ctx_rasterizer_finish_shape (CtxRasterizer *rasterizer)
+static inline void ctx_rasterizer_finish_shape (CtxRasterizer *rasterizer)
 {
   if (rasterizer->has_shape && rasterizer->has_prev)
     {
@@ -11027,7 +16401,7 @@ static void ctx_rasterizer_finish_shape (CtxRasterizer *rasterizer)
     }
 }
 
-static void ctx_rasterizer_move_to (CtxRasterizer *rasterizer, float x, float y)
+static inline void ctx_rasterizer_move_to (CtxRasterizer *rasterizer, float x, float y)
 {
   float tx = x; float ty = y;
   int aa = 15;//rasterizer->aa;
@@ -11044,25 +16418,23 @@ static void ctx_rasterizer_move_to (CtxRasterizer *rasterizer, float x, float y)
   tx = (tx - rasterizer->blit_x) * CTX_SUBDIV;
   ty = ty * aa;
 
-  if (ty < rasterizer->scan_min)
-    { rasterizer->scan_min = ty; }
-  if (ty > rasterizer->scan_max)
-    { rasterizer->scan_max = ty; }
-  if (tx < rasterizer->col_min)
-    { rasterizer->col_min = tx; }
-  if (tx > rasterizer->col_max)
-    { rasterizer->col_max = tx; }
+  rasterizer->inner_x = tx;
+  rasterizer->inner_y = ty;
+
+  rasterizer->scan_min = ctx_mini (ty, rasterizer->scan_min);
+  rasterizer->scan_max = ctx_maxi (ty, rasterizer->scan_max);
+
+  rasterizer->col_min = ctx_mini (tx, rasterizer->col_min);
+  rasterizer->col_max = ctx_maxi (tx, rasterizer->col_max);
 }
-
-
 
 static inline void ctx_rasterizer_line_to (CtxRasterizer *rasterizer, float x, float y)
 {
   float tx = x;
   float ty = y;
-  float ox = rasterizer->x;
-  float oy = rasterizer->y;
-  if (rasterizer->uses_transforms)
+  //float ox = rasterizer->x;
+  //float oy = rasterizer->y;
+  if ((rasterizer->uses_transforms))
     {
       _ctx_user_to_device (rasterizer->state, &tx, &ty);
     }
@@ -11070,27 +16442,28 @@ static inline void ctx_rasterizer_line_to (CtxRasterizer *rasterizer, float x, f
 #define MIN_Y -1000
 #define MAX_Y 1400
 
-  if (ty < MIN_Y) ty = MIN_Y;
-  if (ty > MAX_Y) ty = MAX_Y;
+  ty = ctx_maxf (MIN_Y, ty);
+  ty = ctx_minf (MAX_Y, ty);
   
-  ctx_rasterizer_add_point (rasterizer, tx * CTX_SUBDIV, ty * 15);//rasterizer->aa);
+  ctx_rasterizer_add_point (rasterizer, tx * CTX_SUBDIV, ty * CTX_FULL_AA);//rasterizer->aa);
 
-  if (rasterizer->has_prev<=0)
+  if (CTX_UNLIKELY(rasterizer->has_prev<=0))
     {
-      if (rasterizer->uses_transforms)
+#if 0
+      if ((rasterizer->uses_transforms))
       {
         // storing transformed would save some processing for a tiny
         // amount of runtime RAM XXX
         _ctx_user_to_device (rasterizer->state, &ox, &oy);
       }
-      ox -= rasterizer->blit_x;
-
-  if (oy < MIN_Y) oy = MIN_Y;
-  if (oy > MAX_Y) oy = MAX_Y;
-
-      rasterizer->edge_list.entries[rasterizer->edge_list.count-1].data.s16[0] = ox * CTX_SUBDIV;
-      rasterizer->edge_list.entries[rasterizer->edge_list.count-1].data.s16[1] = oy * 15;//rasterizer->aa;
-      rasterizer->edge_list.entries[rasterizer->edge_list.count-1].code = CTX_NEW_EDGE;
+#endif
+      //ox -= rasterizer->blit_x;
+      //oy = ctx_maxf (oy, MIN_Y);
+      //oy = ctx_minf (oy, MAX_Y);
+      CtxSegment *entry = & ((CtxSegment*)rasterizer->edge_list.entries)[rasterizer->edge_list.count-1];
+      //entry->data.s16[0] = ox * CTX_SUBDIV;
+      //entry->data.s16[1] = oy * CTX_FULL_AA;
+      entry->code = CTX_NEW_EDGE;
       rasterizer->has_prev = 1;
     }
   rasterizer->has_shape = 1;
@@ -11134,8 +16507,6 @@ ctx_rasterizer_bezier_divide (CtxRasterizer *rasterizer,
                               int   iteration,
                               float tolerance)
 {
-  if (iteration > 8)
-    { return; }
   float t = (s + e) * 0.5f;
   float x, y, lx, ly, dx, dy;
   ctx_bezier_sample (ox, oy, x0, y0, x1, y1, x2, y2, t, &x, &y);
@@ -11145,16 +16516,18 @@ ctx_rasterizer_bezier_divide (CtxRasterizer *rasterizer,
       ly = ctx_lerpf (sy, ey, t);
       dx = lx - x;
       dy = ly - y;
-      if ( (dx*dx+dy*dy) < tolerance)
+      if (CTX_UNLIKELY( (dx*dx+dy*dy) < tolerance))
         /* bailing - because for the mid-point straight line difference is
            tiny */
         { return; }
       dx = sx - ex;
       dy = ey - ey;
-      if ( (dx*dx+dy*dy) < tolerance)
+      if (CTX_UNLIKELY( (dx*dx+dy*dy) < tolerance))
         /* bailing on tiny segments */
         { return; }
     }
+  if (iteration < 8)
+  {
   ctx_rasterizer_bezier_divide (rasterizer, ox, oy, x0, y0, x1, y1, x2, y2,
                                 sx, sy, x, y, s, t, iteration + 1,
                                 tolerance);
@@ -11162,6 +16535,7 @@ ctx_rasterizer_bezier_divide (CtxRasterizer *rasterizer,
   ctx_rasterizer_bezier_divide (rasterizer, ox, oy, x0, y0, x1, y1, x2, y2,
                                 x, y, ex, ey, t, e, iteration + 1,
                                 tolerance);
+  }
 }
 
 static void
@@ -11170,15 +16544,19 @@ ctx_rasterizer_curve_to (CtxRasterizer *rasterizer,
                          float x1, float y1,
                          float x2, float y2)
 {
-  float tolerance =
-    ctx_pow2 (rasterizer->state->gstate.transform.m[0][0]) +
-    ctx_pow2 (rasterizer->state->gstate.transform.m[1][1]);
+  //float tolerance =
+  //  1.0f*(ctx_pow2 (rasterizer->state->gstate.transform.m[0][0]) +
+  //  ctx_pow2 (rasterizer->state->gstate.transform.m[1][1]));
+  float tolerance = ctx_matrix_get_scale (&rasterizer->state->gstate.transform);
   float ox = rasterizer->x;
   float oy = rasterizer->y;
+  //tolerance *= tolerance;
+  tolerance = 2.0/(tolerance*tolerance);
   ox = rasterizer->state->x;
   oy = rasterizer->state->y;
-  tolerance = 1.0f/tolerance * 2;
-#if 1 // skipping this to preserve hash integrity
+  //tolerance = 10.0/(tolerance*tolerance);
+  //tolerance = 10.0f/tolerance;
+#if 0 // skipping this to preserve hash integrity
   if (tolerance == 1.0f || 1)
   {
   float maxx = ctx_maxf (x1,x2);
@@ -11229,8 +16607,8 @@ ctx_rasterizer_curve_to (CtxRasterizer *rasterizer,
 static void
 ctx_rasterizer_rel_move_to (CtxRasterizer *rasterizer, float x, float y)
 {
-  if (x == 0.f && y == 0.f)
-    { return; }
+  //if (CTX_UNLIKELY(x == 0.f && y == 0.f))
+  //{ return; }
   x += rasterizer->x;
   y += rasterizer->y;
   ctx_rasterizer_move_to (rasterizer, x, y);
@@ -11239,8 +16617,8 @@ ctx_rasterizer_rel_move_to (CtxRasterizer *rasterizer, float x, float y)
 static void
 ctx_rasterizer_rel_line_to (CtxRasterizer *rasterizer, float x, float y)
 {
-  if (x== 0.f && y==0.f)
-    { return; }
+  //if (CTX_UNLIKELY(x== 0.f && y==0.f))
+  //  { return; }
   x += rasterizer->x;
   y += rasterizer->y;
   ctx_rasterizer_line_to (rasterizer, x, y);
@@ -11300,11 +16678,8 @@ ctx_rasterizer_set_texture (CtxRasterizer *rasterizer,
   }
   source->type = CTX_SOURCE_TEXTURE;
   source->texture.buffer = &rasterizer->texture_source->texture[no];
-  source->texture.x0 = 0;
-  source->texture.y0 = 0;
-  source->transform = rasterizer->state->gstate.transform;
-  ctx_matrix_translate (&source->transform, x, y);
-  ctx_matrix_invert (&source->transform);
+  ctx_matrix_identity (&source->set_transform);
+  ctx_matrix_translate (&source->set_transform, x, y);
 }
 
 
@@ -11334,34 +16709,30 @@ static void ctx_rasterizer_define_texture (CtxRasterizer *rasterizer,
                      *  use
                      */
 
-  _ctx_texture_unlock ();
   ctx_rasterizer_set_texture (rasterizer, eid, 0.0, 0.0);
+  _ctx_texture_unlock ();
 }
 
 
 CTX_INLINE static int ctx_compare_edges (const void *ap, const void *bp)
 {
-  const CtxEntry *a = (const CtxEntry *) ap;
-  const CtxEntry *b = (const CtxEntry *) bp;
-  int ycompare = a->data.s16[1] - b->data.s16[1];
-  if (ycompare)
-    { return ycompare; }
-  int xcompare = a->data.s16[0] - b->data.s16[0];
-  return xcompare;
+  const CtxSegment *a = (const CtxSegment *) ap;
+  const CtxSegment *b = (const CtxSegment *) bp;
+  return a->data.s16[1] - b->data.s16[1];
 }
 
-CTX_INLINE static int ctx_edge_qsort_partition (CtxEntry *A, int low, int high)
+CTX_INLINE static int ctx_edge_qsort_partition (CtxSegment *A, int low, int high)
 {
-  CtxEntry pivot = A[ (high+low) /2];
+  CtxSegment pivot = A[ (high+low) /2];
   int i = low;
   int j = high;
   while (i <= j)
     {
-      while (ctx_compare_edges (&A[i], &pivot) <0) { i ++; }
-      while (ctx_compare_edges (&pivot, &A[j]) <0) { j --; }
+      while (ctx_compare_edges (&A[i], &pivot) < 0) { i ++; }
+      while (ctx_compare_edges (&pivot, &A[j]) < 0) { j --; }
       if (i <= j)
         {
-          CtxEntry tmp = A[i];
+          CtxSegment tmp = A[i];
           A[i] = A[j];
           A[j] = tmp;
           i++;
@@ -11371,7 +16742,7 @@ CTX_INLINE static int ctx_edge_qsort_partition (CtxEntry *A, int low, int high)
   return i;
 }
 
-static void ctx_edge_qsort (CtxEntry *entries, int low, int high)
+static inline void ctx_edge_qsort (CtxSegment *entries, int low, int high)
 {
   {
     int p = ctx_edge_qsort_partition (entries, low, high);
@@ -11384,48 +16755,60 @@ static void ctx_edge_qsort (CtxEntry *entries, int low, int high)
 
 static CTX_INLINE void ctx_rasterizer_sort_edges (CtxRasterizer *rasterizer)
 {
-  ctx_edge_qsort (& (rasterizer->edge_list.entries[0]), 0, rasterizer->edge_list.count-1);
+  ctx_edge_qsort ((CtxSegment*)& (rasterizer->edge_list.entries[0]), 0, rasterizer->edge_list.count-1);
 }
-
 
 static inline void ctx_rasterizer_discard_edges (CtxRasterizer *rasterizer)
 {
   int scanline = rasterizer->scanline;
-  int slope_limit3 = CTX_RASTERIZER_AA_SLOPE_LIMIT3;
-  int slope_limit5 = CTX_RASTERIZER_AA_SLOPE_LIMIT5;
-  int slope_limit15 = CTX_RASTERIZER_AA_SLOPE_LIMIT15;
-  rasterizer->ending_edges = 0;
+  int next_scanline = rasterizer->scanline + CTX_FULL_AA;
+  int limit3 = CTX_RASTERIZER_AA_SLOPE_LIMIT3;
+  //if (rasterizer->fast_aa)
+    limit3 = CTX_RASTERIZER_AA_SLOPE_LIMIT3_FAST_AA;
+  CtxSegment *segments = &((CtxSegment*)(rasterizer->edge_list.entries))[0];
+  int *edges = rasterizer->edges;
   for (int i = 0; i < rasterizer->active_edges; i++)
     {
-      int edge_end =rasterizer->edge_list.entries[rasterizer->edges[i].index].data.s16[3]-1;
-      if (CTX_UNLIKELY(edge_end < scanline))
+      CtxSegment *segment = segments + edges[i];
+      int edge_end = segment->data.s16[3]-1;
+      if ((edge_end < scanline))
         {
-          int dx_dy = abs(rasterizer->edges[i].delta);
-          if (dx_dy > slope_limit15)
-            { rasterizer->needs_aa15 --; }
-          else if (dx_dy > slope_limit5)
-            { rasterizer->needs_aa5 --; }
-          else if (dx_dy > slope_limit3)
-            { rasterizer->needs_aa3 --; }
+
+          int dx_dy = abs(segment->delta);
+          rasterizer->needs_aa3  -= (dx_dy > limit3);
+          rasterizer->needs_aa5  -= (dx_dy > CTX_RASTERIZER_AA_SLOPE_LIMIT5);
+          rasterizer->needs_aa15 -= (dx_dy > CTX_RASTERIZER_AA_SLOPE_LIMIT15);
           rasterizer->edges[i] = rasterizer->edges[rasterizer->active_edges-1];
           rasterizer->active_edges--;
           i--;
         }
-      else if (edge_end < scanline + CTX_FULL_AA)
-        rasterizer->ending_edges = 1; // only used as a flag!
+      else if (edge_end < next_scanline)
+        rasterizer->ending_edges++;
     }
+#if 0
+  // we should - but for 99% of the cases we do not need to, so we skip it
+  for (int i = 0; i < rasterizer->pending_edges; i++)
+    {
+      int edge_end = ((CtxSegment*)(rasterizer->edge_list.entries))[rasterizer->edges[CTX_MAX_EDGES-1-i]].data.s16[3]-1;
+      if (edge_end < scanline + CTX_FULL_AA)
+        rasterizer->ending_edges++;
+    }
+#endif
 }
 
 inline static void ctx_rasterizer_increment_edges (CtxRasterizer *rasterizer, int count)
 {
   rasterizer->scanline += count;
+  CtxSegment *segments = &((CtxSegment*)(rasterizer->edge_list.entries))[0];
   for (int i = 0; i < rasterizer->active_edges; i++)
     {
-      rasterizer->edges[i].val += rasterizer->edges[i].delta * count;
+      CtxSegment *segment = segments + rasterizer->edges[i];
+      segment->val += segment->delta * count;
     }
   for (int i = 0; i < rasterizer->pending_edges; i++)
     {
-      rasterizer->edges[CTX_MAX_EDGES-1-i].val += rasterizer->edges[CTX_MAX_EDGES-1-i].delta * count;
+      CtxSegment *segment = segments + rasterizer->edges[CTX_MAX_EDGES-1-i];
+      segment->val += segment->delta * count;
     }
 }
 
@@ -11437,13 +16820,54 @@ inline static void ctx_rasterizer_increment_edges (CtxRasterizer *rasterizer, in
    again feed_edges until middle of scanline if doing non-AA
    or directly render when doing AA
 */
-inline static void ctx_rasterizer_feed_edges (CtxRasterizer *rasterizer)
+CTX_INLINE static void ctx_edge2_insertion_sort (CtxSegment *segments, int *entries, int count)
+{
+  for(int i=1; i<count; i++)
+   {
+     int temp = entries[i];
+     int j = i-1;
+     while (j >= 0 && segments[temp].val - segments[entries[j]].val < 0)
+     {
+       entries[j+1] = entries[j];
+       j--;
+     }
+     entries[j+1] = temp;
+   }
+}
+
+CTX_INLINE static int ctx_edge2_compare2 (CtxSegment *segments, int a, int b)
+{
+  CtxSegment *seg_a = &segments[a];
+  CtxSegment *seg_b = &segments[b];
+  int minval_a = ctx_mini (seg_a->val - seg_a->delta * CTX_AA_HALFSTEP2, seg_a->val + seg_a->delta * CTX_AA_HALFSTEP);
+  int minval_b = ctx_mini (seg_b->val - seg_b->delta * CTX_AA_HALFSTEP2, seg_b->val + seg_b->delta * CTX_AA_HALFSTEP);
+  return minval_a - minval_b;
+}
+
+CTX_INLINE static void ctx_edge2_insertion_sort2 (CtxSegment *segments, int *entries, int count)
+{
+  for(int i=1; i<count; i++)
+   {
+     int temp = entries[i];
+     int j = i-1;
+     while (j >= 0 && ctx_edge2_compare2 (segments, temp, entries[j]) < 0)
+     {
+       entries[j+1] = entries[j];
+       j--;
+     }
+     entries[j+1] = temp;
+   }
+}
+
+inline static void ctx_rasterizer_feed_edges (CtxRasterizer *rasterizer, int apply2_sort)
 {
   int miny;
-  CtxEntry *entries = rasterizer->edge_list.entries;
+  CtxSegment *entries = (CtxSegment*)&rasterizer->edge_list.entries[0];
+  rasterizer->horizontal_edges = 0;
+  rasterizer->ending_edges = 0;
   for (int i = 0; i < rasterizer->pending_edges; i++)
     {
-      if (entries[rasterizer->edges[CTX_MAX_EDGES-1-i].index].data.s16[1] - 1 <= rasterizer->scanline)
+      if (entries[rasterizer->edges[CTX_MAX_EDGES-1-i]].data.s16[1] - 1 <= rasterizer->scanline)
         {
           if (CTX_LIKELY(rasterizer->active_edges < CTX_MAX_EDGES-2))
             {
@@ -11457,38 +16881,40 @@ inline static void ctx_rasterizer_feed_edges (CtxRasterizer *rasterizer)
             }
         }
     }
+  int limit3 = CTX_RASTERIZER_AA_SLOPE_LIMIT3;
+  //if (rasterizer->fast_aa)
+    limit3 = CTX_RASTERIZER_AA_SLOPE_LIMIT3_FAST_AA;
   int scanline = rasterizer->scanline;
-  while (CTX_LIKELY(rasterizer->edge_pos < rasterizer->edge_list.count &&
-         (miny=entries[rasterizer->edge_pos].data.s16[1]-1)  <= scanline + 15))
+  int next_scanline = scanline + CTX_FULL_AA;
+  int edge_pos = rasterizer->edge_pos;
+  int edge_count = rasterizer->edge_list.count;
+  int *edges = rasterizer->edges;
+  while ((edge_pos < edge_count &&
+         (miny=entries[edge_pos].data.s16[1]-1)  <= next_scanline))
     {
-      int maxy=entries[rasterizer->edge_pos].data.s16[3]-1;
-      if (CTX_LIKELY(rasterizer->active_edges < CTX_MAX_EDGES-2) &&
-          maxy >= scanline)
+      int maxy=entries[edge_pos].data.s16[3]-1;
+      if ((rasterizer->active_edges < CTX_MAX_EDGES-2 &&
+          maxy >= scanline))
         {
-          int dy = (entries[rasterizer->edge_pos].data.s16[3] - 1 - miny);
-          if (dy) /* skipping horizontal edges */
+          int dy = (entries[edge_pos].data.s16[3] - 1 - miny);
+          if ((dy))
             {
               int yd = scanline - miny;
               int no = rasterizer->active_edges;
               rasterizer->active_edges++;
-              rasterizer->edges[no].index = rasterizer->edge_pos;
-              int index = rasterizer->edges[no].index;
+              int index = edges[no] = edge_pos;
               int x0 = entries[index].data.s16[0];
               int x1 = entries[index].data.s16[2];
-              rasterizer->edges[no].val = x0 * CTX_RASTERIZER_EDGE_MULTIPLIER;
-              int dx_dy;
-              dx_dy = CTX_RASTERIZER_EDGE_MULTIPLIER * (x1 - x0) / dy;
-              rasterizer->edges[no].delta = dx_dy;
-              rasterizer->edges[no].val += (yd * dx_dy);
+              int dx_dy = CTX_RASTERIZER_EDGE_MULTIPLIER * (x1 - x0) / dy;
+              entries[index].delta = dx_dy;
+              entries[index].val = x0 * CTX_RASTERIZER_EDGE_MULTIPLIER +
+                                         (yd * dx_dy);
 
               {
                 int abs_dx_dy = abs(dx_dy);
-                if (abs_dx_dy> CTX_RASTERIZER_AA_SLOPE_LIMIT3)
-                  { rasterizer->needs_aa3 ++; }
-                if (abs_dx_dy> CTX_RASTERIZER_AA_SLOPE_LIMIT5)
-                  { rasterizer->needs_aa5 ++; }
-                if (abs_dx_dy> CTX_RASTERIZER_AA_SLOPE_LIMIT15)
-                  { rasterizer->needs_aa15 ++; }
+                rasterizer->needs_aa3  += (abs_dx_dy > limit3);
+                rasterizer->needs_aa5  += (abs_dx_dy > CTX_RASTERIZER_AA_SLOPE_LIMIT5);
+                rasterizer->needs_aa15 += (abs_dx_dy > CTX_RASTERIZER_AA_SLOPE_LIMIT15);
               }
 
               if ((miny > scanline) )
@@ -11497,54 +16923,36 @@ inline static void ctx_rasterizer_feed_edges (CtxRasterizer *rasterizer)
                      and keep a different count for items stored here, like
                      a heap and stack growing against each other
                   */
-                  if (rasterizer->pending_edges < CTX_MAX_PENDING-1)
+                  if ((rasterizer->pending_edges < CTX_MAX_PENDING-1))
                   {
-                    rasterizer->edges[CTX_MAX_EDGES-1-rasterizer->pending_edges] =
+                    edges[CTX_MAX_EDGES-1-rasterizer->pending_edges] =
                     rasterizer->edges[no];
                     rasterizer->pending_edges++;
                     rasterizer->active_edges--;
                   }
                 }
             }
+          else
+            rasterizer->horizontal_edges ++;
         }
-      rasterizer->edge_pos++;
+      edge_pos++;
     }
-
+    rasterizer->edge_pos = edge_pos;
     ctx_rasterizer_discard_edges (rasterizer);
+    if (apply2_sort)
+      ctx_edge2_insertion_sort2 ((CtxSegment*)rasterizer->edge_list.entries, rasterizer->edges, rasterizer->active_edges);
+    else
+      ctx_edge2_insertion_sort ((CtxSegment*)rasterizer->edge_list.entries, rasterizer->edges, rasterizer->active_edges);
 }
 
-CTX_INLINE static int ctx_compare_edges2 (const void *ap, const void *bp)
-{
-  const CtxEdge *a = (const CtxEdge *) ap;
-  const CtxEdge *b = (const CtxEdge *) bp;
-  return a->val - b->val;
-}
-
-CTX_INLINE static void ctx_edge2_insertion_sort (CtxEdge *entries, int count)
-{
-  for(int i=1; i<count; i++)
-   {
-     CtxEdge temp = entries[i];
-     int j = i-1;
-     while (j >= 0 && ctx_compare_edges2 (&temp, &entries[j])<0)
-     {
-       entries[j+1] = entries[j];
-       j--;
-     }
-     entries[j+1] = temp;
-   }
-}
-
-static inline void ctx_rasterizer_sort_active_edges (CtxRasterizer *rasterizer)
-{
-  ctx_edge2_insertion_sort (rasterizer->edges, rasterizer->active_edges);
-}
 
 #undef CTX_CMPSWP
 
-void ctx_coverage_post_process (CtxRasterizer *rasterizer, int minx, int maxx, uint8_t *coverage)
+static inline void ctx_coverage_post_process (CtxRasterizer *rasterizer, int minx, int maxx, uint8_t *coverage, int *first_col, int *last_col)
 {
-  int scanline     = rasterizer->scanline;
+  int scanline     = rasterizer->scanline - CTX_FULL_AA; // we do the
+                                                 // post process after
+                                                 // coverage generation icnrement
 #if CTX_ENABLE_SHADOW_BLUR
   if (CTX_UNLIKELY(rasterizer->in_shadow))
   {
@@ -11558,7 +16966,7 @@ void ctx_coverage_post_process (CtxRasterizer *rasterizer, int minx, int maxx, u
       for (int x = dim/2; x < maxx-minx + 1 - dim/2; x ++)
         for (int u = 0; u < dim; u ++)
         {
-            temp[x] += coverage[minx+x+u-dim/2] * rasterizer->kernel[u] * 256;
+          temp[x] += coverage[minx+x+u-dim/2] * rasterizer->kernel[u] * 256;
         }
       for (int x = 0; x < maxx-minx + 1; x ++)
         coverage[minx+x] = temp[x] >> 8;
@@ -11570,15 +16978,15 @@ void ctx_coverage_post_process (CtxRasterizer *rasterizer, int minx, int maxx, u
   if (CTX_UNLIKELY(rasterizer->clip_buffer &&  !rasterizer->clip_rectangle))
   {
     /* perhaps not working right for clear? */
-    int y = scanline / 15;//rasterizer->aa;
+    int y = scanline / CTX_FULL_AA;//rasterizer->aa;
     uint8_t *clip_line = &((uint8_t*)(rasterizer->clip_buffer->data))[rasterizer->blit_width*y];
     // XXX SIMD candidate
     for (int x = minx; x <= maxx; x ++)
     {
 #if CTX_1BIT_CLIP
-        coverage[x] = (coverage[x] * ((clip_line[x/8]&(1<<(x%8)))?255:0))/255;
+       coverage[x] = (coverage[x] * ((clip_line[x/8]&(1<<(x&8)))?255:0))/255;
 #else
-        coverage[x] = (coverage[x] * clip_line[x])/255;
+       coverage[x] = (255 + coverage[x] * clip_line[x-rasterizer->blit_x])>>8;
 #endif
     }
   }
@@ -11590,140 +16998,821 @@ void ctx_coverage_post_process (CtxRasterizer *rasterizer, int minx, int maxx, u
 #endif
 }
 
+#define CTX_EDGE(no)      entries[edges[no]]
+#define CTX_EDGE_YMIN     (segment->data.s16[1]-1)
+
+#define UPDATE_PARITY \
+        { \
+          if (scanline!=CTX_EDGE_YMIN)\
+            parity = (is_winding)? \
+             parity + -1+2*(segment->code == CTX_EDGE_FLIPPED) : \
+                        1 - parity;\
+        }
+
 inline static void
 ctx_rasterizer_generate_coverage (CtxRasterizer *rasterizer,
                                   int            minx,
                                   int            maxx,
                                   uint8_t       *coverage,
-                                  int            winding,
-                                  int            aa_factor)
+                                  int            is_winding,
+                                  const uint8_t  aa_factor)
 {
-  CtxEntry *entries = rasterizer->edge_list.entries;;
-  CtxEdge  *edges = rasterizer->edges;
-  int scanline     = rasterizer->scanline;
-  int active_edges = rasterizer->active_edges;
-  int parity = 0;
-  int fraction = 255/aa_factor;
+  CtxSegment *entries      = (CtxSegment*)(&rasterizer->edge_list.entries[0]);
+  int        *edges        = rasterizer->edges;
+  int         scanline     = rasterizer->scanline;
+  int         active_edges = rasterizer->active_edges;
+  int         parity       = 0;
   coverage -= minx;
-#define CTX_EDGE(no)      entries[edges[no].index]
-#define CTX_EDGE_YMIN(no) (CTX_EDGE(no).data.s16[1]-1)
-#define CTX_EDGE_X(no)    (edges[no].val)
+  uint8_t fraction = 255/aa_factor;
   for (int t = 0; t < active_edges -1;t++)
     {
-      int ymin = CTX_EDGE_YMIN (t);
-      if (scanline != ymin)
-        {
-          if (winding)
-            { parity += ( (CTX_EDGE (t).code == CTX_EDGE_FLIPPED) ?1:-1); }
-          else
-            { parity = 1 - parity; }
-        }
+      CtxSegment *segment = &entries[edges[t]];
+      UPDATE_PARITY;
 
-       if (parity)
+      if (parity)
         {
-          int x0 = CTX_EDGE_X (t);
-          int x1 = CTX_EDGE_X (t+1);
+          CtxSegment *next_segment = &entries[edges[t+1]];
+          const int x0 = segment->val;
+          const int x1 = next_segment->val;
           int graystart = x0 / (CTX_RASTERIZER_EDGE_MULTIPLIER*CTX_SUBDIV/256);
-          int first     = graystart / 256;
           int grayend   = x1 / (CTX_RASTERIZER_EDGE_MULTIPLIER*CTX_SUBDIV/256);
-          int last      = grayend / 256;
+          int first     = graystart >> 8;
+          int last      = grayend   >> 8;
 
-          if (CTX_UNLIKELY(first < minx))
+          if ((first < minx))
           { 
             first = minx;
-            graystart=0;//255;
+            graystart=0;
           }
-          if (CTX_UNLIKELY(last > maxx))
+          if ((last > maxx))
           {
             last = maxx;
             grayend=255;
           }
 
-          graystart=fraction- (graystart&0xff)/aa_factor;
-          grayend = (grayend & 0xff) / aa_factor;
+          graystart = fraction- (graystart&0xff)/aa_factor;
+          grayend   = (grayend & 0xff) / aa_factor;
 
-          if (first == last)
-            coverage[first] += (graystart-(fraction-grayend));
-          else if (first < last)
+          if (first < last)
           {
               coverage[first] += graystart;
               for (int x = first + 1; x < last; x++)
-                coverage[x] += fraction;
-              coverage[last]  += grayend;
+                coverage[x]  += fraction;
+              coverage[last] += grayend;
           }
+          else if (first == last)
+            coverage[first] += (graystart-(fraction-grayend));
         }
    }
 }
 
 inline static void
 ctx_rasterizer_generate_coverage_set (CtxRasterizer *rasterizer,
-                                  int            minx,
-                                  int            maxx,
-                                  uint8_t       *coverage,
-                                  int            winding,
-                                  int            aa_factor)
+                                      int            minx,
+                                      int            maxx,
+                                      uint8_t       *coverage,
+                                      int            is_winding)
 {
-  CtxEntry *entries = rasterizer->edge_list.entries;;
-  CtxEdge  *edges = rasterizer->edges;
+  CtxSegment *entries = (CtxSegment*)(&rasterizer->edge_list.entries[0]);
+  int      *edges = rasterizer->edges;
   int scanline     = rasterizer->scanline;
   int active_edges = rasterizer->active_edges;
   int parity = 0;
-  int fraction = 255/aa_factor;
   coverage -= minx;
-#define CTX_EDGE(no)      entries[edges[no].index]
-#define CTX_EDGE_YMIN(no) (CTX_EDGE(no).data.s16[1]-1)
-#define CTX_EDGE_X(no)    (edges[no].val)
   for (int t = 0; t < active_edges -1;t++)
     {
-      int ymin = CTX_EDGE_YMIN (t);
-      if (scanline != ymin)
-        {
-          if (winding)
-            { parity += ( (CTX_EDGE (t).code == CTX_EDGE_FLIPPED) ?1:-1); }
-          else
-            { parity = 1 - parity; }
-        }
+      CtxSegment *segment = &entries[edges[t]];
+      UPDATE_PARITY;
 
-       if (parity)
+      if (parity)
         {
-          int x0 = CTX_EDGE_X (t);
-          int x1 = CTX_EDGE_X (t+1);
+          CtxSegment *next_segment = &entries[edges[t+1]];
+          const int x0        = segment->val;
+          const int x1        = next_segment->val;
           int graystart = x0 / (CTX_RASTERIZER_EDGE_MULTIPLIER*CTX_SUBDIV/256);
-          int first     = graystart / 256;
           int grayend   = x1 / (CTX_RASTERIZER_EDGE_MULTIPLIER*CTX_SUBDIV/256);
-          int last      = grayend / 256;
+          int first     = graystart >> 8;
+          int last      = grayend   >> 8;
 
-          if (CTX_UNLIKELY(first < minx))
+          if ((first < minx))
           { 
             first = minx;
-            graystart=0;//255;
+            graystart=0;
           }
-          if (CTX_UNLIKELY(last > maxx))
+          if ((last > maxx))
           {
             last = maxx;
             grayend=255;
           }
 
-          graystart=fraction- (graystart&0xff)/aa_factor;
-          grayend = (grayend & 0xff) / aa_factor;
+          graystart = 255 - (graystart&0xff);
+          grayend   = (grayend & 0xff);
 
-          if (first == last)
-            coverage[first] += (graystart-(fraction-grayend));
-          else if (first < last)
+          if (first < last)
           {
               coverage[first] += graystart;
+#if 0
               for (int x = first + 1; x < last; x++)
-                coverage[x] = fraction;
+                coverage[x] = 255;
+#else
+              memset(&coverage[first+1], 255, last-(first+1));
+#endif
               coverage[last]  += grayend;
           }
+          else if (first == last)
+            coverage[first] += (graystart-(255-grayend));
         }
+   }
+}
+
+static inline uint32_t
+ctx_over_RGBA8 (uint32_t dst, uint32_t src, uint32_t cov)
+{
+  uint32_t si_ga = (src & 0xff00ff00) >> 8;
+  uint32_t si_rb = src & 0x00ff00ff;
+  uint32_t si_a  = si_ga >> 16;
+  uint32_t rcov  = ((255+si_a * cov)>>8)^255;
+  uint32_t di_ga = ( dst & 0xff00ff00) >> 8;
+  uint32_t di_rb = dst & 0x00ff00ff;
+  return
+     ((((si_rb * cov) + 0xff00ff + (di_rb * rcov)) & 0xff00ff00) >> 8)  |
+      (((si_ga * cov) + 0xff00ff + (di_ga * rcov)) & 0xff00ff00);
+}
+
+
+static inline uint32_t
+ctx_over_RGBA8_full (uint32_t dst, uint32_t src)
+{
+  uint32_t si_ga = (src & 0xff00ff00) >> 8;
+  uint32_t si_rb = src & 0x00ff00ff;
+  uint32_t si_a  = si_ga >> 16;
+  uint32_t rcov  = si_a^255;
+  uint32_t di_ga = (dst & 0xff00ff00) >> 8;
+  uint32_t di_rb = dst & 0x00ff00ff;
+  return
+     ((((si_rb * 255) + 0xff00ff + (di_rb * rcov)) & 0xff00ff00) >> 8)  |
+      (((si_ga * 255) + 0xff00ff + (di_ga * rcov)) & 0xff00ff00);
+}
+
+static inline uint32_t
+ctx_over_RGBA8_2 (uint32_t dst, uint32_t si_ga, uint32_t si_rb, uint32_t si_a, uint32_t cov)
+{
+  uint32_t rcov  = ((si_a * cov)/255)^255;
+  uint32_t di_ga = (dst & 0xff00ff00) >> 8;
+  uint32_t di_rb = dst & 0x00ff00ff;
+  return
+     ((((si_rb * cov) + 0xff00ff + (di_rb * rcov)) & 0xff00ff00) >> 8)  |
+      (((si_ga * cov) + 0xff00ff + (di_ga * rcov)) & 0xff00ff00);
+}
+
+static inline uint32_t
+ctx_over_RGBA8_full_2 (uint32_t dst, uint32_t si_ga_full, uint32_t si_rb_full, uint32_t si_a)
+{
+  uint32_t rcov = si_a^255;
+  uint32_t di_ga = ( dst & 0xff00ff00) >> 8;
+  uint32_t di_rb = dst & 0x00ff00ff;
+  return
+     ((((si_rb_full) + (di_rb * rcov)) & 0xff00ff00) >> 8)  |
+      (((si_ga_full) + (di_ga * rcov)) & 0xff00ff00);
+}
+
+static inline void ctx_span_set_color (uint32_t *dst_pix, uint32_t val, int count)
+{
+  if (count>0)
+  while(count--)
+    *dst_pix++=val;
+}
+
+inline static void
+ctx_rasterizer_generate_coverage_apply (CtxRasterizer *rasterizer,
+                                        int            minx,
+                                        int            maxx,
+                                        uint8_t       *coverage,
+                                        int            is_winding,
+                                        CtxCovPath     comp)
+{
+  CtxSegment *entries = (CtxSegment*)(&rasterizer->edge_list.entries[0]);
+  int *edges  = rasterizer->edges;
+  int scanline        = rasterizer->scanline;
+  const int bpp             = rasterizer->format->bpp/8;
+  int active_edges    = rasterizer->active_edges;
+  int parity        = 0;
+  const uint32_t src_pix    = ((uint32_t*)rasterizer->color)[0];
+  const uint32_t si_ga = ((uint32_t*)rasterizer->color)[1];
+  const uint32_t si_rb = ((uint32_t*)rasterizer->color)[2];
+  const uint32_t si_ga_full = ((uint32_t*)rasterizer->color)[3];
+  const uint32_t si_rb_full = ((uint32_t*)rasterizer->color)[4];
+  const uint32_t si_a  = si_ga >> 16;
+
+  uint8_t *dst = ( (uint8_t *) rasterizer->buf) +
+         (rasterizer->blit_stride * (scanline / CTX_FULL_AA));
+  int accumulator_x=0;
+  uint8_t accumulated = 0;
+  for (int t = 0; t < active_edges -1;t++)
+    {
+      CtxSegment *segment = &entries[edges[t]];
+      UPDATE_PARITY;
+
+       if (parity)
+        {
+          CtxSegment   *next_segment = &entries[edges[t+1]];
+          const int x0        = segment->val;
+          const int x1        = next_segment->val;
+          int graystart = x0 / (CTX_RASTERIZER_EDGE_MULTIPLIER*CTX_SUBDIV/256);
+          int grayend   = x1 / (CTX_RASTERIZER_EDGE_MULTIPLIER*CTX_SUBDIV/256);
+          int first     = graystart >> 8;
+          int last      = grayend   >> 8;
+
+          if ((first < minx))
+          { 
+            first = minx;
+            graystart=0;
+          }
+          if ((last > maxx))
+          {
+            last = maxx;
+            grayend=255;
+          }
+
+          graystart = 255 - (graystart&0xff);
+          grayend   = (grayend & 0xff);
+
+          if (accumulated)
+          {
+            if (accumulator_x == first)
+            {
+              graystart += accumulated;
+            }
+            else
+            {
+              uint32_t* dst_pix = (uint32_t*)(&dst[(accumulator_x*bpp)]);
+              switch (comp)
+              {
+                case CTX_COV_PATH_COPY:
+                  *dst_pix = ctx_lerp_RGBA8_2(*dst_pix, si_ga, si_rb, accumulated);
+                  break;
+                case CTX_COV_PATH_OVER:
+                  *dst_pix = ctx_over_RGBA8_2(*dst_pix, si_ga, si_rb, si_a, accumulated);
+                  break;
+                default:
+                  ctx_rasterizer_apply_coverage (rasterizer, (uint8_t*)dst_pix, accumulator_x, &accumulated, 1);
+              }
+            }
+            accumulated = 0;
+          }
+
+          if (first < last)
+          {
+            switch (comp)
+            {
+              case CTX_COV_PATH_COPY:
+            {
+              uint32_t* dst_pix = (uint32_t*)(&dst[(first *bpp)]);
+              *dst_pix = ctx_lerp_RGBA8_2(*dst_pix, si_ga, si_rb, graystart);
+
+              dst_pix++;
+              ctx_span_set_color (dst_pix, src_pix, last - first - 1);
+#if 0
+              for (int i = first + 1; i < last; i++)
+              {
+                *dst_pix = src_pix;
+                dst_pix++;
+              }
+#endif
+            }
+            break;
+              case CTX_COV_PATH_OVER:
+            {
+              uint32_t* dst_pix = (uint32_t*)(&dst[(first *bpp)]);
+              *dst_pix = ctx_over_RGBA8_2(*dst_pix, si_ga, si_rb, si_a, graystart);
+              dst_pix++;
+              for (int i = first + 1; i < last; i++)
+              {
+                *dst_pix = ctx_over_RGBA8_full_2(*dst_pix, si_ga_full, si_rb_full, si_a);
+                dst_pix++;
+              }
+            }
+            break;
+              case CTX_COV_PATH_COPY_FRAGMENT:
+            {
+              float u0 = 0; float v0 = 0;
+              float ud = 0; float vd = 0;
+              uint8_t gs = graystart;
+              ctx_RGBA8_source_copy_normal_fragment (rasterizer, &dst[(first * bpp)], NULL, first, &gs, 1);
+              ctx_init_uv (rasterizer, first+1, last-first-1, &u0, &v0, &ud, &vd);
+              rasterizer->fragment (rasterizer, u0, v0, &dst[(first+1)*bpp], last-first-1, ud, vd);
+            }
+            break;
+              case CTX_COV_PATH_OVER_FRAGMENT:
+            {
+              uint8_t gs = graystart;
+              ctx_RGBA8_source_over_normal_fragment (rasterizer, &dst[(first * bpp)], NULL, first, &gs, 1);
+              ctx_RGBA8_source_over_normal_full_cov_fragment (rasterizer,
+                                                     &dst[((first+1)*bpp)], NULL, first + 1, NULL, last-first-1);
+            }
+            break;
+              default:
+            {
+              uint8_t opaque[last-first];
+              memset (opaque, 255, sizeof (opaque));
+              opaque[0] = graystart;
+              ctx_rasterizer_apply_coverage (rasterizer,
+                                             &dst[(first * bpp)], first, opaque, last-first);
+            }
+            }
+            accumulated = grayend;
+          }
+          else if (first == last)
+          {
+            accumulated = (graystart-(255-grayend));
+          }
+          accumulator_x = last;
+        }
+   }
+
+   if (accumulated)
+   {
+     uint32_t* dst_pix = (uint32_t*)(&dst[(accumulator_x*bpp)]);
+     switch (comp)
+     {
+       case CTX_COV_PATH_COPY:
+         *dst_pix = ctx_lerp_RGBA8_2(*dst_pix, si_ga, si_rb, accumulated);
+         break;
+       case CTX_COV_PATH_OVER:
+         *dst_pix = ctx_over_RGBA8_2(*dst_pix, si_ga, si_rb, si_a, accumulated);
+         break;
+       default:
+         ctx_rasterizer_apply_coverage (rasterizer, (uint8_t*)dst_pix, accumulator_x, &accumulated, 1);
+     }
+   }
+}
+
+inline static int ctx_rasterizer_is_simple (CtxRasterizer *rasterizer)
+{
+  if (rasterizer->fast_aa == 0 ||
+      rasterizer->ending_edges ||
+      rasterizer->pending_edges)
+   return 0;
+  int *edges  = rasterizer->edges;
+  CtxSegment *segments = &((CtxSegment*)(rasterizer->edge_list.entries))[0];
+
+  int active_edges = rasterizer->active_edges;
+  for (int t = 0; t < active_edges -1;t++)
+    {
+      CtxSegment *segment0 = segments + edges[t];
+      CtxSegment *segment1 = segments + edges[t+1];
+      const int delta0    = segment0->delta;
+      const int delta1    = segment1->delta;
+      const int x0        = segment0->val;
+      const int x1        = segment1->val;
+      int x0_end   = x0 + delta0 * CTX_AA_HALFSTEP;
+      int x1_end   = x1 + delta1 * CTX_AA_HALFSTEP;
+      int x0_start = x0 - delta0 * CTX_AA_HALFSTEP2;
+      int x1_start = x1 - delta1 * CTX_AA_HALFSTEP2;
+      if (x1_end < x0_end   ||
+          x1_start < x0_end ||
+          x1_end < x0_start
+         )
+         return 0;
+    }
+  return 1;
+}
+
+
+inline static void
+ctx_rasterizer_generate_coverage_set2 (CtxRasterizer *rasterizer,
+                                         int            minx,
+                                         int            maxx,
+                                         uint8_t       *coverage,
+                                         int            is_winding)
+{
+  CtxSegment *entries = (CtxSegment*)(&rasterizer->edge_list.entries[0]);
+  int *edges  = rasterizer->edges;
+  int scanline        = rasterizer->scanline;
+  int active_edges    = rasterizer->active_edges;
+  int parity        = 0;
+
+  coverage -= minx;
+
+  const int minx_ = minx * CTX_RASTERIZER_EDGE_MULTIPLIER * CTX_SUBDIV;
+  const int maxx_ = maxx * CTX_RASTERIZER_EDGE_MULTIPLIER * CTX_SUBDIV;
+
+  for (int t = 0; t < active_edges -1;t++)
+    {
+      CtxSegment   *segment = &entries[edges[t]];
+      UPDATE_PARITY;
+
+       if (parity)
+        {
+          CtxSegment   *next_segment = &entries[edges[t+1]];
+          const int x0        = segment->val;
+          const int x1        = next_segment->val;
+          const int delta0    = segment->delta;
+          const int delta1    = next_segment->delta;
+
+          int x0_start = x0 - delta0 * CTX_AA_HALFSTEP2;
+          int x1_start = x1 - delta1 * CTX_AA_HALFSTEP2;
+          int x0_end   = x0 + delta0 * CTX_AA_HALFSTEP;
+          int x1_end   = x1 + delta1 * CTX_AA_HALFSTEP;
+
+          int graystart = x0 / (CTX_RASTERIZER_EDGE_MULTIPLIER*CTX_SUBDIV/256);
+          int grayend   = x1 / (CTX_RASTERIZER_EDGE_MULTIPLIER*CTX_SUBDIV/256);
+          int first     = graystart >> 8;
+          int last      = grayend   >> 8;
+
+          first = ctx_maxi (first, minx);
+          last  = ctx_mini (last, maxx);
+
+          if (first < last)
+          {
+            int pre = 1;
+            int post = 1;
+
+            if (abs(delta0) < CTX_RASTERIZER_AA_SLOPE_LIMIT3_FAST_AA)
+            {
+              graystart = 255 - (graystart&0xff);
+              coverage[first] += graystart;
+            }
+            else
+            {
+              int u0 = ctx_mini (x0_start, x0_end);
+              int u1 = ctx_maxi (x0_start, x0_end);
+              u0 = ctx_maxi (u0, minx_);
+              u1 = ctx_mini (u1, maxx_);
+              u1 = ctx_maxi (u1, minx_);
+              u0 = ctx_mini (u0, maxx_);
+  
+              int us = u0 / (CTX_RASTERIZER_EDGE_MULTIPLIER*CTX_SUBDIV);
+              int count = 0;
+
+              int mod = (255-(u0 / (CTX_RASTERIZER_EDGE_MULTIPLIER*CTX_SUBDIV/256) % 256)) *
+                         (CTX_RASTERIZER_EDGE_MULTIPLIER*CTX_SUBDIV/255);
+              int sum = ((u1-u0+CTX_RASTERIZER_EDGE_MULTIPLIER * CTX_SUBDIV)/255);
+
+              for (int u = u0; u < u1; u+= CTX_RASTERIZER_EDGE_MULTIPLIER*CTX_SUBDIV)
+              {
+                coverage[us + count] = (u - u0 + mod) / sum;
+                count++;
+              }
+              pre = (us+count-1)-first+1;
+            }
+  
+            if (abs(delta1) < CTX_RASTERIZER_AA_SLOPE_LIMIT3_FAST_AA)
+            {
+               grayend   = (grayend & 0xff);
+               coverage[last] += grayend;
+            }
+            else
+            {
+              int u0 = ctx_mini (x1_start, x1_end);
+              int u1 = ctx_maxi (x1_start, x1_end);
+              u0 = ctx_maxi (u0, minx_);
+              u1 = ctx_mini (u1, maxx_);
+              u1 = ctx_maxi (u1, minx_);
+              u0 = ctx_mini (u0, maxx_);
+              int us = u0 / (CTX_RASTERIZER_EDGE_MULTIPLIER*CTX_SUBDIV);
+              int count = 0;
+              int mod = ((255-(u0 / (CTX_RASTERIZER_EDGE_MULTIPLIER*CTX_SUBDIV/256) % 256)+64) *
+                    (CTX_RASTERIZER_EDGE_MULTIPLIER*CTX_SUBDIV/255));
+              int sum = ((u1-u0+CTX_RASTERIZER_EDGE_MULTIPLIER * CTX_SUBDIV * 1.25)/255);
+              for (int u = u0; u < u1; u+= CTX_RASTERIZER_EDGE_MULTIPLIER*CTX_SUBDIV)
+              {
+                coverage[us + count] = 255-((u - u0 + mod)/ sum);
+                count++;
+              }
+              post = last-us+1;
+            }
+            for (int i = first + pre; i <= last - post; i++)
+              coverage[i] = 255;
+          }
+          else if (first == last)
+          {
+            graystart = 255 - (graystart&0xff);
+            grayend   = (grayend & 0xff);
+            coverage[last]+=(graystart-(255-grayend));
+          }
+        }
+   }
+}
+
+
+inline static void
+ctx_rasterizer_generate_coverage_apply2 (CtxRasterizer *rasterizer,
+                                         int            minx,
+                                         int            maxx,
+                                         uint8_t       *coverage,
+                                         int            is_winding,
+                                         CtxCovPath     comp)
+{
+  CtxSegment *entries = (CtxSegment*)(&rasterizer->edge_list.entries[0]);
+  int *edges          = rasterizer->edges;
+  int  scanline       = rasterizer->scanline;
+  const int  bpp      = rasterizer->format->bpp/8;
+  int  active_edges   = rasterizer->active_edges;
+  int  parity         = 0;
+
+  const uint32_t src_pix    = ((uint32_t*)rasterizer->color)[0];
+  const uint32_t si_ga      = ((uint32_t*)rasterizer->color)[1];
+  const uint32_t si_rb      = ((uint32_t*)rasterizer->color)[2];
+  const uint32_t si_ga_full = ((uint32_t*)rasterizer->color)[3];
+  const uint32_t si_rb_full = ((uint32_t*)rasterizer->color)[4];
+  const uint32_t si_a  = src_pix >> 24;
+
+  uint8_t *dst = ( (uint8_t *) rasterizer->buf) +
+         (rasterizer->blit_stride * (scanline / CTX_FULL_AA));
+
+  coverage -= minx;
+
+  const int minx_ = minx * CTX_RASTERIZER_EDGE_MULTIPLIER * CTX_SUBDIV;
+  const int maxx_ = maxx * CTX_RASTERIZER_EDGE_MULTIPLIER * CTX_SUBDIV;
+
+  int accumulated_x0 = 65538;
+  int accumulated_x1 = 65536;
+
+  for (int t = 0; t < active_edges -1;t++)
+    {
+      CtxSegment   *segment = &entries[edges[t]];
+      UPDATE_PARITY;
+
+       if (parity)
+        {
+          CtxSegment   *next_segment = &entries[edges[t+1]];
+          const int x0        = segment->val;
+          const int x1        = next_segment->val;
+          const int delta0    = segment->delta;
+          const int delta1    = next_segment->delta;
+
+          int x0_start = x0 - delta0 * CTX_AA_HALFSTEP2;
+          int x1_start = x1 - delta1 * CTX_AA_HALFSTEP2;
+          int x0_end   = x0 + delta0 * CTX_AA_HALFSTEP;
+          int x1_end   = x1 + delta1 * CTX_AA_HALFSTEP;
+
+          int graystart = x0 / (CTX_RASTERIZER_EDGE_MULTIPLIER*CTX_SUBDIV/256);
+          int grayend   = x1 / (CTX_RASTERIZER_EDGE_MULTIPLIER*CTX_SUBDIV/256);
+          int first     = graystart >> 8;
+          int last      = grayend   >> 8;
+
+          first = ctx_maxi (first, minx);
+          last = ctx_mini (last, maxx);
+          graystart = 255 - (graystart&0xff);
+          grayend   = (grayend & 0xff);
+
+          if (first < last)
+          {
+            int pre = 1;
+            int post = 1;
+
+          if (abs(delta0) < CTX_RASTERIZER_AA_SLOPE_LIMIT3_FAST_AA)
+          {
+             coverage[first] += graystart;
+
+            accumulated_x1 = first;
+            accumulated_x0 = ctx_mini (accumulated_x0, first);
+          }
+          else
+          {
+            int u0 = ctx_mini (x0_start, x0_end);
+            int u1 = ctx_maxi (x0_start, x0_end);
+            u0 = ctx_maxi (u0, minx_);
+            u1 = ctx_mini (u1, maxx_);
+            u1 = ctx_maxi (u1, minx_);
+            u0 = ctx_mini (u0, maxx_);
+
+            int mod = (255-(u0 / (CTX_RASTERIZER_EDGE_MULTIPLIER*CTX_SUBDIV/256) % 256)) *
+                    (CTX_RASTERIZER_EDGE_MULTIPLIER*CTX_SUBDIV/255);
+            int sum = ((u1-u0+CTX_RASTERIZER_EDGE_MULTIPLIER * CTX_SUBDIV)/255);
+
+            int us = u0 / (CTX_RASTERIZER_EDGE_MULTIPLIER*CTX_SUBDIV);
+            int count = 0;
+            for (int u = u0; u < u1; u+= CTX_RASTERIZER_EDGE_MULTIPLIER*CTX_SUBDIV)
+            {
+              coverage[us + count] = (u - u0 + mod) / sum;
+              count++;
+            }
+            pre = (us+count-1)-first+1;
+
+#if 0 // the CTX_UNLIKELY helps - but this is a big constant overhead
+      // which ends up penalizing us in benchmarks, it needs to be
+      // a shape with really large interior emptiness for this
+      // to be worthwhile
+          if (CTX_UNLIKELY(
+              us - accumulated_x1 > 16 &&
+              accumulated_x1-accumulated_x0>=0
+                          ))
+          {
+             switch (comp)
+             {
+                case CTX_COV_PATH_OVER:
+                {
+                  uint32_t *dst_i = (uint32_t*)&dst[((accumulated_x0) * bpp)];
+                  for (int i = 0; i < accumulated_x1-accumulated_x0+1; i++)
+                    {
+                      *dst_i = ctx_over_RGBA8_2 (*dst_i, si_ga, si_rb, si_a, coverage[accumulated_x0+i]);
+                      dst_i++;
+                    }
+                }
+                break;
+                case CTX_COV_PATH_COPY:
+                {
+                  uint32_t *dst_i = (uint32_t*)&dst[((accumulated_x0) * bpp)];
+                  for (int i = 0; i < accumulated_x1-accumulated_x0+1; i++)
+                  {
+                    *dst_i = ctx_lerp_RGBA8_2 (*dst_i, si_ga, si_rb, coverage[accumulated_x0+i]);
+                    dst_i++;
+                  }
+                }
+                  break;
+                default:
+                ctx_rasterizer_apply_coverage (rasterizer,
+                          &dst[((accumulated_x0) * bpp)],
+                          accumulated_x0,
+                          &coverage[accumulated_x0],
+                          accumulated_x1-accumulated_x0+1);
+             }
+          }
+#endif
+
+            accumulated_x0 = ctx_mini (accumulated_x0, us);
+            accumulated_x1 = us + count - 1;
+          }
+
+   if (accumulated_x1-accumulated_x0>=0)
+          {
+             switch (comp)
+             {
+                case CTX_COV_PATH_OVER:
+                {
+                  uint32_t *dst_i = (uint32_t*)&dst[((accumulated_x0) * bpp)];
+                  for (int i = 0; i < accumulated_x1-accumulated_x0+1; i++)
+                    {
+                      *dst_i = ctx_over_RGBA8_2 (*dst_i, si_ga, si_rb, si_a, coverage[accumulated_x0+i]);
+                      dst_i++;
+                    }
+                }
+                break;
+                case CTX_COV_PATH_COPY:
+                {
+                  uint32_t *dst_i = (uint32_t*)&dst[((accumulated_x0) * bpp)];
+                  for (int i = 0; i < accumulated_x1-accumulated_x0+1; i++)
+                  {
+                    *dst_i = ctx_lerp_RGBA8_2 (*dst_i, si_ga, si_rb, coverage[accumulated_x0+i]);
+                    dst_i++;
+                  }
+                }
+                  break;
+                default:
+                ctx_rasterizer_apply_coverage (rasterizer,
+                          &dst[((accumulated_x0) * bpp)],
+                          accumulated_x0,
+                          &coverage[accumulated_x0],
+                          accumulated_x1-accumulated_x0+1);
+             }
+             accumulated_x0 = 65538;
+             accumulated_x1 = 65536;
+          }
+
+          if (abs(delta1) < CTX_RASTERIZER_AA_SLOPE_LIMIT3_FAST_AA)
+          {
+             coverage[last] += grayend;
+             accumulated_x1 = last;
+             accumulated_x0 = last;
+          }
+          else
+          {
+            int u0 = ctx_mini (x1_start, x1_end);
+            int u1 = ctx_maxi (x1_start, x1_end);
+            u0 = ctx_maxi (u0, minx_);
+            u1 = ctx_mini (u1, maxx_);
+            u1 = ctx_maxi (u1, minx_);
+            u0 = ctx_mini (u0, maxx_);
+            int us = u0 / (CTX_RASTERIZER_EDGE_MULTIPLIER*CTX_SUBDIV);
+            int count = 0;
+
+            int mod = ((255-(u0 / (CTX_RASTERIZER_EDGE_MULTIPLIER*CTX_SUBDIV/256) % 256)+64) *
+                    (CTX_RASTERIZER_EDGE_MULTIPLIER*CTX_SUBDIV/255));
+            int sum = ((u1-u0+CTX_RASTERIZER_EDGE_MULTIPLIER * CTX_SUBDIV * 1.25)/255);
+
+            for (int u = u0; u < u1; u+= CTX_RASTERIZER_EDGE_MULTIPLIER*CTX_SUBDIV)
+            {
+                coverage[us + count] = 255-((u - u0 + mod)/ sum);
+              count++;
+            }
+            post = last-us+1;
+
+            accumulated_x1 = us + count;
+            accumulated_x0 = us;
+          }
+            switch (comp)
+            {
+              case CTX_COV_PATH_COPY:
+            {
+              uint32_t* dst_pix = (uint32_t*)(&dst[(first *bpp)]);
+              dst_pix+=pre;
+              ctx_span_set_color (dst_pix, src_pix, last-first-pre-post + 1);
+            }
+            break;
+              case CTX_COV_PATH_OVER:
+            {
+              uint32_t* dst_pix = (uint32_t*)(&dst[(first *bpp)]);
+              dst_pix+=pre;
+              for (int i = first + pre; i <= last - post; i++)
+              {
+                *dst_pix = ctx_over_RGBA8_full_2(*dst_pix, si_ga_full, si_rb_full, si_a);
+                dst_pix++;
+              }
+            }
+            break;
+              case CTX_COV_PATH_COPY_FRAGMENT:
+              {
+              int width = last-first-pre-post+1;
+            if (width>0)
+            {
+              {
+                float u0 = 0; float v0 = 0;
+                float ud = 0; float vd = 0;
+                ctx_init_uv (rasterizer, first+pre, width, &u0, &v0, &ud, &vd);
+                rasterizer->fragment (rasterizer, u0, v0, &dst[(first+pre)*bpp],                                      width, ud, vd);
+              }
+            }
+              }
+            break;
+              case CTX_COV_PATH_OVER_FRAGMENT:
+              {
+                int width = last-first-pre-post+1;
+                if (width>0)
+                ctx_RGBA8_source_over_normal_full_cov_fragment (rasterizer,
+                               &dst[((first+pre)*bpp)],
+                               NULL,
+                               first + pre,
+                               NULL,
+                               width);
+              }
+              break;
+              default:
+              {
+                int width = last-first-pre-post+1;
+                if (width > 0)
+                {
+                uint8_t opaque[width];
+                memset (opaque, 255, sizeof (opaque));
+                ctx_rasterizer_apply_coverage (rasterizer,
+                            &dst[((first + pre) * bpp)],
+                            first + pre,
+                            opaque,
+                            width);
+                }
+              }
+            }
+            //}
+          }
+          else if (first == last)
+          {
+            coverage[last]+=(graystart-(255-grayend));
+
+            accumulated_x1 = last;
+            accumulated_x0 = ctx_mini (accumulated_x0, last);
+          }
+        }
+   }
+
+   if (accumulated_x1-accumulated_x0>=0)
+   {
+             switch (comp)
+             {
+                case CTX_COV_PATH_OVER:
+                {
+                  uint32_t *dst_i = (uint32_t*)&dst[((accumulated_x0) * bpp)];
+                  for (int i = 0; i < accumulated_x1-accumulated_x0+1; i++)
+                    {
+                      *dst_i = ctx_over_RGBA8_2 (*dst_i, si_ga, si_rb, si_a, coverage[accumulated_x0+i]);
+                      dst_i++;
+                    }
+                }
+                break;
+                case CTX_COV_PATH_COPY:
+                {
+                  uint32_t *dst_i = (uint32_t*)&dst[((accumulated_x0) * bpp)];
+                  for (int i = 0; i < accumulated_x1-accumulated_x0+1; i++)
+                  {
+                    *dst_i = ctx_lerp_RGBA8_2 (*dst_i, si_ga, si_rb, coverage[accumulated_x0+i]);
+                    dst_i++;
+                  }
+                }
+                  break;
+                default:
+                ctx_rasterizer_apply_coverage (rasterizer,
+                          &dst[((accumulated_x0) * bpp)],
+                          accumulated_x0,
+                          &coverage[accumulated_x0],
+                          accumulated_x1-accumulated_x0+1);
+             }
    }
 }
 
 #undef CTX_EDGE_Y0
 #undef CTX_EDGE
 
-static void
+static inline void
 ctx_rasterizer_reset (CtxRasterizer *rasterizer)
 {
   rasterizer->pending_edges   = 0;
@@ -11732,56 +17821,51 @@ ctx_rasterizer_reset (CtxRasterizer *rasterizer)
   rasterizer->has_prev        = 0;
   rasterizer->edge_list.count = 0; // ready for new edges
   rasterizer->edge_pos        = 0;
-  rasterizer->needs_aa3       = 0;
-  rasterizer->needs_aa5       = 0;
-  rasterizer->needs_aa15      = 0;
   rasterizer->scanline        = 0;
-  if (!rasterizer->preserve)
+  if (CTX_LIKELY(!rasterizer->preserve))
   {
     rasterizer->scan_min      = 5000;
     rasterizer->scan_max      = -5000;
     rasterizer->col_min       = 5000;
     rasterizer->col_max       = -5000;
   }
-  //rasterizer->comp_op       = NULL;
+  //rasterizer->comp_op       = NULL; // keep comp_op cached 
+  //     between rasterizations where rendering attributes are
+  //     nonchanging
 }
 
 static void
-ctx_rasterizer_rasterize_edges (CtxRasterizer *rasterizer, int winding
+ctx_rasterizer_rasterize_edges (CtxRasterizer *rasterizer, const int fill_rule 
 #if CTX_SHAPE_CACHE
                                 ,CtxShapeEntry *shape
 #endif
                                )
 {
+  int      is_winding = fill_rule == CTX_FILL_RULE_WINDING;
+  const CtxCovPath comp = rasterizer->comp;
+  const int real_aa = rasterizer->aa;
   uint8_t *dst = ( (uint8_t *) rasterizer->buf);
 
-  int real_aa = rasterizer->aa;
 
   int scan_start = rasterizer->blit_y * CTX_FULL_AA;
-  int scan_end   = scan_start + rasterizer->blit_height * CTX_FULL_AA;
-  int blit_width = rasterizer->blit_width;
-  int blit_max_x = rasterizer->blit_x + blit_width;
+  int scan_end   = scan_start + (rasterizer->blit_height - 1) * CTX_FULL_AA;
+  const int blit_width = rasterizer->blit_width;
+  const int blit_max_x = rasterizer->blit_x + blit_width;
   int minx       = rasterizer->col_min / CTX_SUBDIV - rasterizer->blit_x;
   int maxx       = (rasterizer->col_max + CTX_SUBDIV-1) / CTX_SUBDIV - rasterizer->blit_x;
+  const int blit_stride = rasterizer->blit_stride;
 
-#if 1
+  rasterizer->prev_active_edges = -1;
   if (
 #if CTX_SHAPE_CACHE
     !shape &&
 #endif
     maxx > blit_max_x - 1)
     { maxx = blit_max_x - 1; }
-#endif
-#if 1
-  if (rasterizer->state->gstate.clip_min_x>
-      minx)
-    { minx = rasterizer->state->gstate.clip_min_x; }
-  if (rasterizer->state->gstate.clip_max_x <
-      maxx)
-    { maxx = rasterizer->state->gstate.clip_max_x; }
-#endif
-  if (minx < 0)
-    { minx = 0; }
+
+  minx = ctx_maxi (rasterizer->state->gstate.clip_min_x, minx);
+  maxx = ctx_mini (rasterizer->state->gstate.clip_max_x, maxx);
+  minx = ctx_maxi (0, minx); // redundant?
   if (minx >= maxx)
     {
       ctx_rasterizer_reset (rasterizer);
@@ -11794,6 +17878,11 @@ ctx_rasterizer_rasterize_edges (CtxRasterizer *rasterizer, int winding
 #endif
   uint8_t *coverage = &_coverage[0];
 
+  int coverage_size = 
+#if CTX_SHAPE_CACHE
+                  shape?shape->width:
+#endif
+                  sizeof (_coverage);
 
 #if CTX_SHAPE_CACHE
   if (shape)
@@ -11801,7 +17890,7 @@ ctx_rasterizer_rasterize_edges (CtxRasterizer *rasterizer, int winding
       coverage = &shape->data[0];
     }
 #endif
-  ctx_assert (coverage);
+  //ctx_assert (coverage);
   rasterizer->scan_min -= (rasterizer->scan_min % CTX_FULL_AA);
 #if CTX_SHAPE_CACHE
   if (shape)
@@ -11817,146 +17906,153 @@ ctx_rasterizer_rasterize_edges (CtxRasterizer *rasterizer, int winding
           dst += (rasterizer->blit_stride * (rasterizer->scan_min-scan_start) / CTX_FULL_AA);
           scan_start = rasterizer->scan_min;
         }
-      if (rasterizer->scan_max < scan_end)
-        { scan_end = rasterizer->scan_max; }
+      scan_end = ctx_mini (rasterizer->scan_max, scan_end);
     }
-  if (rasterizer->state->gstate.clip_min_y * CTX_FULL_AA > scan_start )
+  if (CTX_UNLIKELY(rasterizer->state->gstate.clip_min_y * CTX_FULL_AA > scan_start ))
     { 
        dst += (rasterizer->blit_stride * (rasterizer->state->gstate.clip_min_y * CTX_FULL_AA -scan_start) / CTX_FULL_AA);
        scan_start = rasterizer->state->gstate.clip_min_y * CTX_FULL_AA; 
     }
-  if (rasterizer->state->gstate.clip_max_y * CTX_FULL_AA < scan_end)
-    { scan_end = rasterizer->state->gstate.clip_max_y * CTX_FULL_AA; }
-  if (scan_start > scan_end ||
-      (scan_start > (rasterizer->blit_y + rasterizer->blit_height) * CTX_FULL_AA) ||
-      (scan_end < (rasterizer->blit_y) * CTX_FULL_AA))
+  scan_end = ctx_mini (rasterizer->state->gstate.clip_max_y * CTX_FULL_AA, scan_end);
+  if (CTX_UNLIKELY(scan_start > scan_end ||
+      (scan_start > (rasterizer->blit_y + (rasterizer->blit_height-1)) * CTX_FULL_AA) ||
+      (scan_end < (rasterizer->blit_y) * CTX_FULL_AA)))
   { 
     /* not affecting this rasterizers scanlines */
     ctx_rasterizer_reset (rasterizer);
     return;
   }
 
-  ctx_rasterizer_sort_edges (rasterizer);
+  rasterizer->horizontal_edges = 0;
   {
-    int halfstep2 = CTX_FULL_AA/2;
-    int halfstep  = halfstep2 + 1;
     rasterizer->needs_aa3  = 0;
     rasterizer->needs_aa5  = 0;
     rasterizer->needs_aa15 = 0;
+    ctx_rasterizer_sort_edges (rasterizer);
     rasterizer->scanline = scan_start;
-    ctx_rasterizer_feed_edges (rasterizer); 
+    ctx_rasterizer_feed_edges (rasterizer, 0); 
+
+      int avoid_direct = (0 
+#if CTX_ENABLE_CLIP
+         || rasterizer->clip_buffer
+#endif
+#if CTX_ENABLE_SHADOW_BLUR
+         || rasterizer->in_shadow
+#endif
+#if CTX_SHAPE_CACHE
+         || shape != NULL
+#endif
+         );
 
   for (; rasterizer->scanline <= scan_end;)
     {
-      int contains_edge_end = rasterizer->pending_edges ||
-                              rasterizer->ending_edges;
 
-      // check if all pending edges are scanline aligned at start
-      ctx_memset (coverage, 0,
-#if CTX_SHAPE_CACHE
-                  shape?shape->width:
-#endif
-                  sizeof (_coverage) );
+      int needs_full_aa =
+          ( (rasterizer->horizontal_edges!=0) 
+          | (rasterizer->active_edges != rasterizer->prev_active_edges)
+          | (rasterizer->active_edges + rasterizer->pending_edges == rasterizer->ending_edges)
+          );
 
-    if (contains_edge_end)
+    if ((needs_full_aa))
     {
+        int increment = CTX_FULL_AA/real_aa;
+        memset (coverage, 0, coverage_size);
         for (int i = 0; i < real_aa; i++)
         {
-          ctx_rasterizer_feed_edges (rasterizer);
-          ctx_rasterizer_sort_active_edges (rasterizer);
-          ctx_rasterizer_generate_coverage (rasterizer, minx, maxx, coverage, winding, real_aa);
-          ctx_rasterizer_increment_edges (rasterizer, CTX_FULL_AA/real_aa);
+          ctx_rasterizer_feed_edges (rasterizer, 0);
+          ctx_rasterizer_generate_coverage (rasterizer, minx, maxx, coverage, is_winding, real_aa);
+          ctx_rasterizer_increment_edges (rasterizer, increment);
         }
     }
-    else if (!rasterizer->needs_aa3) // if it doesnt need aa3 it doesnt need aa5 or aa15 either
+    else if (! avoid_direct & (rasterizer->needs_aa3 == 0))
     {
-      ctx_rasterizer_increment_edges (rasterizer, halfstep2);
-      ctx_rasterizer_feed_edges (rasterizer);
+      ctx_rasterizer_increment_edges (rasterizer, CTX_AA_HALFSTEP2);
+      ctx_rasterizer_feed_edges (rasterizer, 0);
 
-      ctx_rasterizer_sort_active_edges (rasterizer);
-      ctx_rasterizer_generate_coverage_set (rasterizer, minx, maxx, coverage, winding, 1);
-      ctx_rasterizer_increment_edges (rasterizer, halfstep);
+      ctx_rasterizer_generate_coverage_apply (rasterizer, minx, maxx, coverage, is_winding,
+                      comp);
+      ctx_rasterizer_increment_edges (rasterizer, CTX_AA_HALFSTEP);
+
+      dst += blit_stride;
+      rasterizer->prev_active_edges = rasterizer->active_edges;
+      continue;
     }
-    else  if (rasterizer->needs_aa15)
-      {
-        for (int i = 0; i < CTX_FULL_AA; i++)
-        {
-          ctx_rasterizer_feed_edges (rasterizer);
-          ctx_rasterizer_sort_active_edges (rasterizer);
-          ctx_rasterizer_generate_coverage (rasterizer, minx, maxx, coverage, winding, CTX_FULL_AA);
-          ctx_rasterizer_increment_edges (rasterizer, 1);
-        }
-    }
-    else if (rasterizer->needs_aa5)
+    else if (avoid_direct & (rasterizer->needs_aa3 == 0))
     {
-      for (int i = 0; i < CTX_FULL_AA; i+=3)
+      ctx_rasterizer_increment_edges (rasterizer, CTX_AA_HALFSTEP2);
+      ctx_rasterizer_feed_edges (rasterizer, 0);
+
+      memset (coverage, 0, coverage_size);
+      ctx_rasterizer_generate_coverage_set (rasterizer, minx, maxx, coverage, is_winding);
+      ctx_rasterizer_increment_edges (rasterizer, CTX_AA_HALFSTEP);
+    }
+    else if (ctx_rasterizer_is_simple (rasterizer))
+    {
+      ctx_rasterizer_increment_edges (rasterizer, CTX_AA_HALFSTEP2);
+      ctx_rasterizer_feed_edges (rasterizer, 1);
+      memset (coverage, 0, coverage_size);
+      if (!avoid_direct)
       {
-        ctx_rasterizer_feed_edges (rasterizer);
-        ctx_rasterizer_sort_active_edges (rasterizer);
-        ctx_rasterizer_generate_coverage (rasterizer, minx, maxx, coverage, winding, CTX_FULL_AA/3);
-        ctx_rasterizer_increment_edges (rasterizer, 3);
+
+        ctx_rasterizer_generate_coverage_apply2 (rasterizer, minx, maxx, coverage, is_winding,
+                      comp);
+        ctx_rasterizer_increment_edges (rasterizer, CTX_AA_HALFSTEP);
+
+        dst += blit_stride;
+        rasterizer->prev_active_edges = rasterizer->active_edges;
+        continue;
       }
-        //for (int x = minx; x <= maxx; x++) coverage[x-minx] *= 0.5;
+      ctx_rasterizer_generate_coverage_set2 (rasterizer, minx, maxx, coverage, is_winding);
+      ctx_rasterizer_increment_edges (rasterizer, CTX_AA_HALFSTEP);
     }
-    else if (rasterizer->needs_aa3)
+    else 
     {
-      for (int i = 0; i < CTX_FULL_AA; i+=5)
+      int aa = 3;
+      if (rasterizer->needs_aa5 && real_aa >=5)
       {
-        ctx_rasterizer_feed_edges (rasterizer);
-        ctx_rasterizer_sort_active_edges (rasterizer);
-        ctx_rasterizer_generate_coverage (rasterizer, minx, maxx, coverage, winding, CTX_FULL_AA/5);
-        ctx_rasterizer_increment_edges (rasterizer, 5);
+         aa = 5;
+         if (rasterizer->needs_aa15 && real_aa >=15)
+           aa = 15;
       }
-      //for (int x = minx; x <= maxx; x++) coverage[x-minx] *= 0.75;
+      int scanline_increment = 15/aa;
+
+      memset (coverage, 0, coverage_size);
+      for (int i = 0; i < CTX_FULL_AA; i+= scanline_increment)
+      {
+        ctx_rasterizer_feed_edges (rasterizer, 0);
+        ctx_rasterizer_generate_coverage (rasterizer, minx, maxx, coverage, is_winding, aa);
+        ctx_rasterizer_increment_edges (rasterizer, scanline_increment);
+      }
     }
-    else
-    {
-      ctx_rasterizer_increment_edges (rasterizer, halfstep2);
-      ctx_rasterizer_feed_edges (rasterizer);
 
-      ctx_rasterizer_sort_active_edges (rasterizer);
-      ctx_rasterizer_generate_coverage_set (rasterizer, minx, maxx, coverage, winding, 1);
-      ctx_rasterizer_increment_edges (rasterizer, halfstep);
-    }
-  ctx_coverage_post_process (rasterizer, minx, maxx, coverage - minx);
-
-
-
-
-        {
+  ctx_coverage_post_process (rasterizer, minx, maxx, coverage - minx,
+                  NULL, NULL);
 #if CTX_SHAPE_CACHE
-          if (shape == NULL)
+  if (shape == NULL)
 #endif
-            {
-#if 0
-              if (CTX_FULL_AA==1)
-              {
-                for (int x = 0; x < maxx-minx; x++)
-                  coverage
-              }
-#endif
-              ctx_rasterizer_apply_coverage (rasterizer,
-                                             &dst[(minx * rasterizer->format->bpp) /8],
-                                             minx,
-                                             coverage, maxx-minx + 1);
-            }
-        }
+  {
+    ctx_rasterizer_apply_coverage (rasterizer,
+                         &dst[(minx * rasterizer->format->bpp) /8],
+                         minx,
+                         coverage,
+                         maxx-minx+ 1);
+  }
 #if CTX_SHAPE_CACHE
       if (shape)
         {
           coverage += shape->width;
         }
 #endif
-      dst += rasterizer->blit_stride;
+      dst += blit_stride;
+      rasterizer->prev_active_edges = rasterizer->active_edges;
     }
   }
 
-  if (rasterizer->state->gstate.compositing_mode == CTX_COMPOSITE_SOURCE_OUT ||
+  if (CTX_UNLIKELY(rasterizer->state->gstate.compositing_mode == CTX_COMPOSITE_SOURCE_OUT ||
       rasterizer->state->gstate.compositing_mode == CTX_COMPOSITE_SOURCE_IN ||
       rasterizer->state->gstate.compositing_mode == CTX_COMPOSITE_DESTINATION_IN ||
-      rasterizer->state->gstate.compositing_mode == CTX_COMPOSITE_COPY ||
       rasterizer->state->gstate.compositing_mode == CTX_COMPOSITE_DESTINATION_ATOP ||
-      rasterizer->state->gstate.compositing_mode == CTX_COMPOSITE_CLEAR)
+      rasterizer->state->gstate.compositing_mode == CTX_COMPOSITE_CLEAR))
   {
      /* fill in the rest of the blitrect when compositing mode permits it */
      uint8_t nocoverage[rasterizer->blit_width];
@@ -11988,9 +18084,10 @@ ctx_rasterizer_rasterize_edges (CtxRasterizer *rasterizer, int winding
                                       &dst[ (startx * rasterizer->format->bpp) /8],
                                       0,
                                       nocoverage, minx-startx);
-       dst += rasterizer->blit_stride;
+       dst += blit_stride;
      }
      }
+
      if (endx > maxx)
      {
      dst = (uint8_t*)(rasterizer->buf) + rasterizer->blit_stride * (scan_start / CTX_FULL_AA);
@@ -12005,6 +18102,7 @@ ctx_rasterizer_rasterize_edges (CtxRasterizer *rasterizer, int winding
        dst += rasterizer->blit_stride;
      }
      }
+#if 1
      dst = (uint8_t*)(rasterizer->buf) + rasterizer->blit_stride * (scan_end / CTX_FULL_AA);
      // XXX valgrind/asan this
      if(0)for (rasterizer->scanline = scan_end; rasterizer->scanline/CTX_FULL_AA < gscan_end-1;)
@@ -12015,8 +18113,9 @@ ctx_rasterizer_rasterize_edges (CtxRasterizer *rasterizer, int winding
                                       nocoverage, clipw-1);
 
        rasterizer->scanline += CTX_FULL_AA;
-       dst += rasterizer->blit_stride;
+       dst += blit_stride;
      }
+#endif
   }
   ctx_rasterizer_reset (rasterizer);
 }
@@ -12037,24 +18136,221 @@ ctx_is_transparent (CtxRasterizer *rasterizer, int stroke)
   return 0;
 }
 
+#define CTX_RECT_FILL 1
+
+#if CTX_RECT_FILL
+static void
+ctx_rasterizer_fill_rect (CtxRasterizer *rasterizer,
+                          int          x0,
+                          int          y0,
+                          int          x1,
+                          int          y1,
+                          uint8_t      cov)
+{
+  int blit_x = rasterizer->blit_x;
+  int blit_y = rasterizer->blit_y;
+  int blit_width = rasterizer->blit_width;
+  int blit_height = rasterizer->blit_height;
+  int blit_stride = rasterizer->blit_stride;
+  x0 = ctx_maxi (x0, blit_x);
+  x1 = ctx_mini (x1, blit_x + blit_width);
+
+  int width = x1 - x0;
+
+  if (CTX_UNLIKELY(width <=0))
+    return;
+
+  void (*comp_op)(CTX_COMPOSITE_ARGUMENTS) = rasterizer->comp_op;
+
+  y0 = ctx_maxi (y0, blit_y);
+  y1 = ctx_mini (y1, blit_y + blit_height);
+  rasterizer->scanline = y0 * CTX_FULL_AA;
+  _ctx_setup_compositor (rasterizer);
+  uint8_t *dst = ( (uint8_t *) rasterizer->buf);
+
+  dst += (y0 - blit_y) * blit_stride;
+  dst += (x0) * rasterizer->format->bpp/8;
+
+  if (cov == 255)
+  {
+    if (comp_op == ctx_RGBA8_source_copy_normal_color)
+    {
+      uint32_t color = *((uint32_t*)rasterizer->color);
+      if ((width == 1))
+      {
+        for (int y = y0; y < y1; y++)
+        {
+          uint32_t *dst_i = (uint32_t*)&dst[0];
+          *dst_i = color;
+          dst += blit_stride;
+        }
+        return;
+      }
+      else
+      {
+        for (int y = y0; y < y1; y++)
+        {
+          ctx_span_set_color ((uint32_t*)&dst[0], color, width);
+          dst += blit_stride;
+        }
+        return;
+      }
+    }
+    else if (comp_op == ctx_RGBA8_source_over_normal_color)
+    {
+      uint32_t si_ga_full = ((uint32_t*)rasterizer->color)[3];
+      uint32_t si_rb_full = ((uint32_t*)rasterizer->color)[4];
+      uint32_t si_a  = rasterizer->color[3];
+
+      if ((width == 1))
+      {
+        for (int y = y0; y < y1; y++)
+        {
+          ((uint32_t*)(dst))[0] = ctx_over_RGBA8_full_2 (
+             ((uint32_t*)(dst))[0], si_ga_full, si_rb_full, si_a);
+          dst += blit_stride;
+        }
+        return;
+      }
+      else
+      {
+        for (int y = y0; y < y1; y++)
+        {
+          uint32_t *dst_i = (uint32_t*)&dst[0];
+          for (int i = 0; i < width; i++)
+          {
+            dst_i[i] = ctx_over_RGBA8_full_2 (dst_i[i], si_ga_full, si_rb_full, si_a);
+          }
+          dst += blit_stride;
+        }
+        return;
+      }
+    }
+    else if (comp_op == ctx_RGBA8_source_copy_normal_fragment)
+    {
+      for (int y = y0; y < y1; y++)
+      {
+        float u0 = 0; float v0 = 0;
+        float ud = 0; float vd = 0;
+        ctx_init_uv (rasterizer, x0, width, &u0, &v0, &ud, &vd);
+        rasterizer->fragment (rasterizer, u0, v0, &dst[0], width, ud, vd);
+        rasterizer->scanline += CTX_FULL_AA;
+        dst += blit_stride;
+      }
+      return;
+    }
+    else if (comp_op == ctx_RGBA8_source_over_normal_fragment)
+    {
+      for (int y = y0; y < y1; y++)
+      {
+        ctx_RGBA8_source_over_normal_full_cov_fragment (rasterizer,
+                                &dst[0], NULL, x0, NULL, width);
+        rasterizer->scanline += CTX_FULL_AA;
+        dst += blit_stride;
+      }
+      return;
+    }
+  }
+  else
+  {
+  if (comp_op == ctx_RGBA8_source_copy_normal_color)
+    {
+      uint32_t color = *((uint32_t*)rasterizer->color);
+      if ((width == 1))
+      {
+        for (int y = y0; y < y1; y++)
+        {
+          uint32_t *dst_i = (uint32_t*)&dst[0];
+          *dst_i = ctx_lerp_RGBA8 (*dst_i, color, cov);
+          dst += blit_stride;
+        }
+        return;
+      }
+      else
+      {
+        for (int y = y0; y < y1; y++)
+        {
+          uint32_t *dst_i = (uint32_t*)&dst[0];
+          for (int i = 0; i < width; i++)
+          {
+            dst_i[i] = ctx_lerp_RGBA8 (dst_i[i], color, cov);
+          }
+          dst += blit_stride;
+        }
+        return;
+      }
+    }
+    else if (comp_op == ctx_RGBA8_source_over_normal_color)
+    {
+      uint32_t color = *((uint32_t*)rasterizer->color);
+      if ((width == 1))
+      {
+        for (int y = y0; y < y1; y++)
+        {
+          uint32_t *dst_i = (uint32_t*)&dst[0];
+          *dst_i = ctx_over_RGBA8 (*dst_i, color, cov);
+          dst += blit_stride;
+        }
+        return;
+      }
+      else
+      {
+        for (int y = y0; y < y1; y++)
+        {
+          uint32_t *dst_i = (uint32_t*)&dst[0];
+          for (int i = 0; i < width; i++)
+          {
+            dst_i[i] = ctx_over_RGBA8 (dst_i[i], color, cov);
+          }
+          dst += blit_stride;
+        }
+        return;
+      }
+    }
+  }
+
+  {
+    uint8_t coverage[width];
+    memset (coverage, cov, sizeof (coverage) );
+    for (int y = y0; y < y1; y++)
+    {
+      ctx_rasterizer_apply_coverage (rasterizer, &dst[0], x0, coverage, width);
+      rasterizer->scanline += CTX_FULL_AA;
+      dst += blit_stride;
+    }
+  }
+}
+#endif
+
+static inline float ctx_fmod1f (float val)
+{
+  int vali = val;
+  return val - vali;
+}
+
 static void
 ctx_rasterizer_fill (CtxRasterizer *rasterizer)
 {
   int count = rasterizer->preserve?rasterizer->edge_list.count:0;
+  int blit_x = rasterizer->blit_x;
+  int blit_y = rasterizer->blit_y;
+  int blit_width = rasterizer->blit_width;
+  int blit_height = rasterizer->blit_height;
+  int blit_stride = rasterizer->blit_stride;
 
-  CtxEntry temp[count]; /* copy of already built up path's poly line
+  CtxSegment temp[count]; /* copy of already built up path's poly line
                           XXX - by building a large enough path
                           the stack can be smashed!
                          */
-  if (rasterizer->preserve)
+  if (CTX_UNLIKELY(rasterizer->preserve))
     { memcpy (temp, rasterizer->edge_list.entries, sizeof (temp) ); }
 
 #if CTX_ENABLE_SHADOW_BLUR
-  if (rasterizer->in_shadow)
+  if (CTX_UNLIKELY(rasterizer->in_shadow))
   {
   for (int i = 0; i < rasterizer->edge_list.count; i++)
     {
-      CtxEntry *entry = &rasterizer->edge_list.entries[i];
+      CtxSegment *entry = &((CtxSegment*)rasterizer->edge_list.entries)[i];
       entry->data.s16[2] += rasterizer->shadow_x * CTX_SUBDIV;
       entry->data.s16[3] += rasterizer->shadow_y * CTX_FULL_AA;
     }
@@ -12065,28 +18361,180 @@ ctx_rasterizer_fill (CtxRasterizer *rasterizer)
   }
 #endif
 
-  if (ctx_is_transparent (rasterizer, 0) ||
-      rasterizer->scan_min / CTX_FULL_AA > rasterizer->blit_y + rasterizer->blit_height ||
-      rasterizer->scan_max / CTX_FULL_AA < rasterizer->blit_y ||
-      rasterizer->col_min / CTX_SUBDIV > rasterizer->blit_x + rasterizer->blit_width ||
-      rasterizer->col_max / CTX_SUBDIV < rasterizer->blit_x)
+  if (CTX_UNLIKELY(ctx_is_transparent (rasterizer, 0) ||
+      rasterizer->scan_min > CTX_FULL_AA * (blit_y + blit_height) ||
+      rasterizer->scan_max < CTX_FULL_AA * blit_y ||
+      rasterizer->col_min > CTX_SUBDIV * (blit_x + blit_width) ||
+      rasterizer->col_max < CTX_SUBDIV * blit_x))
     {
       ctx_rasterizer_reset (rasterizer);
     }
   else
   {
-    if (rasterizer->comp_op == NULL)
-      ctx_compositor_setup_default (rasterizer);
+    _ctx_setup_compositor (rasterizer);
 
-    rasterizer->state->min_x =
-      ctx_mini (rasterizer->state->min_x, rasterizer->col_min / CTX_SUBDIV);
-    rasterizer->state->max_x =
-      ctx_maxi (rasterizer->state->max_x, rasterizer->col_max / CTX_SUBDIV);
-    rasterizer->state->min_y =
-      ctx_mini (rasterizer->state->min_y, rasterizer->scan_min / CTX_FULL_AA);
-    rasterizer->state->max_y =
-      ctx_maxi (rasterizer->state->max_y, rasterizer->scan_max / CTX_FULL_AA);
+#if 1
+    rasterizer->state->min_x = ctx_mini (rasterizer->state->min_x, rasterizer->col_min / CTX_SUBDIV);
+    rasterizer->state->max_x = ctx_maxi (rasterizer->state->min_x, rasterizer->col_max / CTX_SUBDIV);
+    rasterizer->state->min_y = ctx_mini (rasterizer->state->min_y, rasterizer->scan_min / CTX_FULL_AA);
+    rasterizer->state->max_y = ctx_maxi (rasterizer->state->max_y, rasterizer->scan_max / CTX_FULL_AA);
+#else
+    if (CTX_UNLIKELY ( rasterizer->col_min / CTX_SUBDIV < rasterizer->state->min_x))
+       rasterizer->state->min_x = rasterizer->col_min / CTX_SUBDIV;
+    if (CTX_UNLIKELY ( rasterizer->col_min / CTX_SUBDIV > rasterizer->state->max_x))
+       rasterizer->state->min_x = rasterizer->col_min / CTX_SUBDIV;
 
+    if (CTX_UNLIKELY ( rasterizer->scan_min / CTX_FULL_AA < rasterizer->state->min_y))
+       rasterizer->state->min_y = rasterizer->scan_min / CTX_FULL_AA;
+    if (CTX_UNLIKELY ( rasterizer->scan_min / CTX_FULL_AA > rasterizer->state->max_y))
+       rasterizer->state->max_y = rasterizer->scan_max / CTX_FULL_AA;
+#endif
+
+#if CTX_RECT_FILL
+  if (rasterizer->edge_list.count == 5)
+    {
+      CtxSegment *entry0 = &(((CtxSegment*)(rasterizer->edge_list.entries)))[0];
+      CtxSegment *entry1 = &(((CtxSegment*)(rasterizer->edge_list.entries)))[1];
+      CtxSegment *entry2 = &(((CtxSegment*)(rasterizer->edge_list.entries)))[2];
+      CtxSegment *entry3 = &(((CtxSegment*)(rasterizer->edge_list.entries)))[3];
+
+      if ((!rasterizer->state->gstate.clipped != 0) &
+          (entry0->data.s16[2] == entry1->data.s16[2]) &
+          (entry0->data.s16[3] == entry3->data.s16[3]) &
+          (entry1->data.s16[3] == entry2->data.s16[3]) &
+          (entry2->data.s16[2] == entry3->data.s16[2])
+#if CTX_ENABLE_SHADOW_BLUR
+           && !rasterizer->in_shadow
+#endif
+         )
+       {
+         if(((entry1->data.s16[2] % (CTX_SUBDIV))  == 0) &
+            ((entry1->data.s16[3] % (CTX_FULL_AA)) == 0) &
+            ((entry3->data.s16[2] % (CTX_SUBDIV))  == 0) &
+            ((entry3->data.s16[3] % (CTX_FULL_AA)) == 0))
+         {
+           /* best-case axis aligned rectangle */
+           int x0 = entry3->data.s16[2] / CTX_SUBDIV;
+           int y0 = entry3->data.s16[3] / CTX_FULL_AA;
+           int x1 = entry1->data.s16[2] / CTX_SUBDIV;
+           int y1 = entry1->data.s16[3] / CTX_FULL_AA;
+
+           ctx_rasterizer_fill_rect (rasterizer, x0, y0, x1, y1, 255);
+           ctx_rasterizer_reset (rasterizer);
+           goto done;
+         }
+        else
+         {
+           float x0 = entry3->data.s16[2] * (1.0f / CTX_SUBDIV);
+           float y0 = entry3->data.s16[3] * (1.0f / CTX_FULL_AA);
+           float x1 = entry1->data.s16[2] * (1.0f / CTX_SUBDIV);
+           float y1 = entry1->data.s16[3] * (1.0f / CTX_FULL_AA);
+
+           x0 = ctx_maxf (x0, blit_x);
+           y0 = ctx_maxf (y0, blit_y);
+           x1 = ctx_minf (x1, blit_x + blit_width);
+           y1 = ctx_minf (y1, blit_y + blit_height);
+
+           uint8_t left = 255-ctx_fmod1f (x0) * 255;
+           uint8_t top  = 255-ctx_fmod1f (y0) * 255;
+           uint8_t right  = ctx_fmod1f (x1) * 255;
+           uint8_t bottom = ctx_fmod1f (y1) * 255;
+
+           x0 = ctx_floorf (x0);
+           y0 = ctx_floorf (y0);
+           x1 = ctx_floorf (x1+7/8.0f);
+           y1 = ctx_floorf (y1+14/15.0f);
+
+           int has_top    = (top < 255);
+           int has_bottom = (bottom <255);
+           int has_right  = (right >0);
+           int has_left   = (left >0);
+
+           int width = x1 - x0;
+
+           if (CTX_LIKELY(width >0))
+           {
+              uint8_t *dst = ( (uint8_t *) rasterizer->buf);
+              uint8_t coverage[width+2];
+              dst += (((int)y0) - blit_y) * blit_stride;
+              dst += ((int)x0) * rasterizer->format->bpp/8;
+
+              if (has_top)
+              {
+                int i = 0;
+                if (has_left)
+                {
+                  coverage[i++] = top * left / 255;
+                }
+                for (int x = x0 + has_left; x < x1 - has_right; x++)
+                  coverage[i++] = top;
+                coverage[i++]= top * right / 255;
+
+                  ctx_rasterizer_apply_coverage (rasterizer,dst,
+                                                 x0,
+                                                 coverage, width);
+                 dst += blit_stride;
+               }
+
+#if 0
+           if (!(
+            (rasterizer->state->gstate.compositing_mode == CTX_COMPOSITE_COPY||
+             rasterizer->state->gstate.compositing_mode == CTX_COMPOSITE_SOURCE_OVER) &&
+             rasterizer->state->gstate.blend_mode == CTX_BLEND_NORMAL &&
+             rasterizer->state->gstate.source_fill.type == CTX_SOURCE_COLOR
+             ))
+           {
+             int i = 0;
+             if (has_left)
+             {
+               coverage[i++] = left;
+             }
+             for (int x = x0 + has_left; x < x1 - has_right; x++)
+               coverage[i++] = 255;
+             coverage[i++] = right;
+
+             for (int ty = y0+has_top; ty < y1-has_bottom; ty++)
+             {
+               ctx_rasterizer_apply_coverage (rasterizer, dst, x0, coverage, width);
+               dst += blit_stride;
+             }
+           }
+           else
+#endif
+           {
+             if (has_left)
+               ctx_rasterizer_fill_rect (rasterizer, x0, y0 + has_top, x0+1, y1 - has_bottom, left);
+             if (has_right)
+               ctx_rasterizer_fill_rect (rasterizer, x1-1, y0 + has_top, x1, y1 - has_bottom, right);
+             x0 += has_left;
+             y0 += has_top;
+             y1 -= has_bottom;
+             x1 -= has_right;
+             ctx_rasterizer_fill_rect (rasterizer, x0,y0,x1,y1,255);
+
+             dst += blit_stride * ((((int)y1)-has_bottom) - (((int)y0)+has_top));
+           }
+
+           if (has_bottom)
+           {
+             int i = 0;
+             if (has_left)
+               coverage[i++] = bottom * left / 255;
+             for (int x = x0 + has_left; x < x1 - has_right; x++)
+               coverage[i++] = bottom;
+             coverage[i++]= bottom * right / 255;
+
+             ctx_rasterizer_apply_coverage (rasterizer,dst, x0, coverage, width);
+           }
+           }
+
+           ctx_rasterizer_reset (rasterizer);
+           goto done;
+         }
+
+       }
+    }
+#endif
     ctx_rasterizer_finish_shape (rasterizer);
 
     uint32_t hash = ctx_rasterizer_poly_to_edges (rasterizer);
@@ -12111,24 +18559,24 @@ ctx_rasterizer_fill (CtxRasterizer *rasterizer)
         int x0 = col_min / CTX_SUBDIV;
         int ymin = y0;
         int x1 = x0 + width;
-        int clip_x_min = rasterizer->blit_x;
-        int clip_x_max = rasterizer->blit_x + rasterizer->blit_width - 1;
-        int clip_y_min = rasterizer->blit_y;
-        int clip_y_max = rasterizer->blit_y + rasterizer->blit_height - 1;
+        int clip_x_min = blit_x;
+        int clip_x_max = blit_x + blit_width - 1;
+        int clip_y_min = blit_y;
+        int clip_y_max = blit_y + blit_height - 1;
 
         int dont_cache = 0;
-        if (x1 >= clip_x_max)
+        if (CTX_UNLIKELY(x1 >= clip_x_max))
           { x1 = clip_x_max;
             dont_cache = 1;
           }
         int xo = 0;
-        if (x0 < clip_x_min)
+        if (CTX_UNLIKELY(x0 < clip_x_min))
           {
             xo = clip_x_min - x0;
             x0 = clip_x_min;
             dont_cache = 1;
           }
-        if (y0 < clip_y_min || y1 >= clip_y_max)
+        if (CTX_UNLIKELY(y0 < clip_y_min || y1 >= clip_y_max))
           dont_cache = 1;
         if (dont_cache || !_ctx_shape_cache_enabled)
         {
@@ -12140,7 +18588,6 @@ ctx_rasterizer_fill (CtxRasterizer *rasterizer)
         }
         else
         {
-
         rasterizer->scanline = scan_min;
         CtxShapeEntry *shape = ctx_shape_entry_find (rasterizer, hash, width, height); 
 
@@ -12151,28 +18598,31 @@ ctx_rasterizer_fill (CtxRasterizer *rasterizer)
             ctx_rasterizer_rasterize_edges (rasterizer, rasterizer->state->gstate.fill_rule, shape);
             rasterizer->clip_buffer = buffer_backup;
           }
-        rasterizer->scanline = scan_min;
 
         int ewidth = x1 - x0;
         if (ewidth>0)
         {
+          rasterizer->scanline = scan_min;
+          int bpp = rasterizer->format->bpp;
           if (rasterizer->clip_buffer && !rasterizer->clip_rectangle)
           {
           uint8_t composite[ewidth];
+          uint8_t *clip_data = (uint8_t*)rasterizer->clip_buffer->data;
+          int shape_width = shape->width;
           for (int y = y0; y < y1; y++)
             {
               if ( (y >= clip_y_min) && (y <= clip_y_max) )
                 {
                     for (int x = 0; x < ewidth; x++)
                     {
-                      int val = shape->data[shape->width * (int)(y-ymin) + xo + x];
+                      int val = shape->data[shape_width * (int)(y-ymin) + xo + x];
                       // XXX : not valid for 1bit clip buffers
-                      val = (val*((uint8_t*)rasterizer->clip_buffer->data) [
-                              ((y-rasterizer->blit_y) * rasterizer->blit_width) + x0 + x])/255;
+                      val = (val*(clip_data) [
+                              ((y-blit_y) * blit_width) + x0 + x])/255;
                       composite[x] = val;
                     }
                     ctx_rasterizer_apply_coverage (rasterizer,
-                                                 ( (uint8_t *) rasterizer->buf) + (y-rasterizer->blit_y) * rasterizer->blit_stride + (int) (x0) * rasterizer->format->bpp/8,
+                                                 ( (uint8_t *) rasterizer->buf) + (y-blit_y) * blit_stride + (int) (x0) * bpp/8,
                                                  x0, // is 0
                                                  composite,
                                                  ewidth );
@@ -12183,10 +18633,10 @@ ctx_rasterizer_fill (CtxRasterizer *rasterizer)
           else
           for (int y = y0; y < y1; y++)
             {
-              if ( (y >= clip_y_min) && (y <= clip_y_max) )
+              if (CTX_LIKELY((y >= clip_y_min) && (y <= clip_y_max) ))
                 {
                     ctx_rasterizer_apply_coverage (rasterizer,
-                                                 ( (uint8_t *) rasterizer->buf) + (y-rasterizer->blit_y) * rasterizer->blit_stride + (int) (x0) * rasterizer->format->bpp/8,
+                                                 ( (uint8_t *) rasterizer->buf) + (y-blit_y) * blit_stride + (int) (x0) * bpp/8,
                                                  x0,
                                                  &shape->data[shape->width * (int) (y-ymin) + xo],
                                                  ewidth );
@@ -12202,19 +18652,23 @@ ctx_rasterizer_fill (CtxRasterizer *rasterizer)
       }
     else
 #endif
+    {
+            
     ctx_rasterizer_rasterize_edges (rasterizer, rasterizer->state->gstate.fill_rule
 #if CTX_SHAPE_CACHE
                                     , NULL
 #endif
                                    );
+    }
   }
-  if (rasterizer->preserve)
+done:
+  if (CTX_UNLIKELY(rasterizer->preserve))
     {
       memcpy (rasterizer->edge_list.entries, temp, sizeof (temp) );
       rasterizer->edge_list.count = count;
     }
 #if CTX_ENABLE_SHADOW_BLUR
-  if (rasterizer->in_shadow)
+  if (CTX_UNLIKELY(rasterizer->in_shadow))
   {
     rasterizer->scan_min -= rasterizer->shadow_y * CTX_FULL_AA;
     rasterizer->scan_max -= rasterizer->shadow_y * CTX_FULL_AA;
@@ -12366,17 +18820,18 @@ ctx_rasterizer_set_font (CtxRasterizer *rasterizer, const char *font_name)
 
 static void
 ctx_rasterizer_arc (CtxRasterizer *rasterizer,
-                    float        x,
-                    float        y,
-                    float        radius,
-                    float        start_angle,
-                    float        end_angle,
-                    int          anticlockwise)
+                    float          x,
+                    float          y,
+                    float          radius,
+                    float          start_angle,
+                    float          end_angle,
+                    int            anticlockwise)
 {
   int full_segments = CTX_RASTERIZER_MAX_CIRCLE_SEGMENTS;
-  full_segments = radius * CTX_PI * 2;
+  full_segments = radius * CTX_PI * 2 / 4.0;
   if (full_segments > CTX_RASTERIZER_MAX_CIRCLE_SEGMENTS)
     { full_segments = CTX_RASTERIZER_MAX_CIRCLE_SEGMENTS; }
+  if (full_segments < 24) full_segments = 24;
   float step = CTX_PI*2.0/full_segments;
   int steps;
 
@@ -12517,7 +18972,7 @@ static void
 ctx_rasterizer_stroke_1px (CtxRasterizer *rasterizer)
 {
   int count = rasterizer->edge_list.count;
-  CtxEntry *temp = rasterizer->edge_list.entries;
+  CtxSegment *temp = (CtxSegment*)rasterizer->edge_list.entries;
   float prev_x = 0.0f;
   float prev_y = 0.0f;
   int aa = 15;//rasterizer->aa;
@@ -12533,7 +18988,7 @@ ctx_rasterizer_stroke_1px (CtxRasterizer *rasterizer)
       int i;
       for (i = start; i < count; i++)
         {
-          CtxEntry *entry = &temp[i];
+          CtxSegment *entry = &temp[i];
           float x, y;
           if (entry->code == CTX_NEW_EDGE)
             {
@@ -12583,40 +19038,115 @@ foo:
 static void
 ctx_rasterizer_stroke (CtxRasterizer *rasterizer)
 {
-  CtxSource source_backup = rasterizer->state->gstate.source_fill;
-  if (rasterizer->state->gstate.source_stroke.type != CTX_SOURCE_INHERIT_FILL)
-    rasterizer->state->gstate.source_fill = rasterizer->state->gstate.source_stroke;
-  CtxState *state = rasterizer->state;
+  CtxGState *gstate = &rasterizer->state->gstate;
+  CtxSource source_backup;
+  if (gstate->source_stroke.type != CTX_SOURCE_INHERIT_FILL)
+  {
+    source_backup = gstate->source_fill;
+    gstate->source_fill = rasterizer->state->gstate.source_stroke;
+  }
   int count = rasterizer->edge_list.count;
   int preserved = rasterizer->preserve;
-  float factor = ctx_matrix_get_scale (&state->gstate.transform);
+  float factor = ctx_matrix_get_scale (&gstate->transform);
+  float line_width = gstate->line_width * factor;
 
-  int aa = 15;//rasterizer->aa;
-  CtxEntry temp[count]; /* copy of already built up path's poly line  */
+  CtxSegment temp[count]; /* copy of already built up path's poly line  */
   memcpy (temp, rasterizer->edge_list.entries, sizeof (temp) );
-#if 1
-  if (rasterizer->state->gstate.line_width * factor <= 0.0f &&
-      rasterizer->state->gstate.line_width * factor > -10.0f)
+
+#if CTX_RECT_FILL
+  if (rasterizer->edge_list.count == 5)
+    {
+      CtxSegment *entry0 = &((CtxSegment*)rasterizer->edge_list.entries)[0];
+      CtxSegment *entry1 = &((CtxSegment*)rasterizer->edge_list.entries)[1];
+      CtxSegment *entry2 = &((CtxSegment*)rasterizer->edge_list.entries)[2];
+      CtxSegment *entry3 = &((CtxSegment*)rasterizer->edge_list.entries)[3];
+      //fprintf (stderr, "{%i %.2f %.2f}", lw, lwmod, line_width);
+
+      if (!rasterizer->state->gstate.clipped &&
+          (entry0->data.s16[2] == entry1->data.s16[2]) &&
+          (entry0->data.s16[3] == entry3->data.s16[3]) &&
+          (entry1->data.s16[3] == entry2->data.s16[3]) &&
+          (entry2->data.s16[2] == entry3->data.s16[2])
+#if CTX_ENABLE_SHADOW_BLUR
+           && !rasterizer->in_shadow
+#endif
+         )
+       {
+      float lwmod = ctx_fmod1f (line_width);
+      int lw = ctx_floorf (line_width + 0.5f);
+      int is_compat_even = (lw % 2 == 0) && (lwmod < 0.1); // only even linewidths implemented properly
+      int is_compat_odd = (lw % 2 == 1) && (lwmod < 0.1); // only even linewidths implemented properly
+
+      int off_x = 0;
+      int off_y = 0;
+
+
+      if (is_compat_odd)
+      {
+        off_x = CTX_SUBDIV/2;
+        off_y = CTX_FULL_AA/2;
+      }
+
+      if((is_compat_odd || is_compat_even) &&
+         (((entry1->data.s16[2]-off_x) % (CTX_SUBDIV))  == 0)  &&
+         (((entry1->data.s16[3]-off_y) % (CTX_FULL_AA)) == 0) &&
+         (((entry3->data.s16[2]-off_x) % (CTX_SUBDIV))  == 0)  &&
+         (((entry3->data.s16[3]-off_y) % (CTX_FULL_AA)) == 0))
+      {
+        float x0 = entry3->data.s16[2] * 1.0f / CTX_SUBDIV;
+        float y0 = entry3->data.s16[3] * 1.0f / CTX_FULL_AA;
+        float x1 = entry1->data.s16[2] * 1.0f / CTX_SUBDIV;
+        float y1 = entry1->data.s16[3] * 1.0f / CTX_FULL_AA;
+
+        int bw = lw/2+1;
+        int bwb = lw/2;
+
+        if (is_compat_even)
+        {
+          bw = lw/2;
+        }
+        ctx_rasterizer_fill_rect (rasterizer, x0-bwb, y0-bwb, x1+bw, y0+bw, 255);
+        ctx_rasterizer_fill_rect (rasterizer, x0-bwb, y1-bwb, x1-bwb, y1+bw, 255);
+        ctx_rasterizer_fill_rect (rasterizer, x0-bwb, y0, x0+bw, y1, 255);
+        ctx_rasterizer_fill_rect (rasterizer, x1-bwb, y0, x1+bw, y1+bw, 255);
+        ctx_rasterizer_reset (rasterizer);
+        goto done;
+      }
+       }
+    }
+#endif
+  
+    {
+
+  int aa = CTX_FULL_AA;
+#if 0
+  if (CTX_UNLIKELY(gstate->line_width * factor <= 0.0f &&
+      gstate->line_width * factor > -10.0f))
     {
       ctx_rasterizer_stroke_1px (rasterizer);
     }
   else
 #endif
     {
-      factor *= 0.86; /* this hack adjustment makes sharp 1px and 2px strokewidths
-                            end up sharp without erronious AA
-                       */
+      if (line_width < 5.0f)
+      {
+      factor *= 0.89; /* this hack adjustment makes sharp 1px and 2px strokewidths
+      //                 end up sharp without erronious AA; we seem to be off by
+      //                 one somewhere else, causing the need for this
+      //                 */
+      line_width *= 0.89f;
+      }
       ctx_rasterizer_reset (rasterizer); /* then start afresh with our stroked shape  */
-      CtxMatrix transform_backup = rasterizer->state->gstate.transform;
-      ctx_matrix_identity (&rasterizer->state->gstate.transform);
+      CtxMatrix transform_backup = gstate->transform;
+      _ctx_matrix_identity (&gstate->transform);
       float prev_x = 0.0f;
       float prev_y = 0.0f;
-      float half_width_x = rasterizer->state->gstate.line_width * factor/2;
-      float half_width_y = rasterizer->state->gstate.line_width * factor/2;
-      if (rasterizer->state->gstate.line_width <= 0.0f)
-        {
-          half_width_x = .5;
-          half_width_y = .5;
+      float half_width_x = line_width/2;
+      float half_width_y = line_width/2;
+      if (CTX_UNLIKELY(line_width <= 0.0f))
+        { // makes 0 width be hairline
+          half_width_x = .5f;
+          half_width_y = .5f;
         }
       int start = 0;
       int end   = 0;
@@ -12626,11 +19156,11 @@ ctx_rasterizer_stroke (CtxRasterizer *rasterizer)
           int i;
           for (i = start; i < count; i++)
             {
-              CtxEntry *entry = &temp[i];
+              CtxSegment *entry = &temp[i];
               float x, y;
-              if (entry->code == CTX_NEW_EDGE)
+              if (CTX_UNLIKELY(entry->code == CTX_NEW_EDGE))
                 {
-                  if (started)
+                  if (CTX_LIKELY(started))
                     {
                       end = i - 1;
                       goto foo;
@@ -12645,11 +19175,12 @@ ctx_rasterizer_stroke (CtxRasterizer *rasterizer)
               float dx = x - prev_x;
               float dy = y - prev_y;
               float length = ctx_fast_hypotf (dx, dy);
-              if (length>0.001f)
+              if (CTX_LIKELY(length>0.001f))
                 {
-                  dx = dx/length * half_width_x;
-                  dy = dy/length * half_width_y;
-                  if (entry->code == CTX_NEW_EDGE)
+                  float recip_length = 1.0/length;
+                  dx = dx * recip_length * half_width_x;
+                  dy = dy * recip_length * half_width_y;
+                  if (CTX_UNLIKELY(entry->code == CTX_NEW_EDGE))
                     {
                       ctx_rasterizer_finish_shape (rasterizer);
                       ctx_rasterizer_move_to (rasterizer, prev_x+dy, prev_y-dx);
@@ -12672,16 +19203,17 @@ ctx_rasterizer_stroke (CtxRasterizer *rasterizer)
 foo:
           for (int i = end; i >= start; i--)
             {
-              CtxEntry *entry = &temp[i];
+              CtxSegment *entry = &temp[i];
               float x, y, dx, dy;
               x = entry->data.s16[2] * 1.0f / CTX_SUBDIV;
               y = entry->data.s16[3] * 1.0f / aa;
               dx = x - prev_x;
               dy = y - prev_y;
               float length = ctx_fast_hypotf (dx, dy);
-              dx = dx/length * half_width_x;
-              dy = dy/length * half_width_y;
-              if (length>0.001f)
+              float recip_length = 1.0f/length;
+              dx = dx * recip_length * half_width_x;
+              dy = dy * recip_length * half_width_y;
+              if (CTX_LIKELY(length>0.001f))
                 {
                   ctx_rasterizer_line_to (rasterizer, prev_x-dy, prev_y+dx);
                   // XXX possible miter line-to
@@ -12690,17 +19222,18 @@ foo:
                 }
               prev_x = x;
               prev_y = y;
-              if (entry->code == CTX_NEW_EDGE)
+              if (CTX_UNLIKELY(entry->code == CTX_NEW_EDGE))
                 {
                   x = entry->data.s16[0] * 1.0f / CTX_SUBDIV;
                   y = entry->data.s16[1] * 1.0f / aa;
                   dx = x - prev_x;
                   dy = y - prev_y;
                   length = ctx_fast_hypotf (dx, dy);
-                  if (length>0.001f)
+                  recip_length = 1.0f/length;
+                  if (CTX_LIKELY(length>0.001f))
                     {
-                      dx = dx / length * half_width_x;
-                      dy = dy / length * half_width_y;
+                      dx = dx * recip_length * half_width_x;
+                      dy = dy * recip_length * half_width_y;
                       ctx_rasterizer_line_to (rasterizer, prev_x-dy, prev_y+dx);
                       ctx_rasterizer_line_to (rasterizer, x-dy, y+dx);
                     }
@@ -12714,7 +19247,7 @@ foo:
           start = end+1;
         }
       ctx_rasterizer_finish_shape (rasterizer);
-      switch (rasterizer->state->gstate.line_cap)
+      switch (gstate->line_cap)
         {
           case CTX_CAP_SQUARE: // XXX: incorrect - if rectangles were in
                                //                  reverse order - rotation would be off
@@ -12724,8 +19257,8 @@ foo:
               int has_prev = 0;
               for (int i = 0; i < count; i++)
                 {
-                  CtxEntry *entry = &temp[i];
-                  if (entry->code == CTX_NEW_EDGE)
+                  CtxSegment *entry = &temp[i];
+                  if (CTX_UNLIKELY(entry->code == CTX_NEW_EDGE))
                     {
                       if (has_prev)
                         {
@@ -12753,8 +19286,8 @@ foo:
               int has_prev = 0;
               for (int i = 0; i < count; i++)
                 {
-                  CtxEntry *entry = &temp[i];
-                  if (entry->code == CTX_NEW_EDGE)
+                  CtxSegment *entry = &temp[i];
+                  if (CTX_UNLIKELY(entry->code == CTX_NEW_EDGE))
                     {
                       if (has_prev)
                         {
@@ -12776,7 +19309,7 @@ foo:
               break;
             }
         }
-      switch (rasterizer->state->gstate.line_join)
+      switch (gstate->line_join)
         {
           case CTX_JOIN_BEVEL:
           case CTX_JOIN_MITER:
@@ -12786,10 +19319,10 @@ foo:
               float x = 0, y = 0;
               for (int i = 0; i < count-1; i++)
                 {
-                  CtxEntry *entry = &temp[i];
+                  CtxSegment *entry = &temp[i];
                   x = entry->data.s16[2] * 1.0f / CTX_SUBDIV;
                   y = entry->data.s16[3] * 1.0f / aa;
-                  if (entry[1].code == CTX_EDGE)
+                  if (CTX_UNLIKELY(entry[1].code == CTX_EDGE))
                     {
                       ctx_rasterizer_arc (rasterizer, x, y, half_width_x, CTX_PI*2, 0, 1);
                       ctx_rasterizer_finish_shape (rasterizer);
@@ -12798,21 +19331,23 @@ foo:
               break;
             }
         }
-      CtxFillRule rule_backup = rasterizer->state->gstate.fill_rule;
-      rasterizer->state->gstate.fill_rule = CTX_FILL_RULE_WINDING;
+      CtxFillRule rule_backup = gstate->fill_rule;
+      gstate->fill_rule = CTX_FILL_RULE_WINDING;
       rasterizer->preserve = 0; // so fill isn't tripped
       ctx_rasterizer_fill (rasterizer);
-      rasterizer->state->gstate.fill_rule = rule_backup;
-      //rasterizer->state->gstate.source = source_backup;
-      rasterizer->state->gstate.transform = transform_backup;
+      gstate->fill_rule = rule_backup;
+      gstate->transform = transform_backup;
     }
+  }
+done:
   if (preserved)
     {
       memcpy (rasterizer->edge_list.entries, temp, sizeof (temp) );
       rasterizer->edge_list.count = count;
       rasterizer->preserve = 0;
     }
-  rasterizer->state->gstate.source_fill = source_backup;
+  if (gstate->source_stroke.type != CTX_SOURCE_INHERIT_FILL)
+    gstate->source_fill = source_backup;
 }
 
 #if CTX_1BIT_CLIP
@@ -12839,7 +19374,7 @@ ctx_rasterizer_clip_reset (CtxRasterizer *rasterizer)
 
 static void
 ctx_rasterizer_clip_apply (CtxRasterizer *rasterizer,
-                           CtxEntry      *edges)
+                           CtxSegment    *edges)
 {
   int count = edges[0].data.u32[0];
 
@@ -12857,7 +19392,7 @@ ctx_rasterizer_clip_apply (CtxRasterizer *rasterizer,
 
   for (int i = 0; i < count; i++)
     {
-      CtxEntry *entry = &edges[i+1];
+      CtxSegment *entry = &edges[i+1];
       float x, y;
       if (entry->code == CTX_NEW_EDGE)
         {
@@ -12885,15 +19420,17 @@ ctx_rasterizer_clip_apply (CtxRasterizer *rasterizer,
 #if CTX_ENABLE_CLIP
 
   if ((rasterizer->clip_rectangle==1
-                          || !rasterizer->clip_buffer)
-                  )
-  //  XXX  disabled, it makes clip test fail, a lot of unneded work
-  //  can be skipped here.
+       || !rasterizer->clip_buffer)
+      )
   {
-    if (count == 6)
+    if (count == 5)
     {
-      if (coords[3][0] == coords[5][0] &&
-          coords[3][1] == coords[5][1])
+      if (coords[0][0] == coords[1][0] &&
+          coords[0][1] == coords[4][1] &&
+          coords[0][1] == coords[3][1] &&
+          coords[1][1] == coords[2][1] &&
+          coords[3][0] == coords[4][0]
+          )
       {
 #if 0
         printf ("%d,%d %dx%d\n", minx, miny,
@@ -12932,6 +19469,20 @@ ctx_rasterizer_clip_apply (CtxRasterizer *rasterizer,
 
          return;
       }
+#if 0
+      else
+      {
+        printf ("%d,%d %dx%d  0,0:%.2f 0,1:%.2f 1,0:%.2f 11:%.2f 20:%.2f 21:%2.f 30:%.2f 31:%.2f 40:%.2f 41:%.2f\n", minx, miny,
+                                       maxx-minx+1, maxy-miny+1
+                                       
+         ,coords[0][0] ,  coords[0][1]
+         ,coords[1][0] ,  coords[1][1]
+         ,coords[2][0] ,  coords[2][1]
+         ,coords[3][0] ,  coords[3][1]
+         ,coords[4][0] ,  coords[4][1]
+         );
+      }
+#endif
     }
   }
   rasterizer->clip_rectangle = 0;
@@ -12953,9 +19504,9 @@ ctx_rasterizer_clip_apply (CtxRasterizer *rasterizer,
     clip_buffer = rasterizer->clip_buffer;
     we_made_it = 1;
     if (CTX_CLIP_FORMAT == CTX_FORMAT_GRAY1)
-    memset (rasterizer->clip_buffer->data, 0, blit_width * blit_height/8);
+      memset (rasterizer->clip_buffer->data, 0, blit_width * blit_height/8);
     else
-    memset (rasterizer->clip_buffer->data, 0, blit_width * blit_height);
+      memset (rasterizer->clip_buffer->data, 0, blit_width * blit_height);
   }
   else
   {
@@ -12974,7 +19525,7 @@ ctx_rasterizer_clip_apply (CtxRasterizer *rasterizer,
 
   for (int i = 0; i < count; i++)
     {
-      CtxEntry *entry = &edges[i+1];
+      CtxSegment *entry = &edges[i+1];
       float x, y;
       if (entry->code == CTX_NEW_EDGE)
         {
@@ -13124,7 +19675,7 @@ static void
 ctx_rasterizer_clip (CtxRasterizer *rasterizer)
 {
   int count = rasterizer->edge_list.count;
-  CtxEntry temp[count+1]; /* copy of already built up path's poly line  */
+  CtxSegment temp[count+1]; /* copy of already built up path's poly line  */
   rasterizer->state->has_clipped=1;
   rasterizer->state->gstate.clipped=1;
   //if (rasterizer->preserve)
@@ -13171,7 +19722,7 @@ ctx_rasterizer_rectangle (CtxRasterizer *rasterizer,
   ctx_rasterizer_rel_line_to (rasterizer, 0, height);
   ctx_rasterizer_rel_line_to (rasterizer, -width, 0);
   ctx_rasterizer_rel_line_to (rasterizer, 0, -height);
-  ctx_rasterizer_rel_line_to (rasterizer, width/2, 0);
+  //ctx_rasterizer_rel_line_to (rasterizer, width/2, 0);
   ctx_rasterizer_finish_shape (rasterizer);
 }
 
@@ -13186,6 +19737,7 @@ ctx_rasterizer_set_pixel (CtxRasterizer *rasterizer,
 {
   rasterizer->state->gstate.source_fill.type = CTX_SOURCE_COLOR;
   ctx_color_set_RGBA8 (rasterizer->state, &rasterizer->state->gstate.source_fill.color, r, g, b, a);
+  rasterizer->comp_op = NULL;
 #if 0
   // XXX : doesn't take transforms into account - and has
   // received less testing than code paths part of protocol,
@@ -13233,14 +19785,15 @@ ctx_rasterizer_round_rectangle (CtxRasterizer *rasterizer, float x, float y, flo
   float radius  = corner_radius / aspect;
   float degrees = CTX_PI / 180.0f;
 
-  if (radius > width/2) radius = width/2;
-  if (radius > height/2) radius = height/2;
+  if (radius > width*0.5f) radius = width/2;
+  if (radius > height*0.5f) radius = height/2;
 
   ctx_rasterizer_finish_shape (rasterizer);
   ctx_rasterizer_arc (rasterizer, x + width - radius, y + radius, radius, -90 * degrees, 0 * degrees, 0);
   ctx_rasterizer_arc (rasterizer, x + width - radius, y + height - radius, radius, 0 * degrees, 90 * degrees, 0);
   ctx_rasterizer_arc (rasterizer, x + radius, y + height - radius, radius, 90 * degrees, 180 * degrees, 0);
   ctx_rasterizer_arc (rasterizer, x + radius, y + radius, radius, 180 * degrees, 270 * degrees, 0);
+
   ctx_rasterizer_finish_shape (rasterizer);
 }
 
@@ -13297,8 +19850,8 @@ ctx_rasterizer_end_group (CtxRasterizer *rasterizer)
   ctx_rasterizer_process (rasterizer, (CtxCommand*)&save_command);
   CtxEntry set_state[3]=
   {
-    ctx_u8 (CTX_COMPOSITING_MODE, comp,  0,0,0,0,0,0,0),
-    ctx_u8 (CTX_BLEND_MODE,       blend, 0,0,0,0,0,0,0),
+    ctx_u32 (CTX_COMPOSITING_MODE, comp,  0),
+    ctx_u32 (CTX_BLEND_MODE,       blend, 0),
     ctx_f  (CTX_GLOBAL_ALPHA,     global_alpha, 0.0)
   };
   ctx_rasterizer_process (rasterizer, (CtxCommand*)&set_state[0]);
@@ -13323,7 +19876,7 @@ ctx_rasterizer_end_group (CtxRasterizer *rasterizer)
                   (uint8_t*)rasterizer->group[no]->data,
                   NULL, NULL);
   {
-     char *eid = ".ctx-group";
+     const char *eid = ".ctx-group";
      int   eid_len = strlen (eid);
 
      CtxEntry commands[4] =
@@ -13522,7 +20075,7 @@ ctx_rasterizer_process (void *user_data, CtxCommand *command)
   CtxState *state = rasterizer->state;
   CtxCommand *c = (CtxCommand *) entry;
   int clear_clip = 0;
-  ctx_interpret_style (rasterizer->state, entry, NULL);
+  ctx_interpret_style (state, entry, NULL);
   switch (c->code)
     {
 #if CTX_ENABLE_SHADOW_BLUR
@@ -13632,11 +20185,20 @@ ctx_rasterizer_process (void *user_data, CtxCommand *command)
                                          c->define_texture.format,
                                          pixel_data);
           rasterizer->comp_op = NULL;
+          rasterizer->fragment = NULL;
         }
         break;
       case CTX_TEXTURE:
         ctx_rasterizer_set_texture (rasterizer, c->texture.eid,
                                     c->texture.x, c->texture.y);
+        rasterizer->comp_op = NULL;
+        rasterizer->fragment = NULL;
+        break;
+      case CTX_SOURCE_TRANSFORM:
+        ctx_matrix_set (&state->gstate.source_fill.set_transform,
+                        ctx_arg_float (0), ctx_arg_float (1),
+                        ctx_arg_float (2), ctx_arg_float (3),
+                        ctx_arg_float (4), ctx_arg_float (5));
         rasterizer->comp_op = NULL;
         break;
 #if 0
@@ -13659,11 +20221,11 @@ ctx_rasterizer_process (void *user_data, CtxCommand *command)
         }
         break;
       case CTX_LINEAR_GRADIENT:
-        ctx_state_gradient_clear_stops (rasterizer->state);
+        ctx_state_gradient_clear_stops (state);
         rasterizer->comp_op = NULL;
         break;
       case CTX_RADIAL_GRADIENT:
-        ctx_state_gradient_clear_stops (rasterizer->state);
+        ctx_state_gradient_clear_stops (state);
         rasterizer->comp_op = NULL;
         break;
 #endif
@@ -13674,6 +20236,7 @@ ctx_rasterizer_process (void *user_data, CtxCommand *command)
       case CTX_COMPOSITING_MODE:
       case CTX_BLEND_MODE:
         rasterizer->comp_op = NULL;
+        //_ctx_setup_compositor (rasterizer);
         break;
 #if CTX_COMPOSITING_GROUPS
       case CTX_START_GROUP:
@@ -13701,7 +20264,7 @@ ctx_rasterizer_process (void *user_data, CtxCommand *command)
       case CTX_SAVE:
         rasterizer->comp_op = NULL;
         rasterizer->uses_transforms = 1;
-        ctx_interpret_transforms (rasterizer->state, entry, NULL);
+        ctx_interpret_transforms (state, entry, NULL);
         if (clear_clip)
         {
           ctx_rasterizer_clip_reset (rasterizer);
@@ -13713,7 +20276,7 @@ ctx_rasterizer_process (void *user_data, CtxCommand *command)
             int idx = ctx_float_to_string_index (state->keydb[i].value);
             if (idx >=0)
             {
-              CtxEntry *edges = (CtxEntry*)&state->stringpool[idx];
+              CtxSegment *edges = (CtxSegment*)&state->stringpool[idx];
               ctx_rasterizer_clip_apply (rasterizer, edges);
             }
           }
@@ -13722,24 +20285,25 @@ ctx_rasterizer_process (void *user_data, CtxCommand *command)
         break;
       case CTX_STROKE:
 #if CTX_ENABLE_SHADOW_BLUR
-        if (rasterizer->state->gstate.shadow_blur > 0.0 &&
+        if (state->gstate.shadow_blur > 0.0 &&
             !rasterizer->in_text)
           ctx_rasterizer_shadow_stroke (rasterizer);
 #endif
-        if (rasterizer->state->gstate.n_dashes)
         {
-          int n_dashes = rasterizer->state->gstate.n_dashes;
-          float *dashes = rasterizer->state->gstate.dashes;
+        int count = rasterizer->edge_list.count;
+        if (state->gstate.n_dashes)
+        {
+          int n_dashes = state->gstate.n_dashes;
+          float *dashes = state->gstate.dashes;
           float factor = ctx_matrix_get_scale (&state->gstate.transform);
 
-          int count = rasterizer->edge_list.count;
           int aa = 15;//rasterizer->aa;
-          CtxEntry temp[count]; /* copy of already built up path's poly line  */
+          CtxSegment temp[count]; /* copy of already built up path's poly line  */
           memcpy (temp, rasterizer->edge_list.entries, sizeof (temp));
           int start = 0;
           int end   = 0;
-      CtxMatrix transform_backup = rasterizer->state->gstate.transform;
-      ctx_matrix_identity (&rasterizer->state->gstate.transform);
+      CtxMatrix transform_backup = state->gstate.transform;
+      _ctx_matrix_identity (&state->gstate.transform);
       ctx_rasterizer_reset (rasterizer); /* for dashing we create
                                             a dashed path to stroke */
       float prev_x = 0.0f;
@@ -13747,7 +20311,7 @@ ctx_rasterizer_process (void *user_data, CtxCommand *command)
       float pos = 0.0;
 
       int   dash_no  = 0.0;
-      float dash_lpos = rasterizer->state->gstate.line_dash_offset * factor;
+      float dash_lpos = state->gstate.line_dash_offset * factor;
       int   is_down = 0;
 
           while (start < count)
@@ -13758,7 +20322,7 @@ ctx_rasterizer_process (void *user_data, CtxCommand *command)
 
             if (!is_down)
             {
-              CtxEntry *entry = &temp[0];
+              CtxSegment *entry = &temp[0];
               prev_x = entry->data.s16[0] * 1.0f / CTX_SUBDIV;
               prev_y = entry->data.s16[1] * 1.0f / aa;
               ctx_rasterizer_move_to (rasterizer, prev_x, prev_y);
@@ -13768,7 +20332,7 @@ ctx_rasterizer_process (void *user_data, CtxCommand *command)
 
             for (i = start; i < count; i++)
             {
-              CtxEntry *entry = &temp[i];
+              CtxSegment *entry = &temp[i];
               float x, y;
               if (entry->code == CTX_NEW_EDGE)
                 {
@@ -13794,7 +20358,6 @@ again:
               float dx = x - prev_x;
               float dy = y - prev_y;
               float length = ctx_fast_hypotf (dx, dy);
-
 
               if (dash_lpos + length >= dashes[dash_no] * factor)
               {
@@ -13834,10 +20397,11 @@ again:
 foo:
           start = end+1;
         }
-      rasterizer->state->gstate.transform = transform_backup;
+        state->gstate.transform = transform_backup;
+        }
+        ctx_rasterizer_stroke (rasterizer);
         }
 
-        ctx_rasterizer_stroke (rasterizer);
         break;
       case CTX_FONT:
         ctx_rasterizer_set_font (rasterizer, ctx_arg_string() );
@@ -13845,7 +20409,7 @@ foo:
       case CTX_TEXT:
         rasterizer->in_text++;
 #if CTX_ENABLE_SHADOW_BLUR
-        if (rasterizer->state->gstate.shadow_blur > 0.0)
+        if (state->gstate.shadow_blur > 0.0)
           ctx_rasterizer_shadow_text (rasterizer, ctx_arg_string ());
 #endif
         ctx_rasterizer_text (rasterizer, ctx_arg_string(), 0);
@@ -13861,7 +20425,7 @@ foo:
         break;
       case CTX_FILL:
 #if CTX_ENABLE_SHADOW_BLUR
-        if (rasterizer->state->gstate.shadow_blur > 0.0 &&
+        if (state->gstate.shadow_blur > 0.0 &&
             !rasterizer->in_text)
           ctx_rasterizer_shadow_fill (rasterizer);
 #endif
@@ -13877,8 +20441,11 @@ foo:
       case CTX_CLOSE_PATH:
         ctx_rasterizer_finish_shape (rasterizer);
         break;
+      case CTX_IMAGE_SMOOTHING:
+        rasterizer->comp_op = NULL;
+        break;
     }
-  ctx_interpret_pos_bare (rasterizer->state, entry, NULL);
+  ctx_interpret_pos_bare (state, entry, NULL);
 }
 
 void
@@ -13920,7 +20487,7 @@ CtxAntialias ctx_get_antialias (Ctx *ctx)
   {
     case 1: return CTX_ANTIALIAS_NONE;
     case 3: return CTX_ANTIALIAS_FAST;
-    case 5: return CTX_ANTIALIAS_GOOD;
+    //case 5: return CTX_ANTIALIAS_GOOD;
     default:
     case 15: return CTX_ANTIALIAS_DEFAULT;
     case 17: return CTX_ANTIALIAS_BEST;
@@ -13959,14 +20526,10 @@ ctx_set_antialias (Ctx *ctx, CtxAntialias antialias)
 
   ((CtxRasterizer*)(ctx->renderer))->aa = 
      _ctx_antialias_to_aa (antialias);
-/* vertical level of supersampling at full/forced AA.
- *
- * 1 is none, 3 is fast 5 is good 15 or 17 is best for 8bit
- *
- * valid values:  - for other values we do not add up to 255
- * 3 5 15 17 51
- *
- */
+  ((CtxRasterizer*)(ctx->renderer))->fast_aa = 0;
+  if (antialias == CTX_ANTIALIAS_DEFAULT||
+      antialias == CTX_ANTIALIAS_FAST)
+    ((CtxRasterizer*)(ctx->renderer))->fast_aa = 1;
 }
 
 CtxRasterizer *
@@ -13979,14 +20542,16 @@ ctx_rasterizer_init (CtxRasterizer *rasterizer, Ctx *ctx, Ctx *texture_source, C
   if (rasterizer->edge_list.size)
     ctx_drawlist_deinit (&rasterizer->edge_list);
 
-  ctx_memset (rasterizer, 0, sizeof (CtxRasterizer) );
+  memset (rasterizer, 0, sizeof (CtxRasterizer) );
   rasterizer->vfuncs.process = ctx_rasterizer_process;
   rasterizer->vfuncs.free    = (CtxDestroyNotify)ctx_rasterizer_deinit;
   rasterizer->edge_list.flags |= CTX_DRAWLIST_EDGE_LIST;
   rasterizer->state       = state;
   rasterizer->ctx         = ctx;
   rasterizer->texture_source = texture_source?texture_source:ctx;
+
   rasterizer->aa          = _ctx_antialias_to_aa (antialias);
+  rasterizer->fast_aa = (antialias == CTX_ANTIALIAS_DEFAULT||antialias == CTX_ANTIALIAS_FAST);
   ctx_state_init (rasterizer->state);
   rasterizer->buf         = data;
   rasterizer->blit_x      = x;
@@ -14000,6 +20565,13 @@ ctx_rasterizer_init (CtxRasterizer *rasterizer, Ctx *ctx, Ctx *texture_source, C
   rasterizer->blit_stride = stride;
   rasterizer->scan_min    = 5000;
   rasterizer->scan_max    = -5000;
+
+  if (pixel_format == CTX_FORMAT_BGRA8)
+  {
+    pixel_format = CTX_FORMAT_RGBA8;
+    rasterizer->swap_red_green = 1;
+  }
+
   rasterizer->format = ctx_pixel_format_info (pixel_format);
 
   return rasterizer;
@@ -14044,29 +20616,9 @@ CtxRasterizer *ctx_rasterizer_new (void *data, int x, int y, int width, int heig
 }
 #endif
 
-CtxPixelFormatInfo *ctx_pixel_formats = NULL;
-
-extern CtxPixelFormatInfo ctx_pixel_formats_default[];
-
-
 CtxPixelFormatInfo *
-ctx_pixel_format_info (CtxPixelFormat format)
-{
-  if (!ctx_pixel_formats)
-  {
-    ctx_pixel_formats = ctx_pixel_formats_default;
+ctx_pixel_format_info (CtxPixelFormat format);
 
-  }
-
-  for (unsigned int i = 0; ctx_pixel_formats[i].pixel_format; i++)
-    {
-      if (ctx_pixel_formats[i].pixel_format == format)
-        {
-          return &ctx_pixel_formats[i];
-        }
-    }
-  return NULL;
-}
 #else
 
 CtxPixelFormatInfo *
@@ -14110,7 +20662,7 @@ float ctx_y (Ctx *ctx)
   return y;
 }
 
-void
+static void
 ctx_process (Ctx *ctx, CtxEntry *entry)
 {
 #if CTX_CURRENT_PATH
@@ -14149,7 +20701,14 @@ ctx_process (Ctx *ctx, CtxEntry *entry)
         break;
     }
 #endif
-  if (ctx->renderer && ctx->renderer->process)
+#if CTX_RASTERIZER
+  if (CTX_LIKELY(ctx->renderer && ctx->renderer->process == ctx_rasterizer_process))
+    {
+      ctx_rasterizer_process (ctx->renderer, (CtxCommand *) entry);
+    }
+  else
+#endif
+  if (CTX_LIKELY(ctx->renderer && ctx->renderer->process))
     {
       ctx->renderer->process (ctx->renderer, (CtxCommand *) entry);
     }
@@ -14178,8 +20737,6 @@ ctx_state_gradient_clear_stops (CtxState *state)
   state->gradient.n_stops = 0;
 }
 
-uint8_t ctx_gradient_cache_u8[CTX_GRADIENT_CACHE_ELEMENTS][4];
-uint8_t ctx_gradient_cache_u8_a[CTX_GRADIENT_CACHE_ELEMENTS][4];
 
 /****  end of engine ****/
 
@@ -14232,7 +20789,11 @@ CtxBuffer *ctx_buffer_new (int width, int height,
   //CtxPixelFormatInfo *info = ctx_pixel_format_info (pixel_format);
   CtxBuffer *buffer = ctx_buffer_new_bare ();
   int stride = ctx_pixel_format_get_stride (pixel_format, width);
-  uint8_t *pixels = (uint8_t*)ctx_calloc (stride, height + 1);
+  int data_len = stride * height;
+  if (pixel_format == CTX_FORMAT_YUV420)
+    data_len = width * height + ((width/2) * (height/2)) * 2;
+
+  uint8_t *pixels = (uint8_t*)ctx_calloc (data_len, 1);
 
   ctx_buffer_set_data (buffer, pixels, width, height, stride, pixel_format,
                        ctx_buffer_pixels_free, NULL);
@@ -14331,10 +20892,15 @@ const char* ctx_texture_init (Ctx           *ctx,
     stride = ctx_pixel_format_get_stride ((CtxPixelFormat)format, width);
   }
 
+  int data_len = stride * height;
+  if (format == CTX_FORMAT_YUV420)
+          data_len = width * height +
+                  2 * ((width/2)*(height/2));
+
   if (freefunc == ctx_buffer_pixels_free && user_data == (void*)23)
   {
-     uint8_t *tmp = (uint8_t*)malloc (height * stride);
-     memcpy (tmp, pixels, height * stride);
+     uint8_t *tmp = (uint8_t*)malloc (data_len);
+     memcpy (tmp, pixels, data_len);
      pixels = tmp;
   }
 
@@ -14372,7 +20938,7 @@ const char* ctx_texture_init (Ctx           *ctx,
   return ctx->texture[id].eid;
 }
 
-void
+static void
 _ctx_texture_prepare_color_management (CtxRasterizer *rasterizer,
                                       CtxBuffer     *buffer)
 {
@@ -14381,7 +20947,12 @@ _ctx_texture_prepare_color_management (CtxRasterizer *rasterizer,
 #ifndef NO_BABL
 #if CTX_BABL
      case CTX_FORMAT_RGBA8:
-        {
+       if (buffer->space == rasterizer->state->gstate.device_space)
+       {
+         buffer->color_managed = buffer;
+       }
+       else
+       {
           buffer->color_managed = ctx_buffer_new (buffer->width, buffer->height,
                                                   CTX_FORMAT_RGBA8);
           babl_process (
@@ -14393,15 +20964,20 @@ _ctx_texture_prepare_color_management (CtxRasterizer *rasterizer,
        }
        break;
      case CTX_FORMAT_RGB8:
+       if (buffer->space == rasterizer->state->gstate.device_space)
        {
-       buffer->color_managed = ctx_buffer_new (buffer->width, buffer->height,
+         buffer->color_managed = buffer;
+       }
+       else
+       {
+         buffer->color_managed = ctx_buffer_new (buffer->width, buffer->height,
                                                CTX_FORMAT_RGB8);
-          babl_process (
-             babl_fish (babl_format_with_space ("R'G'B' u8", buffer->space),
-                        babl_format_with_space ("R'G'B' u8", rasterizer->state->gstate.device_space)),
-             buffer->data, buffer->color_managed->data,
-             buffer->width * buffer->height
-             );
+         babl_process (
+            babl_fish (babl_format_with_space ("R'G'B' u8", buffer->space),
+                       babl_format_with_space ("R'G'B' u8", rasterizer->state->gstate.device_space)),
+            buffer->data, buffer->color_managed->data,
+            buffer->width * buffer->height
+          );
        }
        break;
 #endif
@@ -14565,6 +21141,13 @@ _ctx_add_hash (CtxHasher *hasher, CtxIntRectangle *shape_rect, char *hash)
     }
 }
 
+static int ctx_str_count_lines (const char *str)
+{
+  int count = 0;
+  for (const char *p = str; *p; p++)
+    if (*p == '\n') count ++;
+  return count;
+}
 
 static void
 ctx_hasher_process (void *user_data, CtxCommand *command)
@@ -14595,7 +21178,7 @@ ctx_hasher_process (void *user_data, CtxCommand *command)
            shape_rect.x=rasterizer->x;
            shape_rect.y=rasterizer->y - height,
            shape_rect.width = width;
-           shape_rect.height = height * 2;
+           shape_rect.height = height * (ctx_str_count_lines (ctx_arg_string()) + 1.5);
           switch ((int)ctx_state_get (rasterizer->state, CTX_text_align))
           {
           case CTX_TEXT_ALIGN_LEFT:
@@ -14637,8 +21220,8 @@ ctx_hasher_process (void *user_data, CtxCommand *command)
           float height = ctx_get_font_size (rasterizer->ctx);
 
            CtxIntRectangle shape_rect = {
-              rasterizer->x, rasterizer->y - height,
-              width, height * 2
+              (int)rasterizer->x, (int)(rasterizer->y - height),
+              (int)width, (int)(height * 2)
            };
 
 #if 0
@@ -14676,7 +21259,7 @@ ctx_hasher_process (void *user_data, CtxCommand *command)
 
           _ctx_user_to_device (rasterizer->state, &tx, &ty);
           _ctx_user_to_device_distance (rasterizer->state, &tw, &th);
-          CtxIntRectangle shape_rect = {tx,ty-th/2,tw,th};
+          CtxIntRectangle shape_rect = {(int)tx,(int)(ty-th/2),(int)tw,(int)th};
 
 
 #if 0
@@ -14709,10 +21292,10 @@ ctx_hasher_process (void *user_data, CtxCommand *command)
            */
         uint64_t hash = ctx_rasterizer_poly_to_hash (rasterizer); // + hasher->salt;
         CtxIntRectangle shape_rect = {
-          rasterizer->col_min / CTX_SUBDIV - 2,
-          rasterizer->scan_min / aa - 2,
-          3+(rasterizer->col_max - rasterizer->col_min + 1) / CTX_SUBDIV,
-          3+(rasterizer->scan_max - rasterizer->scan_min + 1) / aa
+          (int)(rasterizer->col_min / CTX_SUBDIV - 2),
+          (int)(rasterizer->scan_min / aa - 2),
+          (int)(3+(rasterizer->col_max - rasterizer->col_min + 1) / CTX_SUBDIV),
+          (int)(3+(rasterizer->scan_max - rasterizer->scan_min + 1) / aa)
         };
 
         hash ^= (rasterizer->state->gstate.fill_rule * 23);
@@ -14739,10 +21322,10 @@ ctx_hasher_process (void *user_data, CtxCommand *command)
           char ctx_sha1_hash[20];
         uint64_t hash = ctx_rasterizer_poly_to_hash (rasterizer);
         CtxIntRectangle shape_rect = {
-          rasterizer->col_min / CTX_SUBDIV - rasterizer->state->gstate.line_width,
-          rasterizer->scan_min / aa - rasterizer->state->gstate.line_width,
-          (rasterizer->col_max - rasterizer->col_min + 1) / CTX_SUBDIV + rasterizer->state->gstate.line_width,
-          (rasterizer->scan_max - rasterizer->scan_min + 1) / aa + rasterizer->state->gstate.line_width
+          (int)(rasterizer->col_min / CTX_SUBDIV - rasterizer->state->gstate.line_width),
+          (int)(rasterizer->scan_min / aa - rasterizer->state->gstate.line_width),
+          (int)((rasterizer->col_max - rasterizer->col_min + 1) / CTX_SUBDIV + rasterizer->state->gstate.line_width),
+          (int)((rasterizer->scan_max - rasterizer->scan_min + 1) / aa + rasterizer->state->gstate.line_width)
         };
 
         shape_rect.width += rasterizer->state->gstate.line_width * 2;
@@ -15861,12 +22444,7 @@ void _ctx_mouse (Ctx *term, int mode)
 
 #define usecs(time)    ((uint64_t)(time.tv_sec - start_time.tv_sec) * 1000000 + time.     tv_usec)
 
-#if CTX_EVENTS
 #if !__COSMOPOLITAN__
-#if CTX_THREADS
-#include <threads.h>
-#endif
-#endif
 static struct timeval start_time;
 
 static void
@@ -15894,17 +22472,12 @@ ctx_ticks (void)
   return _ctx_ticks ();
 }
 
-uint32_t ctx_ms (Ctx *ctx)
-{
-  return _ctx_ticks () / 1000;
-}
 
-
-typedef enum _CtxFlags CtxFlags;
 
 enum _CtxFlags {
    CTX_FLAG_DIRECT = (1<<0),
 };
+typedef enum _CtxFlags CtxFlags;
 
 
 int _ctx_max_threads = 1;
@@ -15953,58 +22526,13 @@ ctx_init (int *argc, char ***argv)
 #endif
 }
 
+
+#if 0
 int ctx_count (Ctx *ctx)
 {
   return ctx->drawlist.count;
 }
-
-
-static int is_in_ctx (void)
-{
-  char buf[1024];
-  struct termios orig_attr;
-  struct termios raw;
-  tcgetattr (STDIN_FILENO, &orig_attr);
-  raw = orig_attr;
-  raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
-  raw.c_oflag &= ~(OPOST);
-  raw.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
-  raw.c_cc[VMIN] = 1; raw.c_cc[VTIME] = 0; /* 1 byte, no timer */
-  if (tcsetattr (STDIN_FILENO, TCSAFLUSH, &raw) < 0)
-    return 0;
-  fprintf (stderr, "\e[?200$p");
-  //tcflush(STDIN_FILENO, 1);
-#if !__COSMOPOLITAN__
-  tcdrain(STDIN_FILENO);
 #endif
-  int length = 0;
-  usleep (1000 * 60); // to account for possibly lowish latency ssh,
-                      // should be made configurable ; perhaps in
-                      // an env var
-  struct timeval tv = {0,0};
-  fd_set rfds;
-  
-  FD_ZERO(&rfds);
-  FD_SET(0, &rfds);
-  tv.tv_usec = 1000 * 5;
-
-  for (int n = 0; select(1, &rfds, NULL, NULL, &tv) && n < 20; n++)
-  {
-    length += read (STDIN_FILENO, &buf[length], 1);
-  }
-  tcsetattr (STDIN_FILENO, TCSAFLUSH, &orig_attr);
-  if (length == -1)
-  {
-    return 0;
-  }
-  char *semi = strchr (buf, ';');
-  buf[length]=0;
-  if (semi &&  semi[1] == '2')
-  {
-    return 1;
-  }
-  return 0;
-}
 
 extern int _ctx_damage_control;
 
@@ -16024,6 +22552,15 @@ static void ctx_list_backends()
     fprintf (stderr, "\n");
 }
 
+#if CTX_EVENTS
+
+static uint32_t ctx_ms (Ctx *ctx)
+{
+  return _ctx_ticks () / 1000;
+}
+
+
+static int is_in_ctx (void);
 Ctx *ctx_new_ui (int width, int height)
 {
 #if CTX_TILED
@@ -16149,6 +22686,7 @@ Ctx *ctx_new_ui (int width, int height)
   ctx_get_event (ret); // enables events
   return ret;
 }
+#endif
 #else
 void _ctx_texture_unlock (void)
 {
@@ -16173,6 +22711,55 @@ void ctx_set_size (Ctx *ctx, int width, int height)
 }
 
 #if CTX_EVENTS
+
+
+static int is_in_ctx (void)
+{
+  char buf[1024];
+  struct termios orig_attr;
+  struct termios raw;
+  tcgetattr (STDIN_FILENO, &orig_attr);
+  raw = orig_attr;
+  raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
+  raw.c_oflag &= ~(OPOST);
+  raw.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
+  raw.c_cc[VMIN] = 1; raw.c_cc[VTIME] = 0; /* 1 byte, no timer */
+  if (tcsetattr (STDIN_FILENO, TCSAFLUSH, &raw) < 0)
+    return 0;
+  fprintf (stderr, "\e[?200$p");
+  //tcflush(STDIN_FILENO, 1);
+#if !__COSMOPOLITAN__
+  tcdrain(STDIN_FILENO);
+#endif
+  int length = 0;
+  usleep (1000 * 60); // to account for possibly lowish latency ssh,
+                      // should be made configurable ; perhaps in
+                      // an env var
+  struct timeval tv = {0,0};
+  fd_set rfds;
+  
+  FD_ZERO(&rfds);
+  FD_SET(0, &rfds);
+  tv.tv_usec = 1000 * 5;
+
+  for (int n = 0; select(1, &rfds, NULL, NULL, &tv) && n < 20; n++)
+  {
+    length += read (STDIN_FILENO, &buf[length], 1);
+  }
+  tcsetattr (STDIN_FILENO, TCSAFLUSH, &orig_attr);
+  if (length == -1)
+  {
+    return 0;
+  }
+  char *semi = strchr (buf, ';');
+  buf[length]=0;
+  if (semi &&  semi[1] == '2')
+  {
+    return 1;
+  }
+  return 0;
+}
+
 typedef struct CtxIdleCb {
   int (*cb) (Ctx *ctx, void *idle_data);
   void *idle_data;
@@ -16785,7 +23372,7 @@ CtxList *_ctx_detect_list (Ctx *ctx, float x, float y, CtxEventType type)
     float u, v;
     u = x;
     v = y;
-    ctx_matrix_apply_transform (&item->inv_matrix, &u, &v);
+    _ctx_matrix_apply_transform (&item->inv_matrix, &u, &v);
 
     if (u >= item->x0 && v >= item->y0 &&
         u <  item->x1 && v <  item->y1 && 
@@ -16848,7 +23435,7 @@ _ctx_emit_cb_item (Ctx *ctx, CtxItem *item, CtxEvent *event, CtxEventType type, 
     float tx, ty;
     tx = transformed_event.x;
     ty = transformed_event.y;
-    ctx_matrix_apply_transform (&item->inv_matrix, &tx, &ty);
+    _ctx_matrix_apply_transform (&item->inv_matrix, &tx, &ty);
     transformed_event.x = tx;
     transformed_event.y = ty;
 
@@ -16860,7 +23447,7 @@ _ctx_emit_cb_item (Ctx *ctx, CtxItem *item, CtxEvent *event, CtxEventType type, 
     {
       tx = transformed_event.start_x;
       ty = transformed_event.start_y;
-      ctx_matrix_apply_transform (&item->inv_matrix, &tx, &ty);
+      _ctx_matrix_apply_transform (&item->inv_matrix, &tx, &ty);
       transformed_event.start_x = tx;
       transformed_event.start_y = ty;
     }
@@ -16868,7 +23455,7 @@ _ctx_emit_cb_item (Ctx *ctx, CtxItem *item, CtxEvent *event, CtxEventType type, 
 
     tx = transformed_event.delta_x;
     ty = transformed_event.delta_y;
-    ctx_matrix_apply_transform (&item->inv_matrix, &tx, &ty);
+    _ctx_matrix_apply_transform (&item->inv_matrix, &tx, &ty);
     transformed_event.delta_x = tx;
     transformed_event.delta_y = ty;
   }
@@ -17761,7 +24348,7 @@ void _ctx_debug_overlays (Ctx *ctx)
     CtxItem *item = a->data;
     CtxMatrix matrix = item->inv_matrix;
 
-    ctx_matrix_apply_transform (&matrix, &current_x, &current_y);
+    _ctx_matrix_apply_transform (&matrix, &current_x, &current_y);
 
     if (current_x >= item->x0 && current_x < item->x1 &&
         current_y >= item->y0 && current_y < item->y1)
@@ -17883,6 +24470,8 @@ void ctx_set_title (Ctx *ctx, const char *title)
                          // to offer headroom for multiplexing
 
 
+#define CTX_REPORT_COL_ROW 0
+
 struct
   _CtxParser
 {
@@ -17897,9 +24486,10 @@ struct
   int        hold_len;
   int        pos;
 
-
+#if CTX_REPORT_COL_ROW
   int        line; /*  for error reporting */
   int        col;  /*  for error reporting */
+#endif
   float      numbers[CTX_PARSER_MAX_ARGS+1];
   int        n_numbers;
   int        decimal;
@@ -17932,6 +24522,7 @@ struct
   int   (*set_prop)(void *prop_data, uint64_t key, const char *data,  int len);
   int   (*get_prop)(void *prop_data, const char *key, char **data, int *len);
   void *prop_data;
+  int   prev_byte;
 };
 
 void
@@ -17968,7 +24559,9 @@ ctx_parser_init (CtxParser *parser,
                 )
 {
   ctx_memset (parser, 0, sizeof (CtxParser) );
+#if CTX_REPORT_COL_ROW
   parser->line             = 1;
+#endif
   parser->ctx              = ctx;
   parser->cell_width       = cell_width;
   parser->cell_height      = cell_height;
@@ -18095,6 +24688,7 @@ static int ctx_arguments_for_code (CtxCode code)
       case CTX_CURVE_TO:
       case CTX_REL_CURVE_TO:
       case CTX_APPLY_TRANSFORM:
+      case CTX_SOURCE_TRANSFORM:
       case CTX_RADIAL_GRADIENT:
         return 6;
       case CTX_STROKE_TEXT:
@@ -18201,7 +24795,7 @@ static int ctx_parser_resolve_command (CtxParser *parser, const uint8_t *str)
         }
       if ( (str[0] == 's' && str[1] == 'e' && str[2] == 't' && str[3] == '_') )
         { str += 4; }
-      str_hash = ctx_strhash ( (char *) str, 0);
+      str_hash = ctx_strhash ( (char *) str);
       switch (str_hash)
         {
           /* first a list of mappings to one_char hashes, handled in a
@@ -18284,6 +24878,7 @@ static int ctx_parser_resolve_command (CtxParser *parser, const uint8_t *str)
           case CTX_text:           ret = CTX_TEXT; break;
           case CTX_identity:       ret = CTX_IDENTITY; break;
           case CTX_transform:      ret = CTX_APPLY_TRANSFORM; break;
+          case CTX_sourceTransform: ret = CTX_SOURCE_TRANSFORM; break;
           case CTX_texture:        ret = CTX_TEXTURE; break;
           case CTX_defineTexture:  ret = CTX_DEFINE_TEXTURE; break;
 #if 0
@@ -18435,6 +25030,8 @@ static int ctx_parser_resolve_command (CtxParser *parser, const uint8_t *str)
 
           /* words that correspond to low integer constants
           */
+          case CTX_nonzero:     return CTX_FILL_RULE_WINDING;
+          case CTX_non_zero:    return CTX_FILL_RULE_WINDING;
           case CTX_winding:     return CTX_FILL_RULE_WINDING;
           case CTX_evenOdd:
           case CTX_even_odd:    return CTX_FILL_RULE_EVEN_ODD;
@@ -18485,6 +25082,7 @@ enum
   CTX_PARSER_STRING_APOS_ESCAPED,
   CTX_PARSER_STRING_QUOT_ESCAPED,
   CTX_PARSER_STRING_A85,
+  CTX_PARSER_STRING_YENC,
 } CTX_STATE;
 
 static void ctx_parser_set_color_model (CtxParser *parser, CtxColorModel color_model, int stroke)
@@ -18538,17 +25136,18 @@ static void ctx_parser_dispatch_command (CtxParser *parser)
 {
   CtxCode cmd = parser->command;
   Ctx *ctx = parser->ctx;
-#if 1
+
   if (parser->expected_args != CTX_ARG_STRING_OR_NUMBER &&
       parser->expected_args != CTX_ARG_COLLECT_NUMBERS &&
       parser->expected_args != parser->n_numbers)
     {
-      if (0)
+#if CTX_REPORT_COL_ROW
          fprintf (stderr, "ctx:%i:%i %c got %i instead of %i args\n",
                parser->line, parser->col,
                cmd, parser->n_numbers, parser->expected_args);
-    }
 #endif
+      //return;
+    }
 
 #define arg(a)  (parser->numbers[a])
   parser->command = CTX_NOP;
@@ -18644,9 +25243,12 @@ static void ctx_parser_dispatch_command (CtxParser *parser)
              int height = arg(1);
              CtxPixelFormat format = (CtxPixelFormat)arg(2);
              int stride = ctx_pixel_format_get_stride (format, width);
+             int data_len = stride * height;
+             if (format == CTX_FORMAT_YUV420)
+                 data_len = height * width + 2*(height/2) * (width/2);
 
 
-             if (parser->pos != stride * height)
+             if (parser->pos != data_len)
              {
              fprintf (stderr, "unexpected datasize for define texture %s %ix%i\n size:%i != expected:%i - start of data: %i %i %i %i\n", eid, width, height,
                                parser->pos,
@@ -18822,6 +25424,9 @@ static void ctx_parser_dispatch_command (CtxParser *parser)
         break;
       case CTX_APPLY_TRANSFORM:
         ctx_apply_transform (ctx, arg(0), arg(1), arg(2), arg(3), arg(4), arg(5) );
+        break;
+      case CTX_SOURCE_TRANSFORM:
+        ctx_source_transform (ctx, arg(0), arg(1), arg(2), arg(3), arg(4), arg(5) );
         break;
       case CTX_CURVE_TO:
         ctx_curve_to (ctx, arg(0), arg(1), arg(2), arg(3), arg(4), arg(5) );
@@ -19050,12 +25655,12 @@ static void ctx_parser_dispatch_command (CtxParser *parser)
 //  parser->n_numbers = 0;
 }
 
-static void ctx_parser_holding_append (CtxParser *parser, int byte)
+static inline void ctx_parser_holding_append (CtxParser *parser, int byte)
 {
 #if !CTX_PARSER_FIXED_TEMP
-  if (parser->hold_len < parser->pos + 1 + 1)
+  if (CTX_UNLIKELY(parser->hold_len < parser->pos + 1 + 1))
   {
-    int new_len = parser->hold_len * 1.5;
+    int new_len = parser->hold_len * 2;
     if (new_len < 512) new_len = 512;
     parser->holding = (uint8_t*)realloc (parser->holding, new_len);
     parser->hold_len = new_len;
@@ -19064,7 +25669,7 @@ static void ctx_parser_holding_append (CtxParser *parser, int byte)
 
   parser->holding[parser->pos++]=byte;
 #if CTX_PARSER_FIXED_TEMP
-  if (parser->pos > (int) sizeof (parser->holding)-2)
+  if (CTX_UNLIKELY(parser->pos > (int) sizeof (parser->holding)-2))
     { parser->pos = sizeof (parser->holding)-2; }
 #endif
   parser->holding[parser->pos]=0;
@@ -19229,7 +25834,8 @@ static void ctx_parser_word_done (CtxParser *parser)
 
       // trigger transition from number
       parser->state = CTX_PARSER_NUMBER;
-      ctx_parser_feed_byte (parser, ',');
+      char c = ',';
+      ctx_parser_feed_bytes (parser, &c, 1);
     }
   else if (command > 0)
     {
@@ -19312,16 +25918,62 @@ static void ctx_parser_string_done (CtxParser *parser)
   }
 }
 
-void ctx_parser_feed_byte (CtxParser *parser, int byte)
+static inline void ctx_parser_feed_byte (CtxParser *parser, char byte)
 {
-  switch (byte)
+#if CTX_REPORT_COL_ROW
+    if (CTX_UNLIKELY(byte == '\n'))
     {
-      case '\n':
         parser->col=0;
         parser->line++;
-        break;
-      default:
+    }
+    else
+    {
         parser->col++;
+    }
+#endif
+
+    if (CTX_LIKELY(parser->state == CTX_PARSER_STRING_YENC))
+    {
+        if (CTX_UNLIKELY((parser->prev_byte == '=') && (byte == 'y')))
+        {
+          parser->state = CTX_PARSER_NEUTRAL;
+                 //   fprintf (stderr, "got %i\n", parser->pos);
+          parser->pos = ctx_ydec ((char*)parser->holding, (char*)parser->holding, parser->pos) - 1;
+#if 0
+          if (parser->pos > 5)
+                    fprintf (stderr, "dec got %i %c %c %c %c\n", parser->pos,
+                                    parser->holding[0],
+                                    parser->holding[1],
+                                    parser->holding[2],
+                                    parser->holding[3]
+                                    );
+#endif
+          ctx_parser_string_done (parser);
+        }
+        else
+        {
+          ctx_parser_holding_append (parser, byte);
+        }
+        parser->prev_byte = byte;
+        return;
+    }
+    else if (CTX_LIKELY(parser->state == CTX_PARSER_STRING_A85))
+    {
+        /* since these are our largest bulk transfers, minimize
+         * overhead for this case. */
+        if (CTX_LIKELY(byte!='~')) 
+        {
+          ctx_parser_holding_append (parser, byte);
+        }
+        else
+        {
+          parser->state = CTX_PARSER_NEUTRAL;
+                 //   fprintf (stderr, "got %i\n", parser->pos);
+          parser->pos = ctx_a85dec ((char*)parser->holding, (char*)parser->holding, parser->pos);
+                 //   fprintf (stderr, "dec got %i\n", parser->pos);
+          ctx_parser_string_done (parser);
+        }
+        return;
     }
   switch (parser->state)
     {
@@ -19338,13 +25990,18 @@ void ctx_parser_feed_byte (CtxParser *parser, int byte)
             case ';': case ',':
             case '(': case ')':
             case '{': case '}':
-            case '=':
+            //case '=':
               break;
             case '#':
               parser->state = CTX_PARSER_COMMENT;
               break;
             case '\'':
               parser->state = CTX_PARSER_STRING_APOS;
+              parser->pos = 0;
+              parser->holding[0] = 0;
+              break;
+            case '=':
+              parser->state = CTX_PARSER_STRING_YENC;
               parser->pos = 0;
               parser->holding[0] = 0;
               break;
@@ -19564,19 +26221,18 @@ void ctx_parser_feed_byte (CtxParser *parser, int byte)
           }
         break;
       case CTX_PARSER_STRING_A85:
-        switch (byte)
-          {
-            case '~':
-              parser->state = CTX_PARSER_NEUTRAL;
+        if (CTX_LIKELY(byte!='~'))
+        {
+          ctx_parser_holding_append (parser, byte);
+        }
+        else
+        {
+          parser->state = CTX_PARSER_NEUTRAL;
                  //   fprintf (stderr, "got %i\n", parser->pos);
-              parser->pos = ctx_a85dec ((char*)parser->holding, (char*)parser->holding, parser->pos);
+          parser->pos = ctx_a85dec ((char*)parser->holding, (char*)parser->holding, parser->pos);
                  //   fprintf (stderr, "dec got %i\n", parser->pos);
-              ctx_parser_string_done (parser);
-              break;
-            default:
-              ctx_parser_holding_append (parser, byte);
-              break;
-          }
+          ctx_parser_string_done (parser);
+        }
         break;
       case CTX_PARSER_STRING_APOS:
         switch (byte)
@@ -19647,6 +26303,12 @@ void ctx_parser_feed_byte (CtxParser *parser, int byte)
     }
 }
 
+void ctx_parser_feed_bytes (CtxParser *parser, const char *data, int count)
+{
+  for (int i = 0; i < count; i++)
+    ctx_parser_feed_byte (parser, data[i]);
+}
+
 void ctx_parse (Ctx *ctx, const char *string)
 {
   if (!string)
@@ -19656,8 +26318,7 @@ void ctx_parse (Ctx *ctx, const char *string)
                                            ctx_get_font_size(ctx),
                                            ctx_get_font_size(ctx),
                                            0, 0, NULL, NULL, NULL, NULL, NULL);
-  for (int i = 0; string[i]; i++)
-     ctx_parser_feed_byte (parser, string[i]);
+  ctx_parser_feed_bytes (parser, string, strlen (string));
   ctx_parser_free (parser);
 }
 
@@ -19992,6 +26653,7 @@ ctx_glyph_ctx (CtxFont *font, Ctx *ctx, uint32_t unichar, int stroke)
   return ctx_glyph_drawlist (font, ctx, &drawlist, unichar, stroke);
 }
 
+#if 0
 uint32_t ctx_glyph_no (Ctx *ctx, int no)
 {
   CtxFont *font = &ctx_fonts[ctx->state.gstate.font];
@@ -19999,6 +26661,7 @@ uint32_t ctx_glyph_no (Ctx *ctx, int no)
     { return 0; }
   return font->ctx.index[no*2];
 }
+#endif
 
 static void ctx_font_init_ctx (CtxFont *font)
 {
@@ -20435,7 +27098,7 @@ int ctx_resolve_font (const char *name)
   return 0;
 }
 
-static void ctx_font_setup ()
+static void ctx_font_setup (void)
 {
   static int initialized = 0;
   if (initialized) { return; }
@@ -20510,9 +27173,6 @@ static void ctx_font_setup ()
 }
 
 
-#ifndef _DEFAULT_SOURCE
-#define _DEFAULT_SOURCE
-#endif
 
 #if !__COSMOPOLITAN__
 #include <stdarg.h>
@@ -20529,8 +27189,7 @@ uint32_t ctx_utf8_to_unichar (const char *input);
 int ctx_unichar_to_utf8 (uint32_t  ch, uint8_t  *dest);
 int ctx_utf8_strlen (const char *s);
 
-
-void ctx_string_init (CtxString *string, int initial_size)
+static void ctx_string_init (CtxString *string, int initial_size)
 {
   string->allocated_length = initial_size;
   string->length = 0;
@@ -20557,9 +27216,9 @@ void ctx_string_clear (CtxString *string)
 
 static inline void _ctx_string_append_byte (CtxString *string, char  val)
 {
-  if ( (val & 0xC0) != 0x80)
+  if (CTX_LIKELY((val & 0xC0) != 0x80))
     { string->utf8_length++; }
-  if (string->length + 2 >= string->allocated_length)
+  if (CTX_UNLIKELY(string->length + 2 >= string->allocated_length))
     {
       char *old = string->str;
       string->allocated_length = CTX_MAX (string->allocated_length * 2, string->length + 2);
@@ -20681,6 +27340,13 @@ ctx_string_free (CtxString *string, int freealloc)
   free (string);
 }
 
+char       *ctx_string_dissolve       (CtxString *string)
+{
+  char *ret = string->str;
+  ctx_string_free (string, 0);
+  return ret;
+}
+
 void
 ctx_string_set (CtxString *string, const char *new_string)
 {
@@ -20699,18 +27365,19 @@ static char *ctx_strdup (const char *str)
 
 void ctx_string_replace_utf8 (CtxString *string, int pos, const char *new_glyph)
 {
-  int new_len = ctx_utf8_len (*new_glyph);
 #if 1
   int old_len = string->utf8_length;
 #else
   int old_len = ctx_utf8_strlen (string->str);// string->utf8_length;
 #endif
-  char tmpg[3]=" ";
-  if (pos == old_len)
+  if (CTX_LIKELY(pos == old_len))
     {
       _ctx_string_append_str (string, new_glyph);
       return;
     }
+
+  char tmpg[3]=" ";
+  int new_len = ctx_utf8_len (*new_glyph);
   if (new_len <= 1 && new_glyph[0] < 32)
     {
       new_len = 1;
@@ -21467,12 +28134,12 @@ again:
       {
         if (src[i] == CTX_CODEC_CHAR)
         {
-          ctx_string_append_byte (string, CTX_CODEC_CHAR);
-          ctx_string_append_byte (string, CTX_CODEC_CHAR);
+          char bytes[2]={CTX_CODEC_CHAR, CTX_CODEC_CHAR};
+          ctx_string_append_data (string, bytes, 2);
         }
         else
         {
-          ctx_string_append_byte (string, src[i]);
+          ctx_string_append_data (string, &src[i], 1);
         }
       }
     }
@@ -21532,7 +28199,7 @@ static char *decode_ctx (const char *encoded, int enc_len, const char *prev, int
         }
       }
       else
-      ctx_string_append_byte (string, encoded[i]);
+      ctx_string_append_data (string, &encoded[i], 1);
     }
   }
   char *ret = string->str;
@@ -21560,7 +28227,7 @@ static void ctx_ctx_flush (CtxCtx *ctxctx)
   if (ctx_native_events)
     fprintf (stdout, "\e[?201h");
   fprintf (stdout, "\e[H\e[?25l\e[?200h");
-#if 0
+#if 1
   fprintf (stdout, CTX_START_STRING);
   ctx_render_stream (ctxctx->ctx, stdout, 0);
   fprintf (stdout, CTX_END_STRING);
@@ -21633,6 +28300,7 @@ void ctx_ctx_free (CtxCtx *ctx)
 
 Ctx *ctx_new_ctx (int width, int height)
 {
+  float font_size = 12.0;
   Ctx *ctx = ctx_new ();
   CtxCtx *ctxctx = (CtxCtx*)calloc (sizeof (CtxCtx), 1);
   fprintf (stdout, "\e[?1049h");
@@ -21646,6 +28314,8 @@ Ctx *ctx_new_ctx (int width, int height)
     ctxctx->rows = ctx_terminal_rows ();
     width  = ctxctx->width  = ctx_terminal_width ();
     height = ctxctx->height = ctx_terminal_height ();
+    font_size = height / ctxctx->rows;
+    ctx_font_size (ctx, font_size);
   }
   else
   {
@@ -21936,9 +28606,9 @@ inline static void ctx_tiled_flush (CtxTiled *tiled)
                                  host, tiled->ctx, &host->state,
                                  &tiled->pixels[tiled->width * 4 * y0 + x0 * 4],
                                  0, 0, 1, 1,
-                                 tiled->width*4, CTX_FORMAT_RGBA8,
+                                 tiled->width*4, CTX_FORMAT_BGRA8,
                                  tiled->antialias);
-            //((CtxRasterizer*)(host->renderer))->swap_red_green = swap_red_green;
+            ((CtxRasterizer*)(host->renderer))->swap_red_green = swap_red_green;
             if (sdl_icc_length)
               ctx_colorspace (host, CTX_COLOR_SPACE_DEVICE_RGB, sdl_icc, sdl_icc_length);
 
@@ -21996,7 +28666,7 @@ void ctx_tiled_render_fun (void **data)
                                  host, tiled->ctx, &host->state,
                                  &tiled->pixels[tiled->width * 4 * y0 + x0 * 4],
                                  0, 0, width, height,
-                                 tiled->width*4, CTX_FORMAT_RGBA8,
+                                 tiled->width*4, CTX_FORMAT_BGRA8,
                                  tiled->antialias);
             ((CtxRasterizer*)(host->renderer))->swap_red_green = swap_red_green;
             if (sdl_icc_length)
@@ -23581,7 +30251,7 @@ Ctx *ctx_new_fb (int width, int height, int drm)
   {
     tiled->host[i] = ctx_new_for_framebuffer (tiled->pixels,
                    tiled->width/CTX_HASH_COLS, tiled->height/CTX_HASH_ROWS,
-                   tiled->width * 4, CTX_FORMAT_RGBA8); // this format
+                   tiled->width * 4, CTX_FORMAT_BGRA8); // this format
                                   // is overriden in  thread
     ((CtxRasterizer*)(tiled->host[i]->renderer))->swap_red_green = 1;
     ctx_set_texture_source (tiled->host[i], tiled->ctx);
@@ -23732,9 +30402,11 @@ void ctx_screenshot (Ctx *ctx, const char *output_path)
 #endif
 }
 
+int ctx_show_fps = 1;
 void ctx_sdl_set_title (void *self, const char *new_title)
 {
    CtxSDL *sdl = self;
+   if (!ctx_show_fps)
    SDL_SetWindowTitle (sdl->window, new_title);
 }
 
@@ -23828,6 +30500,7 @@ static void ctx_sdl_show_frame (CtxSDL *sdl, int block)
       return;
   }
 
+
   if (tiled->min_row == 100)
   {
   }
@@ -23855,6 +30528,17 @@ static void ctx_sdl_show_frame (CtxSDL *sdl, int block)
     SDL_RenderClear (sdl->renderer);
     SDL_RenderCopy (sdl->renderer, sdl->texture, NULL, NULL);
     SDL_RenderPresent (sdl->renderer);
+
+
+  if (ctx_show_fps)
+  {
+    static uint64_t prev_time = 0;
+    static char tmp_title[1024];
+    uint64_t time = ctx_ticks ();
+    sprintf (tmp_title, "FPS: %.1f", 1000000.0/  (time - prev_time));
+    prev_time = time;
+    SDL_SetWindowTitle (sdl->window, tmp_title);
+  }
   }
   tiled->shown_frame = tiled->render_frame;
 }
@@ -24238,6 +30922,9 @@ Ctx *ctx_new_sdl (int width, int height)
 #endif
   sdl->fullscreen = 0;
 
+
+  ctx_show_fps = getenv ("CTX_SHOW_FPS")!=NULL;
+
   ctx_sdl_events = 1;
   sdl->texture = SDL_CreateTexture (sdl->renderer,
         SDL_PIXELFORMAT_ABGR8888,
@@ -24528,7 +31215,7 @@ static inline int _ctx_rgba8_manhattan_diff (const uint8_t *a, const uint8_t *b)
   int diff = 0;
   for (c = 0; c<3;c++)
     diff += ctx_pow2(a[c]-b[c]);
-  return sqrtf(diff);
+  return ctx_sqrtf(diff);
   return diff;
 }
 
@@ -25347,12 +32034,12 @@ struct _CtxFormatter
   void (*add_str)(CtxFormatter *formatter, const char *str, int len);
 };
 
-static void ctx_formatter_addstr (CtxFormatter *formatter, const char *str, int len)
+static inline void ctx_formatter_addstr (CtxFormatter *formatter, const char *str, int len)
 {
   formatter->add_str (formatter, str, len);
 }
 
-static void ctx_formatter_addstrf (CtxFormatter *formatter, const char *format, ...)
+static inline void ctx_formatter_addstrf (CtxFormatter *formatter, const char *format, ...)
 {
    va_list ap;
    size_t needed;
@@ -25447,6 +32134,7 @@ const char *_ctx_code_to_name (int code)
           case CTX_FILL:                 return "fill"; break;
           case CTX_EXIT:                 return "exit"; break;
           case CTX_APPLY_TRANSFORM:      return "transform"; break;
+          case CTX_SOURCE_TRANSFORM:     return "sourceTransform"; break;
           case CTX_REL_ARC_TO:           return "relArcTo"; break;
           case CTX_GLYPH:                return "glyph"; break;
           case CTX_TEXTURE:              return "texture"; break;
@@ -25615,6 +32303,7 @@ ctx_print_entry_enum (CtxFormatter *formatter, CtxEntry *entry, int args)
                   }
                 break;
               case CTX_BLEND_MODE:
+                val = ctx_arg_u32 (i);
                 switch (val)
                   {
             case CTX_BLEND_NORMAL:      str = "normal"; break;
@@ -25636,6 +32325,7 @@ ctx_print_entry_enum (CtxFormatter *formatter, CtxEntry *entry, int args)
                   }
                 break;
               case CTX_COMPOSITING_MODE:
+                val = ctx_arg_u32 (i);
                 switch (val)
                   {
               case CTX_COMPOSITE_SOURCE_OVER: str = "sourceOver"; break;
@@ -25681,6 +32371,18 @@ ctx_print_a85 (CtxFormatter *formatter, uint8_t *data, int length)
   ctx_formatter_addstr (formatter, " ~", 2);
   ctx_formatter_addstr (formatter, tmp, -1);
   ctx_formatter_addstr (formatter, "~ ", 2);
+  free (tmp);
+}
+
+static void
+ctx_print_yenc (CtxFormatter *formatter, uint8_t *data, int length)
+{
+  char *tmp = (char*)malloc (length * 2 + 2);// worst case scenario
+  int enclength = ctx_yenc ((char*)data, tmp, length);
+  data[enclength]=0;
+  ctx_formatter_addstr (formatter, " =", 2);
+  ctx_formatter_addstr (formatter, tmp, enclength);
+  ctx_formatter_addstr (formatter, "=y ", 2);
   free (tmp);
 }
 
@@ -25818,8 +32520,13 @@ ctx_formatter_process (void *user_data, CtxCommand *c)
 #if 1
 
         int stride = ctx_pixel_format_get_stride ((CtxPixelFormat)c->define_texture.format, c->define_texture.width);
+        int data_len = stride * c->define_texture.height;
+        if (c->define_texture.format == CTX_FORMAT_YUV420)
+          data_len = c->define_texture.height * c->define_texture.width +
+                       2*(c->define_texture.height/2) * (c->define_texture.width/2);
         //fprintf (stderr, "encoding %i bytes\n", c->define_texture.height *stride);
-        ctx_print_a85 (formatter, pixel_data, c->define_texture.height * stride);
+        //ctx_print_a85 (formatter, pixel_data, c->define_texture.height * stride);
+        ctx_print_yenc (formatter, pixel_data, data_len);
 #else
         ctx_formatter_addstrf (formatter, "\"");
         ctx_print_escaped_string (formatter, pixel_data);
@@ -25841,6 +32548,7 @@ ctx_formatter_process (void *user_data, CtxCommand *c)
       case CTX_ARC:
       case CTX_RADIAL_GRADIENT:
       case CTX_APPLY_TRANSFORM:
+      case CTX_SOURCE_TRANSFORM:
         ctx_print_entry (formatter, entry, 6);
         break;
       case CTX_QUAD_TO:
@@ -26311,7 +33019,7 @@ ctx_path_extents (Ctx *ctx, float *ex1, float *ey1, float *ex2, float *ey2)
 #endif
 
 
-static void
+static inline void
 ctx_gstate_push (CtxState *state)
 {
   if (state->gstate_no + 1 >= CTX_MAX_STATES)
@@ -26322,7 +33030,7 @@ ctx_gstate_push (CtxState *state)
   state->has_clipped=0;
 }
 
-static void
+static inline void
 ctx_gstate_pop (CtxState *state)
 {
   if (state->gstate_no <= 0)
@@ -26506,7 +33214,10 @@ _ctx_set_frame (Ctx *ctx, int frame)
    return ctx->frame = frame;
 }
 
-void ctx_define_texture (Ctx *ctx, const char *eid, int width, int height, int stride, int format, void *data, char *ret_eid)
+void ctx_define_texture (Ctx *ctx,
+                         const char *eid,
+                         int width, int height, int stride, int format, void *data,
+                         char *ret_eid)
 {
   uint8_t hash[20]="";
   char ascii[41]="";
@@ -26517,26 +33228,28 @@ void ctx_define_texture (Ctx *ctx, const char *eid, int width, int height, int s
   if (stride <= 0)
     stride = dst_stride;
 
-  int data_len = height * dst_stride;
+  int data_len;
+ 
+  if (format == CTX_FORMAT_YUV420)
+  data_len = width * height + ((width/2) * (height/2)) * 2;
+  else
+  data_len = height * dst_stride;
 
   if (eid == NULL)
   {
     CtxSHA1 *sha1 = ctx_sha1_new ();
-
+    uint8_t *src = (uint8_t*)data;
+    for (int y = 0; y < height; y++)
     {
-      uint8_t *src = (uint8_t*)data;
-      for (int y = 0; y < height; y++)
-      {
-         ctx_sha1_process (sha1, src, dst_stride);
-         src += stride;
-      }
+       ctx_sha1_process (sha1, src, dst_stride);
+       src += stride;
     }
     ctx_sha1_done (sha1, hash);
     ctx_sha1_free (sha1);
     const char *hex="0123456789abcdef";
     for (int i = 0; i < 20; i ++)
     {
-       ascii[i*2]=hex[hash[i]/16];
+       ascii[i*2]  =hex[hash[i]/16];
        ascii[i*2+1]=hex[hash[i]%16];
     }
     ascii[40]=0;
@@ -26555,7 +33268,7 @@ void ctx_define_texture (Ctx *ctx, const char *eid, int width, int height, int s
     const char *hex="0123456789abcdef";
     for (int i = 0; i < 20; i ++)
     {
-       ascii[i*2]=hex[hash[i]/16];
+       ascii[i*2]  =hex[hash[i]/16];
        ascii[i*2+1]=hex[hash[i]%16];
     }
     ascii[40]=0;
@@ -26607,12 +33320,16 @@ void ctx_define_texture (Ctx *ctx, const char *eid, int width, int height, int s
     {
       uint8_t *src = (uint8_t*)data;
       uint8_t *dst = &commands[pos+1].data.u8[0];
+#if 1
+      memcpy (dst, src, data_len);
+#else
       for (int y = 0; y < height; y++)
       {
          memcpy (dst, src, dst_stride);
          src += stride;
          dst += dst_stride;
       }
+#endif
     }
     ((char *) &commands[pos+1].data.u8[0])[data_len]=0;
 
@@ -26627,11 +33344,11 @@ void ctx_define_texture (Ctx *ctx, const char *eid, int width, int height, int s
     }
 
     CtxEidInfo *eid_info = (CtxEidInfo*)calloc (sizeof (CtxEidInfo), 1);
-    eid_info->eid        = strdup (eid);
     eid_info->width      = width;
     eid_info->height     = height;
     eid_info->frame      = ctx->texture_cache->frame;
     //fprintf (stderr, "%i\n", eid_info->frame);
+    eid_info->eid        = strdup (eid);
     ctx_list_prepend (&ctx->texture_cache->eid_db, eid_info);
   }
 
@@ -26675,7 +33392,7 @@ ctx_texture_load (Ctx *ctx, const char *path, int *tw, int *th, char *reid)
   }
 
 #ifdef STBI_INCLUDE_STB_IMAGE_H
-    CtxPixelFormat pixel_format = CTX_FORMAT_RGBA8;
+  CtxPixelFormat pixel_format = CTX_FORMAT_RGBA8;
   int w, h, components;
   unsigned char *pixels = NULL;
 
@@ -26706,8 +33423,7 @@ ctx_texture_load (Ctx *ctx, const char *path, int *tw, int *th, char *reid)
     }
     if (tw) *tw = w;
     if (th) *th = h;
-    ctx_define_texture (ctx, eid, w, h, w * components, pixel_format, pixels, 
-                             reid);
+    ctx_define_texture (ctx, eid, w, h, w * components, pixel_format, pixels, reid);
     free (pixels);
   }
   else
@@ -26730,7 +33446,6 @@ ctx_draw_texture_clipped  (Ctx *ctx, const char *eid,
   {
     if (width > 0.0 && height > 0.0)
     {
-      ctx_save (ctx);
 #if 0
       if (clip_width > 0.0f)
       {
@@ -26739,19 +33454,29 @@ ctx_draw_texture_clipped  (Ctx *ctx, const char *eid,
       }
 #endif
       ctx_rectangle (ctx, x, y, width, height);
+      CtxMatrix matrix;
+      ctx_matrix_identity (&matrix);
+      
+      ctx_texture (ctx, eid, 0, 0);// / (width/tex_width), y / (height/tex_height));
+      //ctx_rgba (ctx, 1, 0,0,0.5);
+#if 1
       if (clip_width > 0.0f)
       {
-        ctx_translate (ctx, -clip_x, -clip_y);
-        ctx_scale (ctx, width/clip_width, height/clip_height);
+              // XXX scale is not yet determined to be correct
+              // in relation to the translate!
+        ctx_matrix_scale (&matrix, clip_width/width, clip_height/height);
+        ctx_matrix_translate (&matrix, -clip_x, -clip_y);
       }
       else
       {
-        ctx_scale (ctx, width/tex_width, height/tex_height);
+        ctx_matrix_scale (&matrix, tex_width/width, tex_height/height);
       }
+      ctx_matrix_translate (&matrix, x, y);
+#endif
+      //ctx_matrix_invert (&matrix);
+      ctx_source_transform_matrix (ctx, &matrix);
       //ctx_texture (ctx, eid, x / (width/tex_width), y / (height/tex_height));
-      ctx_texture (ctx, eid, x, y);// / (width/tex_width), y / (height/tex_height));
       ctx_fill (ctx);
-      ctx_restore (ctx);
     }
   }
 }
@@ -26809,7 +33534,6 @@ ctx_radial_gradient (Ctx *ctx, float x0, float y0, float r0, float x1, float y1,
   };
   ctx_process (ctx, command);
 }
-
 
 void ctx_preserve (Ctx *ctx)
 {
@@ -27070,7 +33794,7 @@ ctx_get (Ctx *ctx, const char *key)
 {
   static char retbuf[32];
   int len = 0;
-  CTX_PROCESS_U32(CTX_GET, ctx_strhash (key, 0), 0);
+  CTX_PROCESS_U32(CTX_GET, ctx_strhash (key), 0);
   while (read (STDIN_FILENO, &retbuf[len], 1) != -1)
     {
       if(retbuf[len]=='\n')
@@ -27107,7 +33831,7 @@ ctx_get_font (Ctx *ctx)
 
 void ctx_line_to (Ctx *ctx, float x, float y)
 {
-  if (!ctx->state.has_moved)
+  if (CTX_UNLIKELY(!ctx->state.has_moved))
     { CTX_PROCESS_F (CTX_MOVE_TO, x, y); }
   else
     { CTX_PROCESS_F (CTX_LINE_TO, x, y); }
@@ -27240,12 +33964,12 @@ void ctx_line_join (Ctx *ctx, CtxLineJoin join)
 void ctx_blend_mode (Ctx *ctx, CtxBlend mode)
 {
   if (ctx->state.gstate.blend_mode != mode)
-    CTX_PROCESS_U8 (CTX_BLEND_MODE, mode);
+    CTX_PROCESS_U32 (CTX_BLEND_MODE, mode, 0);
 }
 void ctx_compositing_mode (Ctx *ctx, CtxCompositingMode mode)
 {
   if (ctx->state.gstate.compositing_mode != mode)
-    CTX_PROCESS_U8 (CTX_COMPOSITING_MODE, mode);
+    CTX_PROCESS_U32 (CTX_COMPOSITING_MODE, mode, 0);
 }
 void ctx_text_align (Ctx *ctx, CtxTextAlign text_align)
 {
@@ -27469,7 +34193,7 @@ ctx_flush (Ctx *ctx)
 
 ////////////////////////////////////////
 
-void
+static inline void
 ctx_interpret_style (CtxState *state, CtxEntry *entry, void *data)
 {
   CtxCommand *c = (CtxCommand *) entry;
@@ -27502,10 +34226,10 @@ ctx_interpret_style (CtxState *state, CtxEntry *entry, void *data)
         state->gstate.line_join = (CtxLineJoin) ctx_arg_u8 (0);
         break;
       case CTX_COMPOSITING_MODE:
-        state->gstate.compositing_mode = (CtxCompositingMode) ctx_arg_u8 (0);
+        state->gstate.compositing_mode = (CtxCompositingMode) ctx_arg_u32 (0);
         break;
       case CTX_BLEND_MODE:
-        state->gstate.blend_mode = (CtxBlend) ctx_arg_u8 (0);
+        state->gstate.blend_mode = (CtxBlend) ctx_arg_u32 (0);
         break;
       case CTX_TEXT_ALIGN:
         ctx_state_set (state, CTX_text_align, ctx_arg_u8 (0) );
@@ -27667,7 +34391,7 @@ ctx_interpret_style (CtxState *state, CtxEntry *entry, void *data)
     }
 }
 
-void
+static inline void
 ctx_interpret_transforms (CtxState *state, CtxEntry *entry, void *data)
 {
   switch (entry->code)
@@ -27679,7 +34403,7 @@ ctx_interpret_transforms (CtxState *state, CtxEntry *entry, void *data)
         ctx_gstate_pop (state);
         break;
       case CTX_IDENTITY:
-        ctx_matrix_identity (&state->gstate.transform);
+        _ctx_matrix_identity (&state->gstate.transform);
         break;
       case CTX_TRANSLATE:
         ctx_matrix_translate (&state->gstate.transform,
@@ -27699,8 +34423,8 @@ ctx_interpret_transforms (CtxState *state, CtxEntry *entry, void *data)
                           ctx_arg_float (0), ctx_arg_float (1),
                           ctx_arg_float (2), ctx_arg_float (3),
                           ctx_arg_float (4), ctx_arg_float (5) );
-          ctx_matrix_multiply (&state->gstate.transform,
-                               &state->gstate.transform, &m); // XXX verify order
+          _ctx_matrix_multiply (&state->gstate.transform,
+                                &state->gstate.transform, &m); // XXX verify order
         }
 #if 0
         ctx_matrix_set (&state->gstate.transform,
@@ -27715,7 +34439,7 @@ ctx_interpret_transforms (CtxState *state, CtxEntry *entry, void *data)
 /*
  * this transforms the contents of entry according to ctx->transformation
  */
-void
+static inline void
 ctx_interpret_pos_transform (CtxState *state, CtxEntry *entry, void *data)
 {
   CtxCommand *c = (CtxCommand *) entry;
@@ -27892,7 +34616,7 @@ ctx_interpret_pos_transform (CtxState *state, CtxEntry *entry, void *data)
     }
 }
 
-void
+static inline void
 ctx_interpret_pos_bare (CtxState *state, CtxEntry *entry, void *data)
 {
   switch (entry->code)
@@ -27908,32 +34632,19 @@ ctx_interpret_pos_bare (CtxState *state, CtxEntry *entry, void *data)
         break;
       case CTX_MOVE_TO:
       case CTX_LINE_TO:
-        {
-          float x = ctx_arg_float (0);
-          float y = ctx_arg_float (1);
-          state->x = x;
-          state->y = y;
-          if (!state->has_moved)
-            {
-              state->has_moved = 1;
-            }
-        }
+        state->x = ctx_arg_float (0);
+        state->y = ctx_arg_float (1);
+        state->has_moved = 1;
         break;
       case CTX_CURVE_TO:
         state->x = ctx_arg_float (4);
         state->y = ctx_arg_float (5);
-        if (!state->has_moved)
-          {
-            state->has_moved = 1;
-          }
+        state->has_moved = 1;
         break;
       case CTX_QUAD_TO:
         state->x = ctx_arg_float (2);
         state->y = ctx_arg_float (3);
-        if (!state->has_moved)
-          {
-            state->has_moved = 1;
-          }
+        state->has_moved = 1;
         break;
       case CTX_ARC:
         state->x = ctx_arg_float (0) + ctx_cosf (ctx_arg_float (4) ) * ctx_arg_float (2);
@@ -27956,7 +34667,7 @@ ctx_interpret_pos_bare (CtxState *state, CtxEntry *entry, void *data)
     }
 }
 
-void
+static inline void
 ctx_interpret_pos (CtxState *state, CtxEntry *entry, void *data)
 {
   if ( ( ( (Ctx *) (data) )->transformation & CTX_TRANSFORMATION_SCREEN_SPACE) ||
@@ -27979,7 +34690,7 @@ ctx_state_init (CtxState *state)
   ctx_memset (state, 0, sizeof (CtxState) );
   state->gstate.global_alpha_u8 = 255;
   state->gstate.global_alpha_f  = 1.0;
-  state->gstate.font_size       = 12;
+  state->gstate.font_size       = 23; // default HTML canvas is 10px sans
   state->gstate.line_width      = 2.0;
   state->gstate.image_smoothing = 1;
   state->gstate.source_stroke.type = CTX_SOURCE_INHERIT_FILL;
@@ -27988,7 +34699,7 @@ ctx_state_init (CtxState *state)
   state->min_y                  = 8192;
   state->max_x                  = -8192;
   state->max_y                  = -8192;
-  ctx_matrix_identity (&state->gstate.transform);
+  _ctx_matrix_identity (&state->gstate.transform);
 #if CTX_CM
 #if CTX_BABL
   //ctx_colorspace_babl (state, CTX_COLOR_SPACE_USER_RGB,   babl_space ("sRGB"));
@@ -28055,7 +34766,7 @@ ctx_new (void)
   return ctx;
 }
 
-void
+static inline void
 ctx_drawlist_deinit (CtxDrawlist *drawlist)
 {
 #if !CTX_DRAWLIST_STATIC
@@ -28104,15 +34815,8 @@ Ctx *ctx_new_for_drawlist (void *data, size_t length)
   return ctx;
 }
 
-#ifdef CTX_HAVE_SIMD
-void ctx_simd_setup ();
-#endif
-
 static void ctx_setup ()
 {
-#ifdef CTX_HAVE_SIMD
-  ctx_simd_setup ();
-#endif
   ctx_font_setup ();
 }
 
@@ -28144,11 +34848,11 @@ ctx_render_ctx_textures (Ctx *ctx, Ctx *d_ctx)
                  //fprintf (stderr, "[%c]", command->code);
                  break;
          case CTX_TEXTURE:
-             fprintf (stderr, "t:%s\n", command->texture.eid);
+             //fprintf (stderr, "t:%s\n", command->texture.eid);
              ctx_process (d_ctx, &command->entry);
              break;
          case CTX_DEFINE_TEXTURE:
-             fprintf (stderr, "d:%s\n", command->define_texture.eid);
+             //fprintf (stderr, "d:%s\n", command->define_texture.eid);
              ctx_process (d_ctx, &command->entry);
            break;
        }
@@ -28263,6 +34967,11 @@ void ctx_set_transform (Ctx *ctx, float a, float b, float c, float d, float e, f
   ctx_identity (ctx);
   ctx_apply_transform (ctx, a, b, c, d, e, f);
 }
+
+#endif
+
+#if CTX_GET_CONTENTS
+
 #ifndef NO_LIBCURL
 #include <curl/curl.h>
 static size_t
@@ -28280,15 +34989,13 @@ ctx_get_contents (const char     *uri,
                   unsigned char **contents,
                   long           *length)
 {
-  char temp_uri[PATH_MAX]; // XXX XXX breaks with data uri's
+  char *temp_uri = NULL; // XXX XXX breaks with data uri's
+  int   success  = -1;
+
   if (uri[0] == '/')
   {
-    snprintf (temp_uri, sizeof (temp_uri)-1, "file://%s", uri);
-    uri = temp_uri;
-  }
-  else
-  {
-    snprintf (temp_uri, sizeof (temp_uri)-1, uri);
+    temp_uri = (char*) malloc (strlen (uri) + 8);
+    sprintf (temp_uri, "file://%s", uri);
     uri = temp_uri;
   }
 
@@ -28303,6 +35010,7 @@ ctx_get_contents (const char     *uri,
       contents = malloc (c->length+1);
       contents[c->length]=0;
       if (length) *length = c->length;
+      free (temp_uri);
       return 0;
     }
   }
@@ -28314,7 +35022,7 @@ ctx_get_contents (const char     *uri,
   }
 
   if (!strncmp (uri, "file://", 7))
-    return __ctx_file_get_contents (uri + 7, contents, length);
+    success = __ctx_file_get_contents (uri + 7, contents, length);
   else
   {
 #ifndef NO_LIBCURL
@@ -28344,5402 +35052,12392 @@ ctx_get_contents (const char     *uri,
      *length = string->length;
      ctx_string_free (string, 0);
      curl_easy_cleanup (curl);
-     return 0;
+     success = 0;
   }
 #else
-    return __ctx_file_get_contents (uri, contents, length);
+    success = __ctx_file_get_contents (uri, contents, length);
 #endif
+  }
+  free (temp_uri);
+  return success;
+}
+#endif
+
+#endif // CTX_IMPLEMENTATION
+#ifndef __CTX_CLIENTS_H
+#define __CTX_CLIENTS_H
+
+typedef enum CtxClientFlags {
+  ITK_CLIENT_UI_RESIZABLE = 1<<0,
+  ITK_CLIENT_CAN_LAUNCH   = 1<<1,
+  ITK_CLIENT_MAXIMIZED    = 1<<2,
+  ITK_CLIENT_ICONIFIED    = 1<<3,
+  ITK_CLIENT_SHADED       = 1<<4,
+  ITK_CLIENT_TITLEBAR     = 1<<5
+} CtxClientFlags;
+
+struct _CtxClient {
+  VT    *vt;
+  Ctx   *ctx;
+  char  *title;
+  int    x;
+  int    y;
+  int    width;
+  int    height;
+  CtxClientFlags flags;
+#if 0
+  int    shaded;
+  int    iconified;
+  int    maximized;
+  int    resizable;
+#endif
+  int    unmaximized_x;
+  int    unmaximized_y;
+  int    unmaximized_width;
+  int    unmaximized_height;
+  int    do_quit;
+  long   drawn_rev;
+  int    id;
+  int    internal; // render a settings window rather than a vt
+#if CTX_THREADS
+  mtx_t  mtx;
+#endif
+#if VT_RECORD
+  Ctx   *recording;
+#endif
+};
+
+typedef struct _CtxClient CtxClient;
+
+
+extern CtxList *clients;
+extern CtxClient *active;
+extern CtxClient *active_tab;
+
+
+int ctx_client_resize (int id, int width, int height);
+void ctx_client_maximize (int id);
+
+CtxClient *vt_get_client (VT *vt);
+CtxClient *ctx_client_new (Ctx *ctx, const char *commandline,
+                       int x, int y, int width, int height,
+                       CtxClientFlags flags);
+CtxClient *ctx_client_new_argv (Ctx *ctx, const char **argv, int x, int y, int width, int height, CtxClientFlags flags);
+int ctx_clients_need_redraw (Ctx *ctx);
+
+extern float ctx_shape_cache_rate;
+extern int _ctx_max_threads;
+
+void ctx_client_move (int id, int x, int y);
+int ctx_client_resize (int id, int w, int h);
+void ctx_client_shade_toggle (int id);
+float ctx_client_min_y_pos (Ctx *ctx);
+float ctx_client_max_y_pos (Ctx *ctx);
+
+CtxClient *client_by_id (int id);
+
+void ctx_client_remove (Ctx *ctx, CtxClient *client);
+
+int ctx_client_height (int id);
+
+int ctx_client_x (int id);
+int ctx_client_y (int id);
+void ctx_client_raise_top (int id);
+void ctx_client_lower_bottom (int id);
+void ctx_client_iconify (int id);
+int ctx_client_is_iconified (int id);
+void ctx_client_uniconify (int id);
+void ctx_client_maximize (int id);
+int ctx_client_is_maximized (int id);
+void ctx_client_unmaximize (int id);
+void ctx_client_maximized_toggle (int id);
+void ctx_client_shade (int id);
+int ctx_client_is_shaded (int id);
+void ctx_client_unshade (int id);
+void ctx_client_toggle_maximized (int id);
+void ctx_client_shade_toggle (int id);
+void ctx_client_move (int id, int x, int y);
+int ctx_client_resize (int id, int width, int height);
+
+
+#endif
+#ifndef MRG_UTF8_H
+#define MRG_UTF8_H
+
+#if !__COSMOPOLITAN__
+#include <string.h>
+#include <stdint.h>
+#endif
+
+static inline int mrg_utf8_len (const unsigned char first_byte)
+{
+  if      ((first_byte & 0x80) == 0)
+    return 1; /* ASCII */
+  else if ((first_byte & 0xE0) == 0xC0)
+    return 2;
+  else if ((first_byte & 0xF0) == 0xE0)
+    return 3;
+  else if ((first_byte & 0xF8) == 0xF0)
+    return 4;
+  return 1;
+}
+
+static inline const char *mrg_utf8_skip (const char *s, int utf8_length)
+{
+   int count;
+   if (!s)
+     return NULL;
+   for (count = 0; *s; s++)
+   {
+     if ((*s & 0xC0) != 0x80)
+       count++;
+     if (count == utf8_length+1)
+       return s;
+   }
+   return s;
+}
+
+int          mrg_unichar_to_utf8       (unsigned int   ch,
+                                        unsigned char *dest);
+unsigned int mrg_utf8_to_unichar       (unsigned char *utf8);
+
+//////////////////////////////////////////////////////////////////////////////////
+
+// Copyright (c) 2008-2009 Bjoern Hoehrmann <bjoern@hoehrmann.de>
+// See http://bjoern.hoehrmann.de/utf-8/decoder/dfa/ for details.
+
+#define UTF8_ACCEPT 0
+#define UTF8_REJECT 1
+
+static const uint8_t utf8d[] = {
+  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, // 00..1f
+  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, // 20..3f
+  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, // 40..5f
+  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, // 60..7f
+  1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9, // 80..9f
+  7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7, // a0..bf
+  8,8,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2, // c0..df
+  0xa,0x3,0x3,0x3,0x3,0x3,0x3,0x3,0x3,0x3,0x3,0x3,0x3,0x4,0x3,0x3, // e0..ef
+  0xb,0x6,0x6,0x6,0x5,0x8,0x8,0x8,0x8,0x8,0x8,0x8,0x8,0x8,0x8,0x8, // f0..ff
+  0x0,0x1,0x2,0x3,0x5,0x8,0x7,0x1,0x1,0x1,0x4,0x6,0x1,0x1,0x1,0x1, // s0..s0
+  1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,0,1,0,1,1,1,1,1,1, // s1..s2
+  1,2,1,1,1,1,1,2,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1, // s3..s4
+  1,2,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,3,1,3,1,1,1,1,1,1, // s5..s6
+  1,3,1,1,1,1,1,3,1,3,1,1,1,1,1,1,1,3,1,1,1,1,1,1,1,1,1,1,1,1,1,1, // s7..s8
+};
+
+static inline uint32_t
+utf8_decode(uint32_t* state, uint32_t* codep, uint32_t byte) {
+  uint32_t type = utf8d[byte];
+
+  *codep = (*state != UTF8_ACCEPT) ?
+    (byte & 0x3fu) | (*codep << 6) :
+    (0xff >> type) & (byte);
+
+  *state = utf8d[256 + *state*16 + type];
+  return *state;
+}
+
+#endif
+#if CTX_VT
+
+/* mrg - MicroRaptor Gui
+ * Copyright (c) 2014 Øyvind Kolås <pippin@hodefoting.com>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#ifndef VT_LINE_H
+#define VT_LINE_H
+
+#include "ctx.h"
+
+#ifndef CTX_UNLIKELY
+#define CTX_UNLIKELY(x)    __builtin_expect(!!(x), 0)
+#define CTX_LIKELY(x)      __builtin_expect(!!(x), 1)
+#endif
+#ifndef CTX_MAX
+#define CTX_MAX(a,b) (((a)>(b))?(a):(b))
+#endif
+
+typedef struct _VtLine   VtLine;
+
+struct _VtLine
+{
+  CtxString string;
+  /* line extends string, permitting string ops to operate on it  */
+
+  uint64_t *style;
+  int       style_size;
+
+  void     *ctx; // each line can have an attached ctx context;
+  char     *prev;
+  int       prev_length;
+  CtxString *frame;
+
+  int       wrapped;
+
+  void     *ctx_copy; // each line can have an attached ctx context;
+  // clearing should be brutal enough to unset the context of the current
+  // at least in alt-screen mode
+  int       double_width;
+  int       double_height_top;
+  int       double_height_bottom;
+  int       contains_proportional;
+  float     xscale;
+  float     yscale;
+  float     y_offset;
+  int       in_scrolling_region;
+
+  /*  XXX:  needs refactoring to a CtxList of links/images */
+  void     *images[4];
+  int       image_col[4];
+  float     image_X[4]; // 0.0 - 1.0 offset in cell
+  float     image_Y[4];
+  int       image_rows[4];
+  int       image_cols[4];
+  int       image_subx[4];
+  int       image_suby[4];
+  int       image_subw[4];
+  int       image_subh[4];
+};
+
+
+static inline uint64_t vt_line_get_style (VtLine *string, int pos)
+{
+  if (string->string.is_line==0)
+    return 0;
+  if (pos < 0 || pos >= string->style_size)
+    return 0;
+  return string->style[pos];
+}
+
+#if !__COSMOPOLITAN__
+#include <stdlib.h>
+#endif
+
+static inline void vt_line_set_style (VtLine *string, int pos, uint64_t style)
+{
+  if (string->string.is_line==0)
+    return;
+  if (pos < 0 || pos >= 512)
+    return;
+  if (pos >= string->style_size)
+    {
+      int new_size = pos + 16;
+      string->style = realloc (string->style, new_size * sizeof (uint64_t) );
+      memset (&string->style[string->style_size], 0, (new_size - string->style_size) * sizeof (uint64_t) );
+      string->style_size = new_size;
+    }
+  string->style[pos] = style;
+}
+
+VtLine *vt_line_new_with_size (const char *initial, int initial_size);
+VtLine *vt_line_new (const char *initial);
+
+static inline void        vt_line_free           (VtLine *line, int freealloc)
+{
+  CtxString *string = (CtxString*)line;
+
+#if 1
+  //if (string->is_line)
+  {
+    VtLine *line = (VtLine*)string;
+    if (line->frame)
+      ctx_string_free (line->frame, 1);
+    if (line->style)
+      { free (line->style); }
+    if (line->ctx)
+      { ctx_free (line->ctx); }
+    if (line->ctx_copy)
+      { ctx_free (line->ctx_copy); }
+  }
+#endif
+
+  ctx_string_free (string, freealloc);
+}
+static inline const char *vt_line_get            (VtLine *line)
+{
+  CtxString *string = (CtxString*)line;
+  return ctx_string_get (string);
+}
+static inline uint32_t    vt_line_get_unichar    (VtLine *line, int pos)
+{
+  CtxString *string = (CtxString*)line;
+  return ctx_string_get_unichar (string, pos);
+}
+static inline int         vt_line_get_length     (VtLine *line)
+{
+  CtxString *string = (CtxString*)line;
+  return ctx_string_get_length (string);
+}
+static inline int         vt_line_get_utf8length     (VtLine *line)
+{
+  CtxString *string = (CtxString*)line;
+  return ctx_string_get_utf8length (string);
+}
+static inline void        vt_line_set            (VtLine *line, const char *new_string)
+{
+  CtxString *string = (CtxString*)line;
+  ctx_string_set (string, new_string);
+}
+static inline void        vt_line_clear          (VtLine *line)
+{
+  CtxString *string = (CtxString*)line;
+  ctx_string_clear (string);
+}
+static inline void        vt_line_append_str     (VtLine *line, const char *str)
+{
+  CtxString *string = (CtxString*)line;
+  ctx_string_append_str (string, str);
+}
+
+#if 0
+static inline void _ctx_string_append_byte (CtxString *string, char  val)
+{
+  if (CTX_LIKELY((val & 0xC0) != 0x80))
+    { string->utf8_length++; }
+  if (CTX_UNLIKELY(string->length + 2 >= string->allocated_length))
+    {
+      char *old = string->str;
+      string->allocated_length = CTX_MAX (string->allocated_length * 2, string->length + 2);
+      string->str = (char*)realloc (old, string->allocated_length);
+    }
+  string->str[string->length++] = val;
+  string->str[string->length] = '\0';
+}
+#endif
+
+static inline void        vt_line_append_byte    (VtLine *line, char  val)
+{
+  CtxString *string = (CtxString*)line;
+  _ctx_string_append_byte (string, val);
+}
+static inline void        vt_line_append_string  (VtLine *line, CtxString *string2)
+{
+  CtxString *string = (CtxString*)line;
+  ctx_string_append_string (string, string2);
+}
+static inline void        vt_line_append_unichar (VtLine *line, unsigned int unichar)
+{
+  CtxString *string = (CtxString*)line;
+  ctx_string_append_unichar (string, unichar);
+}
+
+
+static inline void vt_line_append_data    (VtLine *line, const char *data, int len)
+{
+  CtxString *string = (CtxString*)line;
+  ctx_string_append_data (string, data, len);
+}
+static inline void vt_line_append_utf8char (VtLine *line, const char *str)
+{
+  CtxString *string = (CtxString*)line;
+  ctx_string_append_utf8char (string, str);
+}
+static inline void vt_line_replace_utf8   (VtLine *line, int pos, const char *new_glyph)
+{
+  CtxString *string = (CtxString*)line;
+  ctx_string_replace_utf8 (string, pos, new_glyph);
+}
+static inline void vt_line_insert_utf8    (VtLine *line, int pos, const char *new_glyph)
+{
+  CtxString *string = (CtxString*)line;
+  ctx_string_insert_utf8 (string, pos, new_glyph);
+  int len = vt_line_get_length (line);
+  for (int i = pos; i < len; i++)
+    vt_line_set_style (line, i, vt_line_get_style (line, i-1));
+}
+
+static inline void vt_line_insert_unichar (VtLine *line, int pos, uint32_t new_glyph)
+{
+  CtxString *string = (CtxString*)line;
+  ctx_string_insert_unichar (string, pos, new_glyph);
+  int len = vt_line_get_length (line);
+  for (int i = 1; i < len; i++)
+    vt_line_set_style (line, i, vt_line_get_style (line, i-1));
+}
+static inline void vt_line_replace_unichar (VtLine *line, int pos, uint32_t unichar)
+{
+  CtxString *string = (CtxString*)line;
+  ctx_string_replace_unichar (string, pos, unichar);
+}
+
+static inline void vt_line_remove (VtLine *line, int pos)
+{ 
+  CtxString *string = (CtxString*)line;
+  ctx_string_remove (string, pos);
+
+  for (int i = pos; i < line->style_size-1; i++)
+  {
+    line->style[i] = line->style[i+1];
+  }
+}
+
+
+#ifndef TRUE
+#define TRUE 1
+#endif
+#ifndef FALSE
+#define FALSE 0
+#endif
+
+#endif
+/* mrg - MicroRaptor Gui
+ * Copyright (c) 2014 Øyvind Kolås <pippin@hodefoting.com>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+
+#ifndef _DEFAULT_SOURCE
+#define _DEFAULT_SOURCE
+#endif
+
+#if !__COSMOPOLITAN__
+#include <stdarg.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#endif
+
+int ctx_unichar_to_utf8 (uint32_t  ch, uint8_t  *dest);
+#define mrg_unichar_to_utf8 ctx_unichar_to_utf8
+void ctx_string_init (CtxString *string, int initial_size);
+
+VtLine *vt_line_new_with_size (const char *initial, int initial_size)
+{
+  VtLine *line = calloc (sizeof (VtLine), 1);
+  CtxString *string = (CtxString*)line;
+  ctx_string_init (string, initial_size);
+  if (initial)
+    { ctx_string_append_str (string, initial); }
+  line->style = calloc (sizeof (uint64_t), initial_size);
+  line->style_size = initial_size;
+  string->is_line = 1;
+  return line;
+}
+
+VtLine *vt_line_new (const char *initial)
+{
+  return vt_line_new_with_size (initial, 8);
+}
+
+typedef struct VtPty
+{
+  int        pty;
+  pid_t      pid;
+  int        done;
+} VtPty;
+ssize_t vtpty_read     (void *vtpty, void *buf, size_t count);
+ssize_t vtpty_write    (void *vtpty, const void *buf, size_t count);
+void    vtpty_resize   (void *vtpty, int cols, int rows,
+                        int px_width, int px_height);
+int     vtpty_waitdata (void  *vtpty, int timeout);
+extern  CtxList *vts;
+#define MAX_COLS 2048 // used for tabstops
+
+
+typedef struct AudioState
+{
+  int action;
+  int samplerate; // 8000
+  int channels;   // 1
+  int bits;       // 8
+  int type;       // 'u'    u-law  f-loat  s-igned u-nsigned
+  int buffer_size; // desired size of audiofragment in frames
+  // (both for feeding SDL and as desired chunking
+  //  size)
+
+
+  int mic;        // <- should
+  //    request permisson,
+  //    and if gotten, start streaming
+  //    audio packets in the incoming direction
+  //
+  int encoding;   // 'a' ascci85 'b' base64
+  int compression; // '0': none , 'z': zlib   'o': opus(reserved)
+
+  int frames;
+
+  uint8_t *data;
+  int      data_size;
+} AudioState;
+
+typedef struct GfxState
+{
+  int action;
+  int id;
+  int buf_width;
+  int buf_height;
+  int format;
+  int compression;
+  int transmission;
+  int multichunk;
+  int buf_size;
+  int x;
+  int y;
+  int w;
+  int h;
+  int x_cell_offset;
+  int y_cell_offset;
+  int columns;
+  int rows;
+  int z_index;
+  int delete;
+
+  uint8_t *data;
+  int   data_size;
+} GfxState;
+
+struct _VT
+{
+  VtPty      vtpty;
+  int       id;
+  unsigned char buf[BUFSIZ]; // need one per vt
+  int keyrepeat;
+  int       lastx;
+  int       lasty;
+  int        result;
+  long       rev;
+  //SDL_Rect   dirty;
+  float  dirtpad;
+  float  dirtpad1;
+  float  dirtpad2;
+  float  dirtpad3;
+
+  void  *client;
+
+  ssize_t (*write)   (void *serial_obj, const void *buf, size_t count);
+  ssize_t (*read)    (void *serial_obj, void *buf, size_t count);
+  int     (*waitdata)(void *serial_obj, int timeout);
+  void    (*resize)  (void *serial_obj, int cols, int rows, int px_width, int px_height);
+
+
+  char     *title;
+  void    (*state) (VT *vt, int byte);
+
+  AudioState audio; // < want to move this one level up and share impl
+  GfxState   gfx;
+
+  CtxList   *saved_lines;
+  int       in_alt_screen;
+  int       saved_line_count;
+  CtxList   *lines;
+  int       line_count;
+  CtxList   *scrollback;
+  int       scrollback_count;
+  int       leds[4];
+  uint64_t  cstyle;
+
+  uint8_t   fg_color[3];
+  uint8_t   bg_color[3];
+
+  int       in_smooth_scroll;
+  int       smooth_scroll;
+  float     scroll_offset;
+  int       debug;
+  int       bell;
+  int       origin;
+  int       at_line_home;
+  int       charset[4];
+  int       saved_charset[4];
+  int       shifted_in;
+  int       reverse_video;
+  int       echo;
+  int       bracket_paste;
+  int       ctx_events;
+  int       font_is_mono;
+  int       palette_no;
+  int       has_blink; // if any of the set characters are blinking
+  // updated on each draw of the screen
+  
+  int can_launch;
+
+  int unit_pixels;
+  int mouse;
+  int mouse_drag;
+  int mouse_all;
+  int mouse_decimal;
+
+
+  uint8_t    utf8_holding[64]; /* only 4 needed for utf8 - but it's purpose
+                                 is also overloaded for ctx journal command
+                                 buffering , and the bigger sizes for the svg-like
+                                 ctx parsing mode */
+  int        utf8_expected_bytes;
+  int        utf8_pos;
+
+
+  int        ref_len;
+  char       reference[16];
+  int        in_prev_match;
+  CtxParser *ctxp;
+  // text related data
+  float      letter_spacing;
+
+  float      word_spacing;
+  float      font_stretch;  // horizontal expansion
+  float      font_size_adjust;
+  // font-variant
+  // font-weight
+  // text-decoration
+
+  int        encoding;  // 0 = utf8 1=pc vga 2=ascii
+
+  int        local_editing; /* terminal operates without pty  */
+
+  int        insert_mode;
+  int        autowrap;
+  int        justify;
+  float      cursor_x;
+  int        cursor_y;
+  int        cols;
+  int        rows;
+  VtLine    *current_line;
+
+
+  int        cr_on_lf;
+  int        cursor_visible;
+  int        saved_x;
+  int        saved_y;
+  uint32_t   saved_style;
+  int        saved_origin;
+  int        cursor_key_application;
+  int        margin_top;
+  int        margin_bottom;
+  int        margin_left;
+  int        margin_right;
+
+  int        left_right_margin_mode;
+
+  int        scrollback_limit;
+  float      scroll;
+  int        scroll_on_input;
+  int        scroll_on_output;
+
+  char       *argument_buf;
+  int        argument_buf_len;
+  int        argument_buf_cap;
+  uint8_t    tabs[MAX_COLS];
+  int        inert;
+
+  int        width;
+  int        height;
+
+  int        cw; // cell width
+  int        ch; // cell height
+  float      font_to_cell_scale;
+  float      font_size; // when set with set_font_size, cw and ch are recomputed
+  float      line_spacing; // using line_spacing
+  float      scale_x;
+  float      scale_y;
+
+  int        ctx_pos;  // 1 is graphics above text, 0 or -1 is below text
+  Ctx       *root_ctx; /* only used for knowledge of top-level dimensions */
+
+  int        blink_state;
+
+  FILE      *log;
+
+  int cursor_down;
+
+  int select_begin_col;
+  int select_begin_row;
+  int select_start_col;
+  int select_start_row;
+  int select_end_col;
+  int select_end_row;
+  int select_begin_x;
+  int select_begin_y;
+  int select_active;
+
+  int popped;
+
+  /* used to make runs of background on one line be drawn
+   * as a single filled rectangle
+   */
+  int   bg_active;
+  float bg_x0;
+  float bg_y0;
+  float bg_width;
+  float bg_height;
+  uint8_t bg_rgba[4];
+};
+
+
+VT *vt_new (const char *command, int width, int height, float font_size, float line_spacing, int id, int can_launch);
+
+void vt_open_log (VT *vt, const char *path);
+
+void        vt_set_px_size        (VT *vt, int width, int height);
+void        vt_set_term_size      (VT *vt, int cols, int rows);
+
+int         vt_cw                 (VT *vt);
+int         vt_ch                 (VT *vt);
+void        vt_set_font_size      (VT *vt, float font_size);
+float       vt_get_font_size      (VT *vt);
+void        vt_set_line_spacing   (VT *vt, float line_spacing);
+
+const char *vt_find_shell_command (void);
+
+int         vt_keyrepeat          (VT *vt);
+
+int         vt_get_result         (VT *vt);
+int         vt_is_done            (VT *vt);
+int         vt_poll               (VT *vt, int timeout);
+long        vt_rev                (VT *vt);
+void        vt_destroy            (VT *vt);
+int         vt_has_blink (VT *vt);
+
+/* this is how mrg/mmm based key-events are fed into the vt engine
+ */
+void        vt_feed_keystring     (VT *vt, CtxEvent *event, const char *str);
+
+void        vt_paste              (VT *vt, const char *str);
+
+/* not needed when passing a commandline for command to
+ * run, but could be used for injecting commands, or
+ * output from stored shell commands/sessions to display
+ */
+//void        vt_feed_byte          (VT *vt, int byte);
+
+//)#define DEFAULT_SCROLLBACK   (1<<16)
+#define DEFAULT_SCROLLBACK   (1<<13)
+#define DEFAULT_ROWS         24
+#define DEFAULT_COLS         80
+
+int         vt_get_line_count       (VT *vt);
+
+pid_t       vt_get_pid              (VT *vt);
+
+const char *vt_get_line             (VT *vt, int no);
+
+void        vt_set_scrollback_lines (VT *vt, int scrollback_lines);
+int         vt_get_scrollback_lines (VT *vt);
+
+void        vt_set_scroll           (VT *vt, int scroll);
+int         vt_get_scroll           (VT *vt);
+
+int         vt_get_cols             (VT *vt);
+int         vt_get_rows             (VT *vt);
+
+char       *vt_get_selection        (VT *vt);
+int         vt_get_cursor_x         (VT *vt);
+int         vt_get_cursor_y         (VT *vt);
+
+void        vt_draw                 (VT *vt, Ctx *ctx, double x, double y);
+void        vt_register_events      (VT *vt, Ctx *ctx, double x0, double y0);
+
+void        vt_rev_inc              (VT *vt);
+
+int         vt_mic (VT *vt);
+void        vt_set_ctx (VT *vt, Ctx *ctx);  /* XXX: rename, this sets the parent/global ctx  */
+
+
+int         vt_get_local (VT *vt);           // this is a hack for the settings tab
+void        vt_set_local (VT *vt, int local);
+
+
+typedef enum VtMouseEvent
+{
+  VT_MOUSE_MOTION = 0,
+  VT_MOUSE_PRESS,
+  VT_MOUSE_DRAG,
+  VT_MOUSE_RELEASE,
+} VtMouseEvent;
+
+void vt_mouse (VT *vt, CtxEvent *event, VtMouseEvent type, int button, int x, int y, int px_x, int px_y);
+
+static ssize_t vt_write (VT *vt, const void *buf, size_t count)
+{
+  if (!vt->write) { return 0; }
+  return vt->write (&vt->vtpty, buf, count);
+}
+static ssize_t vt_read (VT *vt, void *buf, size_t count)
+{
+  if (!vt->read) { return 0; }
+  return vt->read (&vt->vtpty, buf, count);
+}
+static int vt_waitdata (VT *vt, int timeout)
+{
+  if (!vt->waitdata) { return 0; }
+  return vt->waitdata (&vt->vtpty, timeout);
+}
+static void vt_resize (VT *vt, int cols, int rows, int px_width, int px_height)
+{
+  if (vt && vt->resize)
+    { vt->resize (&vt->vtpty, cols, rows, px_width, px_height); }
+}
+
+/* atty - audio interface and driver for terminals
+ * Copyright (C) 2020 Øyvind Kolås <pippin@gimp.org>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>. 
+ */
+
+
+#ifndef NO_SDL
+#include <SDL.h>
+#include <zlib.h>
+
+static int ydec (const void *srcp, void *dstp, int count)
+{
+  const char *src = srcp;
+  char *dst = dstp;
+  int out_len = 0;
+  for (int i = 0; i < count; i ++)
+  {
+    int o = src[i];
+    switch (o)
+    {
+      case '=':
+              i++;
+              o = src[i];
+              o = (o-42-64) % 256;
+              break;
+      case '\n':
+      case '\033':
+      case '\r':
+      case '\0':
+              break;
+      default:
+              o = (o-42) % 256;
+              break;
+    }
+    dst[out_len++] = o;
+  }
+  dst[out_len]=0;
+  return out_len;
+}
+
+#ifndef NO_SDL
+static SDL_AudioDeviceID speaker_device = 0;
+#endif
+
+//#define AUDIO_CHUNK_SIZE 512
+
+// our pcm queue is currently always 16 bit
+// signed stereo
+
+static int16_t pcm_queue[1<<18];
+static int     pcm_write_pos = 0;
+static int     pcm_read_pos  = 0;
+
+void terminal_queue_pcm (int16_t sample_left, int16_t sample_right)
+{
+  if (pcm_write_pos >= (1<<18)-1)
+  {
+    /*  TODO  :  fix cyclic buffer */
+    pcm_write_pos = 0;
+    pcm_read_pos  = 0;
+  }
+  pcm_queue[pcm_write_pos++]=sample_left;
+  pcm_queue[pcm_write_pos++]=sample_right;
+}
+
+float click_volume = 0.05;
+
+void vt_feed_audio (VT *vt, void *samples, int bytes);
+int mic_device = 0;   // when non 0 we have an active mic device
+
+
+/*  https://jonathanhays.me/2018/11/14/mu-law-and-a-law-compression-tutorial/
+ */
+
+#if 0
+static char MuLawCompressTable[256] =
+{
+   0,0,1,1,2,2,2,2,3,3,3,3,3,3,3,3,
+   4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,
+   5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,
+   5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,
+   6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,
+   6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,
+   6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,
+   6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,
+   7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
+   7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
+   7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
+   7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
+   7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
+   7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
+   7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
+   7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7
+};
+
+unsigned char LinearToMuLawSample(int16_t sample)
+{
+  const int cBias = 0x84;
+  const int cClip = 32635;
+  int sign = (sample >> 8) & 0x80;
+
+  if (sign)
+    sample = (int16_t)-sample;
+
+  if (sample > cClip)
+    sample = cClip;
+
+  sample = (int16_t)(sample + cBias);
+
+  int exponent = (int)MuLawCompressTable[(sample>>7) & 0xFF];
+  int mantissa = (sample >> (exponent+3)) & 0x0F;
+
+  int compressedByte = ~ (sign | (exponent << 4) | mantissa);
+
+  return (unsigned char)compressedByte;
+}
+#endif
+
+void vt_feed_audio (VT *vt, void *samples, int bytes)
+{
+  char buf[256];
+  AudioState *audio = &vt->audio;
+  uint8_t *data = samples;
+  int frames = bytes / (audio->bits/8) / audio->channels;
+
+  if (audio->compression == 'z')
+  {
+    uLongf len = compressBound(bytes);
+    data = malloc (len);
+    int z_result = compress (data, &len, samples, len);
+    if (z_result != Z_OK)
+    {
+      char buf[256]= "\033_Ao=z;zlib error2\033\\";
+      vt_write (vt, buf, strlen(buf));
+      data = samples;
+    }
+    else
+    {
+      bytes = len;
+    }
+  }
+
+  char *encoded = malloc (bytes * 2);
+  encoded[0]=0;
+  if (audio->encoding == 'a')
+  {
+    ctx_a85enc (data, encoded, bytes);
+  }
+  else /* if (audio->encoding == 'b')  */
+  {
+    ctx_bin2base64 (data, bytes, encoded);
+  }
+
+  sprintf (buf, "\033[_Af=%i;", frames);
+  vt_write (vt, buf, strlen (buf));
+  vt_write (vt, encoded, strlen(encoded));
+  free (encoded);
+
+  if (data != samples)
+    free (data);
+
+  //vt_write (vt, samples, bytes);
+  buf[0]='\033';
+  buf[1]='\\';
+  buf[2]=0;
+  vt_write (vt, buf, 2);
+}
+
+#define MIC_BUF_LEN 40960
+
+uint8_t mic_buf[MIC_BUF_LEN];
+int     mic_buf_pos = 0;
+
+static void mic_callback(void*     userdata,
+                         uint8_t * stream,
+                         int       len)
+{
+  AudioState *audio = userdata;
+  int16_t *sstream = (void*)stream;
+  int frames;
+  int channels = audio->channels;
+
+  frames = len / 2;
+
+  if (audio->bits == 8)
+  {
+    if (audio->type == 'u')
+    {
+      for (int i = 0; i < frames; i++)
+      {
+        for (int c = 0; c < channels; c++)
+        {
+          mic_buf[mic_buf_pos++] = LinearToMuLawSample (sstream[i]);
+          if (mic_buf_pos >= MIC_BUF_LEN - 4)
+            mic_buf_pos = 0;
+        }
+      }
+    }
+    else
+    {
+      for (int i = 0; i < frames; i++)
+      {
+        for (int c = 0; c <  audio->channels; c++)
+        {
+          mic_buf[mic_buf_pos++] = (sstream[i]) / 256;
+          if (mic_buf_pos >= MIC_BUF_LEN - 4)
+            mic_buf_pos = 0;
+        }
+      }
+    }
+  }
+  else
+  {
+    for (int i = 0; i < frames; i++)
+    {
+      for (int c = 0; c < audio->channels; c++)
+      {
+        *((int16_t*)(&mic_buf[mic_buf_pos])) = (sstream[i]);
+        mic_buf_pos+=2;
+        if (mic_buf_pos >= MIC_BUF_LEN - 4)
+          mic_buf_pos = 0;
+      }
+    }
+  }
+}
+
+static long int ticks (void)
+{
+  struct timeval tp;
+  gettimeofday(&tp, NULL);
+  return tp.tv_sec * 1000 + tp.tv_usec / 1000;
+}
+
+static long int silence_start = 0;
+
+static void sdl_audio_init ()
+{
+  static int done = 0;
+  if (!done)
+  {
+#ifndef NO_SDL
+  if (SDL_Init(SDL_INIT_AUDIO) < 0)
+  {
+    fprintf (stderr, "sdl audio init fail\n");
+  }
+#endif
+  done = 1;
+  }
+}
+
+void vt_audio_task (VT *vt, int click)
+{
+  if (!vt) return;
+  AudioState *audio = &vt->audio;
+#ifndef NO_SDL
+
+  if (audio->mic)
+  {
+    if (mic_device == 0)
+    {
+      SDL_AudioSpec spec_want, spec_got;
+      sdl_audio_init ();
+
+      spec_want.freq     = audio->samplerate;
+      spec_want.channels = 1;
+      spec_want.format   = AUDIO_S16;
+      spec_want.samples  = audio->buffer_size;
+      spec_want.callback = mic_callback;
+      spec_want.userdata = audio;
+      mic_device = SDL_OpenAudioDevice(SDL_GetAudioDeviceName(0, SDL_TRUE), 1, &spec_want, &spec_got, 0);
+
+      SDL_PauseAudioDevice(mic_device, 0);
+    }
+
+    if (mic_buf_pos)
+    {
+      SDL_LockAudioDevice (mic_device);
+      vt_feed_audio (vt, mic_buf, mic_buf_pos);
+      mic_buf_pos = 0;
+      SDL_UnlockAudioDevice (mic_device);
+    }
+  }
+  else
+  {
+    if (mic_device)
+    {
+      SDL_PauseAudioDevice(mic_device, 1);
+      SDL_CloseAudioDevice(mic_device);
+      mic_device = 0;
+    }
+  }
+
+  int free_frames = audio->buffer_size - SDL_GetQueuedAudioSize(speaker_device);
+  int queued = (pcm_write_pos - pcm_read_pos)/2; // 2 for stereo
+  //if (free_frames > 6) free_frames -= 4;
+  int frames = queued;
+
+  if (frames > free_frames) frames = free_frames;
+  if (frames > 0)
+  {
+    if (speaker_device == 0)
+    {
+      SDL_AudioSpec spec_want, spec_got;
+      sdl_audio_init ();
+
+       spec_want.freq = audio->samplerate;
+       if (audio->bits == 8 && audio->type == 'u')
+       {
+         spec_want.format = AUDIO_S16;
+         spec_want.channels = 2;
+       }
+       else if (audio->bits == 8 && audio->type == 's')
+       {
+         spec_want.format = AUDIO_S8;
+         spec_want.channels = audio->channels;
+       }
+       else if (audio->bits == 16 && audio->type == 's')
+       {
+         spec_want.format = AUDIO_S16;
+         spec_want.channels = audio->channels;
+       }
+       else
+       {
+         spec_want.format = AUDIO_S16; // XXX  : error
+         spec_want.channels = audio->channels;
+       }
+
+       /* In SDL we always set 16bit stereo, but with the
+        * requested sample rate.
+        */
+      spec_want.format = AUDIO_S16;
+      spec_want.channels = 2;
+
+      spec_want.samples = audio->buffer_size;
+      spec_want.callback = NULL;
+
+      speaker_device = SDL_OpenAudioDevice (NULL, 0, &spec_want, &spec_got, 0);
+      if (!speaker_device){
+        fprintf (stderr, "sdl openaudiodevice fail\n");
+      }
+      SDL_PauseAudioDevice (speaker_device, 0);
+    }
+
+#if 0
+    {
+       int i;
+       unsigned char *b = (void*)(&pcm_queue[pcm_read_pos]);
+       for (i = 0; i < frames * 4; i++)
+       {
+         if ((b[i] > ' ') && (b[i] <= '~'))
+           fprintf (stderr, "[%c]", b[i]);
+         else
+           fprintf (stderr, "[%i]", b[i]);
+       }
+    }
+#endif
+    SDL_QueueAudio (speaker_device, (void*)&pcm_queue[pcm_read_pos], frames * 4);
+    pcm_read_pos += frames*2;
+    silence_start = ticks();
+  }
+  else
+  {
+    if (speaker_device &&  (ticks() - silence_start >  2000))
+    {
+      SDL_PauseAudioDevice(speaker_device, 1);
+      SDL_CloseAudioDevice(speaker_device);
+      speaker_device = 0;
+    }
+  }
+#endif
+}
+
+void terminal_queue_pcm (int16_t sample_left, int16_t sample_right);
+
+static unsigned char vt_bell_audio[] = {
+#if 1
+  0xaf, 0xaf, 0xaf, 0xaf, 0xaf, 0xaf, 0xaf, 0xaf, 0xaf, 0xaf, 0xaf, 0xaf,
+  0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08,
+  0xaf, 0xaf, 0xaf, 0xaf, 0xaf, 0xaf, 0xaf, 0xaf, 0xaf, 0xaf, 0xaf, 0xaf,
+  0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08,
+  0xaf, 0xaf, 0xaf, 0xaf, 0xaf, 0xaf, 0xaf, 0xaf, 0xaf, 0xaf, 0xaf, 0xaf,
+  0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08,
+  0xaf, 0xaf, 0xaf, 0xaf, 0xaf, 0xaf, 0xaf, 0xaf, 0xaf, 0xaf, 0xaf, 0xaf,
+  0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08,
+  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+#else
+  0x7e, 0xfe, 0x7e, 0x7d, 0x7e, 0x7e, 0x7e, 0x7d, 0x7e, 0x7e, 0x7e, 0xff,
+  0xff, 0xfe, 0xfe, 0x7e, 0xff, 0xfe, 0xfd, 0xfd, 0xfe, 0xfe, 0xfd, 0xfd,
+  0xfe, 0xfe, 0x7e, 0x7e, 0x7e, 0x7e, 0x7e, 0x7e, 0x7e, 0x7e, 0x7d, 0x7d,
+  0xfe, 0x7e, 0x7e, 0x7e, 0x7e, 0xfd, 0xfd, 0x7e, 0x7e, 0xfd, 0xfe, 0xfe,
+  0xfe, 0x7d, 0x7d, 0x7e, 0x7e, 0x7e, 0x7e, 0x7e, 0xfe, 0xfe, 0xff, 0xfe,
+  0xfe, 0xfe, 0x7d, 0x7c, 0xfb, 0xfa, 0xfc, 0xfd, 0xfc, 0x76, 0x75, 0xfa,
+  0xfb, 0x7b, 0xfc, 0xef, 0xf6, 0x77, 0x6d, 0x7b, 0xf8, 0x78, 0x78, 0xfa,
+  0xf7, 0xfd, 0xfd, 0xfc, 0xfc, 0xfa, 0xf5, 0xf7, 0x7d, 0x7b, 0x78, 0x77,
+  0x7c, 0x6f, 0x7b, 0xf5, 0xfb, 0x7b, 0x7c, 0x78, 0x76, 0xea, 0xf2, 0x6d,
+  0xfd, 0xed, 0x7a, 0x6d, 0x6e, 0x71, 0xfe, 0x76, 0x6d, 0xfb, 0xef, 0x7e,
+  0xfa, 0xef, 0xec, 0xed, 0xf8, 0xf0, 0xea, 0xf9, 0x70, 0x7c, 0x7c, 0x6b,
+  0x6d, 0x75, 0xfb, 0xf1, 0xf9, 0xfe, 0xec, 0xea, 0x7c, 0x75, 0xff, 0xfb,
+  0x7d, 0x77, 0x7a, 0x71, 0x6e, 0x6c, 0x6e, 0x7b, 0x7e, 0x7a, 0x7c, 0xf4,
+  0xf9, 0x7b, 0x7b, 0xfa, 0xfe, 0x73, 0x79, 0xfe, 0x7b, 0x76, 0xfe, 0xf3,
+  0xf9, 0x76, 0x77, 0x7e, 0x7e, 0x7d, 0x7c, 0xf9, 0xee, 0xf2, 0x7d, 0xf8,
+  0xec, 0xee, 0xf7, 0xfa, 0xf7, 0xf6, 0xfd, 0x77, 0x75, 0x7b, 0xfa, 0xfe,
+  0x78, 0x79, 0x7c, 0x76, 0x7e, 0xf7, 0xfb, 0xf5, 0xf6, 0x75, 0x6f, 0x74,
+  0x6e, 0x6e, 0x6d, 0x6c, 0x7a, 0xf9, 0x75, 0x77, 0xf4, 0xf0, 0xf0, 0xf1,
+  0xef, 0xf3, 0xf6, 0xfd, 0xfc, 0xfb, 0xfd, 0xfc, 0xf6, 0xf8, 0xfb, 0xf9,
+  0xfa, 0xfd, 0xfb, 0xfc, 0x7a, 0x7c, 0x77, 0x75, 0x78, 0x7a, 0x7a, 0x78,
+  0x7a, 0xfa, 0xf9, 0x7c, 0xff, 0xfb, 0x7d, 0x77, 0x73, 0x6c, 0x6e, 0x7b,
+  0xfc, 0xfe, 0x7e, 0xfb, 0xf1, 0xeb, 0xee, 0xf6, 0xf6, 0xef, 0xf7, 0x7c,
+  0x76, 0x76, 0x7b, 0x7a, 0x7b, 0x73, 0x73, 0x7c, 0x79, 0x70, 0x79, 0xfb,
+  0xfd, 0xf8, 0xf9, 0xfc, 0xfc, 0xf8, 0xfb, 0xff, 0xfc, 0xf9, 0x75, 0x6f,
+  0x74, 0xfe, 0xff, 0xfd, 0x7d, 0xf5, 0xef, 0xee, 0xf8, 0xfd, 0xfd, 0xf3,
+  0xfa, 0xfe, 0xfe, 0x7c, 0x77, 0x7a, 0xfb, 0x79, 0x7e, 0x7b, 0xfd, 0x6d,
+  0xfc, 0x7a, 0xf0, 0x74, 0xee, 0x79, 0xea, 0x79, 0xf9, 0x6d, 0xf7, 0x71,
+  0x79, 0x76, 0x7c, 0x77, 0x6f, 0xf3, 0x6c, 0xe8, 0x67, 0xe3, 0x5e, 0xdc,
+  0x58, 0xd8, 0x4e, 0xce, 0x46, 0xc5, 0x40, 0x67, 0xba, 0x49, 0xac, 0x26,
+  0xba, 0x3e, 0xc5, 0xc8, 0x2b, 0xa8, 0x32, 0xbd, 0xe4, 0x3e, 0xb7, 0x3b,
+  0xb7, 0x3a, 0x33, 0xab, 0x3f, 0xc8, 0x46, 0x5f, 0xb7, 0x69, 0xd4, 0x3d,
+  0xc0, 0x4c, 0xf2, 0xdb, 0x3b, 0xdd, 0x69, 0xc5, 0x5f, 0xd8, 0xd8, 0xda,
+  0xc6, 0x39, 0xba, 0x3f, 0x35, 0xb3, 0x3e, 0xbb, 0x4a, 0x4a, 0xe7, 0x60,
+  0xae, 0x2c, 0xcb, 0x53, 0x45, 0xaf, 0x2a, 0xae, 0x3e, 0x4a, 0xae, 0x2a,
+  0xad, 0x38, 0xcc, 0xbb, 0x36, 0xae, 0x2c, 0xc6, 0xce, 0x38, 0xb1, 0x2f,
+  0xb9, 0x54, 0x7c, 0xb3, 0x28, 0xae, 0x3d, 0xcf, 0xbb, 0x2e, 0xb4, 0x41,
+  0xc6, 0x78, 0x39, 0xbc, 0x41, 0xc8, 0x59, 0x5b, 0xc7, 0x43, 0xbc, 0x45,
+  0xf3, 0xdc, 0x69, 0xd6, 0x48, 0xc9, 0x4e, 0xd9, 0x59, 0x61, 0xde, 0x4b,
+  0xc9, 0x44, 0xc8, 0xf5, 0x43, 0xc5, 0x37, 0xba, 0x65, 0x4d, 0xc8, 0x31,
+  0xaf, 0x47, 0xdb, 0xd6, 0x36, 0xad, 0x37, 0xbb, 0x61, 0x3a, 0xae, 0x2d,
+  0xb4, 0x47, 0x49, 0xb2, 0x30, 0xac, 0x3a, 0xcd, 0xbc, 0x2e, 0xaf, 0x32,
+  0xbd, 0xd7, 0x34, 0xaf, 0x32, 0xbb, 0x55, 0x4a, 0xb4, 0x30, 0xbb, 0x40,
+  0xeb, 0xbf, 0x39, 0xba, 0x3a, 0xd6, 0xd3, 0x48, 0xc0, 0x3b, 0xce, 0x5e,
+  0xe7, 0xd3, 0x46, 0xcb, 0x4c, 0xce, 0x74, 0x7e, 0x7e, 0x55, 0xcf, 0x44,
+  0xc4, 0x5b, 0x7c, 0xd3, 0x3f, 0xbc, 0x44, 0xcb, 0xfa, 0x46, 0xb9, 0x37,
+  0xb8, 0x51, 0x54, 0xbe, 0x33, 0xb1, 0x3d, 0xce, 0xc4, 0x34, 0xaf, 0x2f,
+  0xbd, 0xf8, 0x37, 0xb0, 0x2d, 0xb1, 0x4c, 0x4a, 0xb3, 0x2c, 0xb0, 0x3c,
+  0xe4, 0xbf, 0x2f, 0xaf, 0x35, 0xc0, 0xdb, 0x39, 0xb3, 0x31, 0xbb, 0x5d,
+  0x4c, 0xb8, 0x37, 0xb9, 0x48, 0xe8, 0xc7, 0x3d, 0xba, 0x43, 0xce, 0xdd,
+  0x52, 0xc6, 0x46, 0xce, 0x55, 0xdf, 0xe8, 0x52, 0xd5, 0x48, 0xca, 0x4d,
+  0xef, 0x68, 0x4c, 0xc7, 0x42, 0xc2, 0x49, 0x78, 0xce, 0x3e, 0xb9, 0x3c,
+  0xc8, 0xef, 0x43, 0xb7, 0x35, 0xb8, 0x4a, 0x53, 0xb8, 0x32, 0xaf, 0x3b,
+  0xde, 0xc1, 0x34, 0xaf, 0x32, 0xc3, 0xde, 0x3b, 0xaf, 0x2e, 0xb6, 0x4e,
+  0x48, 0xb4, 0x2e, 0xb2, 0x3d, 0xf0, 0xbf, 0x33, 0xb2, 0x37, 0xc8, 0xd9,
+  0x3d, 0xb5, 0x36, 0xbc, 0x56, 0x4f, 0xbc, 0x39, 0xbc, 0x47, 0xf6, 0xcf,
+  0x44, 0xbf, 0x46, 0xce, 0x68, 0x5b, 0xd0, 0x4a, 0xcc, 0x4d, 0xd3, 0x60,
+  0x6a, 0xcf, 0x49, 0xc8, 0x45, 0xd0, 0x7b, 0x58, 0xc3, 0x3c, 0xbf, 0x48,
+  0xe2, 0xc9, 0x3b, 0xb7, 0x39, 0xc5, 0xdb, 0x40, 0xb6, 0x31, 0xb9, 0x50,
+  0x50, 0xb9, 0x2f, 0xb3, 0x3b, 0xdc, 0xbf, 0x33, 0xaf, 0x32, 0xc1, 0xd6,
+  0x3b, 0xb0, 0x2f, 0xb8, 0x54, 0x4a, 0xb6, 0x30, 0xb4, 0x3f, 0xfd, 0xc0,
+  0x36, 0xb5, 0x39, 0xcc, 0xd9, 0x41, 0xb9, 0x39, 0xc2, 0x59, 0x57, 0xc1,
+  0x3e, 0xc2, 0x49, 0xe2, 0xd7, 0x4c, 0xcb, 0x47, 0xcf, 0x5b, 0xec, 0xe0,
+  0x53, 0xcb, 0x4b, 0xca, 0x55, 0xf6, 0xdb, 0x48, 0xc0, 0x43, 0xc9, 0x5f,
+  0x54, 0xc0, 0x3c, 0xbb, 0x43, 0xe8, 0xc8, 0x39, 0xb5, 0x39, 0xc6, 0xde,
+  0x3d, 0xb4, 0x32, 0xba, 0x4f, 0x4c, 0xb9, 0x30, 0xb2, 0x3c, 0xec, 0xc1,
+  0x33, 0xaf, 0x35, 0xc4, 0xd7, 0x3a, 0xb2, 0x31, 0xba, 0x56, 0x48, 0xb9,
+  0x33, 0xb7, 0x44, 0x7e, 0xc3, 0x39, 0xb7, 0x3d, 0xcd, 0xe3, 0x42, 0xbd,
+  0x3d, 0xc2, 0x58, 0x5d, 0xcb, 0x43, 0xc4, 0x4c, 0xd8, 0xf8, 0x58, 0xcd,
+  0x4c, 0xcb, 0x4e, 0xda, 0x71, 0x5c, 0xcc, 0x46, 0xc4, 0x49, 0xdc, 0xdc,
+  0x46, 0xbe, 0x3d, 0xc4, 0x59, 0x53, 0xbe, 0x38, 0xb8, 0x41, 0xe1, 0xc5,
+  0x39, 0xb3, 0x38, 0xc4, 0xde, 0x3d, 0xb2, 0x32, 0xb9, 0x4e, 0x4b, 0xb7,
+  0x30, 0xb3, 0x3d, 0xf2, 0xbf, 0x33, 0xb1, 0x36, 0xc9, 0xd9, 0x3a, 0xb4,
+  0x33, 0xbc, 0x58, 0x49, 0xba, 0x36, 0xb9, 0x46, 0x7e, 0xc8, 0x3c, 0xba,
+  0x3f, 0xcd, 0xe8, 0x4b, 0xc1, 0x41, 0xc7, 0x57, 0xfe, 0xd3, 0x4e, 0xc9,
+  0x4d, 0xd0, 0x5e, 0x7c, 0xda, 0x4e, 0xca, 0x47, 0xcd, 0x5b, 0x68, 0xcc,
+  0x40, 0xbf, 0x42, 0xd2, 0xe4, 0x42, 0xbd, 0x3a, 0xbf, 0x56, 0x50, 0xbd,
+  0x36, 0xb6, 0x40, 0xe2, 0xc5, 0x36, 0xb2, 0x37, 0xc5, 0xde, 0x3c, 0xb3,
+  0x32, 0xba, 0x52, 0x4a, 0xb7, 0x31, 0xb4, 0x3f, 0xef, 0xbf, 0x34, 0xb2,
+  0x39, 0xc8, 0xd3, 0x3c, 0xb6, 0x37, 0xbe, 0x5c, 0x4c, 0xbd, 0x39, 0xbc,
+  0x49, 0xf2, 0xcc, 0x3f, 0xbf, 0x44, 0xcf, 0xfd, 0x51, 0xca, 0x48, 0xcb,
+  0x54, 0xe4, 0xeb, 0x57, 0xcf, 0x4d, 0xcc, 0x4f, 0xe0, 0xee, 0x51, 0xc7,
+  0x44, 0xc6, 0x4f, 0x78, 0xcc, 0x3f, 0xbd, 0x3e, 0xce, 0xe5, 0x42, 0xba,
+  0x38, 0xbe, 0x50, 0x4f, 0xbb, 0x35, 0xb6, 0x3e, 0xe8, 0xc2, 0x36, 0xb2,
+  0x37, 0xc6, 0xda, 0x3c, 0xb3, 0x32, 0xba, 0x55, 0x4a, 0xb7, 0x33, 0xb5,
+  0x41, 0x7e, 0xbf, 0x37, 0xb4, 0x3b, 0xcd, 0xd8, 0x3e, 0xb8, 0x39, 0xc2,
+  0x5b, 0x4f, 0xc0, 0x3c, 0xbf, 0x4a, 0xee, 0xd1, 0x47, 0xc5, 0x47, 0xd0,
+  0x68, 0x63, 0xd0, 0x4d, 0xcd, 0x4e, 0xd6, 0x67, 0x68, 0xd6, 0x4b, 0xc9,
+  0x4a, 0xd1, 0x6e, 0x52, 0xc5, 0x3f, 0xc0, 0x4b, 0xfd, 0xcb, 0x3d, 0xba,
+  0x3d, 0xcc, 0xe2, 0x41, 0xb8, 0x37, 0xbc, 0x53, 0x4e, 0xba, 0x34, 0xb6,
+  0x3f, 0xee, 0xc1, 0x36, 0xb2, 0x38, 0xc8, 0xd6, 0x3c, 0xb3, 0x34, 0xbc,
+  0x58, 0x49, 0xb9, 0x34, 0xb7, 0x44, 0x73, 0xc3, 0x38, 0xb7, 0x3d, 0xce,
+  0xd9, 0x40, 0xbc, 0x3c, 0xc5, 0x5e, 0x55, 0xc6, 0x40, 0xc3, 0x4d, 0xe5,
+  0xde, 0x4d, 0xca, 0x4b, 0xce, 0x5c, 0xfa, 0xe1, 0x54, 0xcd, 0x4d, 0xcd,
+  0x56, 0xf3, 0xd9, 0x4a, 0xc4, 0x44, 0xcb, 0x67, 0x53, 0xc3, 0x3d, 0xbe,
+  0x48, 0xf0, 0xca, 0x3c, 0xb8, 0x3b, 0xca, 0xdf, 0x3f, 0xb7, 0x36, 0xbc,
+  0x54, 0x4c, 0xb9, 0x34, 0xb6, 0x40, 0xf7, 0xc1, 0x36, 0xb3, 0x39, 0xca,
+  0xd6, 0x3c, 0xb4, 0x35, 0xbe, 0x5b, 0x49, 0xba, 0x36, 0xba, 0x47, 0x6f,
+  0xc5, 0x3b, 0xba, 0x3f, 0xd2, 0xdd, 0x46, 0xbe, 0x3f, 0xc9, 0x5c, 0x5d,
+  0xcc, 0x47, 0xc8, 0x4e, 0xdd, 0xf5, 0x5a, 0xd1, 0x4e, 0xcf, 0x52, 0xde,
+  0x7d, 0x5c, 0xcf, 0x49, 0xc9, 0x4d, 0xdd, 0xde, 0x49, 0xc1, 0x3f, 0xc6,
+  0x5d, 0x53, 0xc0, 0x3b, 0xbc, 0x46, 0xeb, 0xc8, 0x3b, 0xb7, 0x3b, 0xc8,
+  0xde, 0x3e, 0xb6, 0x35, 0xbb, 0x57, 0x4c, 0xb9, 0x34, 0xb6, 0x42, 0xff,
+  0xc1, 0x36, 0xb4, 0x3a, 0xcc, 0xd7, 0x3d, 0xb7, 0x37, 0xbf, 0x5e, 0x4a,
+  0xbc, 0x38, 0xbc, 0x4a, 0x6e, 0xc9, 0x3e, 0xbe, 0x43, 0xd5, 0xe2, 0x4b,
+  0xc5, 0x45, 0xcb, 0x5e, 0x6e, 0xd6, 0x4e, 0xcd, 0x51, 0xd7, 0x65, 0x74,
+  0xdc, 0x54, 0xcd, 0x4d, 0xd1, 0x5e, 0x6b, 0xcf, 0x46, 0xc4, 0x47, 0xd7,
+  0xe3, 0x48, 0xbe, 0x3d, 0xc3, 0x58, 0x54, 0xbe, 0x39, 0xba, 0x43, 0xee,
+  0xc7, 0x3a, 0xb6, 0x3a, 0xc9, 0xdc, 0x3e, 0xb5, 0x35, 0xbd, 0x57, 0x4b,
+  0xb9, 0x34, 0xb7, 0x43, 0x6f, 0xc1, 0x38, 0xb6, 0x3c, 0xcf, 0xd3, 0x3e,
+  0xb8, 0x3a, 0xc3, 0x64, 0x4c, 0xbe, 0x3c, 0xbf, 0x4d, 0x72, 0xcc, 0x42,
+  0xc1, 0x48, 0xd9, 0xed, 0x51, 0xcc, 0x4b, 0xcf, 0x5a, 0xef, 0xe8, 0x59,
+  0xd3, 0x50, 0xd1, 0x58, 0xe1, 0xec, 0x56, 0xcc, 0x49, 0xca, 0x55, 0x7c,
+  0xcf, 0x44, 0xbf, 0x43, 0xcf, 0xe5, 0x47, 0xbc, 0x3b, 0xbf, 0x56, 0x52,
+  0xbe, 0x38, 0xb9, 0x42, 0xee, 0xc6, 0x39, 0xb6, 0x3a, 0xca, 0xdc, 0x3d,
+  0xb6, 0x36, 0xbd, 0x59, 0x4a, 0xba, 0x35, 0xb9, 0x45, 0x6b, 0xc2, 0x39,
+  0xb8, 0x3d, 0xd2, 0xd5, 0x3f, 0xbb, 0x3c, 0xc6, 0x69, 0x4f, 0xc1, 0x3f,
+  0xc3, 0x50, 0x7d, 0xd0, 0x49, 0xc8, 0x4c, 0xd8, 0x7d, 0x5d, 0xd4, 0x4f,
+  0xd2, 0x57, 0xde, 0x6e, 0x69, 0xda, 0x50, 0xcd, 0x4e, 0xd6, 0x71, 0x59,
+  0xca, 0x44, 0xc5, 0x4d, 0xf3, 0xce, 0x41, 0xbd, 0x3f, 0xcd, 0xe5, 0x45,
+  0xbb, 0x3a, 0xbf, 0x55, 0x51, 0xbd, 0x37, 0xb9, 0x43, 0xf1, 0xc5, 0x39,
+  0xb6, 0x3b, 0xcc, 0xd9, 0x3d, 0xb7, 0x37, 0xbf, 0x5d, 0x49, 0xbb, 0x37,
+  0xba, 0x48, 0x69, 0xc4, 0x3b, 0xba, 0x40, 0xd5, 0xd7, 0x42, 0xbd, 0x3f,
+  0xc9, 0x69, 0x52, 0xc7, 0x44, 0xc7, 0x52, 0xfa, 0xda, 0x4f, 0xcd, 0x4f,
+  0xd8, 0x66, 0x72, 0xdf, 0x59, 0xd4, 0x52, 0xd6, 0x5d, 0xef, 0xde, 0x4f,
+  0xca, 0x49, 0xce, 0x64, 0x5a, 0xc8, 0x40, 0xc1, 0x4a, 0xec, 0xcd, 0x3f,
+  0xbc, 0x3e, 0xcc, 0xe5, 0x43, 0xba, 0x39, 0xbe, 0x55, 0x4f, 0xbc, 0x37,
+  0xb9, 0x43, 0xf8, 0xc4, 0x39, 0xb6, 0x3b, 0xcd, 0xd7, 0x3e, 0xb7, 0x38,
+  0xc0, 0x60, 0x4b, 0xbc, 0x39, 0xbc, 0x4b, 0x6b, 0xc6, 0x3d, 0xbd, 0x43,
+  0xd9, 0xda, 0x47, 0xc1, 0x42, 0xcd, 0x66, 0x5a, 0xcd, 0x48, 0xcc, 0x54,
+  0xe9, 0xe9, 0x59, 0xd5, 0x54, 0xd5, 0x5c, 0xe4, 0xfb, 0x61, 0xd4, 0x4f,
+  0xcd, 0x51, 0xdf, 0xe3, 0x4e, 0xc5, 0x45, 0xca, 0x5e, 0x5b, 0xc6, 0x3e,
+  0xbf, 0x48, 0xea, 0xcc, 0x3e, 0xbb, 0x3d, 0xcb, 0xe4, 0x42, 0xba, 0x38,
+  0xbe, 0x56, 0x4e, 0xbc, 0x37, 0xb9, 0x44, 0x7b, 0xc4, 0x39, 0xb7, 0x3c,
+  0xcf, 0xd7, 0x3e, 0xb9, 0x3a, 0xc2, 0x62, 0x4c, 0xbd, 0x3b, 0xbe, 0x4d,
+  0x6b, 0xc9, 0x3f, 0xbf, 0x46, 0xd9, 0xde, 0x4b, 0xc5, 0x47, 0xce, 0x63,
+  0x65, 0xd3, 0x4e, 0xcf, 0x55, 0xdf, 0x74, 0x67, 0xdc, 0x55, 0xd3, 0x54,
+  0xda, 0x68, 0x67, 0xd5, 0x4c, 0xca, 0x4d, 0xdc, 0xe7, 0x4d, 0xc4, 0x42,
+  0xc8, 0x5b, 0x59, 0xc4, 0x3d, 0xbe, 0x47, 0xec, 0xcc, 0x3d, 0xba, 0x3d,
+  0xcc, 0xe1, 0x42, 0xba, 0x39, 0xbf, 0x5a, 0x4f, 0xbc, 0x38, 0xba, 0x46,
+  0x7d, 0xc5, 0x3b, 0xb9, 0x3e, 0xd0, 0xd8, 0x40, 0xbb, 0x3c, 0xc5, 0x63,
+  0x4d, 0xc0, 0x3d, 0xc1, 0x4e, 0x6e, 0xcd, 0x44, 0xc4, 0x49, 0xdb, 0xec,
+  0x50, 0xcc, 0x4a, 0xd1, 0x5c, 0x7b, 0xde, 0x56, 0xd2, 0x54, 0xd8, 0x62,
+  0xf2, 0xe2, 0x58, 0xcf, 0x4e, 0xd0, 0x5d, 0x72, 0xd3, 0x4a, 0xc5, 0x49,
+  0xd6, 0xe8, 0x4b, 0xc0, 0x3f, 0xc5, 0x5b, 0x58, 0xc2, 0x3c, 0xbd, 0x47,
+  0xee, 0xca, 0x3d, 0xba, 0x3d, 0xcd, 0xdf, 0x41, 0xba, 0x3a, 0xc0, 0x5b,
+  0x4d, 0xbd, 0x39, 0xbc, 0x48, 0x73, 0xc6, 0x3c, 0xbb, 0x3f, 0xd4, 0xd9,
+  0x43, 0xbd, 0x3e, 0xc8, 0x67, 0x50, 0xc4, 0x40, 0xc4, 0x51, 0x7b, 0xd1,
+  0x4a, 0xc8, 0x4d, 0xd9, 0xf6, 0x5c, 0xd0, 0x51, 0xd2, 0x5c, 0xe8, 0xf2,
+  0x62, 0xd8, 0x55, 0xd4, 0x56, 0xe1, 0x7c, 0x59, 0xcf, 0x49, 0xcc, 0x53,
+  0x7a, 0xd4, 0x46, 0xc4, 0x45, 0xd5, 0xef, 0x49, 0xc0, 0x3d, 0xc5, 0x57,
+  0x55, 0xc2, 0x3b, 0xbd, 0x47, 0xed, 0xc9, 0x3d, 0xb9, 0x3e, 0xcc, 0xdb,
+  0x43, 0xb9, 0x3b, 0xc0, 0x61, 0x4f, 0xbd, 0x3b, 0xbc, 0x4b, 0x75, 0xc6,
+  0x3d, 0xbc, 0x43, 0xd7, 0xd9, 0x45, 0xbf, 0x40, 0xcc, 0x68, 0x54, 0xc9,
+  0x44, 0xca, 0x53, 0x7d, 0xda, 0x4d, 0xce, 0x4f, 0xdb, 0x6d, 0x68, 0xdd,
+  0x55, 0xd6, 0x56, 0xdc, 0x67, 0x71, 0xde, 0x53, 0xce, 0x4f, 0xd6, 0x6e,
+  0x5c, 0xcc, 0x47, 0xc7, 0x4f, 0xef, 0xd0, 0x45, 0xbf, 0x44, 0xcf, 0xe6,
+  0x48, 0xbe, 0x3d, 0xc3, 0x5a, 0x54, 0xc0, 0x3b, 0xbc, 0x47, 0xfa, 0xc9,
+  0x3c, 0xba, 0x3e, 0xd0, 0xdc, 0x41, 0xbb, 0x3b, 0xc4, 0x5f, 0x4d, 0xbf,
+  0x3c, 0xbf, 0x4c, 0x6d, 0xc9, 0x3f, 0xbe, 0x46, 0xda, 0xdc, 0x49, 0xc3,
+  0x45, 0xce, 0x6b, 0x5b, 0xcd, 0x4a, 0xcd, 0x57, 0xee, 0xe4, 0x58, 0xd4,
+  0x54, 0xd9, 0x60, 0xf1, 0xed, 0x5f, 0xd7, 0x53, 0xd3, 0x5a, 0xeb, 0xe1,
+  0x52, 0xca, 0x4b, 0xce, 0x68, 0x5c, 0xc9, 0x44, 0xc4, 0x4e, 0xec, 0xce,
+  0x43, 0xbe, 0x42, 0xcf, 0xe4, 0x47, 0xbd, 0x3c, 0xc3, 0x5b, 0x50, 0xbf,
+  0x3b, 0xbd, 0x48, 0x73, 0xc8, 0x3c, 0xbb, 0x3f, 0xd4, 0xda, 0x41, 0xbc,
+  0x3d, 0xc7, 0x67, 0x4d, 0xc0, 0x3d, 0xc2, 0x4f, 0x68, 0xcb, 0x42, 0xc2,
+  0x4a, 0xdd, 0xdd, 0x4d, 0xc7, 0x4a, 0xd1, 0x6d, 0x65, 0xd3, 0x52, 0xd1,
+  0x5b, 0xe3, 0xf8, 0x68, 0xdd, 0x5a, 0xd8, 0x59, 0xde, 0x6d, 0x68, 0xd9,
+  0x4e, 0xce, 0x4f, 0xe1, 0xeb, 0x4e, 0xc9, 0x45, 0xcd, 0x5d, 0x58, 0xc9,
+  0x3f, 0xc2, 0x4b, 0xf6, 0xce, 0x3f, 0xbd, 0x40, 0xcf, 0xe0, 0x45, 0xbc,
+  0x3d, 0xc3, 0x5e, 0x51, 0xbf, 0x3c, 0xbd, 0x4b, 0x7b, 0xc7, 0x3e, 0xbb,
+  0x42, 0xd4, 0xd6, 0x45, 0xbd, 0x3f, 0xc9, 0x6f, 0x50, 0xc3, 0x40, 0xc5,
+  0x53, 0x6c, 0xce, 0x46, 0xc7, 0x4c, 0xe0, 0xeb, 0x51, 0xce, 0x4d, 0xd7,
+  0x5f, 0x6c, 0xe3, 0x57, 0xd9, 0x57, 0xde, 0x64, 0xfd, 0xe9, 0x5b, 0xd5,
+  0x52, 0xd5, 0x61, 0x78, 0xd6, 0x4d, 0xc9, 0x4e, 0xd8, 0xe5, 0x4e, 0xc4,
+  0x44, 0xc9, 0x5f, 0x5a, 0xc6, 0x3f, 0xc0, 0x4b, 0xf5, 0xcd, 0x3f, 0xbd,
+  0x40, 0xd2, 0xdf, 0x43, 0xbd, 0x3c, 0xc6, 0x5e, 0x4e, 0xbf, 0x3b, 0xbf,
+  0x4c, 0x6b, 0xc9, 0x3e, 0xbd, 0x44, 0xda, 0xd8, 0x45, 0xbf, 0x42, 0xcc,
+  0x75, 0x52, 0xc6, 0x45, 0xc8, 0x58, 0x76, 0xd2, 0x4c, 0xca, 0x51, 0xdd,
+  0xed, 0x5d, 0xd3, 0x55, 0xd7, 0x61, 0xec, 0xef, 0x65, 0xdc, 0x58, 0xd7,
+  0x5a, 0xe4, 0xfd, 0x5c, 0xd2, 0x4c, 0xcf, 0x57, 0x77, 0xd8, 0x49, 0xc7,
+  0x48, 0xd8, 0xeb, 0x4b, 0xc3, 0x40, 0xc8, 0x5d, 0x57, 0xc4, 0x3e, 0xbf,
+  0x4b, 0xf8, 0xca, 0x3f, 0xbc, 0x42, 0xd1, 0xd9, 0x45, 0xbc, 0x3e, 0xc6,
+  0x6a, 0x4f, 0xbf, 0x3d, 0xc0, 0x4f, 0x67, 0xc9, 0x3f, 0xbf, 0x47, 0xdf,
+  0xdb, 0x47, 0xc4, 0x44, 0xd1, 0x6c, 0x53, 0xcc, 0x48, 0xce, 0x58, 0x74,
+  0xdc, 0x50, 0xd1, 0x54, 0xdf, 0x74, 0x6a, 0xde, 0x5b, 0xd9, 0x5d, 0xdd,
+  0x6e, 0xfc, 0xdd, 0x5a, 0xcf, 0x54, 0xd6, 0x7b, 0x60, 0xcd, 0x4b, 0xc9,
+  0x55, 0xf2, 0xd2, 0x48, 0xc3, 0x47, 0xd5, 0xe6, 0x4a, 0xc1, 0x3f, 0xc8,
+  0x5d, 0x52, 0xc4, 0x3d, 0xc0, 0x4b, 0x71, 0xcb, 0x3e, 0xbd, 0x41, 0xd7,
+  0xdc, 0x43, 0xbe, 0x3e, 0xc9, 0x6a, 0x4e, 0xc1, 0x3e, 0xc3, 0x52, 0x6a,
+  0xca, 0x43, 0xc1, 0x4b, 0xdd, 0xda, 0x4c, 0xc6, 0x4a, 0xd1, 0x77, 0x5d,
+  0xce, 0x4e, 0xcf, 0x5c, 0xf3, 0xe5, 0x5a, 0xd8, 0x58, 0xdd, 0x62, 0xfb,
+  0xf4, 0x5e, 0xdc, 0x54, 0xd9, 0x5a, 0xf6, 0xea, 0x52, 0xce, 0x4c, 0xd4,
+  0x67, 0x5c, 0xcc, 0x46, 0xc8, 0x50, 0xf8, 0xd0, 0x45, 0xc0, 0x46, 0xd3,
+  0xe1, 0x49, 0xbf, 0x3f, 0xc6, 0x63, 0x54, 0xc1, 0x3e, 0xbf, 0x4d, 0x76,
+  0xc9, 0x3f, 0xbd, 0x44, 0xd8, 0xda, 0x44, 0xbe, 0x3f, 0xcb, 0x6b, 0x4e,
+  0xc4, 0x3f, 0xc7, 0x53, 0x66, 0xcd, 0x45, 0xc6, 0x4d, 0xe3, 0xdf, 0x4e,
+  0xcb, 0x4d, 0xd5, 0x6f, 0x65, 0xd6, 0x55, 0xd4, 0x5e, 0xe5, 0xf1, 0x6b,
+  0xdc, 0x5d, 0xd8, 0x5e, 0xdf, 0x79, 0x6d, 0xd9, 0x53, 0xcf, 0x56, 0xe3,
+  0xe8, 0x52, 0xcb, 0x49, 0xcf, 0x61, 0x5a, 0xcb, 0x43, 0xc6, 0x4d, 0x7c,
+  0xd1, 0x42, 0xc0, 0x43, 0xd6, 0xe3, 0x47, 0xbf, 0x3e, 0xc8, 0x63, 0x51,
+  0xc1, 0x3e, 0xc0, 0x4e, 0x6f, 0xc9, 0x3f, 0xbe, 0x47, 0xd9, 0xd7, 0x47,
+  0xbf, 0x43, 0xcc, 0x79, 0x51, 0xc6, 0x44, 0xc9, 0x58, 0x6a, 0xd0, 0x49,
+  0xca, 0x4f, 0xe6, 0xea, 0x54, 0xd1, 0x50, 0xdb, 0x65, 0x6e, 0xe4, 0x5a,
+  0xdc, 0x5a, 0xe1, 0x67, 0xfe, 0xea, 0x5d, 0xd7, 0x55, 0xd8, 0x63, 0x74,
+  0xd8, 0x4f, 0xcb, 0x4f, 0xdc, 0xe5, 0x50, 0xc7, 0x47, 0xcc, 0x65, 0x5b,
+  0xc8, 0x43, 0xc4, 0x4e, 0xfa, 0xcd, 0x42, 0xbf, 0x44, 0xd6, 0xdf, 0x46,
+  0xbf, 0x3f, 0xc9, 0x64, 0x4f, 0xc3, 0x3e, 0xc3, 0x4f, 0x68, 0xcb, 0x40,
+  0xc0, 0x48, 0xde, 0xd9, 0x48, 0xc2, 0x45, 0xcf, 0x7b, 0x55, 0xc9, 0x48,
+  0xcb, 0x5c, 0x75, 0xd3, 0x4f, 0xcd, 0x56, 0xe0, 0xed, 0x5e, 0xd7, 0x58,
+  0xdb, 0x63, 0xef, 0xf5, 0x65, 0xdf, 0x5a, 0xdb, 0x5b, 0xea, 0x7d, 0x5d,
+  0xd6, 0x4e, 0xd3, 0x59, 0x73, 0xd9, 0x4b, 0xca, 0x4b, 0xdc, 0xeb, 0x4d,
+  0xc6, 0x44, 0xcb, 0x61, 0x59, 0xc7, 0x41, 0xc2, 0x4e, 0xfb, 0xcc, 0x42,
+  0xbe, 0x46, 0xd5, 0xdb, 0x47, 0xbe, 0x40, 0xc9, 0x6e, 0x50, 0xc2, 0x3f,
+  0xc4, 0x52, 0x69, 0xcb, 0x42, 0xc3, 0x4a, 0xe2, 0xdc, 0x49, 0xc6, 0x48,
+  0xd4, 0x71, 0x56, 0xcd, 0x4a, 0xcf, 0x5b, 0x73, 0xdd, 0x53, 0xd3, 0x57,
+  0xe2, 0x78, 0x6a, 0xdf, 0x5d, 0xdb, 0x5e, 0xe1, 0x6f, 0x7a, 0xe0, 0x5b,
+  0xd4, 0x57, 0xdb, 0x79, 0x5f, 0xd0, 0x4d, 0xcd, 0x58, 0xfd, 0xd6, 0x4a,
+  0xc7, 0x4a, 0xd9, 0xe8, 0x4c, 0xc5, 0x42, 0xcb, 0x5f, 0x55, 0xc7, 0x3f,
+  0xc4, 0x4e, 0x71, 0xcd, 0x41, 0xbf, 0x46, 0xd9, 0xdb, 0x47, 0xbf, 0x41,
+  0xcb, 0x70, 0x51, 0xc4, 0x42, 0xc5, 0x57, 0x6b, 0xcc, 0x46, 0xc4, 0x4d,
+  0xe0, 0xdb, 0x4d, 0xc8, 0x4c, 0xd5, 0x78, 0x5d, 0xd1, 0x4f, 0xd3, 0x5d,
+  0xfb, 0xe6, 0x5a, 0xda, 0x59, 0xe1, 0x67, 0x7c, 0xf1, 0x5f, 0xde, 0x58,
+  0xdc, 0x5e, 0xf9, 0xe8, 0x56, 0xd1, 0x4f, 0xd7, 0x6d, 0x5e, 0xce, 0x4a,
+  0xcb, 0x55, 0xf7, 0xd3, 0x49, 0xc4, 0x4a, 0xd7, 0xe3, 0x4c, 0xc2, 0x43,
+  0xca, 0x66, 0x56, 0xc5, 0x40, 0xc3, 0x4f, 0x74, 0xcc, 0x42, 0xc0, 0x47,
+  0xdb, 0xdc, 0x47, 0xc1, 0x42, 0xce, 0x6e, 0x50, 0xc7, 0x43, 0xc9, 0x57,
+  0x67, 0xcf, 0x48, 0xc9, 0x4e, 0xe6, 0xe0, 0x50, 0xcd, 0x4e, 0xd8, 0x6f,
+  0x65, 0xd7, 0x55, 0xd7, 0x5f, 0xeb, 0xf3, 0x68, 0xde, 0x5e, 0xdc, 0x60,
+  0xe5, 0x7b, 0x6b, 0xdc, 0x56, 0xd4, 0x59, 0xe8, 0xe8, 0x55, 0xcd, 0x4c,
+  0xd3, 0x68, 0x5c, 0xcd, 0x47, 0xc9, 0x52, 0xfe, 0xd2, 0x47, 0xc4, 0x48,
+  0xd8, 0xe2, 0x4a, 0xc2, 0x42, 0xcb, 0x68, 0x54, 0xc5, 0x40, 0xc4, 0x51,
+  0x6e, 0xcc, 0x42, 0xc1, 0x49, 0xdd, 0xda, 0x49, 0xc3, 0x46, 0xcf, 0x7a,
+  0x53, 0xc8, 0x46, 0xcb, 0x5b, 0x6a, 0xd2, 0x4b, 0xcc, 0x52, 0xe7, 0xe7,
+  0x56, 0xd2, 0x53, 0xdc, 0x6a, 0x6d, 0xe2, 0x5b, 0xdc, 0x5e, 0xe5, 0x6d,
+  0x7a, 0xea, 0x5f, 0xda, 0x59, 0xdc, 0x68, 0x70, 0xdb, 0x52, 0xcf, 0x53,
+  0xe0, 0xe9, 0x53, 0xcb, 0x4a, 0xcf, 0x66, 0x5c, 0xcb, 0x46, 0xc7, 0x51,
+  0xfb, 0xcf, 0x46, 0xc2, 0x48, 0xd8, 0xdf, 0x4a, 0xc2, 0x42, 0xcb, 0x69,
+  0x53, 0xc5, 0x41, 0xc5, 0x53, 0x6b, 0xcc, 0x44, 0xc3, 0x4a, 0xe0, 0xdb,
+  0x4a, 0xc5, 0x48, 0xd2, 0x78, 0x55, 0xcb, 0x49, 0xce, 0x5c, 0x6e, 0xd7,
+  0x4f, 0xcf, 0x56, 0xe6, 0xef, 0x5d, 0xd8, 0x59, 0xdc, 0x67, 0xf6, 0xee,
+  0x65, 0xdf, 0x5d, 0xdd, 0x61, 0xec, 0xf4, 0x5f, 0xd8, 0x54, 0xd6, 0x5f,
+  0x78, 0xda, 0x4f, 0xcc, 0x4f, 0xde, 0xea, 0x50, 0xc9, 0x48, 0xce, 0x64,
+  0x5a, 0xca, 0x45, 0xc7, 0x50, 0x7b, 0xcf, 0x45, 0xc3, 0x48, 0xda, 0xde,
+  0x4a, 0xc2, 0x43, 0xcc, 0x6d, 0x53, 0xc6, 0x43, 0xc7, 0x56, 0x6a, 0xcd,
+  0x46, 0xc5, 0x4d, 0xe2, 0xdc, 0x4c, 0xc8, 0x4b, 0xd5, 0x7a, 0x59, 0xce,
+  0x4d, 0xd0, 0x5e, 0x76, 0xdc, 0x55, 0xd4, 0x5a, 0xe5, 0x7d, 0x68, 0xdf,
+  0x5d, 0xde, 0x60, 0xe9, 0x73, 0x70, 0xe4, 0x5c, 0xd9, 0x59, 0xe1, 0x7a,
+  0x60, 0xd5, 0x4f, 0xd1, 0x5b, 0x7e, 0xd9, 0x4d, 0xca, 0x4d, 0xdb, 0xe8,
+  0x4f, 0xc8, 0x47, 0xcd, 0x66, 0x5a, 0xc9, 0x44, 0xc6, 0x51, 0x78, 0xce,
+  0x45, 0xc3, 0x49, 0xdb, 0xdd, 0x49, 0xc3, 0x44, 0xce, 0x6f, 0x53, 0xc7,
+  0x44, 0xc9, 0x57, 0x69, 0xce, 0x48, 0xc8, 0x4e, 0xe6, 0xde, 0x4e, 0xcb,
+  0x4d, 0xd8, 0x78, 0x5d, 0xd2, 0x50, 0xd5, 0x5f, 0xfc, 0xe4, 0x5c, 0xda,
+  0x5c, 0xe2, 0x6e, 0x7d, 0xeb, 0x63, 0xde, 0x5d, 0xde, 0x65, 0xf9, 0xe7,
+  0x5a, 0xd5, 0x54, 0xdb, 0x6f, 0x5f, 0xd2, 0x4d, 0xce, 0x58, 0x7d, 0xd7,
+  0x4b, 0xc9, 0x4c, 0xdb, 0xe7, 0x4e, 0xc6, 0x46, 0xcd, 0x67, 0x58, 0xc8,
+  0x44, 0xc7, 0x53, 0x72, 0xce, 0x45, 0xc3, 0x4a, 0xdd, 0xdc, 0x4a, 0xc4,
+  0x46, 0xcf, 0x76, 0x54, 0xc9, 0x46, 0xcb, 0x5a, 0x69, 0xd0, 0x4a, 0xcb,
+  0x51, 0xe8, 0xe1, 0x52, 0xce, 0x50, 0xdb, 0x72, 0x63, 0xda, 0x56, 0xda,
+  0x5f, 0xf1, 0xf3, 0x65, 0xe0, 0x5e, 0xe0, 0x63, 0xec, 0x7c, 0x6a, 0xde,
+  0x59, 0xd8, 0x5c, 0xec, 0xe9, 0x58, 0xd0, 0x4f, 0xd7, 0x6c, 0x5f, 0xcf,
+  0x4b, 0xcc, 0x56, 0xfc, 0xd5, 0x4a, 0xc7, 0x4b, 0xdb, 0xe4, 0x4d, 0xc6,
+  0x46, 0xcd, 0x69, 0x57, 0xc8, 0x44, 0xc7, 0x54, 0x6e, 0xce, 0x46, 0xc5,
+  0x4b, 0xdf, 0xdc, 0x4b, 0xc6, 0x48, 0xd2, 0x79, 0x55, 0xcb, 0x49, 0xcd,
+  0x5d, 0x6c, 0xd4, 0x4d, 0xcd, 0x55, 0xe8, 0xe6, 0x58, 0xd3, 0x55, 0xdd,
+  0x6e, 0x6d, 0xe0, 0x5d, 0xdd, 0x5f, 0xe9, 0x73, 0x75, 0xe9, 0x60, 0xdd,
+  0x5c, 0xe0, 0x6c, 0x6e, 0xde, 0x55, 0xd4, 0x57, 0xe6, 0xeb, 0x56, 0xce,
+  0x4d, 0xd4, 0x6a, 0x5e, 0xce, 0x49, 0xcb, 0x55, 0xfe, 0xd3, 0x49, 0xc6,
+  0x4b, 0xdb, 0xe2, 0x4c, 0xc5, 0x46, 0xce, 0x6c, 0x56, 0xc8, 0x45, 0xc8,
+  0x56, 0x6c, 0xce, 0x47, 0xc6, 0x4d, 0xe3, 0xdd, 0x4c, 0xc8, 0x4a, 0xd5,
+  0x7a, 0x57, 0xcd, 0x4b, 0xcf, 0x5e, 0x6d, 0xd8, 0x50, 0xd1, 0x58, 0xe9,
+  0xee, 0x5d, 0xd9, 0x5a, 0xde, 0x6a, 0xfe, 0xec, 0x65, 0xe0, 0x5f, 0xe0,
+  0x67, 0xf0, 0xf1, 0x63, 0xda, 0x58, 0xda, 0x65, 0x78, 0xdc, 0x53, 0xcf,
+  0x54, 0xe1, 0xeb, 0x54, 0xcc, 0x4b, 0xd1, 0x68, 0x5d, 0xcd, 0x48, 0xca,
+  0x54, 0x7b, 0xd2, 0x48, 0xc6, 0x4b, 0xdc, 0xe0, 0x4c, 0xc6, 0x47, 0xcf,
+  0x6e, 0x55, 0xc9, 0x45, 0xca, 0x58, 0x6b, 0xcf, 0x48, 0xc8, 0x4e, 0xe5,
+  0xdd, 0x4e, 0xca, 0x4c, 0xd8, 0x7b, 0x5a, 0xcf, 0x4e, 0xd3, 0x60, 0x73,
+  0xdd, 0x56, 0xd6, 0x5b, 0xe8, 0xfc, 0x67, 0xdf, 0x5e, 0xdf, 0x65, 0xed,
+  0x7b, 0x6e, 0xe5, 0x5e, 0xdc, 0x5d, 0xe6, 0xff, 0x63, 0xd8, 0x53, 0xd5,
+  0x5e, 0x7c, 0xdb, 0x4f, 0xcd, 0x50, 0xde, 0xea, 0x52, 0xcb, 0x4a, 0xcf,
+  0x68, 0x5c, 0xcc, 0x47, 0xc9, 0x54, 0x79, 0xd1, 0x48, 0xc6, 0x4b, 0xdd,
+  0xdf, 0x4c, 0xc6, 0x47, 0xd0, 0x6f, 0x56, 0xca, 0x47, 0xcb, 0x5a, 0x6b,
+  0xd1, 0x4a, 0xca, 0x50, 0xe7, 0xdf, 0x50, 0xcd, 0x4f, 0xda, 0x79, 0x5e,
+  0xd5, 0x52, 0xd7, 0x62, 0xff, 0xe4, 0x5c, 0xdb, 0x5d, 0xe5, 0x73, 0x77,
+  0xea, 0x64, 0xe0, 0x5f, 0xe2, 0x6b, 0xfe, 0xe8, 0x5c, 0xd8, 0x58, 0xde,
+  0x76, 0x63, 0xd5, 0x50, 0xd1, 0x5b, 0xff, 0xda, 0x4e, 0xcb, 0x4f, 0xdd,
+  0xe9, 0x50, 0xca, 0x49, 0xcf, 0x69, 0x5b, 0xcb, 0x47, 0xc9, 0x55, 0x75,
+  0xd1, 0x48, 0xc7, 0x4c, 0xde, 0xde, 0x4c, 0xc7, 0x49, 0xd2, 0x76, 0x57,
+  0xcb, 0x49, 0xcd, 0x5c, 0x6b, 0xd3, 0x4c, 0xcd, 0x54, 0xe9, 0xe3, 0x54,
+  0xcf, 0x52, 0xdc, 0x75, 0x64, 0xda, 0x58, 0xdb, 0x63, 0xf4, 0xee, 0x65,
+  0xe0, 0x5f, 0xe3, 0x68, 0xf1, 0xf9, 0x6a, 0xe0, 0x5d, 0xdc, 0x60, 0xef,
+  0xeb, 0x5b, 0xd5, 0x54, 0xda, 0x6d, 0x62, 0xd3, 0x4e, 0xcf, 0x59, 0xfd,
+  0xd9, 0x4d, 0xca, 0x4e, 0xdd, 0xe8, 0x4f, 0xc9, 0x49, 0xcf, 0x69, 0x5a,
+  0xcb, 0x47, 0xca, 0x56, 0x73, 0xd1, 0x49, 0xc7, 0x4d, 0xdf, 0xdf, 0x4d,
+  0xc8, 0x4a, 0xd4, 0x77, 0x58, 0xcd, 0x4b, 0xcf, 0x5d, 0x6d, 0xd6, 0x4e,
+  0xcf, 0x56, 0xea, 0xe9, 0x59, 0xd5, 0x56, 0xde, 0x6f, 0x6d, 0xdf, 0x5d,
+  0xdd, 0x62, 0xeb, 0x7c, 0x71, 0xe8, 0x62, 0xdf, 0x60, 0xe5, 0x73, 0x6f,
+  0xdf, 0x5a, 0xd7, 0x5c, 0xe9, 0xec, 0x5a, 0xd1, 0x50, 0xd7, 0x6c, 0x61,
+  0xd1, 0x4c, 0xcd, 0x58, 0xfd, 0xd7, 0x4c, 0xc9, 0x4d, 0xdd, 0xe7, 0x4f,
+  0xc9, 0x49, 0xcf, 0x6b, 0x59, 0xcb, 0x47, 0xcb, 0x57, 0x6f, 0xd1, 0x49,
+  0xc9, 0x4e, 0xe2, 0xdf, 0x4e, 0xca, 0x4c, 0xd6, 0x78, 0x5a, 0xcf, 0x4d,
+  0xd1, 0x5f, 0x70, 0xda, 0x52, 0xd3, 0x59, 0xe9, 0xef, 0x5e, 0xda, 0x5a,
+  0xdf, 0x6b, 0x7b, 0xeb, 0x63, 0xe1, 0x61, 0xe5, 0x6b, 0xfa, 0xf0, 0x64,
+  0xdd, 0x5b, 0xde, 0x68, 0x75, 0xdf, 0x56, 0xd4, 0x58, 0xe4, 0xed, 0x58,
+  0xcf, 0x4e, 0xd5, 0x6a, 0x60, 0xcf, 0x4b, 0xcc, 0x57, 0xfd, 0xd6, 0x4b,
+  0xc9, 0x4d, 0xdd, 0xe5, 0x4f, 0xc9, 0x49, 0xd0, 0x6d, 0x5a, 0xcc, 0x48,
+  0xcc, 0x59, 0x6f, 0xd3, 0x4b, 0xca, 0x4f, 0xe5, 0xe1, 0x50, 0xcc, 0x4e,
+  0xd9, 0x77, 0x5d, 0xd2, 0x4f, 0xd5, 0x60, 0x77, 0xde, 0x57, 0xd7, 0x5c,
+  0xe8, 0xfa, 0x67, 0xdf, 0x5e, 0xe0, 0x67, 0xf0, 0xfc, 0x6d, 0xe5, 0x5f,
+  0xdf, 0x61, 0xeb, 0xfb, 0x65, 0xdb, 0x57, 0xd9, 0x61, 0x7c, 0xde, 0x54,
+  0xd0, 0x54, 0xe1, 0xed, 0x56, 0xcd, 0x4d, 0xd3, 0x69, 0x5f, 0xce, 0x4b,
+  0xcc, 0x57, 0x7d, 0xd5, 0x4b, 0xc9, 0x4e, 0xde, 0xe4, 0x4f, 0xc9, 0x4a,
+  0xd2, 0x6f, 0x5a, 0xcc, 0x4a, 0xcd, 0x5b, 0x6f, 0xd4, 0x4c, 0xcc, 0x52,
+  0xe7, 0xe4, 0x53, 0xce, 0x50, 0xdb, 0x76, 0x60, 0xd6, 0x54, 0xd8, 0x62,
+  0xff, 0xe5, 0x5d, 0xdc, 0x5e, 0xe7, 0x75, 0x73, 0xe9, 0x64, 0xe2, 0x63,
+  0xe7, 0x6f, 0x7b, 0xe9, 0x5f, 0xdb, 0x5c, 0xe2, 0x78, 0x65, 0xd9, 0x54,
+  0xd6, 0x5e, 0xfe, 0xdd, 0x51, 0xce, 0x52, 0xdf, 0xec, 0x54, 0xcd, 0x4c,
+  0xd2, 0x69, 0x5d, 0xce, 0x4a, 0xcc, 0x57, 0x7a, 0xd5, 0x4b, 0xc9, 0x4e,
+  0xdf, 0xe3, 0x4f, 0xca, 0x4b, 0xd4, 0x70, 0x5a, 0xcd, 0x4b, 0xce, 0x5c,
+  0x6f, 0xd6, 0x4e, 0xce, 0x55, 0xe8, 0xe7, 0x57, 0xd2, 0x54, 0xdd, 0x73,
+  0x66, 0xdb, 0x59, 0xdb, 0x63, 0xf5, 0xee, 0x65, 0xe0, 0x60, 0xe5, 0x6b,
+  0xf7, 0xf6, 0x69, 0xe2, 0x5f, 0xdf, 0x65, 0xf5, 0xeb, 0x5d, 0xd8, 0x58,
+  0xdd, 0x71, 0x65, 0xd7, 0x51, 0xd2, 0x5c, 0xfd, 0xdb, 0x4f, 0xcd, 0x50,
+  0xde, 0xea, 0x53, 0xcc, 0x4c, 0xd2, 0x6a, 0x5d, 0xce, 0x4a, 0xcc, 0x58,
+  0x78, 0xd4, 0x4b, 0xca, 0x4f, 0xe1, 0xe3, 0x4f, 0xcb, 0x4c, 0xd6, 0x74,
+  0x5b, 0xcf, 0x4d, 0xd0, 0x5e, 0x70, 0xd9, 0x50, 0xd0, 0x58, 0xea, 0xeb,
+  0x5b, 0xd6, 0x58, 0xdf, 0x6f, 0x6d, 0xe1, 0x5d, 0xde, 0x64, 0xed, 0xff,
+  0x6e, 0xe8, 0x63, 0xe2, 0x64, 0xe9, 0x77, 0x6e, 0xe2, 0x5c, 0xdb, 0x5e,
+  0xec, 0xed, 0x5c, 0xd5, 0x54, 0xda, 0x6d, 0x64, 0xd5, 0x4f, 0xd0, 0x5a,
+  0xfd, 0xda, 0x4e, 0xcc, 0x4f, 0xde, 0xe9, 0x52, 0xcb, 0x4b, 0xd3, 0x6c,
+  0x5c, 0xce, 0x4a, 0xcd, 0x5a, 0x74, 0xd5, 0x4c, 0xcb, 0x50, 0xe4, 0xe3,
+  0x51, 0xcc, 0x4e, 0xd8, 0x77, 0x5c, 0xd1, 0x4f, 0xd4, 0x60, 0x72, 0xdc,
+  0x55, 0xd5, 0x5b, 0xeb, 0xef, 0x5f, 0xdb, 0x5c, 0xe1, 0x6d, 0x7a, 0xeb,
+  0x65, 0xe3, 0x64, 0xe8, 0x6e, 0xfc, 0xef, 0x66, 0xdf, 0x5e, 0xe0, 0x6b,
+  0x76, 0xe0, 0x59, 0xd7, 0x5a, 0xe8, 0xee, 0x5a, 0xd2, 0x51, 0xd8, 0x6c,
+  0x62, 0xd3, 0x4e, 0xcf, 0x5a, 0xff, 0xd9, 0x4e, 0xcc, 0x4f, 0xdf, 0xe7,
+  0x51, 0xcb, 0x4c, 0xd4, 0x6e, 0x5c, 0xce, 0x4b, 0xce, 0x5b, 0x71, 0xd5,
+  0x4d, 0xcd, 0x53, 0xe7, 0xe3, 0x53, 0xce, 0x50, 0xdb, 0x78, 0x5e, 0xd5,
+  0x52, 0xd7, 0x63, 0x78, 0xdf, 0x5a, 0xd9, 0x5e, 0xea, 0xf9, 0x69, 0xe1,
+  0x60, 0xe3, 0x6a, 0xf2, 0xfa, 0x6e, 0xe7, 0x63, 0xe1, 0x65, 0xed, 0xfa,
+  0x67, 0xdd, 0x5a, 0xdc, 0x65, 0x7b, 0xdf, 0x57, 0xd4, 0x57, 0xe4, 0xee,
+  0x59, 0xd0, 0x4f, 0xd6, 0x6b, 0x60, 0xd2, 0x4d, 0xce, 0x59, 0x7d, 0xd8,
+  0x4d, 0xcc, 0x4f, 0xe0, 0xe7, 0x51, 0xcc, 0x4c, 0xd5, 0x6f, 0x5b, 0xce,
+  0x4c, 0xcf, 0x5c, 0x70, 0xd7, 0x4e, 0xce, 0x55, 0xe9, 0xe5, 0x56, 0xd1,
+  0x53, 0xdd, 0x78, 0x62, 0xd9, 0x57, 0xda, 0x66, 0x7e, 0xe6, 0x5e, 0xde,
+  0x60, 0xe9, 0x78, 0x73, 0xea, 0x66, 0xe4, 0x66, 0xea, 0x71, 0x7a, 0xea,
+  0x61, 0xde, 0x5e, 0xe5, 0x7a, 0x67, 0xdb, 0x57, 0xd8, 0x60, 0x7e, 0xde,
+  0x54, 0xd1, 0x55, 0xe2, 0xed, 0x57, 0xcf, 0x4e, 0xd6, 0x6b, 0x5f, 0xd0,
+  0x4c, 0xce, 0x5a, 0x7a, 0xd8, 0x4d, 0xcc, 0x50, 0xe3, 0xe5, 0x51, 0xcc,
+  0x4d, 0xd7, 0x74, 0x5c, 0xcf, 0x4d, 0xd1, 0x5e, 0x6f, 0xd9, 0x50, 0xd0,
+  0x58, 0xea, 0xe7, 0x59, 0xd4, 0x57, 0xde, 0x77, 0x68, 0xdd, 0x5b, 0xdd,
+  0x66, 0xf7, 0xee, 0x67, 0xe3, 0x64, 0xe7, 0x6d, 0xf9, 0xf5, 0x6b, 0xe5,
+  0x62, 0xe2, 0x68, 0xf6, 0xed, 0x5f, 0xdb, 0x5a, 0xdf, 0x72, 0x67, 0xd9,
+  0x54, 0xd5, 0x5e, 0xfd, 0xdd, 0x52, 0xcf, 0x53, 0xe1, 0xed, 0x56, 0xce,
+  0x4e, 0xd5, 0x6b, 0x5e, 0xd0, 0x4c, 0xce, 0x5a, 0x77, 0xd7, 0x4d, 0xcc,
+  0x52, 0xe4, 0xe5, 0x53, 0xcd, 0x4e, 0xd8, 0x76, 0x5d, 0xd1, 0x4f, 0xd3,
+  0x5f, 0x71, 0xdb, 0x53, 0xd4, 0x5a, 0xec, 0xec, 0x5d, 0xd9, 0x5a, 0xe1,
+  0x72, 0x6e, 0xe3, 0x5f, 0xe0, 0x66, 0xef, 0xfe, 0x6f, 0xe9, 0x66, 0xe5,
+  0x67, 0xec, 0x79, 0x70, 0xe5, 0x5e, 0xdd, 0x60, 0xee, 0xee, 0x5e, 0xd8,
+  0x57, 0xdc, 0x6f, 0x67, 0xd8, 0x52, 0xd3, 0x5d, 0xfd, 0xdc, 0x51, 0xce,
+  0x53, 0xe0, 0xeb, 0x55, 0xce, 0x4e, 0xd6, 0x6d, 0x5e, 0xd0, 0x4c, 0xcf,
+  0x5b, 0x75, 0xd8, 0x4e, 0xcd, 0x53, 0xe6, 0xe5, 0x54, 0xce, 0x50, 0xda,
+  0x78, 0x5e, 0xd4, 0x51, 0xd6, 0x63, 0x74, 0xdd, 0x57, 0xd7, 0x5d, 0xec,
+  0xf0, 0x61, 0xdd, 0x5e, 0xe4, 0x6f, 0x7a, 0xec, 0x67, 0xe5, 0x67, 0xea,
+  0x70, 0xfe, 0xf0, 0x68, 0xe2, 0x61, 0xe3, 0x6d, 0x77, 0xe4, 0x5c, 0xda,
+  0x5d, 0xea, 0xef, 0x5d, 0xd6, 0x54, 0xdb, 0x6c, 0x65, 0xd6, 0x50, 0xd2,
+  0x5c, 0xfe, 0xdc, 0x50, 0xce, 0x52, 0xe1, 0xea, 0x55, 0xcd, 0x4e, 0xd6,
+  0x6e, 0x5e, 0xd0, 0x4d, 0xcf, 0x5d, 0x74, 0xd8, 0x4f, 0xce, 0x55, 0xe8,
+  0xe6, 0x56, 0xd0, 0x53, 0xdc, 0x78, 0x60, 0xd7, 0x55, 0xd9, 0x65, 0x78,
+  0xe2, 0x5b, 0xdb, 0x5f, 0xec, 0xfa, 0x69, 0xe3, 0x62, 0xe6, 0x6b, 0xf6,
+  0xfa, 0x6e, 0xe9, 0x66, 0xe5, 0x68, 0xee, 0xfb, 0x69, 0xdf, 0x5d, 0xde,
+  0x68, 0x7c, 0xe3, 0x5a, 0xd7, 0x5a, 0xe6, 0xef, 0x5c, 0xd3, 0x52, 0xd9,
+  0x6c, 0x64, 0xd5, 0x4f, 0xd1, 0x5b, 0xff, 0xdb, 0x4f, 0xce, 0x53, 0xe2,
+  0xe9, 0x55, 0xce, 0x4e, 0xd7, 0x70, 0x5e, 0xd1, 0x4e, 0xd1, 0x5e, 0x73,
+  0xd9, 0x50, 0xd0, 0x58, 0xea, 0xe7, 0x58, 0xd3, 0x56, 0xde, 0x78, 0x64,
+  0xdb, 0x59, 0xdc, 0x67, 0x7d, 0xe8, 0x5f, 0xdf, 0x62, 0xeb, 0x79, 0x72,
+  0xeb, 0x67, 0xe7, 0x68, 0xec, 0x74, 0x79, 0xec, 0x64, 0xe0, 0x60, 0xe8,
+  0x7a, 0x6a, 0xde, 0x5a, 0xdb, 0x63, 0xfe, 0xe1, 0x58, 0xd4, 0x58, 0xe4,
+  0xef, 0x5a, 0xd2, 0x51, 0xd8, 0x6c, 0x63, 0xd4, 0x4f, 0xd0, 0x5c, 0x7d,
+  0xda, 0x4f, 0xce, 0x53, 0xe3, 0xe8, 0x55, 0xce, 0x4f, 0xd9, 0x73, 0x5e,
+  0xd2, 0x4f, 0xd4, 0x5f, 0x72, 0xdb, 0x53, 0xd3, 0x5a, 0xeb, 0xea, 0x5b,
+  0xd7, 0x59, 0xe0, 0x75, 0x6a, 0xde, 0x5d, 0xde, 0x68, 0xf9, 0xef, 0x67,
+  0xe5, 0x65, 0xe9, 0x6f, 0xfb, 0xf5, 0x6c, 0xe7, 0x64, 0xe5, 0x6a, 0xf8,
+  0xee, 0x62, 0xdd, 0x5d, 0xe2, 0x73, 0x6a, 0xdc, 0x57, 0xd8, 0x5f, 0xfb,
+  0xe0, 0x56, 0xd2, 0x57, 0xe2, 0xee, 0x59, 0xd1, 0x50, 0xd8, 0x6d, 0x62,
+  0xd3, 0x4e, 0xd0, 0x5c, 0x7a, 0xda, 0x4f, 0xce, 0x54, 0xe5, 0xe8, 0x56,
+  0xcf, 0x50, 0xda, 0x75, 0x5f, 0xd4, 0x51, 0xd6, 0x62, 0x74, 0xdd, 0x56,
+  0xd6, 0x5c, 0xec, 0xed, 0x5e, 0xdb, 0x5c, 0xe3, 0x73, 0x6e, 0xe5, 0x60,
+  0xe3, 0x68, 0xf1, 0xfd, 0x6f, 0xeb, 0x67, 0xe7, 0x69, 0xee, 0x7a, 0x71,
+  0xe7, 0x61, 0xdf, 0x64, 0xef, 0xef, 0x60, 0xda, 0x5a, 0xde, 0x70, 0x69,
+  0xda, 0x55, 0xd6, 0x5e, 0xfb, 0xde, 0x55, 0xd1, 0x56, 0xe2, 0xed, 0x59,
+  0xd0, 0x50, 0xd8, 0x6d, 0x60, 0xd3, 0x4f, 0xd1, 0x5d, 0x79, 0xda, 0x50,
+  0xcf, 0x56, 0xe7, 0xe8, 0x57, 0xd1, 0x53, 0xdc, 0x77, 0x60, 0xd7, 0x54,
+  0xd8, 0x64, 0x76, 0xdf, 0x59, 0xd9, 0x5e, 0xed, 0xf2, 0x64, 0xde, 0x5f,
+  0xe5, 0x6f, 0x79, 0xec, 0x68, 0xe7, 0x68, 0xec, 0x73, 0x7e, 0xf1, 0x6a,
+  0xe5, 0x63, 0xe7, 0x6f, 0x77, 0xe7, 0x5e, 0xdc, 0x5e, 0xeb, 0xf2, 0x5f,
+  0xd9, 0x57, 0xdc, 0x6d, 0x68, 0xd9, 0x53, 0xd5, 0x5d, 0xfc, 0xde, 0x53,
+  0xd0, 0x55, 0xe3, 0xed, 0x58, 0xd0, 0x50, 0xd8, 0x6e, 0x60, 0xd3, 0x4f,
+  0xd2, 0x5e, 0x77, 0xdb, 0x52, 0xd1, 0x57, 0xe8, 0xe9, 0x59, 0xd3, 0x55,
+  0xdd, 0x78, 0x64, 0xd9, 0x57, 0xdb, 0x66, 0x7b, 0xe4, 0x5d, 0xdc, 0x61,
+  0xec, 0xfa, 0x6b, 0xe4, 0x64, 0xe7, 0x6d, 0xf7, 0xf8, 0x6f, 0xea, 0x68,
+  0xe8, 0x6a, 0xf2, 0xfa, 0x6b, 0xe3, 0x5f, 0xe1, 0x69, 0x7c, 0xe6, 0x5c,
+  0xda, 0x5c, 0xe9, 0xf3, 0x5e, 0xd7, 0x55, 0xdb, 0x6c, 0x67, 0xd8, 0x52,
+  0xd4, 0x5d, 0xfd, 0xdd, 0x53, 0xd0, 0x55, 0xe3, 0xec, 0x58, 0xd0, 0x50,
+  0xd9, 0x6f, 0x61, 0xd4, 0x50, 0xd4, 0x5f, 0x77, 0xdc, 0x54, 0xd3, 0x59,
+  0xea, 0xea, 0x5b, 0xd6, 0x58, 0xdf, 0x77, 0x67, 0xdc, 0x5a, 0xdd, 0x68,
+  0xfe, 0xea, 0x62, 0xdf, 0x64, 0xeb, 0x7b, 0x73, 0xeb, 0x68, 0xe8, 0x6a,
+  0xee, 0x77, 0x79, 0xed, 0x67, 0xe3, 0x64, 0xeb, 0x7c, 0x6b, 0xe0, 0x5c,
+  0xdd, 0x65, 0xfe, 0xe5, 0x5a, 0xd8, 0x5a, 0xe6, 0xf3, 0x5d, 0xd5, 0x54,
+  0xda, 0x6d, 0x67, 0xd7, 0x51, 0xd3, 0x5d, 0xfe, 0xdd, 0x53, 0xd0, 0x56,
+  0xe5, 0xeb, 0x58, 0xd1, 0x52, 0xda, 0x71, 0x61, 0xd6, 0x52, 0xd6, 0x61,
+  0x77, 0xdd, 0x56, 0xd5, 0x5b, 0xeb, 0xec, 0x5d, 0xd9, 0x5a, 0xe2, 0x75,
+  0x6b, 0xe0, 0x5e, 0xe0, 0x68, 0xf9, 0xf0, 0x68, 0xe5, 0x66, 0xeb, 0x70,
+  0xfe, 0xf4, 0x6c, 0xe9, 0x67, 0xe8, 0x6d, 0xfa, 0xef, 0x65, 0xdf, 0x5f,
+  0xe6, 0x75, 0x6b, 0xde, 0x5a, 0xdb, 0x62, 0xfc, 0xe3, 0x59, 0xd6, 0x59,
+  0xe5, 0xf2, 0x5c, 0xd4, 0x53, 0xda, 0x6d, 0x65, 0xd7, 0x51, 0xd4, 0x5e,
+  0x7e, 0xdd, 0x53, 0xd1, 0x57, 0xe6, 0xeb, 0x59, 0xd2, 0x53, 0xdc, 0x75,
+  0x62, 0xd7, 0x54, 0xd8, 0x64, 0x78, 0xdf, 0x59, 0xd8, 0x5d, 0xec, 0xee,
+  0x60, 0xdc, 0x5d, 0xe4, 0x74, 0x70, 0xe6, 0x63, 0xe3, 0x6a, 0xf2, 0xfc,
+  0x70, 0xeb, 0x69, 0xe9, 0x6b, 0xf0, 0x7d, 0x72, 0xe9, 0x64, 0xe3, 0x67,
+  0xf2, 0xf2, 0x63, 0xdd, 0x5c, 0xe1, 0x70, 0x6b, 0xdd, 0x58, 0xd9, 0x5f,
+  0xfb, 0xe2, 0x58, 0xd4, 0x58, 0xe5, 0xf1, 0x5b, 0xd4, 0x53, 0xda, 0x6d,
+  0x64, 0xd6, 0x51, 0xd4, 0x5e, 0x7b, 0xdd, 0x54, 0xd2, 0x58, 0xe8, 0xeb,
+  0x5a, 0xd4, 0x55, 0xdd, 0x76, 0x64, 0xd9, 0x57, 0xda, 0x65, 0x79, 0xe2,
+  0x5b, 0xdb, 0x5f, 0xed, 0xf3, 0x66, 0xdf, 0x61, 0xe7, 0x71, 0x7a, 0xed,
+  0x69, 0xe8, 0x6a, 0xed, 0x76, 0x7e, 0xf1, 0x6b, 0xe7, 0x66, 0xea, 0x71,
+  0x77, 0xe9, 0x60, 0xde, 0x61, 0xed, 0xf5, 0x61, 0xdb, 0x5a, 0xde, 0x6e,
+  0x6b, 0xdc, 0x57, 0xd8, 0x5f, 0xfb, 0xe1, 0x57, 0xd4, 0x57, 0xe5, 0xef,
+  0x5b, 0xd3, 0x53, 0xda, 0x6e, 0x64, 0xd7, 0x52, 0xd5, 0x5f, 0x7b, 0xdd,
+  0x55, 0xd3, 0x59, 0xe9, 0xeb, 0x5b, 0xd6, 0x58, 0xde, 0x77, 0x67, 0xdb,
+  0x59, 0xdc, 0x68, 0x7d, 0xe6, 0x5f, 0xde, 0x63, 0xed, 0xfb, 0x6b, 0xe6,
+  0x65, 0xe8, 0x6e, 0xfa, 0xf8, 0x6e, 0xeb, 0x69, 0xea, 0x6c, 0xf5, 0xfa,
+  0x6c, 0xe5, 0x61, 0xe4, 0x6c, 0x7c, 0xe8, 0x5e, 0xdc, 0x5e, 0xea, 0xf4,
+  0x60, 0xd9, 0x58, 0xdd, 0x6e, 0x6a, 0xdb, 0x55, 0xd7, 0x5e, 0xfc, 0xdf,
+  0x56, 0xd3, 0x58, 0xe5, 0xee, 0x5b, 0xd3, 0x54, 0xdb, 0x6f, 0x64, 0xd7,
+  0x53, 0xd7, 0x60, 0x79, 0xde, 0x56, 0xd5, 0x5b, 0xeb, 0xed, 0x5d, 0xd8,
+  0x5a, 0xe1, 0x76, 0x69, 0xde, 0x5c, 0xde, 0x69, 0xfd, 0xeb, 0x64, 0xe2,
+  0x66, 0xed, 0x7c, 0x74, 0xec, 0x6a, 0xe9, 0x6c, 0xef, 0x7a, 0x78, 0xee,
+  0x68, 0xe6, 0x67, 0xed, 0x7c, 0x6d, 0xe3, 0x5e, 0xdf, 0x68, 0xfe, 0xe7,
+  0x5d, 0xda, 0x5d, 0xe8, 0xf4, 0x5f, 0xd8, 0x57, 0xdc, 0x6e, 0x69, 0xda,
+  0x55, 0xd6, 0x5e, 0xfd, 0xdf, 0x56, 0xd3, 0x58, 0xe6, 0xed, 0x5a, 0xd4,
+  0x54, 0xdc, 0x72, 0x64, 0xd8, 0x55, 0xd8, 0x63, 0x78, 0xdf, 0x58, 0xd8,
+  0x5d, 0xed, 0xee, 0x5f, 0xdb, 0x5c, 0xe4, 0x76, 0x6d, 0xe2, 0x5f, 0xe2,
+  0x6a, 0xfa, 0xf1, 0x6a, 0xe7, 0x68, 0xec, 0x72, 0x7e, 0xf5, 0x6e, 0xea,
+  0x69, 0xea, 0x6e, 0xfc, 0xf0, 0x68, 0xe2, 0x62, 0xe7, 0x77, 0x6d, 0xe0,
+  0x5d, 0xdd, 0x65, 0xfb, 0xe6, 0x5b, 0xd9, 0x5b, 0xe7, 0xf4, 0x5e, 0xd7,
+  0x56, 0xdc, 0x6e, 0x68, 0xd9, 0x54, 0xd6, 0x5f, 0xfe, 0xdf, 0x56, 0xd4,
+  0x59, 0xe7, 0xed, 0x5b, 0xd5, 0x56, 0xdd, 0x73, 0x65, 0xda, 0x57, 0xda,
+  0x65, 0x79, 0xe2, 0x5b, 0xda, 0x5f, 0xed, 0xf1, 0x63, 0xde, 0x5f, 0xe6,
+  0x75, 0x72, 0xe8, 0x64, 0xe6, 0x6b, 0xf4, 0xfb, 0x70, 0xec, 0x6a, 0xeb,
+  0x6d, 0xf3, 0x7e, 0x72, 0xeb, 0x66, 0xe5, 0x69, 0xf5, 0xf3, 0x66, 0xdf,
+  0x5f, 0xe4, 0x73, 0x6d, 0xdf, 0x5b, 0xdc, 0x63, 0xfb, 0xe5, 0x5a, 0xd7,
+  0x5a, 0xe6, 0xf3, 0x5d, 0xd7, 0x56, 0xdc, 0x6e, 0x67, 0xd9, 0x55, 0xd7,
+  0x5f, 0x7e, 0xdf, 0x57, 0xd5, 0x5a, 0xe9, 0xed, 0x5c, 0xd6, 0x58, 0xde,
+  0x76, 0x67, 0xdb, 0x59, 0xdc, 0x66, 0x7b, 0xe5, 0x5d, 0xdc, 0x61, 0xee,
+  0xf6, 0x67, 0xe2, 0x62, 0xe8, 0x71, 0x7a, 0xee, 0x69, 0xe9, 0x6b, 0xef,
+  0x78, 0x7c, 0xf0, 0x6c, 0xe9, 0x69, 0xec, 0x76, 0x77, 0xea, 0x63, 0xe1,
+  0x65, 0xee, 0xf4, 0x65, 0xdd, 0x5d, 0xe1, 0x70, 0x6d, 0xde, 0x59, 0xda,
+  0x61, 0xfb, 0xe4, 0x59, 0xd7, 0x5a, 0xe6, 0xf2, 0x5d, 0xd6, 0x56, 0xdc,
+  0x6e, 0x67, 0xd9, 0x55, 0xd8, 0x61, 0x7c, 0xdf, 0x58, 0xd6, 0x5b, 0xea,
+  0xee, 0x5d, 0xd8, 0x59, 0xe0, 0x76, 0x69, 0xdd, 0x5b, 0xde, 0x68, 0x7d,
+  0xe9, 0x5f, 0xdf, 0x63, 0xee, 0xfc, 0x6c, 0xe7, 0x66, 0xe9, 0x6f, 0xfb,
+  0xf7, 0x6e, 0xec, 0x6a, 0xec, 0x6e, 0xf8, 0xf9, 0x6d, 0xe7, 0x65, 0xe7,
+  0x6e, 0x7c, 0xea, 0x61, 0xde, 0x61, 0xec, 0xf6, 0x64, 0xdc, 0x5b, 0xdf,
+  0x6f, 0x6c, 0xdd, 0x58, 0xd9, 0x61, 0xfb, 0xe3, 0x59, 0xd6, 0x5a, 0xe7,
+  0xf1, 0x5d, 0xd6, 0x56, 0xdd, 0x6f, 0x67, 0xda, 0x56, 0xd9, 0x62, 0x7c,
+  0xe0, 0x59, 0xd8, 0x5d, 0xeb, 0xee, 0x5f, 0xda, 0x5b, 0xe2, 0x76, 0x6b,
+  0xe0, 0x5d, 0xe0, 0x6a, 0xfe, 0xed, 0x65, 0xe4, 0x67, 0xee, 0x7b, 0x73,
+  0xed, 0x6a, 0xeb, 0x6d, 0xf2, 0x7b, 0x77, 0xee, 0x6a, 0xe9, 0x6a, 0xef,
+  0x7e, 0x6e, 0xe6, 0x61, 0xe2, 0x6a, 0xfe, 0xe9, 0x5f, 0xdc, 0x5f, 0xea,
+  0xf7, 0x62, 0xdb, 0x5a, 0xde, 0x6e, 0x6c, 0xdc, 0x58, 0xd9, 0x60, 0xfc,
+  0xe2, 0x59, 0xd6, 0x5a, 0xe7, 0xef, 0x5d, 0xd7, 0x57, 0xde, 0x72, 0x67,
+  0xdb, 0x57, 0xda, 0x64, 0x7b, 0xe2, 0x5b, 0xda, 0x5e, 0xed, 0xf0, 0x61,
+  0xdd, 0x5e, 0xe5, 0x77, 0x6e, 0xe4, 0x61, 0xe3, 0x6c, 0xf9, 0xf1, 0x6b,
+  0xe8, 0x6a, 0xed, 0x75, 0x7e, 0xf5, 0x6e, 0xec, 0x6b, 0xec, 0x71, 0xfe,
+  0xf1, 0x69, 0xe5, 0x65, 0xea, 0x78, 0x6e, 0xe4, 0x5e, 0xdf, 0x67, 0xfc,
+  0xe9, 0x5e, 0xdb, 0x5d, 0xe9, 0xf6, 0x61, 0xda, 0x59, 0xde, 0x6e, 0x6b,
+  0xdc, 0x57, 0xd9, 0x61, 0xfd, 0xe2, 0x59, 0xd7, 0x5b, 0xe9, 0xef, 0x5d,
+  0xd8, 0x58, 0xdf, 0x73, 0x68, 0xdc, 0x59, 0xdc, 0x66, 0x7b, 0xe4, 0x5c,
+  0xdc, 0x60, 0xee, 0xf4, 0x65, 0xdf, 0x60, 0xe7, 0x75, 0x73, 0xe9, 0x66,
+  0xe7, 0x6c, 0xf5, 0xfa, 0x71, 0xed, 0x6b, 0xec, 0x6e, 0xf6, 0xfe, 0x73,
+  0xec, 0x68, 0xe9, 0x6b, 0xf7, 0xf5, 0x68, 0xe2, 0x61, 0xe7, 0x73, 0x6e,
+  0xe2, 0x5d, 0xde, 0x65, 0xfa, 0xe8, 0x5d, 0xda, 0x5d, 0xe8, 0xf6, 0x5f,
+  0xd9, 0x59, 0xdd, 0x6f, 0x6a, 0xdc, 0x58, 0xd9, 0x62, 0xfe, 0xe2, 0x59,
+  0xd7, 0x5c, 0xe9, 0xef, 0x5e, 0xd9, 0x5a, 0xdf, 0x75, 0x69, 0xdd, 0x5b,
+  0xdd, 0x68, 0x7d, 0xe7, 0x5f, 0xde, 0x63, 0xee, 0xf7, 0x69, 0xe4, 0x64,
+  0xe9, 0x72, 0x7b, 0xee, 0x6b, 0xea, 0x6c, 0xf0, 0x79, 0x7b, 0xf2, 0x6d,
+  0xeb, 0x6b, 0xee, 0x76, 0x78, 0xec, 0x66, 0xe4, 0x67, 0xf0, 0xf7, 0x67,
+  0xdf, 0x5e, 0xe4, 0x70, 0x6e, 0xe0, 0x5c, 0xdc, 0x63, 0xfa, 0xe7, 0x5c,
+  0xd9, 0x5c, 0xe8, 0xf5, 0x5f, 0xd9, 0x58, 0xde, 0x6f, 0x6a, 0xdc, 0x58,
+  0xda, 0x62, 0x7e, 0xe3, 0x5a, 0xd9, 0x5d, 0xeb, 0xf0, 0x5f, 0xdb, 0x5b,
+  0xe2, 0x74, 0x6b, 0xdf, 0x5d, 0xdf, 0x69, 0x7e, 0xea, 0x63, 0xe1, 0x65,
+  0xee, 0xfd, 0x6e, 0xe8, 0x68, 0xea, 0x6f, 0xfc, 0xf8, 0x6f, 0xed, 0x6c,
+  0xed, 0x70, 0xf9, 0xf9, 0x6e, 0xe9, 0x68, 0xe9, 0x6f, 0x7c, 0xec, 0x64,
+  0xe1, 0x64, 0xed, 0xf8, 0x66, 0xde, 0x5d, 0xe1, 0x6f, 0x6e, 0xdf, 0x5b,
+  0xdc, 0x63, 0xfb, 0xe6, 0x5b, 0xd9, 0x5c, 0xe8, 0xf4, 0x5f, 0xd9, 0x59,
+  0xde, 0x70, 0x6a, 0xdc, 0x59, 0xdb, 0x64, 0x7e, 0xe3, 0x5b, 0xda, 0x5e,
+  0xec, 0xf0, 0x61, 0xdc, 0x5d, 0xe4, 0x75, 0x6d, 0xe2, 0x5f, 0xe1, 0x6b,
+  0xfb, 0xee, 0x67, 0xe5, 0x68, 0xee, 0x7c, 0x75, 0xed, 0x6b, 0xec, 0x6e,
+  0xf4, 0x7d, 0x77, 0xef, 0x6c, 0xea, 0x6b, 0xf1, 0xff, 0x6f, 0xe8, 0x64,
+  0xe6, 0x6c, 0xff, 0xeb, 0x62, 0xdf, 0x61, 0xec, 0xf8, 0x65, 0xdd, 0x5c,
+  0xe0, 0x6f, 0x6d, 0xdf, 0x5a, 0xdb, 0x63, 0xfa, 0xe6, 0x5b, 0xd9, 0x5c,
+  0xe8, 0xf3, 0x5f, 0xda, 0x59, 0xdf, 0x71, 0x6a, 0xdd, 0x59, 0xdc, 0x65,
+  0x7d, 0xe5, 0x5d, 0xdc, 0x5f, 0xed, 0xf3, 0x64, 0xde, 0x5f, 0xe6, 0x75,
+  0x70, 0xe6, 0x63, 0xe5, 0x6c, 0xf8, 0xf3, 0x6c, 0xe9, 0x6a, 0xed, 0x76,
+  0x7e, 0xf5, 0x6e, 0xec, 0x6c, 0xee, 0x74, 0xfe, 0xf2, 0x6b, 0xe8, 0x68,
+  0xec, 0x7a, 0x6f, 0xe6, 0x61, 0xe2, 0x6a, 0xfc, 0xea, 0x60, 0xdd, 0x5f,
+  0xea, 0xf8, 0x64, 0xdc, 0x5b, 0xdf, 0x6e, 0x6d, 0xde, 0x5a, 0xdb, 0x63,
+  0xfb, 0xe5, 0x5b, 0xd9, 0x5d, 0xea, 0xf3, 0x5f, 0xda, 0x5a, 0xe0, 0x72,
+  0x6b, 0xde, 0x5b, 0xdd, 0x67, 0x7e, 0xe7, 0x5e, 0xdd, 0x62, 0xee, 0xf6,
+  0x68, 0xe1, 0x62, 0xe8, 0x74, 0x75, 0xeb, 0x68, 0xe8, 0x6c, 0xf6, 0xfb,
+  0x72, 0xed, 0x6d, 0xed, 0x70, 0xf7, 0xfe, 0x74, 0xed, 0x6a, 0xea, 0x6d,
+  0xf7, 0xf6, 0x6a, 0xe5, 0x64, 0xe9, 0x75, 0x70, 0xe5, 0x5f, 0xdf, 0x67,
+  0xfa, 0xea, 0x5f, 0xdc, 0x5e, 0xe9, 0xf8, 0x63, 0xdc, 0x5b, 0xdf, 0x6f,
+  0x6c, 0xde, 0x5a, 0xdb, 0x63, 0xfc, 0xe6, 0x5c, 0xda, 0x5e, 0xea, 0xf3,
+  0x61, 0xdb, 0x5c, 0xe2, 0x74, 0x6c, 0xdf, 0x5d, 0xdf, 0x69, 0x7e, 0xe9,
+  0x61, 0xdf, 0x64, 0xef, 0xfa, 0x6b, 0xe6, 0x65, 0xea, 0x72, 0x7b, 0xef,
+  0x6c, 0xeb, 0x6d, 0xf1, 0x7a, 0x7a, 0xf3, 0x6e, 0xec, 0x6c, 0xef, 0x78,
+  0x78, 0xed, 0x68, 0xe7, 0x6a, 0xf2, 0xf7, 0x6a, 0xe2, 0x61, 0xe6, 0x72,
+  0x70, 0xe3, 0x5e, 0xde, 0x66, 0xfa, 0xe9, 0x5e, 0xdc, 0x5e, 0xe9, 0xf8,
+  0x62, 0xdb, 0x5b, 0xdf, 0x6f, 0x6c, 0xde, 0x5a, 0xdc, 0x64, 0xfd, 0xe6,
+  0x5c, 0xdb, 0x5e, 0xeb, 0xf4, 0x62, 0xdd, 0x5d, 0xe3, 0x74, 0x6d, 0xe2,
+  0x5e, 0xe1, 0x69, 0xfd, 0xed, 0x65, 0xe3, 0x67, 0xee, 0xfe, 0x6f, 0xea,
+  0x69, 0xeb, 0x70, 0xfb, 0xf7, 0x70, 0xed, 0x6d, 0xee, 0x72, 0xfa, 0xf9,
+  0x6f, 0xeb, 0x6a, 0xeb, 0x71, 0x7c, 0xed, 0x67, 0xe3, 0x66, 0xee, 0xf9,
+  0x69, 0xe0, 0x5f, 0xe4, 0x71, 0x71, 0xe2, 0x5d, 0xdd, 0x65, 0xf8, 0xe9,
+  0x5e, 0xdb, 0x5e, 0xe8, 0xf7, 0x63, 0xdb, 0x5b, 0xdf, 0x70, 0x6d, 0xde,
+  0x5b, 0xdc, 0x65, 0xfc, 0xe7, 0x5d, 0xdc, 0x5f, 0xec, 0xf5, 0x64, 0xde,
+  0x5e, 0xe5, 0x73, 0x6f, 0xe5, 0x60, 0xe3, 0x6a, 0xfc, 0xf0, 0x68, 0xe7,
+  0x69, 0xef, 0x7b, 0x75, 0xee, 0x6c, 0xec, 0x6f, 0xf5, 0x7d, 0x77, 0xef,
+  0x6d, 0xec, 0x6d, 0xf3, 0xff, 0x70, 0xea, 0x66, 0xe8, 0x6e, 0xfe, 0xed,
+  0x65, 0xe1, 0x64, 0xed, 0xfa, 0x68, 0xdf, 0x5e, 0xe2, 0x6f, 0x6f, 0xe1,
+  0x5d, 0xdd, 0x65, 0xf9, 0xe9, 0x5e, 0xdb, 0x5e, 0xe9, 0xf6, 0x63, 0xdc,
+  0x5b, 0xe0, 0x71, 0x6d, 0xdf, 0x5c, 0xdd, 0x66, 0xfe, 0xe9, 0x5f, 0xdd,
+  0x61, 0xed, 0xf7, 0x67, 0xe0, 0x60, 0xe7, 0x74, 0x73, 0xe8, 0x64, 0xe6,
+  0x6c, 0xf8, 0xf5, 0x6c, 0xeb, 0x6b, 0xee, 0x76, 0x7d, 0xf4, 0x6f, 0xed,
+  0x6d, 0xef, 0x75, 0x7e, 0xf4, 0x6c, 0xe9, 0x6a, 0xee, 0x7a, 0x71, 0xe9,
+  0x64, 0xe5, 0x6b, 0xfc, 0xed, 0x63, 0xdf, 0x62, 0xeb, 0xfa, 0x67, 0xde,
+  0x5d, 0xe1, 0x6f, 0x6f, 0xe0, 0x5c, 0xdd, 0x64, 0xf9, 0xe8, 0x5e, 0xdb,
+  0x5e, 0xea, 0xf6, 0x64, 0xdc, 0x5c, 0xe1, 0x72, 0x6d, 0xe0, 0x5d, 0xde,
+  0x68, 0xfd, 0xea, 0x61, 0xdf, 0x63, 0xed, 0xf9, 0x6a, 0xe4, 0x63, 0xe9,
+  0x74, 0x77, 0xec, 0x69, 0xe9, 0x6d, 0xf6, 0xfd, 0x73, 0xee, 0x6d, 0xee,
+  0x72, 0xf9, 0xfd, 0x74, 0xee, 0x6c, 0xec, 0x6f, 0xf9, 0xf6, 0x6c, 0xe8,
+  0x66, 0xeb, 0x76, 0x72, 0xe8, 0x62, 0xe2, 0x69, 0xfa, 0xec, 0x62, 0xde,
+  0x60, 0xea, 0xfb, 0x66, 0xde, 0x5d, 0xe1, 0x6f, 0x6f, 0xe0, 0x5c, 0xdd,
+  0x65, 0xfa, 0xe9, 0x5e, 0xdc, 0x5f, 0xeb, 0xf7, 0x64, 0xdd, 0x5d, 0xe3,
+  0x72, 0x6e, 0xe2, 0x5e, 0xe0, 0x69, 0xfc, 0xec, 0x64, 0xe1, 0x65, 0xef,
+  0xfc, 0x6c, 0xe7, 0x66, 0xeb, 0x72, 0x7c, 0xf1, 0x6c, 0xec, 0x6d, 0xf2,
+  0x7b, 0x7a, 0xf2, 0x6e, 0xed, 0x6e, 0xf1, 0x7a, 0x79, 0xee, 0x6a, 0xe9,
+  0x6c, 0xf4, 0xf9, 0x6b, 0xe5, 0x64, 0xe8, 0x73, 0x73, 0xe6, 0x60, 0xe0,
+  0x68, 0xf9, 0xec, 0x61, 0xde, 0x5f, 0xea, 0xfa, 0x66, 0xde, 0x5d, 0xe1,
+  0x6f, 0x6f, 0xe1, 0x5c, 0xdd, 0x66, 0xfb, 0xe9, 0x5e, 0xdd, 0x5f, 0xec,
+  0xf7, 0x65, 0xde, 0x5e, 0xe5, 0x74, 0x6f, 0xe5, 0x60, 0xe2, 0x6a, 0xfc,
+  0xee, 0x67, 0xe5, 0x68, 0xef, 0xfe, 0x71, 0xeb, 0x6a, 0xec, 0x72, 0xfc,
+  0xf8, 0x71, 0xee, 0x6e, 0xef, 0x74, 0xfb, 0xf9, 0x70, 0xed, 0x6c, 0xed,
+  0x73, 0x7d, 0xef, 0x69, 0xe6, 0x68, 0xef, 0xfa, 0x6b, 0xe3, 0x62, 0xe6,
+  0x72, 0x73, 0xe5, 0x5f, 0xdf, 0x67, 0xf8, 0xeb, 0x60, 0xdd, 0x5f, 0xea,
+  0xfb, 0x65, 0xde, 0x5d, 0xe2, 0x6f, 0x6e, 0xe1, 0x5d, 0xde, 0x66, 0xfd,
+  0xea, 0x5f, 0xde, 0x61, 0xed, 0xf8, 0x67, 0xe0, 0x60, 0xe7, 0x74, 0x71,
+  0xe8, 0x63, 0xe5, 0x6c, 0xfa, 0xf1, 0x6b, 0xe8, 0x6a, 0xef, 0x7c, 0x77,
+  0xef, 0x6d, 0xed, 0x71, 0xf5, 0x7e, 0x79, 0xf0, 0x6e, 0xed, 0x6f, 0xf4,
+  0xfe, 0x73, 0xeb, 0x69, 0xe9, 0x6f, 0xfd, 0xee, 0x67, 0xe4, 0x66, 0xed,
+  0xfb, 0x6a, 0xe2, 0x60, 0xe5, 0x70, 0x72, 0xe5, 0x5e, 0xdf, 0x66, 0xf8,
+  0xeb, 0x5f, 0xdd, 0x5f, 0xea, 0xfa, 0x65, 0xde, 0x5d, 0xe3, 0x6f, 0x6e,
+  0xe2, 0x5d, 0xdf, 0x67, 0xfc, 0xeb, 0x60, 0xdf, 0x63, 0xed, 0xf9, 0x69,
+  0xe3, 0x63, 0xe9, 0x74, 0x75, 0xea, 0x67, 0xe8, 0x6d, 0xf9, 0xf7, 0x6e,
+  0xec, 0x6c, 0xef, 0x78, 0x7e, 0xf5, 0x71, 0xee, 0x6e, 0xf0, 0x77, 0xfe,
+  0xf4, 0x6e, 0xeb, 0x6c, 0xef, 0x7b, 0x74, 0xea, 0x67, 0xe7, 0x6d, 0xfb,
+  0xee, 0x66, 0xe1, 0x64, 0xec, 0xfc, 0x69, 0xe1, 0x5f, 0xe4, 0x6f, 0x72,
+  0xe4, 0x5e, 0xdf, 0x66, 0xf9, 0xeb, 0x5f, 0xdd, 0x5f, 0xeb, 0xf9, 0x66,
+  0xde, 0x5e, 0xe3, 0x71, 0x6f, 0xe4, 0x5f, 0xe0, 0x69, 0xfc, 0xec, 0x63,
+  0xe1, 0x65, 0xef, 0xfb, 0x6b, 0xe6, 0x65, 0xea, 0x74, 0x79, 0xed, 0x6a,
+  0xea, 0x6e, 0xf6, 0xfc, 0x73, 0xef, 0x6e, 0xef, 0x73, 0xf9, 0xfd, 0x75,
+  0xef, 0x6d, 0xed, 0x70, 0xfa, 0xf7, 0x6e, 0xe9, 0x69, 0xec, 0x77, 0x74,
+  0xe9, 0x65, 0xe5, 0x6b, 0xfa, 0xee, 0x64, 0xe0, 0x63, 0xec, 0xfc, 0x69,
+  0xe0, 0x5f, 0xe3, 0x6f, 0x72, 0xe4, 0x5e, 0xdf, 0x66, 0xfa, 0xeb, 0x60,
+  0xde, 0x60, 0xeb, 0xf9, 0x67, 0xdf, 0x5f, 0xe5, 0x72, 0x70, 0xe5, 0x60,
+  0xe2, 0x6a, 0xfc, 0xee, 0x66, 0xe4, 0x67, 0xef, 0xfd, 0x6e, 0xe9, 0x68,
+  0xec, 0x73, 0x7d, 0xf3, 0x6e, 0xed, 0x6e, 0xf3, 0x7b, 0x7b, 0xf5, 0x70,
+  0xee, 0x6f, 0xf3, 0x7a, 0x7a, 0xef, 0x6c, 0xeb, 0x6d, 0xf5, 0xf9, 0x6d,
+  0xe7, 0x67, 0xea, 0x75, 0x75, 0xe8, 0x63, 0xe3, 0x69, 0xf8, 0xed, 0x64,
+  0xdf, 0x62, 0xeb, 0xfc, 0x69, 0xdf, 0x5f, 0xe3, 0x70, 0x71, 0xe3, 0x5e,
+  0xdf, 0x67, 0xfa, 0xeb, 0x61, 0xdf, 0x61, 0xed, 0xfa, 0x68, 0xe1, 0x60,
+  0xe7, 0x73, 0x71, 0xe7, 0x62, 0xe5, 0x6b, 0xfb, 0xf0, 0x69, 0xe7, 0x69,
+  0xef, 0x7e, 0x72, 0xed, 0x6b, 0xed, 0x72, 0xfc, 0xf9, 0x72, 0xef, 0x6e,
+  0xf1, 0x74, 0xfc, 0xf9, 0x71, 0xee, 0x6d, 0xee, 0x75, 0x7d, 0xf0, 0x6b,
+  0xe8, 0x6b, 0xf0, 0xfa, 0x6d, 0xe6, 0x64, 0xe8, 0x72, 0x75, 0xe8, 0x62,
+  0xe2, 0x69, 0xf8, 0xed, 0x63, 0xdf, 0x61, 0xeb, 0xfc, 0x68, 0xdf, 0x5f,
+  0xe4, 0x70, 0x71, 0xe4, 0x5f, 0xe0, 0x68, 0xfb, 0xec, 0x62, 0xdf, 0x63,
+  0xed, 0xfa, 0x69, 0xe3, 0x62, 0xe8, 0x74, 0x74, 0xea, 0x65, 0xe7, 0x6c,
+  0xfa, 0xf4, 0x6c, 0xea, 0x6b, 0xef, 0x7a, 0x78, 0xf0, 0x6e, 0xee, 0x71,
+  0xf6, 0xff, 0x79, 0xf2, 0x6f, 0xee, 0x70, 0xf5, 0xfd, 0x74, 0xed, 0x6b,
+  0xec, 0x70, 0xfe, 0xf0, 0x69, 0xe7, 0x68, 0xef, 0xfd, 0x6c, 0xe5, 0x62,
+  0xe7, 0x70, 0x74, 0xe7, 0x60, 0xe1, 0x67, 0xf9, 0xee, 0x62, 0xdf, 0x61,
+  0xeb, 0xfb, 0x68, 0xe0, 0x5f, 0xe4, 0x70, 0x71, 0xe5, 0x5f, 0xe1, 0x69,
+  0xfb, 0xed, 0x64, 0xe1, 0x65, 0xee, 0xfb, 0x6b, 0xe5, 0x65, 0xe9, 0x74,
+  0x78, 0xec, 0x69, 0xe9, 0x6e, 0xf8, 0xf8, 0x6f, 0xec, 0x6d, 0xef, 0x77,
+  0x7e, 0xf6, 0x72, 0xef, 0x70, 0xf2, 0x78, 0x7e, 0xf6, 0x6f, 0xed, 0x6d,
+  0xf0, 0x7b, 0x75, 0xed, 0x69, 0xe9, 0x6e, 0xfb, 0xf0, 0x68, 0xe5, 0x66,
+  0xee, 0xfd, 0x6b, 0xe4, 0x61, 0xe6, 0x70, 0x74, 0xe7, 0x60, 0xe1, 0x67,
+  0xf8, 0xed, 0x63, 0xdf, 0x62, 0xeb, 0xfb, 0x69, 0xe0, 0x5f, 0xe5, 0x71,
+  0x72, 0xe6, 0x61, 0xe2, 0x6a, 0xfa, 0xee, 0x66, 0xe3, 0x67, 0xee, 0xfc,
+  0x6e, 0xe8, 0x67, 0xeb, 0x74, 0x7c, 0xef, 0x6c, 0xeb, 0x6e, 0xf6, 0xfd,
+  0x75, 0xf0, 0x6f, 0xef, 0x74, 0xfa, 0xfd, 0x75, 0xf0, 0x6e, 0xef, 0x73,
+  0xfb, 0xf8, 0x6e, 0xeb, 0x6a, 0xee, 0x78, 0x76, 0xeb, 0x67, 0xe7, 0x6c,
+  0xfa, 0xf0, 0x67, 0xe3, 0x65, 0xed, 0xfe, 0x6b, 0xe3, 0x61, 0xe5, 0x6f,
+  0x74, 0xe7, 0x60, 0xe1, 0x67, 0xf9, 0xee, 0x63, 0xdf, 0x62, 0xec, 0xfc,
+  0x69, 0xe2, 0x60, 0xe6, 0x72, 0x73, 0xe8, 0x63, 0xe4, 0x6b, 0xfa, 0xef,
+  0x68, 0xe5, 0x69, 0xef, 0xfe, 0x70, 0xea, 0x6a, 0xec, 0x74, 0x7e, 0xf3,
+  0x6f, 0xed, 0x6f, 0xf3, 0x7c, 0x7b, 0xf4, 0x71, 0xef, 0x71, 0xf4, 0x7c,
+  0x7a, 0xf0, 0x6e, 0xec, 0x6f, 0xf6, 0xfa, 0x6f, 0xea, 0x69, 0xeb, 0x76,
+  0x77, 0xeb, 0x66, 0xe5, 0x6b, 0xf8, 0xef, 0x67, 0xe2, 0x64, 0xed, 0xfe,
+  0x6b, 0xe3, 0x60, 0xe5, 0x6f, 0x74, 0xe7, 0x60, 0xe1, 0x68, 0xf9, 0xee,
+  0x63, 0xe1, 0x63, 0xed, 0xfd, 0x6a, 0xe4, 0x62, 0xe8, 0x72, 0x75, 0xe9,
+  0x65, 0xe6, 0x6c, 0xfa, 0xf2, 0x6b, 0xe8, 0x6a, 0xef, 0x7d, 0x74, 0xed,
+  0x6d, 0xed, 0x73, 0xfb, 0xf9, 0x74, 0xef, 0x70, 0xf1, 0x77, 0xfd, 0xfa,
+  0x73, 0xef, 0x6e, 0xef, 0x76, 0x7d, 0xf2, 0x6c, 0xeb, 0x6c, 0xf2, 0xfc,
+  0x6e, 0xe9, 0x67, 0xea, 0x72, 0x77, 0xea, 0x65, 0xe4, 0x6a, 0xf8, 0xef,
+  0x66, 0xe2, 0x63, 0xec, 0xff, 0x6b, 0xe3, 0x60, 0xe5, 0x70, 0x75, 0xe7,
+  0x61, 0xe2, 0x69, 0xf9, 0xee, 0x65, 0xe2, 0x64, 0xed, 0xfd, 0x6c, 0xe5,
+  0x64, 0xe9, 0x73, 0x77, 0xeb, 0x67, 0xe8, 0x6d, 0xf9, 0xf6, 0x6d, 0xeb,
+  0x6c, 0xef, 0x7a, 0x7a, 0xf1, 0x6f, 0xee, 0x72, 0xf7, 0xff, 0x78, 0xf3,
+  0x70, 0xef, 0x72, 0xf7, 0xfe, 0x75, 0xee, 0x6c, 0xed, 0x72, 0xfd, 0xf2,
+  0x6b, 0xe8, 0x6a, 0xef, 0xfd, 0x6e, 0xe7, 0x65, 0xe9, 0x71, 0x78, 0xea,
+  0x63, 0xe4, 0x69, 0xf7, 0xef, 0x66, 0xe1, 0x64, 0xec, 0xff, 0x6b, 0xe3,
+  0x61, 0xe6, 0x70, 0x75, 0xe8, 0x62, 0xe3, 0x6a, 0xf9, 0xef, 0x67, 0xe3,
+  0x66, 0xee, 0xfe, 0x6d, 0xe7, 0x66, 0xea, 0x74, 0x7a, 0xee, 0x6a, 0xea,
+  0x6e, 0xf7, 0xfa, 0x70, 0xee, 0x6e, 0xf1, 0x77, 0x7e, 0xf7, 0x72, 0xf0,
+  0x71, 0xf4, 0x79, 0x7d, 0xf6, 0x71, 0xee, 0x6f, 0xf2, 0x7c, 0x77, 0xee,
+  0x6b, 0xeb, 0x6f, 0xfb, 0xf2, 0x6b, 0xe7, 0x68, 0xee, 0xff, 0x6e, 0xe6,
+  0x64, 0xe7, 0x70, 0x78, 0xea, 0x63, 0xe3, 0x69, 0xf7, 0xef, 0x66, 0xe2,
+  0x64, 0xec, 0xfe, 0x6b, 0xe4, 0x62, 0xe6, 0x71, 0x76, 0xe9, 0x63, 0xe4,
+  0x6a, 0xf9, 0xf1, 0x68, 0xe5, 0x67, 0xef, 0x7e, 0x6f, 0xea, 0x68, 0xec,
+  0x74, 0x7c, 0xf1, 0x6c, 0xec, 0x6f, 0xf6, 0xfe, 0x76, 0xf1, 0x6f, 0xf0,
+  0x75, 0xfb, 0xfd, 0x76, 0xf1, 0x6f, 0xef, 0x74, 0xfb, 0xf9, 0x70, 0xec,
+  0x6d, 0xee, 0x79, 0x78, 0xed, 0x6a, 0xe9, 0x6d, 0xf9, 0xf2, 0x6a, 0xe6,
+  0x67, 0xed, 0x7e, 0x6d, 0xe6, 0x63, 0xe7, 0x70, 0x78, 0xe9, 0x63, 0xe3,
+  0x69, 0xf7, 0xf0, 0x66, 0xe2, 0x64, 0xec, 0xfe, 0x6c, 0xe5, 0x63, 0xe7,
+  0x71, 0x77, 0xea, 0x65, 0xe6, 0x6b, 0xf8, 0xf3, 0x6a, 0xe8, 0x69, 0xef,
+  0x7e, 0x72, 0xec, 0x6b, 0xed, 0x74, 0xfe, 0xf5, 0x6f, 0xee, 0x6f, 0xf4,
+  0x7c, 0x7b, 0xf5, 0x71, 0xf0, 0x72, 0xf6, 0x7b, 0x79, 0xf3, 0x6e, 0xee,
+  0x6f, 0xf7, 0xfb, 0x6f, 0xec, 0x6b, 0xed, 0x76, 0x79, 0xed, 0x68, 0xe7,
+  0x6c, 0xf7, 0xf2, 0x69, 0xe5, 0x66, 0xec, 0x7e, 0x6e, 0xe5, 0x63, 0xe7,
+  0x6f, 0x78, 0xe9, 0x63, 0xe4, 0x69, 0xf7, 0xf0, 0x67, 0xe3, 0x65, 0xed,
+  0xff, 0x6d, 0xe6, 0x65, 0xe9, 0x73, 0x78, 0xeb, 0x67, 0xe7, 0x6c, 0xf8,
+  0xf5, 0x6d, 0xea, 0x6b, 0xf0, 0x7c, 0x76, 0xef, 0x6d, 0xee, 0x72, 0xfc,
+  0xfb, 0x74, 0xf2, 0x70, 0xf3, 0x76, 0xfe, 0xfb, 0x75, 0xf0, 0x6f, 0xf1,
+  0x77, 0x7d, 0xf4, 0x6e, 0xec, 0x6d, 0xf3, 0xfe, 0x70, 0xeb, 0x69, 0xeb,
+  0x73, 0x7a, 0xed, 0x67, 0xe7, 0x6b, 0xf7, 0xf4, 0x69, 0xe5, 0x66, 0xec,
+  0x7d, 0x6d, 0xe5, 0x63, 0xe6, 0x6f, 0x79, 0xea, 0x64, 0xe3, 0x6a, 0xf6,
+  0xf0, 0x68, 0xe4, 0x66, 0xed, 0xff, 0x6e, 0xe7, 0x66, 0xea, 0x73, 0x7a,
+  0xed, 0x69, 0xe9, 0x6d, 0xf8, 0xf8, 0x6f, 0xec, 0x6d, 0xf1, 0x7a, 0x7a,
+  0xf3, 0x6f, 0xf0, 0x72, 0xf8, 0x7e, 0x78, 0xf5, 0x70, 0xf1, 0x72, 0xf9,
+  0xff, 0x75, 0xf0, 0x6d, 0xef, 0x72, 0xfd, 0xf4, 0x6d, 0xeb, 0x6b, 0xf1,
+  0xff, 0x70, 0xea, 0x67, 0xea, 0x72, 0x7a, 0xec, 0x66, 0xe5, 0x6a, 0xf6,
+  0xf3, 0x68, 0xe4, 0x66, 0xec, 0x7d, 0x6e, 0xe6, 0x64, 0xe7, 0x70, 0x79,
+  0xea, 0x65, 0xe4, 0x6b, 0xf6, 0xf2, 0x69, 0xe5, 0x68, 0xed, 0xff, 0x6f,
+  0xe9, 0x68, 0xeb, 0x73, 0x7c, 0xef, 0x6c, 0xeb, 0x6e, 0xf6, 0xfc, 0x72,
+  0xee, 0x6e, 0xf1, 0x77, 0xfe, 0xf8, 0x73, 0xf2, 0x71, 0xf5, 0x79, 0x7d,
+  0xf7, 0x72, 0xef, 0x6f, 0xf4, 0x7b, 0x77, 0xf0, 0x6c, 0xec, 0x6f, 0xfb,
+  0xf5, 0x6c, 0xe9, 0x6a, 0xef, 0x7d, 0x6f, 0xe9, 0x66, 0xe9, 0x70, 0x7a,
+  0xec, 0x66, 0xe5, 0x6a, 0xf6, 0xf3, 0x69, 0xe4, 0x65, 0xec, 0x7d, 0x6e,
+  0xe7, 0x64, 0xe8, 0x70, 0x79, 0xeb, 0x66, 0xe6, 0x6b, 0xf7, 0xf4, 0x6b,
+  0xe7, 0x69, 0xee, 0x7d, 0x72, 0xeb, 0x6a, 0xec, 0x73, 0xff, 0xf2, 0x6e,
+  0xed, 0x6f, 0xf5, 0xfe, 0x78, 0xf2, 0x70, 0xf1, 0x75, 0xfb, 0xfd, 0x77,
+  0xf3, 0x70, 0xf1, 0x75, 0xfb, 0xfa, 0x73, 0xee, 0x6e, 0xf0, 0x78, 0x79,
+  0xef, 0x6b, 0xeb, 0x6e, 0xf8, 0xf5, 0x6c, 0xe8, 0x69, 0xee, 0x7c, 0x6f,
+  0xe9, 0x66, 0xe8, 0x6f, 0x7a, 0xec, 0x66, 0xe5, 0x6a, 0xf6, 0xf4, 0x69,
+  0xe5, 0x66, 0xed, 0x7c, 0x6e, 0xe7, 0x65, 0xe9, 0x71, 0x7a, 0xec, 0x68,
+  0xe7, 0x6c, 0xf7, 0xf6, 0x6c, 0xe9, 0x6b, 0xef, 0x7c, 0x75, 0xed, 0x6c,
+  0xed, 0x74, 0xfd, 0xf7, 0x71, 0xef, 0x70, 0xf4, 0x7c, 0x7c, 0xf6, 0x74,
+  0xf1, 0x73, 0xf6, 0x7d, 0x7b, 0xf3, 0x70, 0xef, 0x71, 0xf7, 0xfd, 0x72,
+  0xee, 0x6c, 0xee, 0x75, 0x7a, 0xef, 0x6a, 0xea, 0x6d, 0xf7, 0xf6, 0x6b,
+  0xe7, 0x68, 0xed, 0x7b, 0x6f, 0xe8, 0x66, 0xe9, 0x6f, 0x7b, 0xec, 0x66,
+  0xe5, 0x6a, 0xf6, 0xf4, 0x6a, 0xe6, 0x67, 0xed, 0x7c, 0x6f, 0xe9, 0x66,
+  0xe9, 0x72, 0x7a, 0xee, 0x69, 0xe9, 0x6d, 0xf8, 0xf8, 0x6e, 0xeb, 0x6c,
+  0xf0, 0x7b, 0x78, 0xf0, 0x6e, 0xef, 0x74, 0xfa, 0xfb, 0x76, 0xf1, 0x71,
+  0xf3, 0x78, 0xfd, 0xfa, 0x76, 0xf1, 0x71, 0xf3, 0x78, 0x7e, 0xf5, 0x6f,
+  0xed, 0x6f, 0xf4, 0xfe, 0x72, 0xec, 0x6b, 0xec, 0x74, 0x7c, 0xee, 0x6a,
+  0xe8, 0x6c, 0xf6, 0xf5, 0x6b, 0xe7, 0x67, 0xed, 0x7c, 0x6f, 0xe9, 0x65,
+  0xe9, 0x6f, 0x7a, 0xed, 0x66, 0xe6, 0x6a, 0xf6, 0xf5, 0x6a, 0xe7, 0x68,
+  0xee, 0x7c, 0x70, 0xea, 0x68, 0xeb, 0x72, 0x7c, 0xef, 0x6b, 0xeb, 0x6e,
+  0xf7, 0xfa, 0x70, 0xee, 0x6d, 0xf1, 0x79, 0x7b, 0xf5, 0x70, 0xf0, 0x74,
+  0xf7, 0x7e, 0x7a, 0xf4, 0x73, 0xf1, 0x75, 0xf9, 0xfe, 0x77, 0xf1, 0x6f,
+  0xef, 0x74, 0xfc, 0xf6, 0x6f, 0xec, 0x6d, 0xf1, 0x7e, 0x73, 0xeb, 0x6a,
+  0xeb, 0x73, 0x7d, 0xee, 0x69, 0xe7, 0x6b, 0xf5, 0xf6, 0x6b, 0xe7, 0x67,
+  0xed, 0x7b, 0x6f, 0xe9, 0x66, 0xe9, 0x6f, 0x7b, 0xed, 0x67, 0xe7, 0x6b,
+  0xf7, 0xf6, 0x6b, 0xe8, 0x68, 0xee, 0x7c, 0x72, 0xeb, 0x69, 0xec, 0x73,
+  0x7d, 0xf2, 0x6d, 0xec, 0x6f, 0xf7, 0xfc, 0x75, 0xef, 0x6f, 0xf1, 0x78,
+  0xfe, 0xf9, 0x75, 0xf2, 0x73, 0xf5, 0x7a, 0x7e, 0xf8, 0x74, 0xf1, 0x71,
+  0xf4, 0x7c, 0x79, 0xf1, 0x6e, 0xee, 0x71, 0xfb, 0xf7, 0x6e, 0xeb, 0x6b,
+  0xf0, 0x7c, 0x72, 0xeb, 0x69, 0xea, 0x71, 0x7d, 0xee, 0x68, 0xe7, 0x6b,
+  0xf5, 0xf6, 0x6b, 0xe7, 0x68, 0xed, 0x7c, 0x70, 0xe9, 0x67, 0xe9, 0x70,
+  0x7b, 0xed, 0x68, 0xe8, 0x6c, 0xf7, 0xf6, 0x6c, 0xe9, 0x6a, 0xef, 0x7b,
+  0x74, 0xed, 0x6b, 0xed, 0x73, 0xff, 0xf5, 0x6f, 0xee, 0x6f, 0xf6, 0x7e,
+  0x79, 0xf3, 0x71, 0xf2, 0x76, 0xfb, 0xfd, 0x78, 0xf5, 0x72, 0xf3, 0x76,
+  0xfc, 0xfa, 0x74, 0xef, 0x6f, 0xf2, 0x79, 0x7a, 0xf1, 0x6d, 0xec, 0x6f,
+  0xf9, 0xf7, 0x6d, 0xea, 0x6b, 0xee, 0x7c, 0x72, 0xeb, 0x68, 0xea, 0x70,
+  0x7d, 0xee, 0x69, 0xe7, 0x6b, 0xf4, 0xf6, 0x6c, 0xe7, 0x68, 0xed, 0x7b,
+  0x71, 0xea, 0x67, 0xea, 0x71, 0x7c, 0xee, 0x69, 0xe9, 0x6c, 0xf6, 0xf8,
+  0x6e, 0xeb, 0x6b, 0xf0, 0x7a, 0x76, 0xef, 0x6d, 0xee, 0x73, 0xfd, 0xf9,
+  0x72, 0xf0, 0x70, 0xf5, 0x7b, 0x7c, 0xf7, 0x73, 0xf3, 0x74, 0xf8, 0x7c,
+  0x7b, 0xf5, 0x71, 0xf1, 0x72, 0xf9, 0xfd, 0x74, 0xee, 0x6d, 0xef, 0x77,
+  0x7c, 0xf1, 0x6c, 0xeb, 0x6e, 0xf7, 0xf7, 0x6d, 0xe9, 0x6a, 0xee, 0x7c,
+  0x72, 0xea, 0x68, 0xea, 0x70, 0x7d, 0xee, 0x69, 0xe7, 0x6b, 0xf5, 0xf6,
+  0x6c, 0xe7, 0x69, 0xed, 0x7c, 0x72, 0xea, 0x68, 0xeb, 0x71, 0x7d, 0xef,
+  0x6b, 0xea, 0x6d, 0xf7, 0xfa, 0x6f, 0xec, 0x6d, 0xf1, 0x7a, 0x7a, 0xf2,
+  0x6f, 0xef, 0x74, 0xfa, 0xfc, 0x76, 0xf3, 0x72, 0xf4, 0x78, 0xfe, 0xfb,
+  0x75, 0xf3, 0x72, 0xf4, 0x79, 0x7e, 0xf7, 0x70, 0xef, 0x70, 0xf5, 0xfe,
+  0x75, 0xee, 0x6c, 0xee, 0x75, 0x7d, 0xf0, 0x6c, 0xea, 0x6d, 0xf7, 0xf8,
+  0x6d, 0xe9, 0x69, 0xee, 0x7b, 0x73, 0xea, 0x68, 0xea, 0x70, 0x7d, 0xee,
+  0x69, 0xe8, 0x6b, 0xf6, 0xf7, 0x6c, 0xe8, 0x69, 0xee, 0x7b, 0x73, 0xec,
+  0x6a, 0xec, 0x71, 0x7d, 0xf2, 0x6c, 0xec, 0x6e, 0xf7, 0xfc, 0x73, 0xee,
+  0x6e, 0xf1, 0x79, 0x7c, 0xf6, 0x72, 0xf1, 0x74, 0xf9, 0x7e, 0x7a, 0xf6,
+  0x73, 0xf3, 0x75, 0xfa, 0xfe, 0x78, 0xf3, 0x70, 0xf1, 0x76, 0xfd, 0xf7,
+  0x70, 0xed, 0x6e, 0xf3, 0x7e, 0x75, 0xed, 0x6c, 0xed, 0x73, 0x7e, 0xf0,
+  0x6b, 0xea, 0x6c, 0xf6, 0xf8, 0x6d, 0xe9, 0x69, 0xee, 0x7b, 0x72, 0xeb,
+  0x68, 0xea, 0x70, 0x7d, 0xee, 0x69, 0xe9, 0x6c, 0xf5, 0xf8, 0x6d, 0xea,
+  0x6a, 0xef, 0x7b, 0x75, 0xed, 0x6b, 0xed, 0x72, 0xff, 0xf4, 0x6e, 0xed,
+  0x6f, 0xf6, 0xfe, 0x75, 0xf1, 0x70, 0xf3, 0x78, 0xfe, 0xf9, 0x75, 0xf3,
+  0x73, 0xf6, 0x7b, 0x7d, 0xf9, 0x74, 0xf2, 0x72, 0xf7, 0x7c, 0x7a, 0xf3,
+  0x6f, 0xef, 0x73, 0xfb, 0xf8, 0x6f, 0xed, 0x6d, 0xf1, 0x7c, 0x75, 0xed,
+  0x6b, 0xec, 0x73, 0x7d, 0xef, 0x6b, 0xe9, 0x6c, 0xf6, 0xf8, 0x6d, 0xe9,
+  0x69, 0xee, 0x7a, 0x73, 0xeb, 0x69, 0xeb, 0x71, 0x7e, 0xef, 0x6b, 0xe9,
+  0x6d, 0xf6, 0xf8, 0x6e, 0xea, 0x6c, 0xef, 0x7c, 0x77, 0xee, 0x6d, 0xee,
+  0x74, 0xfe, 0xf7, 0x70, 0xef, 0x70, 0xf6, 0x7d, 0x78, 0xf5, 0x71, 0xf4,
+  0x76, 0xfb, 0xfe, 0x78, 0xf6, 0x73, 0xf5, 0x76, 0xfd, 0xfb, 0x75, 0xf2,
+  0x70, 0xf3, 0x7a, 0x7b, 0xf3, 0x6e, 0xed, 0x71, 0xf9, 0xf8, 0x6f, 0xec,
+  0x6c, 0xef, 0x7c, 0x75, 0xec, 0x6a, 0xec, 0x71, 0x7e, 0xf0, 0x6a, 0xe9,
+  0x6c, 0xf6, 0xf9, 0x6d, 0xe9, 0x69, 0xee, 0x7a, 0x73, 0xec, 0x69, 0xeb,
+  0x71, 0x7e, 0xf0, 0x6b, 0xea, 0x6d, 0xf6, 0xfa, 0x6f, 0xec, 0x6d, 0xf0,
+  0x7b, 0x79, 0xf0, 0x6e, 0xef, 0x75, 0xfc, 0xf9, 0x74, 0xf1, 0x72, 0xf6,
+  0x7b, 0x7c, 0xf8, 0x75, 0xf4, 0x74, 0xf8, 0x7d, 0x7c, 0xf7, 0x73, 0xf2,
+  0x74, 0xf9, 0xfd, 0x76, 0xf0, 0x6f, 0xf0, 0x77, 0x7d, 0xf3, 0x6d, 0xed,
+  0x6f, 0xf8, 0xfa, 0x6f, 0xeb, 0x6b, 0xef, 0x7b, 0x75, 0xec, 0x6a, 0xeb,
+  0x71, 0x7e, 0xf0, 0x6a, 0xe9, 0x6c, 0xf5, 0xf9, 0x6d, 0xea, 0x6a, 0xee,
+  0x7a, 0x74, 0xed, 0x6a, 0xec, 0x71, 0x7e, 0xf2, 0x6c, 0xec, 0x6e, 0xf5,
+  0xfc, 0x72, 0xed, 0x6e, 0xf1, 0x79, 0x7b, 0xf3, 0x70, 0xef, 0x74, 0xfa,
+  0xfc, 0x78, 0xf3, 0x73, 0xf4, 0x79, 0xfc, 0xfa, 0x77, 0xf3, 0x74, 0xf4,
+  0x7a, 0xfe, 0xf7, 0x73, 0xef, 0x71, 0xf7, 0x7e, 0x76, 0xef, 0x6e, 0xef,
+  0x75, 0x7d, 0xf3, 0x6d, 0xec, 0x6e, 0xf7, 0xfa, 0x6e, 0xeb, 0x6b, 0xef,
+  0x79, 0x74, 0xed, 0x69, 0xeb, 0x6f, 0x7e, 0xf1, 0x6a, 0xea, 0x6c, 0xf6,
+  0xfa, 0x6e, 0xeb, 0x6a, 0xef, 0x7a, 0x76, 0xee, 0x6b, 0xed, 0x72, 0xfe,
+  0xf4, 0x6e, 0xed, 0x6f, 0xf6, 0xfd, 0x75, 0xef, 0x6f, 0xf1, 0x79, 0x7e,
+  0xf6, 0x75, 0xf1, 0x76, 0xf8, 0xfd, 0x7a, 0xf5, 0x74, 0xf2, 0x76, 0xf8,
+  0x7e, 0x7a, 0xf6, 0x71, 0xec, 0x76, 0xfa, 0x7e, 0x7b, 0xf9, 0x72, 0xf5,
+  0x7d, 0xfb, 0xfb, 0x76, 0xf9, 0x75, 0x7b, 0xf1, 0x77, 0xfe, 0x7a, 0xfb,
+  0x7e, 0x73, 0xfa, 0x7e, 0xfb, 0x7d, 0x77, 0xf7, 0x7e, 0x7c, 0xfe, 0x78,
+  0xfa, 0x7e, 0xff, 0x7e, 0x76, 0xf9, 0xfd, 0xf9, 0xfe, 0x75, 0xf1, 0x76,
+  0x7c, 0xfc, 0x7a, 0xf3, 0x70, 0xfd, 0x7e, 0x7d, 0xf3, 0x70, 0xf7, 0x78,
+  0x7e, 0xf9, 0x72, 0xef, 0x77, 0xfc, 0xfd, 0x75, 0xee, 0x72, 0xf7, 0xfb
+#endif
+};
+
+static short MuLawDecompressTable[256] =
+{
+     -32124,-31100,-30076,-29052,-28028,-27004,-25980,-24956,
+     -23932,-22908,-21884,-20860,-19836,-18812,-17788,-16764,
+     -15996,-15484,-14972,-14460,-13948,-13436,-12924,-12412,
+     -11900,-11388,-10876,-10364, -9852, -9340, -8828, -8316,
+      -7932, -7676, -7420, -7164, -6908, -6652, -6396, -6140,
+      -5884, -5628, -5372, -5116, -4860, -4604, -4348, -4092,
+      -3900, -3772, -3644, -3516, -3388, -3260, -3132, -3004,
+      -2876, -2748, -2620, -2492, -2364, -2236, -2108, -1980,
+      -1884, -1820, -1756, -1692, -1628, -1564, -1500, -1436,
+      -1372, -1308, -1244, -1180, -1116, -1052,  -988,  -924,
+       -876,  -844,  -812,  -780,  -748,  -716,  -684,  -652,
+       -620,  -588,  -556,  -524,  -492,  -460,  -428,  -396,
+       -372,  -356,  -340,  -324,  -308,  -292,  -276,  -260,
+       -244,  -228,  -212,  -196,  -180,  -164,  -148,  -132,
+       -120,  -112,  -104,   -96,   -88,   -80,   -72,   -64,
+        -56,   -48,   -40,   -32,   -24,   -16,    -8,     -1,
+      32124, 31100, 30076, 29052, 28028, 27004, 25980, 24956,
+      23932, 22908, 21884, 20860, 19836, 18812, 17788, 16764,
+      15996, 15484, 14972, 14460, 13948, 13436, 12924, 12412,
+      11900, 11388, 10876, 10364,  9852,  9340,  8828,  8316,
+       7932,  7676,  7420,  7164,  6908,  6652,  6396,  6140,
+       5884,  5628,  5372,  5116,  4860,  4604,  4348,  4092,
+       3900,  3772,  3644,  3516,  3388,  3260,  3132,  3004,
+       2876,  2748,  2620,  2492,  2364,  2236,  2108,  1980,
+       1884,  1820,  1756,  1692,  1628,  1564,  1500,  1436,
+       1372,  1308,  1244,  1180,  1116,  1052,   988,   924,
+        876,   844,   812,   780,   748,   716,   684,   652,
+        620,   588,   556,   524,   492,   460,   428,   396,
+        372,   356,   340,   324,   308,   292,   276,   260,
+        244,   228,   212,   196,   180,   164,   148,   132,
+        120,   112,   104,    96,    88,    80,    72,    64,
+         56,    48,    40,    32,    24,    16,     8,     0
+};
+
+
+void vt_bell (VT *vt)
+{
+  if (vt->bell < 2)
+    return;
+  for (int i = 0; i < (int)sizeof (vt_bell_audio); i++)
+  {
+    int16_t val = MuLawDecompressTable[vt_bell_audio[i]] * vt->bell / 8;
+    terminal_queue_pcm (val, val);
+  }
+}
+
+
+void terminal_queue_pcm (int16_t sample_left, int16_t sample_right);
+
+void vt_audio (VT *vt, const char *command)
+{
+  AudioState *audio = &vt->audio;
+  // the simplest form of audio is raw audio
+  // _As=8000,c=2,b=8,e=u
+  //
+  // multiple voices:
+  //   ids to queue - store samples as images...
+  //
+  // reusing samples
+  //   .. pitch bend and be able to do a mod player?
+  const char *payload = NULL;
+  char key = 0;
+  int  value;
+  int  pos = 1;
+
+  audio->frames=0;
+  audio->action='t';
+
+  int configure = 0;
+  while (command[pos] != ';')
+  {
+    pos ++; // G or ,
+    if (command[pos] == ';') break;
+    key = command[pos]; pos++;
+    if (command[pos] == ';') break;
+    pos ++; // =
+    if (command[pos] == ';') break;
+
+    if (command[pos] >= '0' && command[pos] <= '9')
+      value = atoi(&command[pos]);
+    else
+      value = command[pos];
+    while (command[pos] &&
+           command[pos] != ',' &&
+           command[pos] != ';') pos++;
+    
+    if (value=='?')
+    {
+      char buf[256];
+      const char *range="";
+      switch (key)
+      {
+        case 's':range="8000,16000,24000,48000";break;
+        case 'b':range="8,16";break;
+        case 'B':range="512-65536";break;
+        case 'c':range="1";break;
+        case 'T':range="u,s,f";break;
+        case 'e':range="b,a";break;
+        case 'o':range="z,0";break;
+        case 'a':range="t,q";break;
+        default:range="unknown";break;
+      }
+      sprintf (buf, "\033_A%c=?;%s\033\\", key, range);
+      vt_write (vt, buf, strlen(buf));
+      return;
+    }
+
+    switch (key)
+    {
+      case 's': audio->samplerate = value; configure = 1; break;
+      case 'b': audio->bits = value; configure = 1; break;
+      case 'B': audio->buffer_size = value; configure = 1; break;
+      case 'c': audio->channels = value; configure = 1; break;
+      case 'a': audio->action = value; configure = 1; break;
+      case 'T': audio->type = value; configure = 1; break;
+      case 'f': audio->frames = value; configure = 1; break;
+      case 'e': audio->encoding = value; configure = 1; break;
+      case 'o': audio->compression = value; configure = 1; break;
+      case 'm': 
+        audio->mic = value?1:0;
+        break;
+    }
+
+    if (configure)
+    {
+      /* these are the specific sample rates supported by opus,
+       * instead of enabling anything SDL supports, the initial
+       * implementation limits itself to the opus sample rates
+       */
+      if (audio->samplerate <= 8000)
+      {
+        audio->samplerate = 8000;
+      }
+      else if (audio->samplerate <= 16000)
+      {
+        audio->samplerate = 16000;
+      }
+      else if (audio->samplerate <= 24000)
+      {
+        audio->samplerate = 24000;
+      }
+      else
+      {
+        audio->samplerate = 48000;
+      }
+
+      if (audio->bits != 8 && audio->bits != 16)
+        audio->bits = 8;
+
+      if (audio->buffer_size > 2048)
+        audio->buffer_size = 2048;
+      else if (audio->buffer_size < 512)
+        audio->buffer_size = 512;
+
+      switch (audio->type)
+      {
+        case 'u':
+        case 's':
+        case 'f':
+          break;
+        default:
+          audio->type = 's';
+      }
+
+      /* only 1 and 2 channels supported */
+      if (audio->channels <= 0 || audio->channels > 2)
+      {
+        audio->channels = 1;
+      }
+    }
+  }
+  
+  if (audio->frames ||  audio->action != 'd')
+  {
+  payload = &command[pos+1];
+
+  // accumulate incoming data
+  {
+     int chunk_size = strlen (payload);
+     int old_size = audio->data_size;
+     if (audio->data == NULL)
+     {
+       audio->data_size = chunk_size;
+       audio->data = malloc (audio->data_size + 1);
+     }
+     else
+     {
+       audio->data_size += chunk_size;
+       audio->data = realloc (audio->data, audio->data_size + 1);
+     }
+     memcpy (audio->data + old_size, payload, chunk_size);
+     audio->data[audio->data_size]=0;
+  }
+
+    if (audio->frames)
+    switch (audio->encoding)
+    {
+      case 'y':
+        audio->data_size = ydec (audio->data, audio->data, audio->data_size);
+      break;
+      case 'a':
+      {
+        int bin_length = audio->data_size;
+        if (bin_length)
+        {
+        uint8_t *data2 = malloc ((unsigned int)ctx_a85len ((char*)audio->data, audio->data_size) + 1);
+        // a85len is inaccurate but gives an upper bound,
+        // should be fixed.
+        bin_length = ctx_a85dec ((char*)audio->data,
+                                 (void*)data2,
+                                 bin_length);
+        free (audio->data);
+        audio->data = data2;
+        audio->data_size = bin_length;
+        }
+      }
+      break;
+
+      case 'b':
+      {
+        int bin_length = audio->data_size;
+        uint8_t *data2 = malloc (audio->data_size);
+        bin_length = ctx_base642bin ((char*)audio->data,
+                                     &bin_length,
+                                     data2);
+        memcpy (audio->data, data2, bin_length + 1);
+        audio->data_size = bin_length;
+        free (data2);
+      }
+      break;
+    }
+
+    if (audio->frames)
+    switch (audio->compression)
+    {
+      case 'z':
+    {
+      unsigned long actual_uncompressed_size = audio->frames * audio->bits/8 * audio->channels + 512;
+      unsigned char *data2 = malloc (actual_uncompressed_size);
+      /* if a buf size is set (rather compression, but
+       * this works first..) then */
+      int z_result = uncompress (data2, &actual_uncompressed_size,
+                                 audio->data,
+                                 audio->data_size);
+      if (z_result != Z_OK)
+      {
+       // fprintf (stderr, "[z error %i %i]", __LINE__, z_result);
+      }
+
+#if 0
+      // XXX : we seem to get buf-error (-5) here, which indicates not enough
+      //       space in output buffer, which is odd
+      //
+      //       it is non fatal though so we ignore it and use the validly
+      //       decompressed bits.
+      {
+        char buf[256];
+        sprintf (buf, "\e_Ao=z;zlib error1 %i\e\\", z_result);
+        vt_write (vt, buf, strlen(buf));
+        //goto cleanup;
+      }
+#endif
+      free (audio->data);
+      audio->data = data2;
+      audio->data_size = actual_uncompressed_size;
+    }
+
+        break;
+      case 'o':
+        break;
+      default:
+        break;
+    }
+
+    if (audio->frames == 0)
+    {
+      /* implicit frame count */
+      audio->frames = audio->data_size /
+                                (audio->bits/8) /
+                                   audio->channels;
+    }
+
+
+#if 0
+    if (audio->format == 100/* opus */)
+    {
+      int channels;
+      uint8_t *new_data = NULL;//stbi_load_from_memory (audio->data, audio->data_size, &audio->buf_width, &audio->buf_height, &channels, 4);
+
+      if (!new_data)
+      {
+        char buf[256]= "\e_Gf=100;audio decode error\e\\";
+        vt_write (vt, buf, strlen(buf));
+        goto cleanup;
+      }
+      audio->format = 32;
+      free (audio->data);
+      audio->data = new_data;
+      audio->data_size = audio->buf_width * audio->buf_height * 4;
+    }
+#endif
+
+  switch (audio->action)
+  {
+    case 't': // transfer
+       if (audio->type == 'u') // implied 8bit
+       {
+         if (audio->channels == 2)
+         {
+           for (int i = 0; i < audio->frames; i++)
+           {
+             int val_left = MuLawDecompressTable[audio->data[i*2]];
+             int val_right = MuLawDecompressTable[audio->data[i*2+1]];
+             terminal_queue_pcm (val_left, val_right);
+           }
+         }
+         else
+         {
+           for (int i = 0; i < audio->frames; i++)
+           {
+             int val = MuLawDecompressTable[audio->data[i]];
+             terminal_queue_pcm (val, val);
+           }
+         }
+       }
+       else if (audio->type == 's')
+       {
+         if (audio->bits == 8)
+         {
+           if (audio->channels == 2)
+           {
+             for (int i = 0; i < audio->frames; i++)
+             {
+               int val_left = 256*((int8_t*)(audio->data))[i*2];
+               int val_right = 256*((int8_t*)(audio->data))[i*2+1];
+               terminal_queue_pcm (val_left, val_right);
+             }
+           }
+           else
+           {
+             for (int i = 0; i < audio->frames; i++)
+             {
+               int val = 256*((int8_t*)(audio->data))[i];
+               terminal_queue_pcm (val, val);
+             }
+           }
+         }
+         else
+         {
+           if (audio->channels == 2)
+           {
+             for (int i = 0; i < audio->frames; i++)
+             {
+               int val_left = ((int16_t*)(audio->data))[i*2];
+               int val_right = ((int16_t*)(audio->data))[i*2+1];
+               terminal_queue_pcm (val_left, val_right);
+             }
+           }
+           else
+           {
+             for (int i = 0; i < audio->frames; i++)
+             {
+               int val = ((int16_t*)(audio->data))[i];
+               terminal_queue_pcm (val, val);
+             }
+           }
+         }
+       }
+       free (audio->data);
+       audio->data = NULL;
+       audio->data_size=0;
+       break;
+    case 'q': // query
+       {
+         char buf[512];
+         sprintf (buf, "\033_As=%i,b=%i,c=%i,T=%c,B=%i,e=%c,o=%c;OK\033\\",
+      audio->samplerate, audio->bits, audio->channels, audio->type,
+      audio->buffer_size,
+      audio->encoding?audio->encoding:'0',
+      audio->compression?audio->compression:'0'
+      /*audio->transmission*/);
+
+         vt_write (vt, buf, strlen(buf));
+       }
+      break;
+  }
+  }
+
+//cleanup:
+    if (audio->data)
+      free (audio->data);
+    audio->data = NULL;
+    audio->data_size=0;
+}
+#endif
+/* DEC terminals/xterm family terminal with ANSI, utf8, vector graphics and
+ * audio.
+ *
+ * Copyright (c) 2014, 2016, 2018, 2020 Øyvind Kolås <pippin@gimp.org>
+ *
+ * Adhering to the standards with modern extensions.
+ *
+ * Features:
+ *     vt100 - 101 points on scoresheet
+ *     UTF8, cp437
+ *     dim, bold, strikethrough, underline, italic, reverse
+ *     ANSI colors, 256 colors (non-redefineable), 24bit color
+ *     realtime audio transmission
+ *     raster sprites (kitty spec)
+ *     vector graphics
+ *     vt320 - horizontal margins
+ *     proportional fonts
+ *
+ *     BBS/ANSI-art mode
+ *
+ * 8bit clean
+ *
+ *
+ * Todo:
+ *     DECCIR - cursor state report https://vt100.net/docs/vt510-rm/DECCIR.html
+ *     make absolute positioning take proportional into account
+ *     HTML / PNG / SVG / PDF export of scrollback / screen
+ *     sixels
+ *
+ */
+
+#define _GNU_SOURCE
+#define _BSD_SOURCE
+#ifndef _DEFAULT_SOURCE
+#define _DEFAULT_SOURCE
+#endif
+#ifndef _XOPEN_SOURCE
+#define _XOPEN_SOURCE 600 // for posix_openpt
+#endif
+
+#if !__COSMOPOLITAN__
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <errno.h>
+#include <assert.h>
+
+#include <string.h>
+#include <signal.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdarg.h>
+#include <ctype.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <sys/time.h>
+#include <sys/ioctl.h>
+#include <termios.h>
+#include <zlib.h>
+#endif
+
+#include "ctx.h"
+
+
+#define CTX_VT_USE_FRAMEDIFF 0  // is a larger drain than neccesary when everything is per-byte?
+                                // is anyways currently disabled also in ctx
+
+//#define STB_IMAGE_IMPLEMENTATION
+//#include "stb_image.h"
+
+//#include "vt-line.h"
+//#include "vt.h"
+//#include "ctx-clients.h"
+
+
+
+#define VT_LOG_INFO     (1<<0)
+#define VT_LOG_CURSOR   (1<<1)
+#define VT_LOG_COMMAND  (1<<2)
+#define VT_LOG_WARNING  (1<<3)
+#define VT_LOG_ERROR    (1<<4)
+#define VT_LOG_INPUT    (1<<5)
+#define VT_LOG_ALL       0xff
+
+static int vt_log_mask = VT_LOG_INPUT;
+//static int vt_log_mask = VT_LOG_WARNING | VT_LOG_ERROR;// | VT_LOG_COMMAND;// | VT_LOG_INFO | VT_LOG_COMMAND;
+//static int vt_log_mask = VT_LOG_WARNING | VT_LOG_ERROR | VT_LOG_INFO | VT_LOG_COMMAND | VT_LOG_INPUT;
+//static int vt_log_mask = VT_LOG_ALL;
+
+#if 0
+#define vt_log(domain, fmt, ...)
+
+#define VT_input(str, ...)
+#define VT_info(str, ...)
+#define VT_command(str, ...)
+#define VT_cursor(str, ...)
+#define VT_warning(str, ...)
+#define VT_error(str, ...)
+#else
+#define vt_log(domain, line, a...) \
+        do {fprintf (stderr, "%i %s ", line, domain);fprintf(stderr, ##a);fprintf(stderr, "\n");}while(0)
+#define VT_info(a...) if (vt_log_mask & VT_LOG_INFO) vt_log ("INFO  ", __LINE__, ##a)
+#define VT_input(a...) if (vt_log_mask & VT_LOG_INPUT) vt_log ("INPUT ", __LINE__, ##a)
+#define VT_command(a...) if (vt_log_mask & VT_LOG_COMMAND) vt_log ("CMD   ", __LINE__, ##a)
+#define VT_cursor(a...) if (vt_log_mask & VT_LOG_CURSOR) vt_log ("CURSOR",__LINE__, ##a)
+#define VT_warning(a...) if (vt_log_mask & VT_LOG_WARNING) vt_log ("WARN  ",__LINE__, ##a)
+#define VT_error(a...) if (vt_log_mask & VT_LOG_ERROR) vt_log ("ERROR",__LINE__, ##a)
+
+#endif
+
+#ifndef MIN
+#define MIN(a,b)  ((a)<(b)?(a):(b))
+#endif
+
+static void vt_state_neutral      (VT *vt, int byte);
+static void vt_state_esc          (VT *vt, int byte);
+static void vt_state_osc          (VT *vt, int byte);
+static void vt_state_apc          (VT *vt, int byte);
+static void vt_state_apc_generic  (VT *vt, int byte);
+static void vt_state_sixel        (VT *vt, int byte);
+static void vt_state_esc_sequence (VT *vt, int byte);
+static void vt_state_esc_foo      (VT *vt, int byte);
+static void vt_state_swallow      (VT *vt, int byte);
+static void vt_state_ctx          (VT *vt, int byte);
+static void vt_state_vt52         (VT *vt, int byte);
+
+#if 0
+/* barebones linked list */
+
+typedef struct _CtxList CtxList;
+struct _CtxList
+{
+  void *data;
+  CtxList *next;
+};
+
+static inline int ctx_list_length (CtxList *list)
+{
+  int length = 0;
+  for (CtxList *l = list; l; l = l->next, length++);
+  return length;
+}
+
+static inline void ctx_list_prepend (CtxList **list, void *data)
+{
+  CtxList *new_=calloc (sizeof (CtxList), 1);
+  new_->next = *list;
+  new_->data = data;
+  *list = new_;
+}
+
+static inline void *ctx_list_last (CtxList *list)
+{
+  if (list)
+    {
+      CtxList *last;
+      for (last = list; last->next; last=last->next);
+      return last->data;
+    }
+  return NULL;
+}
+
+static inline void ctx_list_append (CtxList **list, void *data)
+{
+  CtxList *new_= calloc (sizeof (CtxList), 1);
+  new_->data=data;
+  if (*list)
+    {
+      CtxList *last;
+      for (last = *list; last->next; last=last->next);
+      last->next = new_;
+      return;
+    }
+  *list = new_;
+  return;
+}
+
+static inline void ctx_list_remove (CtxList **list, void *data)
+{
+  CtxList *iter, *prev = NULL;
+  if ( (*list)->data == data)
+    {
+      prev = (void *) (*list)->next;
+      free (*list);
+      *list = prev;
+      return;
+    }
+  for (iter = *list; iter; iter = iter->next)
+    if (iter->data == data)
+      {
+        prev->next = iter->next;
+        free (iter);
+        break;
+      }
+    else
+      { prev = iter; }
+}
+
+static inline void
+ctx_list_insert_before (CtxList **list, CtxList *sibling,
+                       void *data)
+{
+  if (*list == NULL || *list == sibling)
+    {
+      ctx_list_prepend (list, data);
+    }
+  else
+    {
+      CtxList *prev = NULL;
+      for (CtxList *l = *list; l; l=l->next)
+        {
+          if (l == sibling)
+            { break; }
+          prev = l;
+        }
+      if (prev)
+        {
+          CtxList *new_=calloc (sizeof (CtxList), 1);
+          new_->next = sibling;
+          new_->data = data;
+          prev->next=new_;
+        }
+    }
+}
+#endif
+
+
+typedef enum
+{
+  STYLE_REVERSE         = 1 << 0,
+  STYLE_BOLD            = 1 << 1,
+  STYLE_BLINK           = 1 << 2,
+  STYLE_UNDERLINE       = 1 << 3,
+  STYLE_DIM             = 1 << 4,
+  STYLE_HIDDEN          = 1 << 5,
+  STYLE_ITALIC          = 1 << 6,
+  STYLE_UNDERLINE_VAR   = 1 << 7,
+  STYLE_STRIKETHROUGH   = 1 << 8,
+  STYLE_OVERLINE        = 1 << 9,
+  STYLE_BLINK_FAST      = 1 << 10,
+  STYLE_PROPORTIONAL    = 1 << 11,
+  STYLE_FG_COLOR_SET    = 1 << 12,
+  STYLE_BG_COLOR_SET    = 1 << 13,
+  STYLE_FG24_COLOR_SET  = 1 << 14,
+  STYLE_BG24_COLOR_SET  = 1 << 15,
+  //STYLE_NONERASABLE     = 1 << 16  // needed for selective erase
+} TerminalStyle;
+
+typedef struct Image
+{
+  int kitty_format;
+  int width;
+  int height;
+  int id;
+  int eid_no;
+  int size;
+  uint8_t *data;
+} Image;
+
+#define MAX_IMAGES 128
+
+static Image image_db[MAX_IMAGES]= {{0,},};
+
+static Image *image_query (int id)
+{
+  for (int i = 0; i < MAX_IMAGES; i++)
+    {
+      Image *image = &image_db[i];
+      if (image->id == id)
+        { return image; }
+    }
+  return NULL;
+}
+
+static int image_eid_no = 0;
+
+static Image *image_add (int width,
+                         int height,
+                         int id,
+                         int format,
+                         int size,
+                         uint8_t *data)
+{
+  // look for id if id is not 0
+  Image *image;
+  for (int i = 0; i < MAX_IMAGES; i++)
+    {
+      image = &image_db[i];
+      if (image->data == NULL)
+        { break; }
+    }
+  if (image->data)
+    {
+      // not a good eviction strategy
+      image = &image_db[random() %MAX_IMAGES];
+    }
+  if (image->data)
+    { free (image->data); }
+  image->kitty_format = format;
+  image->width  = width;
+  image->height = height;
+  image->id     = id;
+  image->size   = size;
+  image->data   = data;
+  image->eid_no = image_eid_no++;
+  return image;
+}
+
+
+
+void vtpty_resize (void *data, int cols, int rows, int px_width, int px_height)
+{
+  VtPty *vtpty = data;
+  struct winsize ws;
+  ws.ws_row = rows;
+  ws.ws_col = cols;
+  ws.ws_xpixel = px_width;
+  ws.ws_ypixel = px_height;
+  ioctl (vtpty->pty, TIOCSWINSZ, &ws);
+}
+
+ssize_t vtpty_write (void *data, const void *buf, size_t count)
+{
+  VtPty *vtpty = data;
+  return write (vtpty->pty, buf, count);
+}
+
+ssize_t vtpty_read (void  *data, void *buf, size_t count)
+{
+  VtPty *vtpty = data;
+  return read (vtpty->pty, buf, count);
+}
+
+int vtpty_waitdata (void  *data, int timeout)
+{
+  VtPty *vtpty = data;
+  struct timeval tv;
+  fd_set fdset;
+  FD_ZERO (&fdset);
+  FD_SET (vtpty->pty, &fdset);
+  tv.tv_sec = 0;
+  tv.tv_usec = timeout;
+  tv.tv_sec  = timeout / 1000000;
+  tv.tv_usec = timeout % 1000000;
+  if (select (vtpty->pty+1, &fdset, NULL, NULL, &tv) == -1)
+    {
+      perror ("select");
+      return 0;
+    }
+  if (FD_ISSET (vtpty->pty, &fdset) )
+    {
+      return 1;
+    }
+  return 0;
+}
+
+
+/* on current line */
+static int vt_col_to_pos (VT *vt, int col)
+{
+  int pos = col;
+  if (vt->current_line->contains_proportional)
+    {
+      Ctx *ctx = ctx_new ();
+      ctx_font (ctx, "regular");
+      ctx_font_size (ctx, vt->font_size);
+      int x = 0;
+      pos = 0;
+      int prev_prop = 0;
+      while (x <= col * vt->cw)
+        {
+          if (vt_line_get_style (vt->current_line, pos) & STYLE_PROPORTIONAL)
+            {
+              x += ctx_glyph_width (ctx, vt_line_get_unichar (vt->current_line, pos) );
+              prev_prop = 1;
+            }
+          else
+            {
+              if (prev_prop)
+                {
+                  int new_cw = vt->cw - ( (x % vt->cw) );
+                  if (new_cw < vt->cw*3/2)
+                    { new_cw += vt->cw; }
+                  x += new_cw;
+                }
+              else
+                {
+                  x += vt->cw;
+                }
+              prev_prop = 0;
+            }
+          pos ++;
+        }
+      pos --;
+      ctx_free (ctx);
+    }
+  return pos;
+}
+
+static int vt_margin_left (VT *vt)
+{
+  int left = vt->left_right_margin_mode?vt->margin_left:1;
+  return vt_col_to_pos (vt, left);
+}
+
+#define VT_MARGIN_LEFT vt_margin_left(vt)
+
+static int vt_margin_right (VT *vt)
+{
+  int right = vt->left_right_margin_mode?vt->margin_right:vt->cols;
+  return vt_col_to_pos (vt, right);
+}
+
+#define VT_MARGIN_RIGHT vt_margin_right(vt)
+
+
+void vt_rev_inc (VT *vt)
+{
+  if (vt)
+    vt->rev++;
+}
+
+long vt_rev (VT *vt)
+{
+  return vt?vt->rev:0;
+}
+
+static void vtcmd_reset_to_initial_state (VT *vt, const char *sequence);
+int vt_set_prop (VT *vt, uint32_t key_hash, const char *val);
+uint64_t ctx_strhash (const char *utf8);
+
+static void vt_set_title (VT *vt, const char *new_title)
+{
+  if (vt->inert) return;
+
+  if (vt->title)
+    { free (vt->title); }
+  vt->title = strdup (new_title);
+  vt_set_prop (vt, ctx_strhash ("title"), (char*)new_title);
+}
+
+const char *vt_get_title (VT *vt)
+{
+  return vt->title;
+}
+
+static void vt_run_command (VT *vt, const char *command, const char *term);
+static void vtcmd_set_top_and_bottom_margins (VT *vt, const char *sequence);
+static void vtcmd_set_left_and_right_margins (VT *vt, const char *sequence);
+static void _vt_move_to (VT *vt, int y, int x);
+
+static void vtcmd_clear (VT *vt, const char *sequence)
+{
+  while (vt->lines)
+    {
+      vt_line_free (vt->lines->data, 1);
+      ctx_list_remove (&vt->lines, vt->lines->data);
+    }
+  vt->lines = NULL;
+  vt->line_count = 0;
+
+  if (1)
+  { /* TODO: detect if this is neccesary.. due to images present
+             in lines in scrollback */
+    for (int i=0; i<vt->rows; i++)
+    {
+      vt->current_line = vt_line_new_with_size ("", vt->cols);
+      ctx_list_prepend (&vt->scrollback, vt->current_line);
+      vt->scrollback_count++;
+    }
+  }
+
+  /* populate lines */
+  for (int i=0; i<vt->rows; i++)
+    {
+      vt->current_line = vt_line_new_with_size ("", vt->cols);
+      ctx_list_prepend (&vt->lines, vt->current_line);
+      vt->line_count++;
+    }
+}
+
+#define set_fg_rgb(r, g, b) \
+    vt->cstyle ^= (vt->cstyle & (((uint64_t)((1l<<24)-1))<<16));\
+    vt->cstyle |=  ((uint64_t)(r)<<16);\
+    vt->cstyle |=  ((uint64_t)(g)<<(16+8));\
+    vt->cstyle |=  ((uint64_t)(b)<<(16+8+8));\
+    vt->cstyle |= STYLE_FG_COLOR_SET;\
+    vt->cstyle |= STYLE_FG24_COLOR_SET;\
+
+#define set_bg_rgb(r, g, b) \
+    vt->cstyle ^= (vt->cstyle & (((uint64_t)((1l<<24)-1))<<40));\
+    vt->cstyle |=  ((uint64_t)(r)<<40);\
+    vt->cstyle |=  ((uint64_t)(g)<<(40+8));\
+    vt->cstyle |=  ((uint64_t)(b)<<(40+8+8));\
+    vt->cstyle |= STYLE_BG_COLOR_SET;\
+    vt->cstyle |= STYLE_BG24_COLOR_SET;\
+
+#define set_fg_idx(idx) \
+    vt->cstyle ^= (vt->cstyle & (((uint64_t)((1l<<24)-1))<<16));\
+    vt->cstyle ^= (vt->cstyle & STYLE_FG24_COLOR_SET);\
+    vt->cstyle |=  ((idx)<<16);\
+    vt->cstyle |= STYLE_FG_COLOR_SET;
+
+#define set_bg_idx(idx) \
+    vt->cstyle ^= (vt->cstyle & (((uint64_t)((1l<<24)-1))<<40));\
+    vt->cstyle ^= (vt->cstyle & STYLE_BG24_COLOR_SET);\
+    vt->cstyle |= ((int64_t)(idx)<<40) ;\
+    vt->cstyle |= STYLE_BG_COLOR_SET;
+
+
+static void _vt_compute_cw_ch (VT *vt)
+{
+  vt->cw = (vt->font_size / vt->line_spacing * vt->scale_x) + 0.99;
+  vt->ch = vt->font_size;
+}
+
+static void vtcmd_set_132_col (VT  *vt, int set)
+{
+  // this should probably force the window as well
+  if (set == 0 && vt->scale_x == 1.0f) return;
+  if (set == 1 && vt->scale_x != 1.0f) return;
+  if (set) // 132 col
+    {
+      vt->scale_x = 74.0/132.0; // show all - po
+      //vt->scale_x = 80.0/132.0;
+      vt->scale_y = 1.0;
+      _vt_compute_cw_ch (vt);
+      vt_set_term_size (vt, vt->cols * 132/80.0, vt->rows);
+    }
+  else // 80 col
+    {
+      vt->scale_x = 1.0;
+      vt->scale_y = 1.0;
+      _vt_compute_cw_ch (vt);
+      vt_set_term_size (vt, vt->cols * 80/132.0, vt->rows);
+    }
+}
+
+static void vt_line_feed (VT *vt);
+static void vt_carriage_return (VT *vt);
+
+static int vt_trimlines (VT *vt, int max);
+static void vtcmd_reset_to_initial_state (VT *vt, const char *sequence)
+{
+  VT_info ("reset %s", sequence);
+  if (getenv ("VT_DEBUG") )
+    { vt->debug = 1; }
+  vtcmd_clear (vt, sequence);
+  vt->encoding = 0;
+  vt->bracket_paste = 0;
+  vt->ctx_events = 0;
+  vt->cr_on_lf = 0;
+  vtcmd_set_top_and_bottom_margins (vt, "[r");
+  vtcmd_set_left_and_right_margins (vt, "[s");
+  vt->autowrap               = 1;
+  vt->justify                = 0;
+  vt->cursor_visible         = 1;
+  vt->charset[0]             = 0;
+  vt->charset[1]             = 0;
+  vt->charset[2]             = 0;
+  vt->charset[3]             = 0;
+  vt->bell                   = 3;
+  vt->scale_x                = 1.0;
+  vt->scale_y                = 1.0;
+  vt->saved_x                = 1;
+  vt->saved_y                = 1;
+  vt->saved_style            = 1;
+  vt->reverse_video          = 0;
+  vt->cstyle                 = 0;
+  vt->keyrepeat              = 1;
+  vt->cursor_key_application = 0;
+  vt->argument_buf_len       = 0;
+  vt->argument_buf[0]        = 0;
+  vt->vtpty.done             = 0;
+  vt->result                 = -1;
+  vt->state                  = vt_state_neutral;
+  vt->scroll_on_output       = 0;
+  vt->scroll_on_input        = 1;
+  vt->unit_pixels            = 0;
+  vt->mouse                  = 0;
+  vt->mouse_drag             = 0;
+  vt->mouse_all              = 0;
+  vt->mouse_decimal          = 0;
+  _vt_compute_cw_ch (vt);
+  for (int i = 0; i < MAX_COLS; i++)
+    { vt->tabs[i] = i % 8 == 0? 1 : 0; }
+  _vt_move_to (vt, vt->margin_top, vt->cursor_x);
+  vt_carriage_return (vt);
+  //if (vt->ctx)
+  //  { ctx_reset (vt->ctx); }
+  vt->audio.bits = 8;
+  vt->audio.channels = 1;
+  vt->audio.type = 'u';
+  vt->audio.samplerate = 8000;
+  vt->audio.buffer_size = 1024;
+  vt->audio.encoding = 'a';
+  vt->audio.compression = '0';
+  vt->audio.mic = 0;
+  while (vt->scrollback)
+    {
+      vt_line_free (vt->scrollback->data, 1);
+      ctx_list_remove (&vt->scrollback, vt->scrollback->data);
+    }
+  vt->scrollback_count = 0;
+}
+
+void vt_set_font_size (VT *vt, float font_size)
+{
+  vt->font_size = font_size;
+  _vt_compute_cw_ch (vt);
+}
+
+float       vt_get_font_size      (VT *vt)
+{
+  return vt->font_size;
+}
+
+void vt_set_line_spacing (VT *vt, float line_spacing)
+{
+  vt->line_spacing = line_spacing;
+  _vt_compute_cw_ch (vt);
+}
+
+VT *vt_new (const char *command, int width, int height, float font_size, float line_spacing, int id, int can_launch)
+{
+  VT *vt                 = calloc (sizeof (VT), 1);
+  vt->id                 = id;
+  vt->lastx              = -1;
+  vt->lasty              = -1;
+  vt->state              = vt_state_neutral;
+  vt->smooth_scroll      = 0;
+  vt->can_launch         = can_launch;
+  vt->scroll_offset      = 0.0;
+  vt->waitdata           = vtpty_waitdata;
+  vt->read               = vtpty_read;
+  vt->write              = vtpty_write;
+  vt->resize             = vtpty_resize;
+  vt->font_to_cell_scale = 0.98;
+  vt->cursor_visible     = 1;
+  vt->lines              = NULL;
+  vt->line_count         = 0;
+  vt->current_line       = NULL;
+  vt->cols               = 0;
+  vt->rows               = 0;
+
+  vt->scrollback_limit   = DEFAULT_SCROLLBACK;
+  vt->argument_buf_len   = 0;
+  vt->argument_buf_cap   = 64;
+  vt->argument_buf       = malloc (vt->argument_buf_cap);
+  vt->argument_buf[0]    = 0;
+  vt->vtpty.done         = 0;
+  vt->result             = -1;
+  vt->line_spacing       = 1.0;
+  vt->scale_x            = 1.0;
+  vt->scale_y            = 1.0;
+  vt_set_font_size (vt, font_size);
+  vt_set_line_spacing (vt, line_spacing);
+  if (command)
+    {
+      vt_run_command (vt, command, NULL);
+    }
+  if (width <= 0) width = 640;
+  if (height <= 0) width = 480;
+  vt_set_px_size (vt, width, height);
+
+  vt->fg_color[0] = 216;
+  vt->fg_color[1] = 216;
+  vt->fg_color[2] = 216;
+  vt->bg_color[0] = 0;
+  vt->bg_color[1] = 0;
+  vt->bg_color[2] = 0;
+  vtcmd_reset_to_initial_state (vt, NULL);
+  //vt->ctx = ctx_new ();
+  ctx_list_prepend (&vts, vt);
+  return vt;
+}
+
+int vt_cw (VT *vt)
+{
+  return vt->cw;
+}
+
+int vt_ch (VT *vt)
+{
+  return vt->ch;
+}
+
+static int vt_trimlines (VT *vt, int max)
+{
+  CtxList *chop_point = NULL;
+  CtxList *l;
+  int i;
+  if (vt->line_count < max)
+    { 
+      return 0;
+    }
+  for (l = vt->lines, i = 0; l && i < max-1; l = l->next, i++);
+  if (l)
+    {
+      chop_point = l->next;
+      l->next = NULL;
+    }
+  while (chop_point)
+    {
+      if (vt->in_alt_screen)
+        {
+          vt_line_free (chop_point->data, 1);
+        }
+      else
+        {
+          ctx_list_prepend (&vt->scrollback, chop_point->data);
+          vt->scrollback_count ++;
+        }
+      ctx_list_remove (&chop_point, chop_point->data);
+      vt->line_count--;
+    }
+  if (vt->scrollback_count > vt->scrollback_limit + 1024)
+    {
+      CtxList *l = vt->scrollback;
+      int no = 0;
+      while (l && no < vt->scrollback_limit)
+        {
+          l = l->next;
+          no++;
+        }
+      chop_point = NULL;
+      if (l)
+        {
+          chop_point = l->next;
+          l->next = NULL;
+        }
+      while (chop_point)
+        {
+          vt_line_free (chop_point->data, 1);
+          ctx_list_remove (&chop_point, chop_point->data);
+          vt->scrollback_count --;
+        }
+    }
+  return 0;
+}
+
+static void vt_rewrap_pair (VT *vt, VtLine *topline, VtLine *bottomline, int max_col)
+{
+  int toplen = 0;
+
+  while ((toplen = vt_line_get_utf8length (topline)) > max_col)
+  {
+     uint32_t unichar = vt_line_get_unichar (topline, toplen-1);
+     uint32_t style =  vt_line_get_style (topline, toplen-1);
+     vt_line_insert_unichar (bottomline, 0, unichar);
+     vt_line_remove (topline, toplen-1);
+     vt_line_set_style (bottomline, 0, style);
+  }
+
+  while (vt_line_get_length (bottomline) &&
+         (toplen = vt_line_get_utf8length (topline)) < max_col)
+  {
+     uint32_t unichar = vt_line_get_unichar (bottomline, 0);
+     uint32_t style =  vt_line_get_style (bottomline, 0);
+     vt_line_append_unichar (topline, unichar);
+     vt_line_set_style (topline, toplen, style);
+     vt_line_remove (bottomline, 0);
+  }
+}
+
+static void vt_rewrap (VT *vt, int max_col)
+{
+  if (max_col < 8) max_col = 8;
+  CtxList *list = NULL;
+
+  for (CtxList *l = vt->lines; l;)
+  {
+    CtxList *next = l->next;
+    ctx_list_prepend (&list, l->data);
+    ctx_list_remove (&vt->lines, l->data);
+    l = next;
+  }
+  for (CtxList *l = vt->scrollback; l;)
+  {
+    CtxList *next = l->next;
+    ctx_list_prepend (&list, l->data);
+    ctx_list_remove (&vt->scrollback, l->data);
+    l = next;
+  }
+
+  for (CtxList *l = list; l; l = l->next)
+    {
+      VtLine *line = l->data;
+      VtLine *next = l->next ?l->next->data:NULL;
+
+      if (vt_line_get_utf8length (line) >= max_col || (next && next->wrapped))
+      {
+        if (!next)
+        {
+          ctx_list_append (&list, vt_line_new (""));
+          next = l->next->data;
+          next->wrapped = 1;
+        }
+        else if (!next->wrapped)
+        {
+          ctx_list_insert_before (&list, l->next, vt_line_new (""));
+          next = l->next->data;
+          next->wrapped = 1;
+        } 
+        vt_rewrap_pair (vt, line, next, max_col);
+        if (vt_line_get_utf8length (next) == 0)
+          ctx_list_remove (&list, l->next->data);
+      }
+    }
+
+  int rows = vt->rows;
+  int total_rows = ctx_list_length (list);
+
+  int scrollback_rows = total_rows - rows;
+
+  int c = 0;
+  CtxList *l;
+  for (l = list; l && c < scrollback_rows;)
+  {
+    CtxList *next = l->next;
+    ctx_list_prepend (&vt->scrollback, l->data);
+    ctx_list_remove (&list, l->data);
+    l = next;
+    c++;
+  }
+  for (; l ;)
+  {
+    CtxList *next = l->next;
+    ctx_list_prepend (&vt->lines, l->data);
+    ctx_list_remove (&list, l->data);
+    l = next;
+    c++;
+  }
+}
+
+void vt_set_term_size (VT *vt, int icols, int irows)
+{
+  if (vt->rows == irows && vt->cols == icols)
+    return;
+
+
+  if (vt->state == vt_state_ctx)
+  {
+    // we should queue a pending resize instead,
+    // .. or set a flag indicating that the last
+    // rendered frame is discarded?
+    return;
+  }
+
+  if(1)vt_rewrap (vt, icols);
+
+  while (irows > vt->rows)
+    {
+      if (vt->scrollback_count)
+        {
+          vt->scrollback_count--;
+          ctx_list_append (&vt->lines, vt->scrollback->data);
+          ctx_list_remove (&vt->scrollback, vt->scrollback->data);
+          vt->cursor_y++;
+        }
+      else
+        {
+          ctx_list_prepend (&vt->lines, vt_line_new_with_size ("", vt->cols) );
+        }
+      vt->line_count++;
+      vt->rows++;
+    }
+  while (irows < vt->rows)
+    {
+      vt->cursor_y--;
+      vt->rows--;
+    }
+  vt->rows = irows;
+  vt->cols = icols;
+  vt_resize (vt, vt->cols, vt->rows, vt->width, vt->height);
+  vt_trimlines (vt, vt->rows);
+  vt->margin_top     = 1;
+  vt->margin_left    = 1;
+  vt->margin_bottom  = vt->rows;
+  vt->margin_right   = vt->cols;
+  _vt_move_to (vt, vt->cursor_y, vt->cursor_x);
+  vt->rev++;
+  VT_info ("resize %i %i", irows, icols);
+  if (vt->ctxp)
+    ctx_parser_free (vt->ctxp);
+  vt->ctxp = NULL;
+}
+
+void vt_set_px_size (VT *vt, int width, int height)
+{
+  int cols = width / vt->cw;
+  int rows = height / vt->ch;
+  vt->width = width;
+  vt->height = height;
+  vt_set_term_size (vt, cols, rows);
+}
+
+
+
+static void vt_argument_buf_reset (VT *vt, const char *start)
+{
+  if (start)
+    {
+      strcpy (vt->argument_buf, start);
+      vt->argument_buf_len = strlen (start);
+    }
+  else
+    { vt->argument_buf[vt->argument_buf_len=0]=0; }
+}
+
+static inline void vt_argument_buf_add (VT *vt, int ch)
+{
+  if (vt->argument_buf_len + 1 >= 1024 * 1024 * 16)
+    return; 
+  //
+  if (vt->argument_buf_len + 1 >=
+      vt->argument_buf_cap)
+    {
+      vt->argument_buf_cap = vt->argument_buf_cap * 2;
+      vt->argument_buf = realloc (vt->argument_buf, vt->argument_buf_cap);
+    }
+  vt->argument_buf[vt->argument_buf_len] = ch;
+  vt->argument_buf[++vt->argument_buf_len] = 0;
+}
+
+static void
+_vt_move_to (VT *vt, int y, int x)
+{
+  int i;
+  x = x < 1 ? 1 : (x > vt->cols ? vt->cols : x);
+  y = y < 1 ? 1 : (y > vt->rows ? vt->rows : y);
+  vt->at_line_home = 0;
+  vt->cursor_x = x;
+  vt->cursor_y = y;
+  i = vt->rows - y;
+  CtxList *l;
+  for (l = vt->lines; l && i >= 1; l = l->next, i--);
+  if (l)
+    {
+      vt->current_line = l->data;
+    }
+  else
+    {
+      for (; i > 0; i--)
+        {
+          vt->current_line = vt_line_new_with_size ("", vt->cols);
+          ctx_list_append (&vt->lines, vt->current_line);
+          vt->line_count++;
+        }
+    }
+  VT_cursor ("%i,%i (_vt_move_to)", y, x);
+  vt->rev++;
+}
+
+static void vt_scroll (VT *vt, int amount);
+
+static void _vt_add_str (VT *vt, const char *str)
+{
+  int logical_margin_right = VT_MARGIN_RIGHT;
+  if (vt->cstyle & STYLE_PROPORTIONAL)
+    { vt->current_line->contains_proportional = 1; }
+  if (vt->cursor_x > logical_margin_right)
+    {
+      if (vt->autowrap)
+        {
+          int chars = 0;
+          int old_x = vt->cursor_x;
+          VtLine *old_line = vt->current_line;
+          if (vt->justify && str[0] != ' ')
+            {
+              while (old_x-1-chars >1 && vt_line_get_unichar (vt->current_line,
+                     old_x-1-chars) !=' ')
+                {
+                  chars++;
+                }
+              chars--;
+              if (chars > (vt->margin_right - vt->margin_left) * 3 / 2)
+                { chars = 0; }
+            }
+          if (vt->cursor_y == vt->margin_bottom)
+            {
+              vt_scroll (vt, -1);
+            }
+          else
+            {
+              _vt_move_to (vt, vt->cursor_y+1, 1);
+            }
+          vt->current_line->wrapped=1;
+          vt_carriage_return (vt);
+          for (int i = 0; i < chars; i++)
+            {
+              vt_line_set_style (vt->current_line, vt->cursor_x-1, vt->cstyle);
+              vt_line_replace_unichar (vt->current_line, vt->cursor_x - 1,
+                                         vt_line_get_unichar (old_line, old_x-1-chars+i) );
+              vt->cursor_x++;
+            }
+          for (int i = 0; i < chars; i++)
+            {
+              vt_line_replace_unichar (old_line, old_x-1-chars+i, ' ');
+            }
+          if (str[0] == ' ')
+            return;
+        }
+      else
+        {
+          vt->cursor_x = logical_margin_right;
+        }
+    }
+  if (vt->insert_mode)
+    {
+      vt_line_insert_utf8 (vt->current_line, vt->cursor_x - 1, str);
+      while (vt->current_line->string.utf8_length > logical_margin_right)
+        { vt_line_remove (vt->current_line, logical_margin_right); }
+    }
+  else
+    {
+      vt_line_replace_utf8 (vt->current_line, vt->cursor_x - 1, str);
+    }
+  vt_line_set_style (vt->current_line, vt->cursor_x-1, vt->cstyle);
+  vt->cursor_x += 1;
+  vt->at_line_home = 0;
+  vt->rev++;
+}
+
+static void _vt_backspace (VT *vt)
+{
+  if (vt->current_line)
+    {
+      vt->cursor_x --;
+      if (vt->cursor_x == VT_MARGIN_RIGHT) { vt->cursor_x--; }
+      if (vt->cursor_x < VT_MARGIN_LEFT)
+        {
+          vt->cursor_x = VT_MARGIN_LEFT;
+          vt->at_line_home = 1;
+        }
+      VT_cursor ("backspace");
+    }
+  vt->rev++;
+}
+
+static void vtcmd_set_top_and_bottom_margins (VT *vt, const char *sequence)
+{
+  int top = 1, bottom = vt->rows;
+  /* w3m issues this; causing reset of cursor position, why it is issued
+   * is unknown 
+   */
+  if (!strcmp (sequence, "[?1001r"))
+    return;
+  if (strlen (sequence) > 2)
+    {
+      sscanf (sequence, "[%i;%ir", &top, &bottom);
+    }
+  VT_info ("margins: %i %i", top, bottom);
+  if (top <1) { top = 1; }
+  if (top > vt->rows) { top = vt->rows; }
+  if (bottom > vt->rows) { bottom = vt->rows; }
+  if (bottom < top) { bottom = top; }
+  vt->margin_top = top;
+  vt->margin_bottom = bottom;
+#if 0
+  _vt_move_to (vt, top, 1);
+#endif
+  vt_carriage_return (vt);
+  VT_cursor ("%i, %i (home)", top, 1);
+}
+static void vtcmd_save_cursor_position (VT *vt, const char *sequence);
+
+static void vtcmd_set_left_and_right_margins (VT *vt, const char *sequence)
+{
+  int left = 1, right = vt->cols;
+  if (!vt->left_right_margin_mode)
+    {
+      vtcmd_save_cursor_position (vt, sequence);
+      return;
+    }
+  if (strlen (sequence) > 2)
+    {
+      sscanf (sequence, "[%i;%is", &left, &right);
+    }
+  VT_info ("hor margins: %i %i", left, right);
+  if (left <1) { left = 1; }
+  if (left > vt->cols) { left = vt->cols; }
+  if (right > vt->cols) { right = vt->cols; }
+  if (right < left) { right = left; }
+  vt->margin_left = left;
+  vt->margin_right = right;
+  _vt_move_to (vt, vt->cursor_y, vt->cursor_x);
+  vt_carriage_return (vt);
+  //VT_cursor ("%i, %i (home)", left, 1);
+}
+
+static inline int parse_int (const char *arg, int def_val)
+{
+  if (!isdigit (arg[1]) || strlen (arg) == 2)
+    { return def_val; }
+  return atoi (arg+1);
+}
+
+
+static void vtcmd_set_line_home (VT *vt, const char *sequence)
+{
+  int val = parse_int (sequence, 1);
+  char buf[256];
+  vt->left_right_margin_mode = 1;
+  sprintf (buf, "[%i;%it", val, vt->margin_right);
+  vtcmd_set_left_and_right_margins (vt, buf);
+}
+
+static void vtcmd_set_line_limit (VT *vt, const char *sequence)
+{
+  int val = parse_int (sequence, 0);
+  char buf[256];
+  vt->left_right_margin_mode = 1;
+  if (val < vt->margin_left) { val = vt->margin_left; }
+  sprintf (buf, "[%i;%it", vt->margin_left, val);
+  vtcmd_set_left_and_right_margins (vt, buf);
+}
+
+static void vt_scroll (VT *vt, int amount)
+{
+  int remove_no, insert_before;
+  VtLine *string = NULL;
+  if (amount == 0) { amount = 1; }
+  if (amount < 0)
+    {
+      remove_no = vt->margin_top;
+      insert_before = vt->margin_bottom;
+    }
+  else
+    {
+      remove_no = vt->margin_bottom;
+      insert_before = vt->margin_top;
+    }
+  CtxList *l;
+  int i;
+  for (i=vt->rows, l = vt->lines; i > 0 && l; l=l->next, i--)
+    {
+      if (i == remove_no)
+        {
+          string = l->data;
+          ctx_list_remove (&vt->lines, string);
+          break;
+        }
+    }
+  if (string)
+    {
+      if (!vt->in_alt_screen &&
+          (vt->margin_top == 1 && vt->margin_bottom == vt->rows) )
+        {
+          ctx_list_prepend (&vt->scrollback, string);
+          vt->scrollback_count ++;
+        }
+      else
+        {
+          vt_line_free (string, 1);
+        }
+    }
+  string = vt_line_new_with_size ("", vt->cols/4);
+  if (amount > 0 && vt->margin_top == 1)
+    {
+      ctx_list_append (&vt->lines, string);
+    }
+  else
+    {
+      for (i=vt->rows, l = vt->lines; l; l=l->next, i--)
+        {
+          if (i == insert_before)
+            {
+              ctx_list_insert_before (&vt->lines, l, string);
+              break;
+            }
+        }
+      if (i != insert_before)
+        {
+          ctx_list_append (&vt->lines, string);
+        }
+    }
+  vt->current_line = string;
+  /* not updating line count since we should always remove one and add one */
+  if (vt->smooth_scroll)
+    {
+      if (amount < 0)
+        {
+          vt->scroll_offset = -1.0;
+          vt->in_smooth_scroll = -1;
+        }
+      else
+        {
+          vt->scroll_offset = 1.0;
+          vt->in_smooth_scroll = 1;
+        }
+    }
+
+  {
+    vt->select_begin_row += amount;
+    vt->select_end_row += amount;
+    vt->select_start_row += amount;
+  }
+}
+
+typedef struct Sequence
+{
+  const char *prefix;
+  char        suffix;
+  void (*vtcmd) (VT *vt, const char *sequence);
+  uint32_t    compat;
+} Sequence;
+
+static void vtcmd_cursor_position (VT *vt, const char *sequence)
+{
+  int y = 1, x = 1;
+  const char *semi;
+  if (sequence[0] != 'H' && sequence[0] != 'f')
+    {
+      y = parse_int (sequence, 1);
+      if ( (semi = strchr (sequence, ';') ) )
+        {
+          x = parse_int (semi, 1);
+        }
+    }
+  if (x == 0) { x = 1; }
+  if (y == 0) { y = 1; }
+  if (vt->origin)
+    {
+      y += vt->margin_top - 1;
+      _vt_move_to (vt, y, vt->cursor_x);
+      x += VT_MARGIN_LEFT - 1;
+    }
+  VT_cursor ("%i %i CUP", y, x);
+  _vt_move_to (vt, y, x);
+}
+
+
+static void vtcmd_horizontal_position_absolute (VT *vt, const char *sequence)
+{
+  int x = parse_int (sequence, 1);
+  if (x<=0) { x = 1; }
+  _vt_move_to (vt, vt->cursor_y, x);
+}
+
+static void vtcmd_goto_row (VT *vt, const char *sequence)
+{
+  int y = parse_int (sequence, 1);
+  _vt_move_to (vt, y, vt->cursor_x);
+}
+
+static void vtcmd_cursor_forward (VT *vt, const char *sequence)
+{
+  int n = parse_int (sequence, 1);
+  if (n==0) { n = 1; }
+  for (int i = 0; i < n; i++)
+    {
+      vt->cursor_x++;
+    }
+  if (vt->cursor_x > VT_MARGIN_RIGHT)
+    { vt->cursor_x = VT_MARGIN_RIGHT; }
+}
+
+static void vtcmd_cursor_backward (VT *vt, const char *sequence)
+{
+  int n = parse_int (sequence, 1);
+  if (n==0) { n = 1; }
+  for (int i = 0; i < n; i++)
+    {
+      vt->cursor_x--;
+    }
+  if (vt->cursor_x < VT_MARGIN_LEFT)
+    {
+      vt->cursor_x = VT_MARGIN_LEFT; // should this wrap??
+      vt->at_line_home = 1;
+    }
+}
+
+static void vtcmd_reverse_index (VT *vt, const char *sequence)
+{
+  int n = parse_int (sequence, 1);
+  if (n==0) { n = 1; }
+  for (int i = 0; i < n; i++)
+    {
+      if (vt->cursor_y == vt->margin_top)
+        {
+          vt_scroll (vt, 1);
+          _vt_move_to (vt, vt->margin_top, vt->cursor_x);
+        }
+      else
+        {
+          _vt_move_to (vt, vt->cursor_y-1, vt->cursor_x);
+        }
+    }
+}
+
+static void vtcmd_cursor_up (VT *vt, const char *sequence)
+{
+  int n = parse_int (sequence, 1);
+  if (n==0) { n = 1; }
+  for (int i = 0; i < n; i++)
+    {
+      if (vt->cursor_y == vt->margin_top)
+        {
+          //_vt_move_to (vt, 1, vt->cursor_x);
+        }
+      else
+        {
+          _vt_move_to (vt, vt->cursor_y-1, vt->cursor_x);
+        }
+    }
+}
+
+static void vtcmd_back_index (VT *vt, const char *sequence)
+{
+  // XXX implement
+}
+
+static void vtcmd_forward_index (VT *vt, const char *sequence)
+{
+  // XXX implement
+}
+
+static void vtcmd_index (VT *vt, const char *sequence)
+{
+  int n = parse_int (sequence, 1);
+  if (n==0) { n = 1; }
+  for (int i = 0; i < n; i++)
+    {
+      if (vt->cursor_y == vt->margin_bottom)
+        {
+          vt_scroll (vt, -1);
+          _vt_move_to (vt, vt->margin_bottom, vt->cursor_x);
+        }
+      else
+        {
+          _vt_move_to (vt, vt->cursor_y + 1, vt->cursor_x);
+        }
+    }
+}
+
+static void vtcmd_cursor_down (VT *vt, const char *sequence)
+{
+  int n = parse_int (sequence, 1);
+  if (n==0) { n = 1; }
+  for (int i = 0; i < n; i++)
+    {
+      if (vt->cursor_y >= vt->margin_bottom)
+        {
+          _vt_move_to (vt, vt->margin_bottom, vt->cursor_x);
+        }
+      else
+        {
+          _vt_move_to (vt, vt->cursor_y + 1, vt->cursor_x);
+        }
+    }
+}
+
+static void vtcmd_next_line (VT *vt, const char *sequence)
+{
+  vtcmd_index (vt, sequence);
+  _vt_move_to (vt, vt->cursor_y, vt->cursor_x);
+  vt_carriage_return (vt);
+  vt->cursor_x = VT_MARGIN_LEFT;
+}
+
+static void vtcmd_cursor_preceding_line (VT *vt, const char *sequence)
+{
+  vtcmd_cursor_up (vt, sequence);
+  _vt_move_to (vt, vt->cursor_y, vt->cursor_x);
+  vt->cursor_x = VT_MARGIN_LEFT;
+}
+
+static void vtcmd_erase_in_line (VT *vt, const char *sequence)
+{
+  int n = parse_int (sequence, 0);
+  switch (n)
+    {
+      case 0: // clear to end of line
+        {
+          char *p = (char *) mrg_utf8_skip (vt->current_line->string.str, vt->cursor_x-1);
+          if (p) { *p = 0; }
+          // XXX : this is chopping lines
+          for (int col = vt->cursor_x; col <= VT_MARGIN_RIGHT; col++)
+            { vt_line_set_style (vt->current_line, col - 1, vt->cstyle); }
+          vt->current_line->string.length = strlen (vt->current_line->string.str);
+          vt->current_line->string.utf8_length = ctx_utf8_strlen (vt->current_line->string.str);
+        }
+        break;
+      case 1: // clear from beginning to cursor
+        {
+          for (int col = VT_MARGIN_LEFT; col <= vt->cursor_x; col++)
+            {
+              vt_line_replace_utf8 (vt->current_line, col-1, " ");
+            }
+          for (int col = VT_MARGIN_LEFT; col <= vt->cursor_x; col++)
+            { vt_line_set_style (vt->current_line, col-1, vt->cstyle); }
+          vt->current_line->string.length = strlen (vt->current_line->string.str);
+          vt->current_line->string.utf8_length = ctx_utf8_strlen (vt->current_line->string.str); // should be a nop
+        }
+        break;
+      case 2: // clear entire line
+        for (int col = VT_MARGIN_LEFT; col <= VT_MARGIN_RIGHT; col++)
+          { vt_line_set_style (vt->current_line, col-1, vt->cstyle); }
+        vt_line_set (vt->current_line, ""); // XXX not all
+        break;
+    }
+}
+
+static void vtcmd_erase_in_display (VT *vt, const char *sequence)
+{
+  int n = parse_int (sequence, 0);
+  switch (n)
+    {
+      case 0: // clear to end of screen
+        {
+          char *p = (char *) mrg_utf8_skip (vt->current_line->string.str, vt->cursor_x-1);
+          if (p) { *p = 0; }
+          vt->current_line->string.length = strlen (vt->current_line->string.str);
+          vt->current_line->string.utf8_length = ctx_utf8_strlen (vt->current_line->string.str);
+        }
+        for (int col = vt->cursor_x; col <= VT_MARGIN_RIGHT; col++)
+          { vt_line_set_style (vt->current_line, col-1, vt->cstyle); }
+        {
+          CtxList *l;
+          int no = vt->rows;
+          for (l = vt->lines; l->data != vt->current_line; l = l->next, no--)
+            {
+              VtLine *buf = l->data;
+              buf->string.str[0] = 0;
+              buf->string.length = 0;
+              buf->string.utf8_length = 0;
+              for (int col = 1; col <= vt->cols; col++)
+                { vt_line_set_style (buf, col-1, vt->cstyle); }
+            }
+        }
+        break;
+      case 1: // clear from beginning to cursor
+        {
+          for (int col = 1; col <= vt->cursor_x; col++)
+            {
+              vt_line_replace_utf8 (vt->current_line, col-1, " ");
+              vt_line_set_style (vt->current_line, col-1, vt->cstyle);
+            }
+        }
+        {
+          CtxList *l;
+          int there_yet = 0;
+          int no = vt->rows;
+          for (l = vt->lines; l; l = l->next, no--)
+            {
+              VtLine *buf = l->data;
+              if (there_yet)
+                {
+                  buf->string.str[0] = 0;
+                  buf->string.length = 0;
+                  buf->string.utf8_length = 0;
+                  for (int col = 1; col <= vt->cols; col++)
+                    { vt_line_set_style (buf, col-1, vt->cstyle); }
+                }
+              if (buf == vt->current_line)
+                {
+                  there_yet = 1;
+                }
+            }
+        }
+        break;
+      case 3: // also clear scrollback
+        while (vt->scrollback)
+        {
+           vt_line_free (vt->scrollback->data, 1);
+           ctx_list_remove (&vt->scrollback, vt->scrollback->data);
+         }
+        vt->scrollback_count = 0;
+        /* FALLTHROUGH */
+      case 2: // clear entire screen but keep cursor;
+        {
+          int tx = vt->cursor_x;
+          int ty = vt->cursor_y;
+          vtcmd_clear (vt, "");
+          _vt_move_to (vt, ty, tx);
+          for (CtxList *l = vt->lines; l; l = l->next)
+            {
+              VtLine *line = l->data;
+              for (int col = 1; col <= vt->cols; col++)
+                { vt_line_set_style (line, col-1, vt->cstyle); }
+            }
+        }
+        break;
+    }
+}
+
+static void vtcmd_screen_alignment_display (VT *vt, const char *sequence)
+{
+  for (int y = 1; y <= vt->rows; y++)
+    {
+      _vt_move_to (vt, y, 1);
+      for (int x = 1; x <= vt->cols; x++)
+        {
+          _vt_add_str (vt, "E");
+        }
+    }
+}
+
+#if 0
+static int find_idx (int r, int g, int b)
+{
+  r = r / 255.0 * 5;
+  g = g / 255.0 * 5;
+  b = b / 255.0 * 5;
+  return 16 + r * 6 * 6 + g * 6 + b;
+}
+#endif
+
+static void vtcmd_set_graphics_rendition (VT *vt, const char *sequence)
+{
+  const char *s = sequence;
+  if (s[0]) { s++; }
+  while (s && *s)
+    {
+      int n = parse_int (s - 1, 0); // works until color
+      // both fg and bg could be set in 256 color mode FIXME
+      //
+      /* S_GR@38@Set forground color@foo bar baz@ */
+      if (n == 38) // set foreground
+        {
+          s = strchr (s, ';');
+          if (!s)
+            {
+              VT_warning ("incomplete [38m expected ;  %s", sequence);
+              return;
+            }
+          n = parse_int (s, 0);
+          if (n == 5)
+            {
+              s++;
+              if (strchr (s, ';') )
+                { s = strchr (s, ';'); }
+              else
+                { s = strchr (s, ':'); }
+              if (s)
+                {
+                  n = parse_int (s, 0);
+                  set_fg_idx (n);
+                  s++;
+                  while (*s && *s >= '0' && *s <='9') { s++; }
+                }
+            }
+          else if (n == 2)
+            {
+              int r = 0, g = 0, b = 0;
+              s++;
+              if (strchr (s, ';') )
+                {
+                  s = strchr (s, ';');
+                  if (s)
+                    { sscanf (s, ";%i;%i;%i", &r, &g, &b); }
+                }
+              else
+                {
+                  s = strchr (s, ':');
+                  if (s)
+                    { sscanf (s, ":%i:%i:%i", &r, &g, &b); }
+                }
+              if (s)
+              for (int i = 0; i < 3; i++)
+                {
+                  if (*s)
+                    {
+                      s++;
+                      while (*s && *s >= '0' && *s <='9') { s++; }
+                    }
+                }
+              set_fg_rgb (r,g,b);
+            }
+          else
+            {
+              VT_warning ("unhandled %s %i", sequence, n);
+              return;
+            }
+          //return; // XXX we should continue, and allow further style set after complex color
+        }
+      else if (n == 48) // set background
+        {
+          s = strchr (s, ';');
+          if (!s)
+            {
+              VT_warning ("incomplete [38m expected ;  %s", sequence);
+              return;
+            }
+          n = parse_int (s, 0);
+          if (n == 5)
+            {
+              s++;
+              if (strchr (s, ';') )
+                { s = strchr (s, ';'); }
+              else
+                { s = strchr (s, ':'); }
+              if (s)
+                { n = parse_int (s, 0); }
+              set_bg_idx (n);
+              if (s)
+                {
+                  s++;
+                  while (*s && *s >= '0' && *s <='9') { s++; }
+                }
+            }
+          else if (n == 2)
+            {
+              int r = 0, g = 0, b = 0;
+              s++;
+              if (strchr (s, ';') )
+                {
+                  s = strchr (s, ';');
+                  if (s)
+                    { sscanf (s, ";%i;%i;%i", &r, &g, &b); }
+                }
+              else
+                {
+                  s = strchr (s, ':');
+                  if (s)
+                    { sscanf (s, ":%i:%i:%i", &r, &g, &b); }
+                }
+              if (s)
+              for (int i = 0; i < 3; i++)
+                {
+                  s++;
+                  while (*s >= '0' && *s <='9') { s++; }
+                }
+              set_bg_rgb (r,g,b);
+            }
+          else
+            {
+              VT_warning ("unhandled %s %i", sequence, n);
+              return;
+            }
+          //return; // we XXX should continue, and allow further style set after complex color
+        }
+      else
+        switch (n)
+          {
+            case 0: /* SGR@0@Style reset@@ */
+              if (vt->cstyle & STYLE_PROPORTIONAL)
+                { vt->cstyle = STYLE_PROPORTIONAL; }
+              else
+                { vt->cstyle = 0; }
+              break;
+            case 1: /* SGR@@Bold@@ */
+              vt->cstyle |= STYLE_BOLD;
+              break;
+            case 2: /* SGR@@Dim@@ */
+              vt->cstyle |= STYLE_DIM;
+              break;
+            case 3: /* SGR@@Italic@@ */
+              vt->cstyle |= STYLE_ITALIC;
+              break;
+            case 4: /* SGR@@Underscore@@ */
+                    /* SGR@4:2@Double underscore@@ */
+                    /* SGR@4:3@Curvy underscore@@ */
+              if (s[1] == ':')
+                {
+                  switch (s[2])
+                    {
+                      case '0':
+                        break;
+                      case '1':
+                        vt->cstyle |= STYLE_UNDERLINE;
+                        break;
+                      case '2':
+                        vt->cstyle |= STYLE_UNDERLINE|
+                                      STYLE_UNDERLINE_VAR;
+                        break;
+                      default:
+                      case '3':
+                        vt->cstyle |= STYLE_UNDERLINE_VAR;
+                        break;
+                    }
+                }
+              else
+                {
+                  vt->cstyle |= STYLE_UNDERLINE;
+                }
+              break;
+            case 5: /* SGR@@Blink@@ */
+              vt->cstyle |= STYLE_BLINK;
+              break;
+            case 6: /* SGR@@Blink Fast@@ */
+              vt->cstyle |= STYLE_BLINK_FAST;
+              break;
+            case 7: /* SGR@@Reverse@@ */
+              vt->cstyle |= STYLE_REVERSE;
+              break;
+            case 8: /* SGR@@Hidden@@ */
+              vt->cstyle |= STYLE_HIDDEN;
+              break;
+            case 9: /* SGR@@Strikethrough@@ */
+              vt->cstyle |= STYLE_STRIKETHROUGH;
+              break;
+            case 10: /* SGR@@Font 0@@ */
+              break;
+            case 11: /* SGR@@Font 1@@ */
+              break;
+            case 12: /* SGR@@Font 2(ignored)@@ */
+            case 13: /* SGR@@Font 3(ignored)@@ */
+            case 14: /* SGR@@Font 4(ignored)@@ */
+              break;
+            case 22: /* SGR@@Bold off@@ */
+              vt->cstyle ^= (vt->cstyle & STYLE_BOLD);
+              vt->cstyle ^= (vt->cstyle & STYLE_DIM);
+              break;
+            case 23: /* SGR@@Italic off@@ */
+              vt->cstyle ^= (vt->cstyle & STYLE_ITALIC);
+              break;
+            case 24: /* SGR@@Underscore off@@ */
+              vt->cstyle ^= (vt->cstyle & (STYLE_UNDERLINE|STYLE_UNDERLINE_VAR) );
+              break;
+            case 25: /* SGR@@Blink off@@ */
+              vt->cstyle ^= (vt->cstyle & STYLE_BLINK);
+              vt->cstyle ^= (vt->cstyle & STYLE_BLINK_FAST);
+              break;
+            case 26: /* SGR@@Proportional spacing @@ */
+              vt->cstyle |= STYLE_PROPORTIONAL;
+              break;
+            case 27: /* SGR@@Reverse off@@ */
+              vt->cstyle ^= (vt->cstyle & STYLE_REVERSE);
+              break;
+            case 28: /* SGR@@Hidden off@@ */
+              vt->cstyle ^= (vt->cstyle & STYLE_HIDDEN);
+              break;
+            case 29: /* SGR@@Strikethrough off@@ */
+              vt->cstyle ^= (vt->cstyle & STYLE_STRIKETHROUGH);
+              break;
+            case 30: /* SGR@@black text color@@ */
+              set_fg_idx (0);
+              break;
+            case 31: /* SGR@@red text color@@ */
+              set_fg_idx (1);
+              break;
+            case 32: /* SGR@@green text color@@ */
+              set_fg_idx (2);
+              break;
+            case 33: /* SGR@@yellow text color@@ */
+              set_fg_idx (3);
+              break;
+            case 34: /* SGR@@blue text color@@ */
+              set_fg_idx (4);
+              break;
+            case 35: /* SGR@@magenta text color@@ */
+              set_fg_idx (5);
+              break;
+            case 36: /* SGR@@cyan text color@@ */
+              set_fg_idx (6);
+              break;
+            case 37: /* SGR@@light gray text color@@ */
+              set_fg_idx (7);
+              break;
+          /* SGR@38;5;Pn@256 color index foreground color@where Pn is 0-15 is system colors 16-(16+6*6*6) is a 6x6x6  RGB cube and in the end a grayscale without white and black.@ */
+              /* SGR@38;2;Pr;Pg;Pb@24 bit RGB foreground color each of Pr Pg and Pb have 0-255 range@@ */
+            case 39: /* SGR@@default text color@@ */
+              set_fg_idx (vt->reverse_video?0:15);
+              vt->cstyle ^= (vt->cstyle & STYLE_FG_COLOR_SET);
+              break;
+            case 40: /* SGR@@black background color@@ */
+              set_bg_idx (0);
+              break;
+            case 41: /* SGR@@red background color@@ */
+              set_bg_idx (1);
+              break;
+            case 42: /* SGR@@green background color@@ */
+              set_bg_idx (2);
+              break;
+            case 43: /* SGR@@yellow background color@@ */
+              set_bg_idx (3);
+              break;
+            case 44: /* SGR@@blue background color@@ */
+              set_bg_idx (4);
+              break;
+            case 45: /* SGR@@magenta background color@@ */
+              set_bg_idx (5);
+              break;
+            case 46: /* SGR@@cyan background color@@ */
+              set_bg_idx (6);
+              break;
+            case 47: /* SGR@@light gray background color@@ */
+              set_bg_idx (7);
+              break;
+
+          /* SGR@48;5;Pn@256 color index background color@where Pn is 0-15 is system colors 16-(16+6*6*6) is a 6x6x6  RGB cube and in the end a grayscale without white and black.@ */
+          /* SGR@48;2;Pr;Pg;Pb@24 bit RGB background color@Where Pr Pg and Pb have 0-255 range@ */
+
+            case 49: /* SGR@@default background color@@ */
+              set_bg_idx (vt->reverse_video?15:0);
+              vt->cstyle ^= (vt->cstyle & STYLE_BG_COLOR_SET);
+              break;
+            case 50: /* SGR@@Proportional spacing off @@ */
+              vt->cstyle ^= (vt->cstyle & STYLE_PROPORTIONAL);
+              break;
+            // 51 : framed
+            // 52 : encircled
+            case 53: /* SGR@@Overlined@@ */
+              vt->cstyle |= STYLE_OVERLINE;
+              break;
+            case 55: /* SGR@@Not Overlined@@ */
+              vt->cstyle ^= (vt->cstyle&STYLE_OVERLINE);
+              break;
+            case 90: /* SGR@@dark gray text color@@ */
+              set_fg_idx (8);
+              break;
+            case 91: /* SGR@@light red text color@@ */
+              set_fg_idx (9);
+              break;
+            case 92: /* SGR@@light green text color@@ */
+              set_fg_idx (10);
+              break;
+            case 93: /* SGR@@light yellow text color@@ */
+              set_fg_idx (11);
+              break;
+            case 94: /* SGR@@light blue text color@@ */
+              set_fg_idx (12);
+              break;
+            case 95: /* SGR@@light magenta text color@@ */
+              set_fg_idx (13);
+              break;
+            case 96: /* SGR@@light cyan text color@@ */
+              set_fg_idx (14);
+              break;
+            case 97: /* SGR@@white text color@@ */
+              set_fg_idx (15);
+              break;
+            case 100: /* SGR@@dark gray background color@@ */
+              set_bg_idx (8);
+              break;
+            case 101: /* SGR@@light red background color@@ */
+              set_bg_idx (9);
+              break;
+            case 102: /* SGR@@light green background color@@ */
+              set_bg_idx (10);
+              break;
+            case 103: /* SGR@@light yellow background color@@ */
+              set_bg_idx (11);
+              break;
+            case 104: /* SGR@@light blue background color@@ */
+              set_bg_idx (12);
+              break;
+            case 105: /* SGR@@light magenta background color@@ */
+              set_bg_idx (13);
+              break;
+            case 106: /* SGR@@light cyan background color@@ */
+              set_bg_idx (14);
+              break;
+            case 107: /* SGR@@white background color@@ */
+              set_bg_idx (15);
+              break;
+            default:
+              VT_warning ("unhandled style code %i in sequence \\033%s\n", n, sequence);
+              return;
+          }
+      while (s && *s && *s != ';') { s++; }
+      if (s && *s == ';') { s++; }
+    }
+}
+
+static void vtcmd_ignore (VT *vt, const char *sequence)
+{
+  VT_info ("ignoring sequence %s", sequence);
+}
+
+static void vtcmd_clear_all_tabs (VT *vt, const char *sequence)
+{
+  memset (vt->tabs, 0, sizeof (vt->tabs) );
+}
+
+static void vtcmd_clear_current_tab (VT *vt, const char *sequence)
+{
+  vt->tabs[ (int) (vt->cursor_x-1)] = 0;
+}
+
+static void vtcmd_horizontal_tab_set (VT *vt, const char *sequence)
+{
+  vt->tabs[ (int) vt->cursor_x-1] = 1;
+}
+
+static void vtcmd_save_cursor_position (VT *vt, const char *sequence)
+{
+  vt->saved_x = vt->cursor_x;
+  vt->saved_y = vt->cursor_y;
+}
+
+static void vtcmd_restore_cursor_position (VT *vt, const char *sequence)
+{
+  _vt_move_to (vt, vt->saved_y, vt->saved_x);
+}
+
+
+static void vtcmd_save_cursor (VT *vt, const char *sequence)
+{
+  vt->saved_style   = vt->cstyle;
+  vt->saved_origin  = vt->origin;
+  vtcmd_save_cursor_position (vt, sequence);
+  for (int i = 0; i < 4; i++)
+    { vt->saved_charset[i] = vt->charset[i]; }
+}
+
+static void vtcmd_restore_cursor (VT *vt, const char *sequence)
+{
+  vtcmd_restore_cursor_position (vt, sequence);
+  vt->cstyle  = vt->saved_style;
+  vt->origin  = vt->saved_origin;
+  for (int i = 0; i < 4; i++)
+    { vt->charset[i] = vt->saved_charset[i]; }
+}
+
+static void vtcmd_erase_n_chars (VT *vt, const char *sequence)
+{
+  int n = parse_int (sequence, 1);
+  while (n--)
+    {
+      vt_line_replace_utf8 (vt->current_line, vt->cursor_x - 1 + n, " ");
+      vt_line_set_style (vt->current_line, vt->cursor_x + n - 1, vt->cstyle);
+    }
+}
+
+static void vtcmd_delete_n_chars (VT *vt, const char *sequence)
+{
+  int n = parse_int (sequence, 1);
+  int count = n;
+  while (count--)
+    {
+      vt_line_remove (vt->current_line, vt->cursor_x - 1);
+    }
+}
+
+static void vtcmd_delete_n_lines (VT *vt, const char *sequence)
+{
+  int n = parse_int (sequence, 1);
+  for (int a = 0; a < n; a++)
+    {
+      int i;
+      CtxList *l;
+      VtLine *string = vt->current_line;
+      vt_line_set (string, "");
+      ctx_list_remove (&vt->lines, vt->current_line);
+      for (i=vt->rows, l = vt->lines; l; l=l->next, i--)
+        {
+          if (i == vt->margin_bottom)
+            {
+              vt->current_line = string;
+              ctx_list_insert_before (&vt->lines, l, string);
+              break;
+            }
+        }
+      _vt_move_to (vt, vt->cursor_y, vt->cursor_x); // updates current_line
+    }
+}
+
+static void vtcmd_insert_character (VT *vt, const char *sequence)
+{
+  int n = parse_int (sequence, 1);
+  while (n--)
+    {
+      vt_line_insert_utf8 (vt->current_line, vt->cursor_x-1, " ");
+    }
+  while (vt->current_line->string.utf8_length > vt->cols)
+    { vt_line_remove (vt->current_line, vt->cols); }
+  // XXX update style
+}
+
+static void vtcmd_scroll_up (VT *vt, const char *sequence)
+{
+  int n = parse_int (sequence, 1);
+  if (n == 0) { n = 1; }
+  while (n--)
+    { vt_scroll (vt, -1); }
+}
+
+static void vtcmd_scroll_down (VT *vt, const char *sequence)
+{
+  int n = parse_int (sequence, 1);
+  if (n == 0) { n = 1; }
+  while (n--)
+    { vt_scroll (vt, 1); }
+}
+
+static void vtcmd_insert_blank_lines (VT *vt, const char *sequence)
+{
+  int n = parse_int (sequence, 1);
+  if (n == 0) { n = 1; }
+  {
+    int st = vt->margin_top;
+    int sb = vt->margin_bottom;
+    vt->margin_top = vt->cursor_y;
+    while (n--)
+      {
+        vt_scroll (vt, 1);
+      }
+    vt->margin_top = st;
+    vt->margin_bottom = sb;
+  }
+}
+
+static void vtcmd_set_default_font (VT *vt, const char *sequence)
+{
+  vt->charset[0] = 0;
+}
+
+static void vtcmd_set_alternate_font (VT *vt, const char *sequence)
+{
+  vt->charset[0] = 1;
+}
+
+int _ctx_set_frame (Ctx *ctx, int frame);
+int _ctx_frame (Ctx *ctx);
+
+static void vt_ctx_exit (void *data)
+{
+  VT *vt = data;
+  vt->state = vt_state_neutral;
+  vt->rev ++;
+  if (!vt->current_line)
+    return;
+#if 0
+  fprintf (stderr, "\n");
+  if (vt->current_line->prev)
+  fprintf (stderr, "---prev(%i)----\n%s", (int)strlen(vt->current_line->prev),vt->current_line->prev);
+  fprintf (stderr, "---new(%i)----\n%s", (int)strlen(vt->current_line->frame->str),vt->current_line->frame->str);
+  fprintf (stderr, "--------\n");
+#endif
+
+#if CTX_VT_USE_FRAME_DIFF
+  if (vt->current_line->prev)
+    free (vt->current_line->prev);
+  vt->current_line->prev = NULL;
+  if (vt->current_line->frame)
+  {
+    vt->current_line->prev = vt->current_line->frame->str;
+    vt->current_line->prev_length = vt->current_line->frame->length;
+
+    ctx_string_free (vt->current_line->frame, 0);
+    vt->current_line->frame = NULL;
+  }
+#endif
+
+  void *tmp = vt->current_line->ctx;
+  vt->current_line->ctx = vt->current_line->ctx_copy;
+  vt->current_line->ctx_copy = tmp;
+
+  _ctx_set_frame (vt->current_line->ctx, _ctx_frame (vt->current_line->ctx) + 1);
+  _ctx_set_frame (vt->current_line->ctx_copy, _ctx_frame (vt->current_line->ctx));
+#if 1
+  if (vt->ctxp) // XXX: ugly hack to aid double buffering
+    ((void**)vt->ctxp)[0]= vt->current_line->ctx;
+#endif
+
+  //ctx_parser_free (vt->ctxp);
+  //vt->ctxp = NULL;
+}
+#if 0
+#define CTX_x            CTX_STRH('x',0,0,0,0,0,0,0,0,0,0,0,0,0)
+#define CTX_y            CTX_STRH('y',0,0,0,0,0,0,0,0,0,0,0,0,0)
+#define CTX_lower_bottom CTX_STRH('l','o','w','e','r','-','b','o','t','t','o','m',0,0)
+#define CTX_lower        CTX_STRH('l','o','w','e','r',0,0,0,0,0,0,0,0,0)
+#define CTX_raise        CTX_STRH('r','a','i','s','e',0,0,0,0,0,0,0,0,0)
+#define CTX_raise_top    CTX_STRH('r','a','i','s','e','-','t','o','p',0,0,0,0,0)
+#define CTX_terminate    CTX_STRH('t','e','r','m','i','n','a','t','e',0,0,0,0,0)
+#define CTX_maximize     CTX_STRH('m','a','x','i','m','i','z','e',0,0,0,0,0,0)
+#define CTX_unmaximize   CTX_STRH('u','n','m','a','x','i','m','i','z','e',0,0,0,0)
+#define CTX_width        CTX_STRH('w','i','d','t','h',0,0,0,0,0,0,0,0,0)
+#define CTX_title        CTX_STRH('t','i','t','l','e',0,0,0,0,0,0,0,0,0)
+#define CTX_action       CTX_STRH('a','c','t','i','o','n',0,0,0,0,0,0,0,0)
+#define CTX_height       CTX_STRH('h','e','i','g','h','t',0,0,0,0,0,0,0,0)
+#endif
+
+
+static int vt_get_prop (VT *vt, const char *key, const char **val, int *len)
+{
+#if 0
+  uint32_t key_hash = ctx_strhash (key);
+  char str[4096]="";
+  fprintf (stderr, "%s: %s %i\n", __FUNCTION__, key, key_hash);
+  CtxClient *client = ctx_client_by_id (ct->id);
+  if (!client)
+    return 0;
+  switch (key_hash)
+  {
+    case CTX_title:
+      sprintf (str, "setkey %s %s\n", key, client->title);
+      break;
+    case CTX_x:      
+      sprintf (str, "setkey %s %i\n", key, client->x);
+      break;
+    case CTX_y:    
+      sprintf (str, "setkey %s %i\n", key, client->y);
+      break;
+    case CTX_width:
+      sprintf (str, "setkey %s %i\n", key, client->width);
+      break;
+    case CTX_height:
+      sprintf (str, "setkey %s %i\n", key, client->width);
+      break;
+    default:
+      sprintf (str, "setkey %s undefined\n", key);
+      break;
+  }
+  if (str[0])
+  {
+    vtpty_write ((void*)ct, str, strlen (str));
+    fprintf (stderr, "%s", str);
+  }
+#endif
+  return 0;
+}
+
+static void vtcmd_set_mode (VT *vt, const char *sequence)
+{
+  int set = 1;
+  if (sequence[strlen (sequence)-1]=='l')
+    { set = 0; }
+  if (sequence[1]=='?')
+    {
+      int qval;
+      sequence++;
+qagain:
+      qval = parse_int (sequence, 1);
+      switch (qval)
+        {
+          case 1: /*MODE;DECCKM;Cursor key mode;Application;Cursor;*/
+            vt->cursor_key_application = set;
+            break;
+          case 2: /*MODE;DECANM;VT52 emulation;on;off; */
+            if (set==0)
+              { vt->state = vt_state_vt52; }
+            break;
+          case 3: /*MODE;DECCOLM;Column mode;132 columns;80 columns;*/
+            vtcmd_set_132_col (vt, set);
+            break; // set 132 col
+          case 4: /*MODE;DECSCLM;Scrolling mode;smooth;jump;*/
+            vt->smooth_scroll = set;
+            break; // set 132 col
+          case 5: /*MODE;DECSCNM;Screen mode;Reverse;Normal;*/
+            vt->reverse_video = set;
+            break;
+          case 6: /*MODE;DECOM;Origin mode;Relative;Absolute;*/
+            vt->origin = set;
+            if (set)
+              {
+                _vt_move_to (vt, vt->margin_top, 1);
+                vt_carriage_return (vt);
+              }
+            else
+              { _vt_move_to (vt, 1, 1); }
+            break;
+          case 7: /*MODE;DECAWM;Autowrap;on;off;*/
+            vt->autowrap = set;
+            break;
+          case 8: /*MODE;DECARM;Auto repeat;on;off;*/
+            vt->keyrepeat = set;
+            break;
+          // case 9: // send mouse x & y on button press 
+
+          // 10 - Block DECEDM
+          // 18 - Print form feed  DECPFF  default off
+          // 19 - Print extent fullscreen DECPEX  default on
+          case 12:
+            vtcmd_ignore (vt, sequence);
+            break; // blinking_cursor
+          case 25:/*MODE;DECTCEM;Cursor visible;on;off; */
+            vt->cursor_visible = set;
+            break;
+          case 30: // from rxvt - show/hide scrollbar
+            break;
+          case 34: // DECRLM - right to left mode
+            break;
+          case 38: // DECTEK - enter tektronix mode
+            break;
+          case 60: // horizontal cursor coupling
+          case 61: // vertical cursor coupling
+            break;
+          case 69:/*MODE;DECVSSM;Left right margin mode;on;off; */
+            vt->left_right_margin_mode = set;
+            break;
+          case 80:/* DECSDM Sixel scrolling */
+            break;
+          case 437:/*MODE;;Encoding/cp437mode;cp437;utf8; */
+            vt->encoding = set ? 1 : 0;
+            break;
+          case 1000:/*MODE;;Mouse reporting;on;off;*/
+            vt->mouse = set;
+            break;
+          case 1001:
+          case 1002:/*MODE;;Mouse drag;on;off;*/
+            vt->mouse_drag = set;
+            break;
+          case 1003:/*MODE;;Mouse all;on;off;*/
+            vt->mouse_all = set;
+            break;
+          case 1006:/*MODE;;Mouse decimal;on;off;*/
+            vt->mouse_decimal = set;
+            break;
+          case 47:
+          case 1047:
+          //case 1048:
+          case 1049:/*MODE;;Alt screen;on;off;*/
+            if (set)
+              {
+                if (vt->in_alt_screen)
+                  {
+                  }
+                else
+                  {
+                    vtcmd_save_cursor (vt, "");
+                    vt->saved_lines = vt->lines;
+                    vt->saved_line_count = vt->line_count;
+                    vt->line_count = 0;
+                    vt->lines = NULL;
+                    for (int i = 0; i <  vt->rows; i++)
+                      {
+                        vt->current_line = vt_line_new_with_size ("", vt->cols);
+                        ctx_list_append (&vt->lines, vt->current_line);
+                        vt->line_count++;
+                      }
+                    vt->in_alt_screen = 1;
+                    vt_line_feed (vt);
+                    _vt_move_to (vt, 1, 1);
+                    vt_carriage_return (vt);
+                  }
+              }
+            else
+              {
+                if (vt->in_alt_screen)
+                  {
+                    while (vt->lines)
+                      {
+                        vt_line_free (vt->lines->data, 1);
+                        ctx_list_remove (&vt->lines, vt->lines->data);
+                      }
+                    vt->line_count = vt->saved_line_count;
+                    vt->lines = vt->saved_lines;
+                    vtcmd_restore_cursor (vt, "");
+                    vt->saved_lines = NULL;
+                    vt->in_alt_screen = 0;
+                  }
+                else
+                  {
+                  }
+              }
+            break; // alt screen
+          case 1010: /*MODE;;scroll on output;on;off; */ //rxvt
+            vt->scroll_on_output = set;
+            break;
+          case 1011:/*MODE:;scroll on input;on;off; */ //rxvt)
+            vt->scroll_on_input = set;
+            break;
+          case 2004:/*MODE;;bracketed paste;on;off; */
+            vt->bracket_paste = set;
+            break;
+          case 201:/*MODE;;ctx-events;on;off;*/
+            vt->ctx_events = set;
+            break;
+          
+          case 200:/*MODE;;ctx vector graphics mode;on;;*/
+            if (set)
+              {
+                if (!vt->current_line->ctx)
+                  {
+                    vt->current_line->ctx = ctx_new ();
+                    vt->current_line->ctx_copy = ctx_new ();
+                    ctx_set_texture_cache (vt->current_line->ctx_copy, vt->current_line->ctx);
+                    _ctx_set_transformation (vt->current_line->ctx, 0);
+                    _ctx_set_transformation (vt->current_line->ctx_copy, 0);
+
+                    //ctx_set_texture_cache (vt->current_line->ctx, vt->current_line->ctx_copy);
+                    //ctx_set_texture_cache (vt->current_line->ctx_copy, vt->current_line->ctx);
+#if CTX_VT_USE_FRAME_DIFF
+                    vt->current_line->frame = ctx_string_new ("");
+#endif
+                  }
+                if (vt->ctxp)
+                  ctx_parser_free (vt->ctxp);
+
+                vt->ctxp = ctx_parser_new (vt->current_line->ctx,
+                                           vt->cols * vt->cw, vt->rows * vt->ch,
+                                           vt->cw, vt->ch, vt->cursor_x, vt->cursor_y,
+                                           (void*)vt_set_prop, (void*)vt_get_prop, vt, vt_ctx_exit, vt);
+                vt->utf8_holding[vt->utf8_pos=0]=0; // XXX : needed?
+                vt->state = vt_state_ctx;
+              }
+            break;
+          default:
+            VT_warning ("unhandled CSI ? %i%s", qval, set?"h":"l");
+            return;
+        }
+      if (strchr (sequence + 1, ';') )
+        {
+          sequence = strchr (sequence + 1, ';');
+          goto qagain;
+        }
+    }
+  else
+    {
+      int val;
+again:
+      val = parse_int (sequence, 1);
+      switch (val)
+        {
+          case 1:/*GATM - transfer enhanced data */
+          case 2:/*KAM - keyboard action mode */
+            break;
+          case 3:/*CRM - control representation mode */
+            /* show control chars? */
+            break;
+          case 4:/*MODE2;IRM;Insert Mode;Insert;Replace; */
+            vt->insert_mode = set;
+            break;
+          case 9: /* interlace mode */
+            break;
+          case 12:/*MODE2;SRM;Local echo;on;off; */
+            vt->echo = set;
+            break;
+          case 20:/*MODE2;LNM;Carriage Return on LF/Newline;on;off;*/
+            ;
+            vt->cr_on_lf = set;
+            break;
+          case 21: // GRCM - whether SGR accumulates or a reset on each command
+            break;
+          case 32: // WYCRTSAVM - screen saver
+            break;
+          case 33: // WYSTCURM  - steady cursor
+            break;
+          case 34: // WYULCURM  - underline cursor
+            break;
+          default:
+            VT_warning ("unhandled CSI %ih", val);
+            return;
+        }
+      if (strchr (sequence, ';') && sequence[0] != ';')
+        {
+          sequence = strchr (sequence, ';');
+          goto again;
+        }
+    }
+}
+
+static void vtcmd_request_mode (VT *vt, const char *sequence)
+{
+  char buf[64]="";
+  if (sequence[1]=='?')
+    {
+      int qval;
+      sequence++;
+      qval = parse_int (sequence, 1);
+      int is_set = -1; // -1 undefiend   0 reset 1 set  1000 perm_reset  1001 perm_set
+      switch (qval)
+        {
+          case 1:
+            is_set = vt->cursor_key_application;
+            break;
+          case 2: /*VT52 emulation;;enable; */
+          //if (set==0) vt->in_vt52 = 1;
+            is_set = 1001;
+            break;
+          case 3:
+            is_set = 0;
+            break;
+          case 4:
+            is_set = vt->smooth_scroll;
+            break;
+          case 5:
+            is_set = vt->reverse_video;
+            break;
+          case 6:
+            is_set = vt->origin;
+            break;
+          case 7:
+            is_set = vt->autowrap;
+            break;
+          case 8:
+            is_set = vt->keyrepeat;
+            break;
+          case 9: // should be dynamic
+            is_set = 1000;
+            break;
+          case 10:
+          case 11:
+          case 12:
+          case 13:
+          case 14:
+          case 16:
+          case 18:
+          case 19:
+            is_set = 1000;
+            break;
+          case 25:
+            is_set = vt->cursor_visible;
+            break;
+          case 45:
+            is_set = 1000;
+            break;
+          case 47:
+            is_set = vt->in_alt_screen;
+            break;
+          case 69:
+            is_set = vt->left_right_margin_mode;
+            break;
+          case 437:
+            is_set = vt->encoding;
+            break;
+          case 1000:
+            is_set = vt->mouse;
+            break;
+            // 1001 hilite tracking
+          case 1002:
+            is_set = vt->mouse_drag;
+            break;
+          case 1003:
+            is_set = vt->mouse_all;
+            break;
+          case 1006:
+            is_set = vt->mouse_decimal;
+            break;
+          case 201:
+            is_set = vt->ctx_events;
+            break;
+          case 2004:
+            is_set = vt->bracket_paste;
+            break;
+          case 1010: // scroll to bottom on tty output (rxvt)
+            is_set = vt->scroll_on_output;
+            break;
+          case 1011: // scroll to bottom on key press (rxvt)
+            is_set = vt->scroll_on_input;
+            break;
+          case 1049:
+            is_set = vt->in_alt_screen;
+            break;
+            break;
+          case 200:/*ctx protocol;On;;*/
+            is_set = (vt->state == vt_state_ctx);
+            break;
+          case 80:/* DECSDM Sixel scrolling */
+          case 30: // from rxvt - show/hide scrollbar
+          case 34: // DECRLM - right to left mode
+          case 60: // horizontal cursor coupling
+          case 61: // vertical cursor coupling
+          default:
+            break;
+        }
+      switch (is_set)
+      {
+        case 0:
+          sprintf (buf, "\033[?%i;%i$y", qval, 2);
+          break;
+        case 1:
+          { sprintf (buf, "\033[?%i;%i$y", qval, 1); }
+          break;
+        case 1000:
+          sprintf (buf, "\033[?%i;%i$y", qval, 4);
+          break;
+        case 1001:
+          sprintf (buf, "\033[?%i;%i$y", qval, 3);
+          break;
+        case -1:
+          { sprintf (buf, "\033[?%i;%i$y", qval, 0); }
+      }
+    }
+  else
+    {
+      int val;
+      val = parse_int (sequence, 1);
+      switch (val)
+        {
+          case 1:
+            sprintf (buf, "\033[%i;%i$y", val, 0);
+            break;
+          case 2:/* AM - keyboard action mode */
+            sprintf (buf, "\033[%i;%i$y", val, 0);
+            break;
+          case 3:/*CRM - control representation mode */
+            sprintf (buf, "\033[%i;%i$y", val, 0);
+            break;
+          case 4:/*Insert Mode;Insert;Replace; */
+            sprintf (buf, "\033[%i;%i$y", val, vt->insert_mode?1:2);
+            break;
+          case 9: /* interlace mode */
+            sprintf (buf, "\033[%i;%i$y", val, 1);
+            break;
+          case 12:
+            sprintf (buf, "\033[%i;%i$y", val, vt->echo?1:2);
+            break;
+          case 20:/*Carriage Return on LF/Newline;on;off;*/
+            ;
+            sprintf (buf, "\033[%i;%i$y", val, vt->cr_on_lf?1:2);
+            break;
+          case 21: // GRCM - whether SGR accumulates or a reset on each command
+          default:
+            sprintf (buf, "\033[%i;%i$y", val, 0);
+        }
+    }
+  if (buf[0])
+    { vt_write (vt, buf, strlen (buf) ); }
+}
+
+static void vtcmd_set_t (VT *vt, const char *sequence)
+{
+  /* \e[21y is request title - allows inserting keychars */
+  if      (!strcmp (sequence,  "[1t")) { ctx_client_unshade (vt->id); }
+  else if (!strcmp (sequence,  "[2t")) { ctx_client_shade (vt->id); } 
+  else if (!strncmp (sequence, "[3;", 3)) {
+    int x=0,y=0;
+    sscanf (sequence, "[3;%i;%ir", &y, &x);
+    ctx_client_move (vt->id, x, y);
+  }
+  else if (!strncmp (sequence, "[4;", 3))
+  {
+    int width = 0, height = 0;
+    sscanf (sequence, "[4;%i;%ir", &height , &width);
+    if (width < 0) width = vt->cols * vt->cw;
+    if (height < 0) height = vt->rows * vt->ch;
+    if (width == 0) width = ctx_width (vt->root_ctx);
+    if (height == 0) height = ctx_height (vt->root_ctx);
+    ctx_client_resize (vt->id, width, height);
+  }
+  else if (!strcmp (sequence, "[5t") ) { ctx_client_raise_top (vt->id); } 
+  else if (!strcmp (sequence, "[6t") ) { ctx_client_lower_bottom (vt->id); } 
+  else if (!strcmp (sequence, "[7t") ) { vt->rev++; /* refresh */ }
+  else if (!strncmp (sequence, "[8;", 3) )
+  {
+    int cols = 0, rows = 0;
+    sscanf (sequence, "[8;%i;%ir", &rows, &cols);
+    if (cols < 0) cols = vt->cols;
+    if (rows < 0) rows = vt->rows;
+    if (cols == 0) cols = ctx_width (vt->root_ctx) / vt->cw;
+    if (rows == 0) rows = ctx_height (vt->root_ctx) / vt->ch;
+    ctx_client_resize (vt->id, cols * vt->cw, rows * vt->ch);
+  }
+  else if (!strcmp (sequence, "[9;0t") ) { ctx_client_unmaximize (vt->id); } 
+  else if (!strcmp (sequence, "[9;1t") ) { ctx_client_maximize (vt->id);} 
+
+  /* should actually be full-screen */
+  else if (!strcmp (sequence, "[10;0t") ) { ctx_client_unmaximize (vt->id); } 
+  else if (!strcmp (sequence, "[10;1t") ) { ctx_client_maximize (vt->id);} 
+  else if (!strcmp (sequence, "[10;2t") ) { ctx_client_toggle_maximized (vt->id);} 
+
+  else if (!strcmp (sequence, "[11t") )  /* report window state  */
+    {
+      char buf[128];
+      if (ctx_client_is_iconified (vt->id))
+        sprintf (buf, "\033[2t");
+      else
+        sprintf (buf, "\033[1t");
+      vt_write (vt, buf, strlen (buf) );
+    }
+  else if (!strcmp (sequence, "[13t") ) /* request terminal position */
+    {
+      char buf[128];
+      sprintf (buf, "\033[3;%i;%it", ctx_client_y (vt->id), ctx_client_x (vt->id));
+      vt_write (vt, buf, strlen (buf) );
+    }
+  else if (!strcmp (sequence, "[14t") ) /* request terminal dimensions in px */
+    {
+      char buf[128];
+      sprintf (buf, "\033[4;%i;%it", vt->rows * vt->ch, vt->cols * vt->cw);
+      vt_write (vt, buf, strlen (buf) );
+    }
+  else if (!strcmp (sequence, "[15t") ) /* request root dimensions in px */
+    {
+      char buf[128];
+      sprintf (buf, "\033[5;%i;%it", ctx_height (vt->root_ctx), ctx_width(vt->root_ctx));
+      vt_write (vt, buf, strlen (buf) );
+    }
+  else if (!strcmp (sequence, "[16t") ) /* request char dimensions in px */
+    {
+      char buf[128];
+      sprintf (buf, "\033[6;%i;%it", vt->ch, vt->cw);
+      vt_write (vt, buf, strlen (buf) );
+    }
+  else if (!strcmp (sequence, "[18t") ) /* request terminal dimensions */
+    {
+      char buf[128];
+      sprintf (buf, "\033[8;%i;%it", vt->rows, vt->cols);
+      vt_write (vt, buf, strlen (buf) );
+    }
+  else if (!strcmp (sequence, "[19t") ) /* request root window size in char */
+    {
+      char buf[128];
+      sprintf (buf, "\033[9;%i;%it", ctx_height(vt->root_ctx)/vt->ch, ctx_width (vt->root_ctx)/vt->cw);
+      vt_write (vt, buf, strlen (buf) );
+    }
+
+#if 0
+  {"[", 's',  foo, VT100}, /*args:PnSP id:DECSWBV Set warning bell volume */
+#endif
+  else if (sequence[strlen (sequence)-2]==' ') /* DECSWBV */
+    {
+      int val = parse_int (sequence, 0);
+      if (val <= 1) { vt->bell = 0; }
+      if (val <= 8) { vt->bell = val; }
+    }
+  else
+    {
+      // XXX: X for ints >=24 resize to that number of lines
+      VT_info ("unhandled subsequence %s", sequence);
+    }
+}
+
+static void _vt_htab (VT *vt)
+{
+  do
+    {
+      vt->cursor_x ++;
+    }
+  while (vt->cursor_x < VT_MARGIN_RIGHT &&  ! vt->tabs[ (int) vt->cursor_x-1]);
+  if (vt->cursor_x > VT_MARGIN_RIGHT)
+    { vt->cursor_x = VT_MARGIN_RIGHT; }
+}
+
+static void _vt_rev_htab (VT *vt)
+{
+  do
+    {
+      vt->cursor_x--;
+    }
+  while ( ! vt->tabs[ (int) vt->cursor_x-1] && vt->cursor_x > 1);
+  if (vt->cursor_x < VT_MARGIN_LEFT)
+    { vt_carriage_return (vt); }
+}
+
+static void vtcmd_insert_n_tabs (VT *vt, const char *sequence)
+{
+  int n = parse_int (sequence, 1);
+  while (n--)
+    {
+      _vt_htab (vt);
+    }
+}
+
+static void vtcmd_rev_n_tabs (VT *vt, const char *sequence)
+{
+  int n = parse_int (sequence, 1);
+  while (n--)
+    {
+      _vt_rev_htab (vt);
+    }
+}
+
+static void vtcmd_set_double_width_double_height_top_line
+(VT *vt, const char *sequence)
+{
+  vt->current_line->double_width         = 1;
+  vt->current_line->double_height_top    = 1;
+  vt->current_line->double_height_bottom = 0;
+}
+static void vtcmd_set_double_width_double_height_bottom_line
+(VT *vt, const char *sequence)
+{
+  vt->current_line->double_width         = 1;
+  vt->current_line->double_height_top    = 0;
+  vt->current_line->double_height_bottom = 1;
+}
+static void vtcmd_set_single_width_single_height_line
+(VT *vt, const char *sequence)
+{
+  vt->current_line->double_width         = 0;
+  vt->current_line->double_height_top    = 0;
+  vt->current_line->double_height_bottom = 0;
+}
+static void
+vtcmd_set_double_width_single_height_line
+(VT *vt, const char *sequence)
+{
+  vt->current_line->double_width         = 1;
+  vt->current_line->double_height_top    = 0;
+  vt->current_line->double_height_bottom = 0;
+}
+
+static void vtcmd_set_led (VT *vt, const char *sequence)
+{
+  int val = 0;
+  //fprintf (stderr, "%s\n", sequence);
+  for (const char *s = sequence; *s; s++)
+    {
+      switch (*s)
+        {
+          case '0': val = 0; break;
+          case '1': val = 1; break;
+          case '2': val = 2; break;
+          case '3': val = 3; break;
+          case '4': val = 4; break;
+          case ';':
+          case 'q':
+            if (val == 0)
+              { vt->leds[0] = vt->leds[1] = vt->leds[2] = vt->leds[3] = 0; }
+            else
+              { vt->leds[val-1] = 1; }
+            val = 0;
+            break;
+        }
+    }
+}
+
+static void vtcmd_char_at_cursor (VT *vt, const char *sequence)
+{
+  char *buf="";
+  vt_write (vt, buf, strlen (buf) );
+}
+
+static void vtcmd_DECELR (VT *vt, const char *sequence)
+{
+  int ps1 = parse_int (sequence, 0);
+  int ps2 = 0;
+  const char *s = strchr (sequence, ';');
+  if (ps1) {/* unused */};
+  if (s)
+    { ps2 = parse_int (s, 0); }
+  if (ps2 == 1)
+    { vt->unit_pixels = 1; }
+  else
+    { vt->unit_pixels = 0; }
+}
+
+static void vtcmd_graphics (VT *vt, const char *sequence)
+{
+  fprintf (stderr, "gfx intro [%s]\n",sequence); // maybe implement such as well?
+}
+
+static void vtcmd_report (VT *vt, const char *sequence)
+{
+  char buf[64]="";
+  if (!strcmp (sequence, "[5n") ) // DSR device status report
+    {
+      sprintf (buf, "\033[0n"); // we're always OK :)
+    }
+  else if (!strcmp (sequence, "[?15n") ) // printer status
+    {
+      sprintf (buf, "\033[?13n"); // no printer
+    }
+  else if (!strcmp (sequence, "[?26n") ) // keyboard dialect
+    {
+      sprintf (buf, "\033[?27;1n"); // north american/ascii
+    }
+  else if (!strcmp (sequence, "[?25n") ) // User Defined Key status
+    {
+      sprintf (buf, "\033[?21n"); // locked
+    }
+#if 0
+  {"[6n", 0, },  /* id:DSR  cursor position report, yields a reply <tt>\e[Pl;PcR</tt> */
+#endif
+  else if (!strcmp (sequence, "[6n") ) // DSR cursor position report
+    {
+      sprintf (buf, "\033[%i;%iR", vt->cursor_y - (vt->origin? (vt->margin_top - 1) :0), (int) vt->cursor_x - (vt->origin? (VT_MARGIN_LEFT-1) :0) );
+    }
+  else if (!strcmp (sequence, "[?6n") ) // DECXPR extended cursor position report
+    {
+#if 0
+  {"[?6n", 0, },  /* id:DEXCPR  extended cursor position report, yields a reply <tt>\e[Pl;PcR</tt> */
+#endif
+      sprintf (buf, "\033[?%i;%i;1R", vt->cursor_y - (vt->origin? (vt->margin_top - 1) :0), (int) vt->cursor_x - (vt->origin? (VT_MARGIN_LEFT-1) :0) );
+    }
+  else if (!strcmp (sequence, "[>c") )
+    {
+      sprintf (buf, "\033[>23;01;1c");
+    }
+  else if (sequence[strlen (sequence)-1]=='c') // device attributes
+    {
+      //buf = "\033[?1;2c"; // what rxvt reports
+      //buf = "\033[?1;6c"; // VT100 with AVO ang GPO
+      //buf = "\033[?2c";     // VT102
+      sprintf (buf, "\033[?63;14;4;22c");
+    }
+  else if (sequence[strlen (sequence)-1]=='x') // terminal parameters
+    {
+      if (!strcmp (sequence, "[1x") )
+        { sprintf (buf, "\033[3;1;1;120;120;1;0x"); }
+      else
+        { sprintf (buf, "\033[2;1;1;120;120;1;0x"); }
+    }
+  if (buf[0])
+    { vt_write (vt, buf, strlen (buf) ); }
+}
+
+static char *charmap_cp437[]=
+{
+  " ","☺","☻","♥","♦","♣","♠","•","◘","○","◙","♂","♀","♪","♫","☼",
+  "►","◄","↕","‼","¶","§","▬","↨","↑","↓","→","←","∟","↔","▲","▼",
+  " ","!","\"","#","$","%","&","'","(",")","*","+",",","-",".","/",
+  "0","1","2","3","4","5","6","7","8","9",":",";","<","=",">","?",
+  "@","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O",
+  "P","Q","R","S","T","U","V","W","X","Y","Z","[","\\","]","^","_",
+  "`","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o",
+  "p","q","r","s","t","u","v","w","x","y","z","{","|","}","~","⌂",
+  "Ç","ü","é","â","ä","à","å","ç","ê","ë","è","ï","î","ì","Ä","Å",
+  "É","æ","Æ","ô","ö","ò","û","ù","ÿ","Ö","Ü","¢","£","¥","₧","ƒ",
+  "á","í","ó","ú","ñ","Ñ","ª","º","¿","⌐","¬","½","¼","¡","«","»",
+  "░","▒","▓","│","┤","╡","╢","╖","╕","╣","║","╗","╝","╜","╛","┐",
+  "└","┴","┬","├","─","┼","╞","╟","╚","╔","╩","╦","╠","═","╬","╧",
+  "╨","╤","╥","╙","╘","╒","╓","╫","╪","┘","┌","█","▄","▌","▐","▀",
+  "α","ß","Γ","π","Σ","σ","µ","τ","Φ","Θ","Ω","δ","∞","φ","ε","∩",
+  "≡","±","≥","≤","⌠","⌡","÷","≈","°","∙","·","√","ⁿ","²","■"," "
+};
+
+
+static char *charmap_graphics[]=
+{
+  " ","!","\"","#","$","%","&","'","(",")","*","+",",","-",".","/","0",
+  "1","2","3","4","5","6","7","8","9",":",";","<","=",">","?",
+  "@","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P",
+  "Q","R","S","T","U","V","W","X","Y","Z","[","\\","]","^","_",
+  "◆","▒","␉","␌","␍","␊","°","±","␤","␋","┘","┐","┌","└","┼","⎺","⎻",
+  "─","⎼","⎽","├","┤","┴","┬","│","≤","≥","π","≠","£","·"," "
+};
+
+static char *charmap_uk[]=
+{
+  " ","!","\"","£","$","%","&","'","(",")","*","+",",","-",".","/","0",
+  "1","2","3","4","5","6","7","8","9",":",";","<","=",">","?",
+  "@","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P",
+  "Q","R","S","T","U","V","W","X","Y","Z","[","\\","]","^","_",
+  "`","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p",
+  "q","r","s","t","u","v","w","x","y","z","{","|","}","~"," "
+};
+
+static char *charmap_ascii[]=
+{
+  " ","!","\"","#","$","%","&","'","(",")","*","+",",","-",".","/","0",
+  "1","2","3","4","5","6","7","8","9",":",";","<","=",">","?",
+  "@","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P",
+  "Q","R","S","T","U","V","W","X","Y","Z","[","\\","]","^","_",
+  "`","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p",
+  "q","r","s","t","u","v","w","x","y","z","{","|","}","~"," "
+};
+
+static void vtcmd_justify (VT *vt, const char *sequence)
+{
+  int n = parse_int (vt->argument_buf, 0);
+  switch (n)
+    {
+      case 0:
+      case 1:
+      case 2:
+      case 3:
+      case 4:
+      case 5:
+      case 6:
+      case 7:
+      case 8:
+        vt->justify = n;
+        break;
+      default:
+        vt->justify = 0;
+    }
+}
+
+static void vtcmd_sixel_related_req (VT *vt, const char *sequence)
+{
+  fprintf (stderr, "it happens!\n");
+}
+
+static void vtcmd_set_charmap (VT *vt, const char *sequence)
+{
+  int slot = 0;
+  int set = sequence[1];
+  if (sequence[0] == ')') { slot = 1; }
+  if (set == 'G') { set = 'B'; }
+  vt->charset[slot] = set;
+}
+#if 0
+
+CSI Pm ' }    '
+Insert Ps Column (s) (default = 1) (DECIC), VT420 and up.
+
+CSI Pm ' ~    '
+Delete Ps Column (s) (default = 1) (DECDC), VT420 and up.
+
+
+in text.  When bracketed paste mode is set, the program will receive:
+ESC [ 2 0 0 ~,
+      followed by the pasted text, followed by
+      ESC [ 2 0 1 ~ .
+
+
+            CSI I
+            when the terminal gains focus, and CSI O  when it loses focus.
+#endif
+
+#define COMPAT_FLAG_LEVEL_0   (1<<1)
+#define COMPAT_FLAG_LEVEL_1   (1<<2)
+#define COMPAT_FLAG_LEVEL_2   (1<<3)
+#define COMPAT_FLAG_LEVEL_3   (1<<4)
+#define COMPAT_FLAG_LEVEL_4   (1<<5)
+#define COMPAT_FLAG_LEVEL_5   (1<<6)
+
+#define COMPAT_FLAG_LEVEL_102 (1<<7)
+
+#define COMPAT_FLAG_ANSI      (1<<8)
+#define COMPAT_FLAG_OBSOLETE  (1<<9)
+
+#define COMPAT_FLAG_ANSI_COLOR (1<<10)
+#define COMPAT_FLAG_256_COLOR  (1<<11)
+#define COMPAT_FLAG_24_COLOR   (1<<12)
+
+#define COMPAT_FLAG_MOUSE_REPORT (1<<13)
+
+#define COMPAT_FLAG_AUDIO      (1<<14)
+#define COMPAT_FLAG_GRAPHICS   (1<<15)
+
+#define ANSI    COMPAT_FLAG_ANSI
+#define OBS     COMPAT_FLAG_OBSOLETE
+
+#define VT100   (COMPAT_FLAG_LEVEL_0|COMPAT_FLAG_LEVEL_1)
+#define VT102   (VT100|COMPAT_FLAG_LEVEL_102)
+#define VT200   (VT102|COMPAT_FLAG_LEVEL_2)
+#define VT300   (VT200|COMPAT_FLAG_LEVEL_3)
+#define VT400   (VT300|COMPAT_FLAG_LEVEL_4)
+#define VT220   VT200
+#define VT320   VT300
+
+#define XTERM   (VT400|COMPAT_FLAG_24_COLOR|COMPAT_FLAG_256_COLOR|COMPAT_FLAG_ANSI_COLOR)
+
+#define VT2020  (XTERM|COMPAT_FLAG_GRAPHICS|COMPAT_FLAG_AUDIO)
+
+
+            static Sequence sequences[]=
+  {
+    /*
+      prefix suffix  command */
+    //{"B",  0,  vtcmd_break_permitted},
+    //{"C",  0,  vtcmd_nobreak_here},
+    {"D", 0,    vtcmd_index, VT100}, /* args: id:IND Index  */
+    {"E",  0,   vtcmd_next_line}, /* ref:none id:  Next line */
+    {"_", 'G',  vtcmd_graphics},
+    {"H",   0,  vtcmd_horizontal_tab_set, VT100}, /* id:HTS Horizontal Tab Set */
+
+    //{"I",  0,  vtcmd_char_tabulation_with_justification},
+    //{"K",  0,  PLD partial line down
+    //{"L",  0,  PLU partial line up
+    {"M",  0,   vtcmd_reverse_index, VT100}, /* ref:none id:RI Reverse Index */
+    //{"N",  0,  vtcmd_ignore}, /* Set Single Shift 2 - SS2*/
+    //{"O",  0,  vtcmd_ignore}, /* Set Single Shift 3 - SS3*/
+
+#if 0
+    {"[0F", 0, vtcmd_justify, ANSI}, /* ref:none id:JFY disable justification and wordwrap  */ // needs special link to ANSI standard
+    {"[1F", 0, vtcmd_justify, ANSI}, /* ref:none id:JFY enable wordwrap  */
+#endif
+
+    /* these need to occur before vtcmd_preceding_line to have precedence */
+    {"[0 F", 0, vtcmd_justify, ANSI},
+    {"[1 F", 0, vtcmd_justify, ANSI},
+    {"[2 F", 0, vtcmd_justify},
+    {"[3 F", 0, vtcmd_justify},
+    {"[4 F", 0, vtcmd_justify},
+    {"[5 F", 0, vtcmd_justify},
+    {"[6 F", 0, vtcmd_justify},
+    {"[7 F", 0, vtcmd_justify},
+    {"[8 F", 0, vtcmd_justify},
+// XXX missing DECIC DECDC  insert and delete column
+    {"[", 'A', vtcmd_cursor_up, VT100},   /* args:Pn    id:CUU Cursor Up */
+    {"[",  'B', vtcmd_cursor_down, VT100}, /* args:Pn    id:CUD Cursor Down */
+    {"[",  'C', vtcmd_cursor_forward, VT100}, /* args:Pn id:CUF Cursor Forward */
+    {"[",  'D', vtcmd_cursor_backward, VT100}, /* args:Pn id:CUB Cursor Backward */
+    {"[",  'j', vtcmd_cursor_backward, ANSI}, /* args:Pn ref:none id:HPB Horizontal Position Backward */
+    {"[",  'k', vtcmd_cursor_up, ANSI}, /* args:Pn ref:none id:VPB Vertical Position Backward */
+    {"[",  'E', vtcmd_next_line, VT100}, /* args:Pn id:CNL Cursor Next Line */
+    {"[",  'F', vtcmd_cursor_preceding_line, VT100}, /* args:Pn id:CPL Cursor Preceding Line */
+    {"[",  'G', vtcmd_horizontal_position_absolute}, /* args:Pn id:CHA Cursor Horizontal Absolute */
+    {"[",  'H', vtcmd_cursor_position, VT100}, /* args:Pl;Pc id:CUP Cursor Position */
+    {"[",  'I', vtcmd_insert_n_tabs}, /* args:Pn id:CHT Cursor Horizontal Forward Tabulation */
+    {"[",  'J', vtcmd_erase_in_display, VT100}, /* args:Ps id:ED Erase in Display */
+    {"[",  'K', vtcmd_erase_in_line, VT100}, /* args:Ps id:EL Erase in Line */
+    {"[",  'L', vtcmd_insert_blank_lines, VT102}, /* args:Pn id:IL Insert Line */
+    {"[",  'M', vtcmd_delete_n_lines, VT102}, /* args:Pn id:DL Delete Line   */
+    // [ N is EA - Erase in field
+    // [ O is EA - Erase in area
+    {"[",  'P', vtcmd_delete_n_chars, VT102}, /* args:Pn id:DCH Delete Character */
+    // [ Q is SEE - Set editing extent
+    // [ R is CPR - active cursor position report
+    {"[?", 'S', vtcmd_sixel_related_req},
+    {"[",  'S', vtcmd_scroll_up, VT100},   /* args:Pn id:SU Scroll Up */
+    {"[",  'T', vtcmd_scroll_down, VT100}, /* args:Pn id:SD Scroll Down */
+    {"[",/*SP*/'U', vtcmd_set_line_home, ANSI}, /* args:PnSP id=SLH Set Line Home */
+    {"[",/*SP*/'V', vtcmd_set_line_limit, ANSI},/* args:PnSP id=SLL Set Line Limit */
+    // [ W is cursor tabulation control
+    // [ Pn Y  - cursor line tabulation
+    //
+    {"[",  'X', vtcmd_erase_n_chars}, /* args:Pn id:ECH Erase Character */
+    {"[",  'Z', vtcmd_rev_n_tabs},    /* args:Pn id:CBT Cursor Backward Tabulation */
+    {"[",  '^', vtcmd_scroll_down}  , /* muphry alternate from ECMA */
+    {"[",  '@', vtcmd_insert_character, VT102}, /* args:Pn id:ICH Insert Character */
+
+    {"[",  'a', vtcmd_cursor_forward, ANSI}, /* args:Pn id:HPR Horizontal Position Relative */
+    {"[",  'b', vtcmd_cursor_forward, ANSI}, /* REP previous char XXX incomplete */
+    {"[",  'c', vtcmd_report}, /* ref:none id:DA args:... Device Attributes */
+    {"[",  'd', vtcmd_goto_row},       /* args:Pn id:VPA Vertical Position Absolute  */
+    {"[",  'e', vtcmd_cursor_down},    /* args:Pn id:VPR Vertical Position Relative */
+    {"[",  'f', vtcmd_cursor_position, VT100}, /* args:Pl;Pc id:HVP Cursor Position */
+    {"[g", 0,   vtcmd_clear_current_tab, VT100}, /* id:TBC clear current tab */
+    {"[0g", 0,  vtcmd_clear_current_tab, VT100}, /* id:TBC clear current tab */
+    {"[3g", 0,  vtcmd_clear_all_tabs, VT100},    /* id:TBC clear all tabs */
+    {"[",  'm', vtcmd_set_graphics_rendition, VT100}, /* args:Ps;Ps;.. id:SGR Select Graphics Rendition */
+    {"[",  'n', vtcmd_report, VT200}, /* id:DSR args:... CPR Cursor Position Report  */
+    {"[",  'r', vtcmd_set_top_and_bottom_margins, VT100}, /* args:Pt;Pb id:DECSTBM Set Top and Bottom Margins */
+#if 0
+    // handled by set_left_and_right_margins - in if 0 to be documented
+    {"[s",  0,  vtcmd_save_cursor_position, VT100}, /*ref:none id:SCP Save Cursor Position */
+#endif
+    {"[u",  0,  vtcmd_restore_cursor_position, VT100}, /*ref:none id:RCP Restore Cursor Position */
+    {"[",  's', vtcmd_set_left_and_right_margins, VT400}, /* args:Pl;Pr id:DECSLRM Set Left and Right Margins */
+    {"[",  '`', vtcmd_horizontal_position_absolute, ANSI},  /* args:Pn id:HPA Horizontal Position Absolute */
+
+    {"[",  'h', vtcmd_set_mode, VT100},   /* args:Pn[;...] id:SM Set Mode */
+    {"[",  'l', vtcmd_set_mode, VT100}, /* args:Pn[;...]  id:RM Reset Mode */
+    {"[",  't', vtcmd_set_t},
+    {"[",  'q', vtcmd_set_led, VT100}, /* args:Ps id:DECLL Load LEDs */
+    {"[",  'x', vtcmd_report}, /* ref:none id:DECREQTPARM */
+    {"[",  'z', vtcmd_DECELR}, /* ref:none id:DECELR set locator res  */
+
+    {"5",   0,  vtcmd_char_at_cursor, VT300}, /* ref:none id:DECXMIT */
+    {"6",   0,  vtcmd_back_index, VT400}, /* id:DECBI Back index (hor. scroll) */
+    {"7",   0,  vtcmd_save_cursor, VT100}, /* id:DECSC Save Cursor */
+    {"8",   0,  vtcmd_restore_cursor, VT100}, /* id:DECRC Restore Cursor */
+    {"9",   0,  vtcmd_forward_index, VT400}, /* id:DECFI Forward index (hor. scroll)*/
+
+    //{"Z", 0,  vtcmd_device_attributes},
+    //{"%G",0,  vtcmd_set_default_font}, // set_alternate_font
+
+
+    {"(0",  0,   vtcmd_set_charmap},
+    {"(1",  0,   vtcmd_set_charmap},
+    {"(2",  0,   vtcmd_set_charmap},
+    {"(A",  0,   vtcmd_set_charmap},
+    {"(B",  0,   vtcmd_set_charmap},
+    {")0",  0,   vtcmd_set_charmap},
+    {")1",  0,   vtcmd_set_charmap},
+    {")2",  0,   vtcmd_set_charmap},
+    {")A",  0,   vtcmd_set_charmap},
+    {")B",  0,   vtcmd_set_charmap},
+    {"%G",  0,   vtcmd_set_charmap},
+
+    {"#3",  0,   vtcmd_set_double_width_double_height_top_line, VT100}, /*id:DECDHL Top half of double-width, double-height line */
+    {"#4",  0,   vtcmd_set_double_width_double_height_bottom_line, VT100}, /*id:DECDHL Bottom half of double-width, double-height line */
+    {"#5",  0,   vtcmd_set_single_width_single_height_line, VT100}, /* id:DECSWL Single-width line */
+    {"#6",  0,   vtcmd_set_double_width_single_height_line, VT100}, /* id:DECDWL Double-width line */
+
+    {"#8",  0,   vtcmd_screen_alignment_display, VT100}, /* id:DECALN Screen Alignment Pattern */
+    {"=",   0,   vtcmd_ignore},  // keypad mode change
+    {">",   0,   vtcmd_ignore},  // keypad mode change
+    {"c",   0,   vtcmd_reset_to_initial_state, VT100}, /* id:RIS Reset to Initial State */
+    {"[!", 'p',  vtcmd_ignore},       // soft reset?
+    {"[",  'p',  vtcmd_request_mode}, /* args:Pa$ id:DECRQM Request ANSI Mode */
+#if 0
+    {"[?",  'p',  vtcmd_request_mode}, /* args:Pd$ id:DECRQM Request DEC Mode */
+#endif
+
+    {NULL, 0, NULL}
+  };
+
+  static void handle_sequence (VT *vt, const char *sequence)
+{
+  int i0 = strlen (sequence)-1;
+  int i;
+  vt->rev ++;
+  for (i = 0; sequences[i].prefix; i++)
+    {
+      if (!strncmp (sequence, sequences[i].prefix, strlen (sequences[i].prefix) ) )
+        {
+          if (! (sequences[i].suffix && (sequence[i0] != sequences[i].suffix) ) )
+            {
+              VT_command ("%s", sequence);
+              sequences[i].vtcmd (vt, sequence);
+              return;
+            }
+        }
+    }
+#ifndef ASANBUILD
+  VT_warning ("unhandled: %c%c%c%c%c%c%c%c%c\n", sequence[0], sequence[1], sequence[2], sequence[3], sequence[4], sequence[5], sequence[6], sequence[7], sequence[8]);
+#endif
+}
+
+static void vt_line_feed (VT *vt)
+{
+  int was_home = vt->at_line_home;
+  if (vt->margin_top == 1 && vt->margin_bottom == vt->rows)
+    {
+      if (vt->lines == NULL ||
+          (vt->lines->data == vt->current_line && vt->cursor_y != vt->rows) )
+        {
+          vt->current_line = vt_line_new_with_size ("", vt->cols);
+          ctx_list_prepend (&vt->lines, vt->current_line);
+          vt->line_count++;
+        }
+      if (vt->cursor_y >= vt->margin_bottom)
+        {
+          vt->cursor_y = vt->margin_bottom;
+          vt_scroll (vt, -1);
+        }
+      else
+        {
+          vt->cursor_y++;
+        }
+    }
+  else
+    {
+      if (vt->lines->data == vt->current_line &&
+          (vt->cursor_y != vt->margin_bottom) && 0)
+        {
+          vt->current_line = vt_line_new_with_size ("", vt->cols);
+          ctx_list_prepend (&vt->lines, vt->current_line);
+          vt->line_count++;
+        }
+      vt->cursor_y++;
+      if (vt->cursor_y > vt->margin_bottom)
+        {
+          vt->cursor_y = vt->margin_bottom;
+          vt_scroll (vt, -1);
+        }
+    }
+  _vt_move_to (vt, vt->cursor_y, vt->cursor_x);
+  if (vt->cr_on_lf)
+    { vt_carriage_return (vt); }
+  vt_trimlines (vt, vt->rows);
+  if (was_home)
+    { vt_carriage_return (vt); }
+}
+
+//#include "vt-encodings.h"
+
+#ifndef NO_SDL
+static void vt_state_apc_audio (VT *vt, int byte)
+{
+  if ( (byte < 32) && ( (byte < 8) || (byte > 13) ) )
+    {
+      vt_audio (vt, vt->argument_buf);
+      vt->state = ( (byte == 27) ?  vt_state_swallow : vt_state_neutral);
+    }
+  else
+    {
+      vt_argument_buf_add (vt, byte);
+    }
+}
+
+#else
+
+void vt_audio_task (VT *vt, int click)
+{
+}
+
+void vt_bell (VT *vt)
+{
+}
+static void vt_state_apc_audio (VT *vt, int byte)
+{
+  vt->state = vt_state_apc_generic;
+}
+
+#endif
+
+static void
+vt_carriage_return (VT *vt)
+{
+  _vt_move_to (vt, vt->cursor_y, vt->cursor_x);
+  vt->cursor_x = VT_MARGIN_LEFT;
+  vt->at_line_home = 1;
+}
+
+/* if the byte is a non-print control character, handle it and return 1
+ * oterhwise return 0*/
+static int _vt_handle_control (VT *vt, int byte)
+{
+  /* the big difference between ANSI-BBS mode and VT100+ mode is that
+   * most C0 characters are printable
+   */
+  if (CTX_UNLIKELY(vt->encoding == 1)) // this codepage is for ansi-bbs use
+    switch (byte)
+      {
+        case '\0':
+          return 1;
+        case 1:    /* SOH start of heading */
+        case 2:    /* STX start of text */
+        case 3:    /* ETX end of text */
+        case 4:    /* EOT end of transmission */
+        case 5:    /* ENQuiry */
+        case 6:    /* ACKnolwedge */
+        case '\v': /* VT vertical tab */
+        case '\f': /* VF form feed */
+        case 14: /* SO shift in - alternate charset */
+        case 15: /* SI shift out - (back to normal) */
+        case 16: /* DLE data link escape */
+        case 17: /* DC1 device control 1 - XON */
+        case 18: /* DC2 device control 2 */
+        case 19: /* DC3 device control 3 - XOFF */
+        case 20: /* DC4 device control 4 */
+        case 21: /* NAK negative ack */
+        case 22: /* SYNchronous idle */
+        case 23: /* ETB end of trans. blk */
+        case 24: /* CANcel (vt100 aborts sequence) */
+        case 25: /* EM  end of medium */
+        case 26: /* SUB stitute */
+        case 28: /* FS file separator */
+        case 29: /* GS group separator */
+        case 30: /* RS record separator */
+        case 31: /* US unit separator */
+          _vt_add_str (vt, charmap_cp437[byte]);
+          return 1;
+      }
+  switch (byte)
+    {
+      case '\0':
+      case 1:    /* SOH start of heading */
+      case 2:    /* STX start of text */
+      case 3:    /* ETX end of text */
+      case 4:    /* EOT end of transmission */
+      case 6:    /* ACKnolwedge */
+        return 1;
+      case 5:    /* ENQuiry */
+        {
+          const char *reply = getenv ("TERM_ENQ_REPLY");
+          if (reply)
+            {
+              char *copy = strdup (reply);
+              for (uint8_t *c = (uint8_t *) copy; *c; c++)
+                {
+                  if (*c < ' ' || * c > 127) { *c = 0; }
+                }
+              vt_write (vt, reply, strlen (reply) );
+              free (copy);
+            }
+        }
+        return 1;
+      case '\a': /* BELl */
+        vt_bell (vt);
+        return 1;
+      case '\b': /* BS */
+        _vt_backspace (vt);
+        return 1;
+      case '\t': /* HT tab */
+        _vt_htab (vt);
+        return 1;
+      case '\v': /* VT vertical tab */
+      case '\f': /* VF form feed */
+      case '\n': /* LF line ffed */
+        vt_line_feed (vt);
+        return 1;
+      case '\r': /* CR carriage return */
+        vt_carriage_return (vt);
+        return 1;
+      case 14: /* SO shift in - alternate charset */
+        vt->shifted_in = 1;  // XXX not in vt52
+        return 1;
+      case 15: /* SI shift out - (back to normal) */
+        vt->shifted_in = 0;
+        return 1;
+      case 16: /* DLE data link escape */
+      case 17: /* DC1 device control 1 - XON */
+      case 18: /* DC2 device control 2 */
+      case 19: /* DC3 device control 3 - XOFF */
+      case 20: /* DC4 device control 4 */
+      case 21: /* NAK negative ack */
+      case 22: /* SYNchronous idle */
+      case 23: /* ETB end of trans. blk */
+      case 24: /* CANcel (vt100 aborts sequence) */
+      case 25: /* EM  end of medium */
+      case 26: /* SUB stitute */
+        _vt_add_str (vt, "¿");  // in vt52? XXX
+        return 1;
+      case 27: /* ESCape */
+        return 0;
+        break;
+      case 28: /* FS file separator */
+      case 29: /* GS group separator */
+      case 30: /* RS record separator */
+      case 31: /* US unit separator */
+      case 127: /* DEL */
+        return 1;
+      default:
+        return 0;
+    }
+}
+
+void vt_open_log (VT *vt, const char *path)
+{
+  unlink (path);
+  vt->log = fopen (path, "w");
+}
+
+/* the function shared by sixels, kitty mode and iterm2 mode for
+ * doing inline images. it attaches an image to the current line
+ */
+static void display_image (VT *vt, Image *image,
+                           int col,
+                           float xoffset,
+                           float yoffset,
+                           int rows,
+                           int cols,
+                           int subx,
+                           int suby,
+                           int subw,
+                           int subh
+                          )
+{
+  int i = 0;
+  for (i = 0; vt->current_line->images[i] && i < 4; i++)
+  {
+     if (vt->current_line->image_col[i] == vt->cursor_x)
+       break;
+  }
+  //for (i = 0; vt->current_line->images[i] && i < 4; i++);
+  if (i >= 4) { i = 3; }
+  /* this needs a struct and dynamic allocation */
+  vt->current_line->images[i] = image;
+  vt->current_line->image_col[i] = vt->cursor_x;
+  vt->current_line->image_X[i] = xoffset;
+  vt->current_line->image_Y[i] = yoffset;
+  vt->current_line->image_subx[i] = subx;
+  vt->current_line->image_suby[i] = suby;
+  vt->current_line->image_subw[i] = subw;
+  vt->current_line->image_subh[i] = subh;
+  vt->current_line->image_rows[i] = rows;
+  vt->current_line->image_cols[i] = cols;
+}
+
+static int vt_gfx_pending=0;
+
+void vt_gfx (VT *vt, const char *command)
+{
+  const char *payload = NULL;
+  char key = 0;
+  int  value;
+  int  pos = 1;
+  if (vt->gfx.multichunk == 0)
+    {
+      memset (&vt->gfx, 0, sizeof (GfxState) );
+      vt->gfx.action='t';
+      vt->gfx.transmission='d';
+    }
+  while (command[pos] != ';')
+    {
+      pos ++; // G or ,
+      if (command[pos] == ';') { break; }
+      key = command[pos];
+      pos++;
+      if (command[pos] == ';') { break; }
+      pos ++; // =
+      if (command[pos] == ';') { break; }
+      if (command[pos] >= '0' && command[pos] <= '9')
+        { value = atoi (&command[pos]); }
+      else
+        { value = command[pos]; }
+      while (command[pos] &&
+             command[pos] != ',' &&
+             command[pos] != ';') { pos++; }
+      switch (key)
+        {
+          case 'a':
+            vt->gfx.action = value;
+            break;
+          case 'd':
+            vt->gfx.delete = value;
+            break;
+          case 'i':
+            vt->gfx.id = value;
+            break;
+          case 'S':
+            vt->gfx.buf_size = value;
+            break;
+          case 's':
+            vt->gfx.buf_width = value;
+            break;
+          case 'v':
+            vt->gfx.buf_height = value;
+            break;
+          case 'f':
+            vt->gfx.format = value;
+            break;
+          case 'm':
+            vt->gfx.multichunk = value;
+            break;
+          case 'o':
+            vt->gfx.compression = value;
+            break;
+          case 't':
+            vt->gfx.transmission = value;
+            break;
+          case 'x':
+            vt->gfx.x = value;
+            break;
+          case 'y':
+            vt->gfx.y = value;
+            break;
+          case 'w':
+            vt->gfx.w = value;
+            break;
+          case 'h':
+            vt->gfx.h = value;
+            break;
+          case 'X':
+            vt->gfx.x_cell_offset = value;
+            break;
+          case 'Y':
+            vt->gfx.y_cell_offset = value;
+            break;
+          case 'c':
+            vt->gfx.columns = value;
+            break;
+          case 'r':
+            vt->gfx.rows = value;
+            break;
+          case 'z':
+            vt->gfx.z_index = value;
+            break;
+        }
+    }
+  payload = &command[pos+1];
+  {
+    int chunk_size = strlen (payload);
+    int old_size = vt->gfx.data_size;
+    // accumulate incoming data
+    if (vt->gfx.data == NULL)
+      {
+        vt->gfx.data_size = chunk_size;
+        vt->gfx.data = malloc (vt->gfx.data_size + 1);
+      }
+    else
+      {
+        vt->gfx.data_size += chunk_size;
+        vt->gfx.data = realloc (vt->gfx.data, vt->gfx.data_size + 1);
+      }
+    memcpy (vt->gfx.data + old_size, payload, chunk_size);
+    vt->gfx.data[vt->gfx.data_size]=0;
+  }
+  if (vt->gfx.multichunk == 0)
+    {
+      if (vt->gfx.transmission != 'd') /* */
+        {
+          char buf[256];
+          sprintf (buf, "\033_Gi=%i;only direct transmission supported\033\\",
+                   vt->gfx.id);
+          vt_write (vt, buf, strlen (buf) );
+          goto cleanup;
+        }
+      {
+        int bin_length = vt->gfx.data_size;
+        uint8_t *data2 = malloc (vt->gfx.data_size);
+        bin_length = ctx_base642bin ( (char *) vt->gfx.data,
+                                     &bin_length,
+                                     data2);
+        memcpy (vt->gfx.data, data2, bin_length + 1);
+        vt->gfx.data_size = bin_length;
+        free (data2);
+      }
+      if (vt->gfx.buf_width)
+        {
+          // implicit buf_size
+          vt->gfx.buf_size = vt->gfx.buf_width * vt->gfx.buf_height *
+                             (vt->gfx.format == 24 ? 3 : 4);
+        }
+      if (vt->gfx.compression == 'z')
+        {
+          //vt->gfx.buf_size)
+          unsigned char *data2 = malloc (vt->gfx.buf_size + 1);
+          /* if a buf size is set (rather compression, but
+           * this works first..) then */
+          unsigned long actual_uncompressed_size = vt->gfx.buf_size;
+          int z_result = uncompress (data2, &actual_uncompressed_size,
+                                     vt->gfx.data,
+                                     vt->gfx.data_size);
+          if (z_result != Z_OK)
+            {
+              char buf[256]= "\033_Go=z;zlib error\033\\";
+              vt_write (vt, buf, strlen (buf) );
+              goto cleanup;
+            }
+          free (vt->gfx.data);
+          vt->gfx.data = data2;
+          vt->gfx.data_size = actual_uncompressed_size;
+          vt->gfx.compression = 0;
+        }
+      if (vt->gfx.format == 100)
+        {
+          int channels;
+          uint8_t *new_data = stbi_load_from_memory (vt->gfx.data, vt->gfx.data_size, &vt->gfx.buf_width, &vt->gfx.buf_height, &channels, 4);
+          if (!new_data)
+            {
+              char buf[256]= "\033_Gf=100;image decode error\033\\";
+              vt_write (vt, buf, strlen (buf) );
+              goto cleanup;
+            }
+          vt->gfx.format = 32;
+          free (vt->gfx.data);
+          vt->gfx.data = new_data;
+          vt->gfx.data_size= vt->gfx.buf_width * vt->gfx.buf_height * 4;
+        }
+      Image *image = NULL;
+      switch (vt->gfx.action)
+        {
+          case 't': // transfer
+          case 'T': // transfer and present
+            switch (vt->gfx.format)
+              {
+                case 24:
+                case 32:
+                  image = image_add (vt->gfx.buf_width, vt->gfx.buf_height, vt->gfx.id,
+                                     vt->gfx.format, vt->gfx.data_size, vt->gfx.data);
+                  vt->gfx.data = NULL;
+                  vt->gfx.data_size=0;
+                  break;
+              }
+            if (vt->gfx.action == 't')
+              { break; }
+          // fallthrough
+          case 'p': // present
+            if (!image && vt->gfx.id)
+              { image = image_query (vt->gfx.id); }
+            if (image)
+              {
+                display_image (vt, image, vt->cursor_x, vt->gfx.rows, vt->gfx.columns,
+                               vt->gfx.x_cell_offset * 1.0 / vt->cw,
+                               vt->gfx.y_cell_offset * 1.0 / vt->ch,
+                               vt->gfx.x,
+                               vt->gfx.y,
+                               vt->gfx.w,
+                               vt->gfx.h);
+                int right = (image->width + (vt->cw-1) ) /vt->cw;
+                int down = (image->height + (vt->ch-1) ) /vt->ch;
+                for (int i = 0; i<down - 1; i++)
+                  { vtcmd_index (vt, " "); }
+                for (int i = 0; i<right; i++)
+                  { vtcmd_cursor_forward (vt, " "); }
+              }
+            break;
+          case 'q': // query
+            if (image_query (vt->gfx.id) )
+              {
+                char buf[256];
+                sprintf (buf, "\033_Gi=%i;OK\033\\", vt->gfx.id);
+                vt_write (vt, buf, strlen (buf) );
+              }
+            break;
+          case 'd': // delete
+            {
+              int row = vt->rows; // probably not right at start of session XXX
+              for (CtxList *l = vt->lines; l; l = l->next, row --)
+                {
+                  VtLine *line = l->data;
+                  for (int i = 0; i < 4; i ++)
+                    {
+                      int free_resource = 0;
+                      int match = 0;
+                      if (line->images[i])
+                        switch (vt->gfx.delete)
+                          {
+                            case 'A':
+                              free_resource = 1;
+                              /* FALLTHROUGH */
+                            case 'a': /* all images visible on screen */
+                              match = 1;
+                              break;
+                            case 'I':
+                              free_resource = 1;
+                              /* FALLTHROUGH */
+                            case 'i': /* all images with specified id */
+                              if ( ( (Image *) (line->images[i]) )->id == vt->gfx.id)
+                                { match = 1; }
+                              break;
+                            case 'P':
+                              free_resource = 1;
+                              /* FALLTHROUGH */
+                            case 'p': /* all images intersecting cell
+          specified with x and y */
+                              if (line->image_col[i] == vt->gfx.x &&
+                                  row == vt->gfx.y)
+                                { match = 1; }
+                              break;
+                            case 'Q':
+                              free_resource = 1;
+                              /* FALLTHROUGH */
+                            case 'q': /* all images with specified cell (x), row(y) and z */
+                              if (line->image_col[i] == vt->gfx.x &&
+                                  row == vt->gfx.y)
+                                { match = 1; }
+                              break;
+                            case 'Y':
+                              free_resource = 1;
+                              /* FALLTHROUGH */
+                            case 'y': /* all images with specified row (y) */
+                              if (row == vt->gfx.y)
+                                { match = 1; }
+                              break;
+                            case 'X':
+                              free_resource = 1;
+                              /* FALLTHROUGH */
+                            case 'x': /* all images with specified column (x) */
+                              if (line->image_col[i] == vt->gfx.x)
+                                { match = 1; }
+                              break;
+                            case 'Z':
+                              free_resource = 1;
+                              /* FALLTHROUGH */
+                            case 'z': /* all images with specified z-index (z) */
+                              break;
+                          }
+                      if (match)
+                        {
+                          line->images[i] = NULL;
+                          if (free_resource)
+                            {
+                              // XXX : NYI
+                            }
+                        }
+                    }
+                }
+            }
+            break;
+        }
+cleanup:
+      if (vt->gfx.data)
+        { free (vt->gfx.data); }
+      vt->gfx.data = NULL;
+      vt->gfx.data_size=0;
+      vt->gfx.multichunk=0;
+      vt_gfx_pending = 0;
+    }
+  else
+     vt_gfx_pending = 1;
+}
+
+static void vt_state_vt52 (VT *vt, int byte)
+{
+  /* in vt52 mode, utf8_pos being non 0 means we got ESC prior */
+  switch (vt->utf8_pos)
+    {
+      case 0:
+        if (_vt_handle_control (vt, byte) == 0)
+          switch (byte)
+            {
+              case 27: /* ESC */
+                vt->utf8_pos = 1;
+                break;
+              default:
+                {
+                  char str[2] = {byte & 127, 0};
+                  /* we're not validating utf8, and our utf8 manipulation
+                   * functions are not robust against malformed utf8,
+                   * hence we strip to ascii
+                   */
+                  _vt_add_str (vt, str);
+                }
+                break;
+            }
+        break;
+      case 1:
+        vt->utf8_pos = 0;
+        switch (byte)
+          {
+            case 'A':
+              vtcmd_cursor_up (vt, " ");
+              break;
+            case 'B':
+              vtcmd_cursor_down (vt, " ");
+              break;
+            case 'C':
+              vtcmd_cursor_forward (vt, " ");
+              break;
+            case 'D':
+              vtcmd_cursor_backward (vt, " ");
+              break;
+            case 'F':
+              vtcmd_set_alternate_font (vt, " ");
+              break;
+            case 'G':
+              vtcmd_set_default_font (vt, " ");
+              break;
+            case 'H':
+              _vt_move_to (vt, 1, 1);
+              break;
+            case 'I':
+              vtcmd_reverse_index (vt, " ");
+              break;
+            case 'J':
+              vtcmd_erase_in_display (vt, "[0J");
+              break;
+            case 'K':
+              vtcmd_erase_in_line (vt, "[0K");
+              break;
+            case 'Y':
+              vt->utf8_pos = 2;
+              break;
+            case 'Z':
+              vt_write (vt, "\033/Z", 3);
+              break;
+            case '<':
+              vt->state = vt_state_neutral;
+              break;
+            default:
+              break;
+          }
+        break;
+      case 2:
+        _vt_move_to (vt, byte - 31, vt->cursor_x);
+        vt->utf8_pos = 3;
+        break;
+      case 3:
+        _vt_move_to (vt, vt->cursor_y, byte - 31);
+        vt->utf8_pos = 0;
+        break;
+    }
+}
+
+static void vt_sixels (VT *vt, const char *sixels)
+{
+  uint8_t colors[256][3];
+  int width = 0;
+  int height = 0;
+  int x = 0;
+  int y = 0;
+  Image *image;
+  uint8_t *pixels = NULL;
+  int repeat = 1;
+  const char *p = sixels;
+  int pal_no = 0;
+#if 0
+  for (; *p && *p != ';'; p++);
+  if (*p == ';') { p ++; }
+  printf ("%i:[%c]%i\n", __LINE__, *p, atoi (p) );
+  // should be 0
+  for (; *p && *p != ';'; p++);
+  if (*p == ';') { p ++; }
+  printf ("%i:[%c]%i\n", __LINE__, *p, atoi (p) );
+  // if 1 then transparency is enabled - otherwise use bg color
+  for (; *p && *p != 'q'; p++);
+#endif
+  //for (; *p && *p != '"'; p++);
+  while (*p && *p != 'q') { p++; }
+  if (*p == 'q') { p++; }
+  if (*p == '"') { p++; }
+  //printf ("%i:[%c]%i\n", __LINE__, *p, atoi (p));
+  for (; *p && *p != ';'; p++);
+  if (*p == ';') { p ++; }
+  //printf ("%i:[%c]%i\n", __LINE__, *p, atoi (p));
+  for (; *p && *p != ';'; p++);
+  if (*p == ';') { p ++; }
+  width = atoi (p);
+  for (; *p && *p != ';'; p++);
+  if (*p == ';') { p ++; }
+  height = atoi (p);
+  if (width * height > 2048 * 2048)
+    return;
+  if (width <= 0 || height <=0)
+    {
+      width = 0;
+      height = 0;
+      // XXX  : a copy paste dry-run
+      for (const char *t=p; *t; t++)
+        {
+          if (*t == '#')
+            {
+              t++;
+              while (*t && *t >= '0' && *t <= '9') { t++; }
+              if (*t == ';')
+                {
+                  for (; *t && *t != ';'; t++);
+                  if (*t == ';') { t ++; }
+                  for (; *t && *t != ';'; t++);
+                  if (*t == ';') { t ++; }
+                  for (; *t && *t != ';'; t++);
+                  if (*t == ';') { t ++; }
+                  for (; *t && *t != ';'; t++);
+                  if (*t == ';') { t ++; }
+                  while (*t && *t >= '0' && *t <= '9') { t++; }
+                  t--;
+                }
+              else
+                {
+                  t--;
+                }
+            }
+          else if (*t == '$') // carriage return
+            {
+              if (x > width) { width = x; }
+              x = 0;
+            }
+          else if (*t == '-') // line feed
+            {
+              y += 6;
+              x = 0;
+            }
+          else if (*t == '!') // repeat
+            {
+              t++;
+              repeat = atoi (t);
+              while (*t && *t >= '0' && *t <= '9') { t++; }
+              t--;
+            }
+          else if (*t >= '?' && *t <= '~') /* sixel data */
+            {
+              x += repeat;
+              repeat = 1;
+            }
+        }
+      height = y;
+    }
+  x = 0;
+  y = 0;
+  pixels = calloc (width * (height + 6), 4);
+  image = image_add (width, height, 0,
+                     32, width*height*4, pixels);
+  uint8_t *dst = pixels;
+  for (; *p; p++)
+    {
+      if (*p == '#')
+        {
+          p++;
+          pal_no = atoi (p);
+          if (pal_no < 0 || pal_no > 255) { pal_no = 255; }
+          while (*p && *p >= '0' && *p <= '9') { p++; }
+          if (*p == ';')
+            {
+              /* define a palette */
+              for (; *p && *p != ';'; p++);
+              if (*p == ';') { p ++; }
+              // color_model , 2 is rgb
+              for (; *p && *p != ';'; p++);
+              if (*p == ';') { p ++; }
+              colors[pal_no][0] = atoi (p) * 255 / 100;
+              for (; *p && *p != ';'; p++);
+              if (*p == ';') { p ++; }
+              colors[pal_no][1] = atoi (p) * 255 / 100;
+              for (; *p && *p != ';'; p++);
+              if (*p == ';') { p ++; }
+              colors[pal_no][2] = atoi (p) * 255 / 100;
+              while (*p && *p >= '0' && *p <= '9') { p++; }
+              p--;
+            }
+          else
+            {
+              p--;
+            }
+        }
+      else if (*p == '$') // carriage return
+        {
+          x = 0;
+          dst = &pixels[ (4 * width * y)];
+        }
+      else if (*p == '-') // line feed
+        {
+          y += 6;
+          x = 0;
+          dst = &pixels[ (4 * width * y)];
+        }
+      else if (*p == '!') // repeat
+        {
+          p++;
+          repeat = atoi (p);
+          while (*p && *p >= '0' && *p <= '9') { p++; }
+          p--;
+        }
+      else if (*p >= '?' && *p <= '~') /* sixel data */
+        {
+          int sixel = (*p) - '?';
+          if (x + repeat <= width && y < height)
+            {
+              for (int bit = 0; bit < 6; bit ++)
+                {
+                  if (sixel & (1 << bit) )
+                    {
+                      for (int u = 0; u < repeat; u++)
+                        {
+                          for (int c = 0; c < 3; c++)
+                            {
+                              dst[ (bit * width * 4) + u * 4 + c] = colors[pal_no][c];
+                              dst[ (bit * width * 4) + u * 4 + 3] = 255;
+                            }
+                        }
+                    }
+                }
+            }
+          x   += repeat;
+          dst += (repeat * 4);
+          repeat = 1;
+        }
+    }
+  if (image)
+    {
+      display_image (vt, image, vt->cursor_x, 0,0, 0.0, 0.0, 0,0,0,0);
+      int right = (image->width + (vt->cw-1) ) /vt->cw;
+      int down = (image->height + (vt->ch-1) ) /vt->ch;
+      for (int i = 0; i<down - 1; i++)
+        { vtcmd_index (vt, " "); }
+      for (int i = 0; i<right; i++)
+        { vtcmd_cursor_forward (vt, " "); }
+      vt_line_feed (vt);
+      vt_carriage_return (vt);
+    }
+  vt->rev++;
+}
+
+static inline void vt_ctx_unrled (VT *vt, char byte)
+{
+#if CTX_VT_USE_FRAMEDIFF
+  ctx_string_append_byte (vt->current_line->frame, byte);
+#endif
+  ctx_parser_feed_byte (vt->ctxp, byte);
+}
+
+static void vt_state_ctx (VT *vt, int byte)
+{
+#if 0
+  //fprintf (stderr, "%c", byte);
+  if (CTX_UNLIKELY(byte == CTX_CODEC_CHAR))
+  {
+    if (CTX_UNLIKELY(vt->in_prev_match))
+    {
+      char *prev = vt->current_line->prev;
+      int prev_length = vt->current_line->prev_length;
+      int start = atoi (vt->reference);
+      int len = 0;
+      if (strchr (vt->reference, ' '))
+        len = atoi (strchr (vt->reference, ' ')+1);
+
+      //fprintf (stderr, "%i-%i:", start, len);
+
+      if (start < 0) start = 0;
+      if (start >= (prev_length))start = prev_length-1;
+      if (len + start > prev_length)
+        len = prev_length - start;
+
+      //fprintf (stderr, "%i-%i\n", start, len);
+
+      if (CTX_UNLIKELY (start == 0 && len == 0))
+      {
+        vt_ctx_unrled (vt, CTX_CODEC_CHAR);
+      }
+      else
+      {
+        if (prev)
+        for (int i = 0; i < len && start + i < prev_length; i++)
+        {
+          vt_ctx_unrled (vt, prev[start + i]);
+        }
+      }
+      vt->ref_len = 0;
+      vt->reference[0]=0;
+      vt->in_prev_match = 0;
+    }
+    else
+    {
+      vt->reference[0]=0;
+      vt->ref_len = 0;
+      vt->in_prev_match = 1;
+    }
+  }
+  else
+  {
+    if (CTX_UNLIKELY(vt->in_prev_match))
+    {
+      if (vt->ref_len < 15)
+      {
+        vt->reference[vt->ref_len++]=byte;
+        vt->reference[vt->ref_len]=0;
+      }
+    }
+    else
+    {
+      vt_ctx_unrled (vt, byte);
+    }
+  }
+#else
+      vt_ctx_unrled (vt, byte);
+#endif
+}
+
+static int vt_decoder_feed (VT *vt, int byte)
+{
+  int encoding = vt->encoding;
+  switch (encoding)
+    {
+      case 0: /* utf8 */
+        if (!vt->utf8_expected_bytes)
+          {
+            vt->utf8_expected_bytes = mrg_utf8_len (byte) - 1;
+            vt->utf8_pos = 0;
+          }
+        if (vt->utf8_expected_bytes)
+          {
+            vt->utf8_holding[vt->utf8_pos++] = byte;
+            vt->utf8_holding[vt->utf8_pos] = 0;
+            if (vt->utf8_pos == vt->utf8_expected_bytes + 1)
+              {
+                vt->utf8_expected_bytes = 0;
+                vt->utf8_pos = 0;
+              }
+            else
+              {
+                return 1;
+              }
+          }
+        else
+          {
+            vt->utf8_holding[0] = byte;
+            vt->utf8_holding[0] &= 127;
+            vt->utf8_holding[1] = 0;
+            if (vt->utf8_holding[0] == 0)
+              { vt->utf8_holding[0] = 32; }
+          }
+        break;
+      case 1:
+        if ( ! (byte>=0 && byte < 256) )
+          { byte = 255; }
+        strcpy ( (char *) &vt->utf8_holding[0], &charmap_cp437[byte][0]);
+        vt->utf8_expected_bytes = mrg_utf8_len (byte) - 1; // ?
+        break;
+      default:
+        vt->utf8_holding[0] = byte & 127;
+        vt->utf8_holding[1] = 0;
+        break;
+    }
+  return 0;
+}
+
+static void vt_state_swallow (VT *vt, int byte)
+{
+  vt->state = vt_state_neutral;
+}
+
+static int vt_decode_hex_digit (char digit)
+{
+  if (digit >= '0' && digit <='9')
+    return digit - '0';
+  if (digit >= 'a' && digit <='f')
+    return digit - 'a' + 10;
+  if (digit >= 'A' && digit <='F')
+    return digit - 'A' + 10;
+  return 0;
+}
+
+static int vt_decode_hex (const char *two_digits)
+{
+  return vt_decode_hex_digit (two_digits[0]) * 16 +
+         vt_decode_hex_digit (two_digits[1]);
+}
+
+static uint8_t palettes[][16][3]=
+{
+  {
+{0, 0, 0},
+{160, 41, 41},
+{74, 160, 139},
+{135, 132, 83},
+{36, 36, 237},
+{171, 74, 223},
+{59, 107, 177},
+{195, 195, 195},
+{111, 111, 111},
+{237, 172, 130},
+{153, 237, 186},
+{233, 216, 8},
+{130, 180, 237},
+{214, 111, 237},
+{29, 225, 237},
+{255, 255, 255},
+
+  },
+
+  {
+    {0, 0, 0},
+    {127, 0, 0},
+    {90, 209, 88},
+    {136, 109, 0},
+    {3, 9, 235},
+    {90, 4, 150},
+    {43, 111, 150},
+    {178, 178, 178},
+    {87, 87, 87},
+    {193, 122, 99},
+    {110, 254, 174},
+    {255, 200, 0},
+    {10, 126, 254},
+    {146, 155, 249},
+    {184, 208, 254},
+    {255, 255, 255},
+
+  },{
+    {0, 0, 0},
+    {147, 53, 38},
+    {30, 171, 82},
+    {188, 153, 0},
+    {32, 71, 193},
+    {236, 49, 188},
+    {42, 182, 253},
+    {149, 149, 149},
+    {73, 73, 73},
+    {210, 36, 0},
+    {96, 239, 97},
+    {247, 240, 2},
+    {93, 11, 249},
+    {222, 42, 255},
+    {11, 227, 255},
+    {233, 235, 235},
+  },
+
+
+  { {0, 0, 0},{97, 27, 0},{129, 180, 0},{127, 100, 0},{44, 15, 255},{135, 10, 167},{20, 133, 164},{174, 174, 174},{71, 71, 71},{167, 114, 90},{162, 214, 127},{255, 251, 83},{118, 77, 253},{192, 121, 255},{14, 217, 255},{255, 255, 255},
+  },{
+
+
+#if 0
+    {
+      {0, 0, 0},
+      {144, 0, 0},
+      {9, 154, 9},
+      {255, 137, 113},
+      {3, 0, 255},
+      {56, 0, 132},
+      {0, 131, 131},
+      {204, 204, 204},
+      {127, 127, 127},
+      {255, 33, 0},
+      {113, 255, 88},
+      {255, 236, 8},
+      {1, 122, 255},
+      {235, 0, 222},
+      {0, 217, 255},
+      {255, 255, 255},
+    },{
+#endif
+
+
+    {0, 0, 0},
+    {139, 0, 0},
+    {9, 154, 9},
+    {255, 137, 113},
+    {3, 0, 255},
+    {56, 0, 132},
+    {0, 111, 111},
+    {204, 204, 204},
+    {127, 127, 127},
+    {255, 33, 0},
+    {118, 255, 92},
+    {255, 230, 15},
+    {1, 122, 255},
+    {232, 0, 220},
+    {1, 217, 255},
+    {255, 255, 255},
+  },
+  {
+
+    {0, 0, 0},
+    {191, 0, 0},
+    {3, 187, 0},
+    {254, 212, 0},
+    {0, 0, 255},
+    {80, 0, 128},
+    {0, 156, 255},
+    {166, 166, 166},
+    {84, 84, 84},
+    {255, 62, 0},
+    {85, 255, 143},
+    {255, 255, 0},
+    {67, 80, 255},
+    {243, 70, 255},
+    {30, 255, 222},
+    {255, 255, 255},
+  },
+  {
+    /* */
+    { 32, 32, 32}, // 0 - background (black)
+    {165, 15, 21}, // 1               red
+    { 95,130, 10}, // 2               green
+    {205,145, 60}, // 3               yellow
+    { 49,130,189}, // 4               blue
+    {120, 40,160}, // 5               magenta
+    {120,230,230}, // 6               cyan
+    {196,196,196},// 7                light-gray
+    { 85, 85, 85},// 8                dark gray
+
+    {251,106, 74},// 9                light red
+    {130,215,140},// 10               light green
+    {255,255,  0},// 11               light yellow
+    {107,174,214},// 12               light blue
+    {215,130,160},// 13               light magenta
+    {225,255,245},// 14               light cyan
+    {255,255,255},// 15 - foreground (white)
+  },{
+    /* */
+    { 32, 32, 32}, // 0 - background (black)
+    {160,  0,  0}, // 1               red
+    {  9,233,  0}, // 2               green
+    {220,110, 44}, // 3               yellow
+    {  0,  0,200}, // 4               blue
+    { 90,  0,130}, // 5               magenta
+    {  0,156,180}, // 6               cyan
+    {196,196,196}, // 7                light-gray
+    { 85, 85, 85}, // 8                dark gray
+
+    {240, 60, 40}, // 9                light red
+    {170,240, 80}, // 10               light green
+    {248,248,  0}, // 11               light yellow
+    {  0, 40,255}, // 12               light blue
+    {204, 62,214}, // 13               light magenta
+    { 10,234,254}, // 14               light cyan
+    {255,255,255}, // 15 - foreground (white)
+  },
+  /* inspired by DEC */
+  { {  0,  0,  0}, // 0 - background  black
+    {150, 10, 10}, // 1               red
+    { 21,133,  0}, // 2               green
+
+    {103,103, 24}, // 3               yellow
+    { 44, 44,153}, // 4               blue
+    {123, 94,183}, // 5               magenta
+
+    { 20,183,193}, // 6               cyan
+
+    {177,177,177},// 7                light-gray
+    {100,100,100},// 8                dark gray
+
+    {244, 39, 39},// 9                light red
+    { 61,224, 81},// 10               light green
+    {255,255,  0},// 11               light yellow
+    { 61, 61,244},// 12               light blue
+    {240, 11,240},// 13               light magenta
+    { 61,234,234},// 14               light cyan
+
+    {255,255,255},// 15 - foreground  white
+  },
+};
+
+static void vt_state_osc (VT *vt, int byte)
+{
+  // https://ttssh2.osdn.jp/manual/4/en/about/ctrlseq.html
+  // and in "\033\" rather than just "\033", this would cause
+  // a stray char
+  //if (byte == '\a' || byte == 27 || byte == 0 || byte < 32)
+  if ( (byte < 32) && ( (byte < 8) || (byte > 13) ) )
+    {
+      int n = parse_int (vt->argument_buf, 0);
+      switch (n)
+        {
+          case 0:
+          case 1:
+          case 2:
+#if 0
+    {"]0;New_title\e\",  0, , }, /* id: set window title */ "
+#endif
+            vt_set_title (vt, vt->argument_buf + 3);
+            break;
+          case 4: // set palette entry
+            {
+            int color_no = parse_int (vt->argument_buf + 2, 0);
+            char *rest = vt->argument_buf + 3;
+            rest = strchr (rest, ';');
+
+            if (rest++)
+            if (strlen(rest)>10 &&
+                rest[0] == 'r' &&
+                rest[1] == 'g' &&
+                rest[2] == 'b' &&
+                rest[3] == ':' &&
+                rest[6] == '/' &&
+                rest[9] == '/')
+            {
+              int red = vt_decode_hex (&rest[4]);
+              int green = vt_decode_hex (&rest[7]);
+              int blue = vt_decode_hex (&rest[10]);
+          //  fprintf (stderr, "set color:%i  %i %i %i\n", color_no, red, green, blue);
+              if (color_no >= 0 && color_no <= 15)
+              {
+                palettes[0][color_no][0]=red;
+                palettes[0][color_no][1]=green;
+                palettes[0][color_no][2]=blue;
+              }
+            }
+            }
+            break;
+          case 12: // text cursor color
+            break;
+          case 17: // highlight color
+            break;
+          case 19: // ??
+            break;
+
+          case 10: // text fg
+#if 0
+#if 0
+    {"]11;",  0, , }, /* id: set foreground color */
+#endif
+            {
+              /* request current foreground color, xterm does this to
+                 determine if it can use 256 colors, when this test fails,
+                 it still mixes in color 130 together with stock colors
+               */
+              char buf[128];
+              sprintf (buf, "\033]10;rgb:%2x/%2x/%2x\033\\",
+                       vt->fg_color[0], vt->fg_color[1], vt->fg_color[2]);
+              vt_write (vt, buf, strlen (buf) );
+            }
+#endif
+            break;
+          case 11: // text bg
+#if 0
+    {"]11;",  0, , }, /* id: get background color */
+            {
+              /* get background color */
+              char buf[128];
+              sprintf (buf, "\033]11;rgb:%2x/%2x/%2x\033\\",
+                       vt->bg_color[0], vt->bg_color[1], vt->bg_color[2]);
+              vt_write (vt, buf, strlen (buf) );
+            }
+#endif
+            break;
+#if 0
+    {"]1337;key=value:base64data\b\",  0, vtcmd_erase_in_line, VT100}, /* args:keyvalue id: iterm2 graphics */ "
+#endif
+          case 1337:
+            if (!strncmp (&vt->argument_buf[6], "File=", 5) )
+              {
+                {
+                  /* iTerm2 image protocol */
+                  int width = 0;
+                  int height = 0;
+                  int file_size = 0;
+                  int show_inline = 0;
+                  int preserve_aspect = 1;
+                  char *name = NULL;
+                  char *p = &vt->argument_buf[11];
+                  char key[128]="";
+                  char value[128]="";
+                  int in_key=1;
+                  if (preserve_aspect) {}; /* XXX : NYI */
+                  for (; *p && *p!=':'; p++)
+                    {
+                      if (in_key)
+                        {
+                          if (*p == '=')
+                            { in_key = 0; }
+                          else
+                            {
+                              if (strlen (key) < 124)
+                                {
+                                  key[strlen (key)+1] = 0;
+                                  key[strlen (key)] = *p;
+                                }
+                            }
+                        }
+                      else
+                        {
+                          if (*p == ';')
+                            {
+                              if (!strcmp (key, "name") )
+                                {
+                                  name = strdup (value);
+                                }
+                              else if (!strcmp (key, "width") )
+                                {
+                                  width = atoi (value);
+                                  if (strchr (value, 'x') )
+                                    { /* pixels */ }
+                                  else if (strchr (value, '%') )
+                                    {
+                                      /* percent */
+                                      width = width / 100.0 * (vt->cw * vt->cols);
+                                    }
+                                  else
+                                    { /* chars */ width = width * vt->cw; }
+                                }
+                              else if (!strcmp (key, "height") )
+                                {
+                                  height = atoi (value);
+                                  if (strchr (value, 'x') )
+                                    { /* pixels */ }
+                                  else if (strchr (value, '%') )
+                                    {
+                                      /* percent */
+                                      height = height / 100.0 * (vt->ch * vt->rows);
+                                    }
+                                  else
+                                    { /* chars */ height = height * vt->ch; }
+                                }
+                              else if (!strcmp (key, "preserveAspectRatio") )
+                                {
+                                  preserve_aspect = atoi (value);
+                                }
+                              else if (!strcmp (key, "inline") )
+                                {
+                                  show_inline = atoi (value);
+                                }
+                              key[0]=0;
+                              value[0]=0;
+                              in_key = 1;
+                            }
+                          else
+                            {
+                              if (strlen (value) < 124)
+                                {
+                                  value[strlen (value)+1] = 0;
+                                  value[strlen (value)] = *p;
+                                }
+                            }
+                        }
+                    }
+                  if (key[0])
+                    {
+                      // code-dup
+                      if (!strcmp (key, "name") )
+                        {
+                          name = strdup (value);
+                        }
+                      else if (!strcmp (key, "width") )
+                        {
+                          width = atoi (value);
+                          if (strchr (value, 'x') )
+                            { /* pixels */ }
+                          else if (strchr (value, '%') )
+                            {
+                              /* percent */
+                              width = width / 100.0 * (vt->cw * vt->cols);
+                            }
+                          else
+                            { /* chars */ width = width * vt->cw; }
+                        }
+                      else if (!strcmp (key, "height") )
+                        {
+                          height = atoi (value);
+                          if (strchr (value, 'x') )
+                            { /* pixels */ }
+                          else if (strchr (value, '%') )
+                            {
+                              /* percent */
+                              height = height / 100.0 * (vt->ch * vt->rows);
+                            }
+                          else
+                            { /* chars */ height = height * vt->ch; }
+                        }
+                      else if (!strcmp (key, "preserveAspectRatio") )
+                        {
+                          preserve_aspect = atoi (value);
+                        }
+                      else if (!strcmp (key, "inline") )
+                        {
+                          show_inline = atoi (value);
+                        }
+                    }
+                  if (*p == ':')
+                    {
+                      p++;
+                    }
+                  if (0)
+                    fprintf (stderr, "%s %i %i %i %i{%s\n", name?name:"",
+                             width, height, file_size, show_inline,
+                             p);
+                  Image *image = NULL;
+                  {
+                    int bin_length = vt->argument_buf_len;
+                    uint8_t *data2 = malloc (bin_length);
+                    bin_length = ctx_base642bin ( (char *) p,
+                                                 &bin_length,
+                                                 data2);
+                    int channels = 4;
+                    int buf_width = 0;
+                    int buf_height = 0;
+                    uint8_t *new_data = stbi_load_from_memory (data2, bin_length, &buf_width, &buf_height, &channels, 4);
+                    free (data2);
+                    if (new_data)
+                      {
+                        image = image_add (buf_width, buf_height, 0,
+                                           32, buf_width*buf_height*4, new_data);
+                      }
+                    else
+                      {
+                        fprintf (stderr, "image decoding problem %s\n", stbi_failure_reason());
+                        fprintf (stderr, "len: %i\n", bin_length);
+                      }
+                  }
+                  if (image)
+                    {
+                      display_image (vt, image, vt->cursor_x, 0,0, 0.0, 0.0, 0,0,0,0);
+                      int right = (image->width + (vt->cw-1) ) /vt->cw;
+                      int down = (image->height + (vt->ch-1) ) /vt->ch;
+                      for (int i = 0; i<down - 1; i++)
+                        { vtcmd_index (vt, " "); }
+                      for (int i = 0; i<right; i++)
+                        { vtcmd_cursor_forward (vt, " "); }
+                    }
+                }
+              }
+            break;
+          case 104:
+            break;
+          case 8:
+            fprintf (stderr, "unhandled OSC 8, hyperlink\n");
+            break;
+          default:
+            fprintf (stderr, "unhandled OSC %i\n", n);
+            break;
+        }
+      if (byte == 27)
+        {
+          vt->state = vt_state_swallow;
+        }
+      else
+        {
+          vt->state = vt_state_neutral;
+        }
+    }
+  else
+    {
+      vt_argument_buf_add (vt, byte);
+    }
+}
+
+
+static void vt_state_sixel (VT *vt, int byte)
+{
+  // https://ttssh2.osdn.jp/manual/4/en/about/ctrlseq.html
+  // and in "\033\" rather than just "\033", this would cause
+  // a stray char
+  if ( (byte < 32) && ( (byte < 8) || (byte > 13) ) )
+    {
+      vt_sixels (vt, vt->argument_buf);
+      if (byte == 27)
+        {
+          vt->state = vt_state_swallow;
+        }
+      else
+        {
+          vt->state = vt_state_neutral;
+        }
+    }
+  else
+    {
+      vt_argument_buf_add (vt, byte);
+      //fprintf (stderr, "\r%i ", vt->argument_buf_len);
+    }
+}
+
+//void add_tab (Ctx *ctx, const char *commandline, int can_launch);
+//void vt_screenshot (const char *output_path);
+
+static void vt_state_apc_generic (VT *vt, int byte)
+{
+  if ( (byte < 32) && ( (byte < 8) || (byte > 13) ) )
+    {
+      if (vt->argument_buf[1] == 'G') /* graphics - from kitty */
+        {
+          vt_gfx (vt, vt->argument_buf);
+        }
+      else if (vt->argument_buf[1] == 'C') /* launch command */
+      {
+        if (vt->can_launch)
+        {
+          int   can_launch = 0;
+          int   no_title = 0;
+          int   no_move = 0;
+          int   no_resize = 0;
+          int   layer = 0;
+  // escape subsequent arguments so that we dont have to pass a string?
+          float x = -1.0;
+          float y = -1.0;
+          int   z = 0;
+          float width = -1.0;
+          float height = -1.0;
+
+          for (int i=2; vt->argument_buf[i]; i++)
+          {
+            if (!strncmp (&vt->argument_buf[i], "can_launch=1", strlen ("can_launch=1")))
+              can_launch = 1;
+            if (!strncmp (&vt->argument_buf[i], "no_title=1", strlen("no_title=1")))
+              no_title = 1;
+            if (!strncmp (&vt->argument_buf[i], "no_move=1", strlen("no_move=1")))
+              no_move = 1;
+            else if (!strncmp (&vt->argument_buf[i], "z=", 2))
+              z=atoi(&vt->argument_buf[i]+strlen("z="));
+            else if (!strncmp (&vt->argument_buf[i], "x=", 2))
+              x=atof(&vt->argument_buf[i]+strlen("x="));
+            else if (!strncmp (&vt->argument_buf[i], "y=", 2))
+              y=atof(&vt->argument_buf[i]+strlen("y="));
+            else if (!strncmp (&vt->argument_buf[i], "width=", 6))
+              width=atof(&vt->argument_buf[i]+strlen("width="));
+            else if (!strncmp (&vt->argument_buf[i], "height=", 7))
+              height=atof(&vt->argument_buf[i]+strlen("height="));
+          }
+
+          if (width + no_resize + layer + height + x + y + no_title + no_move + z + can_launch) {};
+
+          char *sep = strchr(vt->argument_buf, ';');
+          if (sep)
+          {
+            //fprintf (stderr, "[%s]", sep +  1);
+            if (!strncmp (sep + 1, "fbsave", 6))
+            {
+              // vt_screenshot (sep + 8);
+            }
+            else
+            {
+          //  add_tab (ctx, sep + 1, can_launch);
+            }
+          }
+        }
+
+      }
+      vt->state = ( (byte == 27) ?  vt_state_swallow : vt_state_neutral);
+    }
+  else
+    {
+      vt_argument_buf_add (vt, byte);
+    }
+}
+
+#if 0
+    {"_G..\e\", 0, vtcmd_delete_n_chars, VT102}, /* ref:none id: <a href='https://sw.kovidgoyal.net/kitty/graphics-protocol.html'>kitty graphics</a> */ "
+    {"_A..\e\", 0, vtcmd_delete_n_chars, VT102}, /* id:  <a href='https://github.com/hodefoting/atty/'>atty</a> audio input/output */ "
+    {"_C..\e\", 0, vtcmd_delete_n_chars, VT102}, /* id:  run command */ "
+#endif
+static void vt_state_apc (VT *vt, int byte)
+{
+  if (byte == 'A')
+    {
+      vt_argument_buf_add (vt, byte);
+      vt->state = vt_state_apc_audio;
+    }
+  else if ( (byte < 32) && ( (byte < 8) || (byte > 13) ) )
+    {
+      vt->state = ( (byte == 27) ?  vt_state_swallow : vt_state_neutral);
+    }
+  else
+    {
+      vt_argument_buf_add (vt, byte);
+      vt->state = vt_state_apc_generic;
+    }
+}
+
+static void vt_state_esc_foo (VT *vt, int byte)
+{
+  vt_argument_buf_add (vt, byte);
+  vt->state = vt_state_neutral;
+  handle_sequence (vt, vt->argument_buf);
+}
+
+static void vt_state_esc_sequence (VT *vt, int byte)
+{
+  if (_vt_handle_control (vt, byte) == 0)
+    {
+      if (byte == 27)
+        {
+        }
+      else if (byte >= '@' && byte <= '~')
+        {
+          vt_argument_buf_add (vt, byte);
+          vt->state = vt_state_neutral;
+          handle_sequence (vt, vt->argument_buf);
+        }
+      else
+        {
+          vt_argument_buf_add (vt, byte);
+        }
+    }
+}
+
+static void vt_state_esc (VT *vt, int byte)
+{
+  if (_vt_handle_control (vt, byte) == 0)
+    switch (byte)
+      {
+        case 27: /* ESCape */
+          break;
+        case ')':
+        case '#':
+        case '(':
+          {
+            char tmp[]= {byte, '\0'};
+            vt_argument_buf_reset (vt, tmp);
+            vt->state = vt_state_esc_foo;
+          }
+          break;
+        case '[':
+        case '%':
+        case '+':
+        case '*':
+          {
+            char tmp[]= {byte, '\0'};
+            vt_argument_buf_reset (vt, tmp);
+            vt->state = vt_state_esc_sequence;
+          }
+          break;
+
+#if 0
+    {"Psixel_data\e\",  0, , }, /* id: sixels */ "
+#endif
+
+        case 'P':
+          {
+            char tmp[]= {byte, '\0'};
+            vt_argument_buf_reset (vt, tmp);
+            vt->state = vt_state_sixel;
+          }
+          break;
+        case ']':
+          {
+            char tmp[]= {byte, '\0'};
+            vt_argument_buf_reset (vt, tmp);
+            vt->state = vt_state_osc;
+          }
+          break;
+        case '^':  // privacy message
+        case '_':  // APC
+        case 'X':  // SOS
+          {
+            char tmp[]= {byte, '\0'};
+            vt_argument_buf_reset (vt, tmp);
+            vt->state = vt_state_apc;
+          }
+          break;
+        default:
+          {
+            char tmp[]= {byte, '\0'};
+            tmp[0]=byte;
+            vt->state = vt_state_neutral;
+            handle_sequence (vt, tmp);
+          }
+          break;
+      }
+}
+
+static void vt_state_neutral (VT *vt, int byte)
+{
+  if (CTX_UNLIKELY(_vt_handle_control (vt, byte) != 0))
+    return;
+  if (CTX_LIKELY(byte != 27))
+  {
+    if (vt_decoder_feed (vt, byte) )
+      return;
+    if (vt->charset[vt->shifted_in] != 0 &&
+        vt->charset[vt->shifted_in] != 'B')
+      {
+        char **charmap;
+        switch (vt->charset[vt->shifted_in])
+          {
+            case 'A':
+              charmap = charmap_uk;
+              break;
+            case 'B':
+              charmap = charmap_ascii;
+              break;
+            case '0':
+              charmap = charmap_graphics;
+              break;
+            case '1':
+              charmap = charmap_cp437;
+              break;
+            case '2':
+              charmap = charmap_graphics;
+              break;
+            default:
+              charmap = charmap_ascii;
+              break;
+          }
+        if ( (vt->utf8_holding[0] >= ' ') && (vt->utf8_holding[0] <= '~') )
+          {
+            _vt_add_str (vt, charmap[vt->utf8_holding[0]-' ']);
+          }
+      }
+    else
+      {
+        // ensure vt->utf8_holding contains a valid utf8
+        uint32_t codepoint;
+        uint32_t state = 0;
+        for (int i = 0; vt->utf8_holding[i]; i++)
+          { utf8_decode (&state, &codepoint, vt->utf8_holding[i]); }
+        if (state != UTF8_ACCEPT)
+          {
+            /* otherwise mangle it so that it does */
+            vt->utf8_holding[0] &= 127;
+            vt->utf8_holding[1] = 0;
+            if (vt->utf8_holding[0] == 0)
+              { vt->utf8_holding[0] = 32; }
+          }
+        _vt_add_str (vt, (char *) vt->utf8_holding);
+      }
+  }
+  else // ESCape
+  {
+    vt->state = vt_state_esc;
+  }
+}
+
+int vt_poll (VT *vt, int timeout)
+{
+  if (!vt) return 0;
+  int read_size = sizeof (vt->buf);
+  int got_data = 0;
+
+  // read_size 1m1.142s
+  // read_size*10  52s
+  // read_size*5   53.8s
+  // read_size*4   53.78s
+  // read_size*3   .....s
+  // read_size*2   56.99s
+  int remaining_chars = read_size * 3;// * 100;
+  int len = 0;
+  vt_audio_task (vt, 0);
+#if 1
+  if (vt->cursor_visible && vt->smooth_scroll)
+    {
+      remaining_chars = vt->cols / 2;
+    }
+#endif
+  read_size = MIN (read_size, remaining_chars);
+  long start_ticks = ctx_ticks ();
+  long ticks = start_ticks;
+  while (remaining_chars > 0 &&
+         vt_waitdata (vt, 0) &&
+         ( ticks - start_ticks < timeout ||  vt->state == vt_state_ctx))
+    {
+  if (vt->in_smooth_scroll)
+    {
+      remaining_chars = 1;
+      // XXX : need a bail condition -
+      // /// so that we can stop accepting data until autowrap or similar
+    }
+      len = vt_read (vt, vt->buf, read_size);
+      if (len >0)
+      {
+     // fwrite (vt->buf, len, 1, vt->log);
+     // fwrite (vt->buf, len, 1, stdout);
+      }
+      for (int i = 0; i < len; i++)
+        { vt->state (vt, vt->buf[i]); }
+      // XXX allow state to break out in ctx mode on flush
+      got_data+=len;
+      remaining_chars -= len;
+      if (vt->state == vt_state_ctx) {
+         if (remaining_chars < read_size)
+         {
+           remaining_chars = read_size * 2;
+         }
+      }
+      vt_audio_task (vt, 0);
+      ticks = ctx_ticks ();
+    }
+  if (got_data < 0)
+    {
+      if (kill (vt->vtpty.pid, 0) != 0)
+        {
+          vt->vtpty.done = 1;
+        }
+    }
+  return got_data;
+}
+
+/******/
+
+static const char *keymap_vt52[][2]=
+{
+  {"up",    "\033A" },
+  {"down",  "\033B" },
+  {"right", "\033C" },
+  {"left",  "\033D" },
+};
+
+static const char *keymap_application[][2]=
+{
+  {"up",    "\033OA" },
+  {"down",  "\033OB" },
+  {"right", "\033OC" },
+  {"left",  "\033OD" },
+};
+
+static const char *keymap_general[][2]=
+{
+  {"up",             "\033[A"},
+  {"down",           "\033[B"},
+  {"right",          "\033[C"},
+  {"left",           "\033[D"},
+  {"end",            "\033[F"},
+  {"home",           "\033[H"},
+  {"shift-up",       "\033[1;2A"},
+  {"shift-down",     "\033[1;2B"},
+  {"shift-right",    "\033[1;2C"},
+  {"shift-left",     "\033[1;2D"},
+  {"alt-a",          "\033a"},
+  {"alt-b",          "\033b"},
+  {"alt-c",          "\033c"},
+  {"alt-d",          "\033d"},
+  {"alt-e",          "\033e"},
+  {"alt-f",          "\033f"},
+  {"alt-g",          "\033g"},
+  {"alt-h",          "\033h"},
+  {"alt-i",          "\033i"},
+  {"alt-j",          "\033j"},
+  {"alt-k",          "\033k"},
+  {"alt-l",          "\033l"},
+  {"alt-m",          "\033m"},
+  {"alt-n",          "\033n"},
+  {"alt-o",          "\033o"},
+  {"alt-p",          "\033p"},
+  {"alt-q",          "\033q"},
+  {"alt-r",          "\033r"},
+  {"alt-s",          "\033s"},
+  {"alt-t",          "\033t"},
+  {"alt-u",          "\033u"},
+  {"alt-v",          "\033v"},
+  {"alt-w",          "\033w"},
+  {"alt-x",          "\033x"},
+  {"alt-y",          "\033y"},
+  {"alt-z",          "\033z"},
+  {"alt- ",          "\033 "},
+  {"alt-space",      "\033 "},
+  {"alt-0",          "\0330"},
+  {"alt-1",          "\0331"},
+  {"alt-2",          "\0332"},
+  {"alt-3",          "\0333"},
+  {"alt-4",          "\0334"},
+  {"alt-5",          "\0335"},
+  {"alt-6",          "\0336"},
+  {"alt-7",          "\0337"},
+  {"alt-8",          "\0338"},
+  {"alt-9",          "\0339"},
+  {"alt-return",     "\033\r"},
+  {"alt-backspace",  "\033\177"},
+  {"alt-up",         "\033[1;3A"},
+  {"alt-down",       "\033[1;3B"},
+  {"alt-right",      "\033[1;3C"},
+  {"alt-left",       "\033[1;3D"},
+  {"shift-alt-up",   "\033[1;4A"},
+  {"shift-alt-down", "\033[1;4B"},
+  {"shift-alt-right","\033[1;4C"},
+  {"shift-alt-left", "\033[1;4D"},
+  {"control-space",  "\000"},
+  {"control-up",     "\033[1;5A"},
+  {"control-down",   "\033[1;5B"},
+  {"control-right",  "\033[1;5C"},
+  {"control-left",   "\033[1;5D"},
+  {"shift-control-up",    "\033[1;6A"},
+  {"shift-control-down",  "\033[1;6B"},
+  {"shift-control-right", "\033[1;6C"},
+  {"shift-control-left",  "\033[1;6D"},
+  {"insert",         "\033[2~"},
+  {"delete",         "\033[3~"},
+  {"control-delete", "\033[3,5~"},
+  {"shift-delete",   "\033[3,2~"},
+  {"control-shift-delete",  "\033[3,6~"},
+  {"page-up",        "\033[5~"},
+  {"page-down",     "\033[6~"},
+  {"return",         "\r"},
+  {"shift-tab",      "\033Z"},
+  {"shift-return",   "\r"},
+  {"control-return", "\r"},
+  {"space",          " "},
+  {"shift-space",    " "},
+  {"control-a",      "\001"},
+  {"control-b",      "\002"},
+  {"control-c",      "\003"},
+  {"control-d",      "\004"},
+  {"control-e",      "\005"},
+  {"control-f",      "\006"},
+  {"control-g",      "\007"},
+  {"control-h",      "\010"},
+  {"control-i",      "\011"},
+  {"control-j",      "\012"},
+  {"control-k",      "\013"},
+  {"control-l",      "\014"},
+  {"control-m",      "\015"},
+  {"control-n",      "\016"},
+  {"control-o",      "\017"},
+  {"control-p",      "\020"},
+  {"control-q",      "\021"},
+  {"control-r",      "\022"},
+  {"control-s",      "\023"},
+  {"control-t",      "\024"},
+  {"control-u",      "\025"},
+  {"control-v",      "\026"},
+  {"control-w",      "\027"},
+  {"control-x",      "\030"},
+  {"control-y",      "\031"},
+  {"control-z",      "\032"},
+  {"escape",         "\033"},
+  {"tab",            "\t"},
+  {"backspace",      "\177"},
+  {"control-backspace", "\177"},
+  {"shift-backspace","\177"},
+  {"shift-tab",      "\033[Z"},
+
+  {"control-F1",     "\033[>11~"},
+  {"control-F2",     "\033[>12~"},
+  {"control-F3",     "\033[>13~"},
+  {"control-F4",     "\033[>14~"},
+  {"control-F5",     "\033[>15~"},
+
+  {"shift-F1",       "\033[?11~"},
+  {"shift-F2",       "\033[?12~"},
+  {"shift-F3",       "\033[?13~"},
+  {"shift-F4",       "\033[?14~"},
+  {"shift-F5",       "\033[?15~"},
+
+  {"F1",             "\033[11~"},  // hold screen   // ESC O P
+  {"F2",             "\033[12~"},  // print screen  //       Q
+  {"F3",             "\033[13~"},  // set-up                 R
+  {"F4",             "\033[14~"},  // data/talk              S
+  {"F5",             "\033[15~"},  // break
+  {"F6",             "\033[17~"},
+  {"F7",             "\033[18~"},
+  {"F8",             "\033[19~"},
+  {"F9",             "\033[20~"},
+  {"F10",            "\033[21~"},
+  {"F11",            "\033[22~"},
+  {"F12",            "\033[23~"},
+  {"control-/",       "\037"},
+  {"shift-control-/", "\037"},
+  {"control-[",       "\033"},
+  {"control-]",       "\035"},
+  {"shift-control-[", "\033"},
+  {"shift-control-]", "\031"},
+  {"shift-control-`", "\036"},
+  {"control-'",       "'"},
+  {"shift-control-'", "'"},
+  {"control-;",       ";"},
+  {"shift-control-;", ";"},
+  {"control-.",       "."},
+  {"shift-control-.", "."},
+  {"control-,",       ","},
+  {"shift-control-,", ","},
+  {"control-\\",      "\034"},
+  {"control-1",       "1"},
+  {"control-3",       "\033"},
+  {"control-4",       "\034"},
+  {"control-5",       "\035"},
+  {"control-6",       "\036"},
+  {"shift-control-6", "\036"},
+  {"control-7",       "\037"},
+  {"shift-control-7", "\036"},
+  {"control-8",       "\177"},
+  {"control-9",       "9"},
+
+
+};
+
+void ctx_client_lock (CtxClient *client);
+void ctx_client_unlock (CtxClient *client);
+
+void vt_feed_keystring (VT *vt, CtxEvent *event, const char *str)
+{
+  if (vt->ctx_events)
+  {
+    if (!strcmp (str, "control-l") )
+    {
+      vt->ctx_events = 0;
+      return;
+    }
+    vt_write (vt, str, strlen (str) );
+    vt_write (vt, "\n", 1);
+    return;
+  }
+  if (!strncmp (str, "keyup",   5)) return;
+  if (!strncmp (str, "keydown", 7)) return;
+
+  if (!strcmp (str, "capslock")) return;
+
+#if 0
+  if (!strstr (str, "-page"))
+    vt_set_scroll (vt, 0);
+#endif
+
+  if (!strcmp (str, "idle") )
+     return;
+  else if (!strcmp (str, "shift-control-home"))
+    {
+      vt_set_scroll (vt, vt->scrollback_count);
+      vt_rev_inc (vt);
+      return;
+    }
+  else if (!strcmp (str, "shift-control-end"))
+    {
+      int new_scroll = 0;
+      vt_set_scroll (vt, new_scroll);
+      vt_rev_inc (vt);
+      return;
+    }
+  else if (!strcmp (str, "shift-control-down"))
+    {
+      int new_scroll = vt_get_scroll (vt) - 1;
+      vt_set_scroll (vt, new_scroll);
+      vt_rev_inc (vt);
+      return;
+    }
+  else if (!strcmp (str, "shift-control-up"))
+    {
+      int new_scroll = vt_get_scroll (vt) + 1;
+      vt_set_scroll (vt, new_scroll);
+      vt_rev_inc (vt);
+      return;
+    }
+  else if (!strcmp (str, "shift-page-up") ||
+           !strcmp (str, "shift-control-page-up"))
+    {
+      int new_scroll = vt_get_scroll (vt) + vt_get_rows (vt) /2;
+      vt_set_scroll (vt, new_scroll);
+      vt_rev_inc (vt);
+      return;
+    }
+  else if (!strcmp (str, "shift-page-down") ||
+           !strcmp (str, "shift-control-page-down"))
+    {
+      int new_scroll = vt_get_scroll (vt) - vt_get_rows (vt) /2;
+      if (new_scroll < 0) { new_scroll = 0; }
+      vt_set_scroll (vt, new_scroll);
+      vt_rev_inc (vt);
+      return;
+    }
+  else if (!strcmp (str, "shift-control--") ||
+           !strcmp (str, "control--") )
+    {
+      float font_size = vt_get_font_size (vt);
+      //font_size /= 1.15;
+      font_size -=2;//= roundf (font_size);
+      if (font_size < 2) { font_size = 2; }
+      vt_set_font_size (vt, font_size);
+      vt_set_px_size (vt, vt->width, vt->height);
+      return;
+    }
+  else if (!strcmp (str, "shift-control-=") ||
+           !strcmp (str, "control-=") )
+    {
+      float font_size = vt_get_font_size (vt);
+      float old = font_size;
+      //font_size *= 1.15;
+      //
+      //font_size = roundf (font_size);
+      font_size+=2;
+
+      if (old == font_size) { font_size = old+1; }
+      if (font_size > 200) { font_size = 200; }
+      vt_set_font_size (vt, font_size);
+      vt_set_px_size (vt, vt->width, vt->height);
+
+      return;
+    }
+  else if (!strcmp (str, "shift-control-r") )
+    {
+      vt_open_log (vt, "/tmp/ctx-vt");
+      return;
+    }
+  else if (!strcmp (str, "shift-control-l") )
+    {
+      vt_set_local (vt, !vt_get_local (vt) );
+      return;
+    }
+  else if (!strncmp (str, "mouse-", 5) )
+    {
+      int cw = vt_cw (vt);
+      int ch = vt_ch (vt);
+      if (!strncmp (str + 6, "motion", 6) )
+        {
+          int x = 0, y = 0;
+          char *s = strchr (str, ' ');
+          if (s)
+            {
+              x = atoi (s);
+              s = strchr (s + 1, ' ');
+              if (s)
+                {
+                  y = atoi (s);
+                  vt_mouse (vt, event, VT_MOUSE_MOTION, 1, x/cw + 1, y/ch + 1, x, y);
+                }
+            }
+        }
+      else if (!strncmp (str + 6, "press", 5) )
+        {
+          int x = 0, y = 0, b = 0;
+          char *s = strchr (str, ' ');
+          if (s)
+            {
+              x = atoi (s);
+              s = strchr (s + 1, ' ');
+              if (s)
+                {
+                  y = atoi (s);
+                  s = strchr (s + 1, ' ');
+                  if (s)
+                  {
+                    b = atoi (s);
+                  }
+                  vt_mouse (vt, event, VT_MOUSE_PRESS, b, x/cw + 1, y/ch + 1, x, y);
+                }
+            }
+          //clients[active].drawn_rev = 0;
+        }
+      else if (!strncmp (str + 6, "drag", 4) )
+        {
+          int x = 0, y = 0, b = 0; // XXX initialize B
+          char *s = strchr (str, ' ');
+          if (s)
+            {
+              x = atoi (s);
+              s = strchr (s + 1, ' ');
+              if (s)
+                {
+                  y = atoi (s);
+                  if (s)
+                  {
+                    b = atoi (s);
+                  }
+                  vt_mouse (vt, event, VT_MOUSE_DRAG, b, x/cw + 1, y/ch + 1, x, y);
+                }
+            }
+          //clients[active].drawn_rev = 0;
+        }
+      else if (!strncmp (str + 6, "release", 7) )
+        {
+          int x = 0, y = 0, b = 0;
+          char *s = strchr (str, ' ');
+          if (s)
+            {
+              x = atoi (s);
+              s = strchr (s + 1, ' ');
+              if (s)
+                {
+                  y = atoi (s);
+                  s = strchr (s + 1, ' ');
+                  if (s)
+                  {
+                    b = atoi (s);
+                  }
+                  vt_mouse (vt, event, VT_MOUSE_RELEASE, b, x/cw + 1, y/ch + 1, x, y);
+                }
+            }
+          //clients[active].drawn_rev = 0;
+          // queue-draw
+        }
+      return;
+    }
+
+  if (vt->scroll_on_input)
+  {
+    vt->scroll = 0.0;
+  }
+
+
+  if (vt->state == vt_state_vt52)
+    {
+      for (unsigned int i = 0; i<sizeof (keymap_vt52) /sizeof (keymap_vt52[0]); i++)
+        if (!strcmp (str, keymap_vt52[i][0]) )
+          { str = keymap_vt52[i][1]; goto done; }
+    }
+  else
+    {
+      if (vt->cursor_key_application)
+        {
+          for (unsigned int i = 0; i<sizeof (keymap_application) /sizeof (keymap_application[0]); i++)
+            if (!strcmp (str, keymap_application[i][0]) )
+              { str = keymap_application[i][1]; goto done; }
+        }
+    }
+
+
+  if (!strcmp (str, "return") )
+    {
+      if (vt->cr_on_lf)
+        { str = "\r\n"; }
+      else
+        { str = "\r"; }
+      goto done;
+    }
+  if (!strcmp (str, "control-space") ||
+      !strcmp (str, "control-`") ||
+      !strcmp (str, "control-2") ||
+      !strcmp (str, "shift-control-2") ||
+      !strcmp (str, "shift-control-space") )
+    {
+      str = "\0\0";
+      vt_write (vt, str, 1);
+      return;
+    }
+  for (unsigned int i = 0; i< sizeof (keymap_general) /
+                              sizeof (keymap_general[0]); i++)
+    if (!strcmp (str, keymap_general[i][0]) )
+      {
+        str = keymap_general[i][1];
+        break;
+      }
+done:
+  if (strlen (str) )
+    {
+      if (vt->local_editing)
+        {
+          for (int i = 0; str[i]; i++)
+            {
+              vt->state (vt, str[i]);
+            }
+        }
+      else
+        {
+          vt_write (vt, str, strlen (str) );
+        }
+    }
+}
+
+void vt_paste (VT *vt, const char *str)
+{
+  if (vt->bracket_paste)
+    {
+      vt_write (vt, "\033[200~", 6);
+    }
+  vt_feed_keystring (vt, NULL, str);
+  if (vt->bracket_paste)
+    {
+      vt_write (vt, "\033[201~", 6);
+    }
+}
+
+const char *vt_find_shell_command (void)
+{
+  if (access ("/.flatpak-info", F_OK) != -1)
+  {
+    static char ret[512];
+    char buf[256];
+    FILE *fp = popen("flatpak-spawn --host getent passwd $USER|cut -f 7 -d :", "r");
+    if (fp)
+    {
+      while (fgets (buf, sizeof(buf), fp) != NULL)
+      {
+        if (buf[strlen(buf)-1]=='\n')
+          buf[strlen(buf)-1]=0;
+        sprintf (ret, "flatpak-spawn --env=TERM=xterm --host %s", buf);
+      }
+      pclose (fp);
+      return ret;
+    }
+  }
+
+  if (getenv ("SHELL"))
+  {
+    return getenv ("SHELL");
+  }
+  int i;
+  const char *command = NULL;
+  struct stat stat_buf;
+  static char *alts[][2] =
+  {
+    {"/bin/bash",     "/bin/bash"},
+    {"/usr/bin/bash", "/usr/bin/bash"},
+    {"/bin/sh",       "/bin/sh"},
+    {"/usr/bin/sh",   "/usr/bin/sh"},
+    {NULL, NULL}
+  };
+  for (i = 0; alts[i][0] && !command; i++)
+    {
+      lstat (alts[i][0], &stat_buf);
+      if (S_ISREG (stat_buf.st_mode) || S_ISLNK (stat_buf.st_mode) )
+        { command = alts[i][1]; }
+    }
+  return command;
+}
+
+static char *string_chop_head (char *orig) /* return pointer to reset after arg */
+{
+  int j=0;
+  int eat=0; /* number of chars to eat at start */
+
+  if(orig)
+    {
+      int got_more;
+      char *o = orig;
+      while(o[j] == ' ')
+        {j++;eat++;}
+
+      if (o[j]=='"')
+        {
+          eat++;j++;
+          while(o[j] != '"' &&
+                o[j] != 0)
+            j++;
+          o[j]='\0';
+          j++;
+        }
+      else if (o[j]=='\'')
+        {
+          eat++;j++;
+          while(o[j] != '\'' &&
+                o[j] != 0)
+            j++;
+          o[j]='\0';
+          j++;
+        }
+      else
+        {
+          while(o[j] != ' ' &&
+                o[j] != 0 &&
+                o[j] != ';')
+            j++;
+        }
+      if (o[j] == 0 ||
+          o[j] == ';')
+        got_more = 0;
+      else
+        got_more = 1;
+      o[j]=0; /* XXX: this is where foo;bar won't work but foo ;bar works*/
+
+      if(eat)
+       {
+         int k;
+         for (k=0; k<j-eat; k++)
+           orig[k] = orig[k+eat];
+       }
+      if (got_more)
+        return &orig[j+1];
+    }
+  return NULL;
+}
+
+void _ctx_add_listen_fd (int fd);
+void _ctx_remove_listen_fd (int fd);
+
+static pid_t
+vt_forkpty (int  *amaster,
+            char *aname,
+            const struct termios *termp,
+            const struct winsize *winsize)
+{
+  pid_t pid;
+  int master = posix_openpt (O_RDWR|O_NOCTTY);
+  int slave;
+
+  if (master < 0)
+    return -1;
+  if (grantpt (master) != 0)
+    return -1;
+  if (unlockpt (master) != 0)
+    return -1;
+#if 0
+  char name[1024];
+  if (ptsname_r (master, name, sizeof(name)-1))
+    return -1;
+#else
+  char *name = NULL;
+  if ((name = ptsname (master)) == NULL)
+    return -1;
+#endif
+
+  slave = open(name, O_RDWR|O_NOCTTY);
+
+  if (termp)   tcsetattr(slave, TCSAFLUSH, termp);
+  if (winsize) ioctl(slave, TIOCSWINSZ, winsize);
+
+  pid = fork();
+  if (pid < 0)
+  {
+    return pid;
+  } else if (pid == 0)
+  {
+    close (master);
+    setsid ();
+    dup2 (slave, STDIN_FILENO);
+    dup2 (slave, STDOUT_FILENO);
+    dup2 (slave, STDERR_FILENO);
+
+    close (slave);
+    return 0;
+  }
+  ioctl (slave, TIOCSCTTY, NULL);
+  close (slave);
+  *amaster = master;
+  return pid;
+}
+
+static void vt_run_command (VT *vt, const char *command, const char *term)
+{
+  struct winsize ws;
+  //signal (SIGCHLD,signal_child);
+#if 0
+  int was_pidone = (getpid () == 1);
+#else
+  int was_pidone = 0; // do no special treatment, all child processes belong
+                      // to root
+#endif
+  signal (SIGINT,SIG_DFL);
+  ws.ws_row = vt->rows;
+  ws.ws_col = vt->cols;
+  ws.ws_xpixel = ws.ws_col * vt->cw;
+  ws.ws_ypixel = ws.ws_row * vt->ch;
+  vt->vtpty.pid = vt_forkpty (&vt->vtpty.pty, NULL, NULL, &ws);
+  if (vt->vtpty.pid == 0)
+    {
+      int i;
+      if (was_pidone)
+      {
+        if (setuid(1000)) fprintf (stderr, "setuid failed\n");
+      }
+      else
+      {
+        for (i = 3; i<768; i++) { close (i); } /*hack, trying to close xcb */
+      }
+      unsetenv ("TERM");
+      unsetenv ("COLUMNS");
+      unsetenv ("LINES");
+      unsetenv ("TERMCAP");
+      unsetenv ("COLOR_TERM");
+      unsetenv ("COLORTERM");
+      unsetenv ("VTE_VERSION");
+      unsetenv ("CTX_BACKEND");
+      //setenv ("TERM", "ansi", 1);
+      //setenv ("TERM", "vt102", 1);
+      //setenv ("TERM", "vt100", 1);
+      // setenv ("TERM", term?term:"xterm", 1);
+      setenv ("TERM", term?term:"xterm-256color", 1);
+      setenv ("COLORTERM", "truecolor", 1);
+      //setenv ("CTX_VERSION", "0", 1);
+      setenv ("CTX_BACKEND", "ctx", 1); // speeds up launching of clients
+
+      {
+        char *cargv[32];
+        int   cargc;
+        char *rest, *copy;
+        copy = calloc (strlen (command)+2, 1);
+        strcpy (copy, command);
+        rest = copy;
+        cargc = 0;
+        while (rest && cargc < 30 && rest[0] != ';')
+        {
+          cargv[cargc++] = rest;
+          rest = string_chop_head (rest);
+        }
+        cargv[cargc] = NULL;
+        execvp (cargv[0], cargv);
+      }
+      exit (0);
+    }
+  else if (vt->vtpty.pid < 0)
+    {
+      VT_error ("forkpty failed (%s)", command);
+      return;
+    }
+  fcntl(vt->vtpty.pty, F_SETFL, O_NONBLOCK|O_NOCTTY);
+  _ctx_add_listen_fd (vt->vtpty.pty);
+}
+
+void vt_destroy (VT *vt)
+{
+  while (vt->lines)
+    {
+      vt_line_free (vt->lines->data, 1);
+      ctx_list_remove (&vt->lines, vt->lines->data);
+      vt->line_count--;
+    }
+  while (vt->scrollback)
+    {
+      vt_line_free (vt->scrollback->data, 1);
+      ctx_list_remove (&vt->scrollback, vt->scrollback->data);
+    }
+  if (vt->ctxp)
+    ctx_parser_free (vt->ctxp);
+  //if (vt->ctx)
+  //  { ctx_free (vt->ctx); }
+  free (vt->argument_buf);
+  ctx_list_remove (&vts, vt);
+  kill (vt->vtpty.pid, 9);
+  _ctx_remove_listen_fd (vt->vtpty.pty);
+  close (vt->vtpty.pty);
+#if 1
+  if (vt->title)
+    free (vt->title);
+#endif
+  free (vt);
+}
+
+int vt_get_line_count (VT *vt)
+{
+  return vt->line_count;
+}
+
+const char *vt_get_line (VT *vt, int no)
+{
+  if (no >= vt->rows)
+  {
+    CtxList *l = ctx_list_nth (vt->scrollback, no - vt->rows);
+    if (!l)
+      { 
+         return "";
+      }
+    CtxString *str = l->data;
+    return str->str;
+  }
+  else
+  {
+    CtxList *l = ctx_list_nth (vt->lines, no);
+    if (!l)
+      { 
+         return "-";
+      }
+    CtxString *str = l->data;
+    return str->str;
+  }
+}
+
+int vt_line_is_continuation (VT *vt, int no)
+{
+  if (no >= vt->rows)
+  {
+    CtxList *l = ctx_list_nth (vt->scrollback, no - vt->rows);
+    if (!l)
+      { 
+         return 1;
+      }
+    VtLine *line = l->data;
+    return line->wrapped;
+  }
+  else
+  {
+    CtxList *l = ctx_list_nth (vt->lines, no);
+    if (!l)
+      { 
+         return 1;
+      }
+    VtLine *line = l->data;
+    return line->wrapped;
+  }
+}
+
+int vt_get_cols (VT *vt)
+{
+  return vt->cols;
+}
+
+int vt_get_rows (VT *vt)
+{
+  return vt->rows;
+}
+
+int vt_get_cursor_x (VT *vt)
+{
+  return vt->cursor_x;
+}
+
+int vt_get_cursor_y (VT *vt)
+{
+  return vt->cursor_y;
+}
+
+static void draw_braille_bit (Ctx *ctx, float x, float y, float cw, float ch, int u, int v)
+{
+  ctx_rectangle (ctx, 0.167 * cw + x + u * cw * 0.5,
+                 y - ch + 0.080 * ch + v * ch * 0.25,
+                 0.33 *cw, 0.33 * cw);
+}
+
+static void draw_sextant_bit (Ctx *ctx, float x, float y, float cw, float ch, int u, int v)
+{
+  ctx_rectangle (ctx,  x + u * cw * 0.5,
+                       y - ch + v * ch * 0.3333,
+                       0.5 *cw, 0.34 * ch);
+}
+
+int vt_special_glyph (Ctx *ctx, VT *vt, float x, float y, int cw, int ch, int unichar)
+{
+  switch (unichar)
+    {
+      case 0x2594: // UPPER_ONE_EIGHT_BLOCK
+        ctx_begin_path (ctx);
+        {
+          float factor = 1.0f/8.0f;
+          ctx_rectangle (ctx, x, y - ch, cw, ch * factor);
+          ctx_fill (ctx);
+        }
+        return 0;
+      case 0x2581: // LOWER_ONE_EIGHT_BLOCK:
+        ctx_begin_path (ctx);
+        {
+          float factor = 1.0f/8.0f;
+          ctx_rectangle (ctx, x, y - ch * factor, cw, ch * factor);
+          ctx_fill (ctx);
+        }
+        return 0;
+      case 0x2582: // LOWER_ONE_QUARTER_BLOCK:
+        ctx_begin_path (ctx);
+        {
+          float factor = 1.0f/4.0f;
+          ctx_rectangle (ctx, x, y - ch * factor, cw, ch * factor);
+          ctx_fill (ctx);
+        }
+        return 0;
+      case 0x2583: // LOWER_THREE_EIGHTS_BLOCK:
+        ctx_begin_path (ctx);
+        {
+          float factor = 3.0f/8.0f;
+          ctx_rectangle (ctx, x, y - ch * factor, cw, ch * factor);
+          ctx_fill (ctx);
+        }
+        return 0;
+      case 0x2585: // LOWER_FIVE_EIGHTS_BLOCK:
+        ctx_begin_path (ctx);
+        {
+          float factor = 5.0f/8.0f;
+          ctx_rectangle (ctx, x, y - ch * factor, cw, ch * factor);
+          ctx_fill (ctx);
+        }
+        return 0;
+      case 0x2586: // LOWER_THREE_QUARTERS_BLOCK:
+        ctx_begin_path (ctx);
+        {
+          float factor = 3.0f/4.0f;
+          ctx_rectangle (ctx, x, y - ch * factor, cw, ch * factor);
+          ctx_fill (ctx);
+        }
+        return 0;
+      case 0x2587: // LOWER_SEVEN_EIGHTS_BLOCK:
+        ctx_begin_path (ctx);
+        {
+          float factor = 7.0f/8.0f;
+          ctx_rectangle (ctx, x, y - ch * factor, cw, ch * factor);
+          ctx_fill (ctx);
+        }
+        return 0;
+      case 0x2589: // LEFT_SEVEN_EIGHTS_BLOCK:
+        ctx_begin_path (ctx);
+        ctx_rectangle (ctx, x, y - ch, cw*7/8, ch);
+        ctx_fill (ctx);
+        return 0;
+      case 0x258A: // LEFT_THREE_QUARTERS_BLOCK:
+        ctx_begin_path (ctx);
+        ctx_rectangle (ctx, x, y - ch, cw*3/4, ch);
+        ctx_fill (ctx);
+        return 0;
+      case 0x258B: // LEFT_FIVE_EIGHTS_BLOCK:
+        ctx_begin_path (ctx);
+        ctx_rectangle (ctx, x, y - ch, cw*5/8, ch);
+        ctx_fill (ctx);
+        return 0;
+      case 0x258D: // LEFT_THREE_EIGHTS_BLOCK:
+        ctx_begin_path (ctx);
+        ctx_rectangle (ctx, x, y - ch, cw*3/8, ch);
+        ctx_fill (ctx);
+        return 0;
+      case 0x258E: // LEFT_ONE_QUARTER_BLOCK:
+        ctx_begin_path (ctx);
+        ctx_rectangle (ctx, x, y - ch, cw/4, ch);
+        ctx_fill (ctx);
+        return 0;
+      case 0x258F: // LEFT_ONE_EIGHT_BLOCK:
+        ctx_begin_path (ctx);
+        ctx_rectangle (ctx, x, y - ch, cw/8, ch);
+        ctx_fill (ctx);
+        return 0;
+      case 0x258C: // HALF_LEFT_BLOCK:
+        ctx_begin_path (ctx);
+        ctx_rectangle (ctx, x, y - ch, cw/2, ch);
+        ctx_fill (ctx);
+        return 0;
+      case 0x2590: // HALF_RIGHT_BLOCK:
+        ctx_begin_path (ctx);
+        ctx_rectangle (ctx, x + cw/2, y - ch, cw/2, ch);
+        ctx_fill (ctx);
+        return 0;
+      case 0x1fb8f: // VT_RIGHT_SEVEN_EIGHTS_BLOCK:
+        ctx_begin_path (ctx);
+        ctx_rectangle (ctx, x + cw*1/8, y - ch, cw*7/8, ch);
+        ctx_fill (ctx);
+        return 0;
+      case 0x1fb8d: // VT_RIGHT_FIVE_EIGHTS_BLOCK:
+        ctx_begin_path (ctx);
+        ctx_rectangle (ctx, x + cw*3/8, y - ch, cw*5/8, ch);
+        ctx_fill (ctx);
+        return 0;
+      case 0x1fb8b: // VT_RIGHT_ONE_QUARTER_BLOCK:
+        ctx_begin_path (ctx);
+        ctx_rectangle (ctx, x + cw*3/4, y - ch, cw/4, ch);
+        ctx_fill (ctx);
+        return 0;
+      case 0x1fb8e: // VT_RIGHT_THREE_QUARTER_BLOCK:
+        ctx_begin_path (ctx);
+        ctx_rectangle (ctx, x + cw*1/4, y - ch, cw*3/4, ch);
+        ctx_fill (ctx);
+        return 0;
+      case 0x2595: // VT_RIGHT_ONE_EIGHT_BLOCK:
+        ctx_begin_path (ctx);
+        ctx_rectangle (ctx, x + cw*7/8, y - ch, cw/8, ch);
+        ctx_fill (ctx);
+        return 0;
+      case 0x2580: // HALF_UP_BLOCK:
+        ctx_begin_path (ctx);
+        ctx_rectangle (ctx, x, y - ch, cw, ch/2);
+        ctx_fill (ctx);
+        return 0;
+      case 0x2584: // _HALF_DOWN_BLOCK:
+        ctx_begin_path (ctx);
+        ctx_rectangle (ctx, x, y - ch/2, cw, ch/2);
+        ctx_fill (ctx);
+        return 0;
+      case 0x2596: // _QUADRANT LOWER LEFT
+        ctx_begin_path (ctx);
+        ctx_rectangle (ctx, x, y - ch/2, cw/2, ch/2);
+        ctx_fill (ctx);
+        return 0;
+      case 0x2597: // _QUADRANT LOWER RIGHT
+        ctx_begin_path (ctx);
+        ctx_rectangle (ctx, x+cw/2, y - ch/2, cw/2, ch/2);
+        ctx_fill (ctx);
+        return 0;
+      case 0x2598: // _QUADRANT UPPER LEFT
+        ctx_begin_path (ctx);
+        ctx_rectangle (ctx, x, y - ch, cw/2, ch/2);
+        ctx_fill (ctx);
+        return 0;
+      case 0x259D: // _QUADRANT UPPER RIGHT
+        ctx_begin_path (ctx);
+        ctx_rectangle (ctx, x + cw/2, y - ch, cw/2, ch/2);
+        ctx_fill (ctx);
+        return 0;
+      case 0x2599: // _QUADRANT UPPER LEFT AND LOWER LEFT AND LOWER RIGHT
+        vt_special_glyph (ctx, vt, x, y, cw, ch, 0x2598);
+        vt_special_glyph (ctx, vt, x, y, cw, ch, 0x2596);
+        vt_special_glyph (ctx, vt, x, y, cw, ch, 0x2597);
+        return 0;
+      case 0x259A: // _QUADRANT UPPER LEFT AND LOWER RIGHT
+        vt_special_glyph (ctx, vt, x, y, cw, ch, 0x2598);
+        vt_special_glyph (ctx, vt, x, y, cw, ch, 0x2597);
+        return 0;
+      case 0x259B: // _QUADRANT UPPER LEFT AND UPPER RIGHT AND LOWER LEFT
+        vt_special_glyph (ctx, vt, x, y, cw, ch, 0x2598);
+        vt_special_glyph (ctx, vt, x, y, cw, ch, 0x259D);
+        vt_special_glyph (ctx, vt, x, y, cw, ch, 0x2596);
+        return 0;
+      case 0x259C: // _QUADRANT UPPER LEFT AND UPPER RIGHT AND LOWER RIGHT
+        vt_special_glyph (ctx, vt, x, y, cw, ch, 0x2598);
+        vt_special_glyph (ctx, vt, x, y, cw, ch, 0x259D);
+        vt_special_glyph (ctx, vt, x, y, cw, ch, 0x2597);
+        return 0;
+      case 0x259E: // _QUADRANT UPPER RIGHT AND LOWER LEFT
+        vt_special_glyph (ctx, vt, x, y, cw, ch, 0x259D);
+        vt_special_glyph (ctx, vt, x, y, cw, ch, 0x2596);
+        return 0;
+      case 0x259F: // _QUADRANT UPPER RIGHT AND LOWER LEFT AND LOWER RIGHT
+        vt_special_glyph (ctx, vt, x, y, cw, ch, 0x259D);
+        vt_special_glyph (ctx, vt, x, y, cw, ch, 0x2596);
+        vt_special_glyph (ctx, vt, x, y, cw, ch, 0x2597);
+        return 0;
+      case 0x2588: // FULL_BLOCK:
+        ctx_begin_path (ctx);
+        ctx_rectangle (ctx, x, y - ch, cw, ch);
+        ctx_fill (ctx);
+        return 0;
+      case 0x2591: // LIGHT_SHADE:
+        ctx_begin_path (ctx);
+        ctx_rectangle (ctx, x, y - ch, cw, ch);
+        ctx_save (ctx);
+        ctx_global_alpha (ctx, 0.25);
+        ctx_fill (ctx);
+        ctx_restore (ctx);
+        return 0;
+      case 0x2592: // MEDIUM_SHADE:
+        ctx_begin_path (ctx);
+        ctx_rectangle (ctx, x, y - ch, cw, ch);
+        ctx_save (ctx);
+        ctx_global_alpha (ctx, 0.5);
+        ctx_fill (ctx);
+        ctx_restore (ctx);
+        return 0;
+      case 0x2593: // DARK SHADE:
+        ctx_begin_path (ctx);
+        ctx_rectangle (ctx, x, y - ch, cw, ch);
+        ctx_save (ctx);
+        ctx_global_alpha (ctx, 0.75);
+        ctx_fill (ctx);
+        ctx_restore (ctx);
+        return 0;
+      case 0x23BA: //HORIZONTAL_SCANLINE-1
+        ctx_begin_path (ctx);
+        ctx_rectangle (ctx, x,      y - ch + ch*0.1 - ch * 0.1,
+                       cw, ch * 0.1);
+        ctx_fill (ctx);
+        return 0;
+      case 0x23BB: //HORIZONTAL_SCANLINE-3
+        ctx_begin_path (ctx);
+        ctx_rectangle (ctx, x,      y - ch + ch*0.3 - ch * 0.075,
+                       cw, ch * 0.1);
+        ctx_fill (ctx);
+        return 0;
+      case 0x23BC: //HORIZONTAL_SCANLINE-7
+        ctx_begin_path (ctx);
+        ctx_rectangle (ctx, x,      y - ch + ch*0.7 - ch * 0.025,
+                       cw, ch * 0.1);
+        ctx_fill (ctx);
+        return 0;
+      case 0x23BD: //HORIZONTAL_SCANLINE-9
+        ctx_begin_path (ctx);
+        ctx_rectangle (ctx, x,      y - ch + ch*0.9 + ch * 0.0,
+                       cw, ch * 0.1);
+        ctx_fill (ctx);
+        return 0;
+      case 0x2500: //VT_BOX_DRAWINGS_LIGHT_HORIZONTAL // and scanline 5
+        ctx_begin_path (ctx);
+        ctx_rectangle (ctx, x, y - ch/2 - ch * 0.1 / 2, cw, ch * 0.1);
+        ctx_fill (ctx);
+        return 0;
+      case 0x2212: // minus -sign
+        ctx_begin_path (ctx);
+        ctx_rectangle (ctx, x + cw * 0.1, y - ch/2 - ch * 0.1 / 2, cw * 0.8, ch * 0.1);
+        ctx_fill (ctx);
+        return 0;
+      case 0x2502: // VT_BOX_DRAWINGS_LIGHT_VERTICAL:
+        ctx_begin_path (ctx);
+        ctx_rectangle (ctx, x + cw/2 - ch * 0.1 / 2, y - ch, ch * 0.1, ch + 1);
+        ctx_fill (ctx);
+        return 0;
+      case 0x250c: //VT_BOX_DRAWINGS_LIGHT_DOWN_AND_RIGHT:
+        ctx_begin_path (ctx);
+        ctx_rectangle (ctx, x + cw/2 - ch * 0.1 / 2, y - ch/2 - ch*0.1/2, ch * 0.1, ch/2 + ch*0.1);
+        ctx_fill (ctx);
+        ctx_rectangle (ctx, x + cw/2 - ch * 0.1 / 2, y - ch/2 - ch*0.1/2, cw/2+ ch * 0.1, ch*0.1);
+        ctx_fill (ctx);
+        return 0;
+      case 0x2510: //VT_BOX_DRAWINGS_LIGHT_DOWN_AND_LEFT:
+        ctx_begin_path (ctx);
+        ctx_rectangle (ctx, x + cw/2 - ch * 0.1 / 2, y - ch/2 - ch*0.1/2, ch * 0.1, ch/2 + ch*0.1);
+        ctx_fill (ctx);
+        ctx_rectangle (ctx, x, y - ch/2 - ch*0.1/2, cw/2+ ch * 0.1/2, ch*0.1);
+        ctx_fill (ctx);
+        return 0;
+      case 0x2514: //VT_BOX_DRAWINGS_LIGHT_UP_AND_RIGHT:
+        ctx_begin_path (ctx);
+        ctx_rectangle (ctx, x + cw/2 - ch * 0.1 / 2, y - ch, ch * 0.1, ch/2+ch*0.1/2);
+        ctx_fill (ctx);
+        ctx_rectangle (ctx, x + cw/2 - ch * 0.1 / 2, y - ch/2 - ch*0.1/2, cw/2 + ch * 0.1, ch*0.1);
+        ctx_fill (ctx);
+        return 0;
+      case 0x2518: //VT_BOX_DRAWINGS_LIGHT_UP_AND_LEFT:
+        ctx_begin_path (ctx);
+        ctx_rectangle (ctx, x + cw/2 - ch * 0.1 / 2, y - ch, ch * 0.1, ch/2+ ch*0.1/2);
+        ctx_fill (ctx);
+        ctx_rectangle (ctx, x, y - ch/2-ch*0.1/2, cw/2+ch * 0.1/2, ch*0.1);
+        ctx_fill (ctx);
+        return 0;
+      case 0x251C: //VT_BOX_DRAWINGS_LIGHT_VERTICAL_AND_RIGHT:
+        ctx_begin_path (ctx);
+        ctx_rectangle (ctx, x + cw/2 - ch * 0.1 / 2, y - ch/2-ch*0.1/2, cw/2+ch * 0.1, ch*0.1);
+        ctx_fill (ctx);
+        ctx_rectangle (ctx, x + cw/2 - ch * 0.1 / 2, y - ch, ch * 0.1, ch);
+        ctx_fill (ctx);
+        return 0;
+      case 0x2524: //VT_BOX_DRAWINGS_LIGHT_VERTICAL_AND_LEFT:
+        ctx_begin_path (ctx);
+        ctx_rectangle (ctx, x + cw/2 - ch * 0.1 / 2, y - ch, ch * 0.1, ch);
+        ctx_fill (ctx);
+        ctx_rectangle (ctx, x, y - ch/2-ch*0.1/2, cw/2+ch * 0.1/2, ch*0.1);
+        ctx_fill (ctx);
+        return 0;
+      case 0x252C: // VT_BOX_DRAWINGS_LIGHT_DOWN_AND_HORIZONTAL:
+        ctx_begin_path (ctx);
+        ctx_rectangle (ctx, x + cw/2 - ch * 0.1 / 2, y - ch/2-ch*0.1/2, ch * 0.1, ch/2+ch*0.1);
+        ctx_fill (ctx);
+        ctx_rectangle (ctx, x, y - ch/2 - ch * 0.1 / 2, cw, ch * 0.1);
+        ctx_fill (ctx);
+        return 0;
+      case 0x2534: // VT_BOX_DRAWINGS_LIGHT_UP_AND_HORIZONTAL:
+        ctx_begin_path (ctx);
+        ctx_rectangle (ctx, x, y - ch/2 - ch * 0.1 / 2, cw, ch * 0.1);
+        ctx_fill (ctx);
+        ctx_rectangle (ctx, x + cw/2 - ch * 0.1 / 2, y - ch, ch * 0.1, ch /2+ch*0.1/2);
+        ctx_fill (ctx);
+        return 0;
+      case 0x253C: // VT_BOX_DRAWINGS_LIGHT_VERTICAL_AND_HORIZONTAL:
+        ctx_begin_path (ctx);
+        ctx_rectangle (ctx, x, y - ch/2 - ch * 0.1 / 2, cw, ch * 0.1);
+        ctx_fill (ctx);
+        ctx_rectangle (ctx, x + cw/2 - ch * 0.1 / 2, y - ch, ch * 0.1, ch);
+        ctx_fill (ctx);
+        return 0;
+      case 0xe0a0: // PowerLine branch
+        ctx_save (ctx);
+        ctx_begin_path (ctx);
+        ctx_move_to (ctx, x+cw/2, y - 0.15 * ch);
+        ctx_rel_line_to (ctx, -cw/3, -ch * 0.7);
+        ctx_rel_line_to (ctx, cw/2, 0);
+        ctx_rel_line_to (ctx, -cw/3, ch * 0.7);
+        ctx_line_width (ctx, cw * 0.25);
+        ctx_stroke (ctx);
+        ctx_restore (ctx);
+        break;
+      // case 0xe0a1: // PowerLine LN
+      // case 0xe0a2: // PowerLine Lock
+      case 0xe0b0: // PowerLine left solid
+        ctx_begin_path (ctx);
+        ctx_move_to (ctx, x, y);
+        ctx_rel_line_to (ctx, 0, -ch);
+        ctx_rel_line_to (ctx, cw, ch/2);
+        ctx_fill (ctx);
+        return 0;
+      case 0xe0b1: // PowerLine left line
+        ctx_save (ctx);
+        ctx_begin_path (ctx);
+        ctx_move_to (ctx, x, y - ch * 0.1);
+        ctx_rel_line_to (ctx, cw * 0.9, -ch/2 * 0.8);
+        ctx_rel_line_to (ctx, -cw * 0.9, -ch/2 * 0.8);
+        ctx_line_width (ctx, cw * 0.2);
+        ctx_stroke (ctx);
+        ctx_restore (ctx);
+        return 0;
+      case 0xe0b2: // PowerLine Right solid
+        ctx_begin_path (ctx);
+        ctx_move_to (ctx, x, y);
+        ctx_rel_move_to (ctx, cw, 0);
+        ctx_rel_line_to (ctx, -cw, -ch/2);
+        ctx_rel_line_to (ctx, cw, -ch/2);
+        ctx_fill (ctx);
+        return 0;
+      case 0xe0b3: // PowerLine right line
+        ctx_save (ctx);
+        ctx_begin_path (ctx);
+        ctx_move_to (ctx, x, y - ch * 0.1);
+        ctx_rel_move_to (ctx, cw, 0);
+        ctx_rel_line_to (ctx, -cw * 0.9, -ch/2 * 0.8);
+        ctx_rel_line_to (ctx,  cw * 0.9, ch/2 * 0.8);
+        ctx_line_width (ctx, cw * 0.2);
+        ctx_stroke (ctx);
+        ctx_restore (ctx);
+        return 0;
+        /*
+      case 0x1fb70: // left triangular one quarter block
+        ctx_begin_path (ctx);
+        ctx_move_to (ctx, x, y);
+        ctx_rel_line_to (ctx, 0, -ch);
+        ctx_rel_line_to (ctx, cw/2, -ch/2);
+        ctx_fill (ctx);
+        return 0;
+      case 0x1fb72: // right triangular one quarter block
+        ctx_begin_path (ctx);
+        ctx_move_to (ctx, x, y);
+        ctx_rel_move_to (ctx, cw/2, -ch/2);
+        ctx_rel_line_to (ctx, cw/2, -ch/2);
+        ctx_rel_line_to (ctx, 0, ch);
+        ctx_fill (ctx);
+        return 0;
+      case 0x1fb73: // lower triangular one quarter block
+        ctx_begin_path (ctx);
+        ctx_move_to (ctx, x, y);
+        ctx_rel_line_to (ctx, cw/2, -ch/2);
+        ctx_rel_line_to (ctx, cw/2, ch/2);
+        ctx_fill (ctx);
+        return 0;
+      case 0x1fb71: // upper triangular one quarter block
+        ctx_begin_path (ctx);
+        ctx_move_to (ctx, x, y);
+        ctx_rel_move_to (ctx, cw/2, -ch/2);
+        ctx_rel_line_to (ctx, -cw/2, -ch/2);
+        ctx_rel_line_to (ctx, cw, 0);
+        ctx_fill (ctx);
+        return 0;
+        */
+      case 0x25E2: // VT_BLACK_LOWER_RIGHT_TRIANGLE:
+        ctx_begin_path (ctx);
+        ctx_move_to (ctx, x, y);
+        ctx_rel_line_to (ctx, cw, -ch);
+        ctx_rel_line_to (ctx, 0, ch);
+        ctx_fill (ctx);
+        return 0;
+      case 0x25E3: //  VT_BLACK_LOWER_LEFT_TRIANGLE:
+        ctx_begin_path (ctx);
+        ctx_move_to (ctx, x, y);
+        ctx_rel_line_to (ctx, 0, -ch);
+        ctx_rel_line_to (ctx, cw, ch);
+        ctx_fill (ctx);
+        return 0;
+      case 0x25E4: // tri
+        ctx_begin_path (ctx);
+        ctx_move_to (ctx, x, y);
+        ctx_rel_line_to (ctx, 0, -ch);
+        ctx_rel_line_to (ctx, cw, 0);
+        ctx_fill (ctx);
+        return 0;
+      case 0x25E5: // tri
+        ctx_begin_path (ctx);
+        ctx_move_to (ctx, x, y - ch);
+        ctx_rel_line_to (ctx, cw, 0);
+        ctx_rel_line_to (ctx, 0, ch);
+        ctx_fill (ctx);
+        return 0;
+      case 0x2800:
+      case 0x2801:
+      case 0x2802:
+      case 0x2803:
+      case 0x2804:
+      case 0x2805:
+      case 0x2806:
+      case 0x2807:
+      case 0x2808:
+      case 0x2809:
+      case 0x280A:
+      case 0x280B:
+      case 0x280C:
+      case 0x280D:
+      case 0x280E:
+      case 0x280F:
+      case 0x2810:
+      case 0x2811:
+      case 0x2812:
+      case 0x2813:
+      case 0x2814:
+      case 0x2815:
+      case 0x2816:
+      case 0x2817:
+      case 0x2818:
+      case 0x2819:
+      case 0x281A:
+      case 0x281B:
+      case 0x281C:
+      case 0x281D:
+      case 0x281E:
+      case 0x281F:
+      case 0x2820:
+      case 0x2821:
+      case 0x2822:
+      case 0x2823:
+      case 0x2824:
+      case 0x2825:
+      case 0x2826:
+      case 0x2827:
+      case 0x2828:
+      case 0x2829:
+      case 0x282A:
+      case 0x282B:
+      case 0x282C:
+      case 0x282D:
+      case 0x282E:
+      case 0x282F:
+      case 0x2830:
+      case 0x2831:
+      case 0x2832:
+      case 0x2833:
+      case 0x2834:
+      case 0x2835:
+      case 0x2836:
+      case 0x2837:
+      case 0x2838:
+      case 0x2839:
+      case 0x283A:
+      case 0x283B:
+      case 0x283C:
+      case 0x283D:
+      case 0x283E:
+      case 0x283F:
+        ctx_begin_path (ctx);
+        {
+          int bit_pattern = unichar - 0x2800;
+          int bit = 0;
+          int u = 0;
+          int v = 0;
+          for (bit = 0; bit < 6; bit++)
+            {
+              if (bit_pattern & (1<<bit) )
+                {
+                  draw_braille_bit (ctx, x, y, cw, ch, u, v);
+                }
+              v++;
+              if (v > 2)
+                {
+                  v = 0;
+                  u++;
+                }
+            }
+        }
+        ctx_fill (ctx);
+        return 0;
+      case 0x2840:
+      case 0x2841:
+      case 0x2842:
+      case 0x2843:
+      case 0x2844:
+      case 0x2845:
+      case 0x2846:
+      case 0x2847:
+      case 0x2848:
+      case 0x2849:
+      case 0x284A:
+      case 0x284B:
+      case 0x284C:
+      case 0x284D:
+      case 0x284E:
+      case 0x284F:
+      case 0x2850:
+      case 0x2851:
+      case 0x2852:
+      case 0x2853:
+      case 0x2854:
+      case 0x2855:
+      case 0x2856:
+      case 0x2857:
+      case 0x2858:
+      case 0x2859:
+      case 0x285A:
+      case 0x285B:
+      case 0x285C:
+      case 0x285D:
+      case 0x285E:
+      case 0x285F:
+      case 0x2860:
+      case 0x2861:
+      case 0x2862:
+      case 0x2863:
+      case 0x2864:
+      case 0x2865:
+      case 0x2866:
+      case 0x2867:
+      case 0x2868:
+      case 0x2869:
+      case 0x286A:
+      case 0x286B:
+      case 0x286C:
+      case 0x286D:
+      case 0x286E:
+      case 0x286F:
+      case 0x2870:
+      case 0x2871:
+      case 0x2872:
+      case 0x2873:
+      case 0x2874:
+      case 0x2875:
+      case 0x2876:
+      case 0x2877:
+      case 0x2878:
+      case 0x2879:
+      case 0x287A:
+      case 0x287B:
+      case 0x287C:
+      case 0x287D:
+      case 0x287E:
+      case 0x287F:
+        ctx_begin_path (ctx);
+        draw_braille_bit (ctx, x, y, cw, ch, 0, 3);
+        {
+          int bit_pattern = unichar - 0x2840;
+          int bit = 0;
+          int u = 0;
+          int v = 0;
+          for (bit = 0; bit < 6; bit++)
+            {
+              if (bit_pattern & (1<<bit) )
+                {
+                  draw_braille_bit (ctx, x, y, cw, ch, u, v);
+                }
+              v++;
+              if (v > 2)
+                {
+                  v = 0;
+                  u++;
+                }
+            }
+        }
+        ctx_fill (ctx);
+        return 0;
+      case 0x2880:
+      case 0x2881:
+      case 0x2882:
+      case 0x2883:
+      case 0x2884:
+      case 0x2885:
+      case 0x2886:
+      case 0x2887:
+      case 0x2888:
+      case 0x2889:
+      case 0x288A:
+      case 0x288B:
+      case 0x288C:
+      case 0x288D:
+      case 0x288E:
+      case 0x288F:
+      case 0x2890:
+      case 0x2891:
+      case 0x2892:
+      case 0x2893:
+      case 0x2894:
+      case 0x2895:
+      case 0x2896:
+      case 0x2897:
+      case 0x2898:
+      case 0x2899:
+      case 0x289A:
+      case 0x289B:
+      case 0x289C:
+      case 0x289D:
+      case 0x289E:
+      case 0x289F:
+      case 0x28A0:
+      case 0x28A1:
+      case 0x28A2:
+      case 0x28A3:
+      case 0x28A4:
+      case 0x28A5:
+      case 0x28A6:
+      case 0x28A7:
+      case 0x28A8:
+      case 0x28A9:
+      case 0x28AA:
+      case 0x28AB:
+      case 0x28AC:
+      case 0x28AD:
+      case 0x28AE:
+      case 0x28AF:
+      case 0x28B0:
+      case 0x28B1:
+      case 0x28B2:
+      case 0x28B3:
+      case 0x28B4:
+      case 0x28B5:
+      case 0x28B6:
+      case 0x28B7:
+      case 0x28B8:
+      case 0x28B9:
+      case 0x28BA:
+      case 0x28BB:
+      case 0x28BC:
+      case 0x28BD:
+      case 0x28BE:
+      case 0x28BF:
+        ctx_begin_path (ctx);
+        draw_braille_bit (ctx, x, y, cw, ch, 1, 3);
+        {
+          int bit_pattern = unichar - 0x2880;
+          int bit = 0;
+          int u = 0;
+          int v = 0;
+          for (bit = 0; bit < 6; bit++)
+            {
+              if (bit_pattern & (1<<bit) )
+                {
+                  draw_braille_bit (ctx, x, y, cw, ch, u, v);
+                }
+              v++;
+              if (v > 2)
+                {
+                  v = 0;
+                  u++;
+                }
+            }
+        }
+        ctx_fill (ctx);
+        return 0;
+      case 0x28C0:
+      case 0x28C1:
+      case 0x28C2:
+      case 0x28C3:
+      case 0x28C4:
+      case 0x28C5:
+      case 0x28C6:
+      case 0x28C7:
+      case 0x28C8:
+      case 0x28C9:
+      case 0x28CA:
+      case 0x28CB:
+      case 0x28CC:
+      case 0x28CD:
+      case 0x28CE:
+      case 0x28CF:
+      case 0x28D0:
+      case 0x28D1:
+      case 0x28D2:
+      case 0x28D3:
+      case 0x28D4:
+      case 0x28D5:
+      case 0x28D6:
+      case 0x28D7:
+      case 0x28D8:
+      case 0x28D9:
+      case 0x28DA:
+      case 0x28DB:
+      case 0x28DC:
+      case 0x28DD:
+      case 0x28DE:
+      case 0x28DF:
+      case 0x28E0:
+      case 0x28E1:
+      case 0x28E2:
+      case 0x28E3:
+      case 0x28E4:
+      case 0x28E5:
+      case 0x28E6:
+      case 0x28E7:
+      case 0x28E8:
+      case 0x28E9:
+      case 0x28EA:
+      case 0x28EB:
+      case 0x28EC:
+      case 0x28ED:
+      case 0x28EE:
+      case 0x28EF:
+      case 0x28F0:
+      case 0x28F1:
+      case 0x28F2:
+      case 0x28F3:
+      case 0x28F4:
+      case 0x28F5:
+      case 0x28F6:
+      case 0x28F7:
+      case 0x28F8:
+      case 0x28F9:
+      case 0x28FA:
+      case 0x28FB:
+      case 0x28FC:
+      case 0x28FD:
+      case 0x28FE:
+      case 0x28FF:
+        ctx_begin_path (ctx);
+        draw_braille_bit (ctx, x, y, cw, ch, 0, 3);
+        draw_braille_bit (ctx, x, y, cw, ch, 1, 3);
+        {
+          int bit_pattern = unichar - 0x28C0;
+          int bit = 0;
+          int u = 0;
+          int v = 0;
+          for (bit = 0; bit < 6; bit++)
+            {
+              if (bit_pattern & (1<<bit) )
+                {
+                  draw_braille_bit (ctx, x, y, cw, ch, u, v);
+                }
+              v++;
+              if (v > 2)
+                {
+                  v = 0;
+                  u++;
+                }
+            }
+        }
+        ctx_fill (ctx);
+        return 0;
+      case 0x1fb00:
+      case 0x1fb01:
+      case 0x1fb02:
+      case 0x1fb03:
+      case 0x1fb04:
+      case 0x1fb05:
+      case 0x1fb06:
+      case 0x1fb07:
+      case 0x1fb08:
+      case 0x1fb09:
+      case 0x1fb0a:
+      case 0x1fb0b:
+      case 0x1fb0c:
+      case 0x1fb0d:
+      case 0x1fb0e:
+      case 0x1fb0f:
+      case 0x1fb10:
+      case 0x1fb11:
+      case 0x1fb12:
+      case 0x1fb13:
+      case 0x1fb14:
+      case 0x1fb15:
+      case 0x1fb16:
+      case 0x1fb17:
+      case 0x1fb18:
+      case 0x1fb19:
+      case 0x1fb1a:
+      case 0x1fb1b:
+      case 0x1fb1c:
+      case 0x1fb1d:
+      case 0x1fb1e:
+      case 0x1fb1f:
+      case 0x1fb20:
+      case 0x1fb21:
+      case 0x1fb22:
+      case 0x1fb23:
+      case 0x1fb24:
+      case 0x1fb25:
+      case 0x1fb26:
+      case 0x1fb27:
+      case 0x1fb28:
+      case 0x1fb29:
+      case 0x1fb2a:
+      case 0x1fb2b:
+      case 0x1fb2c:
+      case 0x1fb2d:
+      case 0x1fb2e:
+      case 0x1fb2f:
+      case 0x1fb30:
+      case 0x1fb31:
+      case 0x1fb32:
+      case 0x1fb33:
+      case 0x1fb34:
+      case 0x1fb35:
+      case 0x1fb36:
+      case 0x1fb37:
+      case 0x1fb38:
+      case 0x1fb39:
+      case 0x1fb3a:
+      case 0x1fb3b:
+
+        {
+          ctx_begin_path (ctx);
+          uint32_t bitmask = (unichar - 0x1fb00) + 1;
+          if (bitmask > 20) bitmask ++;
+          if (bitmask > 41) bitmask ++;
+          int bit = 0;
+          for (int v = 0; v < 3; v ++)
+          for (int u = 0; u < 2; u ++, bit ++)
+          {
+            if (bitmask & (1<<bit))
+            {
+              draw_sextant_bit (ctx, x, y, cw, ch, u, v);
+            }
+          }
+          ctx_fill (ctx);
+          return 0;
+        }
+        break;
+      case 0x1fb3c:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_line_to (ctx, 0, -ch / 3.0f);
+          ctx_rel_line_to (ctx, cw/2, ch/3.0f);
+          ctx_fill (ctx);
+          return 0;
+        }
+        break;
+      case 0x1fb3d:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_line_to (ctx, 0, -ch/3.0f);
+          ctx_rel_line_to (ctx, cw, ch/3.0f);
+          ctx_fill (ctx);
+          return 0;
+        }
+        break;
+      case 0x1fb3e:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_line_to (ctx, 0,   -ch/3.0f * 2);
+          ctx_rel_line_to (ctx, cw/2, ch/3.0f * 2);
+          ctx_fill (ctx);
+          return 0;
+        }
+        break;
+      case 0x1fb3f:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_line_to (ctx, 0,  -ch/3.0f * 2);
+          ctx_rel_line_to (ctx, cw, ch/3.0f * 2);
+          ctx_fill (ctx);
+          return 0;
+        }
+        break;
+      case 0x1fb40:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_line_to (ctx, 0, -ch);
+          ctx_rel_line_to (ctx, cw/2, ch);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb41:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_line_to (ctx, 0, -ch/3.0*2);
+          ctx_rel_line_to (ctx, cw/2, -ch/3.0);
+          ctx_rel_line_to (ctx, cw/2, 0);
+          ctx_rel_line_to (ctx, 0.0, ch);
+          ctx_rel_line_to (ctx, -cw, 0);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb42:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_line_to (ctx, 0, -ch/3.0*2);
+          ctx_rel_line_to (ctx, cw, -ch/3.0);
+          ctx_rel_line_to (ctx, 0.0, ch);
+          ctx_rel_line_to (ctx, -cw, 0);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb43:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_line_to (ctx, 0, -ch/3.0f);
+          ctx_rel_line_to (ctx, cw/2, -ch/3.0f*2.0f);
+          ctx_rel_line_to (ctx, cw/2, 0);
+          ctx_rel_line_to (ctx, 0.0, ch);
+          ctx_rel_line_to (ctx, -cw, 0);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb44:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_line_to (ctx, 0, -ch/3.0);
+          ctx_rel_line_to (ctx, cw, -ch/3.0 * 2);
+          ctx_rel_line_to (ctx, 0.0, ch);
+          ctx_rel_line_to (ctx, -cw, 0);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb45:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_line_to (ctx, cw/2, -ch);
+          ctx_rel_line_to (ctx, cw/2, 0);
+          ctx_rel_line_to (ctx, 0.0, ch);
+          ctx_rel_line_to (ctx, -cw, 0);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb46:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_line_to (ctx, 0, -ch/3.0);
+          ctx_rel_line_to (ctx, cw, -ch/3.0);
+          ctx_rel_line_to (ctx, 0.0, ch/3.0*2);
+          ctx_rel_line_to (ctx, -cw, 0);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb47:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_move_to (ctx, cw/2, 0);
+          ctx_rel_line_to (ctx, cw/2, -ch/3.0);
+          ctx_rel_line_to (ctx, 0.0, ch/3.0);
+          ctx_rel_line_to (ctx, -cw/2, 0);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb48:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_line_to (ctx, cw, -ch/3.0);
+          ctx_rel_line_to (ctx, 0.0, ch/3.0);
+          ctx_rel_line_to (ctx, -cw, 0);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb49:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_move_to (ctx, cw/2, 0);
+          ctx_rel_line_to (ctx, cw/2, -ch/3.0*2);
+          ctx_rel_line_to (ctx, 0.0, ch/3.0*2);
+          ctx_rel_line_to (ctx, -cw/2, 0);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb4a:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_line_to (ctx, cw, -ch/3.0*2);
+          ctx_rel_line_to (ctx, 0.0, ch/3.0*2);
+          ctx_rel_line_to (ctx, -cw, 0);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb4b:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_line_to (ctx, 0, -ch);
+          ctx_rel_line_to (ctx, cw/2, 0);
+          ctx_rel_line_to (ctx, cw/2, ch/3);
+          ctx_rel_line_to (ctx, 0, ch/3.0*2);
+          ctx_rel_line_to (ctx, -cw, 0);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb4c:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_line_to (ctx, 0, -ch);
+          ctx_rel_line_to (ctx, cw, ch/3);
+          ctx_rel_line_to (ctx, 0, ch/3.0*2);
+          ctx_rel_line_to (ctx, -cw, 0);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb4d:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_line_to (ctx, 0, -ch);
+          ctx_rel_line_to (ctx, cw, ch/3);
+          ctx_rel_line_to (ctx, 0, ch/3.0*2);
+          ctx_rel_line_to (ctx, -cw, 0);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb4e:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_line_to (ctx, 0, -ch);
+          ctx_rel_line_to (ctx, cw/2, 0);
+          ctx_rel_line_to (ctx, cw/2, ch/3 *  2);
+          ctx_rel_line_to (ctx, 0, ch/3.0);
+          ctx_rel_line_to (ctx, -cw, 0);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb4f:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_line_to (ctx, 0, -ch);
+          ctx_rel_line_to (ctx, cw, ch/3 *  2);
+          ctx_rel_line_to (ctx, 0, ch/3.0);
+          ctx_rel_line_to (ctx, -cw, 0);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb50:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_line_to (ctx, 0, -ch);
+          ctx_rel_line_to (ctx, cw/2, 0);
+          ctx_rel_line_to (ctx, cw/2, ch);
+          ctx_rel_line_to (ctx, -cw, 0);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb51:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_line_to (ctx, 0, -ch/3.0*2);
+          ctx_rel_line_to (ctx, cw, ch/3.0);
+          ctx_rel_line_to (ctx, 0, ch/3.0);
+          ctx_rel_line_to (ctx, -cw, 0);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb52:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_move_to (ctx, 0, -ch/3.0);
+          ctx_rel_line_to (ctx, 0, -ch/3.0*2);
+          ctx_rel_line_to (ctx, cw, 0);
+          ctx_rel_line_to (ctx, 0, ch);
+          ctx_rel_line_to (ctx, -cw/2, 0);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb53:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_move_to (ctx, 0, -ch/3.0);
+          ctx_rel_line_to (ctx, 0, -ch/3.0*2);
+          ctx_rel_line_to (ctx, cw, 0);
+          ctx_rel_line_to (ctx, 0, ch);
+          ctx_rel_line_to (ctx, -cw, -ch/3.0);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb54:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_move_to (ctx, 0, -ch/3.0*2);
+          ctx_rel_line_to (ctx, 0, -ch/3.0);
+          ctx_rel_line_to (ctx, cw, 0);
+          ctx_rel_line_to (ctx, 0, ch);
+          ctx_rel_line_to (ctx, -cw/2, 0);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb55:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_move_to (ctx, 0, -ch/3.0*2);
+          ctx_rel_line_to (ctx, 0, -ch/3.0);
+          ctx_rel_line_to (ctx, cw, 0);
+          ctx_rel_line_to (ctx, 0, ch);
+          ctx_rel_line_to (ctx, -cw, -ch/3.0*2);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb56:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_move_to (ctx, 0, -ch);
+          ctx_rel_line_to (ctx, cw, 0);
+          ctx_rel_line_to (ctx, 0, ch);
+          ctx_rel_line_to (ctx, -cw/2, 0);
+          ctx_rel_line_to (ctx, -cw/2, -ch);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb57:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_move_to (ctx, 0, -ch/3.0*2);
+          ctx_rel_line_to (ctx, 0, -ch/3);
+          ctx_rel_line_to (ctx, cw/2, 0);
+          ctx_rel_line_to (ctx, -cw/2, ch/3);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb58:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_move_to (ctx, 0, -ch/3.0*2);
+          ctx_rel_line_to (ctx, 0, -ch/3);
+          ctx_rel_line_to (ctx, cw, 0);
+          ctx_rel_line_to (ctx, -cw, ch/3);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb59:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_move_to (ctx, 0, -ch/3.0);
+          ctx_rel_line_to (ctx, 0, -ch/3.0*2);
+          ctx_rel_line_to (ctx, cw/2, 0);
+          ctx_rel_line_to (ctx, -cw/2, ch/3 * 2);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb5a:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_move_to (ctx, 0, -ch/3.0);
+          ctx_rel_line_to (ctx, 0, -ch/3.0*2);
+          ctx_rel_line_to (ctx, cw, 0);
+          ctx_rel_line_to (ctx, -cw, ch/3 * 2);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb5b:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_line_to (ctx, 0, -ch);
+          ctx_rel_line_to (ctx, cw/2, 0);
+          ctx_rel_line_to (ctx, -cw/2, ch);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb5c:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_move_to (ctx, 0, -ch/3);
+
+          ctx_rel_line_to (ctx, 0, -ch/3.0*2);
+          ctx_rel_line_to (ctx, cw, 0);
+          ctx_rel_line_to (ctx, 0, ch/3);
+          ctx_rel_line_to (ctx, -cw, ch/3);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb5d:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_line_to (ctx, 0, -ch);
+          ctx_rel_line_to (ctx, cw, 0);
+          ctx_rel_line_to (ctx, 0, ch/3 * 2);
+          ctx_rel_line_to (ctx, -cw/2, ch/3);
+          ctx_rel_line_to (ctx, -cw/2, 0);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb5e:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_line_to (ctx, 0, -ch);
+          ctx_rel_line_to (ctx, cw, 0);
+          ctx_rel_line_to (ctx, 0, ch/3 * 2);
+          ctx_rel_line_to (ctx, -cw, ch/3);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb5f:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_line_to (ctx, 0, -ch);
+          ctx_rel_line_to (ctx, cw, 0);
+          ctx_rel_line_to (ctx, 0, ch/3);
+          ctx_rel_line_to (ctx, -cw/2, ch/3*2);
+          ctx_rel_line_to (ctx, -cw/2, 0);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb60:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_line_to (ctx, 0, -ch);
+          ctx_rel_line_to (ctx, cw, 0);
+          ctx_rel_line_to (ctx, 0, ch/3);
+          ctx_rel_line_to (ctx, -cw, ch/3*2);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb61:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_line_to (ctx, 0, -ch);
+          ctx_rel_line_to (ctx, cw, 0);
+          ctx_rel_line_to (ctx, -cw/2, ch);
+          ctx_rel_line_to (ctx, -cw/2, 0);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb62:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_move_to (ctx, cw/2, -ch);
+          ctx_rel_line_to (ctx, cw/2, 0);
+          ctx_rel_line_to (ctx, 0, ch/3);
+          ctx_rel_line_to (ctx, -cw/2, -ch/3);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb63:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_move_to (ctx, 0, -ch);
+          ctx_rel_line_to (ctx, cw, 0);
+          ctx_rel_line_to (ctx, 0, ch/3);
+          ctx_rel_line_to (ctx, -cw, -ch/3);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb64:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_move_to (ctx, cw/2, -ch);
+          ctx_rel_line_to (ctx, cw/2, 0);
+          ctx_rel_line_to (ctx, 0, ch/3*2);
+          ctx_rel_line_to (ctx, -cw/2, -ch/3*2);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb65:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_move_to (ctx, 0, -ch);
+          ctx_rel_line_to (ctx, cw, 0);
+          ctx_rel_line_to (ctx, 0, ch/3*2);
+          ctx_rel_line_to (ctx, -cw, -ch/3*2);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb66:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_move_to (ctx, cw/2, -ch);
+          ctx_rel_line_to (ctx, cw/2, 0);
+          ctx_rel_line_to (ctx, 0, ch);
+          ctx_rel_line_to (ctx, -cw/2, -ch);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb67:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_move_to (ctx, 0, -ch/3.0*2);
+          ctx_rel_line_to (ctx, 0, -ch/3);
+          ctx_rel_line_to (ctx, cw, 0);
+          ctx_rel_line_to (ctx, 0, ch/3.0*2);
+          ctx_rel_line_to (ctx, -cw, -ch/3.0);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb68:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_line_to (ctx, cw/2, -ch/2);
+          ctx_rel_line_to (ctx, -cw/2, -ch/2);
+          ctx_rel_line_to (ctx, cw, 0);
+          ctx_rel_line_to (ctx, 0, ch);
+          ctx_rel_line_to (ctx, -cw, 0);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb69:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_line_to (ctx, 0, -ch);
+          ctx_rel_line_to (ctx, cw/2, ch/2);
+          ctx_rel_line_to (ctx, cw/2, -ch/2);
+          ctx_rel_line_to (ctx, 0, ch);
+          ctx_rel_line_to (ctx, -cw, 0);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb6a:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_line_to (ctx, 0, -ch);
+          ctx_rel_line_to (ctx, cw, 0);
+          ctx_rel_line_to (ctx, -cw/2, ch/2);
+          ctx_rel_line_to (ctx, cw/2, ch/2);
+          ctx_rel_line_to (ctx, -cw, 0);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb6b:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_line_to (ctx, 0, -ch);
+          ctx_rel_line_to (ctx, cw, 0);
+          ctx_rel_line_to (ctx, 0, ch);
+          ctx_rel_line_to (ctx, -cw/2, -ch/2);
+          ctx_rel_line_to (ctx, -cw/2, ch/2);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb6c:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_line_to (ctx, 0, -ch);
+          ctx_rel_line_to (ctx, cw/2, ch/2);
+          ctx_rel_line_to (ctx, -cw/2, ch/2);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb6d:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_move_to (ctx, 0, -ch);
+          ctx_rel_line_to (ctx, cw, 0);
+          ctx_rel_line_to (ctx, -cw/2, ch/2);
+          ctx_rel_line_to (ctx, -cw/2, -ch/2);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb6e:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_move_to (ctx, cw, -ch);
+          ctx_rel_line_to (ctx, 0, ch);
+          ctx_rel_line_to (ctx, -cw/2, -ch/2);
+          ctx_rel_line_to (ctx, cw/2, -ch/2);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb6f:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_line_to (ctx, cw/2, -ch/2);
+          ctx_rel_line_to (ctx, cw/2, ch/2);
+          ctx_rel_line_to (ctx, -cw, 0);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb82:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_move_to (ctx, 0, -ch/8 * 2);
+          ctx_rel_line_to (ctx, cw, 0);
+          ctx_rel_move_to (ctx, 0, ch/8 * 2);
+          ctx_rel_line_to (ctx, -cw, 0);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb83:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_move_to (ctx, 0, -ch/8 * 3);
+          ctx_rel_line_to (ctx, cw, 0);
+          ctx_rel_move_to (ctx, 0, ch/8 * 3);
+          ctx_rel_line_to (ctx, -cw, 0);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb84:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_move_to (ctx, 0, -ch/8 * 5);
+          ctx_rel_line_to (ctx, cw, 0);
+          ctx_rel_move_to (ctx, 0, ch/8 * 5);
+          ctx_rel_line_to (ctx, -cw, 0);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb85:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_move_to (ctx, 0, -ch/8 * 6);
+          ctx_rel_line_to (ctx, cw, 0);
+          ctx_rel_move_to (ctx, 0, ch/8 * 6);
+          ctx_rel_line_to (ctx, -cw, 0);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb86:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_move_to (ctx, 0, -ch/8 * 7);
+          ctx_rel_line_to (ctx, cw, 0);
+          ctx_rel_move_to (ctx, 0, ch/8 * 7);
+          ctx_rel_line_to (ctx, -cw, 0);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb87:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_move_to (ctx, cw/8*6, 0);
+          ctx_rel_line_to (ctx, 0, -ch);
+          ctx_rel_move_to (ctx, cw/8*2, 0);
+          ctx_rel_line_to (ctx, 0, ch);
+          ctx_rel_move_to (ctx, -cw/8*2, 0);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb88:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_move_to (ctx, cw/8*5, 0);
+          ctx_rel_line_to (ctx, 0, -ch);
+          ctx_rel_move_to (ctx, cw/8*3, 0);
+          ctx_rel_line_to (ctx, 0, ch);
+          ctx_rel_move_to (ctx, -cw/8*3, 0);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb89:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_move_to (ctx, cw/8*3, 0);
+          ctx_rel_line_to (ctx, 0, -ch);
+          ctx_rel_move_to (ctx, cw/8*5, 0);
+          ctx_rel_line_to (ctx, 0, ch);
+          ctx_rel_move_to (ctx, -cw/8*5, 0);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb8a:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_move_to (ctx, cw/8*2, 0);
+          ctx_rel_line_to (ctx, 0, -ch);
+          ctx_rel_move_to (ctx, cw/8*6, 0);
+          ctx_rel_line_to (ctx, 0, ch);
+          ctx_rel_move_to (ctx, -cw/8*6, 0);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb97:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_line_to (ctx, 0, -ch/4);
+          ctx_rel_move_to (ctx, cw, 0);
+          ctx_rel_line_to (ctx, 0, ch/4);
+          ctx_rel_line_to (ctx, -cw, 0);
+          ctx_close_path (ctx);
+          ctx_move_to (ctx, 0, -ch/2);
+          ctx_rel_line_to (ctx, 0, -ch/4);
+          ctx_rel_move_to (ctx, cw, 0);
+          ctx_rel_line_to (ctx, 0, ch/4);
+          ctx_rel_line_to (ctx, -cw, 0);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb9a:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_line_to (ctx, cw/2, -ch/2);
+          ctx_rel_line_to (ctx, -cw/2, -ch/2);
+          ctx_rel_move_to (ctx, cw, 0);
+          ctx_rel_line_to (ctx, -cw/2, ch/2);
+          ctx_rel_line_to (ctx, cw/2, ch/2);
+          ctx_rel_line_to (ctx, -cw, 0);
+          ctx_fill (ctx);
+          return 0;
+        }
+      case 0x1fb9b:
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x, y);
+          ctx_rel_line_to (ctx, 0, -ch);
+          ctx_rel_line_to (ctx, cw/2, ch/2);
+          ctx_rel_line_to (ctx, cw/2, -ch/2);
+          ctx_rel_line_to (ctx, 0, ch);
+          ctx_rel_line_to (ctx, -cw/2, -ch/2);
+          ctx_rel_line_to (ctx, -cw/2, ch/2);
+          ctx_fill (ctx);
+          return 0;
+        }
+
+    }
+  return -1;
+}
+
+void vt_ctx_glyph (Ctx *ctx, VT *vt, float x, float y, int unichar, int bold, float scale_x, float scale_y, float offset_y)
+{
+  int did_save = 0;
+  if (unichar <= ' ')
+    return;
+  scale_x *= vt->scale_x;
+  scale_y *= vt->scale_y;
+
+  if (!ctx_renderer_is_term (ctx))
+  {
+    // TODO : use our own special glyphs when glyphs are not passed through
+    if (!vt_special_glyph (ctx, vt, x, y + offset_y * vt->ch, vt->cw * scale_x, vt->ch * scale_y, unichar) )
+      return;
+  }
+
+  if (scale_x != 1.0 || scale_y != 1.0)
+    {
+      if (!did_save)
+      {
+        ctx_save (ctx);
+        did_save = 1;
+      }
+
+      ctx_translate (ctx, x, y);
+      ctx_scale (ctx, scale_x, scale_y);
+      ctx_translate (ctx, -x, -y);
+    }
+  if (offset_y != 0.0f)
+  {
+    if (!did_save)
+    {
+      ctx_save (ctx);
+      did_save = 1;
+    }
+    ctx_translate (ctx, 0, vt->font_size * offset_y);
+  }
+  y -= vt->font_size * 0.22;
+  if (bold
+      && !ctx_renderer_is_term (ctx)
+     )
+    {
+      ctx_move_to (ctx, x - vt->font_size/30.0, y);
+      //ctx_line_width (ctx, vt->font_size/30.0);
+      ctx_glyph (ctx, unichar, 0);
+    }
+  ctx_move_to (ctx, x, y);
+  ctx_glyph (ctx, unichar, 0);
+  if (did_save)
+    ctx_restore (ctx);
+}
+
+//static uint8_t palette[256][3];
+
+/* optimized for ANSI ART - and avoidance of human metamers
+ * among color deficient vision - by distributing and pertubating
+ * until all 64 combinations - sans self application, have
+ * likely to be discernable by humans.
+ */
+
+
+void vt_ctx_get_color (VT *vt, int no, int intensity, uint8_t *rgba)
+{
+  uint8_t r = 0, g = 0, b = 0;
+  if (no < 16 && no >= 0)
+    {
+      switch (intensity)
+        {
+          case 0:
+            no = 0;
+            break;
+          case 1:
+            // 15 becomes 7
+            if (no == 15) { no = 8; }
+            else if (no > 8) { no -= 8; }
+            break;
+          case 2:
+            /* give the normal color special treatment, and in really normal
+             * cirumstances it is the dim variant of foreground that is used
+             */
+            if (no == 15) { no = 7; }
+            break;
+          case 3:
+          case 4:
+            if (no < 8)
+              { no += 8; }
+            break;
+          default:
+            break;
+        }
+      r = palettes[vt->palette_no][no][0];
+      g = palettes[vt->palette_no][no][1];
+      b = palettes[vt->palette_no][no][2];
+    }
+  else if (no < 16 + 6*6*6)
+    {
+      no = no-16;
+      b = (no % 6) * 255 / 5;
+      no /= 6;
+      g = (no % 6) * 255 / 5;
+      no /= 6;
+      r = (no % 6) * 255 / 5;
+    }
+  else
+    {
+      int gray = no - (16 + 6*6*6);
+      float val = gray * 255 / 24;
+      r = g = b = val;
+    }
+  rgba[0]=r;
+  rgba[1]=g;
+  rgba[2]=b;
+  rgba[3]=255;
+}
+
+int vt_keyrepeat (VT *vt)
+{
+  return vt->keyrepeat;
+}
+
+static void vt_flush_bg (VT *vt, Ctx *ctx)
+{
+  if (vt->bg_active)
+  {
+    ctx_rgba8 (ctx, vt->bg_rgba[0], vt->bg_rgba[1], vt->bg_rgba[2], vt->bg_rgba[3]);
+    ctx_rectangle (ctx, vt->bg_x0, vt->bg_y0, vt->bg_width, vt->bg_height);
+    ctx_fill (ctx);
+    vt->bg_active = 0;
+  }
+}
+
+static void vt_draw_bg (VT *vt, Ctx *ctx,
+                        float x0, float y0,
+                        float width, float height,
+                        uint8_t *rgba)
+{
+   int same_color = !memcmp(rgba, vt->bg_rgba, 4);
+   if (vt->bg_active && !same_color)
+   {
+     vt_flush_bg (vt, ctx);
+   }
+
+   if (vt->bg_active && same_color)
+   {
+     vt->bg_width += width;
+   }
+   else
+   {
+     memcpy (vt->bg_rgba, rgba, 4);
+     vt->bg_active = 1;
+     vt->bg_x0 = x0;
+     vt->bg_y0 = y0;
+     vt->bg_width = width;
+     vt->bg_height = height;
+   }
+}
+
+float vt_draw_cell (VT      *vt, Ctx *ctx,
+                    int      row, int col, // pass 0 to force draw - like
+                    float    x0, float y0, // for scrollback visible
+                    uint64_t style,
+                    uint32_t unichar,
+                    int      dw, int dh,
+                    int      in_smooth_scroll,
+                    int      in_select,
+                    int      is_fg)
+// dw is 0 or 1
+// dh is 0 1 or -1  1 is upper -1 is lower
+{
+  int on_white = vt->reverse_video;
+  int color = 0;
+  int bold = (style & STYLE_BOLD) != 0;
+  int dim = (style & STYLE_DIM) != 0;
+  int is_hidden = (style & STYLE_HIDDEN) != 0;
+  int proportional = (style & STYLE_PROPORTIONAL) != 0;
+  int fg_set = (style & STYLE_FG_COLOR_SET) != 0;
+  int bg_intensity = 0;
+  int fg_intensity = 2;
+  int reverse = ( (style & STYLE_REVERSE) != 0) ^ in_select;
+  int blink = ( (style & STYLE_BLINK) != 0);
+  int blink_fast = ( (style & STYLE_BLINK_FAST) != 0);
+  int cw = vt->cw;
+  int ch = vt->ch;
+  if (proportional)
+    {
+      if (vt->font_is_mono)
+        {
+          ctx_font (ctx, "regular");
+          vt->font_is_mono = 0;
+        }
+      cw = ctx_glyph_width (ctx, unichar);
+    }
+  else
+    {
+      if (vt->font_is_mono == 0)
+        {
+          ctx_font (ctx, "mono");
+          vt->font_is_mono = 1;
+          if (col > 1)
+            {
+              int x = x0;
+              int new_cw = cw - ( (x % cw) );
+              if (new_cw < cw*3/2)
+                { new_cw += cw; }
+              cw = new_cw;
+            }
+        }
+    }
+  float scale_x  = 1.0f;
+  float scale_y  = 1.0f;
+  float offset_y = 0.0f;
+  if (dw)
+    {
+      scale_x = 2.0f;
+    }
+  if (dh)
+    {
+      scale_y = 2.0f;
+    }
+  if (dh == 1)
+    {
+      offset_y = 0.5f;
+    }
+  else if (dh == -1)
+    {
+      offset_y =  0.0f;
+    }
+  if (in_smooth_scroll)
+    {
+      offset_y -= vt->scroll_offset / (dh?2:1);
+    }
+  cw *= scale_x;
+  if (blink_fast)
+    {
+      if ( (vt->blink_state % 2) == 0)
+        { blink = 1; }
+      else
+        { blink = 0; }
+    }
+  else if (blink)
+    {
+      if ( (vt->blink_state % 10) < 5)
+        { blink = 1; }
+      else
+        { blink = 0; }
+    }
+  /*
+     from the vt100 technical-manual:
+
+     "Reverse characters [..] normally have dim backgrounds with
+     black characters so that large white spaces have the same impact
+     on the viewer's eye as the smaller brighter white areas of
+     normal characters. Bold and reverse asserted together give a
+     background of normal intensity. Blink applied to nonreverse
+     characters causes them to alternate between their usual
+     intensity and the next lower intensity. (Normal characters vary
+     between normal and dim intensity. Bold characters vary between
+     bright and normal intensity.) Blink applied to a reverse
+     character causes that character to alternate between normal and
+     reverse video representations of that character."
+
+     This is in contrast with how the truth table appears to be
+     meant used, since it uses a reverse computed as the xor of
+     the global screen reverse and the reverse attribute of the
+     cell.
+
+     To fulfil the more asthethic resulting from implementing the
+     text, and would be useful to show how the on_bright background
+     mode of the vt100 actually displays the vttest.
+
+     */
+  if (on_white)
+    {
+          if (bold)
+            {
+              bg_intensity =           2;
+              fg_intensity = blink?1:  0;
+            }
+          else if (dim)
+            {
+              bg_intensity =           2;
+              fg_intensity = blink?3:  1;
+            }
+          else
+            {
+              bg_intensity =           2;
+              fg_intensity = blink?1:  0;
+            }
+          if (fg_set)
+            {
+              fg_intensity = blink?2:3;
+            }
+    }
+  else /* bright on dark */
+    {
+          if (bold)
+            {
+              bg_intensity =           0;
+              fg_intensity = blink?2:  3;
+            }
+          else if (dim)
+            {
+              bg_intensity =           0;
+              fg_intensity = blink?0:  1;
+            }
+          else
+            {
+              bg_intensity =           0;
+              fg_intensity = blink?1:  2;
+            }
+    }
+  uint8_t bg_rgb[4]= {0,0,0,255};
+  uint8_t fg_rgb[4]= {255,255,255,255};
+  {
+      //ctx_begin_path (ctx);
+      if (style &  STYLE_BG24_COLOR_SET)
+        {
+          uint64_t temp = style >> 40;
+          bg_rgb[0] = temp & 0xff;
+          temp >>= 8;
+          bg_rgb[1] = temp & 0xff;
+          temp >>= 8;
+          bg_rgb[2] = temp & 0xff;
+#if 0
+          if (dh)
+          {
+             bg_rgb[0] = 
+             bg_rgb[1] =
+             bg_rgb[2] = 30;
+          }
+#endif
+        }
+      else
+        {
+          if (style & STYLE_BG_COLOR_SET)
+            {
+              color = (style >> 40) & 255;
+              bg_intensity = -1;
+              vt_ctx_get_color (vt, color, bg_intensity, bg_rgb);
+            }
+          else
+            {
+              switch (bg_intensity)
+                {
+                  case 0:
+                    for (int i = 0; i <3 ; i++)
+                      { bg_rgb[i] = vt->bg_color[i]; }
+                    break;
+                  case 1:
+                    for (int i = 0; i <3 ; i++)
+                      { bg_rgb[i] = vt->bg_color[i] * 0.5 + vt->fg_color[i] * 0.5; }
+                    break;
+                  case 2:
+                    for (int i = 0; i <3 ; i++)
+                      { bg_rgb[i] = vt->bg_color[i] * 0.05 + vt->fg_color[i] * 0.95; }
+                    break;
+                  case 3:
+                    for (int i = 0; i <3 ; i++)
+                      { bg_rgb[i] = vt->fg_color[i]; }
+                    break;
+                }
+            }
+        }
+  }
+  if (style & STYLE_FG24_COLOR_SET)
+    {
+      uint64_t temp = style >> 16;
+      fg_rgb[0] = temp & 0xff;
+      temp >>= 8;
+      fg_rgb[1] = temp & 0xff;
+      temp >>= 8;
+      fg_rgb[2] = temp & 0xff;
+    }
+  else
+    {
+      if ( (style & STYLE_FG_COLOR_SET) == 0)
+        {
+          switch (fg_intensity)
+            {
+              case 0:
+                for (int i = 0; i <3 ; i++)
+                  { fg_rgb[i] = vt->bg_color[i] * 0.7 + vt->fg_color[i] * 0.3; }
+                break;
+              case 1:
+                for (int i = 0; i <3 ; i++)
+                  { fg_rgb[i] = vt->bg_color[i] * 0.5 + vt->fg_color[i] * 0.5; }
+                break;
+              case 2:
+                for (int i = 0; i <3 ; i++)
+                  { fg_rgb[i] = vt->bg_color[i] * 0.20 + vt->fg_color[i] * 0.80; }
+                break;
+              case 3:
+                for (int i = 0; i <3 ; i++)
+                  { fg_rgb[i] = vt->fg_color[i]; }
+            }
+        }
+      else
+        {
+          color = (style >> 16) & 255;
+          vt_ctx_get_color (vt, color, fg_intensity, fg_rgb);
+        }
+  }
+
+  if (reverse)
+  {
+    for (int c = 0; c < 3; c ++)
+    {
+      int t = bg_rgb[c];
+      bg_rgb[c] = fg_rgb[c];
+      fg_rgb[c] = t;
+    }
+  }
+
+  if (is_fg ||
+      ((!on_white) && bg_rgb[0]==0 && bg_rgb[1]==0 && bg_rgb[2]==0) ||
+      ((on_white) && bg_rgb[0]==255 && bg_rgb[1]==255 && bg_rgb[2]==255))
+          /* these comparisons are not entirely correct, when on dark background we assume black to
+           * be default and non-set, even when theme might differ
+           */
+  {
+    /* skipping draw of background */
+  }
+  else
+  {
+    if (dh)
+    {
+      vt_draw_bg (vt, ctx, ctx_floorf(x0),
+         ctx_floorf(y0 - ch - ch * (vt->scroll_offset)), cw, ch, bg_rgb);
+    }
+    else
+    {
+      vt_draw_bg (vt, ctx, x0, y0 - ch + ch * offset_y, cw, ch, bg_rgb);
+    }
+  }
+
+  if (!is_fg)
+    return cw;
+
+  int italic        = (style & STYLE_ITALIC) != 0;
+  int strikethrough = (style & STYLE_STRIKETHROUGH) != 0;
+  int overline      = (style & STYLE_OVERLINE) != 0;
+  int underline     = (style & STYLE_UNDERLINE) != 0;
+  int underline_var = (style & STYLE_UNDERLINE_VAR) != 0;
+  if (dh == 1)
+    {
+      underline = underline_var = 0;
+    }
+  int double_underline = 0;
+  int curved_underline = 0;
+  if (underline_var)
+    {
+      if (underline)
+        {
+          double_underline = 1;
+        }
+      else
+        {
+          curved_underline = 1;
+        }
+    }
+
+  int has_underline = (underline || double_underline || curved_underline);
+
+  if (unichar == ' ' && !has_underline)
+    is_hidden = 1;
+
+  if (!is_hidden)
+    {
+
+      ctx_rgba8 (ctx, fg_rgb[0], fg_rgb[1], fg_rgb[2], 255);
+
+
+      if (italic)
+        {
+          ctx_save (ctx);
+          ctx_translate (ctx, (x0 + cw/3), (y0 + vt->ch/2) );
+          ctx_scale (ctx, 0.9, 0.9);
+          ctx_rotate (ctx, 0.15);
+          ctx_translate (ctx, - (x0 + cw/3), - (y0 + vt->ch/2) );
+        }
+      vt_ctx_glyph (ctx, vt, x0, y0, unichar, bold, scale_x, scale_y, offset_y);
+      if (italic)
+        {
+          ctx_restore (ctx);
+        }
+      if (curved_underline)
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x0, y0 - vt->font_size * 0.07 - vt->ch * vt->scroll_offset);
+          ctx_rel_line_to (ctx, (cw+2) /3, -vt->ch * 0.05);
+          ctx_rel_line_to (ctx, (cw+2) /3, vt->ch * 0.1);
+          ctx_rel_line_to (ctx, (cw+2) /3, -vt->ch * 0.05);
+          //ctx_rel_line_to (ctx, cw, 0);
+          ctx_line_width (ctx, vt->font_size * (style &  STYLE_BOLD?0.050:0.04) );
+          ctx_stroke (ctx);
+        }
+      else if (double_underline)
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x0, y0 - vt->font_size * 0.130 - vt->ch * vt->scroll_offset);
+          ctx_rel_line_to (ctx, cw, 0);
+          ctx_move_to (ctx, x0, y0 - vt->font_size * 0.030 - vt->ch * vt->scroll_offset);
+          ctx_rel_line_to (ctx, cw, 0);
+          ctx_line_width (ctx, vt->font_size * (style &  STYLE_BOLD?0.050:0.04) );
+          ctx_stroke (ctx);
+        }
+      else if (underline)
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x0, y0 - vt->font_size * 0.07 - vt->ch * vt->scroll_offset);
+          ctx_rel_line_to (ctx, cw, 0);
+          ctx_line_width (ctx, vt->font_size * (style &  STYLE_BOLD?0.075:0.05) );
+          ctx_stroke (ctx);
+        }
+      if (overline)
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x0, y0 - vt->font_size * 0.94 - vt->ch * vt->scroll_offset);
+          ctx_rel_line_to (ctx, cw, 0);
+          ctx_line_width (ctx, vt->font_size * (style &  STYLE_BOLD?0.075:0.05) );
+          ctx_stroke (ctx);
+        }
+      if (strikethrough)
+        {
+          ctx_begin_path (ctx);
+          ctx_move_to (ctx, x0, y0 - vt->font_size * 0.43 - vt->ch * vt->scroll_offset);
+          ctx_rel_line_to (ctx, cw, 0);
+          ctx_line_width (ctx, vt->font_size * (style &  STYLE_BOLD?0.075:0.05) );
+          ctx_stroke (ctx);
+        }
+    }
+  return cw;
+}
+
+int vt_has_blink (VT *vt)
+{
+  if (!vt) return 0;
+  return (vt->in_smooth_scroll ?  10 : 0);
+  //return vt->has_blink + (vt->in_smooth_scroll ?  10 : 0);
+}
+
+//extern int enable_terminal_menu;
+//
+
+//void ctx_set_popup (Ctx *ctx, void (*popup)(Ctx *ctx, void *data), void *popup_data);
+
+static char *primary = NULL;
+static void scrollbar_drag (CtxEvent *event, void *data, void *data2);
+static int scrollbar_down = 0;
+
+void vt_mouse_event (CtxEvent *event, void *data, void *data2)
+{
+  VT   *vt = data;
+  CtxClient *client = vt_get_client (vt);
+  float  x = event->x;
+  float  y = event->y;
+  int device_no = event->device_no;
+  char buf[128]="";
+  if ((!vt->in_alt_screen) &&
+      (event->x > vt->width - vt->cw * 1.5 || scrollbar_down) &&
+      (event->type == CTX_DRAG_MOTION ||
+      event->type == CTX_DRAG_PRESS ||
+      event->type == CTX_DRAG_RELEASE))
+    return scrollbar_drag (event, data, data2);
+  switch (event->type)
+  {
+    case CTX_MOTION:
+    case CTX_DRAG_MOTION:
+      //if (event->device_no==1)
+      {
+        sprintf (buf, "mouse-motion %.0f %.0f %i", x, y, device_no);
+//      ctx_set_dirty (event->ctx, 1);
+        ctx_client_lock (client);
+        vt_feed_keystring (vt, event, buf);
+        ctx_client_unlock (client);
+//      vt->rev++;
+      }
+      break;
+    case CTX_DRAG_PRESS:
+      if (event->device_no==2)
+      {
+        if (primary)
+        {
+          if (vt)
+            vt_paste (vt, primary);
+        }
+      }
+      else if (event->device_no==3 && !vt->in_alt_screen)
+      {
+        vt->popped = 1;
+      }
+      else
+      {
+        sprintf (buf, "mouse-press %.0f %.0f %i", x, y, device_no);
+        ctx_client_lock (client);
+        vt_feed_keystring (vt, event, buf);
+        ctx_client_unlock (client);
+//      ctx_set_dirty (event->ctx, 1);
+//      vt->rev++;
+      }
+      break;
+    case CTX_DRAG_RELEASE:
+      if (event->device_no==3 && !vt->in_alt_screen)
+      {
+        vt->popped = 0;
+      }
+        ctx_set_dirty (event->ctx, 1);
+        sprintf (buf, "mouse-release %.0f %.0f %i", x, y, device_no);
+        ctx_client_lock (client);
+        vt_feed_keystring (vt, event, buf);
+        ctx_client_unlock (client);
+      break;
+    default:
+      // we should not stop propagation
+      return;
+      break;
+  }
+  event->stop_propagate = 1;
+//vt->rev++;
+}
+static int scrollbar_focused = 0;
+#if 0
+static void scrollbar_enter (CtxEvent *event, void *data, void *data2)
+{
+  VT *vt = data;
+  vt->rev++;
+  scrollbar_focused = 1;
+}
+
+static void scrollbar_leave (CtxEvent *event, void *data, void *data2)
+{
+  VT *vt = data;
+  vt->rev++;
+  scrollbar_focused = 0;
+}
+#endif
+
+static void scrollbar_drag (CtxEvent *event, void *data, void *data2)
+{
+  VT *vt = data;
+  float disp_lines = vt->rows;
+  float tot_lines = vt->line_count + vt->scrollback_count;
+
+  vt->scroll = tot_lines - disp_lines - (event->y*1.0/ ctx_client_height (vt->id)) * tot_lines + disp_lines/2;
+  if (vt->scroll < 0) { vt->scroll = 0.0; }
+  if (vt->scroll > vt->scrollback_count) { vt->scroll = vt->scrollback_count; }
+  vt->rev++;
+  ctx_set_dirty (event->ctx, 1);
+  event->stop_propagate = 1;
+
+  switch (event->type)
+  {
+    case CTX_DRAG_PRESS:
+      scrollbar_down = 1;
+      break;
+    case CTX_DRAG_RELEASE:
+      scrollbar_down = 0;
+      break;
+    default:
+      break;
+  }
+}
+
+#if 0
+static void scroll_handle_drag (CtxEvent *event, void *data, void *data2)
+{
+  VT *vt = data;
+  float tot_lines = vt->line_count + vt->scrollback_count;
+  if (event->type == CTX_DRAG_MOTION)
+  {
+    vt->scroll -= (event->delta_y * tot_lines) / (vt->rows * vt->ch);
+  }
+  if (vt->scroll < 0) { vt->scroll = 0.0; }
+  if (vt->scroll > vt->scrollback_count) { vt->scroll = vt->scrollback_count; }
+  vt->rev++;
+  event->stop_propagate = 1;
+}
+#endif
+
+#if 0
+static void test_popup (Ctx *ctx, void *data)
+{
+  VT *vt = data;
+
+  float x = ctx_client_x (vt->id);
+  float y = ctx_client_y (vt->id);
+  ctx_rectangle (ctx, x, y, 100, 100);
+  ctx_rgb (ctx, 1,0,0);
+  ctx_fill (ctx);
+}
+#endif
+
+void itk_style_color (Ctx *ctx, const char *name); // only itk fun used in vt
+
+void vt_use_images (VT *vt, Ctx *ctx)
+{
+  /*  this is a call intended for minimized/shaded fully obscured
+   *  clients to make sure their textures are kept alive
+   *  in the server
+   */
+  //float x0=0;
+  float y0=0;
+  //vt->has_blink = 0;
+  //vt->blink_state++;
+
+  ctx_save (ctx);
+
+  {
+    /* draw graphics */
+    for (int row = ((vt->scroll!=0.0f)?vt->scroll:0);
+         row < (vt->scroll) + vt->rows * 4;
+         row ++)
+    {
+       CtxList *l = ctx_list_nth (vt->lines, row);
+       float y = y0 + vt->ch * (vt->rows - row);
+
+       if (row >= vt->rows && !vt->in_alt_screen)
+         {
+           l = ctx_list_nth (vt->scrollback, row-vt->rows);
+         }
+
+       if (l && y <= (vt->rows - vt->scroll) *  vt->ch)
+         {
+           VtLine *line = l->data;
+           if (line->ctx_copy)
+             {
+               ctx_render_ctx_textures (line->ctx_copy, ctx);
+             }
+         }
+    }
+  }
+  ctx_restore (ctx);
+}
+
+
+void vt_register_events (VT *vt, Ctx *ctx, double x0, double y0)
+{
+  ctx_begin_path (ctx);
+  ctx_save (ctx);
+  ctx_translate (ctx, x0, y0);
+  ctx_rectangle (ctx, 0, 0, vt->cols * vt->cw, vt->rows * vt->ch);
+  ctx_listen (ctx, CTX_DRAG,   vt_mouse_event, vt, NULL);
+  ctx_listen (ctx, CTX_MOTION, vt_mouse_event, vt, NULL);
+  ctx_begin_path (ctx);
+  ctx_restore (ctx);
+}
+
+void vt_draw (VT *vt, Ctx *ctx, double x0, double y0)
+{
+  ctx_begin_path (ctx);
+  ctx_save (ctx);
+  ctx_translate (ctx, x0, y0);
+  x0 = 0;
+  y0 = 0;
+  ctx_font (ctx, "mono");
+  vt->font_is_mono = 0;
+  ctx_font_size (ctx, vt->font_size * vt->font_to_cell_scale);
+  vt->has_blink = 0;
+  vt->blink_state++;
+#if 0
+  int cursor_x_px = 0;
+  int cursor_y_px = 0;
+  int cursor_w = vt->cw;
+  int cursor_h = vt->ch;
+  cursor_x_px = x0 + (vt->cursor_x - 1) * vt->cw;
+  cursor_y_px = y0 + (vt->cursor_y - 1) * vt->ch;
+  cursor_w = vt->cw;
+  cursor_h = vt->ch;
+#endif
+  ctx_save (ctx);
+  //if (vt->scroll || full)
+    {
+      ctx_begin_path (ctx);
+#if 1
+      ctx_rectangle (ctx, 0, 0, vt->width, //(vt->cols) * vt->cw,
+                     (vt->rows) * vt->ch);
+      if (vt->reverse_video)
+        {
+          itk_style_color (ctx, "terminal-bg-reverse");
+          ctx_fill  (ctx);
+        }
+      else
+        {
+          itk_style_color (ctx, "terminal-bg");
+          ctx_fill  (ctx);
+        }
+#endif
+      if (vt->scroll != 0.0f)
+        ctx_translate (ctx, 0.0, vt->ch * vt->scroll);
+    }
+  /* draw terminal lines */
+   {
+     for (int row = (vt->scroll!=0.0f)?vt->scroll:0; row < (vt->scroll) + vt->rows; row ++)
+       {
+         CtxList *l = ctx_list_nth (vt->lines, row);
+         float y = y0 + vt->ch * (vt->rows - row);
+         if (row >= vt->rows)
+           {
+             l = ctx_list_nth (vt->scrollback, row-vt->rows);
+           }
+         if (l && y <= (vt->rows - vt->scroll) *  vt->ch)
+           {
+             VtLine *line = l->data;
+             int r = vt->rows - row;
+             const char *data = line->string.str;
+
+             vt->bg_active = 0;
+             for (int is_fg = 0; is_fg < 2; is_fg++)
+             {
+               const char *d = data;
+               float x = x0;
+               uint64_t style = 0;
+               uint32_t unichar = 0;
+               int in_scrolling_region = vt->in_smooth_scroll &&
+                   ((r >= vt->margin_top && r <= vt->margin_bottom) || r <= 0);
+               if (is_fg)
+                  vt_flush_bg (vt, ctx);
+  
+               for (int col = 1; col <= vt->cols * 1.33 && x < vt->cols * vt->cw; col++)
+                 {
+                   int c = col;
+                   int real_cw;
+                   int in_selected_region = 0;
+                   //if (vt->in_alt_screen == 0)
+                   {
+                   if (r > vt->select_start_row && r < vt->select_end_row)
+                     {
+                       in_selected_region = 1;
+                     }
+                   else if (r == vt->select_start_row)
+                     {
+                       if (col >= vt->select_start_col) { in_selected_region = 1; }
+                       if (r == vt->select_end_row)
+                         {
+                           if (col > vt->select_end_col) { in_selected_region = 0; }
+                         }
+                     }
+                   else if (r == vt->select_end_row)
+                     {
+                       in_selected_region = 1;
+                       if (col > vt->select_end_col) { in_selected_region = 0; }
+                     }
+                   }
+                   if (vt->select_active == 0) in_selected_region = 0;
+                   style = vt_line_get_style (line, col-1);
+                   unichar = d?ctx_utf8_to_unichar (d) :' ';
+  
+                   int is_cursor = 0;
+                   if (vt->cursor_x == col && vt->cursor_y == vt->rows - row && vt->cursor_visible)
+                      is_cursor = 1;
+  
+                   real_cw=vt_draw_cell (vt, ctx, r, c, x, y, style, unichar,
+                                         line->double_width,
+                                         line->double_height_top?1:
+                                         line->double_height_bottom?-1:0,
+                                         in_scrolling_region,
+                                         in_selected_region ^ is_cursor, is_fg);
+                   if (r == vt->cursor_y && col == vt->cursor_x)
+                     {
+#if 0
+                       cursor_x_px = x;
+#endif
+                     }
+                   x+=real_cw;
+                   if (style & STYLE_BLINK ||
+                       style & STYLE_BLINK_FAST)
+                     {
+                       vt->has_blink = 1;
+                     }
+                   if (d)
+                     {
+                       d = mrg_utf8_skip (d, 1);
+                       if (!*d) { d = NULL; }
+                     }
+                 }
+             }
+#if 0
+             if (line->wrapped)
+             {
+               ctx_rectangle (ctx, x0, y, 10, 10);
+               ctx_rgb (ctx, 1,0,0);
+               ctx_fill (ctx);
+             }
+#endif
+          }
+      }
+  }
+
+#if 0
+  /* draw cursor (done inline with fg/bg reversing, some cursor styles might need
+   * additional drawing though
+   */
+  if (vt->cursor_visible)
+    {
+    //  ctx_rgba (ctx, 0.9, 0.8, 0.0, 0.5333);
+      ctx_rgba (ctx, 1.0,1.0,1.0,1.0);
+      ctx_begin_path (ctx);
+      ctx_rectangle (ctx,
+                     cursor_x_px, cursor_y_px,
+                     cursor_w, cursor_h);
+      ctx_fill (ctx);
+    }
+#endif
+
+
+  {
+    /* draw graphics */
+     for (int row = ((vt->scroll!=0.0f)?vt->scroll:0); row < (vt->scroll) + vt->rows * 4; row ++)
+      {
+        CtxList *l = ctx_list_nth (vt->lines, row);
+        float y = y0 + vt->ch * (vt->rows - row);
+
+        if (row >= vt->rows && !vt->in_alt_screen)
+          {
+            l = ctx_list_nth (vt->scrollback, row-vt->rows);
+          }
+
+        if (l && y <= (vt->rows - vt->scroll) *  vt->ch)
+          {
+            VtLine *line = l->data;
+            {
+            for (int i = 0; i < 4; i++)
+              {
+                Image *image = line->images[i];
+                if (image)
+                  {
+                    int u = (line->image_col[i]-1) * vt->cw + (line->image_X[i] * vt->cw);
+                    int v = y - vt->ch + (line->image_Y[i] * vt->ch);
+                //  int rows = (image->height + (vt->ch-1) ) /vt->ch;
+                //
+                //
+                    if (v + image->height +vt->scroll * vt->ch > 0.0 &&
+                        image->width && image->height /* some ghost images appear with these */
+                        )
+                    {
+                    ctx_save (ctx);
+                    ctx_rectangle (ctx, x0, y0 - vt->scroll * vt->ch, vt->cw * vt->cols,
+                                    vt->ch * vt->rows);
+                    ctx_clip (ctx);
+                    char texture_n[65]; 
+
+                    sprintf (texture_n, "vtimg%i", image->eid_no);
+                    ctx_rectangle (ctx, u, v, image->width, image->height);
+                    ctx_translate (ctx, u, v);
+
+                    //replace this texture_n with NULL to
+                    // be content addressed - but bit slower
+                    ctx_define_texture (ctx, texture_n, image->width,
+                                        image->height,
+                                        0,
+                                        image->kitty_format == 32 ?
+                                                 CTX_FORMAT_RGBA8 :
+                                                 CTX_FORMAT_RGB8,
+                                        image->data, texture_n);
+                    ctx_fill (ctx);
+
+                    ctx_restore (ctx);
+                    }
+                  }
+              }
+
+            if (line->ctx_copy)
+              {
+                //fprintf (stderr, " [%i]\n", _ctx_frame (ctx));
+                //ctx_render_stream (line->ctx_copy, stderr, 1);
+
+                ctx_begin_path (ctx);
+                ctx_save (ctx);
+                ctx_rectangle (ctx, x0, y0 - vt->scroll * vt->ch, vt->cw * vt->cols,
+                                    vt->ch * vt->rows);
+                ctx_clip (ctx);
+                ctx_translate (ctx, 0.0, y - vt->ch);
+
+                //(vt->rows-row-1) * (vt->ch) );
+                //float factor = vt->cols * vt->cw / 1000.0;
+                //ctx_scale (ctx, factor, factor);
+                //
+                ctx_render_ctx (line->ctx_copy, ctx);
+                ctx_restore (ctx);
+              }
+            }
+          }
+    //  y -= vt->ch;
+      }
+  }
+
+
+  for (int i = 0; i < 4; i++)
+    {
+      if (vt->leds[i])
+        {
+          ctx_rgba (ctx, .5,1,.5,0.8);
+          ctx_rectangle (ctx, vt->cw * i + vt->cw * 0.25, vt->ch * 0.25, vt->cw/2, vt->ch/2);
+          ctx_fill (ctx);
+        }
+    }
+  ctx_restore (ctx);
+//#define SCROLL_SPEED 0.25;
+#define SCROLL_SPEED 0.001;
+  if (vt->in_smooth_scroll)
+   {
+     if (vt->in_smooth_scroll<0)
+       {
+         vt->scroll_offset += SCROLL_SPEED;
+         if (vt->scroll_offset >= 0.0)
+           {
+             vt->scroll_offset = 0;
+             vt->in_smooth_scroll = 0;
+             vt->rev++;
+           }
+       }
+     else
+       {
+         vt->scroll_offset -= SCROLL_SPEED;
+         if (vt->scroll_offset <= 0.0)
+           {
+             vt->scroll_offset = 0;
+             vt->in_smooth_scroll = 0;
+             vt->rev++;
+           }
+       }
+   }
+
+    /* scrollbar */
+    if (!vt->in_alt_screen)
+    {
+      float disp_lines = vt->rows;
+      float tot_lines = vt->line_count + vt->scrollback_count;
+      float offset = (tot_lines - disp_lines - vt->scroll) / tot_lines;
+      float win_len = disp_lines / tot_lines;
+
+#if 0
+      ctx_rectangle (ctx, (vt->cols *vt->cw), 0, 
+                       (vt->width) - (vt->cols * vt->cw),
+                       vt->rows *  vt->ch);
+      ctx_rgb (ctx,1,0,0);
+      ctx_fill (ctx);
+#endif
+
+      ctx_rectangle (ctx, (vt->width) - vt->cw * 1.5,
+                     0, 1.5 * vt->cw,
+                     vt->rows * vt->ch);
+      //ctx_listen (ctx, CTX_DRAG,  scrollbar_drag, vt, NULL);
+      //ctx_listen (ctx, CTX_ENTER, scrollbar_enter, vt, NULL);
+      //ctx_listen (ctx, CTX_LEAVE, scrollbar_leave, vt, NULL);
+      if (vt->scroll != 0 || scrollbar_focused)
+        ctx_rgba (ctx, 0.5, 0.5, 0.5, .25);
+      else
+        ctx_rgba (ctx, 0.5, 0.5, 0.5, .10);
+      ctx_fill (ctx);
+      ctx_round_rectangle (ctx, (vt->width) - vt->cw * 1.5,
+                           offset * vt->rows * vt->ch, (1.5-0.2) * vt->cw,
+                           win_len * vt->rows * vt->ch,
+                           vt->cw * 1.5 /2);
+      //ctx_listen (ctx, CTX_DRAG, scroll_handle_drag, vt, NULL);
+      if (vt->scroll != 0 || scrollbar_focused)
+        ctx_rgba (ctx, 1, 1, 1, .25);
+      else
+        ctx_rgba (ctx, 1, 1, 1, .10);
+      ctx_fill (ctx);
+    }
+
+    ctx_rectangle (ctx, 0, 0, vt->cols * vt->cw, vt->rows * vt->ch);
+    ctx_listen (ctx, CTX_DRAG,   vt_mouse_event, vt, NULL);
+    ctx_listen (ctx, CTX_MOTION, vt_mouse_event, vt, NULL);
+    ctx_begin_path (ctx);
+
+    ctx_restore (ctx);
+
+    if (vt->popped)
+    {
+       //ctx_set_popup (ctx, test_popup, vt);
+    }
+}
+
+
+int vt_is_done (VT *vt)
+{
+  return vt->vtpty.done;
+}
+
+int vt_get_result (VT *vt)
+{
+  /* we could block - at least for a while, here..? */
+  return vt->result;
+}
+
+void vt_set_scrollback_lines (VT *vt, int scrollback_lines)
+{
+  vt->scrollback_limit = scrollback_lines;
+}
+
+int  vt_get_scrollback_lines (VT *vt)
+{
+  return vt->scrollback_limit;
+}
+
+void vt_set_scroll (VT *vt, int scroll)
+{
+  if (vt->scroll == scroll)
+    return;
+  vt->scroll = scroll;
+  if (vt->scroll > ctx_list_length (vt->scrollback) )
+    { vt->scroll = ctx_list_length (vt->scrollback); }
+  if (vt->scroll < 0)
+    { vt->scroll = 0; }
+}
+
+int vt_get_scroll (VT *vt)
+{
+  return vt->scroll;
+}
+
+char *
+vt_get_selection (VT *vt)
+{
+  CtxString *str = ctx_string_new ("");
+  char *ret;
+  for (int row = vt->select_start_row; row <= vt->select_end_row; row++)
+    {
+      const char *line_str = vt_get_line (vt, vt->rows - row);
+      int col = 1;
+      for (const char *c = line_str; *c; c = mrg_utf8_skip (c, 1), col ++)
+        {
+          if (row == vt->select_end_row && col > vt->select_end_col)
+            { continue; }
+          if (row == vt->select_start_row && col < vt->select_start_col)
+            { continue; }
+          ctx_string_append_utf8char (str, c);
+        }
+      if (row < vt->select_end_row && !vt_line_is_continuation (vt, vt->rows-row-1))
+      {
+        _ctx_string_append_byte (str, '\n');
+      }
+    }
+  ret = str->str;
+  ctx_string_free (str, 0);
+  return ret;
+}
+
+int vt_get_local (VT *vt)
+{
+  return vt->local_editing;
+}
+
+void vt_set_local (VT *vt, int local)
+{
+  vt->local_editing = local;
+}
+
+static unsigned long prev_press_time = 0;
+static int short_count = 0;
+
+
+void terminal_set_primary (const char *text)
+{
+  if (primary) free (primary);
+  primary = NULL;
+  if (text) primary = strdup (text);
+}
+
+void terminal_long_tap (Ctx *ctx, VT *vt);
+static int long_tap_cb_id = 0;
+static int single_tap (Ctx *ctx, void *data)
+{
+#if 0 // XXX
+  VT *vt = data;
+  if (short_count == 0 && !vt->select_active)
+    terminal_long_tap (ctx, vt);
+#endif
+  return 0;
+}
+
+void vt_mouse (VT *vt, CtxEvent *event, VtMouseEvent type, int button, int x, int y, int px_x, int px_y)
+{
+ char buf[64]="";
+ int button_state = 0;
+ vt->rev++;
+ ctx_ticks();
+ if ((! (vt->mouse | vt->mouse_all | vt->mouse_drag)) ||
+     (event && (event->state & CTX_MODIFIER_STATE_SHIFT)))
+   {
+     // regular mouse select, this is incomplete
+     // fully ignorant of scrollback for now
+     //
+     if (type == VT_MOUSE_PRESS)
+       {
+         vt->cursor_down = 1;
+         vt->select_begin_col = x;
+         vt->select_begin_row = y - (int)vt->scroll;
+         vt->select_start_col = x;
+         vt->select_start_row = y - (int)vt->scroll;
+         vt->select_end_col = x;
+         vt->select_end_row = y - (int)vt->scroll;
+         vt->select_active = 0;
+         if (long_tap_cb_id)
+           {
+             ctx_remove_idle (vt->root_ctx, long_tap_cb_id);
+             long_tap_cb_id = 0;
+           }
+         
+         if ((ctx_ticks () - prev_press_time) < 1000*300 &&
+             abs(px_x - vt->select_begin_x) + 
+             abs(px_y - vt->select_begin_y) < 8)
+         {
+           short_count++;
+           switch (short_count)
+           {
+             case 1:
+             {
+               /* extend selection until space, XXX  should handle utf8 instead of ascii here!  */
+
+               int hit_space = 0;
+           
+               while (vt->select_start_col > 1 && !hit_space)
+               {
+                 vt->select_start_col --;
+                 char *sel = vt_get_selection (vt);
+                 if (sel[0] == ' ' || sel[0] == '\0')
+                   hit_space = 1;
+                 free (sel);
+               }
+               if (hit_space)
+                 vt->select_start_col++;
+
+               hit_space = 0;
+               while ((hit_space == 0) &&
+                      (vt->select_end_col < vt->cols))
+               {
+                 vt->select_end_col ++;
+                 char *sel = vt_get_selection (vt);
+                 int len = strlen(sel);
+                 if (sel[len-1]==' ')
+                   hit_space = 1;
+                 free (sel);
+               }
+               if (hit_space)
+                 vt->select_end_col--;
+
+               vt->select_active = 1;
+
+               { char *sel = vt_get_selection (vt);
+                 if (sel)
+                 {
+                    terminal_set_primary (sel);
+                    free (sel);
+                 }
+               }
+               }
+               break;
+             case 2:
+               vt->select_start_col = 1;
+               vt->select_end_col = vt->cols;
+               vt->select_active = 1;
+               {
+                 char *sel = vt_get_selection (vt);
+                 if (sel){
+                    terminal_set_primary (sel);
+                    free (sel);
+                 }
+               }
+               break;
+             case 3:
+               short_count = 0;
+               vt->select_start_col = 
+               vt->select_end_col = vt->select_begin_col;
+               vt->select_active = 0;
+               terminal_set_primary ("");
+               break;
+           }
+         }
+         else
+         {
+           if (vt->root_ctx && short_count == 0)
+             long_tap_cb_id = ctx_add_timeout (vt->root_ctx, 1000, single_tap, vt);
+           short_count = 0;
+           //vt->select_start_col = 
+           //vt->select_end_col = vt->select_begin_col;
+         }
+         vt->select_begin_x = px_x;
+         vt->select_begin_y = px_y;
+         prev_press_time = ctx_ticks ();
+         vt->rev++;
+       }
+     else if (type == VT_MOUSE_RELEASE)
+       {
+         if (long_tap_cb_id)
+           {
+             ctx_remove_idle (vt->root_ctx, long_tap_cb_id);
+             long_tap_cb_id = 0;
+           }
+         vt->cursor_down = 0;
+       }
+     else if (type == VT_MOUSE_MOTION && vt->cursor_down)
+       {
+         int row = y - (int)vt->scroll;
+         int col = x;
+         if ((row > vt->select_begin_row) ||
+             ((row == vt->select_begin_row) && (col >= vt->select_begin_col)))
+         {
+           vt->select_start_col = vt->select_begin_col;
+           vt->select_start_row = vt->select_begin_row;
+           vt->select_end_col = col;
+           vt->select_end_row = row;
+         }
+         else
+         {
+           vt->select_start_col = col;
+           vt->select_start_row = row;
+           vt->select_end_col = vt->select_begin_col;
+           vt->select_end_row = vt->select_begin_row;
+         }
+         if (vt->select_end_row == vt->select_start_row &&
+             abs (vt->select_begin_x - px_x) < vt->cw/2)
+         {
+           vt->select_active = 0;
+         }
+         else
+         {
+           vt->select_active = 1;
+           char *selection = vt_get_selection (vt);
+           if (selection)
+           {
+             terminal_set_primary (selection);
+             free (selection);
+           }
+         }
+
+         if (y < 1)
+         {
+           vt->scroll += 1.0f;
+           if (vt->scroll > vt->scrollback_count)
+             vt->scroll = vt->scrollback_count;
+         }
+         else if (y > vt->rows)
+         {
+           vt->scroll -= 1.0f;
+           if (vt->scroll < 0)
+             vt->scroll = 0.0f;
+         }
+
+         vt->rev++;
+       }
+     return;
+   }
+ if (type == VT_MOUSE_MOTION)
+   { button_state = 3; }
+
+ if (vt->unit_pixels && vt->mouse_decimal)
+   {
+     x = px_x;
+     y = px_y;
+   }
+ switch (type)
+   {
+     case VT_MOUSE_MOTION:
+       if (!vt->mouse_all)
+         return;
+       if (x==vt->lastx && y==vt->lasty)
+         return;
+       vt->lastx = x;
+       vt->lasty = y;
+   //  sprintf (buf, "\033[<35;%i;%iM", x, y);
+       break;
+     case VT_MOUSE_RELEASE:
+       if (vt->mouse_decimal == 0)
+         button_state = 3;
+       break;
+     case VT_MOUSE_PRESS:
+       button_state = 0;
+       break;
+     case VT_MOUSE_DRAG: // XXX not really used - remove
+       if (! (vt->mouse_all || vt->mouse_drag) )
+         return;
+       button_state = 32;
+       break;
+   }
+ // todo : mix in ctrl/meta state
+ if (vt->mouse_decimal)
+   {
+     sprintf (buf, "\033[<%i;%i;%i%c", button_state, x, y, type == VT_MOUSE_RELEASE?'m':'M');
+   }
+ else
+   { 
+     sprintf (buf, "\033[M%c%c%c", button_state + 32, x + 32, y + 32);
+   }
+ if (buf[0])
+   {
+     vt_write (vt, buf, strlen (buf) );
+     fflush (NULL);
+   }
+}
+
+pid_t vt_get_pid (VT *vt)
+{
+  return vt->vtpty.pid;
+}
+
+void vt_set_ctx (VT *vt, Ctx *ctx)
+{
+  vt->root_ctx = ctx;
+}
+#ifndef _DEFAULT_SOURCE
+#define _DEFAULT_SOURCE
+#endif
+
+#if !__COSMOPOLITAN__
+#include <unistd.h>
+#include <assert.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdint.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <sys/ioctl.h>
+#include <signal.h>
+#include <pty.h>
+#include <math.h>
+#include <malloc.h>
+#include <sys/time.h>
+#include <time.h>
+#endif
+
+#define VT_RECORD 0
+extern Ctx *ctx;
+#define flag_is_set(a, f) (((a) & (f))!=0)
+#define flag_set(a, f)    ((a) |= (f));
+#define flag_unset(a, f)  ((a) &= ~(f));
+
+//#define CTX_x            CTX_STRH('x',0,0,0,0,0,0,0,0,0,0,0,0,0)
+//#define CTX_y            CTX_STRH('y',0,0,0,0,0,0,0,0,0,0,0,0,0)
+#define CTX_lower_bottom CTX_STRH('l','o','w','e','r','-','b','o','t','t','o','m',0,0)
+#define CTX_lower        CTX_STRH('l','o','w','e','r',0,0,0,0,0,0,0,0,0)
+#define CTX_raise        CTX_STRH('r','a','i','s','e',0,0,0,0,0,0,0,0,0)
+#define CTX_raise_top    CTX_STRH('r','a','i','s','e','-','t','o','p',0,0,0,0,0)
+#define CTX_terminate    CTX_STRH('t','e','r','m','i','n','a','t','e',0,0,0,0,0)
+#define CTX_maximize     CTX_STRH('m','a','x','i','m','i','z','e',0,0,0,0,0,0)
+#define CTX_unmaximize   CTX_STRH('u','n','m','a','x','i','m','i','z','e',0,0,0,0)
+//#define CTX_width        CTX_STRH('w','i','d','t','h',0,0,0,0,0,0,0,0,0)
+//#define CTX_title        CTX_STRH('t','i','t','l','e',0,0,0,0,0,0,0,0,0)
+#define CTX_title        15643372
+#define CTX_action       CTX_STRH('a','c','t','i','o','n',0,0,0,0,0,0,0,0)
+//#define CTX_height       CTX_STRH('h','e','i','g','h','t',0,0,0,0,0,0,0,0)
+
+void terminal_update_title  (const char *title);
+int  ctx_renderer_is_sdl    (Ctx *ctx);
+int  ctx_renderer_is_fb     (Ctx *ctx);
+int  ctx_renderer_is_term   (Ctx *ctx);
+void ctx_sdl_set_fullscreen (Ctx *ctx, int val);
+int  ctx_sdl_get_fullscreen (Ctx *ctx);
+float ctx_target_fps = 25.0;
+static int ctx_fetched_bytes = 1;
+
+CtxClient *vt_get_client (VT *vt);
+
+CtxList *vts = NULL;
+
+void ctx_clients_signal_child (int signum)
+{
+  pid_t pid;
+  int   status;
+  if ( (pid = waitpid (-1, &status, WNOHANG) ) != -1)
+    {
+      if (pid)
+        {
+          for (CtxList *l = vts; l; l=l->next)
+            {
+              VtPty *vt = l->data;
+              if (vt->pid == pid)
+                {
+                  vt->done = 1;
+                  //vt->result = status;
+                }
+            }
+        }
+    }
+}
+
+
+
+int vt_set_prop (VT *vt, uint32_t key_hash, const char *val)
+{
+#if 1
+  switch (key_hash)
+  {
+    case CTX_title:  
+     {
+       CtxClient *client = vt_get_client (vt);
+       if (client)
+       {
+         if (client->title) free (client->title);
+         client->title = strdup (val);
+       }
+     }
+
+     break;
+  }
+#else
+  float fval = strtod (val, NULL);
+  CtxClient *client = ctx_client_by_id (ct->id);
+  uint32_t val_hash = ctx_strhash (val);
+  if (!client)
+    return 0;
+
+  if (key_hash == ctx_strhash("start_move"))
+  {
+    start_moving (client);
+    moving_client = 1;
+    return 0;
+  }
+
+// set "pcm-hz"       "8000"
+// set "pcm-bits"     "8"
+// set "pcm-encoding" "ulaw"
+// set "play-pcm"     "d41ata312313"
+// set "play-pcm-ref" "foo.wav"
+
+// get "free"
+// storage of blobs for referencing when drawing or for playback
+// set "foo.wav"      "\3\1\1\4\"
+// set "fnord.png"    "PNG12.4a312"
+
+  switch (key_hash)
+  {
+    case CTX_title:  ctx_client_set_title (ct->id, val); break;
+    case CTX_x:      client->x = fval; break;
+    case CTX_y:      client->y = fval; break;
+    case CTX_width:  ctx_client_resize (ct->id, fval, client->height); break;
+    case CTX_height: ctx_client_resize (ct->id, client->width, fval); break;
+    case CTX_action:
+      switch (val_hash)
+      {
+        case CTX_maximize:     ctx_client_maximize (client); break;
+        case CTX_unmaximize:   ctx_client_unmaximize (client); break;
+        case CTX_lower:        ctx_client_lower (client); break;
+        case CTX_lower_bottom: ctx_client_lower_bottom (client);  break;
+        case CTX_raise:        ctx_client_raise (client); break;
+        case CTX_raise_top:    ctx_client_raise_top (client); break;
+      }
+      break;
+  }
+  ct->rev++;
+#endif
+  return 0;
+}
+
+static float _ctx_font_size = 10.0;
+
+CtxList *clients = NULL;
+CtxClient *active = NULL;
+CtxClient *active_tab = NULL;
+
+static CtxClient *ctx_client_by_id (int id);
+
+int ctx_client_resize (int id, int width, int height);
+void ctx_client_maximize (int id);
+
+CtxClient *vt_get_client (VT *vt)
+{
+  for (CtxList *l = clients; l; l =l->next)
+  {
+    CtxClient *client = l->data;
+    if (client->vt == vt)
+            return client;
+  }
+  return NULL;
+}
+
+CtxClient *ctx_client_new (Ctx *ctx,
+                           const char *commandline,
+                           int x, int y, int width, int height,
+                           CtxClientFlags flags)
+{
+  static int global_id = 0;
+  float font_size = ctx_get_font_size (ctx);
+  CtxClient *client = calloc (sizeof (CtxClient), 1);
+  ctx_list_append (&clients, client);
+  client->id = global_id++;
+  client->x = x;
+  client->y = y;
+  client->flags = flags;
+  client->ctx = ctx;
+  client->width = width;
+  client->height = height;
+
+  if (ctx_renderer_is_term (ctx))
+  {
+    font_size = 3;
+  }
+
+      //fprintf (stderr, "client new:%f\n", font_size);
+#if CTX_THREADS
+  mtx_init (&client->mtx, mtx_plain);
+#endif
+  float line_spacing = 2.0f;
+  client->vt = vt_new (commandline, width, height, font_size,line_spacing, client->id, (flags & ITK_CLIENT_CAN_LAUNCH)!=0);
+  vt_set_ctx (client->vt, ctx);
+  return client;
+}
+
+CtxClient *ctx_client_new_argv (Ctx *ctx, const char **argv, int x, int y, int width, int height, CtxClientFlags flags)
+{
+  CtxString *string = ctx_string_new ("");
+  for (int i = 0; argv[i]; i++)
+  {
+    char space = ' ';
+    if (i > 0)
+      ctx_string_append_data (string, &space, 1);
+    for (int c = 0; argv[i][c]; c++)
+    {
+       switch (argv[i][c])
+       {
+         case '"':ctx_string_append_str (string, "\\\"");break;
+         case '\'':ctx_string_append_str (string, "\\\'");break;
+         default:ctx_string_append_data (string, &argv[i][c], 1);break;
+       }
+    }
+  }
+  CtxClient *ret = ctx_client_new (ctx, string->str, x, y, width, height, flags);
+  ctx_string_free (string, 1);
+  return ret;
+}
+
+extern float ctx_shape_cache_rate;
+extern int _ctx_max_threads;
+
+static int focus_follows_mouse = 0;
+
+static CtxClient *find_active (int x, int y)
+{
+  CtxClient *ret = NULL;
+  float titlebar_height = _ctx_font_size;
+  int resize_border = titlebar_height/2;
+
+  for (CtxList *l = clients; l; l = l->next)
+  {
+     CtxClient *c = l->data;
+     if ((c->flags & ITK_CLIENT_MAXIMIZED) && c == active_tab)
+     if (x > c->x - resize_border && x < c->x+c->width + resize_border &&
+         y > c->y - titlebar_height && y < c->y+c->height + resize_border)
+     {
+       ret = c;
+     }
+  }
+
+  for (CtxList *l = clients; l; l = l->next)
+  {
+     CtxClient *c = l->data;
+     if (!(c->flags &  ITK_CLIENT_MAXIMIZED))
+     if (x > c->x - resize_border && x < c->x+c->width + resize_border &&
+         y > c->y - titlebar_height && y < c->y+c->height + resize_border)
+     {
+       ret = c;
+     }
+  }
+  return ret;
+}
+
+int id_to_no (int id)
+{
+  CtxList *l;
+  int no = 0;
+
+  for (l = clients; l; l = l->next)
+  {
+    CtxClient *client = l->data;
+    if (client->id == id)
+      return no;
+    no++;
   }
   return -1;
 }
 
+void ctx_client_move (int id, int x, int y);
+int ctx_client_resize (int id, int w, int h);
+void ctx_client_shade_toggle (int id);
+float ctx_client_min_y_pos (Ctx *ctx);
+float ctx_client_max_y_pos (Ctx *ctx);
 
+#if 0
+void ensure_layout ()
+{
+  int n_clients = ctx_list_length (clients);
+  if (n_clients == 1)
+  {
+    CtxClient *client = clients->data;
+    if (client->flags & ITK_CLIENT_MAXIMIZED)
+    {
+      ctx_client_move (client->id, 0, 0);
+      ctx_client_resize (client->id, ctx_width (ctx), ctx_height(ctx));
+      if (active_tab == NULL)
+        active_tab = client;
+    }
+  }
+  else
+  for (CtxList *l = clients; l; l = l->next)
+  {
+    CtxClient *client = l->data;
+    if (client->flags & ITK_CLIENT_MAXIMIZED)
+    {
+      ctx_client_move   (client->id, 0, client_min_y_pos (ctx));
+      ctx_client_resize (client->id, ctx_width (ctx), ctx_height(ctx) -
+                      ctx_client_min_y_pos (ctx) / 2);   // /2 to counter the double titlebar of non-maximized
+      if (active_tab == NULL)
+        active_tab = client;
+    }
+  }
+}
 #endif
 
-#endif // CTX_IMPLEMENTATION
-
-#if CTX_COMPOSITE
-
-
-#define CTX_RGBA8_R_SHIFT  0
-#define CTX_RGBA8_G_SHIFT  8
-#define CTX_RGBA8_B_SHIFT  16
-#define CTX_RGBA8_A_SHIFT  24
-
-#define CTX_RGBA8_R_MASK   (0xff << CTX_RGBA8_R_SHIFT)
-#define CTX_RGBA8_G_MASK   (0xff << CTX_RGBA8_G_SHIFT)
-#define CTX_RGBA8_B_MASK   (0xff << CTX_RGBA8_B_SHIFT)
-#define CTX_RGBA8_A_MASK   (0xff << CTX_RGBA8_A_SHIFT)
-
-#define CTX_RGBA8_RB_MASK  (CTX_RGBA8_R_MASK | CTX_RGBA8_B_MASK)
-#define CTX_RGBA8_GA_MASK  (CTX_RGBA8_G_MASK | CTX_RGBA8_A_MASK)
-
-#if CTX_GRADIENTS
-#if CTX_GRADIENT_CACHE
-
-
-inline static int ctx_grad_index (float v)
+static CtxClient *ctx_client_by_id (int id)
 {
-  int ret = v * (CTX_GRADIENT_CACHE_ELEMENTS - 1.0f) + 0.5f;
-  if (ret >= CTX_GRADIENT_CACHE_ELEMENTS)
-    return CTX_GRADIENT_CACHE_ELEMENTS - 1;
-  if (ret >= 0 && ret < CTX_GRADIENT_CACHE_ELEMENTS)
-    return ret;
+  for (CtxList *l = clients; l; l = l->next)
+  {
+    CtxClient *client = l->data;
+    if (client->id == id)
+      return client;
+  }
+  return NULL;
+}
+
+void ctx_client_remove (Ctx *ctx, CtxClient *client)
+{
+  ctx_client_lock (client);
+  if (!client->internal)
+  {
+
+    if (client->vt)
+      vt_destroy (client->vt);
+  }
+
+  if (client->title)
+    free (client->title);
+
+#if VT_RECORD
+  if (client->recording)
+    ctx_free (client->recording);
+#endif
+
+  ctx_list_remove (&clients, client);
+
+  if (client == active_tab)
+  {
+    active_tab = NULL;
+  }
+
+  if (ctx)
+  if (client == active)
+  {
+    active = find_active (ctx_pointer_x (ctx), ctx_pointer_y (ctx));
+    if (!active) active = clients?clients->data:NULL;
+  }
+
+  ctx_client_unlock (client);
+  free (client);
+  //ensure_layout();
+}
+
+#if 0
+void ctx_client_remove_by_id (int id)
+{
+  int no = id_to_no (id);
+  if (no>=0)
+    ctx_client_remove (no);
+}
+#endif
+
+int ctx_client_height (int id)
+{
+  CtxClient *client = ctx_client_by_id (id);
+  if (!client) return 0;
+  return client->height;
+}
+
+int ctx_client_x (int id)
+{
+  CtxClient *client = ctx_client_by_id (id);
+  if (!client) return 0;
+  return client->x;
+}
+
+int ctx_client_y (int id)
+{
+  CtxClient *client = ctx_client_by_id (id);
+  if (!client) return 0;
+  return client->y;
+}
+
+void ctx_client_raise_top (int id)
+{
+  CtxClient *client = ctx_client_by_id (id);
+  if (!client) return;
+  ctx_list_remove (&clients, client);
+  ctx_list_append (&clients, client);
+}
+
+void ctx_client_lower_bottom (int id)
+{
+  CtxClient *client = ctx_client_by_id (id);
+  if (!client) return;
+  ctx_list_remove (&clients, client);
+  ctx_list_prepend (&clients, client);
+}
+
+
+void ctx_client_iconify (int id)
+{
+   CtxClient *client = ctx_client_by_id (id);
+   if (!client) return;
+   client->flags |= ITK_CLIENT_ICONIFIED;
+}
+
+int ctx_client_is_iconified (int id)
+{
+   CtxClient *client = ctx_client_by_id (id);
+   if (!client) return -1;
+   return (client->flags & ITK_CLIENT_ICONIFIED) != 0;
+}
+
+void ctx_client_uniconify (int id)
+{
+   CtxClient *client = ctx_client_by_id (id);
+   if (!client) return;
+   client->flags &= ~ITK_CLIENT_ICONIFIED;
+}
+
+void ctx_client_maximize (int id)
+{
+   CtxClient *client = ctx_client_by_id (id);
+   if (!client) return;
+   if (client->flags &  ITK_CLIENT_MAXIMIZED)
+     return;
+   client->flags |= ITK_CLIENT_MAXIMIZED;
+   client->unmaximized_x = client->x;
+   client->unmaximized_y = client->y;
+   client->unmaximized_width  = client->width;
+   client->unmaximized_height = client->height;
+
+   // enforce_layout does the size
+   //client_resize (id, ctx_width (ctx), ctx_height(ctx) - ctx_client_min_y_pos (ctx));
+   
+   ctx_client_move (id, 0, ctx_client_min_y_pos (client->ctx));
+   active_tab = client;
+}
+
+int ctx_client_is_maximized (int id)
+{
+   CtxClient *client = ctx_client_by_id (id);
+   if (!client) return -1;
+   return (client->flags & ITK_CLIENT_MAXIMIZED) != 0;
+}
+
+void ctx_client_unmaximize (int id)
+{
+   CtxClient *client = ctx_client_by_id (id);
+   if (!client) return;
+   if ((client->flags & ITK_CLIENT_MAXIMIZED) == 0)
+     return;
+   client->flags &= ~ITK_CLIENT_MAXIMIZED;
+   ctx_client_resize (id, client->unmaximized_width, client->unmaximized_height);
+   ctx_client_move (id, client->unmaximized_x, client->unmaximized_y);
+   active_tab = NULL;
+}
+
+void ctx_client_maximized_toggle (int id)
+{
+  if (ctx_client_is_maximized (id))
+    ctx_client_unmaximize (id);
+  else
+    ctx_client_maximize (id);
+}
+
+
+void ctx_client_shade (int id)
+{
+   CtxClient *client = ctx_client_by_id (id);
+   if (!client) return;
+   client->flags |= ITK_CLIENT_SHADED;
+}
+
+int ctx_client_is_shaded (int id)
+{
+   CtxClient *client = ctx_client_by_id (id);
+   if (!client) return -1;
+   return (client->flags & ITK_CLIENT_SHADED) != 0;
+}
+
+void ctx_client_unshade (int id)
+{
+   CtxClient *client = ctx_client_by_id (id);
+   if (!client) return;
+   client->flags &= ~ITK_CLIENT_SHADED;
+}
+
+void ctx_client_toggle_maximized (int id)
+{
+   CtxClient *client = ctx_client_by_id (id);
+   if (!client) return;
+   if (ctx_client_is_maximized (id))
+     ctx_client_unmaximize (id);
+   else
+     ctx_client_maximize (id);
+}
+
+void ctx_client_shade_toggle (int id)
+{
+   CtxClient *client = ctx_client_by_id (id);
+   if (!client) return;
+   if (ctx_client_is_shaded (id))
+    ctx_client_shade (id);
+   else
+    ctx_client_unshade (id);
+}
+
+void ctx_client_move (int id, int x, int y)
+{
+   CtxClient *client = ctx_client_by_id (id);
+   if (client && (client->x != x || client->y != y))
+   {
+     client->x = x;
+     client->y = y;
+     vt_rev_inc (client->vt);
+   }
+}
+
+int ctx_client_resize (int id, int width, int height)
+{
+   CtxClient *client = ctx_client_by_id (id);
+
+   if (client && ((height != client->height) || (width != client->width) ))
+   {
+     client->width  = width;
+     client->height = height;
+     if (client->vt)
+       vt_set_px_size (client->vt, width, height);
+     return 1;
+   }
+   return 0;
+}
+
+static void ctx_client_titlebar_drag (CtxEvent *event, void *data, void *data2)
+{
+  CtxClient *client = data;
+
+  if (event->type == CTX_DRAG_RELEASE)
+  {
+    static int prev_drag_end_time = 0;
+    if (event->time - prev_drag_end_time < 500)
+    {
+      //client_shade_toggle (client->id);
+      ctx_client_maximized_toggle (client->id);
+    }
+    prev_drag_end_time = event->time;
+  }
+
+  float new_x = client->x +  event->delta_x;
+  float new_y = client->y +  event->delta_y;
+
+  float snap_threshold = 8;
+
+  if (ctx_renderer_is_term (event->ctx))
+     snap_threshold = 1;
+
+  if (new_y < ctx_client_min_y_pos (event->ctx)) new_y = ctx_client_min_y_pos (event->ctx);
+  if (new_y > ctx_client_max_y_pos (event->ctx)) new_y = ctx_client_max_y_pos (event->ctx);
+
+  if (fabs (new_x - 0) < snap_threshold) new_x = 0.0;
+  if (fabs (ctx_width (event->ctx) - (new_x + client->width)) < snap_threshold) new_x = ctx_width (event->ctx) - client->width;
+
+  ctx_client_move (client->id, new_x, new_y);
+
+  //vt_rev_inc (client->vt);
+  ctx_set_dirty (event->ctx, 1);
+
+  event->stop_propagate = 1;
+}
+
+static float min_win_dim = 32;
+
+static void ctx_client_resize_se (CtxEvent *event, void *data, void *data2)
+{
+  CtxClient *client = data;
+  int new_w = client->width + event->delta_x;
+  int new_h = client->height + event->delta_y;
+  if (new_w <= min_win_dim) new_w = min_win_dim;
+  if (new_h <= min_win_dim) new_h = min_win_dim;
+  ctx_client_resize (client->id, new_w, new_h);
+  if (client->vt) // force redraw
+    vt_rev_inc (client->vt);
+  ctx_set_dirty (event->ctx, 1);
+  event->stop_propagate = 1;
+}
+
+static void ctx_client_resize_e (CtxEvent *event, void *data, void *data2)
+{
+  CtxClient *client = data;
+  int new_w = client->width + event->delta_x;
+  if (new_w <= min_win_dim) new_w = min_win_dim;
+  ctx_client_resize (client->id, new_w, client->height);
+  if (client->vt) // force redraw
+    vt_rev_inc (client->vt);
+  ctx_set_dirty (event->ctx, 1);
+  event->stop_propagate = 1;
+}
+
+static void ctx_client_resize_s (CtxEvent *event, void *data, void *data2)
+{
+  CtxClient *client = data;
+  int new_h = client->height + event->delta_y;
+  if (new_h <= min_win_dim) new_h = min_win_dim;
+  ctx_client_resize (client->id, client->width, new_h);
+  if (client->vt) // force redraw
+    vt_rev_inc (client->vt);
+  ctx_set_dirty (event->ctx, 1);
+  event->stop_propagate = 1;
+}
+
+static void ctx_client_resize_n (CtxEvent *event, void *data, void *data2)
+{
+  CtxClient *client = data;
+  float new_y = client->y +  event->delta_y;
+  int new_h = client->height - event->delta_y;
+  if (new_h <= min_win_dim) new_h = min_win_dim;
+  ctx_client_resize (client->id, client->width, new_h);
+  ctx_client_move (client->id, client->x, new_y);
+  if (client->vt) // force redraw
+    vt_rev_inc (client->vt);
+  ctx_set_dirty (event->ctx, 1);
+  event->stop_propagate = 1;
+}
+
+static void ctx_client_resize_ne (CtxEvent *event, void *data, void *data2)
+{
+  CtxClient *client = data;
+  float new_y = client->y +  event->delta_y;
+  int new_h = client->height - event->delta_y;
+  int new_w = client->width + event->delta_x;
+  if (new_h <= min_win_dim) new_h = min_win_dim;
+  if (new_w <= min_win_dim) new_w = min_win_dim;
+  ctx_client_resize (client->id, new_w, new_h);
+  ctx_client_move (client->id, client->x, new_y);
+  if (client->vt) // force redraw
+    vt_rev_inc (client->vt);
+  ctx_set_dirty (event->ctx, 1);
+  event->stop_propagate = 1;
+}
+
+static void ctx_client_resize_sw (CtxEvent *event, void *data, void *data2)
+{
+  CtxClient *client = data;
+
+  float new_x = client->x +  event->delta_x;
+  int new_w = client->width - event->delta_x;
+  int new_h = client->height + event->delta_y;
+
+  if (new_h <= min_win_dim) new_h = min_win_dim;
+  if (new_w <= min_win_dim) new_w = min_win_dim;
+  ctx_client_resize (client->id, new_w, new_h);
+  ctx_client_move (client->id, new_x, client->y);
+  if (client->vt) // force redraw
+    vt_rev_inc (client->vt);
+  ctx_set_dirty (event->ctx, 1);
+  event->stop_propagate = 1;
+}
+
+static void ctx_client_resize_nw (CtxEvent *event, void *data, void *data2)
+{
+  CtxClient *client = data;
+  float new_x = client->x +  event->delta_x;
+  float new_y = client->y +  event->delta_y;
+  int new_w = client->width - event->delta_x;
+  int new_h = client->height - event->delta_y;
+  if (new_h <= min_win_dim) new_h = min_win_dim;
+  if (new_w <= min_win_dim) new_w = min_win_dim;
+  ctx_client_resize (client->id, new_w, new_h);
+  ctx_client_move (client->id, new_x, new_y);
+  if (client->vt) // force redraw
+    vt_rev_inc (client->vt);
+  ctx_set_dirty (event->ctx, 1);
+  event->stop_propagate = 1;
+}
+
+static void ctx_client_resize_w (CtxEvent *event, void *data, void *data2)
+{
+  CtxClient *client = data;
+
+  float new_x = client->x +  event->delta_x;
+  int new_w = client->width - event->delta_x;
+  if (new_w <= min_win_dim) new_w = min_win_dim;
+  ctx_client_resize (client->id, new_w, client->height);
+  ctx_client_move (client->id, new_x, client->y);
+  if (client->vt) // force redraw
+    vt_rev_inc (client->vt);
+  ctx_set_dirty (event->ctx, 1);
+
+  event->stop_propagate = 1;
+}
+
+static void ctx_client_close (CtxEvent *event, void *data, void *data2)
+{
+  //Ctx *ctx = event->ctx;
+  CtxClient *client = data;
+
+ // client->do_quit = 1;
+  
+  ctx_client_remove (event->ctx, client);
+
+  ctx_set_dirty (event->ctx, 1);
+  event->stop_propagate = 1;
+}
+
+/********************/
+void vt_use_images (VT *vt, Ctx *ctx);
+float _ctx_green = 0.5;
+
+static void ctx_client_draw (Ctx *ctx, CtxClient *client, float x, float y)
+{
+    if (client->internal)
+    {
+#if 0
+      ctx_save (ctx);
+
+      ctx_translate (ctx, x, y);
+      int width = client->width;
+      int height = client->height;
+
+      itk_panel_start (itk, "", 0, 0, width, height);
+      //itk_seperator (itk);
+#if 0
+      if (itk_button (itk, "add tab"))
+      {
+        add_tab (vt_find_shell_command(), 1);
+      }
+#endif
+      //itk_sameline (itk);
+      //itk_toggle (itk, "on screen keyboard", &on_screen_keyboard);
+      //itk_toggle (itk, "focus follows mouse", &focus_follows_mouse);
+      itk_slider_float (itk, "CTX_GREEN", &_ctx_green, 0.0, 1.0, 0.5);
+      itk_ctx_settings (itk);
+      itk_itk_settings (itk);
+
+      itk_panel_end (itk);
+      itk_done (itk);
+      //itk_key_bindings (itk);
+
+      ctx_restore (ctx);
+#endif
+    }
+    else
+    {
+       ctx_client_lock (client);
+
+          int found = 0;
+          for (CtxList *l2 = clients; l2; l2 = l2->next)
+            if (l2->data == client) found = 1;
+          if (found)
+          {
+
+      int rev = vt_rev (client->vt);
+#if VT_RECORD
+      if (client->drawn_rev != rev)
+      {
+        if (!client->recording)
+          client->recording = ctx_new ();
+        else
+          ctx_reset (client->recording);
+        vt_draw (client->vt, client->recording, 0.0, 0.0);
+      }
+
+      if (client->recording)
+      {
+        ctx_save (ctx);
+        ctx_translate (ctx, x, y);
+        ctx_render_ctx (client->recording, ctx);
+        vt_register_events (client->vt, ctx, 0.0, 0.0);
+        ctx_restore (ctx);
+      }
+#else
+
+      vt_draw (client->vt, ctx, x, y);
+      vt_register_events (client->vt, ctx, x, y);
+#endif
+      client->drawn_rev = rev;
+      ctx_client_unlock (client);
+          }
+    }
+}
+
+static void ctx_client_use_images (Ctx *ctx, CtxClient *client)
+{
+  if (!client->internal)
+  {
+      uint32_t rev = vt_rev (client->vt);
+#if VT_RECORD
+      if (client->drawn_rev != rev)
+      {
+        if (!client->recording)
+          client->recording = ctx_new ();
+        else
+          ctx_reset (client->recording);
+        vt_draw (client->vt, client->recording, 0.0, 0.0);
+      }
+
+      if (client->recording)
+      {
+        ctx_save (ctx);
+        ctx_render_ctx_textures (client->recording, ctx);
+        ctx_restore (ctx);
+      }
+#else
+    vt_use_images (client->vt, ctx);
+#endif
+    client->drawn_rev = rev;
+  }
+}
+
+void ctx_client_lock (CtxClient *client)
+{
+#if CTX_THREADS
+    mtx_lock (&client->mtx);
+#endif
+}
+
+void ctx_client_unlock (CtxClient *client)
+{
+#if CTX_THREADS
+    mtx_unlock (&client->mtx);
+#endif
+}
+
+#if 0
+void ctx_client_handle_event (Ctx *ctx, CtxEvent *ctx_event, const char *event)
+{
+  if (!active)
+    return;
+  if (active->internal)
+    return;
+  VT *vt = active->vt;
+  CtxClient *client = vt_get_client (vt);
+
+  ctx_client_lock (client);
+
+  if (!strcmp (event, "F11"))
+  {
+#ifndef NO_SDL
+    if (ctx_renderer_is_sdl (ctx))
+    {
+      ctx_sdl_set_fullscreen (ctx, !ctx_sdl_get_fullscreen (ctx));
+    }
+#endif
+  }
+  else if (!strcmp (event, "shift-return"))
+  {
+    vt_feed_keystring (vt, ctx_event, "return");
+  }
+  else if (!strcmp (event, "shift-control-v") )
+    {
+      char *text = ctx_get_clipboard (ctx);
+      if (text)
+        {
+          if (vt)
+            vt_paste (vt, text);
+          free (text);
+        }
+    }
+  else if (!strcmp (event, "shift-control-c") && vt)
+    {
+      char *text = vt_get_selection (vt);
+      if (text)
+        {
+          ctx_set_clipboard (ctx, text);
+          free (text);
+        }
+    }
+  else if (!strcmp (event, "shift-control-t") ||
+           ((ctx_renderer_is_fb (ctx) || ctx_renderer_is_term (ctx))
+           &&   !strcmp (event, "control-t") ))
+  {
+    //XXX add_tab (vt_find_shell_command(), 1);
+  }
+  else if (!strcmp (event, "shift-control-n") )
+    {
+      pid_t pid;
+      if ( (pid=fork() ) ==0)
+        {
+          unsetenv ("CTX_VERSION");
+         // execlp (execute_self, execute_self, NULL);
+          exit (0);
+        }
+    }
+
+#if 0
+  else if (!strcmp (event, "alt-1"))   switch_to_tab(0);
+  else if (!strcmp (event, "alt-2"))   switch_to_tab(1);
+  else if (!strcmp (event, "alt-3"))   switch_to_tab(2);
+  else if (!strcmp (event, "alt-4"))   switch_to_tab(3);
+  else if (!strcmp (event, "alt-5"))   switch_to_tab(4);
+  else if (!strcmp (event, "alt-6"))   switch_to_tab(5);
+  else if (!strcmp (event, "alt-7"))   switch_to_tab(6);
+  else if (!strcmp (event, "alt-8"))   switch_to_tab(7);
+  else if (!strcmp (event, "alt-9"))   switch_to_tab(8);
+  else if (!strcmp (event, "alt-0"))   switch_to_tab(9);
+#endif
+  else if (!strcmp (event, "shift-control-q") )
+    {
+      ctx_quit (ctx);
+    }
+  else if (!strcmp (event, "shift-control-w") )
+    {
+      active->do_quit = 1;
+    }
+  else if (!strcmp (event, "shift-control-s") )
+    {
+      if (vt)
+      {
+        char *sel = vt_get_selection (vt);
+        if (sel)
+        {
+          vt_feed_keystring (vt, ctx_event, sel);
+          free (sel);
+        }
+      }
+    }
+  else
+    {
+      if (vt)
+        vt_feed_keystring (vt, ctx_event, event);
+    }
+  ctx_client_unlock (client);
+}
+#endif
+
+static int ctx_clients_dirty_count (void)
+{
+  int changes = 0;
+  for (CtxList *l = clients; l; l = l->next)
+  {
+    CtxClient *client = l->data;
+    if ((client->drawn_rev != vt_rev (client->vt) ) ||
+        vt_has_blink (client->vt))
+      changes++;
+  }
+  return changes;
+}
+
+static void ctx_client_titlebar_drag_maximized (CtxEvent *event, void *data, void *data2)
+{
+  CtxClient *client = data;
+
+  active = active_tab = client;
+  if (event->type == CTX_DRAG_RELEASE)
+  {
+    static int prev_drag_end_time = 0;
+    if (event->time - prev_drag_end_time < 500)
+    {
+      //client_shade_toggle (client->id);
+      ctx_client_unmaximize (client->id);
+      ctx_client_raise_top (client->id);
+      active_tab = NULL;
+    }
+    prev_drag_end_time = event->time;
+  }
+  ctx_set_dirty (event->ctx, 1);
+  vt_rev_inc (client->vt);
+  event->stop_propagate = 1;
+}
+
+float ctx_client_min_y_pos (Ctx *ctx)
+{
+  return _ctx_font_size * 2; // a titlebar and a panel
+}
+
+float ctx_client_max_y_pos (Ctx *ctx)
+{
+  return ctx_height (ctx);
+}
+
+void ctx_client_titlebar_draw (Ctx *ctx, CtxClient *client,
+                               float x, float y, float width, float titlebar_height)
+{
+#if 0
+  ctx_move_to (ctx, x, y + height * 0.8);
+  if (client == active)
+    ctx_rgba (ctx, 1, 1,0.4, 1.0);
+  else
+    ctx_rgba (ctx, 1, 1,1, 0.8);
+  ctx_text (ctx, client->title);
+#else
+  ctx_rectangle (ctx, x, y - titlebar_height,
+                 width, titlebar_height);
+  if (client == active)
+     itk_style_color (ctx, "titlebar-focused-bg");
+  else
+     itk_style_color (ctx, "titlebar-bg");
+
+  if (flag_is_set(client->flags, ITK_CLIENT_MAXIMIZED) || y == titlebar_height)
+  {
+    ctx_listen (ctx, CTX_DRAG, ctx_client_titlebar_drag_maximized, client, NULL);
+    ctx_listen_set_cursor (ctx, CTX_CURSOR_RESIZE_ALL);
+  }
+  else
+  {
+    ctx_listen (ctx, CTX_DRAG, ctx_client_titlebar_drag, client, NULL);
+    ctx_listen_set_cursor (ctx, CTX_CURSOR_RESIZE_ALL);
+  }
+  ctx_fill (ctx);
+  //ctx_font_size (ctx, itk->font_size);//titlebar_height);// * 0.85);
+
+  if (client == active &&
+      (flag_is_set(client->flags, ITK_CLIENT_MAXIMIZED) || y != titlebar_height))
+#if 1
+  ctx_rectangle (ctx, x + width - titlebar_height,
+                  y - titlebar_height, titlebar_height,
+                  titlebar_height);
+#endif
+  ctx_rgb (ctx, 1, 0,0);
+  ctx_listen (ctx, CTX_PRESS, ctx_client_close, client, NULL);
+  ctx_listen_set_cursor (ctx, CTX_CURSOR_ARROW);
+  //ctx_fill (ctx);
+  ctx_begin_path (ctx);
+  ctx_move_to (ctx, x + width - titlebar_height * 0.8, y - titlebar_height * 0.22);
+  if (client == active)
+    itk_style_color (ctx, "titlebar-focused-close");
+  else
+    itk_style_color (ctx, "titlebar-close");
+  ctx_text (ctx, "X");
+
+  ctx_move_to (ctx, x +  width/2, y - titlebar_height * 0.22);
+  if (client == active)
+    itk_style_color (ctx, "titlebar-focused-fg");
+  else
+    itk_style_color (ctx, "titlebar-fg");
+
+  ctx_save (ctx);
+  ctx_text_align (ctx, CTX_TEXT_ALIGN_CENTER);
+  if (client->title)
+    ctx_text (ctx, client->title);
+  else
+    ctx_text (ctx, "untitled");
+  ctx_restore (ctx);
+#endif
+}
+
+#if 0
+static void key_down (CtxEvent *event, void *data1, void *data2)
+{
+  fprintf (stderr, "down %i %s\n", event->unicode, event->string);
+}
+static void key_up (CtxEvent *event, void *data1, void *data2)
+{
+  fprintf (stderr, "up %i %s\n", event->unicode, event->string);
+}
+static void key_press (CtxEvent *event, void *data1, void *data2)
+{
+  fprintf (stderr, "press %i %s\n", event->unicode, event->string);
+}
+#endif
+
+int ctx_clients_draw (Ctx *ctx)
+{
+  _ctx_font_size = ctx_get_font_size (ctx);
+  float titlebar_height = _ctx_font_size;
+  int n_clients         = ctx_list_length (clients);
+
+  if (active && flag_is_set(active->flags, ITK_CLIENT_MAXIMIZED) && n_clients == 1)
+  {
+    ctx_client_draw (ctx, active, 0, 0);
+    return 0;
+  }
+
+  for (CtxList *l = clients; l; l = l->next)
+  {
+    CtxClient *client = l->data;
+    if (flag_is_set(client->flags, ITK_CLIENT_MAXIMIZED))
+    {
+      if (client == active_tab)
+      {
+        ctx_client_draw (ctx, client, 0, titlebar_height);
+      }
+      else
+      {
+        ctx_client_use_images (ctx, client);
+      }
+    }
+  }
+
+  {
+  for (CtxList *l = clients; l; l = l->next)
+  {
+    CtxClient *client = l->data;
+    VT *vt = client->vt;
+    if (vt && !flag_is_set(client->flags, ITK_CLIENT_MAXIMIZED))
+    {
+      if (flag_is_set(client->flags, ITK_CLIENT_SHADED))
+      {
+        ctx_client_use_images (ctx, client);
+      }
+      else
+      {
+        ctx_client_draw (ctx, client, client->x, client->y);
+      }
+
+      // resize regions
+      if (client == active &&
+         !flag_is_set(client->flags, ITK_CLIENT_SHADED) &&
+         !flag_is_set(client->flags, ITK_CLIENT_MAXIMIZED) &&
+         flag_is_set(client->flags, ITK_CLIENT_UI_RESIZABLE))
+      {
+        itk_style_color (ctx, "titlebar-focused-bg");
+
+        ctx_rectangle (ctx,
+                       client->x,
+                       client->y - titlebar_height * 2,
+                       client->width, titlebar_height);
+        ctx_listen (ctx, CTX_DRAG, ctx_client_resize_n, client, NULL);
+        ctx_listen_set_cursor (ctx, CTX_CURSOR_RESIZE_N);
+        ctx_begin_path (ctx);
+
+        ctx_rectangle (ctx,
+                       client->x,
+                       client->y + client->height - titlebar_height,
+                       client->width, titlebar_height * 2);
+        ctx_listen (ctx, CTX_DRAG, ctx_client_resize_s, client, NULL);
+        ctx_listen_set_cursor (ctx, CTX_CURSOR_RESIZE_S);
+        ctx_begin_path (ctx);
+
+        ctx_rectangle (ctx,
+                       client->x + client->width,
+                       client->y - titlebar_height,
+                       titlebar_height, client->height + titlebar_height);
+        ctx_listen (ctx, CTX_DRAG, ctx_client_resize_e, client, NULL);
+        ctx_listen_set_cursor (ctx, CTX_CURSOR_RESIZE_E);
+        ctx_begin_path (ctx);
+
+        ctx_rectangle (ctx,
+                       client->x - titlebar_height,
+                       client->y - titlebar_height,
+                       titlebar_height, client->height + titlebar_height);
+        ctx_listen (ctx, CTX_DRAG, ctx_client_resize_w, client, NULL);
+        ctx_listen_set_cursor (ctx, CTX_CURSOR_RESIZE_W);
+        ctx_begin_path (ctx); 
+
+        ctx_rectangle (ctx,
+                       client->x + client->width - titlebar_height,
+                       client->y - titlebar_height * 2,
+                       titlebar_height * 2, titlebar_height * 2);
+        ctx_listen (ctx, CTX_DRAG, ctx_client_resize_ne, client, NULL);
+        ctx_listen_set_cursor (ctx, CTX_CURSOR_RESIZE_NE);
+        ctx_begin_path (ctx);
+
+        ctx_rectangle (ctx,
+                       client->x - titlebar_height,
+                       client->y - titlebar_height * 2,
+                       titlebar_height * 2, titlebar_height * 2);
+        ctx_listen (ctx, CTX_DRAG, ctx_client_resize_nw, client, NULL);
+        ctx_listen_set_cursor (ctx, CTX_CURSOR_RESIZE_NW);
+        ctx_begin_path (ctx);
+
+        ctx_rectangle (ctx,
+                       client->x - titlebar_height,
+                       client->y + client->height - titlebar_height,
+                       titlebar_height * 2, titlebar_height * 2);
+        ctx_listen (ctx, CTX_DRAG, ctx_client_resize_sw, client, NULL);
+        ctx_listen_set_cursor (ctx, CTX_CURSOR_RESIZE_SW);
+        ctx_begin_path (ctx);
+
+        ctx_rectangle (ctx,
+                       client->x + client->width - titlebar_height,
+                       client->y + client->height - titlebar_height,
+                       titlebar_height * 2, titlebar_height * 2);
+        ctx_listen (ctx, CTX_DRAG, ctx_client_resize_se, client, NULL);
+        ctx_listen_set_cursor (ctx, CTX_CURSOR_RESIZE_SE);
+        ctx_begin_path (ctx);
+
+      }
+
+      if (client->flags & ITK_CLIENT_TITLEBAR)
+        ctx_client_titlebar_draw (ctx, client, client->x, client->y, client->width, titlebar_height);
+    }
+  }
+  }
   return 0;
 }
 
-extern uint8_t ctx_gradient_cache_u8[CTX_GRADIENT_CACHE_ELEMENTS][4];
-extern uint8_t ctx_gradient_cache_u8_a[CTX_GRADIENT_CACHE_ELEMENTS][4];
-extern int ctx_gradient_cache_valid;
+extern int _ctx_enable_hash_cache;
 
-//static void
-//ctx_gradient_cache_reset (void)
-//{
-//  ctx_gradient_cache_valid = 0;
-//}
+void vt_audio_task (VT *vt, int click);
 
+int ctx_input_pending (Ctx *ctx, int timeout);
 
-#endif
-
-CTX_INLINE static void
-_ctx_fragment_gradient_1d_RGBA8 (CtxRasterizer *rasterizer, float x, float y, uint8_t *rgba)
+int ctx_clients_need_redraw (Ctx *ctx)
 {
-  float v = x;
-  CtxGradient *g = &rasterizer->state->gradient;
-  if (v < 0) { v = 0; }
-  if (v > 1) { v = 1; }
+  int changes = 0;
+  int follow_mouse = focus_follows_mouse;
+      CtxList *to_remove = NULL;
+  //ensure_layout ();
 
-  if (g->n_stops == 0)
-    {
-      rgba[0] = rgba[1] = rgba[2] = v * 255;
-      rgba[3] = 255;
-      return;
-    }
-  CtxGradientStop *stop      = NULL;
-  CtxGradientStop *next_stop = &g->stops[0];
-  CtxColor *color;
-  for (int s = 0; s < g->n_stops; s++)
-    {
-      stop      = &g->stops[s];
-      next_stop = &g->stops[s+1];
-      if (s + 1 >= g->n_stops) { next_stop = NULL; }
-      if (v >= stop->pos && next_stop && v < next_stop->pos)
-        { break; }
-      stop = NULL;
-      next_stop = NULL;
-    }
-  if (stop == NULL && next_stop)
-    {
-      color = & (next_stop->color);
-    }
-  else if (stop && next_stop == NULL)
-    {
-      color = & (stop->color);
-    }
-  else if (stop && next_stop)
-    {
-      uint8_t stop_rgba[4];
-      uint8_t next_rgba[4];
-      ctx_color_get_rgba8 (rasterizer->state, & (stop->color), stop_rgba);
-      ctx_color_get_rgba8 (rasterizer->state, & (next_stop->color), next_rgba);
-      int dx = (v - stop->pos) * 255 / (next_stop->pos - stop->pos);
-      for (int c = 0; c < 4; c++)
-        { rgba[c] = ctx_lerp_u8 (stop_rgba[c], next_rgba[c], dx); }
-      return;
-    }
-  else
-    {
-      color = & (g->stops[g->n_stops-1].color);
-    }
-  ctx_color_get_rgba8 (rasterizer->state, color, rgba);
-  if (rasterizer->swap_red_green)
-  {
-    uint8_t tmp = rgba[0];
-    rgba[0] = rgba[2];
-    rgba[2] = tmp;
-  }
-}
+//  if (print_shape_cache_rate)
+//    fprintf (stderr, "\r%f ", ctx_shape_cache_rate);
 
-#if CTX_GRADIENT_CACHE
-static void
-ctx_gradient_cache_prime (CtxRasterizer *rasterizer);
-#endif
+   CtxClient *client = find_active (ctx_pointer_x (ctx),
+                                    ctx_pointer_y (ctx));
 
-CTX_INLINE static void
-ctx_fragment_gradient_1d_RGBA8 (CtxRasterizer *rasterizer, float x, float y, uint8_t *rgba)
-{
-#if CTX_GRADIENT_CACHE
-  uint32_t* rgbap = ((uint32_t*)(&ctx_gradient_cache_u8[ctx_grad_index(x)][0]));
-  *((uint32_t*)rgba) = *rgbap;
-#else
- _ctx_fragment_gradient_1d_RGBA8 (rasterizer, x, y, rgba);
-#endif
-}
-#endif
-
-CTX_INLINE static void
-ctx_RGBA8_associate_alpha (uint8_t *u8)
-{
-  uint32_t val = *((uint32_t*)(u8));
-  int a = val >> CTX_RGBA8_A_SHIFT;
-  if (a!=255)
-  {
-    if (a)
-    {
-      uint32_t g = (((val & CTX_RGBA8_G_MASK) * a) >> 8) & CTX_RGBA8_G_MASK;
-      uint32_t rb =(((val & CTX_RGBA8_RB_MASK) * a) >> 8) & CTX_RGBA8_RB_MASK;
-      *((uint32_t*)(u8)) = g|rb|(a << CTX_RGBA8_A_SHIFT);
-    }
-    else
-    {
-      *((uint32_t*)(u8)) = 0;
-    }
-  }
-}
-
-CTX_INLINE static void
-ctx_u8_associate_alpha (int components, uint8_t *u8)
-{
-  switch (u8[components-1])
-  {
-          case 255:break;
-          case 0: 
-            for (int c = 0; c < components-1; c++)
-             u8[c] = 0;
-            break;
-          default:
-  for (int c = 0; c < components-1; c++)
-    u8[c] = (u8[c] * u8[components-1]) /255;
-  }
-}
-
-#if CTX_GRADIENTS
-#if CTX_GRADIENT_CACHE
-static void
-ctx_gradient_cache_prime (CtxRasterizer *rasterizer)
-{
-  if (ctx_gradient_cache_valid)
-    return;
-  for (int u = 0; u < CTX_GRADIENT_CACHE_ELEMENTS; u++)
-  {
-    float v = u / (CTX_GRADIENT_CACHE_ELEMENTS - 1.0f);
-    _ctx_fragment_gradient_1d_RGBA8 (rasterizer, v, 0.0f, &ctx_gradient_cache_u8[u][0]);
-    //*((uint32_t*)(&ctx_gradient_cache_u8_a[u][0]))= *((uint32_t*)(&ctx_gradient_cache_u8[u][0]));
-    memcpy(&ctx_gradient_cache_u8_a[u][0], &ctx_gradient_cache_u8[u][0], 4);
-    ctx_RGBA8_associate_alpha (&ctx_gradient_cache_u8_a[u][0]);
-  }
-  ctx_gradient_cache_valid = 1;
-}
-#endif
-
-CTX_INLINE static void
-ctx_fragment_gradient_1d_GRAYA8 (CtxRasterizer *rasterizer, float x, float y, uint8_t *rgba)
-{
-  float v = x;
-  CtxGradient *g = &rasterizer->state->gradient;
-  if (v < 0) { v = 0; }
-  if (v > 1) { v = 1; }
-  if (g->n_stops == 0)
-    {
-      rgba[0] = rgba[1] = rgba[2] = v * 255;
-      rgba[1] = 255;
-      return;
-    }
-  CtxGradientStop *stop      = NULL;
-  CtxGradientStop *next_stop = &g->stops[0];
-  CtxColor *color;
-  for (int s = 0; s < g->n_stops; s++)
-    {
-      stop      = &g->stops[s];
-      next_stop = &g->stops[s+1];
-      if (s + 1 >= g->n_stops) { next_stop = NULL; }
-      if (v >= stop->pos && next_stop && v < next_stop->pos)
-        { break; }
-      stop = NULL;
-      next_stop = NULL;
-    }
-  if (stop == NULL && next_stop)
-    {
-      color = & (next_stop->color);
-    }
-  else if (stop && next_stop == NULL)
-    {
-      color = & (stop->color);
-    }
-  else if (stop && next_stop)
-    {
-      uint8_t stop_rgba[4];
-      uint8_t next_rgba[4];
-      ctx_color_get_graya_u8 (rasterizer->state, & (stop->color), stop_rgba);
-      ctx_color_get_graya_u8 (rasterizer->state, & (next_stop->color), next_rgba);
-      int dx = (v - stop->pos) * 255 / (next_stop->pos - stop->pos);
-      for (int c = 0; c < 2; c++)
-        { rgba[c] = ctx_lerp_u8 (stop_rgba[c], next_rgba[c], dx); }
-      return;
-    }
-  else
-    {
-      color = & (g->stops[g->n_stops-1].color);
-    }
-  ctx_color_get_graya_u8 (rasterizer->state, color, rgba);
-}
-
-CTX_INLINE static void
-ctx_fragment_gradient_1d_RGBAF (CtxRasterizer *rasterizer, float v, float y, float *rgba)
-{
-  CtxGradient *g = &rasterizer->state->gradient;
-  if (v < 0) { v = 0; }
-  if (v > 1) { v = 1; }
-  if (g->n_stops == 0)
-    {
-      rgba[0] = rgba[1] = rgba[2] = v;
-      rgba[3] = 1.0;
-      return;
-    }
-  CtxGradientStop *stop      = NULL;
-  CtxGradientStop *next_stop = &g->stops[0];
-  CtxColor *color;
-  for (int s = 0; s < g->n_stops; s++)
-    {
-      stop      = &g->stops[s];
-      next_stop = &g->stops[s+1];
-      if (s + 1 >= g->n_stops) { next_stop = NULL; }
-      if (v >= stop->pos && next_stop && v < next_stop->pos)
-        { break; }
-      stop = NULL;
-      next_stop = NULL;
-    }
-  if (stop == NULL && next_stop)
-    {
-      color = & (next_stop->color);
-    }
-  else if (stop && next_stop == NULL)
-    {
-      color = & (stop->color);
-    }
-  else if (stop && next_stop)
-    {
-      float stop_rgba[4];
-      float next_rgba[4];
-      ctx_color_get_rgba (rasterizer->state, & (stop->color), stop_rgba);
-      ctx_color_get_rgba (rasterizer->state, & (next_stop->color), next_rgba);
-      int dx = (v - stop->pos) / (next_stop->pos - stop->pos);
-      for (int c = 0; c < 4; c++)
-        { rgba[c] = ctx_lerpf (stop_rgba[c], next_rgba[c], dx); }
-      return;
-    }
-  else
-    {
-      color = & (g->stops[g->n_stops-1].color);
-    }
-  ctx_color_get_rgba (rasterizer->state, color, rgba);
-}
-#endif
-
-static void
-ctx_fragment_image_RGBA8 (CtxRasterizer *rasterizer, float x, float y, void *out, int count, float dx, float dy)
-{
-  uint8_t *rgba = (uint8_t *) out;
-  CtxSource *g = &rasterizer->state->gstate.source_fill;
-  CtxBuffer *buffer = g->texture.buffer->color_managed;
-  ctx_assert (rasterizer);
-  ctx_assert (g);
-  ctx_assert (buffer);
-
-  for (int i = 0; i < count; i ++)
-  {
-
-  int u = x - g->texture.x0;
-  int v = y - g->texture.y0;
-  int width = buffer->width;
-  int height = buffer->height;
-  if ( u < 0 || v < 0 ||
-       u >= width ||
-       v >= height)
-    {
-      *((uint32_t*)(rgba)) = 0;
-    }
-  else
-    {
-      int bpp = buffer->format->bpp/8;
-      if (rasterizer->state->gstate.image_smoothing)
-      {
-      uint8_t *src00 = (uint8_t *) buffer->data;
-      src00 += v * buffer->stride + u * bpp;
-      uint8_t *src01 = src00;
-      if ( u + 1 < width)
-      {
-        src01 = src00 + bpp;
-      }
-      uint8_t *src11 = src01;
-      uint8_t *src10 = src00;
-      if ( v + 1 < height)
-      {
-        src10 = src00 + buffer->stride;
-        src11 = src01 + buffer->stride;
-      }
-      float dx = (x-(int)(x)) * 255.9;
-      float dy = (y-(int)(y)) * 255.9;
-
-      switch (bpp)
-      {
-      case 1:
-        rgba[0] = rgba[1] = rgba[2] = ctx_lerp_u8 (ctx_lerp_u8 (src00[0], src01[0], dx),
-                               ctx_lerp_u8 (src10[0], src11[0], dx), dy);
-        rgba[3] = 255;
-        break;
-      case 2:
-        rgba[0] = rgba[1] = rgba[2] = ctx_lerp_u8 (ctx_lerp_u8 (src00[0], src01[0], dx),
-                               ctx_lerp_u8 (src10[0], src11[0], dx), dy);
-        rgba[3] = ctx_lerp_u8 (ctx_lerp_u8 (src00[1], src01[1], dx),
-                               ctx_lerp_u8 (src10[1], src11[1], dx), dy);
-        break;
-      case 3:
-      for (int c = 0; c < bpp; c++)
-        { rgba[c] = ctx_lerp_u8 (ctx_lerp_u8 (src00[c], src01[c], dx),
-                                 ctx_lerp_u8 (src10[c], src11[c], dx), dy);
-                
-        }
-        rgba[3]=255;
-        break;
-      break;
-      case 4:
-      for (int c = 0; c < bpp; c++)
-        { rgba[c] = ctx_lerp_u8 (ctx_lerp_u8 (src00[c], src01[c], dx),
-                                 ctx_lerp_u8 (src10[c], src11[c], dx), dy);
-                
-        }
-      }
-      }
-      else
-      {
-      uint8_t *src = (uint8_t *) buffer->data;
-      src += v * buffer->stride + u * bpp;
-      switch (bpp)
+   if (follow_mouse || ctx_pointer_is_down (ctx, 0) ||
+       ctx_pointer_is_down (ctx, 1) || (active==NULL))
+   {
+        if (client)
         {
-          case 1:
-            for (int c = 0; c < 3; c++)
-              { rgba[c] = src[0]; }
-            rgba[3] = 255;
-            break;
-          case 2:
-            for (int c = 0; c < 3; c++)
-              { rgba[c] = src[0]; }
-            rgba[3] = src[1];
-            break;
-          case 3:
-            for (int c = 0; c < 3; c++)
-              { rgba[c] = src[c]; }
-            rgba[3] = 255;
-            break;
-          case 4:
-            for (int c = 0; c < 4; c++)
-              { rgba[c] = src[c]; }
-            break;
-        }
-      }
-      if (rasterizer->swap_red_green)
-      {
-        uint8_t tmp = rgba[0];
-        rgba[0] = rgba[2];
-        rgba[2] = tmp;
-      }
-    }
-    rgba += 4;
-    x += dx;
-    y += dy;
-  }
-}
-
-#if CTX_DITHER
-static inline int ctx_dither_mask_a (int x, int y, int c, int divisor)
-{
-  /* https://pippin.gimp.org/a_dither/ */
-  return ( ( ( ( (x + c * 67) + y * 236) * 119) & 255 )-127) / divisor;
-}
-
-inline static void
-ctx_dither_rgba_u8 (uint8_t *rgba, int x, int y, int dither_red_blue, int dither_green)
-{
-  if (dither_red_blue == 0)
-    { return; }
-  for (int c = 0; c < 3; c ++)
-    {
-      int val = rgba[c] + ctx_dither_mask_a (x, y, 0, c==1?dither_green:dither_red_blue);
-      rgba[c] = CTX_CLAMP (val, 0, 255);
-    }
-}
-
-inline static void
-ctx_dither_graya_u8 (uint8_t *rgba, int x, int y, int dither_red_blue, int dither_green)
-{
-  if (dither_red_blue == 0)
-    { return; }
-  for (int c = 0; c < 1; c ++)
-    {
-      int val = rgba[c] + ctx_dither_mask_a (x, y, 0, dither_red_blue);
-      rgba[c] = CTX_CLAMP (val, 0, 255);
-    }
-}
-#endif
-
-CTX_INLINE static void
-ctx_RGBA8_deassociate_alpha (const uint8_t *in, uint8_t *out)
-{
-    uint32_t val = *((uint32_t*)(in));
-    int a = val >> CTX_RGBA8_A_SHIFT;
-    if (a)
-    {
-    if (a ==255)
-    {
-      *((uint32_t*)(out)) = val;
-    } else
-    {
-      uint32_t g = (((val & CTX_RGBA8_G_MASK) * 255 / a) >> 8) & CTX_RGBA8_G_MASK;
-      uint32_t rb =(((val & CTX_RGBA8_RB_MASK) * 255 / a) >> 8) & CTX_RGBA8_RB_MASK;
-      *((uint32_t*)(out)) = g|rb|(a << CTX_RGBA8_A_SHIFT);
-    }
-    }
-    else
-    {
-      *((uint32_t*)(out)) = 0;
-    }
-}
-
-CTX_INLINE static void
-ctx_u8_deassociate_alpha (int components, const uint8_t *in, uint8_t *out)
-{
-  if (in[components-1])
-  {
-    if (in[components-1] != 255)
-    for (int c = 0; c < components-1; c++)
-      out[c] = (in[c] * 255) / in[components-1];
-    else
-    for (int c = 0; c < components-1; c++)
-      out[c] = in[c];
-    out[components-1] = in[components-1];
-  }
-  else
-  {
-  for (int c = 0; c < components; c++)
-    out[c] = 0;
-  }
-}
-
-CTX_INLINE static void
-ctx_float_associate_alpha (int components, float *rgba)
-{
-  float alpha = rgba[components-1];
-  for (int c = 0; c < components-1; c++)
-    rgba[c] *= alpha;
-}
-
-CTX_INLINE static void
-ctx_float_deassociate_alpha (int components, float *rgba, float *dst)
-{
-  float ralpha = rgba[components-1];
-  if (ralpha != 0.0) ralpha = 1.0/ralpha;
-
-  for (int c = 0; c < components-1; c++)
-    dst[c] = (rgba[c] * ralpha);
-  dst[components-1] = rgba[components-1];
-}
-
-CTX_INLINE static void
-ctx_RGBAF_associate_alpha (float *rgba)
-{
-  ctx_float_associate_alpha (4, rgba);
-}
-
-CTX_INLINE static void
-ctx_RGBAF_deassociate_alpha (float *rgba, float *dst)
-{
-  ctx_float_deassociate_alpha (4, rgba, dst);
-}
-
-
-static inline void ctx_swap_red_green_u8 (void *data)
-{
-  uint8_t *rgba = (uint8_t*)data;
-  uint8_t tmp = rgba[0];
-  rgba[0] = rgba[2];
-  rgba[2] = tmp;
-}
-
-static void
-ctx_fragment_swap_red_green_u8 (void *out, int count)
-{
-  uint8_t *rgba = (uint8_t*)out;
-  for (int x = 0; x < count; x++)
-  {
-    ctx_swap_red_green_u8 (rgba);
-    rgba += 4;
-  }
-}
-
-/**** rgb8 ***/
-
-static void
-ctx_fragment_image_rgb8_RGBA8_box (CtxRasterizer *rasterizer,
-                                   float x,
-                                   float y,
-                                   void *out, int count, float dx, float dy)
-{
-  uint8_t *rgba = (uint8_t *) out;
-  CtxSource *g = &rasterizer->state->gstate.source_fill;
-  CtxBuffer *buffer = g->texture.buffer->color_managed;
-  int width = buffer->width;
-  int height = buffer->height;
-
-  for (int i = 0; i < count; i++)
-  {
-
-  int u = x - g->texture.x0;
-  int v = y - g->texture.y0;
-  if ( u < 0 || v < 0 ||
-       u >= width ||
-       v >= height)
-    {
-      *((uint32_t*)(rgba))= 0;
-    }
-  else
-    {
-      int bpp = 3;
-      rgba[3]=255;
-      float factor = ctx_matrix_get_scale (&rasterizer->state->gstate.transform);
-          int dim = (1.0 / factor) / 2;
-          uint64_t sum[4]={0,0,0,0};
-          int count = 0;
-          for (int ou = - dim; ou < dim; ou++)
-          for (int ov = - dim; ov < dim; ov++)
+          if (active != client)
           {
-            uint8_t *src = (uint8_t *) buffer->data;
-            int o = (v+ov) * width + (u + ou);
-
-            if (o>=0 && o < width * height)
+            active = client;
+            if (follow_mouse == 0 ||
+                (ctx_pointer_is_down (ctx, 0) ||
+                 ctx_pointer_is_down (ctx, 1)))
             {
-              src += o * bpp;
-
-              for (int c = 0; c < bpp; c++)
-                sum[c] += src[c];
-              count ++;
-            }
-          }
-          if (count)
-            for (int c = 0; c < bpp; c++)
-              rgba[c] = sum[c]/count;
-    }
-    rgba += 4;
-    x += dx;
-    y += dy;
-  }
-#if CTX_DITHER
-//ctx_dither_rgba_u8 (rgba, x, y, rasterizer->format->dither_red_blue,
-//                    rasterizer->format->dither_green);
-#endif
-}
-
-static void
-ctx_fragment_image_rgb8_RGBA8_box_swap_red_green (CtxRasterizer *rasterizer,
-                                  float x,
-                                  float y,
-                                  void *out, int count, float dx, float dy)
-{
-  ctx_fragment_image_rgb8_RGBA8_box (rasterizer, x, y, out, count, dx, dy);
-  ctx_fragment_swap_red_green_u8 (out, count);
-}
-
-static void
-ctx_fragment_image_rgb8_RGBA8_bi (CtxRasterizer *rasterizer,
-                                  float x,
-                                  float y,
-                                  void *out, int count, float dx, float dy)
-{
-  uint8_t *rgba = (uint8_t *) out;
-
-  CtxSource *g = &rasterizer->state->gstate.source_fill;
-  CtxBuffer *buffer = g->texture.buffer->color_managed;
-  int width = buffer->width;
-  int height = buffer->height;
-
-  for (int i = 0; i < count; i++)
-  {
-
-  int u = x - g->texture.x0;
-  int v = y - g->texture.y0;
-  if ( u < 0 || v < 0 ||
-       u >= width ||
-       v >= height)
-    {
-      *((uint32_t*)(rgba))= 0;
-    }
-  else
-    {
-      int bpp = 3;
-      rgba[3]=255;
-      uint8_t *src00 = (uint8_t *) buffer->data;
-      int stride = buffer->stride;
-      src00 += v * stride + u * bpp;
-      uint8_t *src01 = src00;
-      if ( u + 1 < width)
-      {
-        src01 = src00 + bpp;
-      }
-      uint8_t *src11 = src01;
-      uint8_t *src10 = src00;
-      if ( v + 1 < height)
-      {
-        src10 = src00 + stride;
-        src11 = src01 + stride;
-      }
-      float dx = (x-(int)(x)) * 255.9f;
-      float dy = (y-(int)(y)) * 255.9f;
-      for (int c = 0; c < bpp; c++)
-      {
-        rgba[c] = ctx_lerp_u8 (ctx_lerp_u8 (src00[c], src01[c], dx),
-                               ctx_lerp_u8 (src10[c], src11[c], dx), dy);
-      }
-    }
-    x += dx;
-    y += dy;
-    rgba += 4;
-  }
-#if CTX_DITHER
-//ctx_dither_rgba_u8 (rgba, x, y, rasterizer->format->dither_red_blue,
-//                    rasterizer->format->dither_green);
-#endif
-}
-
-static void
-ctx_fragment_image_rgb8_RGBA8_bi_swap_red_green (CtxRasterizer *rasterizer,
-                                  float x,
-                                  float y,
-                                  void *out, int count, float dx, float dy)
-{
-  ctx_fragment_image_rgb8_RGBA8_bi_swap_red_green (rasterizer, x, y, out, count, dx, dy);
-  ctx_fragment_swap_red_green_u8 (out, count);
-}
-
-static CTX_INLINE void
-ctx_fragment_image_rgb8_RGBA8_nearest (CtxRasterizer *rasterizer,
-                                       float x,
-                                       float y,
-                                       void *out, int count, float dx, float dy)
-{
-  CtxSource *g = &rasterizer->state->gstate.source_fill;
-  CtxBuffer *buffer = g->texture.buffer->color_managed;
-  uint8_t *rgba = (uint8_t *) out;
-  uint8_t *src = (uint8_t *) buffer->data;
-
-  x += 0.5f;
-  y += 0.5f;
-
-  if (dy == 0.0f && dx > 0.999f && dx < 1.001f)
-  {
-    int v = y - g->texture.y0;
-    int u = x - g->texture.x0;
-  
-    if (v < buffer->height && v > 0)
-    {
-      int o = v * buffer->stride + u * 3;
-      int i;
-      for (i = 0; i < count && u < buffer->width; i++)
-      {
-        if (CTX_UNLIKELY(u < 0))
-          {
-            *((uint32_t*)(rgba))= 0;
-          }
-        else
-          {
-            rgba[0] = src[o];
-            rgba[1] = src[o+1];
-            rgba[2] = src[o+2]; 
-            rgba[3]=255;
-          }
-        rgba += 4;
-        o += 3;
-        u+=1;
-      }
-      for (; i < count; i++)
-      {
-        *((uint32_t*)(rgba))= 0;
-        rgba += 4;
-      }
-    }
-    else
-    {
-      for (int i = 0; i < count; i++)
-      {
-        *((uint32_t*)(rgba))= 0;
-        rgba+=4;
-      }
-    }
-  }
-  else
-  {
-    for (int i = 0; i < count; i++)
-    {
-  
-    int u = x - g->texture.x0;
-    int v = y - g->texture.y0;
-    if (CTX_UNLIKELY( u < 0 || v < 0 ||
-         u >= buffer->width ||
-         v >= buffer->height))
-      {
-        *((uint32_t*)(rgba))= 0;
-      }
-    else
-      {
-        int      o = v * buffer->stride + u * 3;
-        uint8_t *src00 = (uint8_t *) buffer->data;
-        rgba[0] = src00[o];
-        rgba[1] = src00[o+1];
-        rgba[2] = src00[o+2]; 
-        rgba[3]=255;
-      }
-  
-      rgba += 4;
-      x += dx;
-      y += dy;
-    }
-  }
-#if CTX_DITHER
-  //ctx_dither_rgba_u8 (rgba, x, y, rasterizer->format->dither_red_blue,
-  //                    rasterizer->format->dither_green);
-#endif
-}
-
-
-static CTX_INLINE void
-ctx_fragment_image_rgb8_RGBA8_nearest_swap_red_green (CtxRasterizer *rasterizer,
-                                                      float x,
-                                                      float y,
-                                                      void *out, int count, float dx, float dy)
-{
-  ctx_fragment_image_rgb8_RGBA8_nearest (rasterizer, x, y, out, count, dx, dy);
-  ctx_fragment_swap_red_green_u8 (out, count);
-}
-
-static void
-ctx_fragment_image_rgb8_RGBA8 (CtxRasterizer *rasterizer,
-                               float x,
-                               float y,
-                               void *out, int count, float dx, float dy)
-{
-  if (rasterizer->state->gstate.image_smoothing)
-  {
-    float factor = ctx_matrix_get_scale (&rasterizer->state->gstate.transform);
-    if (factor <= 0.50f)
-    {
-      if (rasterizer->swap_red_green)
-        ctx_fragment_image_rgb8_RGBA8_box_swap_red_green (rasterizer, x, y, out, count, dx, dy);
-      else
-        ctx_fragment_image_rgb8_RGBA8_box (rasterizer, x, y, out, count, dx, dy);
-    }
-    else if (factor > 0.99f && factor < 1.01f)
-    {
-      // XXX missing translate test
-      if (rasterizer->swap_red_green)
-        ctx_fragment_image_rgb8_RGBA8_nearest_swap_red_green (rasterizer, x, y, out, count, dx, dy);
-      else
-        ctx_fragment_image_rgb8_RGBA8_nearest (rasterizer, x, y, out, count, dx, dy);
-    }
-    else
-    {
-      if (rasterizer->swap_red_green)
-        ctx_fragment_image_rgb8_RGBA8_bi_swap_red_green (rasterizer, x, y, out, count, dx, dy);
-      else
-        ctx_fragment_image_rgb8_RGBA8_bi (rasterizer, x, y, out, count, dx, dy);
-    }
-  }
-  else
-  {
-    if (rasterizer->swap_red_green)
-      ctx_fragment_image_rgb8_RGBA8_nearest_swap_red_green (rasterizer, x, y, out, count, dx, dy);
-    else
-      ctx_fragment_image_rgb8_RGBA8_nearest (rasterizer, x, y, out, count, dx, dy);
-  }
-#if CTX_DITHER
-  {
-  uint8_t *rgba = (uint8_t*)out;
-  ctx_dither_rgba_u8 (rgba, x, y, rasterizer->format->dither_red_blue,
-                      rasterizer->format->dither_green);
-  }
-#endif
-}
-
-
-/************** rgba8 */
-
-static void
-ctx_fragment_image_rgba8_RGBA8_box (CtxRasterizer *rasterizer,
-                                    float x,
-                                    float y,
-                                    void *out, int count, float dx, float dy)
-{
-  uint8_t *rgba = (uint8_t *) out;
-  CtxSource *g = &rasterizer->state->gstate.source_fill;
-  CtxBuffer *buffer = g->texture.buffer->color_managed;
-
-  for (int i = 0; i < count; i ++)
-  {
-
-  int u = x - g->texture.x0;
-  int v = y - g->texture.y0;
-  if ( u < 0 || v < 0 ||
-       u >= buffer->width ||
-       v >= buffer->height)
-    {
-      *((uint32_t*)(rgba))= 0;
-    }
-  else
-    {
-      int bpp = 4;
-      float factor = ctx_matrix_get_scale (&rasterizer->state->gstate.transform);
-          int dim = (1.0 / factor) / 2;
-          uint64_t sum[4]={0,0,0,0};
-          int count = 0;
-          int width = buffer->width;
-          int height = buffer->height;
-          for (int ou = - dim; ou < dim; ou++)
-          for (int ov = - dim; ov < dim; ov++)
-          {
-            uint8_t *src = (uint8_t *) buffer->data;
-            int o = (v+ov) * width + (u + ou);
-
-            if (o>=0 && o < width * height)
-            {
-              src += o * bpp;
-
-              for (int c = 0; c < bpp; c++)
-                sum[c] += src[c];
-              count ++;
-            }
-          }
-          if (count)
-            for (int c = 0; c < bpp; c++)
-              rgba[c] = sum[c]/count;
-    }
-    rgba += 4;
-    x += dx;
-    y += dy;
-  }
-#if CTX_DITHER
-//ctx_dither_rgba_u8 (rgba, x, y, rasterizer->format->dither_red_blue,
-//                    rasterizer->format->dither_green);
-#endif
-}
-
-static void
-ctx_fragment_image_rgba8_RGBA8_bi (CtxRasterizer *rasterizer,
-                                   float x,
-                                   float y,
-                                   void *out, int count, float dx, float dy)
-{
-  uint8_t *rgba = (uint8_t *) out;
-
-  CtxSource *g = &rasterizer->state->gstate.source_fill;
-  CtxBuffer *buffer = g->texture.buffer->color_managed;
-
-  for (int i = 0; i < count; i ++)
-  {
-
-  int u = x - g->texture.x0;
-  int v = y - g->texture.y0;
-  if ( u < 0 || v < 0 ||
-       u >= buffer->width ||
-       v >= buffer->height)
-    {
-      *((uint32_t*)(rgba))= 0;
-    }
-  else
-    {
-      int bpp = 4;
-      uint8_t *src00 = (uint8_t *) buffer->data;
-      int stride = buffer->stride;
-      src00 += v * stride + u * bpp;
-      uint8_t *src01 = src00;
-      if ( u + 1 < buffer->width)
-      {
-        src01 = src00 + bpp;
-      }
-      uint8_t *src11 = src01;
-      uint8_t *src10 = src00;
-      if ( v + 1 < buffer->height)
-      {
-        src10 = src00 + stride;
-        src11 = src01 + stride;
-      }
-      float dx = (x-(int)(x)) * 255.9;
-      float dy = (y-(int)(y)) * 255.9;
-      for (int c = 0; c < bpp; c++)
-      {
-        rgba[c] = ctx_lerp_u8 (ctx_lerp_u8 (src00[c], src01[c], dx),
-                               ctx_lerp_u8 (src10[c], src11[c], dx), dy);
-      }
-    }
-
-
-    x += dx;
-    y += dy;
-    rgba += 4;
-  }
-#if CTX_DITHER
-//ctx_dither_rgba_u8 (rgba, x, y, rasterizer->format->dither_red_blue,
-//                    rasterizer->format->dither_green);
-#endif
-}
-
-static void
-ctx_fragment_image_rgba8_RGBA8_nearest (CtxRasterizer *rasterizer,
-                                        float x,
-                                        float y,
-                                        void *out, int count, float dx, float dy)
-{
-  uint8_t *rgba = (uint8_t *) out;
-  CtxSource *g = &rasterizer->state->gstate.source_fill;
-  CtxBuffer *buffer = g->texture.buffer->color_managed;
-  int bwidth = buffer->width;
-  int bheight = buffer->height;
-  x += 0.5f;
-  y += 0.5f;
-
-  if (dy == 0.0f && dx > 0.999f && dx < 1.001f)
-  {
-    int u = x - g->texture.x0;
-    int v = y - g->texture.y0;
-    if (u >= 0 && v >= 0 && u + count < bwidth && v < bheight)
-    {
-      uint32_t *src = (uint32_t *) buffer->data;
-      memcpy (out, &src[v * bwidth + u], count * 4);
-      return;
-    }
-  }
-  //else
-  {
-    for (int i = 0; i < count; i ++)
-    {
-  
-    int u = x - g->texture.x0;
-    int v = y - g->texture.y0;
-    if ( u < 0 || v < 0 ||
-         u >= bwidth ||
-         v >= bheight)
-      {
-        *((uint32_t*)(rgba))= 0;
-      }
-    else
-      {
-        int      i = (v * bwidth + u);
-        uint32_t *src = (uint32_t *) buffer->data;
-        *((uint32_t*)(rgba))= src[i];
-      }
-  
-      x += dx;
-      y += dy;
-      rgba += 4;
-    }
-  }
-#if CTX_DITHER
-  //ctx_dither_rgba_u8 (rgba, x, y, rasterizer->format->dither_red_blue,
-  //                    rasterizer->format->dither_green);
-#endif
-
-
-#if CTX_DITHER
-  //ctx_dither_rgba_u8 (rgba, x, y, rasterizer->format->dither_red_blue,
-  //                    rasterizer->format->dither_green);
-#endif
-}
-
-static void
-ctx_fragment_image_rgba8_RGBA8_box_swap_red_green (CtxRasterizer *rasterizer,
-                                    float x,
-                                    float y,
-                                    void *out, int count, float dx, float dy)
-{
-  ctx_fragment_image_rgba8_RGBA8_box (rasterizer, x, y, out, count, dx, dy);
-  ctx_fragment_swap_red_green_u8 (out, count);
-}
-
-static void
-ctx_fragment_image_rgba8_RGBA8_bi_swap_red_green (CtxRasterizer *rasterizer,
-                                    float x,
-                                    float y,
-                                    void *out, int count, float dx, float dy)
-{
-  ctx_fragment_image_rgba8_RGBA8_bi (rasterizer, x, y, out, count, dx, dy);
-  ctx_fragment_swap_red_green_u8 (out, count);
-}
-
-static void
-ctx_fragment_image_rgba8_RGBA8_nearest_swap_red_green (CtxRasterizer *rasterizer,
-                                    float x,
-                                    float y,
-                                    void *out, int count, float dx, float dy)
-{
-  ctx_fragment_image_rgba8_RGBA8_nearest (rasterizer, x, y, out, count, dx, dy);
-  ctx_fragment_swap_red_green_u8 (out, count);
-}
-
-static void
-ctx_fragment_image_rgba8_RGBA8 (CtxRasterizer *rasterizer,
-                                float x,
-                                float y,
-                                void *out, int count, float dx, float dy)
-{
-  if (rasterizer->state->gstate.image_smoothing)
-  {
-    float factor = ctx_matrix_get_scale (&rasterizer->state->gstate.transform);
-    if (factor <= 0.50f)
-    {
-      if (rasterizer->swap_red_green)
-        ctx_fragment_image_rgba8_RGBA8_box_swap_red_green (rasterizer, x, y, out, count, dx, dy);
-      else
-        ctx_fragment_image_rgba8_RGBA8_box (rasterizer, x, y, out, count, dx, dy);
-    }
-    else if (factor > 0.99f && factor < 1.01f)
-    {
-      // XXX: also verify translate == 0 for this fast path to be valid
-      if (rasterizer->swap_red_green)
-        ctx_fragment_image_rgba8_RGBA8_nearest_swap_red_green (rasterizer, x, y, out, count, dx, dy);
-      else
-        ctx_fragment_image_rgba8_RGBA8_nearest (rasterizer, x, y, out, count, dx, dy);
-    }
-    else
-    {
-      if (rasterizer->swap_red_green)
-        ctx_fragment_image_rgba8_RGBA8_bi_swap_red_green (rasterizer, x, y, out, count, dx, dy);
-      else
-        ctx_fragment_image_rgba8_RGBA8_bi (rasterizer, x, y, out, count, dx, dy);
-    }
-  }
-  else
-  {
-    if (rasterizer->swap_red_green)
-      ctx_fragment_image_rgba8_RGBA8_nearest_swap_red_green (rasterizer, x, y, out, count, dx, dy);
-    else
-      ctx_fragment_image_rgba8_RGBA8_nearest (rasterizer, x, y, out, count, dx, dy);
-  }
-  //ctx_fragment_swap_red_green_u8 (out, count);
-#if CTX_DITHER
-  uint8_t *rgba = (uint8_t*)out;
-  ctx_dither_rgba_u8 (rgba, x, y, rasterizer->format->dither_red_blue,
-                      rasterizer->format->dither_green);
-#endif
-}
-
-static void
-ctx_fragment_image_gray1_RGBA8 (CtxRasterizer *rasterizer, float x, float y, void *out, int count, float dx, float dy)
-{
-  uint8_t *rgba = (uint8_t *) out;
-  CtxSource *g = &rasterizer->state->gstate.source_fill;
-  CtxBuffer *buffer = g->texture.buffer;
-  ctx_assert (rasterizer);
-  ctx_assert (g);
-  ctx_assert (buffer);
-  for (int i = 0; i < count; i ++)
-  {
-  int u = x - g->texture.x0;
-  int v = y - g->texture.y0;
-  if ( u < 0 || v < 0 ||
-       u >= buffer->width ||
-       v >= buffer->height)
-    {
-      rgba[0] = rgba[1] = rgba[2] = rgba[3] = 0;
-    }
-  else
-    {
-      uint8_t *src = (uint8_t *) buffer->data;
-      src += v * buffer->stride + u / 8;
-      if (*src & (1<< (u & 7) ) )
-        {
-          rgba[0] = rgba[1] = rgba[2] = rgba[3] = 0;
-        }
-      else
-        {
-          for (int c = 0; c < 4; c++)
-            { rgba[c] = 255;
-            }//g->texture.rgba[c];
-            //}
-        }
-    }
-
-    rgba += 4;
-    x += dx;
-    y += dy;
-  }
-}
-
-#if CTX_GRADIENTS
-static void
-ctx_fragment_radial_gradient_RGBA8 (CtxRasterizer *rasterizer, float x, float y, void *out, int count, float dx, float dy)
-{
-  uint8_t *rgba = (uint8_t *) out;
-  CtxSource *g = &rasterizer->state->gstate.source_fill;
-  for (int i = 0; i <  count; i ++)
-  {
-    float v = (ctx_hypotf (g->radial_gradient.x0 - x, g->radial_gradient.y0 - y) -
-              g->radial_gradient.r0) * (g->radial_gradient.rdelta);
-#if CTX_GRADIENT_CACHE
-    uint32_t *rgbap = (uint32_t*)&ctx_gradient_cache_u8[ctx_grad_index(v)][0];
-    *((uint32_t*)rgba) = *rgbap;
-#else
-    ctx_fragment_gradient_1d_RGBA8 (rasterizer, v, 0.0, rgba);
-#endif
-#if CTX_DITHER
-    ctx_dither_rgba_u8 (rgba, x, y, rasterizer->format->dither_red_blue,
-                        rasterizer->format->dither_green);
-#endif
-    rgba += 4;
-    x += dx;
-    y += dy;
-  }
-}
-
-static void
-ctx_fragment_linear_gradient_RGBA8 (CtxRasterizer *rasterizer, float x, float y, void *out, int count, float dx, float dy)
-{
-  uint8_t *rgba = (uint8_t *) out;
-  CtxSource *g = &rasterizer->state->gstate.source_fill;
-  for (int i = 0; i <  count; i ++)
-  {
-  float v = ( ( (g->linear_gradient.dx * x + g->linear_gradient.dy * y) /
-                g->linear_gradient.length) -
-              g->linear_gradient.start) * (g->linear_gradient.rdelta);
-#if CTX_GRADIENT_CACHE
-  uint32_t*rgbap = ((uint32_t*)(&ctx_gradient_cache_u8[ctx_grad_index(v)][0]));
-  *((uint32_t*)rgba) = *rgbap;
-#else
-  _ctx_fragment_gradient_1d_RGBA8 (rasterizer, v, 1.0, rgba);
-#endif
-#if CTX_DITHER
-  ctx_dither_rgba_u8 (rgba, x, y, rasterizer->format->dither_red_blue,
-                      rasterizer->format->dither_green);
-#endif
-    rgba += 4;
-    x += dx;
-    y += dy;
-  }
-}
-
-#endif
-
-static void
-ctx_fragment_color_RGBA8 (CtxRasterizer *rasterizer, float x, float y, void *out, int count, float dx, float dy)
-{
-  uint8_t  rgba[4];
-  uint8_t *rgba_out = (uint8_t *) out;
-  CtxSource *g = &rasterizer->state->gstate.source_fill;
-  ctx_color_get_rgba8 (rasterizer->state, &g->color, rgba);
-
-  if (rasterizer->swap_red_green)
-  {
-    int tmp = rgba[0];
-    rgba[0] = rgba[2];
-    rgba[2] = tmp;
-  }
-  for (int i = 0; i < count; i++, rgba_out+=4)
-    memcpy (rgba_out, rgba, 4);
-}
-#if CTX_ENABLE_FLOAT
-
-#if CTX_GRADIENTS
-static void
-ctx_fragment_linear_gradient_RGBAF (CtxRasterizer *rasterizer, float x, float y, void *out, int count, float dx, float dy)
-{
-  float *rgba = (float *) out;
-  CtxSource *g = &rasterizer->state->gstate.source_fill;
-  for (int i = 0; i < count; i++)
-  {
-    float v = ( ( (g->linear_gradient.dx * x + g->linear_gradient.dy * y) /
-                  g->linear_gradient.length) -
-                g->linear_gradient.start) * (g->linear_gradient.rdelta);
-    ctx_fragment_gradient_1d_RGBAF (rasterizer, v, 1.0f, rgba);
-    x += dx;
-    y += dy;
-    rgba += 4;
-  }
-}
-
-static void
-ctx_fragment_radial_gradient_RGBAF (CtxRasterizer *rasterizer, float x, float y, void *out, int count, float dx, float dy)
-{
-  float *rgba = (float *) out;
-  CtxSource *g = &rasterizer->state->gstate.source_fill;
-  for (int i = 0; i < count; i++)
-  {
-  float v = ctx_hypotf (g->radial_gradient.x0 - x, g->radial_gradient.y0 - y);
-        v = (v - g->radial_gradient.r0) * (g->radial_gradient.rdelta);
-  ctx_fragment_gradient_1d_RGBAF (rasterizer, v, 0.0f, rgba);
-    x+=dx;
-    y+=dy;
-    rgba +=4;
-  }
-}
-#endif
-
-
-static void
-ctx_fragment_color_RGBAF (CtxRasterizer *rasterizer, float x, float y, void *out, int count, float dx, float dy)
-{
-  float *rgba = (float *) out;
-  for (int i = 0; i < count; i++)
-  {
-    CtxSource *g = &rasterizer->state->gstate.source_fill;
-    ctx_color_get_rgba (rasterizer->state, &g->color, rgba);
-    rgba += 4;
-  }
-}
-
-static void ctx_fragment_image_RGBAF (CtxRasterizer *rasterizer, float x, float y, void *out, int count, float dx, float dy)
-{
-  float *outf = (float *) out;
-  uint8_t rgba[4];
-  CtxGState *gstate = &rasterizer->state->gstate;
-  CtxBuffer *buffer = gstate->source_fill.texture.buffer;
-  switch (buffer->format->bpp)
-    {
-      case 1:  ctx_fragment_image_gray1_RGBA8 (rasterizer, x, y, rgba, count, dx, dy); break;
-      case 24: ctx_fragment_image_rgb8_RGBA8 (rasterizer, x, y, rgba, count, dx, dy);  break;
-      case 32: ctx_fragment_image_rgba8_RGBA8 (rasterizer, x, y, rgba, count, dx, dy); break;
-      default: ctx_fragment_image_RGBA8 (rasterizer, x, y, rgba, count, dx, dy);       break;
-    }
-  for (int c = 0; c < 4 * count; c ++) { outf[c] = ctx_u8_to_float (rgba[c]); }
-}
-
-static CtxFragment ctx_rasterizer_get_fragment_RGBAF (CtxRasterizer *rasterizer)
-{
-  CtxGState *gstate = &rasterizer->state->gstate;
-  switch (gstate->source_fill.type)
-    {
-      case CTX_SOURCE_TEXTURE:           return ctx_fragment_image_RGBAF;
-      case CTX_SOURCE_COLOR:           return ctx_fragment_color_RGBAF;
-#if CTX_GRADIENTS
-      case CTX_SOURCE_LINEAR_GRADIENT: return ctx_fragment_linear_gradient_RGBAF;
-      case CTX_SOURCE_RADIAL_GRADIENT: return ctx_fragment_radial_gradient_RGBAF;
-#endif
-    }
-  return ctx_fragment_color_RGBAF;
-}
-#endif
-
-static CtxFragment ctx_rasterizer_get_fragment_RGBA8 (CtxRasterizer *rasterizer)
-{
-  CtxGState *gstate = &rasterizer->state->gstate;
-  CtxBuffer *buffer = gstate->source_fill.texture.buffer;
-  switch (gstate->source_fill.type)
-    {
-      case CTX_SOURCE_TEXTURE:
-        switch (buffer->format->bpp)
-          {
-            case 1:  return ctx_fragment_image_gray1_RGBA8;
-            case 24: 
+              //if (client != clients->data)
+       #if 1
+              if ((client->flags & ITK_CLIENT_MAXIMIZED)==0)
               {
-                if (gstate->image_smoothing)
-                {
-                  float factor = ctx_matrix_get_scale (&gstate->transform);
-                          //fprintf (stderr, "{%.3f}", factor);
-                  if (factor < 0.5f)
-                  {
-                    if (rasterizer->swap_red_green)
-                      return ctx_fragment_image_rgb8_RGBA8_box_swap_red_green;
-                    return ctx_fragment_image_rgb8_RGBA8_box;
-                  }
-                  else if (factor > 0.99f && factor < 1.01f)
-                  {
-                    if (rasterizer->swap_red_green)
-                      return ctx_fragment_image_rgb8_RGBA8_nearest_swap_red_green;
-                    return ctx_fragment_image_rgb8_RGBA8_nearest;
-                  }
-                  else
-                  {
-                    if (rasterizer->swap_red_green)
-                      return ctx_fragment_image_rgb8_RGBA8_bi_swap_red_green;
-                    return ctx_fragment_image_rgb8_RGBA8_bi;
-                  }
-                }
-                else
-                {
-                  if (rasterizer->swap_red_green)
-                    return ctx_fragment_image_rgb8_RGBA8_nearest_swap_red_green;
-                  return ctx_fragment_image_rgb8_RGBA8_nearest;
-                }
+                ctx_list_remove (&clients, client);
+                ctx_list_append (&clients, client);
               }
-              break;
-            case 32:
-              {
-                if (gstate->image_smoothing)
-                {
-                  float factor = ctx_matrix_get_scale (&gstate->transform);
-                          //fprintf (stderr, "[%.3f]", factor);
-                  if (factor < 0.5f)
-                  {
-                    if (rasterizer->swap_red_green)
-                      return ctx_fragment_image_rgba8_RGBA8_box_swap_red_green;
-                    return ctx_fragment_image_rgba8_RGBA8_box;
-                  }
-                  else if (factor > 0.99f && factor < 1.01f)
-                  {
-                    if (rasterizer->swap_red_green)
-                      return ctx_fragment_image_rgba8_RGBA8_nearest_swap_red_green;
-                    return ctx_fragment_image_rgba8_RGBA8_nearest;
-                  }
-                  else
-                  {
-                    if (rasterizer->swap_red_green)
-                      return ctx_fragment_image_rgba8_RGBA8_bi_swap_red_green;
-                    return ctx_fragment_image_rgba8_RGBA8_bi;
-                  }
-                }
-                else
-                {
-                  if (rasterizer->swap_red_green)
-                    return ctx_fragment_image_rgba8_RGBA8_nearest_swap_red_green;
-                  return ctx_fragment_image_rgba8_RGBA8_nearest;
-                }
-              }
-            default: return ctx_fragment_image_RGBA8;
-          }
-      case CTX_SOURCE_COLOR:           return ctx_fragment_color_RGBA8;
-#if CTX_GRADIENTS
-      case CTX_SOURCE_LINEAR_GRADIENT: return ctx_fragment_linear_gradient_RGBA8;
-      case CTX_SOURCE_RADIAL_GRADIENT: return ctx_fragment_radial_gradient_RGBA8;
 #endif
-    }
-  return ctx_fragment_color_RGBA8;
-}
-
-static void
-ctx_init_uv (CtxRasterizer *rasterizer,
-             int x0, int count,
-             float *u0, float *v0, float *ud, float *vd)
-{
-  CtxGState *gstate = &rasterizer->state->gstate;
-  *u0 = x0;
-  *v0 = rasterizer->scanline / 15;//rasterizer->aa;
-  float u1 = *u0 + count;
-  float v1 = *v0;
-
-  ctx_matrix_apply_transform (&gstate->source_fill.transform, u0, v0);
-  ctx_matrix_apply_transform (&gstate->source_fill.transform, &u1, &v1);
-
-  *ud = (u1-*u0) / (count);
-  *vd = (v1-*v0) / (count);
-}
-
-#if 1
-static void
-ctx_u8_source_over_normal_opaque_color (int components, CTX_COMPOSITE_ARGUMENTS)
-{
-  while (count--)
-  {
-    int cov = *coverage;
-    if (cov)
-    {
-    if (cov == 255)
-    {
-        switch (components)
-        {
-          case 4:
-            *((uint32_t*)(dst)) = *((uint32_t*)(src));
-            break;
-          default:
-            for (int c = 0; c < components; c++)
-              dst[c] = src[c];
-        }
-    }
-    else
-    {
-        for (int c = 0; c < components; c++)
-          dst[c] = dst[c]+((src[c]-dst[c]) * cov) / 255;
-    }
-    }
-    coverage ++;
-    dst+=components;
-  }
-}
-#endif
-
-static void
-ctx_u8_copy_normal (int components, CTX_COMPOSITE_ARGUMENTS)
-{
-  float u0 = 0; float v0 = 0;
-  float ud = 0; float vd = 0;
-  if (rasterizer->fragment)
-    {
-      ctx_init_uv (rasterizer, x0, count, &u0, &v0, &ud, &vd);
-    }
-
-  while (count--)
-  {
-    int cov = *coverage;
-    if (cov == 0)
-    {
-      for (int c = 0; c < components; c++)
-        { dst[c] = 0; }
-    }
-    else
-    {
-      if (rasterizer->fragment)
-      {
-        rasterizer->fragment (rasterizer, u0, v0, src, 1, ud, vd);
-        u0+=ud;
-        v0+=vd;
-      }
-    if (cov == 255)
-    {
-      for (int c = 0; c < components; c++)
-        dst[c] = src[c];
-    }
-    else
-    {
-      uint8_t ralpha = 255 - cov;
-      for (int c = 0; c < components; c++)
-        { dst[c] = (src[c]*cov + 0 * ralpha) / 255; }
-    }
-    }
-    dst += components;
-    coverage ++;
-  }
-}
-
-static void
-ctx_u8_clear_normal (int components, CTX_COMPOSITE_ARGUMENTS)
-{
-  while (count--)
-  {
-#if 0
-    int cov = *coverage;
-    if (cov)
-    {
-      if (cov == 255)
-      {
-#endif
-           //__attribute__ ((fallthrough));
-        switch (components)
-        {
-          case 1: dst[0] = 0; break;
-          case 3: dst[2] = 0;
-           /* FALLTHROUGH */
-          case 2: *((uint16_t*)(dst)) = 0; break;
-          case 5: dst[4] = 0;
-           /* FALLTHROUGH */
-          case 4: *((uint32_t*)(dst)) = 0; break;
-          default:
-            for (int c = 0; c < components; c ++)
-              dst[c] = 0;
-            break;
-        }
-#if 0
-      }
-      else
-      {
-        uint8_t ralpha = 255 - cov;
-        for (int c = 0; c < components; c++)
-          { dst[c] = (dst[c] * ralpha) / 255; }
-      }
-    }
-    coverage ++;
-#endif
-    dst += components;
-  }
-}
-
-typedef enum {
-  CTX_PORTER_DUFF_0,
-  CTX_PORTER_DUFF_1,
-  CTX_PORTER_DUFF_ALPHA,
-  CTX_PORTER_DUFF_1_MINUS_ALPHA,
-} CtxPorterDuffFactor;
-
-#define  \
-ctx_porter_duff_factors(mode, foo, bar)\
-{\
-  switch (mode)\
-  {\
-     case CTX_COMPOSITE_SOURCE_ATOP:\
-        f_s = CTX_PORTER_DUFF_ALPHA;\
-        f_d = CTX_PORTER_DUFF_1_MINUS_ALPHA;\
-      break;\
-     case CTX_COMPOSITE_DESTINATION_ATOP:\
-        f_s = CTX_PORTER_DUFF_1_MINUS_ALPHA;\
-        f_d = CTX_PORTER_DUFF_ALPHA;\
-      break;\
-     case CTX_COMPOSITE_DESTINATION_IN:\
-        f_s = CTX_PORTER_DUFF_0;\
-        f_d = CTX_PORTER_DUFF_ALPHA;\
-      break;\
-     case CTX_COMPOSITE_DESTINATION:\
-        f_s = CTX_PORTER_DUFF_0;\
-        f_d = CTX_PORTER_DUFF_1;\
-       break;\
-     case CTX_COMPOSITE_SOURCE_OVER:\
-        f_s = CTX_PORTER_DUFF_1;\
-        f_d = CTX_PORTER_DUFF_1_MINUS_ALPHA;\
-       break;\
-     case CTX_COMPOSITE_DESTINATION_OVER:\
-        f_s = CTX_PORTER_DUFF_1_MINUS_ALPHA;\
-        f_d = CTX_PORTER_DUFF_1;\
-       break;\
-     case CTX_COMPOSITE_XOR:\
-        f_s = CTX_PORTER_DUFF_1_MINUS_ALPHA;\
-        f_d = CTX_PORTER_DUFF_1_MINUS_ALPHA;\
-       break;\
-     case CTX_COMPOSITE_DESTINATION_OUT:\
-        f_s = CTX_PORTER_DUFF_0;\
-        f_d = CTX_PORTER_DUFF_1_MINUS_ALPHA;\
-       break;\
-     case CTX_COMPOSITE_SOURCE_OUT:\
-        f_s = CTX_PORTER_DUFF_1_MINUS_ALPHA;\
-        f_d = CTX_PORTER_DUFF_0;\
-       break;\
-     case CTX_COMPOSITE_SOURCE_IN:\
-        f_s = CTX_PORTER_DUFF_ALPHA;\
-        f_d = CTX_PORTER_DUFF_0;\
-       break;\
-     case CTX_COMPOSITE_COPY:\
-        f_s = CTX_PORTER_DUFF_1;\
-        f_d = CTX_PORTER_DUFF_0;\
-       break;\
-     default:\
-     case CTX_COMPOSITE_CLEAR:\
-        f_s = CTX_PORTER_DUFF_0;\
-        f_d = CTX_PORTER_DUFF_0;\
-       break;\
-  }\
-}
-
-#if 1
-static void
-ctx_u8_source_over_normal_color (int components,
-                                 CtxRasterizer         *rasterizer,
-                                 uint8_t * __restrict__ dst,
-                                 uint8_t * __restrict__ src,
-                                 int                    x0,
-                                 uint8_t * __restrict__ coverage,
-                                 int                    count)
-{
-  uint8_t tsrc[5];
-  *((uint32_t*)tsrc) = *((uint32_t*)src);
-  ctx_u8_associate_alpha (components, tsrc);
-
-    while (count--)
-    {
-      int cov = *coverage;
-      if (cov)
-      {
-        if (cov == 255)
-        {
-        for (int c = 0; c < components; c++)
-          dst[c] = (tsrc[c]) + (dst[c] * (255-(tsrc[components-1])))/(255);
-        }
-        else
-        {
-          for (int c = 0; c < components; c++)
-            dst[c] = (tsrc[c] * cov)/255 + (dst[c] * ((255*255)-(tsrc[components-1] * cov)))/(255*255);
-         }
-      }
-      coverage ++;
-      dst+=components;
-    }
-}
-#endif
-
-#if CTX_AVX2
-
-#if !__COSMOPOLITAN__
-#include <stdalign.h>
-#endif
-#endif
-
-static void
-CTX_COMPOSITE_SUFFIX(ctx_RGBA8_source_over_normal_buf) (CTX_COMPOSITE_ARGUMENTS, uint8_t *tsrc)
-{
-    int x = 0;
-
-#if CTX_AVX2
-    if (((size_t)(dst) & 31))
-#endif
-    {
-      for (; (x < count) 
-#if CTX_AVX2
-                        && ((size_t)(dst)&31)
-#endif
-                      ; 
-                      x++)
-    {
-      int cov = coverage[0];
-      if (cov)
-      {
-        uint32_t *sip = ((uint32_t*)(tsrc));
-        uint32_t si = *sip;
-        uint64_t si_ga = si & CTX_RGBA8_GA_MASK;
-        uint32_t si_rb = si & CTX_RGBA8_RB_MASK;
-        uint32_t *dip = ((uint32_t*)(dst));
-        int      si_a  = si >> CTX_RGBA8_A_SHIFT;
-        uint32_t di = *dip;
-        uint64_t di_ga = di & CTX_RGBA8_GA_MASK;
-        uint32_t di_rb = di & CTX_RGBA8_RB_MASK;
-        int ir_cov_si_a = 255-((cov*si_a)/255);
-        *((uint32_t*)(dst)) = 
-         (((si_rb * cov + di_rb * ir_cov_si_a) >> 8) & CTX_RGBA8_RB_MASK) |
-         (((si_ga * cov + di_ga * ir_cov_si_a) >> 8) & CTX_RGBA8_GA_MASK);
-      }
-      dst += 4;
-      tsrc += 4;
-      coverage ++;
-    }
-  }
-
-#if CTX_AVX2
-    __m256i a_mask = _mm256_set1_epi32 (0xFF000000);
-    __m256i lo_mask = _mm256_set1_epi32 (0x00FF00FF);
-    __m256i hi_mask = _mm256_set1_epi32 (0xFF00FF00);
-    __m256i x00ff =   _mm256_set1_epi16(255);
-    __m256i x0101 =   _mm256_set1_epi16(0x0101);
-    __m256i x0080 =   _mm256_set1_epi16(0x0080);
-
-    int trailer = (count - x) % 8 + 1;
-
-    for (; x <= count-trailer; x+=8)
-    {
-     if (((uint64_t*)(coverage))[0])
-     {
-       __m256i xcov;
-       __m256i x1_minus_cov_mul_a;
-       __m256i xsrc = _mm256_load_si256((__m256i*)(tsrc));
-
-       __m256i xsrc_a = _mm256_and_si256(xsrc, a_mask);
-       xsrc_a = _mm256_srli_epi32 (xsrc_a, 24);
-       xsrc_a |= xsrc_a << 16;
-       xcov  = _mm256_set_epi32(coverage[7],
-                                coverage[6],
-                                coverage[5],
-                                coverage[4],
-                                coverage[3],
-                                coverage[2],
-                                coverage[1],
-                                coverage[0]
-                                );
-       xcov |= xcov << 16;
-       __m256i xcov_mul_a  =
-         _mm256_mulhi_epu16(_mm256_adds_epu16(_mm256_mullo_epi16(xcov,  xsrc_a), x0080), x0101);
-       x1_minus_cov_mul_a = _mm256_sub_epi16(x00ff, xcov_mul_a);
-
-       __m256i xdst   = _mm256_load_si256((__m256i*)(dst));
-       __m256i dst_lo = _mm256_and_si256 (xdst, lo_mask);
-       __m256i dst_hi = _mm256_srli_epi16 (_mm256_and_si256 (xdst, hi_mask), 8);
-       __m256i src_lo = _mm256_and_si256 (xsrc, lo_mask);
-       __m256i src_hi = _mm256_srli_epi16 (_mm256_and_si256 (xsrc, hi_mask), 8);
-        
-       dst_hi  = _mm256_mulhi_epu16(_mm256_adds_epu16(_mm256_mullo_epi16(dst_hi,  x1_minus_cov_mul_a), x0080), x0101);
-       dst_lo  = _mm256_mulhi_epu16(_mm256_adds_epu16(_mm256_mullo_epi16(dst_lo,  x1_minus_cov_mul_a), x0080), x0101);
-
-       src_lo  = _mm256_mulhi_epu16(_mm256_adds_epu16(_mm256_mullo_epi16(src_lo, xcov), x0080), x0101);
-       src_hi  = _mm256_mulhi_epu16(_mm256_adds_epu16(_mm256_mullo_epi16(src_hi, xcov), x0080), x0101);
-
-       dst_hi = _mm256_adds_epu16(dst_hi, src_hi);
-       dst_lo = _mm256_adds_epu16(dst_lo, src_lo);
-
-       _mm256_store_si256((__m256i*)dst, _mm256_slli_epi16 (dst_hi,8)|dst_lo);
-     }
-
-      dst  += 4 * 8;
-      tsrc += 4 * 8;
-      coverage += 8;
-    }
-    for (; x < count; x++)
-    {
-      int cov = coverage[0];
-      if (cov)
-      {
-        uint32_t *sip = ((uint32_t*)(tsrc));
-        uint32_t si = *sip;
-        uint32_t *dip = ((uint32_t*)(dst));
-        uint32_t di = *dip;
-
-        uint64_t si_ga = si & CTX_RGBA8_GA_MASK;
-        uint32_t si_rb = si & CTX_RGBA8_RB_MASK;
-        int      si_a  = si >> CTX_RGBA8_A_SHIFT;
-
-        uint64_t di_ga = di & CTX_RGBA8_GA_MASK;
-        uint32_t di_rb = di & CTX_RGBA8_RB_MASK;
-        int ir_cov_si_a = 255-((cov*si_a)/255);
-        *((uint32_t*)(dst)) = 
-         (((si_rb * cov + di_rb * ir_cov_si_a) >> 8) & CTX_RGBA8_RB_MASK) |
-         (((si_ga * cov + di_ga * ir_cov_si_a) >> 8) & CTX_RGBA8_GA_MASK);
-      }
-      dst  += 4;
-      tsrc += 4;
-      coverage ++;
-    }
-#endif
-}
-
-static void
-CTX_COMPOSITE_SUFFIX(ctx_RGBA8_source_over_normal_fragment) (CTX_COMPOSITE_ARGUMENTS)
-{
-  float u0 = 0; float v0 = 0;
-  float ud = 0; float vd = 0;
-  ctx_init_uv (rasterizer, x0, count, &u0, &v0, &ud, &vd);
-#if CTX_DITHER
-  int dither_red_blue = rasterizer->format->dither_red_blue;
-  int dither_green = rasterizer->format->dither_green;
-#endif
-  CtxFragment fragment = rasterizer->fragment;
-  int fudge = ((size_t)(dst) & 31);
-#if CTX_AVX2
-  alignas(32)
-#endif
-  uint8_t _tsrc[4 * (count + fudge)];
-  uint8_t *tsrc = &_tsrc[fudge];
-  fragment (rasterizer, u0, v0, tsrc, count, ud, vd);
-#if CTX_DITHER
-  ctx_init_uv (rasterizer, x0, count, &u0, &v0, &ud, &vd);
-#endif
-  for (int x = 0; x < count ; x++)
-  {
-    ctx_RGBA8_associate_alpha (tsrc);
-#if CTX_DITHER
-    ctx_dither_rgba_u8 (tsrc, u0, v0, dither_red_blue, dither_green);
-#endif
-    tsrc += 4;
-#if CTX_DITHER
-    u0 += ud;
-    v0 += vd;
-#endif
-  }
-  tsrc = &_tsrc[fudge];
-
-  CTX_COMPOSITE_SUFFIX(ctx_RGBA8_source_over_normal_buf) (rasterizer,
-                       dst, src, x0, coverage, count, tsrc);
-
-}
-
-
-#if CTX_GRADIENTS
-#if CTX_INLINED_GRADIENTS
-static void
-CTX_COMPOSITE_SUFFIX(ctx_RGBA8_source_over_normal_linear_gradient) (CTX_COMPOSITE_ARGUMENTS)
-{
-  CtxSource *g = &rasterizer->state->gstate.source_fill;
-  float u0 = 0; float v0 = 0;
-  float ud = 0; float vd = 0;
-  ctx_init_uv (rasterizer, x0, count, &u0, &v0, &ud, &vd);
-  float linear_gradient_dx = g->linear_gradient.dx;
-  float linear_gradient_dy = g->linear_gradient.dy;
-  float linear_gradient_rdelta = g->linear_gradient.rdelta;
-  float linear_gradient_start = g->linear_gradient.start;
-  float linear_gradient_length = g->linear_gradient.length;
-#if CTX_DITHER
-  int dither_red_blue = rasterizer->format->dither_red_blue;
-  int dither_green = rasterizer->format->dither_green;
-#endif
-  int fudge = ((size_t)(dst) & 31);
-#if CTX_AVX2
-  alignas(32)
-#endif
-  uint8_t _tsrc[4 * (count + fudge)];
-  uint8_t *tsrc = &_tsrc[fudge];
-  for (int x = 0; x < count ; x++)
-  {
-      float vv = ( ( (linear_gradient_dx * u0 + linear_gradient_dy * v0) / linear_gradient_length) -
-            linear_gradient_start) * (linear_gradient_rdelta);
-      uint32_t *tsrci = (uint32_t*)tsrc;
-#if CTX_GRADIENT_CACHE
-      uint32_t *cachei = ((uint32_t*)(&ctx_gradient_cache_u8_a[ctx_grad_index(vv)][0]));
-      *tsrci = *cachei;
-#else
-      ctx_fragment_gradient_1d_RGBA8 (rasterizer, vv, 1.0, tsrc);
-      ctx_RGBA8_associate_alpha (tsrc);
-#endif
-#if CTX_DITHER
-      ctx_dither_rgba_u8 (tsrc, u0, v0, dither_red_blue, dither_green);
-#endif
-
-    tsrc += 4;
-    u0 += ud;
-    v0 += vd;
-  }
-  tsrc = &_tsrc[fudge];
-  CTX_COMPOSITE_SUFFIX(ctx_RGBA8_source_over_normal_buf) (rasterizer,
-               dst, src, x0, coverage, count, tsrc);
-}
-
-static void
-CTX_COMPOSITE_SUFFIX(ctx_RGBA8_source_over_normal_radial_gradient) (CTX_COMPOSITE_ARGUMENTS)
-{
-  CtxSource *g = &rasterizer->state->gstate.source_fill;
-  float u0 = 0; float v0 = 0;
-  float ud = 0; float vd = 0;
-  ctx_init_uv (rasterizer, x0, count, &u0, &v0, &ud, &vd);
-  float radial_gradient_x0 = g->radial_gradient.x0;
-  float radial_gradient_y0 = g->radial_gradient.y0;
-  float radial_gradient_r0 = g->radial_gradient.r0;
-  float radial_gradient_rdelta = g->radial_gradient.rdelta;
-#if CTX_DITHER
-  int dither_red_blue = rasterizer->format->dither_red_blue;
-  int dither_green = rasterizer->format->dither_green;
-#endif
-  int fudge = ((size_t)(dst) & 31);
-#if CTX_AVX2
-  alignas(32)
-#endif
-  uint8_t _tsrc[4 * (count + fudge)];
-  uint8_t *tsrc = &_tsrc[fudge];
-  for (int x = 0; x < count ; x++)
-  {
-      float vv = ctx_hypotf (radial_gradient_x0 - u0, radial_gradient_y0 - v0);
-            vv = (vv - radial_gradient_r0) * (radial_gradient_rdelta);
-#if CTX_GRADIENT_CACHE
-      uint32_t *tsrcp = (uint32_t*)tsrc;
-      uint32_t *cp = ((uint32_t*)(&ctx_gradient_cache_u8_a[ctx_grad_index(vv)][0]));
-      *tsrcp = *cp;
-#else
-      ctx_fragment_gradient_1d_RGBA8 (rasterizer, vv, 1.0, tsrc);
-      ctx_RGBA8_associate_alpha (tsrc);
-#endif
-
-#if CTX_DITHER
-      ctx_dither_rgba_u8 (tsrc, u0, v0, dither_red_blue, dither_green);
-#endif
-
-    tsrc += 4;
-    u0 += ud;
-    v0 += vd;
-  }
-
-  CTX_COMPOSITE_SUFFIX(ctx_RGBA8_source_over_normal_buf) (rasterizer,
-               dst, src, x0, coverage, count, &_tsrc[fudge]);
-}
-
-
-#endif
-#endif
-
-static void
-CTX_COMPOSITE_SUFFIX(ctx_RGBA8_source_over_normal_color) (CTX_COMPOSITE_ARGUMENTS)
-{
-#if 0
-  ctx_u8_source_over_normal_color (4, rasterizer, dst, src, clip, x0, coverage, count);
-  return;
-#endif
-  {
-    uint8_t tsrc[4];
-    memcpy (tsrc, src, 4);
-    ctx_RGBA8_associate_alpha (tsrc);
-    uint8_t a = src[3];
-    int x = 0;
-
-#if CTX_AVX2
-    if ((size_t)(dst) & 31)
-#endif
-    {
-      uint32_t *sip = ((uint32_t*)(tsrc));
-      uint32_t si = *sip;
-      uint64_t si_ga = si & CTX_RGBA8_GA_MASK;
-      uint32_t si_rb = si & CTX_RGBA8_RB_MASK;
-      if (a==255)
-      {
-
-      for (; (x < count) 
-#if CTX_AVX2
-                      && ((size_t)(dst)&31)
-#endif
-                      ; 
-                      x++)
-    {
-      int cov = coverage[0];
-      if (cov)
-      {
-        int r_cov = 255-cov;
-        uint32_t di = *((uint32_t*)(dst));
-        uint64_t di_ga = di & CTX_RGBA8_GA_MASK;
-        uint32_t di_rb = di & CTX_RGBA8_RB_MASK;
-        *((uint32_t*)(dst)) = 
-         (((si_rb * cov + di_rb * r_cov) >> 8) & CTX_RGBA8_RB_MASK) |
-         (((si_ga * cov + di_ga * r_cov) >> 8) & CTX_RGBA8_GA_MASK);
-      }
-      dst += 4;
-      coverage ++;
-    }
-  }
-    else
-    {
-      int si_a = si >> CTX_RGBA8_A_SHIFT;
-      for (; (x < count) 
-#if CTX_AVX2
-                      && ((size_t)(dst)&31)
-#endif
-                      ; 
-                      x++)
-      {
-        int cov = *coverage;
-        if (cov)
-        {
-          uint32_t di = *((uint32_t*)(dst));
-          uint64_t di_ga = di & CTX_RGBA8_GA_MASK;
-          uint32_t di_rb = di & CTX_RGBA8_RB_MASK;
-          int ir_cov_si_a = 255-((cov*si_a)>>8);
-          *((uint32_t*)(dst)) = 
-           (((si_rb * cov + di_rb * ir_cov_si_a) >> 8) & CTX_RGBA8_RB_MASK) |
-           (((si_ga * cov + di_ga * ir_cov_si_a) >> 8) & CTX_RGBA8_GA_MASK);
-        }
-        dst += 4;
-        coverage ++;
-      }
-    }
-    }
-
-#if CTX_AVX2
-                    
-    __m256i xsrc = _mm256_set1_epi32( *((uint32_t*)tsrc)) ;
-    __m256i lo_mask = _mm256_set1_epi32 (0x00FF00FF);
-    __m256i hi_mask = _mm256_set1_epi32 (0xFF00FF00);
-    __m256i x00ff =   _mm256_set1_epi16(255);
-    __m256i x0101 =   _mm256_set1_epi16(0x0101);
-    __m256i x0080 =   _mm256_set1_epi16(0x0080);
-
-    int trailer = (count - x) % 8 + 1;
-
-    for (; x <= count-trailer; x+=8)
-    {
-      __m256i xcov;
-      __m256i x1_minus_cov_mul_a;
-     
-     if (((uint64_t*)(coverage))[0])
-     {
-       if (CTX_LIKELY(((uint64_t*)(coverage))[0] != 0xffffffffffffffff))
-       {
-         xcov  = _mm256_set_epi32(coverage[7],
-                                  coverage[6],
-                                  coverage[5],
-                                  coverage[4],
-                                  coverage[3],
-                                  coverage[2],
-                                  coverage[1],
-                                  coverage[0]
-                                  );
-         xcov |= xcov << 16;
-
-        x1_minus_cov_mul_a = 
-           _mm256_sub_epi16(x00ff, _mm256_mulhi_epu16 (
-                   _mm256_adds_epu16 (_mm256_mullo_epi16(xcov,
-                                      _mm256_set1_epi16(a)), x0080), x0101));
-       }
-       else
-       {
-          if (a == 255)
-          {
-            _mm256_store_si256((__m256i*)dst, xsrc);
-            dst += 4 * 8;
-            coverage += 8;
-            continue;
-          }
-
-          xcov = x00ff;
-          x1_minus_cov_mul_a = _mm256_set1_epi16(255-a);
-       }
-      __m256i xdst   = _mm256_load_si256((__m256i*)(dst));
-      __m256i dst_lo = _mm256_and_si256 (xdst, lo_mask);
-      __m256i dst_hi = _mm256_srli_epi16 (_mm256_and_si256 (xdst, hi_mask), 8);
-      __m256i src_lo = _mm256_and_si256 (xsrc, lo_mask);
-      __m256i src_hi = _mm256_srli_epi16 (_mm256_and_si256 (xsrc, hi_mask), 8);
-        
-      dst_hi  = _mm256_mulhi_epu16(_mm256_adds_epu16(_mm256_mullo_epi16(dst_hi,  x1_minus_cov_mul_a), x0080), x0101);
-      dst_lo  = _mm256_mulhi_epu16(_mm256_adds_epu16(_mm256_mullo_epi16(dst_lo,  x1_minus_cov_mul_a), x0080), x0101);
-
-      src_lo  = _mm256_mulhi_epu16(_mm256_adds_epu16(_mm256_mullo_epi16(src_lo, xcov), x0080), x0101);
-      src_hi  = _mm256_mulhi_epu16(_mm256_adds_epu16(_mm256_mullo_epi16(src_hi,  xcov), x0080), x0101);
-
-      dst_hi = _mm256_adds_epu16(dst_hi, src_hi);
-      dst_lo = _mm256_adds_epu16(dst_lo, src_lo);
-
-      _mm256_store_si256((__m256i*)dst, _mm256_slli_epi16 (dst_hi,8)|dst_lo);
-     }
-
-      dst += 4 * 8;
-      coverage += 8;
-    }
-
-    if (x < count)
-    {
-      uint32_t *sip = ((uint32_t*)(tsrc));
-      uint32_t si = *sip;
-      uint64_t si_ga = si & CTX_RGBA8_GA_MASK;
-      uint32_t si_rb = si & CTX_RGBA8_RB_MASK;
-      int si_a = si >> CTX_RGBA8_A_SHIFT;
-      for (; x < count; x++)
-      {
-        int cov = *coverage;
-        if (cov)
-        {
-          uint32_t *dip = ((uint32_t*)(dst));
-          uint32_t di = *dip;
-          uint64_t di_ga = di & CTX_RGBA8_GA_MASK;
-          uint32_t di_rb = di & CTX_RGBA8_RB_MASK;
-          int ir_cov_si_a = 255-((cov*si_a)>>8);
-          *((uint32_t*)(dst)) = 
-           (((si_rb * cov + di_rb * ir_cov_si_a) >> 8) & CTX_RGBA8_RB_MASK) |
-           (((si_ga * cov + di_ga * ir_cov_si_a) >> 8) & CTX_RGBA8_GA_MASK);
-        }
-        dst      += 4;
-        coverage ++;
-      }
-    }
-#endif
-  }
-}
-
-
-
-static void
-CTX_COMPOSITE_SUFFIX(ctx_RGBA8_source_over_normal_color_solid) (CTX_COMPOSITE_ARGUMENTS)
-{
-#if 0
-  ctx_u8_source_over_normal_color (4, rasterizer, dst, src, clip, x0, coverage, count);
-  return;
-#endif
-    uint8_t *tsrc = src;
-    int x = 0;
-
-#if CTX_AVX2
-    if ((size_t)(dst) & 31)
-#endif
-    {
-      uint32_t *sip = ((uint32_t*)(tsrc));
-      uint32_t si = *sip;
-      uint64_t si_ga = si & CTX_RGBA8_GA_MASK;
-      uint32_t si_rb = si & CTX_RGBA8_RB_MASK;
-      for (; (x < count) 
-#if CTX_AVX2
-                      && ((size_t)(dst)&31)
-#endif
-                      ; 
-                      x++)
-    {
-      int cov = coverage[0];
-      if (cov)
-      {
-        int r_cov = 255-cov;
-        uint32_t *dip = ((uint32_t*)(dst));
-        uint32_t di = *dip;
-        uint64_t di_ga = di & CTX_RGBA8_GA_MASK;
-        uint32_t di_rb = di & CTX_RGBA8_RB_MASK;
-        *((uint32_t*)(dst)) = 
-         (((si_rb * cov + di_rb * r_cov) >> 8) & CTX_RGBA8_RB_MASK) |
-         (((si_ga * cov + di_ga * r_cov) >> 8) & CTX_RGBA8_GA_MASK);
-      }
-      dst += 4;
-      coverage ++;
-    }
-  }
-
-#if CTX_AVX2
-                    
-    __m256i xsrc = _mm256_set1_epi32( *((uint32_t*)tsrc)) ;
-    int trailer = (count - x) % 8 + 1;
-    for (; x < count-trailer; x+=8)
-    {
-      __m256i xcov;
-      __m256i x1_minus_cov_mul_a;
-    __m256i lo_mask = _mm256_set1_epi32 (0x00FF00FF);
-    __m256i hi_mask = _mm256_set1_epi32 (0xFF00FF00);
-    __m256i x00ff =   _mm256_set1_epi16(255);
-    __m256i x0101 =   _mm256_set1_epi16(0x0101);
-    __m256i x0080 =   _mm256_set1_epi16(0x0080);
-     uint64_t cov = ((uint64_t*)(coverage))[0];
-     if (cov)
-     {
-       if (CTX_UNLIKELY(cov == 0xffffffffffffffff))
-       {
-         _mm256_store_si256((__m256i*)dst, xsrc);
-       }
-       else
-       {
-          __m256i xdst   = _mm256_load_si256((__m256i*)(dst));
-          __m256i dst_lo = _mm256_and_si256 (xdst, lo_mask);
-          __m256i dst_hi = _mm256_srli_epi16 (_mm256_and_si256 (xdst, hi_mask), 8);
-          __m256i src_lo = _mm256_and_si256 (xsrc, lo_mask);
-          __m256i src_hi = _mm256_srli_epi16 (_mm256_and_si256 (xsrc, hi_mask), 8);
-            
-          xcov  = _mm256_set_epi32(coverage[7],
-                                   coverage[6],
-                                   coverage[5],
-                                   coverage[4],
-                                   coverage[3],
-                                   coverage[2],
-                                   coverage[1],
-                                   coverage[0]
-                                   );
-          xcov |= xcov << 16;
-
-          x1_minus_cov_mul_a = _mm256_sub_epi16(x00ff, xcov);
-    
-          dst_hi  = _mm256_mulhi_epu16(_mm256_adds_epu16(_mm256_mullo_epi16(dst_hi,  x1_minus_cov_mul_a), x0080), x0101);
-          dst_lo  = _mm256_mulhi_epu16(_mm256_adds_epu16(_mm256_mullo_epi16(dst_lo,  x1_minus_cov_mul_a), x0080), x0101);
-    
-          src_lo  = _mm256_mulhi_epu16(_mm256_adds_epu16(_mm256_mullo_epi16(src_lo, xcov), x0080), x0101);
-          src_hi  = _mm256_mulhi_epu16(_mm256_adds_epu16(_mm256_mullo_epi16(src_hi,  xcov), x0080), x0101);
-    
-          dst_hi = _mm256_adds_epu16(dst_hi, src_hi);
-          dst_lo = _mm256_adds_epu16(dst_lo, src_lo);
-    
-          _mm256_store_si256((__m256i*)dst, _mm256_slli_epi16 (dst_hi,8)|dst_lo);
-        }
-      }
-
-      dst += 4 * 8;
-      coverage += 8;
-    }
-
-    if (x < count)
-    {
-      uint32_t *sip = ((uint32_t*)(tsrc));
-      uint32_t si = *sip;
-      uint64_t si_ga = si & CTX_RGBA8_GA_MASK;
-      uint32_t si_rb = si & CTX_RGBA8_RB_MASK;
-      int si_a = si >> CTX_RGBA8_A_SHIFT;
-      for (; x < count; x++)
-      {
-        int cov = *coverage;
-        if (cov)
-        {
-          uint32_t *dip = ((uint32_t*)(dst));
-          uint32_t di = *dip;
-          uint64_t di_ga = di & CTX_RGBA8_GA_MASK;
-          uint32_t di_rb = di & CTX_RGBA8_RB_MASK;
-          int ir_cov_si_a = 255-((cov*si_a)>>8);
-          *((uint32_t*)(dst)) = 
-           (((si_rb * cov + di_rb * ir_cov_si_a) >> 8) & CTX_RGBA8_RB_MASK) |
-           (((si_ga * cov + di_ga * ir_cov_si_a) >> 8) & CTX_RGBA8_GA_MASK);
-        }
-        dst += 4;
-        coverage ++;
-      }
-    }
-#endif
-}
-
-static void
-CTX_COMPOSITE_SUFFIX(ctx_RGBA8_copy_normal) (CTX_COMPOSITE_ARGUMENTS)
-{
-  ctx_u8_copy_normal (4, rasterizer, dst, src, x0, coverage, count);
-}
-
-static void
-ctx_RGBA8_clear_normal (CTX_COMPOSITE_ARGUMENTS)
-{
-  ctx_u8_clear_normal (4, rasterizer, dst, src, x0, coverage, count);
-}
-
-static void
-ctx_u8_blend_normal (int components, uint8_t * __restrict__ dst, uint8_t *src, uint8_t *blended)
-{
-  switch (components)
-  {
-     case 3:
-       ((uint8_t*)(blended))[2] = ((uint8_t*)(src))[2];
-      /* FALLTHROUGH */
-     case 2:
-       *((uint16_t*)(blended)) = *((uint16_t*)(src));
-       ctx_u8_associate_alpha (components, blended);
-       break;
-     case 5:
-       ((uint8_t*)(blended))[4] = ((uint8_t*)(src))[4];
-       /* FALLTHROUGH */
-     case 4:
-       *((uint32_t*)(blended)) = *((uint32_t*)(src));
-       ctx_u8_associate_alpha (components, blended);
-       break;
-     default:
-       {
-         uint8_t alpha = src[components-1];
-         for (int i = 0; i<components - 1;i++)
-           blended[i] = (src[i] * alpha)/255;
-         blended[components-1]=alpha;
-       }
-       break;
-  }
-}
-
-/* branchless 8bit add that maxes out at 255 */
-static inline uint8_t ctx_sadd8(uint8_t a, uint8_t b)
-{
-  uint16_t s = (uint16_t)a+b;
-  return -(s>>8) | (uint8_t)s;
-}
-
-#if CTX_BLENDING_AND_COMPOSITING
-
-#define ctx_u8_blend_define(name, CODE) \
-static void \
-ctx_u8_blend_##name (int components, uint8_t * __restrict__ dst, uint8_t *src, uint8_t *blended)\
-{\
-  uint8_t *s=src; uint8_t b[components];\
-  ctx_u8_deassociate_alpha (components, dst, b);\
-    CODE;\
-  blended[components-1] = src[components-1];\
-  ctx_u8_associate_alpha (components, blended);\
-}
-
-#define ctx_u8_blend_define_seperable(name, CODE) \
-        ctx_u8_blend_define(name, for (int c = 0; c < components-1; c++) { CODE ;}) \
-
-ctx_u8_blend_define_seperable(multiply,     blended[c] = (b[c] * s[c])/255;)
-ctx_u8_blend_define_seperable(screen,       blended[c] = s[c] + b[c] - (s[c] * b[c])/255;)
-ctx_u8_blend_define_seperable(overlay,      blended[c] = b[c] < 127 ? (s[c] * b[c])/255 :
-                                                         s[c] + b[c] - (s[c] * b[c])/255;)
-ctx_u8_blend_define_seperable(darken,       blended[c] = ctx_mini (b[c], s[c]))
-ctx_u8_blend_define_seperable(lighten,      blended[c] = ctx_maxi (b[c], s[c]))
-ctx_u8_blend_define_seperable(color_dodge,  blended[c] = b[c] == 0 ? 0 :
-                                     s[c] == 255 ? 255 : ctx_mini(255, (255 * b[c]) / (255-s[c])))
-ctx_u8_blend_define_seperable(color_burn,   blended[c] = b[c] == 1 ? 1 :
-                                     s[c] == 0 ? 0 : 255 - ctx_mini(255, (255*(255 - b[c])) / s[c]))
-ctx_u8_blend_define_seperable(hard_light,   blended[c] = s[c] < 127 ? (b[c] * s[c])/255 :
-                                                          b[c] + s[c] - (b[c] * s[c])/255;)
-ctx_u8_blend_define_seperable(difference,   blended[c] = (b[c] - s[c]))
-ctx_u8_blend_define_seperable(divide,       blended[c] = s[c]?(255 * b[c]) / s[c]:0)
-ctx_u8_blend_define_seperable(addition,     blended[c] = ctx_sadd8 (s[c], b[c]))
-ctx_u8_blend_define_seperable(subtract,     blended[c] = ctx_maxi(0, s[c]-b[c]))
-ctx_u8_blend_define_seperable(exclusion,    blended[c] = b[c] + s[c] - 2 * (b[c] * s[c]/255))
-ctx_u8_blend_define_seperable(soft_light,
-  if (s[c] <= 255/2)
-  {
-    blended[c] = b[c] - (255 - 2 * s[c]) * b[c] * (255 - b[c]) / (255 * 255);
-  }
-  else
-  {
-    int d;
-    if (b[c] <= 255/4)
-      d = (((16 * b[c] - 12 * 255)/255 * b[c] + 4 * 255) * b[c])/255;
-    else
-      d = ctx_sqrtf(b[c]/255.0) * 255.4;
-    blended[c] = (b[c] + (2 * s[c] - 255) * (d - b[c]))/255;
-  }
-)
-
-static int ctx_int_get_max (int components, int *c)
-{
-  int max = 0;
-  for (int i = 0; i < components - 1; i ++)
-  {
-    if (c[i] > max) max = c[i];
-  }
-  return max;
-}
-
-static int ctx_int_get_min (int components, int *c)
-{
-  int min = 400;
-  for (int i = 0; i < components - 1; i ++)
-  {
-    if (c[i] < min) min = c[i];
-  }
-  return min;
-}
-
-static int ctx_int_get_lum (int components, int *c)
-{
-  switch (components)
-  {
-    case 3:
-    case 4:
-            return CTX_CSS_RGB_TO_LUMINANCE(c);
-    case 1:
-    case 2:
-            return c[0];
-            break;
-    default:
-       {
-         int sum = 0;
-         for (int i = 0; i < components - 1; i ++)
-         {
-           sum += c[i];
-         }
-         return sum / (components - 1);
-       }
-            break;
-  }
-}
-
-static int ctx_u8_get_lum (int components, uint8_t *c)
-{
-  switch (components)
-  {
-    case 3:
-    case 4:
-            return CTX_CSS_RGB_TO_LUMINANCE(c);
-    case 1:
-    case 2:
-            return c[0];
-            break;
-    default:
-       {
-         int sum = 0;
-         for (int i = 0; i < components - 1; i ++)
-         {
-           sum += c[i];
-         }
-         return sum / (components - 1);
-       }
-            break;
-  }
-}
-static int ctx_u8_get_sat (int components, uint8_t *c)
-{
-  switch (components)
-  {
-    case 3:
-    case 4:
-            { int r = c[0];
-              int g = c[1];
-              int b = c[2];
-              return ctx_maxi(r, ctx_maxi(g,b)) - ctx_mini(r,ctx_mini(g,b));
             }
-            break;
-    case 1:
-    case 2:
-            return 0.0;
-            break;
-    default:
-       {
-         int min = 1000;
-         int max = -1000;
-         for (int i = 0; i < components - 1; i ++)
-         {
-           if (c[i] < min) min = c[i];
-           if (c[i] > max) max = c[i];
-         }
-         return max-min;
-       }
-       break;
-  }
-}
-
-static void ctx_u8_set_lum (int components, uint8_t *c, uint8_t lum)
-{
-  int d = lum - ctx_u8_get_lum (components, c);
-  int tc[components];
-  for (int i = 0; i < components - 1; i++)
-  {
-    tc[i] = c[i] + d;
-  }
-
-  int l = ctx_int_get_lum (components, tc);
-  int n = ctx_int_get_min (components, tc);
-  int x = ctx_int_get_max (components, tc);
-
-  if (n < 0 && l!=n)
-  {
-    for (int i = 0; i < components - 1; i++)
-      tc[i] = l + (((tc[i] - l) * l) / (l-n));
-  }
-
-  if (x > 255 && x!=l)
-  {
-    for (int i = 0; i < components - 1; i++)
-      tc[i] = l + (((tc[i] - l) * (255 - l)) / (x-l));
-  }
-  for (int i = 0; i < components - 1; i++)
-    c[i] = tc[i];
-}
-
-static void ctx_u8_set_sat (int components, uint8_t *c, uint8_t sat)
-{
-  int max = 0, mid = 1, min = 2;
-  
-  if (c[min] > c[mid]){int t = min; min = mid; mid = t;}
-  if (c[mid] > c[max]){int t = mid; mid = max; max = t;}
-  if (c[min] > c[mid]){int t = min; min = mid; mid = t;}
-
-  if (c[max] > c[min])
-  {
-    c[mid] = ((c[mid]-c[min]) * sat) / (c[max] - c[min]);
-    c[max] = sat;
-  }
-  else
-  {
-    c[mid] = c[max] = 0;
-  }
-  c[min] = 0;
-}
-
-ctx_u8_blend_define(color,
-  for (int i = 0; i < components; i++)
-    blended[i] = s[i];
-  ctx_u8_set_lum(components, blended, ctx_u8_get_lum (components, s));
-)
-
-ctx_u8_blend_define(hue,
-  int in_sat = ctx_u8_get_sat(components, b);
-  int in_lum = ctx_u8_get_lum(components, b);
-  for (int i = 0; i < components; i++)
-    blended[i] = s[i];
-  ctx_u8_set_sat(components, blended, in_sat);
-  ctx_u8_set_lum(components, blended, in_lum);
-)
-
-ctx_u8_blend_define(saturation,
-  int in_sat = ctx_u8_get_sat(components, s);
-  int in_lum = ctx_u8_get_lum(components, b);
-  for (int i = 0; i < components; i++)
-    blended[i] = b[i];
-  ctx_u8_set_sat(components, blended, in_sat);
-  ctx_u8_set_lum(components, blended, in_lum);
-)
-
-ctx_u8_blend_define(luminosity,
-  int in_lum = ctx_u8_get_lum(components, s);
-  for (int i = 0; i < components; i++)
-    blended[i] = b[i];
-  ctx_u8_set_lum(components, blended, in_lum);
-)
-#endif
-
-CTX_INLINE static void
-ctx_u8_blend (int components, CtxBlend blend, uint8_t * __restrict__ dst, uint8_t *src, uint8_t *blended)
-{
-#if CTX_BLENDING_AND_COMPOSITING
-  switch (blend)
-  {
-    case CTX_BLEND_NORMAL:      ctx_u8_blend_normal      (components, dst, src, blended); break;
-    case CTX_BLEND_MULTIPLY:    ctx_u8_blend_multiply    (components, dst, src, blended); break;
-    case CTX_BLEND_SCREEN:      ctx_u8_blend_screen      (components, dst, src, blended); break;
-    case CTX_BLEND_OVERLAY:     ctx_u8_blend_overlay     (components, dst, src, blended); break;
-    case CTX_BLEND_DARKEN:      ctx_u8_blend_darken      (components, dst, src, blended); break;
-    case CTX_BLEND_LIGHTEN:     ctx_u8_blend_lighten     (components, dst, src, blended); break;
-    case CTX_BLEND_COLOR_DODGE: ctx_u8_blend_color_dodge (components, dst, src, blended); break;
-    case CTX_BLEND_COLOR_BURN:  ctx_u8_blend_color_burn  (components, dst, src, blended); break;
-    case CTX_BLEND_HARD_LIGHT:  ctx_u8_blend_hard_light  (components, dst, src, blended); break;
-    case CTX_BLEND_SOFT_LIGHT:  ctx_u8_blend_soft_light  (components, dst, src, blended); break;
-    case CTX_BLEND_DIFFERENCE:  ctx_u8_blend_difference  (components, dst, src, blended); break;
-    case CTX_BLEND_EXCLUSION:   ctx_u8_blend_exclusion   (components, dst, src, blended); break;
-    case CTX_BLEND_COLOR:       ctx_u8_blend_color       (components, dst, src, blended); break;
-    case CTX_BLEND_HUE:         ctx_u8_blend_hue         (components, dst, src, blended); break;
-    case CTX_BLEND_SATURATION:  ctx_u8_blend_saturation  (components, dst, src, blended); break;
-    case CTX_BLEND_LUMINOSITY:  ctx_u8_blend_luminosity  (components, dst, src, blended); break;
-    case CTX_BLEND_ADDITION:    ctx_u8_blend_addition    (components, dst, src, blended); break;
-    case CTX_BLEND_DIVIDE:      ctx_u8_blend_divide      (components, dst, src, blended); break;
-    case CTX_BLEND_SUBTRACT:    ctx_u8_blend_subtract    (components, dst, src, blended); break;
-  }
-#else
-  switch (blend)
-  {
-    default:                    ctx_u8_blend_normal      (components, dst, src, blended); break;
-  }
-
-#endif
-}
-
-CTX_INLINE static void
-__ctx_u8_porter_duff (CtxRasterizer         *rasterizer,
-                     int                    components,
-                     uint8_t * __restrict__ dst,
-                     uint8_t * __restrict__ src,
-                     int                    x0,
-                     uint8_t * __restrict__ coverage,
-                     int                    count,
-                     CtxCompositingMode     compositing_mode,
-                     CtxFragment            fragment,
-                     CtxBlend               blend)
-{
-  CtxPorterDuffFactor f_s, f_d;
-  ctx_porter_duff_factors (compositing_mode, &f_s, &f_d);
-  uint8_t global_alpha_u8 = rasterizer->state->gstate.global_alpha_u8;
-
-  {
-    uint8_t tsrc[components];
-    float u0 = 0; float v0 = 0;
-    float ud = 0; float vd = 0;
-    if (CTX_UNLIKELY(fragment))
-      ctx_init_uv (rasterizer, x0, count, &u0, &v0, &ud, &vd);
-
-    while (count--)
-    {
-      int cov = *coverage;
-
-      if (CTX_UNLIKELY(
-        (compositing_mode == CTX_COMPOSITE_DESTINATION_OVER && dst[components-1] == 255)||
-        (compositing_mode == CTX_COMPOSITE_SOURCE_OVER      && cov == 0) ||
-        (compositing_mode == CTX_COMPOSITE_XOR              && cov == 0) ||
-        (compositing_mode == CTX_COMPOSITE_DESTINATION_OUT  && cov == 0) ||
-        (compositing_mode == CTX_COMPOSITE_SOURCE_ATOP      && cov == 0)
-        ))
-      {
-        u0 += ud;
-        v0 += vd;
-        coverage ++;
-        dst+=components;
-        continue;
-      }
-
-      if (fragment)
-      {
-        fragment (rasterizer, u0, v0, tsrc, 1, ud, vd);
-        if (blend != CTX_BLEND_NORMAL)
-          ctx_u8_blend (components, blend, dst, tsrc, tsrc);
-      }
-      else
-      {
-        ctx_u8_blend (components, blend, dst, src, tsrc);
-      }
-
-      u0 += ud;
-      v0 += vd;
-      if (global_alpha_u8 != 255)
-        cov = (cov * global_alpha_u8)/255;
-
-      if (cov != 255)
-        for (int c = 0; c < components; c++)
-          tsrc[c] = (tsrc[c] * cov)/255;
-
-      for (int c = 0; c < components; c++)
-      {
-        int res = 0;
-        switch (f_s)
-        {
-          case CTX_PORTER_DUFF_0: break;
-          case CTX_PORTER_DUFF_1:             res += (tsrc[c]); break;
-          case CTX_PORTER_DUFF_ALPHA:         res += (tsrc[c] * dst[components-1])/255; break;
-          case CTX_PORTER_DUFF_1_MINUS_ALPHA: res += (tsrc[c] * (255-dst[components-1]))/255; break;
+            changes ++;
+          }
         }
-        switch (f_d)
-        {
-          case CTX_PORTER_DUFF_0: break;
-          case CTX_PORTER_DUFF_1:             res += dst[c]; break;
-          case CTX_PORTER_DUFF_ALPHA:         res += (dst[c] * tsrc[components-1])/255; break;
-          case CTX_PORTER_DUFF_1_MINUS_ALPHA: res += (dst[c] * (255-tsrc[components-1]))/255; break;
-        }
-        dst[c] = res;
-      }
-      coverage ++;
-      dst+=components;
-    }
-  }
-}
-
-#if CTX_AVX2
-CTX_INLINE static void
-ctx_avx2_porter_duff (CtxRasterizer         *rasterizer,
-                      int                    components,
-                      uint8_t * dst,
-                      uint8_t * src,
-                      int                    x0,
-                      uint8_t * coverage,
-                      int                    count,
-                      CtxCompositingMode     compositing_mode,
-                      CtxFragment            fragment,
-                      CtxBlend               blend)
-{
-  CtxPorterDuffFactor f_s, f_d;
-  ctx_porter_duff_factors (compositing_mode, &f_s, &f_d);
-  uint8_t global_alpha_u8 = rasterizer->state->gstate.global_alpha_u8;
-//assert ((((size_t)dst) & 31) == 0);
-  int n_pix = 32/components;
-  uint8_t tsrc[components * n_pix];
-  float u0 = 0; float v0 = 0;
-  float ud = 0; float vd = 0;
-  int x = 0;
-  if (fragment)
-    ctx_init_uv (rasterizer, x0, count, &u0, &v0, &ud, &vd);
-
-  __m256i lo_mask = _mm256_set1_epi32 (0x00FF00FF);
-  __m256i hi_mask = _mm256_set1_epi32 (0xFF00FF00);
-  __m256i x00ff =   _mm256_set1_epi16(255);
-  __m256i x0101 =   _mm256_set1_epi16(0x0101);
-  __m256i x0080 =   _mm256_set1_epi16(0x0080);
-  for (; x < count; x+=n_pix)
-  {
-    __m256i xdst  = _mm256_loadu_si256((__m256i*)(dst)); 
-    __m256i xcov;
-    __m256i xsrc;
-    __m256i xsrc_a;
-    __m256i xdst_a;
-
-    int is_blank = 1;
-    int is_full = 0;
-    switch (n_pix)
-    {
-      case 16:
-        if (((uint64_t*)(coverage))[0] &&
-            ((uint64_t*)(coverage))[1])
-           is_blank = 0;
-        else if (((uint64_t*)(coverage))[0] == 0xffffffffffffffff &&
-                 ((uint64_t*)(coverage))[1] == 0xffffffffffffffff)
-           is_full = 1;
-        break;
-      case 8:
-        if (((uint64_t*)(coverage))[0])
-           is_blank = 0;
-        else if (((uint64_t*)(coverage))[0] == 0xffffffffffffffff)
-           is_full = 1;
-        break;
-      case 4:
-        if (((uint32_t*)(coverage))[0])
-           is_blank = 0;
-        else if (((uint32_t*)(coverage))[0] == 0xffffffff)
-           is_full = 1;
-        break;
-      default:
-        break;
-    }
-
-#if 1
-    if (
-      //(compositing_mode == CTX_COMPOSITE_DESTINATION_OVER && dst[components-1] == 255)||
-      (compositing_mode == CTX_COMPOSITE_SOURCE_OVER      && is_blank) ||
-      (compositing_mode == CTX_COMPOSITE_XOR              && is_blank) ||
-      (compositing_mode == CTX_COMPOSITE_DESTINATION_OUT  && is_blank) ||
-      (compositing_mode == CTX_COMPOSITE_SOURCE_ATOP      && is_blank)
-      )
-    {
-      u0 += ud * n_pix;
-      v0 += vd * n_pix;
-      coverage += n_pix;
-      dst+=32;
-      continue;
-    }
-#endif
-
-    if (fragment)
-    {
-      for (int i = 0; i < n_pix; i++)
-      {
-         fragment (rasterizer, u0, v0, &tsrc[i*components], 1, ud, vd);
-         ctx_u8_associate_alpha (components, &tsrc[i*components]);
-         ctx_u8_blend (components, blend,
-                       &dst[i*components],
-                       &tsrc[i*components],
-                       &tsrc[i*components]);
-         u0 += ud;
-         v0 += vd;
-      }
-      xsrc = _mm256_loadu_si256((__m256i*)tsrc);
-    }
-    else
-    {
-#if 0
-      if (blend == CTX_BLEND_NORMAL && components == 4)
-        xsrc = _mm256_set1_epi32 (*((uint32_t*)src));
-    else
-#endif
-      {
- //     for (int i = 0; i < n_pix; i++)
- //       for (int c = 0; c < components; c++)
- //         tsrc[i*components+c]=src[c];
-#if 1
-        uint8_t lsrc[components];
-        for (int i = 0; i < components; i ++)
-          lsrc[i] = src[i];
-  //    ctx_u8_associate_alpha (components, lsrc);
-        for (int i = 0; i < n_pix; i++)
-          ctx_u8_blend (components, blend,
-                        &dst[i*components],
-                        lsrc,
-                        &tsrc[i*components]);
-#endif
-        xsrc = _mm256_loadu_si256((__m256i*)tsrc);
-      }
-    }
-
-    if (is_full)
-       xcov = _mm256_set1_epi16(255);
-    else
-    switch (n_pix)
-    {
-      case 4: xcov  = _mm256_set_epi16(
-               (coverage[3]), (coverage[3]), coverage[3], coverage[3],
-               (coverage[2]), (coverage[2]), coverage[2], coverage[2],
-               (coverage[1]), (coverage[1]), coverage[1], coverage[1],
-               (coverage[0]), (coverage[0]), coverage[0], coverage[0]);
-              break;
-      case 8: 
-          xcov  = _mm256_set_epi32(coverage[7],
-                                   coverage[6],
-                                   coverage[5],
-                                   coverage[4],
-                                   coverage[3],
-                                   coverage[2],
-                                   coverage[1],
-                                   coverage[0]
-                                   );
-          xcov |= xcov << 16;
-              break;
-      case 16: xcov  = _mm256_set_epi16(
-               (coverage[15]),
-               (coverage[14]),
-               (coverage[13]),
-               (coverage[12]),
-               (coverage[11]),
-               (coverage[10]),
-               (coverage[9]),
-               (coverage[8]),
-               (coverage[7]),
-               (coverage[6]),
-               (coverage[5]),
-               (coverage[4]),
-               (coverage[3]),
-               (coverage[2]),
-               (coverage[1]),
-               (coverage[0]));
-              break;
-    }
-#if 0
-    switch (n_pix)
-    {
-      case 4:
-      xsrc_a = _mm256_set_epi16(
-            tsrc[3*components+(components-1)], tsrc[3*components+(components-1)],tsrc[3*components+(components-1)], tsrc[3*components+(components-1)],
-            tsrc[2*components+(components-1)], tsrc[2*components+(components-1)],tsrc[2*components+(components-1)], tsrc[2*components+(components-1)],
-            tsrc[1*components+(components-1)], tsrc[1*components+(components-1)],tsrc[1*components+(components-1)], tsrc[1*components+(components-1)],
-            tsrc[0*components+(components-1)], tsrc[0*components+(components-1)],tsrc[0*components+(components-1)], tsrc[0*components+(components-1)]);
-      xdst_a = _mm256_set_epi16(
-            dst[3*components+(components-1)], dst[3*components+(components-1)],dst[3*components+(components-1)], dst[3*components+(components-1)],
-            dst[2*components+(components-1)], dst[2*components+(components-1)],dst[2*components+(components-1)], dst[2*components+(components-1)],
-            dst[1*components+(components-1)], dst[1*components+(components-1)],dst[1*components+(components-1)], dst[1*components+(components-1)],
-            dst[0*components+(components-1)], dst[0*components+(components-1)],dst[0*components+(components-1)], dst[0*components+(components-1)]);
-
-              break;
-      case 8:
-      xsrc_a = _mm256_set_epi16(
-            tsrc[7*components+(components-1)], tsrc[7*components+(components-1)],
-            tsrc[6*components+(components-1)], tsrc[6*components+(components-1)],
-            tsrc[5*components+(components-1)], tsrc[5*components+(components-1)],
-            tsrc[4*components+(components-1)], tsrc[4*components+(components-1)],
-            tsrc[3*components+(components-1)], tsrc[3*components+(components-1)],
-            tsrc[2*components+(components-1)], tsrc[2*components+(components-1)],
-            tsrc[1*components+(components-1)], tsrc[1*components+(components-1)],
-            tsrc[0*components+(components-1)], tsrc[0*components+(components-1)]);
-      xdst_a = _mm256_set_epi16(
-            dst[7*components+(components-1)], dst[7*components+(components-1)],
-            dst[6*components+(components-1)], dst[6*components+(components-1)],
-            dst[5*components+(components-1)], dst[5*components+(components-1)],
-            dst[4*components+(components-1)], dst[4*components+(components-1)],
-            dst[3*components+(components-1)], dst[3*components+(components-1)],
-            dst[2*components+(components-1)], dst[2*components+(components-1)],
-            dst[1*components+(components-1)], dst[1*components+(components-1)],
-            dst[0*components+(components-1)], dst[0*components+(components-1)]);
-              break;
-      case 16: 
-      xsrc_a = _mm256_set_epi16(
-            tsrc[15*components+(components-1)],
-            tsrc[14*components+(components-1)],
-            tsrc[13*components+(components-1)],
-            tsrc[12*components+(components-1)],
-            tsrc[11*components+(components-1)],
-            tsrc[10*components+(components-1)],
-            tsrc[9*components+(components-1)],
-            tsrc[8*components+(components-1)],
-            tsrc[7*components+(components-1)],
-            tsrc[6*components+(components-1)],
-            tsrc[5*components+(components-1)],
-            tsrc[4*components+(components-1)],
-            tsrc[3*components+(components-1)],
-            tsrc[2*components+(components-1)],
-            tsrc[1*components+(components-1)],
-            tsrc[0*components+(components-1)]);
-      xdst_a = _mm256_set_epi16(
-            dst[15*components+(components-1)],
-            dst[14*components+(components-1)],
-            dst[13*components+(components-1)],
-            dst[12*components+(components-1)],
-            dst[11*components+(components-1)],
-            dst[10*components+(components-1)],
-            dst[9*components+(components-1)],
-            dst[8*components+(components-1)],
-            dst[7*components+(components-1)],
-            dst[6*components+(components-1)],
-            dst[5*components+(components-1)],
-            dst[4*components+(components-1)],
-            dst[3*components+(components-1)],
-            dst[2*components+(components-1)],
-            dst[1*components+(components-1)],
-            dst[0*components+(components-1)]);
-              break;
-    }
-#endif
-
-    if (global_alpha_u8 != 255)
-    {
-      xcov = _mm256_mulhi_epu16(
-              _mm256_adds_epu16(
-                 _mm256_mullo_epi16(xcov,
-                                    _mm256_set1_epi16(global_alpha_u8)),
-                 x0080), x0101);
-      is_full = 0;
-    }
-
-
-    xsrc_a = _mm256_srli_epi32(xsrc, 24);  // XX 24 is RGB specific
-    if (!is_full)
-    xsrc_a = _mm256_mulhi_epu16(
-              _mm256_adds_epu16(
-                 _mm256_mullo_epi16(xsrc_a, xcov),
-                 x0080), x0101);
-    xsrc_a = xsrc_a | _mm256_slli_epi32(xsrc, 16);
-
-    xdst_a = _mm256_srli_epi32(xdst, 24);
-    xdst_a = xdst_a |  _mm256_slli_epi32(xdst, 16);
-
-
- //  case CTX_COMPOSITE_SOURCE_OVER:
- //     f_s = CTX_PORTER_DUFF_1;
- //     f_d = CTX_PORTER_DUFF_1_MINUS_ALPHA;
-
-
-    __m256i dst_lo;
-    __m256i dst_hi; 
-    __m256i src_lo; 
-    __m256i src_hi;
-
-    switch (f_s)
-    {
-      case CTX_PORTER_DUFF_0:
-        src_lo = _mm256_set1_epi32(0);
-        src_hi = _mm256_set1_epi32(0);
-        break;
-      case CTX_PORTER_DUFF_1:
-        src_lo = _mm256_and_si256 (xsrc, lo_mask); 
-        src_hi = _mm256_srli_epi16 (_mm256_and_si256 (xsrc, hi_mask), 8);
-
-        //if (!is_full)
-        {
-          src_lo = _mm256_mulhi_epu16(
-                   _mm256_adds_epu16(
-                   _mm256_mullo_epi16(src_lo, xcov),
-                   x0080), x0101);
-          src_hi = _mm256_mulhi_epu16(
-                   _mm256_adds_epu16(
-                   _mm256_mullo_epi16(src_hi, xcov),
-                   x0080), x0101);
-        }
-        break;
-      case CTX_PORTER_DUFF_ALPHA:
-        // res += (tsrc[c] *      dst[components-1])/255;
-        src_lo = _mm256_and_si256 (xsrc, lo_mask); 
-        src_hi = _mm256_srli_epi16 (_mm256_and_si256 (xsrc, hi_mask), 8);
-        if (!is_full)
-        {
-           src_lo = _mm256_mulhi_epu16(
-                 _mm256_adds_epu16(
-                 _mm256_mullo_epi16(src_lo, xcov),
-                 x0080), x0101);
-           src_hi = _mm256_mulhi_epu16(
-                    _mm256_adds_epu16(
-                    _mm256_mullo_epi16(src_hi, xcov),
-                    x0080), x0101);
-        }
-        src_lo = _mm256_mulhi_epu16 (
-                      _mm256_adds_epu16 (_mm256_mullo_epi16(src_lo,
-                                         xdst_a), x0080), x0101);
-        src_hi = _mm256_mulhi_epu16 (
-                      _mm256_adds_epu16 (_mm256_mullo_epi16(src_hi,
-                                         xdst_a), x0080), x0101);
-        break;
-      case CTX_PORTER_DUFF_1_MINUS_ALPHA:
-        // res += (tsrc[c] * (255-dst[components-1]))/255;
-        src_lo = _mm256_and_si256 (xsrc, lo_mask); 
-        src_hi = _mm256_srli_epi16 (_mm256_and_si256 (xsrc, hi_mask), 8);
-  //    if (!is_full)
-        {
-          src_lo = _mm256_mulhi_epu16(
-                        _mm256_adds_epu16(
-                        _mm256_mullo_epi16(src_lo, xcov),
-                        x0080), x0101);
-          src_hi = _mm256_mulhi_epu16(
-                        _mm256_adds_epu16(
-                        _mm256_mullo_epi16(src_hi, xcov),
-                        x0080), x0101);
-        }
-        src_lo = _mm256_mulhi_epu16 (
-                  _mm256_adds_epu16 (_mm256_mullo_epi16(src_lo,
-                                     _mm256_sub_epi16(x00ff,xdst_a)), x0080),
-                  x0101);
-        src_hi = _mm256_mulhi_epu16 (
-                 _mm256_adds_epu16 (_mm256_mullo_epi16(src_hi,
-                                    _mm256_sub_epi16(x00ff,xdst_a)), x0080),
-                 x0101);
-        break;
-    }
-    switch (f_d)
-    {
-      case CTX_PORTER_DUFF_0: 
-        dst_lo = _mm256_set1_epi32(0);
-        dst_hi = _mm256_set1_epi32(0);
-        break;
-      case CTX_PORTER_DUFF_1:
-        dst_lo = _mm256_and_si256 (xdst, lo_mask); 
-        dst_hi = _mm256_srli_epi16 (_mm256_and_si256 (xdst, hi_mask), 8); 
-        break;
-      case CTX_PORTER_DUFF_ALPHA:        
-          //res += (dst[c] * tsrc[components-1])/255;
-          dst_lo = _mm256_and_si256 (xdst, lo_mask); 
-          dst_hi = _mm256_srli_epi16 (_mm256_and_si256 (xdst, hi_mask), 8); 
-
-          dst_lo =
-             _mm256_mulhi_epu16 (
-                 _mm256_adds_epu16 (_mm256_mullo_epi16(dst_lo,
-                                    xsrc_a), x0080), x0101);
-          dst_hi =
-             _mm256_mulhi_epu16 (
-                 _mm256_adds_epu16 (_mm256_mullo_epi16(dst_hi,
-                                    xsrc_a), x0080), x0101);
-          break;
-      case CTX_PORTER_DUFF_1_MINUS_ALPHA:
-          dst_lo = _mm256_and_si256 (xdst, lo_mask); 
-          dst_hi = _mm256_srli_epi16 (_mm256_and_si256 (xdst, hi_mask), 8); 
-          dst_lo = 
-             _mm256_mulhi_epu16 (
-                 _mm256_adds_epu16 (_mm256_mullo_epi16(dst_lo,
-                                    _mm256_sub_epi16(x00ff,xsrc_a)), x0080),
-                 x0101);
-          dst_hi = 
-             _mm256_mulhi_epu16 (
-                 _mm256_adds_epu16 (_mm256_mullo_epi16(dst_hi,
-                                    _mm256_sub_epi16(x00ff,xsrc_a)), x0080),
-                 x0101);
-          break;
-    }
-
-    dst_hi = _mm256_adds_epu16(dst_hi, src_hi);
-    dst_lo = _mm256_adds_epu16(dst_lo, src_lo);
-
-#if 0 // to toggle source vs dst
-      src_hi = _mm256_slli_epi16 (src_hi, 8);
-      _mm256_storeu_si256((__m256i*)dst, _mm256_blendv_epi8(src_lo, src_hi, hi_mask));
-#else
-      _mm256_storeu_si256((__m256i*)dst, _mm256_slli_epi16 (dst_hi, 8) | dst_lo);
-#endif
-
-    coverage += n_pix;
-    dst      += 32;
-  }
-}
-#endif
-
-CTX_INLINE static void
-_ctx_u8_porter_duff (CtxRasterizer         *rasterizer,
-                     int                    components,
-                     uint8_t *              dst,
-                     uint8_t * __restrict__ src,
-                     int                    x0,
-                     uint8_t *              coverage,
-                     int                    count,
-                     CtxCompositingMode     compositing_mode,
-                     CtxFragment            fragment,
-                     CtxBlend               blend)
-{
-#if NOT_USABLE_CTX_AVX2
-  int pre_count = 0;
-  if ((size_t)(dst)&31)
-  {
-    pre_count = (32-(((size_t)(dst))&31))/components;
-  __ctx_u8_porter_duff (rasterizer, components,
-     dst, src, x0, coverage, pre_count, compositing_mode, fragment, blend);
-    dst += components * pre_count;
-    x0 += pre_count;
-    coverage += pre_count;
-    count -= pre_count;
-  }
-  if (count < 0)
-     return;
-  int post_count = (count & 31);
-  if (src && 0)
-  {
-    src[0]/=2;
-    src[1]/=2;
-    src[2]/=2;
-    src[3]/=2;
-  }
-#if 0
-  __ctx_u8_porter_duff (rasterizer, components, dst, src, x0, coverage, count-post_count, compositing_mode, fragment, blend);
-#else
-  ctx_avx2_porter_duff (rasterizer, components, dst, src, x0, coverage, count-post_count, compositing_mode, fragment, blend);
-#endif
-  if (src && 0)
-  {
-    src[0]*=2;
-    src[1]*=2;
-    src[2]*=2;
-    src[3]*=2;
-  }
-  if (post_count > 0)
-  {
-       x0 += (count - post_count);
-       dst += components * (count-post_count);
-       coverage += (count - post_count);
-       __ctx_u8_porter_duff (rasterizer, components, dst, src, x0, coverage, post_count, compositing_mode, fragment, blend);
-  }
-#else
-  __ctx_u8_porter_duff (rasterizer, components, dst, src, x0, coverage, count, compositing_mode, fragment, blend);
-#endif
-}
-
-#define _ctx_u8_porter_duffs(comp_format, components, source, fragment, blend) \
-   switch (rasterizer->state->gstate.compositing_mode) \
-   { \
-     case CTX_COMPOSITE_SOURCE_ATOP: \
-      _ctx_u8_porter_duff (rasterizer, components, dst, src, x0, coverage, count, \
-        CTX_COMPOSITE_SOURCE_ATOP, fragment, blend);\
-      break;\
-     case CTX_COMPOSITE_DESTINATION_ATOP:\
-      _ctx_u8_porter_duff (rasterizer, components, dst, src, x0, coverage, count,\
-        CTX_COMPOSITE_DESTINATION_ATOP, fragment, blend);\
-      break;\
-     case CTX_COMPOSITE_DESTINATION_IN:\
-      _ctx_u8_porter_duff (rasterizer, components, dst, src, x0, coverage, count,\
-        CTX_COMPOSITE_DESTINATION_IN, fragment, blend);\
-      break;\
-     case CTX_COMPOSITE_DESTINATION:\
-      _ctx_u8_porter_duff (rasterizer, components, dst, src, x0, coverage, count,\
-        CTX_COMPOSITE_DESTINATION, fragment, blend);\
-       break;\
-     case CTX_COMPOSITE_SOURCE_OVER:\
-      _ctx_u8_porter_duff (rasterizer, components, dst, src, x0, coverage, count,\
-        CTX_COMPOSITE_SOURCE_OVER, fragment, blend);\
-       break;\
-     case CTX_COMPOSITE_DESTINATION_OVER:\
-      _ctx_u8_porter_duff (rasterizer, components, dst, src, x0, coverage, count,\
-        CTX_COMPOSITE_DESTINATION_OVER, fragment, blend);\
-       break;\
-     case CTX_COMPOSITE_XOR:\
-      _ctx_u8_porter_duff (rasterizer, components, dst, src, x0, coverage, count,\
-        CTX_COMPOSITE_XOR, fragment, blend);\
-       break;\
-     case CTX_COMPOSITE_DESTINATION_OUT:\
-       _ctx_u8_porter_duff (rasterizer, components, dst, src, x0, coverage, count,\
-        CTX_COMPOSITE_DESTINATION_OUT, fragment, blend);\
-       break;\
-     case CTX_COMPOSITE_SOURCE_OUT:\
-       _ctx_u8_porter_duff (rasterizer, components, dst, src, x0, coverage, count,\
-        CTX_COMPOSITE_SOURCE_OUT, fragment, blend);\
-       break;\
-     case CTX_COMPOSITE_SOURCE_IN:\
-       _ctx_u8_porter_duff (rasterizer, components, dst, src, x0, coverage, count,\
-        CTX_COMPOSITE_SOURCE_IN, fragment, blend);\
-       break;\
-     case CTX_COMPOSITE_COPY:\
-       _ctx_u8_porter_duff (rasterizer, components, dst, src, x0, coverage, count,\
-        CTX_COMPOSITE_COPY, fragment, blend);\
-       break;\
-     case CTX_COMPOSITE_CLEAR:\
-       _ctx_u8_porter_duff (rasterizer, components, dst, src, x0, coverage, count,\
-        CTX_COMPOSITE_CLEAR, fragment, blend);\
-       break;\
    }
 
-/* generating one function per compositing_mode would be slightly more efficient,
- * but on embedded targets leads to slightly more code bloat,
- * here we trade off a slight amount of performance
- */
-#define ctx_u8_porter_duff(comp_format, components, source, fragment, blend) \
-static void \
-CTX_COMPOSITE_SUFFIX(ctx_##comp_format##_porter_duff_##source) (CTX_COMPOSITE_ARGUMENTS) \
-{ \
-  _ctx_u8_porter_duffs(comp_format, components, source, fragment, blend);\
-}
-
-ctx_u8_porter_duff(RGBA8, 4,color,   NULL,                 rasterizer->state->gstate.blend_mode)
-ctx_u8_porter_duff(RGBA8, 4,generic, rasterizer->fragment, rasterizer->state->gstate.blend_mode)
-
-//ctx_u8_porter_duff(comp_name, components,color_##blend_name,  NULL, blend_mode)
-
-static void
-CTX_COMPOSITE_SUFFIX(ctx_RGBA8_nop) (CTX_COMPOSITE_ARGUMENTS)
-{
-}
-
-
-static void
-ctx_setup_RGBA8 (CtxRasterizer *rasterizer)
-{
-  CtxGState *gstate = &rasterizer->state->gstate;
-  int components = 4;
-  rasterizer->fragment = ctx_rasterizer_get_fragment_RGBA8 (rasterizer);
-  rasterizer->comp_op = CTX_COMPOSITE_SUFFIX(ctx_RGBA8_porter_duff_generic);
-
-#if 1
-  if (gstate->compositing_mode == CTX_COMPOSITE_CLEAR)
-  {
-    rasterizer->comp_op = ctx_RGBA8_clear_normal;
-    return;
-  }
-#endif
-
-
-#if CTX_INLINED_GRADIENTS
-#if CTX_GRADIENTS
-  if (gstate->source_fill.type == CTX_SOURCE_LINEAR_GRADIENT &&
-      gstate->blend_mode == CTX_BLEND_NORMAL &&
-      gstate->compositing_mode == CTX_COMPOSITE_SOURCE_OVER)
-  {
-     rasterizer->comp_op = CTX_COMPOSITE_SUFFIX(ctx_RGBA8_source_over_normal_linear_gradient);
-     return;
-  }
-  if (gstate->source_fill.type == CTX_SOURCE_RADIAL_GRADIENT &&
-      gstate->blend_mode == CTX_BLEND_NORMAL &&
-      gstate->compositing_mode == CTX_COMPOSITE_SOURCE_OVER)
-  {
-     rasterizer->comp_op = CTX_COMPOSITE_SUFFIX (ctx_RGBA8_source_over_normal_radial_gradient);
-     return;
-  }
-#endif
-#endif
-
-  if (gstate->source_fill.type == CTX_SOURCE_COLOR)
-    {
-      ctx_color_get_rgba8 (rasterizer->state, &gstate->source_fill.color, rasterizer->color);
-      if (gstate->global_alpha_u8 != 255)
-        rasterizer->color[components-1] = (rasterizer->color[components-1] * gstate->global_alpha_u8)/255;
-      if (rasterizer->swap_red_green)
-      {
-        uint8_t *rgba = (uint8_t*)&rasterizer->color[0];
-        uint8_t tmp = rgba[0];
-        rgba[0] = rgba[2];
-        rgba[2] = tmp;
-      }
-
-      switch (gstate->blend_mode)
-      {
-        case CTX_BLEND_NORMAL:
-          if (gstate->compositing_mode == CTX_COMPOSITE_COPY)
-          {
-            rasterizer->comp_op = CTX_COMPOSITE_SUFFIX(ctx_RGBA8_copy_normal);
-            return;
-          }
-          else if (gstate->global_alpha_u8 == 0)
-          {
-            rasterizer->comp_op = CTX_COMPOSITE_SUFFIX(ctx_RGBA8_nop);
-          }
-          else if (gstate->compositing_mode == CTX_COMPOSITE_SOURCE_OVER)
-          {
-             if (rasterizer->color[components-1] == 0)
-                 rasterizer->comp_op = CTX_COMPOSITE_SUFFIX(ctx_RGBA8_nop);
-             else if (rasterizer->color[components-1] == 255)
-                 rasterizer->comp_op = CTX_COMPOSITE_SUFFIX(ctx_RGBA8_source_over_normal_color_solid);
-             else
-                 rasterizer->comp_op = CTX_COMPOSITE_SUFFIX(ctx_RGBA8_source_over_normal_color);
-         }
-         break;
-      default:
-         rasterizer->comp_op = CTX_COMPOSITE_SUFFIX(ctx_RGBA8_porter_duff_color);
-         break;
-    }
-    //rasterizer->comp_op = ctx_RGBA8_porter_duff_color; // XXX overide to make all go
-                                                       // through generic code path
-    rasterizer->fragment = NULL;
-    return;
-  }
-
-
-#if 1
-  if (gstate->blend_mode == CTX_BLEND_NORMAL &&
-      gstate->compositing_mode == CTX_COMPOSITE_SOURCE_OVER &&
-      rasterizer->fragment)
-  {
-          // only really valid for image sources
-     rasterizer->comp_op = CTX_COMPOSITE_SUFFIX(ctx_RGBA8_source_over_normal_fragment);
-     return;
-  }
-#endif
-}
-
-/*
- * we could use this instead of NULL in the pixfmt table - but such dispatch
- * is slightly slower
- */
-inline static void
-ctx_composite_direct (CTX_COMPOSITE_ARGUMENTS)
-{
-  rasterizer->comp_op (rasterizer, dst, rasterizer->color, x0, coverage, count);
-}
-
-static void
-ctx_composite_convert (CTX_COMPOSITE_ARGUMENTS)
-{
-  uint8_t pixels[count * rasterizer->format->ebpp];
-  rasterizer->format->to_comp (rasterizer, x0, dst, &pixels[0], count);
-  rasterizer->comp_op (rasterizer, &pixels[0], rasterizer->color, x0, coverage, count);
-  rasterizer->format->from_comp (rasterizer, x0, &pixels[0], dst, count);
-}
-
-#if CTX_ENABLE_FLOAT
-static void
-ctx_float_copy_normal (int components, CTX_COMPOSITE_ARGUMENTS)
-{
-  float *dstf = (float*)dst;
-  float *srcf = (float*)src;
-  float u0 = 0; float v0 = 0;
-  float ud = 0; float vd = 0;
-
-  if (rasterizer->fragment)
-    {
-      ctx_init_uv (rasterizer, x0, count, &u0, &v0, &ud, &vd);
-    }
-
-  while (count--)
-  {
-    int cov = *coverage;
-    if (cov == 0)
-    {
-      for (int c = 0; c < components; c++)
-        { dst[c] = 0; }
-    }
-    else
-    {
-      if (rasterizer->fragment)
-      {
-        rasterizer->fragment (rasterizer, u0, v0, src, 1, ud, vd);
-        u0+=ud;
-        v0+=vd;
-      }
-    if (cov == 255)
-    {
-      for (int c = 0; c < components; c++)
-        dstf[c] = srcf[c];
-    }
-    else
-    {
-      float covf = ctx_u8_to_float (cov);
-      for (int c = 0; c < components; c++)
-        dstf[c] = srcf[c]*covf;
-    }
-    }
-    dstf += components;
-    coverage ++;
-  }
-}
-
-static void
-ctx_float_clear_normal (int components, CTX_COMPOSITE_ARGUMENTS)
-{
-  float *dstf = (float*)dst;
-  while (count--)
-  {
-#if 0
-    int cov = *coverage;
-    if (cov == 0)
-    {
-    }
-    else if (cov == 255)
-    {
-#endif
-      switch (components)
-      {
-        case 2:
-          ((uint64_t*)(dst))[0] = 0;
-          break;
-        case 4:
-          ((uint64_t*)(dst))[0] = 0;
-          ((uint64_t*)(dst))[1] = 0;
-          break;
-        default:
-          for (int c = 0; c < components; c++)
-            dstf[c] = 0.0f;
-      }
-#if 0
-    }
-    else
-    {
-      float ralpha = 1.0 - ctx_u8_to_float (cov);
-      for (int c = 0; c < components; c++)
-        { dstf[c] = (dstf[c] * ralpha); }
-    }
-    coverage ++;
-#endif
-    dstf += components;
-  }
-}
-
-static void
-ctx_float_source_over_normal_opaque_color (int components, CTX_COMPOSITE_ARGUMENTS)
-{
-  float *dstf = (float*)dst;
-  float *srcf = (float*)src;
-
-  while (count--)
-  {
-    int cov = *coverage;
-    if (cov)
-    {
-      if (cov == 255)
-      {
-        for (int c = 0; c < components; c++)
-          dstf[c] = srcf[c];
-      }
-      else
-      {
-        float fcov = ctx_u8_to_float (cov);
-        float ralpha = 1.0f - fcov;
-        for (int c = 0; c < components-1; c++)
-          dstf[c] = (srcf[c]*fcov + dstf[c] * ralpha);
-      }
-    }
-    coverage ++;
-    dstf+= components;
-  }
-}
-
-inline static void
-ctx_float_blend_normal (int components, float *dst, float *src, float *blended)
-{
-  float a = src[components-1];
-  for (int c = 0; c <  components - 1; c++)
-    blended[c] = src[c] * a;
-  blended[components-1]=a;
-}
-
-static float ctx_float_get_max (int components, float *c)
-{
-  float max = -1000.0f;
-  for (int i = 0; i < components - 1; i ++)
-  {
-    if (c[i] > max) max = c[i];
-  }
-  return max;
-}
-
-static float ctx_float_get_min (int components, float *c)
-{
-  float min = 400.0;
-  for (int i = 0; i < components - 1; i ++)
-  {
-    if (c[i] < min) min = c[i];
-  }
-  return min;
-}
-
-static float ctx_float_get_lum (int components, float *c)
-{
-  switch (components)
-  {
-    case 3:
-    case 4:
-            return CTX_CSS_RGB_TO_LUMINANCE(c);
-    case 1:
-    case 2:
-            return c[0];
-            break;
-    default:
+   for (CtxList *l = clients; l; l = l->next)
+   {
+     CtxClient *client = l->data;
+     if (client->vt)
        {
-         float sum = 0;
-         for (int i = 0; i < components - 1; i ++)
-         {
-           sum += c[i];
-         }
-         return sum / (components - 1);
+         if (vt_is_done (client->vt))
+           ctx_list_prepend (&to_remove, client);
        }
-  }
+   }
+   for (CtxList *l = to_remove; l; l = l->next)
+   {
+     ctx_client_remove (ctx, l->data);
+     changes++;
+   }
+   while (to_remove)
+   {
+     ctx_list_remove (&to_remove, to_remove->data);
+   }
+
+   changes += ctx_clients_dirty_count ();
+   return changes != 0;
 }
 
-static float ctx_float_get_sat (int components, float *c)
+float ctx_avg_bytespeed = 0.0;
+
+static void ctx_client_handle_events_iteration (Ctx *ctx)
 {
-  switch (components)
-  {
-    case 3:
-    case 4:
-            { float r = c[0];
-              float g = c[1];
-              float b = c[2];
-              return ctx_maxf(r, ctx_maxf(g,b)) - ctx_minf(r,ctx_minf(g,b));
-            }
-            break;
-    case 1:
-    case 2: return 0.0;
-            break;
-    default:
-       {
-         float min = 1000;
-         float max = -1000;
-         for (int i = 0; i < components - 1; i ++)
-         {
-           if (c[i] < min) min = c[i];
-           if (c[i] > max) max = c[i];
-         }
-         return max-min;
-       }
-  }
-}
+  static int fail_safe = 0;
+  //int n_clients = ctx_list_length (clients);
+      int pending_data = 0;
+      long time_start = ctx_ticks ();
+      int sleep_time = 1000000/ctx_target_fps;
 
-static void ctx_float_set_lum (int components, float *c, float lum)
-{
-  float d = lum - ctx_float_get_lum (components, c);
-  float tc[components];
-  for (int i = 0; i < components - 1; i++)
-  {
-    tc[i] = c[i] + d;
-  }
+      pending_data = ctx_input_pending (ctx, sleep_time);
 
-  float l = ctx_float_get_lum (components, tc);
-  float n = ctx_float_get_min (components, tc);
-  float x = ctx_float_get_max (components, tc);
-
-  if (n < 0.0f && l != n)
-  {
-    for (int i = 0; i < components - 1; i++)
-      tc[i] = l + (((tc[i] - l) * l) / (l-n));
-  }
-
-  if (x > 1.0f && x != l)
-  {
-    for (int i = 0; i < components - 1; i++)
-      tc[i] = l + (((tc[i] - l) * (1.0f - l)) / (x-l));
-  }
-  for (int i = 0; i < components - 1; i++)
-    c[i] = tc[i];
-}
-
-static void ctx_float_set_sat (int components, float *c, float sat)
-{
-  int max = 0, mid = 1, min = 2;
-  
-  if (c[min] > c[mid]){int t = min; min = mid; mid = t;}
-  if (c[mid] > c[max]){int t = mid; mid = max; max = t;}
-  if (c[min] > c[mid]){int t = min; min = mid; mid = t;}
-
-  if (c[max] > c[min])
-  {
-    c[mid] = ((c[mid]-c[min]) * sat) / (c[max] - c[min]);
-    c[max] = sat;
-  }
-  else
-  {
-    c[mid] = c[max] = 0.0f;
-  }
-  c[min] = 0.0f;
-
-}
-
-#define ctx_float_blend_define(name, CODE) \
-static void \
-ctx_float_blend_##name (int components, float * __restrict__ dst, float *src, float *blended)\
-{\
-  float *s = src; float b[components];\
-  ctx_float_deassociate_alpha (components, dst, b);\
-    CODE;\
-  blended[components-1] = s[components-1];\
-  ctx_float_associate_alpha (components, blended);\
-}
-
-#define ctx_float_blend_define_seperable(name, CODE) \
-        ctx_float_blend_define(name, for (int c = 0; c < components-1; c++) { CODE ;}) \
-
-ctx_float_blend_define_seperable(multiply,    blended[c] = (b[c] * s[c]);)
-ctx_float_blend_define_seperable(screen,      blended[c] = b[c] + s[c] - (b[c] * s[c]);)
-ctx_float_blend_define_seperable(overlay,     blended[c] = b[c] < 0.5f ? (s[c] * b[c]) :
-                                                          s[c] + b[c] - (s[c] * b[c]);)
-ctx_float_blend_define_seperable(darken,      blended[c] = ctx_minf (b[c], s[c]))
-ctx_float_blend_define_seperable(lighten,     blended[c] = ctx_maxf (b[c], s[c]))
-ctx_float_blend_define_seperable(color_dodge, blended[c] = (b[c] == 0.0f) ? 0.0f :
-                                     s[c] == 1.0f ? 1.0f : ctx_minf(1.0f, (b[c]) / (1.0f-s[c])))
-ctx_float_blend_define_seperable(color_burn,  blended[c] = (b[c] == 1.0f) ? 1.0f :
-                                     s[c] == 0.0f ? 0.0f : 1.0f - ctx_minf(1.0f, ((1.0f - b[c])) / s[c]))
-ctx_float_blend_define_seperable(hard_light,  blended[c] = s[c] < 0.f ? (b[c] * s[c]) :
-                                                          b[c] + s[c] - (b[c] * s[c]);)
-ctx_float_blend_define_seperable(difference,  blended[c] = (b[c] - s[c]))
-
-ctx_float_blend_define_seperable(divide,      blended[c] = s[c]?(b[c]) / s[c]:0.0f)
-ctx_float_blend_define_seperable(addition,    blended[c] = s[c]+b[c])
-ctx_float_blend_define_seperable(subtract,    blended[c] = s[c]-b[c])
-
-ctx_float_blend_define_seperable(exclusion,   blended[c] = b[c] + s[c] - 2.0f * b[c] * s[c])
-ctx_float_blend_define_seperable(soft_light,
-  if (s[c] <= 0.5f)
-  {
-    blended[c] = b[c] - (1.0f - 2.0f * s[c]) * b[c] * (1.0f - b[c]);
-  }
-  else
-  {
-    int d;
-    if (b[c] <= 255/4)
-      d = (((16 * b[c] - 12.0f) * b[c] + 4.0f) * b[c]);
-    else
-      d = ctx_sqrtf(b[c]);
-    blended[c] = (b[c] + (2.0f * s[c] - 1.0f) * (d - b[c]));
-  }
-)
-
-
-ctx_float_blend_define(color,
-  for (int i = 0; i < components; i++)
-    blended[i] = s[i];
-  ctx_float_set_lum(components, blended, ctx_float_get_lum (components, s));
-)
-
-ctx_float_blend_define(hue,
-  float in_sat = ctx_float_get_sat(components, b);
-  float in_lum = ctx_float_get_lum(components, b);
-  for (int i = 0; i < components; i++)
-    blended[i] = s[i];
-  ctx_float_set_sat(components, blended, in_sat);
-  ctx_float_set_lum(components, blended, in_lum);
-)
-
-ctx_float_blend_define(saturation,
-  float in_sat = ctx_float_get_sat(components, s);
-  float in_lum = ctx_float_get_lum(components, b);
-  for (int i = 0; i < components; i++)
-    blended[i] = b[i];
-  ctx_float_set_sat(components, blended, in_sat);
-  ctx_float_set_lum(components, blended, in_lum);
-)
-
-ctx_float_blend_define(luminosity,
-  float in_lum = ctx_float_get_lum(components, s);
-  for (int i = 0; i < components; i++)
-    blended[i] = b[i];
-  ctx_float_set_lum(components, blended, in_lum);
-)
-
-inline static void
-ctx_float_blend (int components, CtxBlend blend, float * __restrict__ dst, float *src, float *blended)
-{
-  switch (blend)
-  {
-    case CTX_BLEND_NORMAL:      ctx_float_blend_normal      (components, dst, src, blended); break;
-    case CTX_BLEND_MULTIPLY:    ctx_float_blend_multiply    (components, dst, src, blended); break;
-    case CTX_BLEND_SCREEN:      ctx_float_blend_screen      (components, dst, src, blended); break;
-    case CTX_BLEND_OVERLAY:     ctx_float_blend_overlay     (components, dst, src, blended); break;
-    case CTX_BLEND_DARKEN:      ctx_float_blend_darken      (components, dst, src, blended); break;
-    case CTX_BLEND_LIGHTEN:     ctx_float_blend_lighten     (components, dst, src, blended); break;
-    case CTX_BLEND_COLOR_DODGE: ctx_float_blend_color_dodge (components, dst, src, blended); break;
-    case CTX_BLEND_COLOR_BURN:  ctx_float_blend_color_burn  (components, dst, src, blended); break;
-    case CTX_BLEND_HARD_LIGHT:  ctx_float_blend_hard_light  (components, dst, src, blended); break;
-    case CTX_BLEND_SOFT_LIGHT:  ctx_float_blend_soft_light  (components, dst, src, blended); break;
-    case CTX_BLEND_DIFFERENCE:  ctx_float_blend_difference  (components, dst, src, blended); break;
-    case CTX_BLEND_EXCLUSION:   ctx_float_blend_exclusion   (components, dst, src, blended); break;
-    case CTX_BLEND_COLOR:       ctx_float_blend_color       (components, dst, src, blended); break;
-    case CTX_BLEND_HUE:         ctx_float_blend_hue         (components, dst, src, blended); break;
-    case CTX_BLEND_SATURATION:  ctx_float_blend_saturation  (components, dst, src, blended); break;
-    case CTX_BLEND_LUMINOSITY:  ctx_float_blend_luminosity  (components, dst, src, blended); break;
-    case CTX_BLEND_ADDITION:    ctx_float_blend_addition    (components, dst, src, blended); break;
-    case CTX_BLEND_SUBTRACT:    ctx_float_blend_subtract    (components, dst, src, blended); break;
-    case CTX_BLEND_DIVIDE:      ctx_float_blend_divide      (components, dst, src, blended); break;
-  }
-}
-
-/* this is the grunt working function, when inlined code-path elimination makes
- * it produce efficient code.
- */
-CTX_INLINE static void
-ctx_float_porter_duff (CtxRasterizer         *rasterizer,
-                       int                    components,
-                       uint8_t * __restrict__ dst,
-                       uint8_t * __restrict__ src,
-                       int                    x0,
-                       uint8_t * __restrict__ coverage,
-                       int                    count,
-                       CtxCompositingMode     compositing_mode,
-                       CtxFragment            fragment,
-                       CtxBlend               blend)
-{
-  float *dstf = (float*)dst;
-
-  CtxPorterDuffFactor f_s, f_d;
-  ctx_porter_duff_factors (compositing_mode, &f_s, &f_d);
-  uint8_t global_alpha_u8 = rasterizer->state->gstate.global_alpha_u8;
-  float   global_alpha_f = rasterizer->state->gstate.global_alpha_f;
-  
-  {
-    float tsrc[components];
-    float u0 = 0; float v0 = 0;
-    float ud = 0; float vd = 0;
-
-    ctx_init_uv (rasterizer, x0, count, &u0, &v0, &ud, &vd);
-
-    while (count--)
-    {
-      int cov = *coverage;
-#if 1
-      if (
-        CTX_UNLIKELY((compositing_mode == CTX_COMPOSITE_DESTINATION_OVER && dst[components-1] == 1.0f)||
-        (cov == 0 && (compositing_mode == CTX_COMPOSITE_SOURCE_OVER ||
-        compositing_mode == CTX_COMPOSITE_XOR               ||
-        compositing_mode == CTX_COMPOSITE_DESTINATION_OUT   ||
-        compositing_mode == CTX_COMPOSITE_SOURCE_ATOP      
-        ))))
+      ctx_fetched_bytes = 0;
+      if (pending_data || fail_safe>100)
       {
-        u0 += ud;
-        v0 += vd;
-        coverage ++;
-        dstf+=components;
-        continue;
-      }
-#endif
-
-      fragment (rasterizer, u0, v0, tsrc, 1, ud, vd);
-      if (blend != CTX_BLEND_NORMAL)
-        ctx_float_blend (components, blend, dstf, tsrc, tsrc);
-      u0 += ud;
-      v0 += vd;
-      float covf = ctx_u8_to_float (cov);
-
-      if (global_alpha_u8 != 255)
-        covf = covf * global_alpha_f;
-
-      if (covf != 1.0f)
-      {
-        for (int c = 0; c < components; c++)
-          tsrc[c] *= covf;
-      }
-
-      for (int c = 0; c < components; c++)
-      {
-        float res;
-        /* these switches and this whole function is written to be
-         * inlined when compiled when the enum values passed in are
-         * constants.
+        if (!pending_data)pending_data = 1;
+        /* record amount of time spent - and adjust time of reading for
+         * vts?
          */
-        switch (f_s)
+        long int fractional_sleep = sleep_time / pending_data;
+        for (CtxList *l = clients; l; l = l->next)
         {
-          case CTX_PORTER_DUFF_0: res = 0.0f; break;
-          case CTX_PORTER_DUFF_1:             res = (tsrc[c]); break;
-          case CTX_PORTER_DUFF_ALPHA:         res = (tsrc[c] *       dstf[components-1]); break;
-          case CTX_PORTER_DUFF_1_MINUS_ALPHA: res = (tsrc[c] * (1.0f-dstf[components-1])); break;
+          CtxClient *client = l->data;
+          ctx_client_lock (client);
+          int found = 0;
+          for (CtxList *l2 = clients; l2; l2 = l2->next)
+            if (l2->data == client) found = 1;
+          if (!found)
+            goto done;
+          
+          ctx_fetched_bytes += vt_poll (client->vt, fractional_sleep);
+          //ctx_fetched_bytes += vt_poll (client->vt, sleep_time); //fractional_sleep);
+          ctx_client_unlock (client);
         }
-        switch (f_d)
-        {
-          case CTX_PORTER_DUFF_0: dstf[c] = res; break;
-          case CTX_PORTER_DUFF_1:             dstf[c] = res + (dstf[c]); break;
-          case CTX_PORTER_DUFF_ALPHA:         dstf[c] = res + (dstf[c] *       tsrc[components-1]); break;
-          case CTX_PORTER_DUFF_1_MINUS_ALPHA: dstf[c] = res + (dstf[c] * (1.0f-tsrc[components-1])); break;
-        }
-      }
-      coverage ++;
-      dstf+=components;
-    }
-  }
-}
-
-/* generating one function per compositing_mode would be slightly more efficient,
- * but on embedded targets leads to slightly more code bloat,
- * here we trade off a slight amount of performance
- */
-#define ctx_float_porter_duff(compformat, components, source, fragment, blend) \
-static void \
-ctx_##compformat##_porter_duff_##source (CTX_COMPOSITE_ARGUMENTS) \
-{ \
-   switch (rasterizer->state->gstate.compositing_mode) \
-   { \
-     case CTX_COMPOSITE_SOURCE_ATOP: \
-      ctx_float_porter_duff (rasterizer, components, dst, src, x0, coverage, count, \
-        CTX_COMPOSITE_SOURCE_ATOP, fragment, blend);\
-      break;\
-     case CTX_COMPOSITE_DESTINATION_ATOP:\
-      ctx_float_porter_duff (rasterizer, components, dst, src, x0, coverage, count,\
-        CTX_COMPOSITE_DESTINATION_ATOP, fragment, blend);\
-      break;\
-     case CTX_COMPOSITE_DESTINATION_IN:\
-      ctx_float_porter_duff (rasterizer, components, dst, src, x0, coverage, count,\
-        CTX_COMPOSITE_DESTINATION_IN, fragment, blend);\
-      break;\
-     case CTX_COMPOSITE_DESTINATION:\
-      ctx_float_porter_duff (rasterizer, components, dst, src, x0, coverage, count,\
-        CTX_COMPOSITE_DESTINATION, fragment, blend);\
-       break;\
-     case CTX_COMPOSITE_SOURCE_OVER:\
-      ctx_float_porter_duff (rasterizer, components, dst, src, x0, coverage, count,\
-        CTX_COMPOSITE_SOURCE_OVER, fragment, blend);\
-       break;\
-     case CTX_COMPOSITE_DESTINATION_OVER:\
-      ctx_float_porter_duff (rasterizer, components, dst, src, x0, coverage, count,\
-        CTX_COMPOSITE_DESTINATION_OVER, fragment, blend);\
-       break;\
-     case CTX_COMPOSITE_XOR:\
-      ctx_float_porter_duff (rasterizer, components, dst, src, x0, coverage, count,\
-        CTX_COMPOSITE_XOR, fragment, blend);\
-       break;\
-     case CTX_COMPOSITE_DESTINATION_OUT:\
-       ctx_float_porter_duff (rasterizer, components, dst, src, x0, coverage, count,\
-        CTX_COMPOSITE_DESTINATION_OUT, fragment, blend);\
-       break;\
-     case CTX_COMPOSITE_SOURCE_OUT:\
-       ctx_float_porter_duff (rasterizer, components, dst, src, x0, coverage, count,\
-        CTX_COMPOSITE_SOURCE_OUT, fragment, blend);\
-       break;\
-     case CTX_COMPOSITE_SOURCE_IN:\
-       ctx_float_porter_duff (rasterizer, components, dst, src, x0, coverage, count,\
-        CTX_COMPOSITE_SOURCE_IN, fragment, blend);\
-       break;\
-     case CTX_COMPOSITE_COPY:\
-       ctx_float_porter_duff (rasterizer, components, dst, src, x0, coverage, count,\
-        CTX_COMPOSITE_COPY, fragment, blend);\
-       break;\
-     case CTX_COMPOSITE_CLEAR:\
-       ctx_float_porter_duff (rasterizer, components, dst, src, x0, coverage, count,\
-        CTX_COMPOSITE_CLEAR, fragment, blend);\
-       break;\
-   }\
-}
-#endif
-
-#if CTX_ENABLE_RGBAF
-
-ctx_float_porter_duff(RGBAF, 4,color,           rasterizer->fragment,                               rasterizer->state->gstate.blend_mode)
-ctx_float_porter_duff(RGBAF, 4,generic,         rasterizer->fragment,               rasterizer->state->gstate.blend_mode)
-
-#if CTX_INLINED_NORMAL
-#if CTX_GRADIENTS
-ctx_float_porter_duff(RGBAF, 4,linear_gradient, ctx_fragment_linear_gradient_RGBAF, rasterizer->state->gstate.blend_mode)
-ctx_float_porter_duff(RGBAF, 4,radial_gradient, ctx_fragment_radial_gradient_RGBAF, rasterizer->state->gstate.blend_mode)
-#endif
-ctx_float_porter_duff(RGBAF, 4,image,           ctx_fragment_image_RGBAF,           rasterizer->state->gstate.blend_mode)
-
-
-#if CTX_GRADIENTS
-#define ctx_float_porter_duff_blend(comp_name, components, blend_mode, blend_name)\
-ctx_float_porter_duff(comp_name, components,color_##blend_name,            rasterizer->fragment,                               blend_mode)\
-ctx_float_porter_duff(comp_name, components,generic_##blend_name,          rasterizer->fragment,               blend_mode)\
-ctx_float_porter_duff(comp_name, components,linear_gradient_##blend_name,  ctx_fragment_linear_gradient_RGBA8, blend_mode)\
-ctx_float_porter_duff(comp_name, components,radial_gradient_##blend_name,  ctx_fragment_radial_gradient_RGBA8, blend_mode)\
-ctx_float_porter_duff(comp_name, components,image_##blend_name,            ctx_fragment_image_RGBAF,           blend_mode)
-#else
-#define ctx_float_porter_duff_blend(comp_name, components, blend_mode, blend_name)\
-ctx_float_porter_duff(comp_name, components,color_##blend_name,            rasterizer->fragment,                               blend_mode)\
-ctx_float_porter_duff(comp_name, components,generic_##blend_name,          rasterizer->fragment,               blend_mode)\
-ctx_float_porter_duff(comp_name, components,image_##blend_name,            ctx_fragment_image_RGBAF,           blend_mode)
-#endif
-
-ctx_float_porter_duff_blend(RGBAF, 4, CTX_BLEND_NORMAL, normal)
-
-
-static void
-ctx_RGBAF_copy_normal (CTX_COMPOSITE_ARGUMENTS)
-{
-  ctx_float_copy_normal (4, rasterizer, dst, src, x0, coverage, count);
-}
-
-static void
-ctx_RGBAF_clear_normal (CTX_COMPOSITE_ARGUMENTS)
-{
-  ctx_float_clear_normal (4, rasterizer, dst, src, x0, coverage, count);
-}
-
-#if 0
-static void
-ctx_RGBAF_source_over_normal_opaque_color (CTX_COMPOSITE_ARGUMENTS)
-{
-  ctx_float_source_over_normal_opaque_color (4, rasterizer, dst, rasterizer->color, x0, coverage, count);
-}
-#endif
-#endif
-
-static void
-ctx_setup_RGBAF (CtxRasterizer *rasterizer)
-{
-  CtxGState *gstate = &rasterizer->state->gstate;
-  int components = 4;
-  rasterizer->fragment = ctx_rasterizer_get_fragment_RGBAF (rasterizer);
-#if 1
-  if (gstate->source_fill.type == CTX_SOURCE_COLOR)
-    {
-      rasterizer->comp_op = ctx_RGBAF_porter_duff_color;
-      ctx_color_get_rgba (rasterizer->state, &gstate->source_fill.color, (float*)rasterizer->color);
-      if (gstate->global_alpha_u8 != 255)
-        for (int c = 0; c < components; c ++)
-          ((float*)rasterizer->color)[c] *= gstate->global_alpha_f;
-    }
-  else
-#endif
-  {
-    rasterizer->comp_op = ctx_RGBAF_porter_duff_generic;
-  }
-
-#if CTX_INLINED_NORMAL
-  if (gstate->compositing_mode == CTX_COMPOSITE_CLEAR)
-    rasterizer->comp_op = ctx_RGBAF_clear_normal;
-  else
-    switch (gstate->blend_mode)
-    {
-      case CTX_BLEND_NORMAL:
-        if (gstate->compositing_mode == CTX_COMPOSITE_COPY)
-        {
-          rasterizer->comp_op = ctx_RGBAF_copy_normal;
-        }
-        else if (gstate->global_alpha_u8 == 0)
-        {
-          rasterizer->comp_op = CTX_COMPOSITE_SUFFIX(ctx_RGBA8_nop);
-        }
-        else
-        switch (gstate->source_fill.type)
-        {
-          case CTX_SOURCE_COLOR:
-            if (gstate->compositing_mode == CTX_COMPOSITE_SOURCE_OVER)
-            {
-              if (((float*)(rasterizer->color))[components-1] == 0.0f)
-                rasterizer->comp_op = CTX_COMPOSITE_SUFFIX(ctx_RGBA8_nop);
-            }
-            else
-            {
-              rasterizer->comp_op = ctx_RGBAF_porter_duff_color_normal;
-            }
-            break;
-#if CTX_GRADIENTS
-          case CTX_SOURCE_LINEAR_GRADIENT:
-            rasterizer->comp_op = ctx_RGBAF_porter_duff_linear_gradient_normal;
-            break;
-          case CTX_SOURCE_RADIAL_GRADIENT:
-            rasterizer->comp_op = ctx_RGBAF_porter_duff_radial_gradient_normal;
-            break;
-#endif
-          case CTX_SOURCE_TEXTURE:
-            rasterizer->comp_op = ctx_RGBAF_porter_duff_image_normal;
-            break;
-          default:
-            rasterizer->comp_op = ctx_RGBAF_porter_duff_generic_normal;
-            break;
-        }
-        break;
-      default:
-        switch (gstate->source_fill.type)
-        {
-          case CTX_SOURCE_COLOR:
-            rasterizer->comp_op = ctx_RGBAF_porter_duff_color;
-//          rasterizer->fragment = NULL;
-            break;
-#if CTX_GRADIENTS
-          case CTX_SOURCE_LINEAR_GRADIENT:
-            rasterizer->comp_op = ctx_RGBAF_porter_duff_linear_gradient;
-            break;
-          case CTX_SOURCE_RADIAL_GRADIENT:
-            rasterizer->comp_op = ctx_RGBAF_porter_duff_radial_gradient;
-            break;
-#endif
-          case CTX_SOURCE_TEXTURE:
-            rasterizer->comp_op = ctx_RGBAF_porter_duff_image;
-            break;
-          default:
-            rasterizer->comp_op = ctx_RGBAF_porter_duff_generic;
-            break;
-        }
-        break;
-    }
-#endif
-}
-
-#endif
-#if CTX_ENABLE_GRAYAF
-
-#if CTX_GRADIENTS
-static void
-ctx_fragment_linear_gradient_GRAYAF (CtxRasterizer *rasterizer, float x, float y, void *out, int count, float dx, float dy)
-{
-  float rgba[4];
-  CtxSource *g = &rasterizer->state->gstate.source_fill;
-  for (int i = 0 ; i < count; i++)
-  {
-  float v = ( ( (g->linear_gradient.dx * x + g->linear_gradient.dy * y) /
-                g->linear_gradient.length) -
-              g->linear_gradient.start) * (g->linear_gradient.rdelta);
-  ctx_fragment_gradient_1d_RGBAF (rasterizer, v, 1.0, rgba);
-  ((float*)out)[0] = ctx_float_color_rgb_to_gray (rasterizer->state, rgba);
-  ((float*)out)[1] = rgba[3];
-     out = ((float*)(out)) + 2;
-     x += dx;
-     y += dy;
-  }
-}
-
-static void
-ctx_fragment_radial_gradient_GRAYAF (CtxRasterizer *rasterizer, float x, float y, void *out, int count, float dx, float dy)
-{
-  float rgba[4];
-  CtxSource *g = &rasterizer->state->gstate.source_fill;
-  for (int i = 0; i < count; i ++)
-  {
-  float v = 0.0f;
-  if ((g->radial_gradient.r1-g->radial_gradient.r0) > 0.0f)
-    {
-      v = ctx_hypotf (g->radial_gradient.x0 - x, g->radial_gradient.y0 - y);
-      v = (v - g->radial_gradient.r0) / (g->radial_gradient.rdelta);
-    }
-  ctx_fragment_gradient_1d_RGBAF (rasterizer, v, 0.0, rgba);
-  ((float*)out)[0] = ctx_float_color_rgb_to_gray (rasterizer->state, rgba);
-  ((float*)out)[1] = rgba[3];
-     out = ((float*)(out)) + 2;
-     x += dx;
-     y += dy;
-  }
-}
-#endif
-
-static void
-ctx_fragment_color_GRAYAF (CtxRasterizer *rasterizer, float x, float y, void *out, int count, float dx, float dy)
-{
-  CtxSource *g = &rasterizer->state->gstate.source_fill;
-  for (int i = 0; i < count; i++)
-  {
-     ctx_color_get_graya (rasterizer->state, &g->color, (float*)out);
-     out = ((float*)(out)) + 2;
-     x += dx;
-     y += dy;
-  }
-}
-
-static void ctx_fragment_image_GRAYAF (CtxRasterizer *rasterizer, float x, float y, void *out, int count, float dx, float dy)
-{
-  uint8_t rgba[4];
-  float rgbaf[4];
-  CtxGState *gstate = &rasterizer->state->gstate;
-  CtxBuffer *buffer = gstate->source_fill.texture.buffer;
-  switch (buffer->format->bpp)
-    {
-      case 1:  ctx_fragment_image_gray1_RGBA8 (rasterizer, x, y, rgba, count, dx, dy); break;
-      case 24: ctx_fragment_image_rgb8_RGBA8 (rasterizer, x, y, rgba, count, dx, dy);  break;
-      case 32: ctx_fragment_image_rgba8_RGBA8 (rasterizer, x, y, rgba, count, dx, dy); break;
-      default: ctx_fragment_image_RGBA8 (rasterizer, x, y, rgba, count, dx, dy);       break;
-    }
-  for (int c = 0; c < 2 * count; c ++) { 
-    rgbaf[c] = ctx_u8_to_float (rgba[c]);
-    ((float*)out)[0] = ctx_float_color_rgb_to_gray (rasterizer->state, rgbaf);
-    ((float*)out)[1] = rgbaf[3];
-    out = ((float*)out) + 2;
-  }
-}
-
-static CtxFragment ctx_rasterizer_get_fragment_GRAYAF (CtxRasterizer *rasterizer)
-{
-  CtxGState *gstate = &rasterizer->state->gstate;
-  switch (gstate->source_fill.type)
-    {
-      case CTX_SOURCE_TEXTURE:           return ctx_fragment_image_GRAYAF;
-      case CTX_SOURCE_COLOR:           return ctx_fragment_color_GRAYAF;
-#if CTX_GRADIENTS
-      case CTX_SOURCE_LINEAR_GRADIENT: return ctx_fragment_linear_gradient_GRAYAF;
-      case CTX_SOURCE_RADIAL_GRADIENT: return ctx_fragment_radial_gradient_GRAYAF;
-#endif
-    }
-  return ctx_fragment_color_GRAYAF;
-}
-
-ctx_float_porter_duff(GRAYAF, 2,color,   rasterizer->fragment, rasterizer->state->gstate.blend_mode)
-ctx_float_porter_duff(GRAYAF, 2,generic, rasterizer->fragment, rasterizer->state->gstate.blend_mode)
-
-#if CTX_INLINED_NORMAL
-ctx_float_porter_duff(GRAYAF, 2,color_normal,   rasterizer->fragment, CTX_BLEND_NORMAL)
-ctx_float_porter_duff(GRAYAF, 2,generic_normal, rasterizer->fragment, CTX_BLEND_NORMAL)
-
-static void
-ctx_GRAYAF_copy_normal (CTX_COMPOSITE_ARGUMENTS)
-{
-  ctx_float_copy_normal (2, rasterizer, dst, src, x0, coverage, count);
-}
-
-static void
-ctx_GRAYAF_clear_normal (CTX_COMPOSITE_ARGUMENTS)
-{
-  ctx_float_clear_normal (2, rasterizer, dst, src, x0, coverage, count);
-}
-
-static void
-ctx_GRAYAF_source_over_normal_opaque_color (CTX_COMPOSITE_ARGUMENTS)
-{
-  ctx_float_source_over_normal_opaque_color (2, rasterizer, dst, rasterizer->color, x0, coverage, count);
-}
-#endif
-
-static void
-ctx_setup_GRAYAF (CtxRasterizer *rasterizer)
-{
-  CtxGState *gstate = &rasterizer->state->gstate;
-  int components = 2;
-  rasterizer->fragment = ctx_rasterizer_get_fragment_GRAYAF (rasterizer);
-  if (gstate->source_fill.type == CTX_SOURCE_COLOR)
-    {
-      rasterizer->comp_op = ctx_GRAYAF_porter_duff_color;
-  //  rasterizer->fragment = NULL;
-      ctx_color_get_rgba (rasterizer->state, &gstate->source_fill.color, (float*)rasterizer->color);
-      if (gstate->global_alpha_u8 != 255)
-        for (int c = 0; c < components; c ++)
-          ((float*)rasterizer->color)[c] *= gstate->global_alpha_f;
-    }
-  else
-  {
-    rasterizer->comp_op = ctx_GRAYAF_porter_duff_generic;
-  }
-
-#if CTX_INLINED_NORMAL
-  if (gstate->compositing_mode == CTX_COMPOSITE_CLEAR)
-    rasterizer->comp_op = ctx_GRAYAF_clear_normal;
-  else
-    switch (gstate->blend_mode)
-    {
-      case CTX_BLEND_NORMAL:
-        if (gstate->compositing_mode == CTX_COMPOSITE_COPY)
-        {
-          rasterizer->comp_op = ctx_GRAYAF_copy_normal;
-        }
-        else if (gstate->global_alpha_u8 == 0)
-          rasterizer->comp_op = CTX_COMPOSITE_SUFFIX(ctx_RGBA8_nop);
-        else
-        switch (gstate->source_fill.type)
-        {
-          case CTX_SOURCE_COLOR:
-            if (gstate->compositing_mode == CTX_COMPOSITE_SOURCE_OVER)
-            {
-              if (((float*)rasterizer->color)[components-1] == 0.0f)
-                rasterizer->comp_op = CTX_COMPOSITE_SUFFIX(ctx_RGBA8_nop);
-#if 0
-              else if (((float*)rasterizer->color)[components-1] == 0.0f)
-                rasterizer->comp_op = ctx_GRAYAF_source_over_normal_opaque_color;
-#endif
-              else
-                rasterizer->comp_op = ctx_GRAYAF_porter_duff_color_normal;
-//            rasterizer->fragment = NULL;
-            }
-            else
-            {
-              rasterizer->comp_op = ctx_GRAYAF_porter_duff_color_normal;
-//            rasterizer->fragment = NULL;
-            }
-            break;
-          default:
-            rasterizer->comp_op = ctx_GRAYAF_porter_duff_generic_normal;
-            break;
-        }
-        break;
-      default:
-        switch (gstate->source_fill.type)
-        {
-          case CTX_SOURCE_COLOR:
-            rasterizer->comp_op = ctx_GRAYAF_porter_duff_color;
-//          rasterizer->fragment = NULL;
-            break;
-          default:
-            rasterizer->comp_op = ctx_GRAYAF_porter_duff_generic;
-            break;
-        }
-        break;
-    }
-#endif
-}
-
-#endif
-#if CTX_ENABLE_GRAYF
-
-static void
-ctx_composite_GRAYF (CTX_COMPOSITE_ARGUMENTS)
-{
-  float *dstf = (float*)dst;
-
-  float temp[count*2];
-  for (int i = 0; i < count; i++)
-  {
-    temp[i*2] = dstf[i];
-    temp[i*2+1] = 1.0f;
-  }
-  rasterizer->comp_op (rasterizer, (uint8_t*)temp, rasterizer->color, x0, coverage, count);
-  for (int i = 0; i < count; i++)
-  {
-    dstf[i] = temp[i*2];
-  }
-}
-
-#endif
-#if CTX_ENABLE_BGRA8
-
-inline static void
-ctx_swap_red_green (uint8_t *rgba)
-{
-  uint32_t *buf  = (uint32_t *) rgba;
-  uint32_t  orig = *buf;
-  uint32_t  green_alpha = (orig & 0xff00ff00);
-  uint32_t  red_blue    = (orig & 0x00ff00ff);
-  uint32_t  red         = red_blue << 16;
-  uint32_t  blue        = red_blue >> 16;
-  *buf = green_alpha | red | blue;
-}
-
-static void
-ctx_BGRA8_to_RGBA8 (CtxRasterizer *rasterizer, int x, const void *buf, uint8_t *rgba, int count)
-{
-  uint32_t *srci = (uint32_t *) buf;
-  uint32_t *dsti = (uint32_t *) rgba;
-  while (count--)
-    {
-      uint32_t val = *srci++;
-      ctx_swap_red_green ( (uint8_t *) &val);
-      *dsti++      = val;
-    }
-}
-
-static void
-ctx_RGBA8_to_BGRA8 (CtxRasterizer *rasterizer, int x, const uint8_t *rgba, void *buf, int count)
-{
-  ctx_BGRA8_to_RGBA8 (rasterizer, x, rgba, (uint8_t *) buf, count);
-}
-
-static void
-ctx_composite_BGRA8 (CTX_COMPOSITE_ARGUMENTS)
-{
-  // for better performance, this could be done without a pre/post conversion,
-  // by swapping R and B of source instead... as long as it is a color instead
-  // of gradient or image
-  //
-  //
-  uint8_t pixels[count * 4];
-  ctx_BGRA8_to_RGBA8 (rasterizer, x0, dst, &pixels[0], count);
-  rasterizer->comp_op (rasterizer, &pixels[0], rasterizer->color, x0, coverage, count);
-  ctx_BGRA8_to_RGBA8  (rasterizer, x0, &pixels[0], dst, count);
-}
-
-
-#endif
-#if CTX_ENABLE_CMYKAF
-
-static void
-ctx_fragment_other_CMYKAF (CtxRasterizer *rasterizer, float x, float y, void *out, int count, float dx, float dy)
-{
-  float *cmyka = (float*)out;
-  float _rgba[4 * count];
-  float *rgba = &_rgba[0];
-  CtxGState *gstate = &rasterizer->state->gstate;
-  switch (gstate->source_fill.type)
-    {
-      case CTX_SOURCE_TEXTURE:
-        ctx_fragment_image_RGBAF (rasterizer, x, y, rgba, count, dx, dy);
-        break;
-      case CTX_SOURCE_COLOR:
-        ctx_fragment_color_RGBAF (rasterizer, x, y, rgba, count, dx, dy);
-        break;
-#if CTX_GRADIENTS
-      case CTX_SOURCE_LINEAR_GRADIENT:
-        ctx_fragment_linear_gradient_RGBAF (rasterizer, x, y, rgba, count, dx, dy);
-        break;
-      case CTX_SOURCE_RADIAL_GRADIENT:
-        ctx_fragment_radial_gradient_RGBAF (rasterizer, x, y, rgba, count, dx, dy);
-        break;
-#endif
-      default:
-        rgba[0]=rgba[1]=rgba[2]=rgba[3]=0.0f;
-        break;
-    }
-  for (int i = 0; i < count; i++)
-  {
-    cmyka[4]=rgba[3];
-    ctx_rgb_to_cmyk (rgba[0], rgba[1], rgba[2], &cmyka[0], &cmyka[1], &cmyka[2], &cmyka[3]);
-    cmyka += 5;
-    rgba += 4;
-  }
-}
-
-static void
-ctx_fragment_color_CMYKAF (CtxRasterizer *rasterizer, float x, float y, void *out, int count, float dx, float dy)
-{
-  CtxGState *gstate = &rasterizer->state->gstate;
-  float *cmyka = (float*)out;
-  float cmyka_in[5];
-  ctx_color_get_cmyka (rasterizer->state, &gstate->source_fill.color, cmyka_in);
-  for (int i = 0; i < count; i++)
-  {
-    for (int c = 0; c < 4; c ++)
-    {
-      cmyka[c] = (1.0f - cmyka_in[c]);
-    }
-    cmyka[4] = cmyka_in[4];
-    cmyka += 5;
-  }
-}
-
-static CtxFragment ctx_rasterizer_get_fragment_CMYKAF (CtxRasterizer *rasterizer)
-{
-  CtxGState *gstate = &rasterizer->state->gstate;
-  switch (gstate->source_fill.type)
-    {
-      case CTX_SOURCE_COLOR:
-        return ctx_fragment_color_CMYKAF;
-    }
-  return ctx_fragment_other_CMYKAF;
-}
-
-ctx_float_porter_duff (CMYKAF, 5,color,           rasterizer->fragment, rasterizer->state->gstate.blend_mode)
-ctx_float_porter_duff (CMYKAF, 5,generic,         rasterizer->fragment, rasterizer->state->gstate.blend_mode)
-
-#if CTX_INLINED_NORMAL
-
-ctx_float_porter_duff (CMYKAF, 5,color_normal,            rasterizer->fragment, CTX_BLEND_NORMAL)
-ctx_float_porter_duff (CMYKAF, 5,generic_normal,          rasterizer->fragment, CTX_BLEND_NORMAL)
-
-static void
-ctx_CMYKAF_copy_normal (CTX_COMPOSITE_ARGUMENTS)
-{
-  ctx_float_copy_normal (5, rasterizer, dst, src, x0, coverage, count);
-}
-
-static void
-ctx_CMYKAF_clear_normal (CTX_COMPOSITE_ARGUMENTS)
-{
-  ctx_float_clear_normal (5, rasterizer, dst, src, x0, coverage, count);
-}
-
-static void
-ctx_CMYKAF_source_over_normal_opaque_color (CTX_COMPOSITE_ARGUMENTS)
-{
-  ctx_float_source_over_normal_opaque_color (5, rasterizer, dst, rasterizer->color, x0, coverage, count);
-}
-#endif
-
-static void
-ctx_setup_CMYKAF (CtxRasterizer *rasterizer)
-{
-  CtxGState *gstate = &rasterizer->state->gstate;
-  int components = 5;
-  rasterizer->fragment = ctx_rasterizer_get_fragment_CMYKAF (rasterizer);
-  if (gstate->source_fill.type == CTX_SOURCE_COLOR)
-    {
-      rasterizer->comp_op = ctx_CMYKAF_porter_duff_color;
-      rasterizer->comp_op = ctx_CMYKAF_porter_duff_generic;
- //     rasterizer->fragment = NULL;
-      ctx_color_get_cmyka (rasterizer->state, &gstate->source_fill.color, (float*)rasterizer->color);
-      if (gstate->global_alpha_u8 != 255)
-        ((float*)rasterizer->color)[components-1] *= gstate->global_alpha_f;
-    }
-  else
-  {
-    rasterizer->comp_op = ctx_CMYKAF_porter_duff_generic;
-  }
-
-#if CTX_INLINED_NORMAL
-  if (gstate->compositing_mode == CTX_COMPOSITE_CLEAR)
-    rasterizer->comp_op = ctx_CMYKAF_clear_normal;
-#if 0
-  else
-    switch (gstate->blend_mode)
-    {
-      case CTX_BLEND_NORMAL:
-        if (gstate->compositing_mode == CTX_COMPOSITE_COPY)
-        {
-          rasterizer->comp_op = ctx_CMYKAF_copy_normal;
-        }
-        else if (gstate->global_alpha_u8 == 0)
-          rasterizer->comp_op = CTX_COMPOSITE_SUFFIX(ctx_RGBA8_nop);
-        else
-        switch (gstate->source_fill.type)
-        {
-          case CTX_SOURCE_COLOR:
-            if (gstate->compositing_mode == CTX_COMPOSITE_SOURCE_OVER)
-            {
-              if (((float*)rasterizer->color)[components-1] == 0.0f)
-                rasterizer->comp_op = CTX_COMPOSITE_SUFFIX(ctx_RGBA8_nop);
-#if 0
-              else if (((float*)rasterizer->color)[components-1] == 1.0f)
-                rasterizer->comp_op = ctx_CMYKAF_source_over_normal_opaque_color;
-              else
-                rasterizer->comp_op = ctx_CMYKAF_porter_duff_color_normal;
-              rasterizer->fragment = NULL;
-#endif
-            }
-            else
-            {
-              rasterizer->comp_op = ctx_CMYKAF_porter_duff_color_normal;
-   //         rasterizer->fragment = NULL;
-            }
-            break;
-          default:
-            rasterizer->comp_op = ctx_CMYKAF_porter_duff_generic_normal;
-            break;
-        }
-        break;
-      default:
-        switch (gstate->source_fill.type)
-        {
-          case CTX_SOURCE_COLOR:
-            rasterizer->comp_op = ctx_CMYKAF_porter_duff_color;
-    //      rasterizer->fragment = NULL;
-            break;
-          default:
-            rasterizer->comp_op = ctx_CMYKAF_porter_duff_generic;
-            break;
-        }
-        break;
-    }
-#endif
-#endif
-}
-
-#endif
-#if CTX_ENABLE_CMYKA8
-
-static void
-ctx_CMYKA8_to_CMYKAF (CtxRasterizer *rasterizer, uint8_t *src, float *dst, int count)
-{
-  for (int i = 0; i < count; i ++)
-    {
-      for (int c = 0; c < 4; c ++)
-        { dst[c] = ctx_u8_to_float ( (255-src[c]) ); }
-      dst[4] = ctx_u8_to_float (src[4]);
-      for (int c = 0; c < 4; c++)
-        { dst[c] *= dst[4]; }
-      src += 5;
-      dst += 5;
-    }
-}
-static void
-ctx_CMYKAF_to_CMYKA8 (CtxRasterizer *rasterizer, float *src, uint8_t *dst, int count)
-{
-  for (int i = 0; i < count; i ++)
-    {
-      int a = ctx_float_to_u8 (src[4]);
-      if (a != 0 && a != 255)
-      {
-        float recip = 1.0f/src[4];
-        for (int c = 0; c < 4; c++)
-        {
-          dst[c] = ctx_float_to_u8 (1.0f - src[c] * recip);
-        }
+done:
+        fail_safe = 0;
       }
       else
       {
-        for (int c = 0; c < 4; c++)
-          dst[c] = 255 - ctx_float_to_u8 (src[c]);
+        fail_safe ++;
+        for (CtxList *l = clients; l; l = l->next)
+        {
+          CtxClient *client = l->data;
+          vt_audio_task (client->vt, 0);
+        }
       }
-      dst[4]=a;
 
-      src += 5;
-      dst += 5;
-    }
-}
+      //int got_events = 0;
 
-static void
-ctx_composite_CMYKA8 (CTX_COMPOSITE_ARGUMENTS)
-{
-  float pixels[count * 5];
-  ctx_CMYKA8_to_CMYKAF (rasterizer, dst, &pixels[0], count);
-  rasterizer->comp_op (rasterizer, (uint8_t *) &pixels[0], rasterizer->color, x0, coverage, count);
-  ctx_CMYKAF_to_CMYKA8 (rasterizer, &pixels[0], dst, count);
-}
-
-#endif
-#if CTX_ENABLE_CMYK8
-
-static void
-ctx_CMYK8_to_CMYKAF (CtxRasterizer *rasterizer, uint8_t *src, float *dst, int count)
-{
-  for (int i = 0; i < count; i ++)
-    {
-      dst[0] = ctx_u8_to_float (255-src[0]);
-      dst[1] = ctx_u8_to_float (255-src[1]);
-      dst[2] = ctx_u8_to_float (255-src[2]);
-      dst[3] = ctx_u8_to_float (255-src[3]);
-      dst[4] = 1.0f;
-      src += 4;
-      dst += 5;
-    }
-}
-static void
-ctx_CMYKAF_to_CMYK8 (CtxRasterizer *rasterizer, float *src, uint8_t *dst, int count)
-{
-  for (int i = 0; i < count; i ++)
-    {
-      float c = src[0];
-      float m = src[1];
-      float y = src[2];
-      float k = src[3];
-      float a = src[4];
-      if (a != 0.0f && a != 1.0f)
-        {
-          float recip = 1.0f/a;
-          c *= recip;
-          m *= recip;
-          y *= recip;
-          k *= recip;
-        }
-      c = 1.0 - c;
-      m = 1.0 - m;
-      y = 1.0 - y;
-      k = 1.0 - k;
-      dst[0] = ctx_float_to_u8 (c);
-      dst[1] = ctx_float_to_u8 (m);
-      dst[2] = ctx_float_to_u8 (y);
-      dst[3] = ctx_float_to_u8 (k);
-      src += 5;
-      dst += 4;
-    }
-}
-
-static void
-ctx_composite_CMYK8 (CTX_COMPOSITE_ARGUMENTS)
-{
-  float pixels[count * 5];
-  ctx_CMYK8_to_CMYKAF (rasterizer, dst, &pixels[0], count);
-  rasterizer->comp_op (rasterizer, (uint8_t *) &pixels[0], src, x0, coverage, count);
-  ctx_CMYKAF_to_CMYK8 (rasterizer, &pixels[0], dst, count);
-}
-#endif
-
-#if CTX_ENABLE_RGB8
-
-inline static void
-ctx_RGB8_to_RGBA8 (CtxRasterizer *rasterizer, int x, const void *buf, uint8_t *rgba, int count)
-{
-  const uint8_t *pixel = (const uint8_t *) buf;
-  while (count--)
-    {
-      rgba[0] = pixel[0];
-      rgba[1] = pixel[1];
-      rgba[2] = pixel[2];
-      rgba[3] = 255;
-      pixel+=3;
-      rgba +=4;
-    }
-}
-
-inline static void
-ctx_RGBA8_to_RGB8 (CtxRasterizer *rasterizer, int x, const uint8_t *rgba, void *buf, int count)
-{
-  uint8_t *pixel = (uint8_t *) buf;
-  while (count--)
-    {
-      pixel[0] = rgba[0];
-      pixel[1] = rgba[1];
-      pixel[2] = rgba[2];
-      pixel+=3;
-      rgba +=4;
-    }
-}
-
-#endif
-#if CTX_ENABLE_GRAY1
-
-#if CTX_NATIVE_GRAYA8
-inline static void
-ctx_GRAY1_to_GRAYA8 (CtxRasterizer *rasterizer, int x, const void *buf, uint8_t *rgba, int count)
-{
-  const uint8_t *pixel = (uint8_t *) buf;
-  while (count--)
-    {
-      if (*pixel & (1<< (x&7) ) )
-        {
-          rgba[0] = 255;
-          rgba[1] = 255;
-        }
-      else
-        {
-          rgba[0] = 0;
-          rgba[1] = 255;
-        }
-      if ( (x&7) ==7)
-        { pixel+=1; }
-      x++;
-      rgba +=2;
-    }
-}
-
-inline static void
-ctx_GRAYA8_to_GRAY1 (CtxRasterizer *rasterizer, int x, const uint8_t *rgba, void *buf, int count)
-{
-  uint8_t *pixel = (uint8_t *) buf;
-  while (count--)
-    {
-      int gray = rgba[0];
-      //gray += ctx_dither_mask_a (x, rasterizer->scanline/aa, 0, 127);
-      if (gray < 127)
-        {
-          *pixel = *pixel & (~ (1<< (x&7) ) );
-        }
-      else
-        {
-          *pixel = *pixel | (1<< (x&7) );
-        }
-      if ( (x&7) ==7)
-        { pixel+=1; }
-      x++;
-      rgba +=2;
-    }
-}
-
-#else
-
-inline static void
-ctx_GRAY1_to_RGBA8 (CtxRasterizer *rasterizer, int x, const void *buf, uint8_t *rgba, int count)
-{
-  const uint8_t *pixel = (uint8_t *) buf;
-  while (count--)
-    {
-      if (*pixel & (1<< (x&7) ) )
-        {
-          rgba[0] = 255;
-          rgba[1] = 255;
-          rgba[2] = 255;
-          rgba[3] = 255;
-        }
-      else
-        {
-          rgba[0] = 0;
-          rgba[1] = 0;
-          rgba[2] = 0;
-          rgba[3] = 255;
-        }
-      if ( (x&7) ==7)
-        { pixel+=1; }
-      x++;
-      rgba +=4;
-    }
-}
-
-inline static void
-ctx_RGBA8_to_GRAY1 (CtxRasterizer *rasterizer, int x, const uint8_t *rgba, void *buf, int count)
-{
-  uint8_t *pixel = (uint8_t *) buf;
-  while (count--)
-    {
-      int gray = ctx_u8_color_rgb_to_gray (rasterizer->state, rgba);
-      //gray += ctx_dither_mask_a (x, rasterizer->scanline/aa, 0, 127);
-      if (gray < 127)
-        {
-          *pixel = *pixel & (~ (1<< (x&7) ) );
-        }
-      else
-        {
-          *pixel = *pixel | (1<< (x&7) );
-        }
-      if ( (x&7) ==7)
-        { pixel+=1; }
-      x++;
-      rgba +=4;
-    }
-}
-#endif
-
-#endif
-#if CTX_ENABLE_GRAY2
-
-#if CTX_NATIVE_GRAYA8
-inline static void
-ctx_GRAY2_to_GRAYA8 (CtxRasterizer *rasterizer, int x, const void *buf, uint8_t *rgba, int count)
-{
-  const uint8_t *pixel = (uint8_t *) buf;
-  while (count--)
-    {
-      int val = (*pixel & (3 << ( (x & 3) <<1) ) ) >> ( (x&3) <<1);
-      val <<= 6;
-      rgba[0] = val;
-      rgba[1] = 255;
-      if ( (x&3) ==3)
-        { pixel+=1; }
-      x++;
-      rgba +=2;
-    }
-}
-
-inline static void
-ctx_GRAYA8_to_GRAY2 (CtxRasterizer *rasterizer, int x, const uint8_t *rgba, void *buf, int count)
-{
-  uint8_t *pixel = (uint8_t *) buf;
-  while (count--)
-    {
-      int val = rgba[0];
-      val >>= 6;
-      *pixel = *pixel & (~ (3 << ( (x&3) <<1) ) );
-      *pixel = *pixel | ( (val << ( (x&3) <<1) ) );
-      if ( (x&3) ==3)
-        { pixel+=1; }
-      x++;
-      rgba +=2;
-    }
-}
-#else
-
-inline static void
-ctx_GRAY2_to_RGBA8 (CtxRasterizer *rasterizer, int x, const void *buf, uint8_t *rgba, int count)
-{
-  const uint8_t *pixel = (uint8_t *) buf;
-  while (count--)
-    {
-      int val = (*pixel & (3 << ( (x & 3) <<1) ) ) >> ( (x&3) <<1);
-      val <<= 6;
-      rgba[0] = val;
-      rgba[1] = val;
-      rgba[2] = val;
-      rgba[3] = 255;
-      if ( (x&3) ==3)
-        { pixel+=1; }
-      x++;
-      rgba +=4;
-    }
-}
-
-inline static void
-ctx_RGBA8_to_GRAY2 (CtxRasterizer *rasterizer, int x, const uint8_t *rgba, void *buf, int count)
-{
-  uint8_t *pixel = (uint8_t *) buf;
-  while (count--)
-    {
-      int val = ctx_u8_color_rgb_to_gray (rasterizer->state, rgba);
-      val >>= 6;
-      *pixel = *pixel & (~ (3 << ( (x&3) <<1) ) );
-      *pixel = *pixel | ( (val << ( (x&3) <<1) ) );
-      if ( (x&3) ==3)
-        { pixel+=1; }
-      x++;
-      rgba +=4;
-    }
-}
-#endif
-
-#endif
-#if CTX_ENABLE_GRAY4
-
-#if CTX_NATIVE_GRAYA8
-inline static void
-ctx_GRAY4_to_GRAYA8 (CtxRasterizer *rasterizer, int x, const void *buf, uint8_t *rgba, int count)
-{
-  const uint8_t *pixel = (uint8_t *) buf;
-  while (count--)
-    {
-      int val = (*pixel & (15 << ( (x & 1) <<2) ) ) >> ( (x&1) <<2);
-      val <<= 4;
-      rgba[0] = val;
-      rgba[1] = 255;
-      if ( (x&1) ==1)
-        { pixel+=1; }
-      x++;
-      rgba +=2;
-    }
-}
-
-inline static void
-ctx_GRAYA8_to_GRAY4 (CtxRasterizer *rasterizer, int x, const uint8_t *rgba, void *buf, int count)
-{
-  uint8_t *pixel = (uint8_t *) buf;
-  while (count--)
-    {
-      int val = rgba[0];
-      val >>= 4;
-      *pixel = *pixel & (~ (15 << ( (x&1) <<2) ) );
-      *pixel = *pixel | ( (val << ( (x&1) <<2) ) );
-      if ( (x&1) ==1)
-        { pixel+=1; }
-      x++;
-      rgba +=2;
-    }
-}
-#else
-inline static void
-ctx_GRAY4_to_RGBA8 (CtxRasterizer *rasterizer, int x, const void *buf, uint8_t *rgba, int count)
-{
-  const uint8_t *pixel = (uint8_t *) buf;
-  while (count--)
-    {
-      int val = (*pixel & (15 << ( (x & 1) <<2) ) ) >> ( (x&1) <<2);
-      val <<= 4;
-      rgba[0] = val;
-      rgba[1] = val;
-      rgba[2] = val;
-      rgba[3] = 255;
-      if ( (x&1) ==1)
-        { pixel+=1; }
-      x++;
-      rgba +=4;
-    }
-}
-
-inline static void
-ctx_RGBA8_to_GRAY4 (CtxRasterizer *rasterizer, int x, const uint8_t *rgba, void *buf, int count)
-{
-  uint8_t *pixel = (uint8_t *) buf;
-  while (count--)
-    {
-      int val = ctx_u8_color_rgb_to_gray (rasterizer->state, rgba);
-      val >>= 4;
-      *pixel = *pixel & (~ (15 << ( (x&1) <<2) ) );
-      *pixel = *pixel | ( (val << ( (x&1) <<2) ) );
-      if ( (x&1) ==1)
-        { pixel+=1; }
-      x++;
-      rgba +=4;
-    }
-}
-#endif
-
-#endif
-#if CTX_ENABLE_GRAY8
-
-#if CTX_NATIVE_GRAYA8
-inline static void
-ctx_GRAY8_to_GRAYA8 (CtxRasterizer *rasterizer, int x, const void *buf, uint8_t *rgba, int count)
-{
-  const uint8_t *pixel = (uint8_t *) buf;
-  while (count--)
-    {
-      rgba[0] = pixel[0];
-      rgba[1] = 255;
-      pixel+=1;
-      rgba +=2;
-    }
-}
-
-inline static void
-ctx_GRAYA8_to_GRAY8 (CtxRasterizer *rasterizer, int x, const uint8_t *rgba, void *buf, int count)
-{
-  uint8_t *pixel = (uint8_t *) buf;
-  while (count--)
-    {
-      pixel[0] = rgba[0];
-      pixel+=1;
-      rgba +=2;
-    }
-}
-#else
-inline static void
-ctx_GRAY8_to_RGBA8 (CtxRasterizer *rasterizer, int x, const void *buf, uint8_t *rgba, int count)
-{
-  const uint8_t *pixel = (uint8_t *) buf;
-  while (count--)
-    {
-      rgba[0] = pixel[0];
-      rgba[1] = pixel[0];
-      rgba[2] = pixel[0];
-      rgba[3] = 255;
-      pixel+=1;
-      rgba +=4;
-    }
-}
-
-inline static void
-ctx_RGBA8_to_GRAY8 (CtxRasterizer *rasterizer, int x, const uint8_t *rgba, void *buf, int count)
-{
-  uint8_t *pixel = (uint8_t *) buf;
-  for (int i = 0; i < count; i ++)
-    {
-      pixel[i] = ctx_u8_color_rgb_to_gray (rasterizer->state, rgba + i * 4);
-    }
-}
-#endif
-
-#endif
-#if CTX_ENABLE_GRAYA8
-
-inline static void
-ctx_GRAYA8_to_RGBA8 (CtxRasterizer *rasterizer, int x, const void *buf, uint8_t *rgba, int count)
-{
-  const uint8_t *pixel = (const uint8_t *) buf;
-  while (count--)
-    {
-      rgba[0] = pixel[0];
-      rgba[1] = pixel[0];
-      rgba[2] = pixel[0];
-      rgba[3] = pixel[1];
-      pixel+=2;
-      rgba +=4;
-    }
-}
-
-inline static void
-ctx_RGBA8_to_GRAYA8 (CtxRasterizer *rasterizer, int x, const uint8_t *rgba, void *buf, int count)
-{
-  uint8_t *pixel = (uint8_t *) buf;
-  while (count--)
-    {
-      pixel[0] = ctx_u8_color_rgb_to_gray (rasterizer->state, rgba);
-      pixel[1] = rgba[3];
-      pixel+=2;
-      rgba +=4;
-    }
-}
-
-#if CTX_NATIVE_GRAYA8
-CTX_INLINE static void ctx_rgba_to_graya_u8 (CtxState *state, uint8_t *in, uint8_t *out)
-{
-  out[0] = ctx_u8_color_rgb_to_gray (state, in);
-  out[1] = in[3];
-}
-
-#if CTX_GRADIENTS
-static void
-ctx_fragment_linear_gradient_GRAYA8 (CtxRasterizer *rasterizer, float x, float y, void *out, int count, float dx, float dy)
-{
-  CtxSource *g = &rasterizer->state->gstate.source_fill;
-  float v = ( ( (g->linear_gradient.dx * x + g->linear_gradient.dy * y) /
-                g->linear_gradient.length) -
-              g->linear_gradient.start) * (g->linear_gradient.rdelta);
-  ctx_fragment_gradient_1d_GRAYA8 (rasterizer, v, 1.0, (uint8_t*)out);
-#if CTX_DITHER
-  ctx_dither_graya_u8 ((uint8_t*)out, x, y, rasterizer->format->dither_red_blue,
-                      rasterizer->format->dither_green);
-#endif
-}
-
+      //while (ctx_get_event (ctx)) { }
 #if 0
-static void
-ctx_fragment_radial_gradient_RGBA8 (CtxRasterizer *rasterizer, float x, float y, void *out)
-{
-  uint8_t *rgba = (uint8_t *) out;
-  CtxSource *g = &rasterizer->state->gstate.source_fill;
-  float v = (ctx_hypotf (g->radial_gradient.x0 - x, g->radial_gradient.y0 - y) -
-              g->radial_gradient.r0) * (g->radial_gradient.rdelta);
-  ctx_fragment_gradient_1d_RGBA8 (rasterizer, v, 0.0, rgba);
-#if CTX_DITHER
-  ctx_dither_rgba_u8 (rgba, x, y, rasterizer->format->dither_red_blue,
-                      rasterizer->format->dither_green);
-#endif
-}
-#endif
+      if (changes /*|| pending_data */)
+      {
+        ctx_target_fps *= 1.6;
+        if (ctx_target_fps > 60) ctx_target_fps = 60;
+      }
+      else
+      {
+        ctx_target_fps = ctx_target_fps * 0.95 + 30.0 * 0.05;
 
+        // 20fps is the lowest where sun 8bit ulaw 8khz works reliably
+      }
 
-static void
-ctx_fragment_radial_gradient_GRAYA8 (CtxRasterizer *rasterizer, float x, float y, void *out, int count, float dx, float dy)
-{
-  CtxSource *g = &rasterizer->state->gstate.source_fill;
-  float v = (ctx_hypotf (g->radial_gradient.x0 - x, g->radial_gradient.y0 - y) -
-              g->radial_gradient.r0) * (g->radial_gradient.rdelta);
-  ctx_fragment_gradient_1d_RGBA8 (rasterizer, v, 0.0, (uint8_t*)out);
-#if CTX_DITHER
-  ctx_dither_graya_u8 ((uint8_t*)out, x, y, rasterizer->format->dither_red_blue,
-                      rasterizer->format->dither_green);
-#endif
-}
+      if (ctx_avg_bytespeed > 1024 * 1024) ctx_target_fps = 10.0;
+
+      if (_ctx_green < 0.4)
+        ctx_target_fps = 120.0;
+      else if (_ctx_green > 0.6)
+        ctx_target_fps = 25.0;
+
+      //ctx_target_fps = 30.0;
+#else
+      ctx_target_fps = 30.0;
 #endif
 
-static void
-ctx_fragment_color_GRAYA8 (CtxRasterizer *rasterizer, float x, float y, void *out, int count, float dx, float dy)
-{
-  CtxSource *g = &rasterizer->state->gstate.source_fill;
-  ctx_color_get_graya_u8 (rasterizer->state, &g->color, out);
-}
+      long time_end = ctx_ticks ();
 
-static void ctx_fragment_image_GRAYA8 (CtxRasterizer *rasterizer, float x, float y, void *out, int count, float dx, float dy)
-{
-  uint8_t rgba[4];
-  CtxGState *gstate = &rasterizer->state->gstate;
-  CtxBuffer *buffer = gstate->source_fill.texture.buffer;
-  switch (buffer->format->bpp)
-    {
-      case 1:  ctx_fragment_image_gray1_RGBA8 (rasterizer, x, y, rgba, count, dx, dy); break;
-      case 24: ctx_fragment_image_rgb8_RGBA8 (rasterizer, x, y, rgba, count, dx, dy);  break;
-      case 32: ctx_fragment_image_rgba8_RGBA8 (rasterizer, x, y, rgba, count, dx, dy); break;
-      default: ctx_fragment_image_RGBA8 (rasterizer, x, y, rgba, count, dx, dy);       break;
-    }
-  ctx_rgba_to_graya_u8 (rasterizer->state, rgba, (uint8_t*)out);
-}
+      int timed = (time_end-time_start);
+      float bytespeed = ctx_fetched_bytes / ((timed)/ (1000.0f * 1000.0f));
 
-static CtxFragment ctx_rasterizer_get_fragment_GRAYA8 (CtxRasterizer *rasterizer)
-{
-  CtxGState *gstate = &rasterizer->state->gstate;
-  switch (gstate->source_fill.type)
-    {
-      case CTX_SOURCE_TEXTURE:           return ctx_fragment_image_GRAYA8;
-#if CTX_GRADIENTS
-      case CTX_SOURCE_COLOR:           return ctx_fragment_color_GRAYA8;
-      case CTX_SOURCE_LINEAR_GRADIENT: return ctx_fragment_linear_gradient_GRAYA8;
-      case CTX_SOURCE_RADIAL_GRADIENT: return ctx_fragment_radial_gradient_GRAYA8;
+      ctx_avg_bytespeed = bytespeed * 0.2 + ctx_avg_bytespeed * 0.8;
+#if 0
+      fprintf (stderr, "%.2fmb/s %i/%i  %.2f                    \r", ctx_avg_bytespeed/1024/1024, ctx_fetched_bytes, timed, ctx_target_fps);
 #endif
-    }
-  return ctx_fragment_color_GRAYA8;
 }
 
-ctx_u8_porter_duff(GRAYA8, 2,color,   rasterizer->fragment, rasterizer->state->gstate.blend_mode)
-ctx_u8_porter_duff(GRAYA8, 2,generic, rasterizer->fragment, rasterizer->state->gstate.blend_mode)
 
-#if CTX_INLINED_NORMAL
-
-ctx_u8_porter_duff(GRAYA8, 2,color_normal,   rasterizer->fragment, CTX_BLEND_NORMAL)
-ctx_u8_porter_duff(GRAYA8, 2,generic_normal, rasterizer->fragment, CTX_BLEND_NORMAL)
-
-static void
-ctx_GRAYA8_copy_normal (CTX_COMPOSITE_ARGUMENTS)
+static int ctx_clients_handle_events_fun (void *data)
 {
-  ctx_u8_copy_normal (2, rasterizer, dst, src, x0, coverage, count);
-}
-
-static void
-ctx_GRAYA8_clear_normal (CTX_COMPOSITE_ARGUMENTS)
-{
-  ctx_u8_clear_normal (2, rasterizer, dst, src, x0, coverage, count);
-}
-
-static void
-CTX_COMPOSITE_SUFFIX (ctx_GRAYA8_source_over_normal_color) (CTX_COMPOSITE_ARGUMENTS)
-{
-  ctx_u8_source_over_normal_color (2, rasterizer, dst, rasterizer->color, x0, coverage, count);
-}
-
-static void
-CTX_COMPOSITE_SUFFIX (ctx_GRAYA8_source_over_normal_opaque_color) (CTX_COMPOSITE_ARGUMENTS)
-{
-  ctx_u8_source_over_normal_opaque_color (2, rasterizer, dst, rasterizer->color, x0, coverage, count);
-}
-#endif
-
-inline static int
-ctx_is_opaque_color (CtxRasterizer *rasterizer)
-{
-  CtxGState *gstate = &rasterizer->state->gstate;
-  if (gstate->global_alpha_u8 != 255)
-    return 0;
-  if (gstate->source_fill.type == CTX_SOURCE_COLOR)
+  Ctx *ctx = data;
+  while (!ctx->quit)
   {
-    uint8_t ga[2];
-    ctx_color_get_graya_u8 (rasterizer->state, &gstate->source_fill.color, ga);
-    return ga[1] == 255;
+    int n_clients = ctx_list_length (clients);
+    ctx_client_handle_events_iteration (data);
+    switch (n_clients)
+    {
+      case 0:
+        usleep (1000 * 10);
+        break;
+      case 1:
+        usleep (1); // letting quit work - and also makes framerate for dump
+        break;
+      default:
+        usleep (0); // the switching between clients should be enough
+        break;
+    }
   }
   return 0;
 }
 
-static void
-ctx_setup_GRAYA8 (CtxRasterizer *rasterizer)
+void ctx_clients_handle_events (Ctx *ctx)
 {
-  CtxGState *gstate = &rasterizer->state->gstate;
-  int components = 2;
-  if (gstate->source_fill.type == CTX_SOURCE_COLOR)
-    {
-      rasterizer->comp_op = CTX_COMPOSITE_SUFFIX(ctx_GRAYA8_porter_duff_color);
-      rasterizer->fragment = NULL;
-      ctx_color_get_rgba8 (rasterizer->state, &gstate->source_fill.color, rasterizer->color);
-      if (gstate->global_alpha_u8 != 255)
-        for (int c = 0; c < components; c ++)
-          rasterizer->color[c] = (rasterizer->color[c] * gstate->global_alpha_u8)/255;
-      rasterizer->color[0] = ctx_u8_color_rgb_to_gray (rasterizer->state, rasterizer->color);
-      rasterizer->color[1] = rasterizer->color[3];
-    }
-  else
-  {
-    rasterizer->fragment = ctx_rasterizer_get_fragment_GRAYA8 (rasterizer);
-    rasterizer->comp_op  = CTX_COMPOSITE_SUFFIX(ctx_GRAYA8_porter_duff_generic);
-  }
-
-#if CTX_INLINED_NORMAL
-  if (gstate->compositing_mode == CTX_COMPOSITE_CLEAR)
-    rasterizer->comp_op = ctx_GRAYA8_clear_normal;
-  else
-    switch (gstate->blend_mode)
-    {
-      case CTX_BLEND_NORMAL:
-        if (gstate->compositing_mode == CTX_COMPOSITE_COPY)
-        {
-          rasterizer->comp_op = ctx_GRAYA8_copy_normal;
-        }
-        else if (gstate->global_alpha_u8 == 0)
-          rasterizer->comp_op = CTX_COMPOSITE_SUFFIX(ctx_RGBA8_nop);
-        else
-        switch (gstate->source_fill.type)
-        {
-          case CTX_SOURCE_COLOR:
-            if (gstate->compositing_mode == CTX_COMPOSITE_SOURCE_OVER)
-            {
-              if (rasterizer->color[components-1] == 0)
-                rasterizer->comp_op = CTX_COMPOSITE_SUFFIX(ctx_RGBA8_nop);
-              else if (rasterizer->color[components-1] == 255)
-                rasterizer->comp_op = CTX_COMPOSITE_SUFFIX(ctx_GRAYA8_source_over_normal_opaque_color);
-              else
-                rasterizer->comp_op = CTX_COMPOSITE_SUFFIX(ctx_GRAYA8_source_over_normal_color);
-              rasterizer->fragment = NULL;
-            }
-            else
-            {
-              rasterizer->comp_op = CTX_COMPOSITE_SUFFIX(ctx_GRAYA8_porter_duff_color_normal);
-              rasterizer->fragment = NULL;
-            }
-            break;
-          default:
-            rasterizer->comp_op = CTX_COMPOSITE_SUFFIX(ctx_GRAYA8_porter_duff_generic_normal);
-            break;
-        }
-        break;
-      default:
-        switch (gstate->source_fill.type)
-        {
-          case CTX_SOURCE_COLOR:
-            rasterizer->comp_op = CTX_COMPOSITE_SUFFIX(ctx_GRAYA8_porter_duff_color);
-            rasterizer->fragment = NULL;
-            break;
-          default:
-            rasterizer->comp_op = CTX_COMPOSITE_SUFFIX(ctx_GRAYA8_porter_duff_generic);
-            break;
-        }
-        break;
-    }
-#endif
-}
-#endif
-
-#endif
-#if CTX_ENABLE_RGB332
-
-inline static void
-ctx_332_unpack (uint8_t pixel,
-                uint8_t *red,
-                uint8_t *green,
-                uint8_t *blue)
-{
-  *blue   = (pixel & 3) <<6;
-  *green = ( (pixel >> 2) & 7) <<5;
-  *red   = ( (pixel >> 5) & 7) <<5;
-  if (*blue > 223)  { *blue  = 255; }
-  if (*green > 223) { *green = 255; }
-  if (*red > 223)   { *red   = 255; }
-}
-
-static inline uint8_t
-ctx_332_pack (uint8_t red,
-              uint8_t green,
-              uint8_t blue)
-{
-  uint8_t c  = (red >> 5) << 5;
-  c |= (green >> 5) << 2;
-  c |= (blue >> 6);
-  return c;
-}
-
-static inline void
-ctx_RGB332_to_RGBA8 (CtxRasterizer *rasterizer, int x, const void *buf, uint8_t *rgba, int count)
-{
-  const uint8_t *pixel = (uint8_t *) buf;
-  while (count--)
-    {
-      ctx_332_unpack (*pixel, &rgba[0], &rgba[1], &rgba[2]);
-#if CTX_RGB332_ALPHA
-      if (rgba[0]==255 && rgba[2] == 255 && rgba[1]==0)
-        { rgba[3] = 0; }
-      else
-#endif
-        { rgba[3] = 255; }
-      pixel+=1;
-      rgba +=4;
-    }
-}
-
-static inline void
-ctx_RGBA8_to_RGB332 (CtxRasterizer *rasterizer, int x, const uint8_t *rgba, void *buf, int count)
-{
-  uint8_t *pixel = (uint8_t *) buf;
-  while (count--)
-    {
-#if CTX_RGB332_ALPHA
-      if (rgba[3]==0)
-        { pixel[0] = ctx_332_pack (255, 0, 255); }
-      else
-#endif
-        { pixel[0] = ctx_332_pack (rgba[0], rgba[1], rgba[2]); }
-      pixel+=1;
-      rgba +=4;
-    }
-}
-
-#endif
-#if CTX_ENABLE_RGB565 | CTX_ENABLE_RGB565_BYTESWAPPED
-
-static inline void
-ctx_565_unpack (uint16_t pixel,
-                uint8_t *red,
-                uint8_t *green,
-                uint8_t *blue,
-                int      byteswap)
-{
-  uint16_t byteswapped;
-  if (byteswap)
-    { byteswapped = (pixel>>8) | (pixel<<8); }
-  else
-    { byteswapped  = pixel; }
-  *blue   = (byteswapped & 31) <<3;
-  *green = ( (byteswapped>>5) & 63) <<2;
-  *red   = ( (byteswapped>>11) & 31) <<3;
-  if (*blue > 248) { *blue = 255; }
-  if (*green > 248) { *green = 255; }
-  if (*red > 248) { *red = 255; }
-}
-
-static inline uint16_t
-ctx_565_pack (uint8_t red,
-              uint8_t green,
-              uint8_t blue,
-              int     byteswap)
-{
-  uint32_t c = (red >> 3) << 11;
-  c |= (green >> 2) << 5;
-  c |= blue >> 3;
-  if (byteswap)
-    { return (c>>8) | (c<<8); } /* swap bytes */
-  return c;
-}
-
-static inline uint16_t
-ctx_888_to_565 (uint32_t in, int byteswap)
-{
-  uint8_t *rgb=(uint8_t*)(&in);
-  return ctx_565_pack (rgb[0],rgb[1],rgb[2], byteswap);
-}
-
-static inline uint32_t
-ctx_565_to_888 (uint16_t in, int byteswap)
-{
-  uint32_t ret = 0;
-  uint8_t *rgba=(uint8_t*)&ret;
-  ctx_565_unpack (in,
-                  &rgba[0],
-                  &rgba[1],
-                  &rgba[2],
-                  byteswap);
-  return ret;
-}
-
-#endif
-#if CTX_ENABLE_RGB565
-
-
-static inline void
-ctx_RGB565_to_RGBA8 (CtxRasterizer *rasterizer, int x, const void *buf, uint8_t *rgba, int count)
-{
-  const uint16_t *pixel = (uint16_t *) buf;
-  while (count--)
-    {
-      ctx_565_unpack (*pixel, &rgba[0], &rgba[1], &rgba[2], 0);
-#if CTX_RGB565_ALPHA
-      if (rgba[0]==255 && rgba[2] == 255 && rgba[1]==0)
-        { rgba[3] = 0; }
-      else
-#endif
-        { rgba[3] = 255; }
-      pixel+=1;
-      rgba +=4;
-    }
-}
-
-static inline void
-ctx_RGBA8_to_RGB565 (CtxRasterizer *rasterizer, int x, const uint8_t *rgba, void *buf, int count)
-{
-  uint16_t *pixel = (uint16_t *) buf;
-  while (count--)
-    {
-#if CTX_RGB565_ALPHA
-      if (rgba[3]==0)
-        { pixel[0] = ctx_565_pack (255, 0, 255, 0); }
-      else
-#endif
-        { pixel[0] = ctx_565_pack (rgba[0], rgba[1], rgba[2], 0); }
-      pixel+=1;
-      rgba +=4;
-    }
-}
-
-static void
-ctx_composite_RGB565 (CTX_COMPOSITE_ARGUMENTS)
-{
-  uint8_t pixels[count * 4];
-  ctx_RGB565_to_RGBA8 (rasterizer, x0, dst, &pixels[0], count);
-  rasterizer->comp_op (rasterizer, &pixels[0], rasterizer->color, x0, coverage, count);
-  ctx_RGBA8_to_RGB565 (rasterizer, x0, &pixels[0], dst, count);
-}
-
-
-#endif
-#if CTX_ENABLE_RGB565_BYTESWAPPED
-
-static inline void
-ctx_RGB565_BS_to_RGBA8 (CtxRasterizer *rasterizer, int x, const void *buf, uint8_t *rgba, int count)
-{
-  const uint16_t *pixel = (uint16_t *) buf;
-  while (count--)
-    {
-      ctx_565_unpack (*pixel, &rgba[0], &rgba[1], &rgba[2], 1);
-#if CTX_RGB565_ALPHA
-      if (rgba[0]==255 && rgba[2] == 255 && rgba[1]==0)
-        { rgba[3] = 0; }
-      else
-#endif
-        { rgba[3] = 255; }
-      pixel+=1;
-      rgba +=4;
-    }
-}
-
-static inline void
-ctx_RGBA8_to_RGB565_BS (CtxRasterizer *rasterizer, int x, const uint8_t *rgba, void *buf, int count)
-{
-  uint16_t *pixel = (uint16_t *) buf;
-  while (count--)
-    {
-#if CTX_RGB565_ALPHA
-      if (rgba[3]==0)
-        { pixel[0] = ctx_565_pack (255, 0, 255, 1); }
-      else
-#endif
-        { pixel[0] = ctx_565_pack (rgba[0], rgba[1], rgba[2], 1); }
-      pixel+=1;
-      rgba +=4;
-    }
-}
-
-static void
-ctx_composite_RGB565_BS (CTX_COMPOSITE_ARGUMENTS)
-{
-  uint8_t pixels[count * 4];
-  ctx_RGB565_BS_to_RGBA8 (rasterizer, x0, dst, &pixels[0], count);
-  rasterizer->comp_op (rasterizer, &pixels[0], rasterizer->color, x0, coverage, count);
-  ctx_RGBA8_to_RGB565_BS (rasterizer, x0, &pixels[0], dst, count);
-}
-
-
-#endif
-
-CtxPixelFormatInfo CTX_COMPOSITE_SUFFIX(ctx_pixel_formats)[]=
-{
-#if CTX_ENABLE_RGBA8
-  {
-    CTX_FORMAT_RGBA8, 4, 32, 4, 0, 0, CTX_FORMAT_RGBA8,
-    NULL, NULL, NULL, ctx_setup_RGBA8
-  },
-#endif
-#if CTX_ENABLE_BGRA8
-  {
-    CTX_FORMAT_BGRA8, 4, 32, 4, 0, 0, CTX_FORMAT_RGBA8,
-    ctx_BGRA8_to_RGBA8, ctx_RGBA8_to_BGRA8, ctx_composite_BGRA8, ctx_setup_RGBA8,
-  },
-#endif
-#if CTX_ENABLE_GRAYF
-  {
-    CTX_FORMAT_GRAYF, 1, 32, 4 * 2, 0, 0, CTX_FORMAT_GRAYAF,
-    NULL, NULL, ctx_composite_GRAYF, ctx_setup_GRAYAF,
-  },
-#endif
-#if CTX_ENABLE_GRAYAF
-  {
-    CTX_FORMAT_GRAYAF, 2, 64, 4 * 2, 0, 0, CTX_FORMAT_GRAYAF,
-    NULL, NULL, NULL, ctx_setup_GRAYAF,
-  },
-#endif
-#if CTX_ENABLE_RGBAF
-  {
-    CTX_FORMAT_RGBAF, 4, 128, 4 * 4, 0, 0, CTX_FORMAT_RGBAF,
-    NULL, NULL, NULL, ctx_setup_RGBAF,
-  },
-#endif
-#if CTX_ENABLE_RGB8
-  {
-    CTX_FORMAT_RGB8, 3, 24, 4, 0, 0, CTX_FORMAT_RGBA8,
-    ctx_RGB8_to_RGBA8, ctx_RGBA8_to_RGB8, ctx_composite_convert, ctx_setup_RGBA8,
-  },
-#endif
-#if CTX_ENABLE_GRAY1
-  {
-#if CTX_NATIVE_GRAYA8
-    CTX_FORMAT_GRAY1, 1, 1, 2, 1, 1, CTX_FORMAT_GRAYA8,
-    ctx_GRAY1_to_GRAYA8, ctx_GRAYA8_to_GRAY1, ctx_composite_convert, ctx_setup_GRAYA8,
+#if CTX_THREADS==0
+    ctx_client_handle_events_iteration (ctx);
 #else
-    CTX_FORMAT_GRAY1, 1, 1, 4, 1, 1, CTX_FORMAT_RGBA8,
-    ctx_GRAY1_to_RGBA8, ctx_RGBA8_to_GRAY1, ctx_composite_convert, ctx_setup_RGBA8,
-#endif
-  },
-#endif
-#if CTX_ENABLE_GRAY2
-  {
-#if CTX_NATIVE_GRAYA8
-    CTX_FORMAT_GRAY2, 1, 2, 2, 4, 4, CTX_FORMAT_GRAYA8,
-    ctx_GRAY2_to_GRAYA8, ctx_GRAYA8_to_GRAY2, ctx_composite_convert, ctx_setup_GRAYA8,
-#else
-    CTX_FORMAT_GRAY2, 1, 2, 4, 4, 4, CTX_FORMAT_RGBA8,
-    ctx_GRAY2_to_RGBA8, ctx_RGBA8_to_GRAY2, ctx_composite_convert, ctx_setup_RGBA8,
-#endif
-  },
-#endif
-#if CTX_ENABLE_GRAY4
-  {
-#if CTX_NATIVE_GRAYA8
-    CTX_FORMAT_GRAY4, 1, 4, 2, 16, 16, CTX_FORMAT_GRAYA8,
-    ctx_GRAY4_to_GRAYA8, ctx_GRAYA8_to_GRAY4, ctx_composite_convert, ctx_setup_GRAYA8,
-#else
-    CTX_FORMAT_GRAY4, 1, 4, 4, 16, 16, CTX_FORMAT_GRAYA8,
-    ctx_GRAY4_to_RGBA8, ctx_RGBA8_to_GRAY4, ctx_composite_convert, ctx_setup_RGBA8,
-#endif
-  },
-#endif
-#if CTX_ENABLE_GRAY8
-  {
-#if CTX_NATIVE_GRAYA8
-    CTX_FORMAT_GRAY8, 1, 8, 2, 0, 0, CTX_FORMAT_GRAYA8,
-    ctx_GRAY8_to_GRAYA8, ctx_GRAYA8_to_GRAY8, ctx_composite_convert, ctx_setup_GRAYA8,
-#else
-    CTX_FORMAT_GRAY8, 1, 8, 4, 0, 0, CTX_FORMAT_RGBA8,
-    ctx_GRAY8_to_RGBA8, ctx_RGBA8_to_GRAY8, ctx_composite_convert, ctx_setup_RGBA8,
-#endif
-  },
-#endif
-#if CTX_ENABLE_GRAYA8
-  {
-#if CTX_NATIVE_GRAYA8
-    CTX_FORMAT_GRAYA8, 2, 16, 2, 0, 0, CTX_FORMAT_GRAYA8,
-    ctx_GRAYA8_to_RGBA8, ctx_RGBA8_to_GRAYA8, NULL, ctx_setup_GRAYA8,
-#else
-    CTX_FORMAT_GRAYA8, 2, 16, 4, 0, 0, CTX_FORMAT_RGBA8,
-    ctx_GRAYA8_to_RGBA8, ctx_RGBA8_to_GRAYA8, ctx_composite_convert, ctx_setup_RGBA8,
-#endif
-  },
-#endif
-#if CTX_ENABLE_RGB332
-  {
-    CTX_FORMAT_RGB332, 3, 8, 4, 10, 12, CTX_FORMAT_RGBA8,
-    ctx_RGB332_to_RGBA8, ctx_RGBA8_to_RGB332,
-    ctx_composite_convert, ctx_setup_RGBA8,
-  },
-#endif
-#if CTX_ENABLE_RGB565
-  {
-    CTX_FORMAT_RGB565, 3, 16, 4, 32, 64, CTX_FORMAT_RGBA8,
-    ctx_RGB565_to_RGBA8, ctx_RGBA8_to_RGB565,
-    ctx_composite_RGB565, ctx_setup_RGBA8,
-  },
-#endif
-#if CTX_ENABLE_RGB565_BYTESWAPPED
-  {
-    CTX_FORMAT_RGB565_BYTESWAPPED, 3, 16, 4, 32, 64, CTX_FORMAT_RGBA8,
-    ctx_RGB565_BS_to_RGBA8,
-    ctx_RGBA8_to_RGB565_BS,
-    ctx_composite_RGB565_BS, ctx_setup_RGBA8,
-  },
-#endif
-#if CTX_ENABLE_CMYKAF
-  {
-    CTX_FORMAT_CMYKAF, 5, 160, 4 * 5, 0, 0, CTX_FORMAT_CMYKAF,
-    NULL, NULL, NULL, ctx_setup_CMYKAF,
-  },
-#endif
-#if CTX_ENABLE_CMYKA8
-  {
-    CTX_FORMAT_CMYKA8, 5, 40, 4 * 5, 0, 0, CTX_FORMAT_CMYKAF,
-    NULL, NULL, ctx_composite_CMYKA8, ctx_setup_CMYKAF,
-  },
-#endif
-#if CTX_ENABLE_CMYK8
-  {
-    CTX_FORMAT_CMYK8, 5, 32, 4 * 5, 0, 0, CTX_FORMAT_CMYKAF,
-    NULL, NULL, ctx_composite_CMYK8, ctx_setup_CMYKAF,
-  },
-#endif
-  {
-    CTX_FORMAT_NONE
-  }
-};
-
-
-void
-CTX_COMPOSITE_SUFFIX(ctx_compositor_setup) (CtxRasterizer *rasterizer)
-{
-  if (rasterizer->state->gstate.source_fill.type == CTX_SOURCE_TEXTURE)
-  {
-    if (!rasterizer->state->gstate.source_fill.texture.buffer->color_managed)
-      _ctx_texture_prepare_color_management (rasterizer,
-        rasterizer->state->gstate.source_fill.texture.buffer);
-  }
-
-  if (rasterizer->format->setup)
-  {
-    // this works also when _default is passed
-    rasterizer->format->setup (rasterizer);
-  }
-#if CTX_GRADIENTS
-#if CTX_GRADIENT_CACHE
-  CtxGState *gstate = &rasterizer->state->gstate;
-  switch (gstate->source_fill.type)
-  {
-    case CTX_SOURCE_LINEAR_GRADIENT:
-    case CTX_SOURCE_RADIAL_GRADIENT:
-      ctx_gradient_cache_prime (rasterizer);
-  }
-#endif
+    static thrd_t tid = 0;
+    if (tid == 0)
+    {
+      thrd_create (&tid, (void*)ctx_clients_handle_events_fun, ctx);
+    }
 #endif
 }
 
-#endif
+#endif /* CTX_VT */
 #endif //  __CTX_H__
