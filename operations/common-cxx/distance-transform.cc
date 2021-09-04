@@ -531,7 +531,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",        "gegl:distance-transform",
     "title",       _("Distance Transform"),
     "categories",  "map",
-    "reference-hash", "4121d1abc01608b557f60111facfe2e6",
+    "reference-hash", "620bf37294bca66e4190da60c5be5622",
     "reference-composition", composition,
     "description", _("Calculate a distance transform"),
     NULL);
