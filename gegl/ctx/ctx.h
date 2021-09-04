@@ -1,4 +1,4 @@
-/* ctx git commit: 4d729cd */
+/* ctx git commit: e119e43 */
 /* 
  * ctx.h is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -5099,6 +5099,8 @@ ctx_matrix_translate (CtxMatrix *matrix, float x, float y);
 
 
 void ctx_get_matrix (Ctx *ctx, CtxMatrix *matrix);
+void ctx_set_matrix (Ctx *ctx, CtxMatrix *matrix);
+int _ctx_is_rasterizer (Ctx *ctx);
 
 int ctx_color (Ctx *ctx, const char *string);
 typedef struct _CtxState CtxState;
@@ -5138,6 +5140,34 @@ _ctx_file_get_contents (const char     *path,
 #if CTX_FONTS_FROM_FILE
 int   ctx_load_font_ttf_file (const char *name, const char *path);
 #endif
+
+#if CTX_BABL
+void ctx_rasterizer_colorspace_babl (CtxState      *state,
+                                     CtxColorSpace  space_slot,
+                                     const Babl    *space);
+#endif
+void ctx_rasterizer_colorspace_icc (CtxState      *state,
+                                    CtxColorSpace  space_slot,
+                                    char          *icc_data,
+                                    int            icc_length);
+
+
+CtxBuffer *ctx_buffer_new_bare (void);
+
+void ctx_buffer_set_data (CtxBuffer *buffer,
+                          void *data, int width, int height,
+                          int stride,
+                          CtxPixelFormat pixel_format,
+                          void (*freefunc) (void *pixels, void *user_data),
+                          void *user_data);
+
+int _ctx_set_frame (Ctx *ctx, int frame);
+int _ctx_frame (Ctx *ctx);
+
+
+void ctx_exit (Ctx *ctx);
+void ctx_list_backends(void);
+int ctx_pixel_format_ebpp (CtxPixelFormat format);
 
 #endif
 #ifndef __CTX_CONSTANTS
@@ -10472,7 +10502,8 @@ void ctx_stroke_source (Ctx *ctx)
   ctx_process (ctx, &set_stroke);
 }
 
-void ctx_color_raw (Ctx *ctx, CtxColorModel model, float *components, int stroke)
+
+static void ctx_color_raw (Ctx *ctx, CtxColorModel model, float *components, int stroke)
 {
 #if 0
   CtxSource *source = stroke?
@@ -11107,7 +11138,7 @@ static float ctx_string_index_to_float (int index)
   return CTX_KEYDB_STRING_START + index;
 }
 
-void *ctx_state_get_blob (CtxState *state, uint64_t key)
+static void *ctx_state_get_blob (CtxState *state, uint64_t key)
 {
   float stored = ctx_state_get (state, key);
   int idx = ctx_float_to_string_index (stored);
@@ -11121,7 +11152,7 @@ void *ctx_state_get_blob (CtxState *state, uint64_t key)
   return NULL;
 }
 
-const char *ctx_state_get_string (CtxState *state, uint64_t key)
+static const char *ctx_state_get_string (CtxState *state, uint64_t key)
 {
   const char *ret = (char*)ctx_state_get_blob (state, key);
   if (ret && ret[0] == 127)
@@ -14506,11 +14537,11 @@ ctx_setup_RGBAF (CtxRasterizer *rasterizer)
         switch (gstate->source_fill.type)
         {
           case CTX_SOURCE_COLOR:
-            if (gstate->compositing_mode == CTX_COMPOSITE_SOURCE_OVER)
-            {
-              rasterizer->comp_op = ctx_RGBAF_source_over_normal_color;
-            }
-            else
+            //if (gstate->compositing_mode == CTX_COMPOSITE_SOURCE_OVER)
+            //{
+            //  rasterizer->comp_op = ctx_RGBAF_source_over_normal_color;
+           // }
+           // else
             {
               rasterizer->comp_op = ctx_RGBAF_porter_duff_color_normal;
             }
@@ -16344,8 +16375,10 @@ static uint32_t ctx_rasterizer_poly_to_hash (CtxRasterizer *rasterizer)
 
 static uint32_t ctx_rasterizer_poly_to_edges (CtxRasterizer *rasterizer)
 {
+#if CTX_SHAPE_CACHE
   int x = 0;
   int y = 0;
+#endif
   int count = rasterizer->edge_list.count;
   if (CTX_UNLIKELY (count == 0))
      return 0;
@@ -20494,7 +20527,7 @@ CtxAntialias ctx_get_antialias (Ctx *ctx)
   }
 }
 
-int _ctx_antialias_to_aa (CtxAntialias antialias)
+static int _ctx_antialias_to_aa (CtxAntialias antialias)
 {
   switch (antialias)
   {
@@ -20800,7 +20833,7 @@ CtxBuffer *ctx_buffer_new (int width, int height,
   return buffer;
 }
 
-void ctx_buffer_deinit (CtxBuffer *buffer)
+static void ctx_buffer_deinit (CtxBuffer *buffer)
 {
   if (buffer->free_func)
     buffer->free_func (buffer->data, buffer->user_data);
@@ -22536,7 +22569,10 @@ int ctx_count (Ctx *ctx)
 
 extern int _ctx_damage_control;
 
-static void ctx_list_backends()
+
+#if CTX_EVENTS
+
+void ctx_list_backends(void)
 {
     fprintf (stderr, "possible values for CTX_BACKEND:\n");
     fprintf (stderr, " ctx");
@@ -22551,8 +22587,6 @@ static void ctx_list_backends()
     fprintf (stderr, " termimg");
     fprintf (stderr, "\n");
 }
-
-#if CTX_EVENTS
 
 static uint32_t ctx_ms (Ctx *ctx)
 {
@@ -33045,7 +33079,6 @@ ctx_close_path (Ctx *ctx)
   CTX_PROCESS_VOID (CTX_CLOSE_PATH);
 }
 
-int _ctx_is_rasterizer (Ctx *ctx);
 
 void
 ctx_get_image_data (Ctx *ctx, int sx, int sy, int sw, int sh,
@@ -34733,7 +34766,7 @@ _ctx_init (Ctx *ctx)
   ctx->texture_cache = ctx;
 }
 
-static void ctx_setup ();
+static void ctx_setup (void);
 
 #if CTX_DRAWLIST_STATIC
 static Ctx ctx_state;
@@ -34815,7 +34848,7 @@ Ctx *ctx_new_for_drawlist (void *data, size_t length)
   return ctx;
 }
 
-static void ctx_setup ()
+static void ctx_setup (void)
 {
   ctx_font_setup ();
 }
@@ -39446,8 +39479,6 @@ static void vtcmd_set_alternate_font (VT *vt, const char *sequence)
   vt->charset[0] = 1;
 }
 
-int _ctx_set_frame (Ctx *ctx, int frame);
-int _ctx_frame (Ctx *ctx);
 
 static void vt_ctx_exit (void *data)
 {
