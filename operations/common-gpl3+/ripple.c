@@ -200,14 +200,14 @@ process (GeglOperation       *operation,
             switch (o->wave_type)
               {
                 case GEGL_RIPPLE_WAVE_TYPE_SAWTOOTH:
-                  lambda = div (nx + period / 2 - phi * period, period).rem;
+                  lambda = remainder (nx + period / 2 - phi * period, period);
                   if (lambda < 0)
                     lambda += period;
                   shift = amplitude * (((lambda / period) * 2) - 1);
                   break;
 
                 case GEGL_RIPPLE_WAVE_TYPE_TRIANGLE:
-                  lambda = div (nx + period * 3 / 4 - phi * period, period).rem;
+                  lambda = remainder (nx + period * 3 / 4 - phi * period, period);
                   if (lambda < 0)
                     lambda += period;
                   shift = amplitude * (fabs (((lambda / period) * 4) - 2) - 1);
