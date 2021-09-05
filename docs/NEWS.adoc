@@ -1,3 +1,38 @@
+GEGL-0.4.32 2021-09-05
+----------------------
+
+
+Docs/testing:
+~~~~~~~~~~~~~
+
+Fixes and improvements to the test system ands it integration for
+comparing/keeping track of hashes of operation output by John Marshall
+including and overhaul of reference compositions and hashes, improving
+development as well as documentation.
+
+Operations:
+~~~~~~~~~~~
+
+ - distance-transform: 
+ - openexr: fix build with newer OpenEXR 3
+ - negative-darkroom: contrast boost and illuminant adjustment parameter, reworked emulsion dye model, UI improvements, more black and white paper presets.
+ - fill-path: 32bit float RGB and CMYK color processing, using ctx as renderer.
+
+Core:
+~~~~~
+
+Fixing of leaks and dead code removal in json op handling, branch hints
+in buffer tile handling.
+
+Contributors to this release:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Alexandre Prokoudine, Anders Jonsson, Andrzej Hunt, Antonio Rojas, Asier
+Sarasua Garmendia, Boyuan Yang, Daniel Mustieles, dimspingos, John Marshall,
+JonnyRobbie, Jordi Mas, Marco Ciampa, Matej Urbančič, Øyvind Kolås, Piotr Drąg,
+Richard Kreckel, Rodrigo Lledó, woob and Yuri Chornoivan, 
+
+
 GEGL-0.4.30 2021-03-27
 ----------------------
 
