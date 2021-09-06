@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl.master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2021-06-28 09:08+0000\n"
-"PO-Revision-Date: 2021-08-26 13:40+0200\n"
+"POT-Creation-Date: 2021-09-04 22:16+0000\n"
+"PO-Revision-Date: 2021-09-06 13:43+0200\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Spanish - Spain <gnome-es-list@gnome.org>\n"
 "Language: es_ES\n"
@@ -965,12 +965,12 @@ msgstr "Renderizar un patrón de tablero de ajedrez"
 #: operations/common/color.c:24 operations/common/color.c:87
 #: operations/common/color-overlay.c:26 operations/common/dropshadow.c:67
 #: operations/common/grid.c:64 operations/common/long-shadow.c:83
-#: operations/common/rectangle.c:48 operations/common/vignette.c:36
-#: operations/common-gpl3+/color-to-alpha.c:29
+#: operations/common/rectangle.c:48 operations/common/vector-fill.c:26
+#: operations/common/vignette.c:36 operations/common-gpl3+/color-to-alpha.c:29
 #: operations/common-gpl3+/supernova.c:60
 #: operations/common-gpl3+/tile-paper.c:31
 #: operations/common-gpl3+/value-propagate.c:54 operations/external/text.c:37
-#: operations/external/vector-fill.c:26 operations/external/vector-stroke.c:27
+#: operations/external/vector-stroke.c:27
 msgid "Color"
 msgstr "Color"
 
@@ -1003,7 +1003,7 @@ msgstr "Saturación"
 #. FIXME: With a large angle, we lose AreaFilter's flavours
 #: operations/common/color-assimilation-grid.c:35
 #: operations/common/long-shadow.c:49 operations/common/motion-blur-linear.c:32
-#: operations/common/newsprint.c:159
+#: operations/common/newsprint.c:158
 #: operations/common-gpl3+/linear-sinusoid.c:65
 #: operations/common-gpl3+/motion-blur-circular.c:51
 #: operations/common-gpl3+/ripple.c:45
@@ -1591,7 +1591,7 @@ msgid "Alpha channel"
 msgstr "Canal alfa"
 
 #: operations/common/convolution-matrix.c:64
-#: operations/common-cxx/distance-transform.cc:46
+#: operations/common-cxx/distance-transform.cc:55
 #: operations/workshop/connected-components.c:41
 msgid "Normalize"
 msgstr "Normalizar"
@@ -1857,7 +1857,7 @@ msgstr "El color de la sombra (el predeterminado es «negro»)"
 #.
 #: operations/common/dropshadow.c:74 operations/common/layer.c:33
 #: operations/common/opacity.c:25 operations/common/opacity.c:289
-#: operations/external/vector-fill.c:29 operations/external/vector-stroke.c:34
+#: operations/common/vector-fill.c:29 operations/external/vector-stroke.c:34
 msgid "Opacity"
 msgstr "Opacidad"
 
@@ -2042,7 +2042,7 @@ msgstr "Filtro"
 
 #: operations/common/gaussian-blur.c:55 operations/common/gblur-1d.c:58
 msgid "How the gaussian kernel is discretized"
-msgstr "¿Cómo se hace discreto el núcleo gaussiano?"
+msgstr "Cómo se hace discreto el núcleo gaussiano"
 
 #: operations/common/gaussian-blur.c:57 operations/common/gblur-1d.c:60
 #: operations/common/map-absolute.c:26 operations/common/map-relative.c:30
@@ -3414,55 +3414,55 @@ msgstr "Patrón negro"
 msgid "Pattern"
 msgstr "Patrón"
 
-#: operations/common/newsprint.c:139 operations/common/newsprint.c:148
+#: operations/common/newsprint.c:139 operations/common/newsprint.c:147
 msgid "Black period"
 msgstr "Periodo negro"
 
-#: operations/common/newsprint.c:142 operations/common/newsprint.c:154
-msgid "Angle offset for patterns"
-msgstr "Desplazamiento del ángulo para patrones"
-
-#: operations/common/newsprint.c:147 operations/common-gpl3+/ripple.c:38
+#: operations/common/newsprint.c:146 operations/common-gpl3+/ripple.c:38
 #: operations/common-gpl3+/waves.c:39
 msgid "Period"
 msgstr "Periodo"
 
-#: operations/common/newsprint.c:150 operations/common/newsprint.c:160
+#: operations/common/newsprint.c:149 operations/common/newsprint.c:159
 msgid "Black angle"
 msgstr "Ángulo negro"
 
-#: operations/common/newsprint.c:162
+#: operations/common/newsprint.c:153
+msgid "Angle offset for patterns"
+msgstr "Desplazamiento del ángulo para patrones"
+
+#: operations/common/newsprint.c:161
 msgid "Black pullout"
 msgstr "Extracción de negro"
 
-#: operations/common/newsprint.c:164
+#: operations/common/newsprint.c:163
 msgid "How much of common gray to pull out of CMY"
 msgstr "Cuanto gris común extraer de CMY"
 
-#: operations/common/newsprint.c:167
+#: operations/common/newsprint.c:166
 msgid "Anti-alias oversampling factor"
 msgstr "Factor de sobremuestreo del suavizado"
 
-#: operations/common/newsprint.c:169
+#: operations/common/newsprint.c:168
 msgid "Number of samples that are averaged for antialiasing the result."
 msgstr ""
 "Número de muestras que se promedian para el resultado del suavizado de "
 "bordes."
 
-#: operations/common/newsprint.c:171 operations/common-gpl3+/plasma.c:36
+#: operations/common/newsprint.c:170 operations/common-gpl3+/plasma.c:36
 msgid "Turbulence"
 msgstr "Turbulencia"
 
 #. rename to wave-pinch or period-pinch?
-#: operations/common/newsprint.c:173
+#: operations/common/newsprint.c:172
 msgid "Color saturation dependent compression of period"
 msgstr "Compresión del periodo dependiente de la saturación de color"
 
-#: operations/common/newsprint.c:175
+#: operations/common/newsprint.c:174
 msgid "Blocksize"
 msgstr "Tamaño de bloque"
 
-#: operations/common/newsprint.c:177
+#: operations/common/newsprint.c:176
 msgid ""
 "Number of periods per tile, this tiling avoids high frequency anomaly that "
 "angle boost causes"
@@ -3470,11 +3470,11 @@ msgstr ""
 "Número de periodos por mosaico, en las que este mosaico evita anomalías de "
 "alta frecuencia causadas por el aumento del ángulo"
 
-#: operations/common/newsprint.c:179
+#: operations/common/newsprint.c:178
 msgid "Angle Boost"
 msgstr "Aumento del ángulo"
 
-#: operations/common/newsprint.c:181
+#: operations/common/newsprint.c:180
 msgid ""
 "Multiplication factor for desired rotation of the local space for texture, "
 "the way this is computed makes it weak for desaturated colors and possibly "
@@ -3484,11 +3484,11 @@ msgstr ""
 "textura, la forma en la que se calcula lo hace débil para colores "
 "desaturados y posiblemente más fuerte donde hay color."
 
-#: operations/common/newsprint.c:654
+#: operations/common/newsprint.c:653
 msgid "Newsprint"
 msgstr "Papel de periódico"
 
-#: operations/common/newsprint.c:659
+#: operations/common/newsprint.c:658
 msgid "Digital halftoning with optional modulations. "
 msgstr "Medio tono digital con modulaciones opcionales. "
 
@@ -3956,9 +3956,10 @@ msgstr "Rectángulo"
 msgid "A rectangular source of a fixed size with a solid color"
 msgstr "Una fuente rectangular de tamaño fijo y color liso"
 
-#: operations/common/recursive-transform.c:28 operations/external/path.c:47
-#: operations/external/vector-fill.c:37 operations/external/vector-stroke.c:38
-#: operations/transform/transform.c:24 operations/transform/transform.c:62
+#: operations/common/recursive-transform.c:28
+#: operations/common/vector-fill.c:37 operations/external/path.c:47
+#: operations/external/vector-stroke.c:38 operations/transform/transform.c:24
+#: operations/transform/transform.c:62
 msgid "Transform"
 msgstr "Transformar"
 
@@ -4513,6 +4514,45 @@ msgstr ""
 "Invierte la componente de valor, el resultado tiene el brillo invertido, "
 "manteniendo el color."
 
+#: operations/common/vector-fill.c:27
+msgid "Color of paint to use for filling."
+msgstr "Color de la pintura que usar para el relleno."
+
+#: operations/common/vector-fill.c:30
+msgid "The fill opacity to use."
+msgstr "Opacidad de relleno que usar."
+
+#. XXX: replace with enum?
+#: operations/common/vector-fill.c:34
+msgid "Fill rule."
+msgstr "Regla de rellenado."
+
+#: operations/common/vector-fill.c:35
+msgid "how to determine what to fill (nonzero|evenodd)"
+msgstr "cómo determinar lo que se rellena (no nulo / par impar)"
+
+#: operations/common/vector-fill.c:38 operations/external/vector-stroke.c:39
+msgid "svg style description of transform."
+msgstr "descripción estilo SVG de la transformación."
+
+#: operations/common/vector-fill.c:40 operations/external/path.c:54
+#: operations/external/vector-stroke.c:41
+msgid "Vector"
+msgstr "Vector"
+
+#: operations/common/vector-fill.c:41 operations/external/path.c:55
+#: operations/external/vector-stroke.c:42
+msgid "A GeglVector representing the path of the stroke"
+msgstr "Un vector GeglVector que representa la ruta del trazo"
+
+#: operations/common/vector-fill.c:320
+msgid "Fill Path"
+msgstr "Rellenar ruta"
+
+#: operations/common/vector-fill.c:323
+msgid "Renders a filled region"
+msgstr "Renderiza una región rellena"
+
 #: operations/common/vignette.c:32
 msgid "Vignette shape"
 msgstr "Forma de viñeta"
@@ -4702,41 +4742,58 @@ msgstr ""
 "Escribir datos de entrada en una superficie de destino de búfer GEGL "
 "existente."
 
-#: operations/common-cxx/distance-transform.cc:30
+#: operations/common-cxx/distance-transform.cc:31
+msgid "Above threshold"
+msgstr "Sobre el umbral"
+
+#: operations/common-cxx/distance-transform.cc:32
+msgid "Below threshold"
+msgstr "Bajo el umbral"
+
+#: operations/common-cxx/distance-transform.cc:35
 #: operations/workshop/external/voronoi-diagram.cc:24
 msgid "Metric"
 msgstr "Métrico"
 
-#: operations/common-cxx/distance-transform.cc:32
+#: operations/common-cxx/distance-transform.cc:37
 #: operations/workshop/external/voronoi-diagram.cc:27
 msgid "Metric to use for the distance calculation"
 msgstr "Métrica que usar para el cálculo de la distancia"
 
-#: operations/common-cxx/distance-transform.cc:34
+#: operations/common-cxx/distance-transform.cc:39
+msgid "Edge handling"
+msgstr "Gestión del borde"
+
+#: operations/common-cxx/distance-transform.cc:41
+msgid "How areas outside the input are considered when calculating distance"
+msgstr ""
+"Cómo se consideran las áreas fuera de la entrada al calcular la distancia"
+
+#: operations/common-cxx/distance-transform.cc:43
 msgid "Threshold low"
 msgstr "Umbral bajo"
 
-#: operations/common-cxx/distance-transform.cc:37
+#: operations/common-cxx/distance-transform.cc:46
 msgid "Threshold high"
 msgstr "Umbral alto"
 
-#: operations/common-cxx/distance-transform.cc:40
+#: operations/common-cxx/distance-transform.cc:49
 msgid "Grayscale Averaging"
 msgstr "Promedio en escala de grises"
 
-#: operations/common-cxx/distance-transform.cc:41
+#: operations/common-cxx/distance-transform.cc:50
 msgid "Number of computations for grayscale averaging"
 msgstr "Número de cálculos para un promedio de escala de grises"
 
-#: operations/common-cxx/distance-transform.cc:47
+#: operations/common-cxx/distance-transform.cc:56
 msgid "Normalize output to range 0.0 to 1.0."
 msgstr "Normalizar la salida a un rango de 0,0 a 1,0."
 
-#: operations/common-cxx/distance-transform.cc:481
+#: operations/common-cxx/distance-transform.cc:532
 msgid "Distance Transform"
 msgstr "Transformación de la distancia"
 
-#: operations/common-cxx/distance-transform.cc:485
+#: operations/common-cxx/distance-transform.cc:536
 msgid "Calculate a distance transform"
 msgstr "Calcular una transformada de distancia"
 
@@ -8024,16 +8081,6 @@ msgstr "Opacidad del relleno"
 msgid "The fill opacity to use"
 msgstr "Opacidad del relleno que usar"
 
-#: operations/external/path.c:54 operations/external/vector-fill.c:40
-#: operations/external/vector-stroke.c:41
-msgid "Vector"
-msgstr "Vector"
-
-#: operations/external/path.c:55 operations/external/vector-fill.c:41
-#: operations/external/vector-stroke.c:42
-msgid "A GeglVector representing the path of the stroke"
-msgstr "Un vector GeglVector que representa la ruta del trazo"
-
 #: operations/external/path.c:584
 msgid "Render Path"
 msgstr "Renderizar ruta"
@@ -8441,35 +8488,6 @@ msgstr "Origen de fotograma de Video4Linux"
 #: operations/external/v4l.c:333
 msgid "Video4Linux input, webcams framegrabbers and similar devices."
 msgstr "Entrada Video4Linux, capturadoras, webcams y dispositivos similares."
-
-#: operations/external/vector-fill.c:27
-msgid "Color of paint to use for filling."
-msgstr "Color de la pintura que usar para el relleno."
-
-#: operations/external/vector-fill.c:30
-msgid "The fill opacity to use."
-msgstr "Opacidad de relleno que usar."
-
-#. XXX: replace with enum?
-#: operations/external/vector-fill.c:34
-msgid "Fill rule."
-msgstr "Regla de rellenado."
-
-#: operations/external/vector-fill.c:35
-msgid "how to determine what to fill (nonzero|evenodd)"
-msgstr "cómo determinar lo que se rellena (no nulo / par impar)"
-
-#: operations/external/vector-fill.c:38 operations/external/vector-stroke.c:39
-msgid "svg style description of transform."
-msgstr "descripción estilo SVG de la transformación."
-
-#: operations/external/vector-fill.c:322
-msgid "Fill Path"
-msgstr "Rellenar ruta"
-
-#: operations/external/vector-fill.c:325
-msgid "Renders a filled region"
-msgstr "Renderiza una región rellena"
 
 #: operations/external/vector-stroke.c:28
 msgid "Color of paint to use for stroking."
