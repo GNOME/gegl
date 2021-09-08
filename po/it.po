@@ -15,8 +15,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GEGL_0_2_0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-20 10:41+0200\n"
-"PO-Revision-Date: 2021-04-20 12:31+0200\n"
+"POT-Creation-Date: 2021-09-08 17:58+0200\n"
+"PO-Revision-Date: 2021-09-08 18:36+0200\n"
 "Last-Translator: Marco Ciampa <ciampix@posteo.net>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -987,13 +987,13 @@ msgstr "Disegna un motivo a scacchiera"
 #: ../operations/common/color.c:24 ../operations/common/color.c:87
 #: ../operations/common/color-overlay.c:26 ../operations/common/dropshadow.c:67
 #: ../operations/common/grid.c:64 ../operations/common/long-shadow.c:83
-#: ../operations/common/rectangle.c:48 ../operations/common/vignette.c:36
+#: ../operations/common/rectangle.c:48 ../operations/common/vector-fill.c:26
+#: ../operations/common/vignette.c:36
 #: ../operations/common-gpl3+/color-to-alpha.c:29
 #: ../operations/common-gpl3+/supernova.c:60
 #: ../operations/common-gpl3+/tile-paper.c:31
 #: ../operations/common-gpl3+/value-propagate.c:54
-#: ../operations/external/text.c:37 ../operations/external/vector-fill.c:26
-#: ../operations/external/vector-stroke.c:27
+#: ../operations/external/text.c:37 ../operations/external/vector-stroke.c:27
 msgid "Color"
 msgstr "Colore"
 
@@ -1027,7 +1027,7 @@ msgstr "Saturazione"
 #: ../operations/common/color-assimilation-grid.c:35
 #: ../operations/common/long-shadow.c:49
 #: ../operations/common/motion-blur-linear.c:32
-#: ../operations/common/newsprint.c:159
+#: ../operations/common/newsprint.c:158
 #: ../operations/common-gpl3+/linear-sinusoid.c:65
 #: ../operations/common-gpl3+/motion-blur-circular.c:51
 #: ../operations/common-gpl3+/ripple.c:45
@@ -1626,7 +1626,7 @@ msgid "Alpha channel"
 msgstr "Canale alfa"
 
 #: ../operations/common/convolution-matrix.c:64
-#: ../operations/common-cxx/distance-transform.cc:46
+#: ../operations/common-cxx/distance-transform.cc:55
 #: ../operations/workshop/connected-components.c:41
 msgid "Normalize"
 msgstr "Normalizza"
@@ -1899,7 +1899,7 @@ msgstr "Il colore dell'ombra (predefinito è \"black\")"
 #.
 #: ../operations/common/dropshadow.c:74 ../operations/common/layer.c:33
 #: ../operations/common/opacity.c:25 ../operations/common/opacity.c:289
-#: ../operations/external/vector-fill.c:29
+#: ../operations/common/vector-fill.c:29
 #: ../operations/external/vector-stroke.c:34
 msgid "Opacity"
 msgstr "Opacità"
@@ -1996,7 +1996,7 @@ msgid "Adjust the black level"
 msgstr "Regola il livello del nero"
 
 #: ../operations/common/exposure.c:30 ../operations/common/exposure.c:480
-#: ../operations/common/negative-darkroom.c:32
+#: ../operations/common/negative-darkroom.c:29
 msgid "Exposure"
 msgstr "Esposizione"
 
@@ -3107,41 +3107,41 @@ msgstr ""
 "Sfoca i pixel in una direzione, simulando lo sfocamento di una macchina "
 "fotografica in movimento lineare durante l'esposizione."
 
-#: ../operations/common/negative-darkroom.c:28
+#: ../operations/common/negative-darkroom.c:25
 msgid "Characteristic curve"
 msgstr "Curva caratteristica"
 
-#: ../operations/common/negative-darkroom.c:30
+#: ../operations/common/negative-darkroom.c:27
 msgid "Hardcoded characteristic curve and color data"
 msgstr "Curva caratteristica e dati colore incorporati"
 
-#: ../operations/common/negative-darkroom.c:33
+#: ../operations/common/negative-darkroom.c:30
 msgid "Base enlargement exposure"
 msgstr "Esposizione allargamento base"
 
-#: ../operations/common/negative-darkroom.c:37
-msgid "Filter cyan"
-msgstr "Filtra ciano"
+#: ../operations/common/negative-darkroom.c:34
+msgid "Cyan filter"
+msgstr "Filtro ciano"
 
-#: ../operations/common/negative-darkroom.c:38
-msgid "Cyan exposure compensation for the negative image"
-msgstr "Compensazione dell'esposizione del ciano per l'immagine negativa"
+#: ../operations/common/negative-darkroom.c:35
+msgid "Cyan filter compensation for the negative image"
+msgstr "Compensazione del filtro ciano per l'immagine negativa"
 
-#: ../operations/common/negative-darkroom.c:41
-msgid "Filter magenta"
-msgstr "Filtra magenta"
+#: ../operations/common/negative-darkroom.c:39
+msgid "Magenta filter"
+msgstr "Filtro magenta"
 
-#: ../operations/common/negative-darkroom.c:42
-msgid "Magenta exposure compensation for the negative image"
-msgstr "Compensazione dell'esposizione del magenta per l'immagine negativa"
+#: ../operations/common/negative-darkroom.c:40
+msgid "Magenta filter compensation for the negative image"
+msgstr "Compensazione del filtro magenta per l'immagine negativa"
+
+#: ../operations/common/negative-darkroom.c:44
+msgid "Yellow filter"
+msgstr "Filtro giallo"
 
 #: ../operations/common/negative-darkroom.c:45
-msgid "Filter yellow"
-msgstr "Filtra giallo"
-
-#: ../operations/common/negative-darkroom.c:46
-msgid "Yellow exposure compensation for the negative image"
-msgstr "Compensazione dell'esposizione del giallo per l'immagine negativa"
+msgid "Yellow filter compensation for the negative image"
+msgstr "Compensazione del filtro giallo per l'immagine negativa"
 
 #: ../operations/common/negative-darkroom.c:49
 msgid "Clip base + fog"
@@ -3159,54 +3159,87 @@ msgstr "Incremento densità"
 msgid ""
 "Boost paper density to take advantage of increased dynamic range of a "
 "monitor compared to a photographic paper"
-msgstr "Incrementa la densità della carta per avantaggiarsi del range dinamico maggiore di uno schermo rispetto alla carta fotografica"
+msgstr ""
+"Incrementa la densità della carta per avantaggiarsi del range dinamico "
+"maggiore di uno schermo rispetto alla carta fotografica"
 
-#: ../operations/common/negative-darkroom.c:56
+#: ../operations/common/negative-darkroom.c:57
+msgid "Contrast boost"
+msgstr "Incremento contrasto"
+
+#: ../operations/common/negative-darkroom.c:58
+msgid "Increase contrast for papers with fixed contrast (usually color papers)"
+msgstr "Aumenta il contrasto per carta con contrasto fisso (solitamente carta colorata)"
+
+#: ../operations/common/negative-darkroom.c:63
 msgid "Dodge/burn multiplier"
 msgstr "Moltiplicatore scherma/brucia"
 
-#: ../operations/common/negative-darkroom.c:57
-msgid "The f-stop of dodge/burn for pure white/black auxillary input"
+#: ../operations/common/negative-darkroom.c:64
+msgid "The f-stop of dodge/burn for pure white/black auxiliary input"
 msgstr "L'f-stop di scherma/brucia per ingresso ausiliario puro bianco/nero"
 
-#: ../operations/common/negative-darkroom.c:60
+#: ../operations/common/negative-darkroom.c:68
 msgid "Enable preflashing"
 msgstr "Abilita preflash"
 
-#: ../operations/common/negative-darkroom.c:61
+#: ../operations/common/negative-darkroom.c:69
 msgid "Show preflash controls"
 msgstr "Mostra controlli preflash"
 
-#: ../operations/common/negative-darkroom.c:63
-msgid "Cyan preflash"
-msgstr "Preflash ciano"
+#: ../operations/common/negative-darkroom.c:71
+msgid "Red preflash"
+msgstr "Preflash rosso"
 
-#: ../operations/common/negative-darkroom.c:64
-msgid "Preflash the negative with cyan light to reduce contrast of the print"
-msgstr "Fa il preflash al negativo con luce ciano per ridurre il contrasto della stampa"
+#: ../operations/common/negative-darkroom.c:72
+msgid "Preflash the negative with red light to reduce contrast of the print"
+msgstr "Fa il preflash al negativo con luce rossa per ridurre il contrasto della stampa"
 
-#: ../operations/common/negative-darkroom.c:68
-msgid "Magenta preflash"
-msgstr "Preflash magenta"
+#: ../operations/common/negative-darkroom.c:76
+msgid "Green preflash"
+msgstr "Preflash verde"
 
-#: ../operations/common/negative-darkroom.c:69
-msgid ""
-"Preflash the negative with magenta light to reduce contrast of the print"
-msgstr "Fa il preflash al negativo con luce magenta per ridurre il contrasto della stampa"
+#: ../operations/common/negative-darkroom.c:77
+msgid "Preflash the negative with green light to reduce contrast of the print"
+msgstr "Fa il preflash al negativo con luce verde per ridurre il contrasto della stampa"
 
-#: ../operations/common/negative-darkroom.c:73
-msgid "Yellow preflash"
-msgstr "Preflash giallo"
+#: ../operations/common/negative-darkroom.c:81
+msgid "Blue preflash"
+msgstr "Preflash blu"
 
-#: ../operations/common/negative-darkroom.c:74
-msgid "Preflash the negative with yellow light to reduce contrast of the print"
-msgstr "Fa il preflash al negativo con luce gialla per ridurre il contrasto della stampa"
+#: ../operations/common/negative-darkroom.c:82
+msgid "Preflash the negative with blue light to reduce contrast of the print"
+msgstr "Fa il preflash al negativo con luce blu per ridurre il contrasto della stampa"
 
-#: ../operations/common/negative-darkroom.c:312
+#: ../operations/common/negative-darkroom.c:86
+msgid "Illuminant adjustment"
+msgstr "Regolazione illuminazione"
+
+#: ../operations/common/negative-darkroom.c:87
+msgid "Show illuminant controls"
+msgstr "Mostra controlli illuminazione"
+
+#: ../operations/common/negative-darkroom.c:88
+msgid "X multiplier"
+msgstr "Moltiplicatore X"
+
+#: ../operations/common/negative-darkroom.c:89
+msgid "Adjust the X tristimulus value for output"
+msgstr "Regola il valore di tristimolo X per l'uscita"
+
+#: ../operations/common/negative-darkroom.c:92
+msgid "Z multiplier"
+msgstr "Moltiplicatore Z"
+
+#: ../operations/common/negative-darkroom.c:93
+msgid "Adjust the Z tristimulus value for output"
+msgstr "Regola il valore del tristimolo Z per l'uscita"
+
+#: ../operations/common/negative-darkroom.c:386
 msgid "Negative Darkroom"
 msgstr "Camera oscura negativi"
 
-#: ../operations/common/negative-darkroom.c:315
+#: ../operations/common/negative-darkroom.c:389
 msgid "Simulate a negative film enlargement in an analog darkroom."
 msgstr "Simula l'elaborazione in camera oscura dei negativi analogici."
 
@@ -3229,6 +3262,30 @@ msgstr "Ilford Ilfobrom Galerie FB 3"
 #: ../operations/common/negative-darkroom/negative-darkroom-curve-enum.c:6
 msgid "Ilford Ilfobrom Galerie FB 4"
 msgstr "Ilford Ilfobrom Galerie FB 4"
+
+#: ../operations/common/negative-darkroom/negative-darkroom-curve-enum.c:7
+msgid "Ilford Multigrade IV RC Deluxe"
+msgstr "Ilford Multigrade IV RC Deluxe"
+
+#: ../operations/common/negative-darkroom/negative-darkroom-curve-enum.c:8
+msgid "Foma Fomabrom C"
+msgstr "Foma Fomabrom C"
+
+#: ../operations/common/negative-darkroom/negative-darkroom-curve-enum.c:9
+msgid "Foma Fomabrom N"
+msgstr "Foma Fomabrom N"
+
+#: ../operations/common/negative-darkroom/negative-darkroom-curve-enum.c:10
+msgid "Foma Fomabrom Sp"
+msgstr "Foma Fomabrom Sp"
+
+#: ../operations/common/negative-darkroom/negative-darkroom-curve-enum.c:11
+msgid "Foma Fomabrom S"
+msgstr "Foma Fomabrom S"
+
+#: ../operations/common/negative-darkroom/negative-darkroom-curve-enum.c:12
+msgid "Foma Fomabrom Variant III"
+msgstr "Foma Fomabrom Variant III"
 
 #: ../operations/common/newsprint.c:25
 msgid "Line"
@@ -3393,53 +3450,53 @@ msgstr "Motivo nero"
 msgid "Pattern"
 msgstr "Motivo"
 
-#: ../operations/common/newsprint.c:139 ../operations/common/newsprint.c:148
+#: ../operations/common/newsprint.c:139 ../operations/common/newsprint.c:147
 msgid "Black period"
 msgstr "Periodo nero"
 
-#: ../operations/common/newsprint.c:142 ../operations/common/newsprint.c:154
-msgid "Angle offset for patterns"
-msgstr "Scostamento angolo per i motivi"
-
-#: ../operations/common/newsprint.c:147 ../operations/common-gpl3+/ripple.c:38
+#: ../operations/common/newsprint.c:146 ../operations/common-gpl3+/ripple.c:38
 #: ../operations/common-gpl3+/waves.c:39
 msgid "Period"
 msgstr "Periodo"
 
-#: ../operations/common/newsprint.c:150 ../operations/common/newsprint.c:160
+#: ../operations/common/newsprint.c:149 ../operations/common/newsprint.c:159
 msgid "Black angle"
 msgstr "Angolo del nero"
 
-#: ../operations/common/newsprint.c:162
+#: ../operations/common/newsprint.c:153
+msgid "Angle offset for patterns"
+msgstr "Scostamento angolo per i motivi"
+
+#: ../operations/common/newsprint.c:161
 msgid "Black pullout"
 msgstr "Estrazione del nero"
 
-#: ../operations/common/newsprint.c:164
+#: ../operations/common/newsprint.c:163
 msgid "How much of common gray to pull out of CMY"
 msgstr "Quanto grigio comune da estrarre dal CMY"
 
-#: ../operations/common/newsprint.c:167
+#: ../operations/common/newsprint.c:166
 msgid "Anti-alias oversampling factor"
 msgstr "Fattore di sovracampionamento anti-alias"
 
-#: ../operations/common/newsprint.c:169
+#: ../operations/common/newsprint.c:168
 msgid "Number of samples that are averaged for antialiasing the result."
 msgstr "Numero di campioni mediati per effettuare l'antialias del risultato."
 
-#: ../operations/common/newsprint.c:171 ../operations/common-gpl3+/plasma.c:36
+#: ../operations/common/newsprint.c:170 ../operations/common-gpl3+/plasma.c:36
 msgid "Turbulence"
 msgstr "Turbolenza"
 
 #. rename to wave-pinch or period-pinch?
-#: ../operations/common/newsprint.c:173
+#: ../operations/common/newsprint.c:172
 msgid "Color saturation dependent compression of period"
 msgstr "Compressione dipendente dalla saturazione del color del periodo"
 
-#: ../operations/common/newsprint.c:175
+#: ../operations/common/newsprint.c:174
 msgid "Blocksize"
 msgstr "Dimensione blocco"
 
-#: ../operations/common/newsprint.c:177
+#: ../operations/common/newsprint.c:176
 msgid ""
 "Number of periods per tile, this tiling avoids high frequency anomaly that "
 "angle boost causes"
@@ -3447,11 +3504,11 @@ msgstr ""
 "Numero di periodi per piastrella, questa piastrellatura evita le anomalie ad "
 "alta frequenza che causa Impulsoangolare"
 
-#: ../operations/common/newsprint.c:179
+#: ../operations/common/newsprint.c:178
 msgid "Angle Boost"
 msgstr "Impulsoangolare"
 
-#: ../operations/common/newsprint.c:181
+#: ../operations/common/newsprint.c:180
 msgid ""
 "Multiplication factor for desired rotation of the local space for texture, "
 "the way this is computed makes it weak for desaturated colors and possibly "
@@ -3461,11 +3518,11 @@ msgstr ""
 "il motivo, il modo in cui questo viene calcolato lo rende debole per colori "
 "desaturati e forse più forte dove c'è colore."
 
-#: ../operations/common/newsprint.c:654
+#: ../operations/common/newsprint.c:653
 msgid "Newsprint"
 msgstr "Effetto giornale"
 
-#: ../operations/common/newsprint.c:659
+#: ../operations/common/newsprint.c:658
 msgid "Digital halftoning with optional modulations. "
 msgstr "Mezze tonalità digitali con modulazioni opzionali."
 
@@ -3936,7 +3993,7 @@ msgid "A rectangular source of a fixed size with a solid color"
 msgstr "Una sorgente rettangolare di dimensione fissa di colore pieno"
 
 #: ../operations/common/recursive-transform.c:28
-#: ../operations/external/path.c:47 ../operations/external/vector-fill.c:37
+#: ../operations/common/vector-fill.c:37 ../operations/external/path.c:47
 #: ../operations/external/vector-stroke.c:38
 #: ../operations/transform/transform.c:24
 #: ../operations/transform/transform.c:62
@@ -4477,6 +4534,46 @@ msgstr ""
 "Inverte il componente valore, il risultato ha la luminosità invertita, "
 "mantenendo il colore."
 
+#: ../operations/common/vector-fill.c:27
+msgid "Color of paint to use for filling."
+msgstr "Colore tinta da usare per il riempimento."
+
+#: ../operations/common/vector-fill.c:30
+msgid "The fill opacity to use."
+msgstr "Il riempimento opacità da usare."
+
+#. XXX: replace with enum?
+#: ../operations/common/vector-fill.c:34
+msgid "Fill rule."
+msgstr "Regola di riempimento."
+
+#: ../operations/common/vector-fill.c:35
+msgid "how to determine what to fill (nonzero|evenodd)"
+msgstr "home determinare cosa riempire (nonzero|paridispari)"
+
+#: ../operations/common/vector-fill.c:38
+#: ../operations/external/vector-stroke.c:39
+msgid "svg style description of transform."
+msgstr "stile svg descrizione della trasformazione."
+
+#: ../operations/common/vector-fill.c:40 ../operations/external/path.c:54
+#: ../operations/external/vector-stroke.c:41
+msgid "Vector"
+msgstr "Vettore"
+
+#: ../operations/common/vector-fill.c:41 ../operations/external/path.c:55
+#: ../operations/external/vector-stroke.c:42
+msgid "A GeglVector representing the path of the stroke"
+msgstr "Un GeglVector che rappresenta il percorso del tratto"
+
+#: ../operations/common/vector-fill.c:320
+msgid "Fill Path"
+msgstr "Percorso riempimento"
+
+#: ../operations/common/vector-fill.c:323
+msgid "Renders a filled region"
+msgstr "Produce una regione riempita"
+
 #: ../operations/common/vignette.c:32
 msgid "Vignette shape"
 msgstr "Forma vignetta"
@@ -4662,41 +4759,57 @@ msgstr ""
 "Scrive i dati di ingresso in un preesistente buffer superficie di "
 "destinazione GEGL."
 
-#: ../operations/common-cxx/distance-transform.cc:30
+#: ../operations/common-cxx/distance-transform.cc:31
+msgid "Above threshold"
+msgstr "Sopra la soglia"
+
+#: ../operations/common-cxx/distance-transform.cc:32
+msgid "Below threshold"
+msgstr "Sotto la soglia"
+
+#: ../operations/common-cxx/distance-transform.cc:35
 #: ../operations/workshop/external/voronoi-diagram.cc:24
 msgid "Metric"
 msgstr "Metrica"
 
-#: ../operations/common-cxx/distance-transform.cc:32
+#: ../operations/common-cxx/distance-transform.cc:37
 #: ../operations/workshop/external/voronoi-diagram.cc:27
 msgid "Metric to use for the distance calculation"
 msgstr "La metrica da usare per il calcolo della distanza"
 
-#: ../operations/common-cxx/distance-transform.cc:34
+#: ../operations/common-cxx/distance-transform.cc:39
+msgid "Edge handling"
+msgstr "Gestione bordo"
+
+#: ../operations/common-cxx/distance-transform.cc:41
+msgid "How areas outside the input are considered when calculating distance"
+msgstr "Come le aree fuori dall'ingresso vengono considerate nel calcolo della distanza"
+
+#: ../operations/common-cxx/distance-transform.cc:43
 msgid "Threshold low"
 msgstr "Soglia bassa"
 
-#: ../operations/common-cxx/distance-transform.cc:37
+#: ../operations/common-cxx/distance-transform.cc:46
 msgid "Threshold high"
 msgstr "Soglia alta"
 
-#: ../operations/common-cxx/distance-transform.cc:40
+#: ../operations/common-cxx/distance-transform.cc:49
 msgid "Grayscale Averaging"
 msgstr "Media scala di grigi"
 
-#: ../operations/common-cxx/distance-transform.cc:41
+#: ../operations/common-cxx/distance-transform.cc:50
 msgid "Number of computations for grayscale averaging"
 msgstr "Numero di computazioni per la media della scala di grigi"
 
-#: ../operations/common-cxx/distance-transform.cc:47
+#: ../operations/common-cxx/distance-transform.cc:56
 msgid "Normalize output to range 0.0 to 1.0."
 msgstr "Normalizza il campo dei risultati da 0,0 a 1,0."
 
-#: ../operations/common-cxx/distance-transform.cc:481
+#: ../operations/common-cxx/distance-transform.cc:532
 msgid "Distance Transform"
 msgstr "Trasformazione distanza"
 
-#: ../operations/common-cxx/distance-transform.cc:485
+#: ../operations/common-cxx/distance-transform.cc:536
 msgid "Calculate a distance transform"
 msgstr "Calcola una trasformazione di distanza"
 
@@ -7331,7 +7444,12 @@ msgid ""
 "with, and the ICC profile potentially embedded for external color "
 "management, setting a pointer to a format overrides the string property and "
 "setting an aux pad overrides both. "
-msgstr "imposta lo spazio colore con cui vengono creati i successivi formati babl nella pipeline e il profilo ICC potenzialmente incorporato per la gestione del colore esterna, l'impostazione di un puntatore a un formato sovrascrive la proprietà della stringa e l'impostazione di un pad ausiliario sovrascrive entrambi."
+msgstr ""
+"imposta lo spazio colore con cui vengono creati i successivi formati babl "
+"nella pipeline e il profilo ICC potenzialmente incorporato per la gestione "
+"del colore esterna, l'impostazione di un puntatore a un formato sovrascrive "
+"la proprietà della stringa e l'impostazione di un pad ausiliario sovrascrive "
+"entrambi."
 
 #: ../operations/core/crop.c:45 ../operations/transform/reset-origin.c:95
 msgid "Reset origin"
@@ -7992,16 +8110,6 @@ msgstr "Riempimento opacità"
 msgid "The fill opacity to use"
 msgstr "Il riempimento opacità da usare"
 
-#: ../operations/external/path.c:54 ../operations/external/vector-fill.c:40
-#: ../operations/external/vector-stroke.c:41
-msgid "Vector"
-msgstr "Vettore"
-
-#: ../operations/external/path.c:55 ../operations/external/vector-fill.c:41
-#: ../operations/external/vector-stroke.c:42
-msgid "A GeglVector representing the path of the stroke"
-msgstr "Un GeglVector che rappresenta il percorso del tratto"
-
 #: ../operations/external/path.c:584
 msgid "Render Path"
 msgstr "Percorso render"
@@ -8403,36 +8511,6 @@ msgstr "Sorgente quadri Video4Linux"
 msgid "Video4Linux input, webcams framegrabbers and similar devices."
 msgstr "Ingresso video4Linux, webcam, framegrabber e dispositivi similari."
 
-#: ../operations/external/vector-fill.c:27
-msgid "Color of paint to use for filling."
-msgstr "Colore tinta da usare per il riempimento."
-
-#: ../operations/external/vector-fill.c:30
-msgid "The fill opacity to use."
-msgstr "Il riempimento opacità da usare."
-
-#. XXX: replace with enum?
-#: ../operations/external/vector-fill.c:34
-msgid "Fill rule."
-msgstr "Regola di riempimento."
-
-#: ../operations/external/vector-fill.c:35
-msgid "how to determine what to fill (nonzero|evenodd)"
-msgstr "home determinare cosa riempire (nonzero|paridispari)"
-
-#: ../operations/external/vector-fill.c:38
-#: ../operations/external/vector-stroke.c:39
-msgid "svg style description of transform."
-msgstr "stile svg descrizione della trasformazione."
-
-#: ../operations/external/vector-fill.c:322
-msgid "Fill Path"
-msgstr "Percorso riempimento"
-
-#: ../operations/external/vector-fill.c:325
-msgid "Renders a filled region"
-msgstr "Produce una regione riempita"
-
 #: ../operations/external/vector-stroke.c:28
 msgid "Color of paint to use for stroking."
 msgstr "Colore tinta da usare per la delineatura."
@@ -8761,7 +8839,7 @@ msgstr "Allineamento bordo"
 #: ../operations/transform/border-align.c:183
 msgid ""
 "Aligns box of input rectangle with border of compositing target or aux' "
-"bounding-box border, if aux pad is not connectd the op tries to figure out "
+"bounding-box border, if aux pad is not connected the op tries to figure out "
 "which bounding box' border applies."
 msgstr ""
 "Allinea il riquadro di ingresso al bordo dell'obiettivo composito o al "
@@ -8997,7 +9075,7 @@ msgstr "Banda bordo"
 
 #: ../operations/workshop/band-tune.c:41
 msgid ""
-"Features size for edge band, used to compensate for loos of edges in detail "
+"Features size for edge band, used to compensate for loss of edges in detail "
 "pass."
 msgstr ""
 "Produce la dimensione per la banda del bordo, usata per compensare la "
