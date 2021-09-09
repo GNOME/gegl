@@ -12,6 +12,7 @@ if gtkdoc_scan.found()
       project_source_root / 'gegl',
       project_build_root / 'gegl',
     ],
+    ignore_headers: ['ctx.h'],
     fixxref_args: [
       '--html-dir=@0@'.format(gegl_gtk_docdir),
       '--extra-dir=@0@'.format(glib_gtk_docdir),
