@@ -627,11 +627,11 @@ msgstr ""
 #: operations/common/bilateral-filter.c:32
 #: operations/common/domain-transform.c:34
 msgid "Edge preservation"
-msgstr "Preservació de la vora"
+msgstr "Conservació de la vora"
 
 #: operations/common/bilateral-filter.c:33
 msgid "Amount of edge preservation"
-msgstr "Quantitat de preservació de la vora"
+msgstr "Quantitat de conservació de la vora"
 
 #: operations/common/bilateral-filter.c:294
 msgid "Bilateral Filter"
@@ -1762,7 +1762,7 @@ msgid ""
 "Amount of edge preservation. This quantity is inversely proportional to the "
 "range standard deviation of the blur kernel."
 msgstr ""
-"Quantitat de preservació de vora. Aquesta quantitat és inversament "
+"Quantitat de conservació de vora. Aquesta quantitat és inversament "
 "proporcional al rang de desviació estàndard del nucli difuminat."
 
 #: operations/common/domain-transform.c:528
@@ -3013,7 +3013,7 @@ msgstr "Fes una interpolació lineal entre l'entrada i l'aux"
 #: operations/common/mono-mixer.c:24
 #: operations/common-gpl3+/channel-mixer.c:30
 msgid "Preserve luminosity"
-msgstr "Preserva la lluminositat"
+msgstr "Conserva la lluminositat"
 
 #: operations/common/mono-mixer.c:26
 msgid "Red Channel Multiplier"
@@ -4170,7 +4170,7 @@ msgstr "Parelles"
 
 #: operations/common/snn-mean.c:34
 msgid "Number of pairs; higher number preserves more acute features"
-msgstr "Nombre de parelles. Els nombres alts mantenen més bé la precisió"
+msgstr "Nombre de parelles. Els nombres alts conserven més bé la precisió"
 
 #: operations/common/snn-mean.c:383
 msgid "Symmetric Nearest Neighbour"
@@ -4322,7 +4322,7 @@ msgstr ""
 " de l'interval 0.0-1.0. Això millora les imatges que fan poc ús del contrast"
 " disponible (imatges amb poc contrast, molt fosques o molt brillants). "
 "Aquesta versió difereix del Contrast Autostretch, que funciona en l'espai "
-"HSV, i preserva el to."
+"HSV, i conserva el to."
 
 #: operations/common/svg-huerotate.c:27 operations/common/svg-matrix.c:27
 #: operations/common/svg-saturate.c:25
@@ -5625,7 +5625,7 @@ msgstr "Repujat"
 
 #: operations/common-gpl3+/emboss.c:27
 msgid "Bumpmap (preserve original colors)"
-msgstr "Mapa de relleu (preserva els colors originals)"
+msgstr "Mapa de relleu (conserva els colors originals)"
 
 #: operations/common-gpl3+/emboss.c:30
 msgid "Emboss Type"
@@ -6534,7 +6534,7 @@ msgstr "Comprimeix"
 #: operations/common-gpl3+/shadows-highlights-correction.c:42
 msgid "Compress the effect on shadows/highlights and preserve midtones"
 msgstr ""
-"Comprimeix l'efecte de les ombres i ressaltats i preserva els tons mitjans"
+"Comprimeix l'efecte de les ombres i ressaltats i conserva els tons mitjans"
 
 #: operations/common-gpl3+/shadows-highlights.c:49
 #: operations/common-gpl3+/shadows-highlights-correction.c:45
@@ -7882,7 +7882,7 @@ msgstr "Alfa paràmetre de ponderació MLS"
 
 #: operations/external/npd.c:44
 msgid "Preserve Model"
-msgstr "Preserva el Model"
+msgstr "Conserva el model"
 
 #: operations/external/npd.c:45
 msgid "When TRUE the model will not be freed"
