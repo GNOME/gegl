@@ -28,6 +28,7 @@ foreach _test : opencl_tests
       '--test-name', _test,
       '--output-dir', meson.current_build_dir() / 'output',
       '--reference-path', meson.current_build_dir() / 'reference',
+      '--endian', host_machine.endian(),
       '--generate-reference',
       '--input-file', files('@0@.xml'.format(_test)),
       '--gegl-exe', gegl_bin,

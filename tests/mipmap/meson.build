@@ -66,6 +66,7 @@ foreach _test, _args : mipmap_tests
       '--test-name', _test,
       '--output-dir', meson.current_build_dir() / 'output',
       '--reference-path', meson.current_source_dir() / 'reference',
+      '--endian', host_machine.endian(),
       '--input-file', mipmap_test_image,
       '--gegl-exe', gegl_bin,
       '--gegl-scale', '0.33',

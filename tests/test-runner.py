@@ -45,6 +45,12 @@ class Args():
             help='reference file or directory'
         )
         parser.add_argument(
+            '--endian',
+            metavar='big|little',
+            help='endianness of reference files to use',
+            default='unknown',
+        )
+        parser.add_argument(
             '--input-file',
             required=True,
             metavar='INPUT_FILE',
@@ -129,6 +135,7 @@ class Args():
                 os.path.join(self.source_dir, 'reference')
             )
         if self.verbose: print('ref path: %s' % self.reference_path)
+        self.endian = parser.parse_args().endian
 
         # input file from parameter
         if parser.parse_args().input_file:
@@ -265,7 +272,11 @@ def main():
             file_ext = os.path.splitext(ref_file)[1]
         elif os.path.isdir(args.reference_path):
             # find reference file matching test name in ref dir
-            for file_ext in ['.png', '.hdr', '.gegl']:
+            for file_ext in [
+                '.png',
+                '.hdr',
+                '.%s-endian.gegl' % args.endian,
+            ]:
                 ref_file = os.path.join(
                     args.reference_path, args.test_name + file_ext
                 )
