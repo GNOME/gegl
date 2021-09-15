@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2021-03-31 17:29+0000\n"
-"PO-Revision-Date: 2021-05-06 12:46+0300\n"
+"POT-Creation-Date: 2021-09-09 19:39+0000\n"
+"PO-Revision-Date: 2021-09-14 15:16+0300\n"
 "Last-Translator: Dimitris Spingos (Δημήτρης Σπίγγος) <dmtrs32@gmail.com>\n"
 "Language-Team: team@lists.gnome.gr\n"
 "Language: el\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.4.3\n"
+"X-Generator: Poedit 2.4.2\n"
 "X-Project-Style: gnome\n"
 
 #: bin/gegl.c:179
@@ -963,12 +963,12 @@ msgstr "Απόδοση μοτίβου σκακιέρας"
 #: operations/common/color.c:24 operations/common/color.c:87
 #: operations/common/color-overlay.c:26 operations/common/dropshadow.c:67
 #: operations/common/grid.c:64 operations/common/long-shadow.c:83
-#: operations/common/rectangle.c:48 operations/common/vignette.c:36
-#: operations/common-gpl3+/color-to-alpha.c:29
+#: operations/common/rectangle.c:48 operations/common/vector-fill.c:26
+#: operations/common/vignette.c:36 operations/common-gpl3+/color-to-alpha.c:29
 #: operations/common-gpl3+/supernova.c:60
 #: operations/common-gpl3+/tile-paper.c:31
 #: operations/common-gpl3+/value-propagate.c:54 operations/external/text.c:37
-#: operations/external/vector-fill.c:26 operations/external/vector-stroke.c:27
+#: operations/external/vector-stroke.c:27
 msgid "Color"
 msgstr "Χρώμα"
 
@@ -1001,7 +1001,7 @@ msgstr "Κορεσμός"
 #. FIXME: With a large angle, we lose AreaFilter's flavours
 #: operations/common/color-assimilation-grid.c:35
 #: operations/common/long-shadow.c:49 operations/common/motion-blur-linear.c:32
-#: operations/common/newsprint.c:159
+#: operations/common/newsprint.c:158
 #: operations/common-gpl3+/linear-sinusoid.c:65
 #: operations/common-gpl3+/motion-blur-circular.c:51
 #: operations/common-gpl3+/ripple.c:45
@@ -1587,7 +1587,7 @@ msgid "Alpha channel"
 msgstr "Κανάλι άλφα"
 
 #: operations/common/convolution-matrix.c:64
-#: operations/common-cxx/distance-transform.cc:46
+#: operations/common-cxx/distance-transform.cc:55
 #: operations/workshop/connected-components.c:41
 msgid "Normalize"
 msgstr "Κανονικοποίηση"
@@ -1852,7 +1852,7 @@ msgstr "Χρώμα της σκιάς (προεπιλογή σε 'μαύρο')"
 #.
 #: operations/common/dropshadow.c:74 operations/common/layer.c:33
 #: operations/common/opacity.c:25 operations/common/opacity.c:289
-#: operations/external/vector-fill.c:29 operations/external/vector-stroke.c:34
+#: operations/common/vector-fill.c:29 operations/external/vector-stroke.c:34
 msgid "Opacity"
 msgstr "Αδιαφάνεια"
 
@@ -1946,7 +1946,7 @@ msgid "Adjust the black level"
 msgstr "Ρύθμιση μαύρου επιπέδου"
 
 #: operations/common/exposure.c:30 operations/common/exposure.c:480
-#: operations/common/negative-darkroom.c:32
+#: operations/common/negative-darkroom.c:29
 msgid "Exposure"
 msgstr "Έκθεση"
 
@@ -3038,41 +3038,41 @@ msgstr ""
 "Θόλωση εικονοστοιχείων σε μια κατεύθυνση, προσομοιάζει τη θόλωση που "
 "προκαλείται από κάμερα σε ευθεία γραμμή κατά τη διάρκεια της έκθεσης."
 
-#: operations/common/negative-darkroom.c:28
+#: operations/common/negative-darkroom.c:25
 msgid "Characteristic curve"
 msgstr "Χαρακτηριστική καμπύλη"
 
-#: operations/common/negative-darkroom.c:30
+#: operations/common/negative-darkroom.c:27
 msgid "Hardcoded characteristic curve and color data"
 msgstr "Δεδομένα μόνιμα κωδικοποιημένης χαρακτηριστικής καμπύλης και χρώματος"
 
-#: operations/common/negative-darkroom.c:33
+#: operations/common/negative-darkroom.c:30
 msgid "Base enlargement exposure"
 msgstr "Έκθεση μεγέθυνσης βάσης"
 
-#: operations/common/negative-darkroom.c:37
-msgid "Filter cyan"
-msgstr "Φίλτρο κυανού"
+#: operations/common/negative-darkroom.c:34
+msgid "Cyan filter"
+msgstr "Κυανό φίλτρο"
 
-#: operations/common/negative-darkroom.c:38
-msgid "Cyan exposure compensation for the negative image"
-msgstr "Αντιστάθμιση έκθεσης κυανού για την αρνητική εικόνα"
+#: operations/common/negative-darkroom.c:35
+msgid "Cyan filter compensation for the negative image"
+msgstr "Αντιστάθμιση κυανού φίλτρου για την αρνητική εικόνα"
 
-#: operations/common/negative-darkroom.c:41
-msgid "Filter magenta"
-msgstr "Φίλτρο ματζέντα"
+#: operations/common/negative-darkroom.c:39
+msgid "Magenta filter"
+msgstr "Ματζέντα φίλτρο"
 
-#: operations/common/negative-darkroom.c:42
-msgid "Magenta exposure compensation for the negative image"
-msgstr "Αντιστάθμιση έκθεσης ματζέντα για την αρνητική εικόνα"
+#: operations/common/negative-darkroom.c:40
+msgid "Magenta filter compensation for the negative image"
+msgstr "Αντιστάθμιση φίλτρου ματζέντα για την αρνητική εικόνα"
+
+#: operations/common/negative-darkroom.c:44
+msgid "Yellow filter"
+msgstr "Κίτρινο φίλτρο"
 
 #: operations/common/negative-darkroom.c:45
-msgid "Filter yellow"
-msgstr "Φίλτρο κίτρινου"
-
-#: operations/common/negative-darkroom.c:46
-msgid "Yellow exposure compensation for the negative image"
-msgstr "Αντιστάθμιση έκθεσης κίτρινου για την αρνητική εικόνα"
+msgid "Yellow filter compensation for the negative image"
+msgstr "Αντιστάθμιση κίτρινου φίλτρου για την αρνητική εικόνα"
 
 #: operations/common/negative-darkroom.c:49
 msgid "Clip base + fog"
@@ -3094,59 +3094,92 @@ msgstr ""
 "Ενισχύστε την πυκνότητα χαρτιού για να επωφεληθείτε από το αυξημένο δυναμικό "
 "εύρος μιας οθόνης σε σύγκριση με ένα φωτογραφικό χαρτί"
 
-#: operations/common/negative-darkroom.c:56
+#: operations/common/negative-darkroom.c:57
+msgid "Contrast boost"
+msgstr "Ενίσχυση αντίθεσης"
+
+#: operations/common/negative-darkroom.c:58
+msgid "Increase contrast for papers with fixed contrast (usually color papers)"
+msgstr ""
+"Αυξήστε την αντίθεση για χαρτιά με σταθερή αντίθεση (συνήθως έγχρωμα χαρτιά)"
+
+#: operations/common/negative-darkroom.c:63
 msgid "Dodge/burn multiplier"
 msgstr "Πολλαπλασιαστής ξανοίγματος/σκοτεινιάσματος"
 
-#: operations/common/negative-darkroom.c:57
-msgid "The f-stop of dodge/burn for pure white/black auxillary input"
+#: operations/common/negative-darkroom.c:64
+msgid "The f-stop of dodge/burn for pure white/black auxiliary input"
 msgstr ""
-"Το στοπ f του ξανοίγματος/σκοτεινιάσματος για καθαρή λευκή/μαύρη βοηθητική "
-"έξοδο"
+"Το f-stop του ξανοίγματος/σκοτεινιάσματος για καθαρή λευκή/μαύρη βοηθητική "
+"είσοδο"
 
-#: operations/common/negative-darkroom.c:60
+#: operations/common/negative-darkroom.c:68
 msgid "Enable preflashing"
 msgstr "Ενεργοποίηση προαναλαμπής (προ-φλας)"
 
-#: operations/common/negative-darkroom.c:61
+#: operations/common/negative-darkroom.c:69
 msgid "Show preflash controls"
 msgstr "Εμφάνιση στοιχείων ελέγχου προαναλαμπής (προ-φλας)"
 
-#: operations/common/negative-darkroom.c:63
-msgid "Cyan preflash"
-msgstr "Προαναλαμπή κυανού"
+#: operations/common/negative-darkroom.c:71
+msgid "Red preflash"
+msgstr "Κόκκινη προαναλαμπή"
 
-#: operations/common/negative-darkroom.c:64
-msgid "Preflash the negative with cyan light to reduce contrast of the print"
+#: operations/common/negative-darkroom.c:72
+msgid "Preflash the negative with red light to reduce contrast of the print"
 msgstr ""
-"Προαναλαμπή του αρνητικού με κυανό φως για μείωση της αντίθεσης της εκτύπωσης"
-
-#: operations/common/negative-darkroom.c:68
-msgid "Magenta preflash"
-msgstr "Προαναλαμπή ματζέντα"
-
-#: operations/common/negative-darkroom.c:69
-msgid ""
-"Preflash the negative with magenta light to reduce contrast of the print"
-msgstr ""
-"Προαναλαμπή του αρνητικού με φως ματζέντα για μείωση της αντίθεσης της "
+"Προαναλαμπή του αρνητικού με κόκκινο φως για μείωση της αντίθεσης της "
 "εκτύπωσης"
 
-#: operations/common/negative-darkroom.c:73
-msgid "Yellow preflash"
-msgstr "Κίτρινη προαναλαμπή"
+#: operations/common/negative-darkroom.c:76
+msgid "Green preflash"
+msgstr "Πράσινη προαναλαμπή"
 
-#: operations/common/negative-darkroom.c:74
-msgid "Preflash the negative with yellow light to reduce contrast of the print"
+#: operations/common/negative-darkroom.c:77
+msgid "Preflash the negative with green light to reduce contrast of the print"
 msgstr ""
-"Προαναλαμπή του αρνητικού με κίτρινο φως για μείωση της αντίθεσης της "
+"Προαναλαμπή του αρνητικού με πράσινο φως για μείωση της αντίθεσης της "
 "εκτύπωσης"
 
-#: operations/common/negative-darkroom.c:312
+#: operations/common/negative-darkroom.c:81
+msgid "Blue preflash"
+msgstr "Γαλάζια προαναλαμπή"
+
+#: operations/common/negative-darkroom.c:82
+msgid "Preflash the negative with blue light to reduce contrast of the print"
+msgstr ""
+"Προαναλαμπή του αρνητικού με γαλάζιο φως για μείωση της αντίθεσης της "
+"εκτύπωσης"
+
+#: operations/common/negative-darkroom.c:86
+msgid "Illuminant adjustment"
+msgstr "Ρύθμιση φωτιστικού"
+
+#: operations/common/negative-darkroom.c:87
+msgid "Show illuminant controls"
+msgstr "Εμφάνιση στοιχείων ελέγχου φωτιστικού"
+
+#: operations/common/negative-darkroom.c:88
+msgid "X multiplier"
+msgstr "Πολλαπλασιαστής Χ"
+
+#: operations/common/negative-darkroom.c:89
+msgid "Adjust the X tristimulus value for output"
+msgstr "Ρυθμίστε την τριχρωματική τιμή X για έξοδο"
+
+#: operations/common/negative-darkroom.c:92
+msgid "Z multiplier"
+msgstr "Πολλαπλασιαστής Ζ"
+
+#: operations/common/negative-darkroom.c:93
+msgid "Adjust the Z tristimulus value for output"
+msgstr "Ρυθμίστε την τριχρωματική τιμή Ζ για έξοδο"
+
+#: operations/common/negative-darkroom.c:386
 msgid "Negative Darkroom"
 msgstr "Αρνητικό σκοτεινό δωμάτιο"
 
-#: operations/common/negative-darkroom.c:315
+#: operations/common/negative-darkroom.c:389
 msgid "Simulate a negative film enlargement in an analog darkroom."
 msgstr "Προσομοίωση αρνητικής μεγέθυνσης φιλμ σε αναλογικό σκοτεινό δωμάτιο."
 
@@ -3169,6 +3202,30 @@ msgstr "Ilford Ilfobrom Galerie FB 3"
 #: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:6
 msgid "Ilford Ilfobrom Galerie FB 4"
 msgstr "Ilford Ilfobrom Galerie FB 4"
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:7
+msgid "Ilford Multigrade IV RC Deluxe"
+msgstr "Ilford Multigrade IV RC Deluxe"
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:8
+msgid "Foma Fomabrom C"
+msgstr "Foma Fomabrom C"
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:9
+msgid "Foma Fomabrom N"
+msgstr "Foma Fomabrom N"
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:10
+msgid "Foma Fomabrom Sp"
+msgstr "Foma Fomabrom Sp"
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:11
+msgid "Foma Fomabrom S"
+msgstr "Foma Fomabrom S"
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:12
+msgid "Foma Fomabrom Variant III"
+msgstr "Παραλλαγή ΙΙΙ της Foma Fomabrom"
 
 #: operations/common/newsprint.c:25
 msgid "Line"
@@ -3333,53 +3390,53 @@ msgstr "Μαύρο μοτίβο"
 msgid "Pattern"
 msgstr "Μοτίβο"
 
-#: operations/common/newsprint.c:139 operations/common/newsprint.c:148
+#: operations/common/newsprint.c:139 operations/common/newsprint.c:147
 msgid "Black period"
 msgstr "Μαύρη περίοδος"
 
-#: operations/common/newsprint.c:142 operations/common/newsprint.c:154
-msgid "Angle offset for patterns"
-msgstr "Μετατόπιση γωνίας για μοτίβα"
-
-#: operations/common/newsprint.c:147 operations/common-gpl3+/ripple.c:38
+#: operations/common/newsprint.c:146 operations/common-gpl3+/ripple.c:38
 #: operations/common-gpl3+/waves.c:39
 msgid "Period"
 msgstr "Περίοδος"
 
-#: operations/common/newsprint.c:150 operations/common/newsprint.c:160
+#: operations/common/newsprint.c:149 operations/common/newsprint.c:159
 msgid "Black angle"
 msgstr "Μαύρη γωνία"
 
-#: operations/common/newsprint.c:162
+#: operations/common/newsprint.c:153
+msgid "Angle offset for patterns"
+msgstr "Μετατόπιση γωνίας για μοτίβα"
+
+#: operations/common/newsprint.c:161
 msgid "Black pullout"
 msgstr "Μαύρη απόσυρση"
 
-#: operations/common/newsprint.c:164
+#: operations/common/newsprint.c:163
 msgid "How much of common gray to pull out of CMY"
 msgstr "Πόσο συνηθισμένο γκρίζο να αφαιρεθεί από το CMY"
 
-#: operations/common/newsprint.c:167
+#: operations/common/newsprint.c:166
 msgid "Anti-alias oversampling factor"
 msgstr "Εξομάλυνση παράγοντα υπερδειγματοληψίας"
 
-#: operations/common/newsprint.c:169
+#: operations/common/newsprint.c:168
 msgid "Number of samples that are averaged for antialiasing the result."
 msgstr "Αριθμός δειγμάτων για τον μέσο όρο εξομάλυνσης του αποτελέσματος."
 
-#: operations/common/newsprint.c:171 operations/common-gpl3+/plasma.c:36
+#: operations/common/newsprint.c:170 operations/common-gpl3+/plasma.c:36
 msgid "Turbulence"
 msgstr "Ανατάραξη"
 
 #. rename to wave-pinch or period-pinch?
-#: operations/common/newsprint.c:173
+#: operations/common/newsprint.c:172
 msgid "Color saturation dependent compression of period"
 msgstr "Κορεσμός χρώματος εξαρτημένος από τη συμπίεση περιόδου"
 
-#: operations/common/newsprint.c:175
+#: operations/common/newsprint.c:174
 msgid "Blocksize"
 msgstr "Μέγεθος ομάδας"
 
-#: operations/common/newsprint.c:177
+#: operations/common/newsprint.c:176
 msgid ""
 "Number of periods per tile, this tiling avoids high frequency anomaly that "
 "angle boost causes"
@@ -3387,11 +3444,11 @@ msgstr ""
 "Αριθμός περιόδων ανά παράθεση, αυτή η παράθεση αποφεύγει την ανωμαλία υψηλής "
 "συχνότητας που προκαλεί η ανύψωση γωνίας"
 
-#: operations/common/newsprint.c:179
+#: operations/common/newsprint.c:178
 msgid "Angle Boost"
 msgstr "Ανύψωση γωνίας"
 
-#: operations/common/newsprint.c:181
+#: operations/common/newsprint.c:180
 msgid ""
 "Multiplication factor for desired rotation of the local space for texture, "
 "the way this is computed makes it weak for desaturated colors and possibly "
@@ -3401,11 +3458,11 @@ msgstr ""
 "για υφή, ο τρόπος που αυτός υπολογίζεται τον κάνει ασθενή για αποκορεσμένα "
 "χρώματα και πιθανόν πιο έντονο όταν υπάρχει χρώμα."
 
-#: operations/common/newsprint.c:654
+#: operations/common/newsprint.c:653
 msgid "Newsprint"
 msgstr "Δημοσιογραφική εκτύπωση"
 
-#: operations/common/newsprint.c:659
+#: operations/common/newsprint.c:658
 msgid "Digital halftoning with optional modulations. "
 msgstr "Ψηφιακοί ενδιάμεσοι τόνοι με προαιρετικές διαμορφώσεις. "
 
@@ -3873,9 +3930,10 @@ msgstr "Ορθογώνιο"
 msgid "A rectangular source of a fixed size with a solid color"
 msgstr "Ορθογώνια πηγή σταθερού μεγέθους με συμπαγές χρώμα"
 
-#: operations/common/recursive-transform.c:28 operations/external/path.c:47
-#: operations/external/vector-fill.c:37 operations/external/vector-stroke.c:38
-#: operations/transform/transform.c:24 operations/transform/transform.c:62
+#: operations/common/recursive-transform.c:28
+#: operations/common/vector-fill.c:37 operations/external/path.c:47
+#: operations/external/vector-stroke.c:38 operations/transform/transform.c:24
+#: operations/transform/transform.c:62
 msgid "Transform"
 msgstr "Μετασχηματισμός"
 
@@ -4418,6 +4476,45 @@ msgstr ""
 "Αντιστρέφει το συστατικό τιμής, το αποτέλεσμα έχει τη φωτεινότητα "
 "ανεστραμμένη, διατηρώντας το χρώμα."
 
+#: operations/common/vector-fill.c:27
+msgid "Color of paint to use for filling."
+msgstr "Χρώμα βαφής για γέμισμα."
+
+#: operations/common/vector-fill.c:30
+msgid "The fill opacity to use."
+msgstr "Η αδιαφάνεια γεμίσματος για χρήση."
+
+#. XXX: replace with enum?
+#: operations/common/vector-fill.c:34
+msgid "Fill rule."
+msgstr "Κανόνας γεμίσματος."
+
+#: operations/common/vector-fill.c:35
+msgid "how to determine what to fill (nonzero|evenodd)"
+msgstr "προσδιορισμός γεμίσματος (μη μηδενικός|ζυγός-μονός)"
+
+#: operations/common/vector-fill.c:38 operations/external/vector-stroke.c:39
+msgid "svg style description of transform."
+msgstr "περιγραφή τεχνοτροπίας SVG του μετασχηματισμού."
+
+#: operations/common/vector-fill.c:40 operations/external/path.c:54
+#: operations/external/vector-stroke.c:41
+msgid "Vector"
+msgstr "Διάνυσμα"
+
+#: operations/common/vector-fill.c:41 operations/external/path.c:55
+#: operations/external/vector-stroke.c:42
+msgid "A GeglVector representing the path of the stroke"
+msgstr "Ένα GeglVector αναπαριστά τη διαδρομή της πινελιάς"
+
+#: operations/common/vector-fill.c:320
+msgid "Fill Path"
+msgstr "Μονοπάτι συμπλήρωσης"
+
+#: operations/common/vector-fill.c:323
+msgid "Renders a filled region"
+msgstr "Αποδίδει μια γεμάτη περιοχή"
+
 #: operations/common/vignette.c:32
 msgid "Vignette shape"
 msgstr "Σχήμα βινιέτας"
@@ -4602,41 +4699,59 @@ msgstr ""
 "Γράψτε τα δεδομένα εισόδου σε μια υφιστάμενη επιφάνεια προορισμού ενδιάμεσης "
 "μνήμης GEGL."
 
-#: operations/common-cxx/distance-transform.cc:30
+#: operations/common-cxx/distance-transform.cc:31
+msgid "Above threshold"
+msgstr "Πάνω από το κατώφλι"
+
+#: operations/common-cxx/distance-transform.cc:32
+msgid "Below threshold"
+msgstr "Κάτω από το κατώφλι"
+
+#: operations/common-cxx/distance-transform.cc:35
 #: operations/workshop/external/voronoi-diagram.cc:24
 msgid "Metric"
 msgstr "Μετρικό"
 
-#: operations/common-cxx/distance-transform.cc:32
+#: operations/common-cxx/distance-transform.cc:37
 #: operations/workshop/external/voronoi-diagram.cc:27
 msgid "Metric to use for the distance calculation"
 msgstr "Μετρικό που θα χρησιμοποιηθεί για τον υπολογισμό απόστασης"
 
-#: operations/common-cxx/distance-transform.cc:34
+#: operations/common-cxx/distance-transform.cc:39
+msgid "Edge handling"
+msgstr "Χειρισμός άκρων"
+
+#: operations/common-cxx/distance-transform.cc:41
+msgid "How areas outside the input are considered when calculating distance"
+msgstr ""
+"Πώς λαμβάνονται υπόψη οι περιοχές εκτός της εισόδου κατά τον υπολογισμό της "
+"απόστασης"
+
+#: operations/common-cxx/distance-transform.cc:43
 msgid "Threshold low"
 msgstr "Κατώτατο όριο"
 
-#: operations/common-cxx/distance-transform.cc:37
+#: operations/common-cxx/distance-transform.cc:46
 msgid "Threshold high"
 msgstr "Ανώτατο όριο"
 
-#: operations/common-cxx/distance-transform.cc:40
+#: operations/common-cxx/distance-transform.cc:49
 msgid "Grayscale Averaging"
 msgstr "Μέσος όρος κλίμακας του γκρι"
 
-#: operations/common-cxx/distance-transform.cc:41
+#: operations/common-cxx/distance-transform.cc:50
 msgid "Number of computations for grayscale averaging"
 msgstr "Αριθμός υπολογισμών για τον μέσο όρο της κλίμακας του γκρι"
 
-#: operations/common-cxx/distance-transform.cc:47
+#: operations/common-cxx/distance-transform.cc:56
 msgid "Normalize output to range 0.0 to 1.0."
 msgstr "Κανονικοποίηση της εξόδου να κυμαίνεται από 0,0 έως 1,0."
 
-#: operations/common-cxx/distance-transform.cc:481
+#: operations/common-cxx/distance-transform.cc:532
 msgid "Distance Transform"
 msgstr "Μετασχηματισμός απόστασης"
 
-#: operations/common-cxx/distance-transform.cc:485
+#: operations/common-cxx/distance-transform.cc:536
 msgid "Calculate a distance transform"
 msgstr "Υπολογίζει έναν μετασχηματισμό απόστασης"
 
@@ -7933,16 +8048,6 @@ msgstr "Αδιαφάνεια γεμίσματος"
 msgid "The fill opacity to use"
 msgstr "Η αδιαφάνεια γεμίσματος για χρήση"
 
-#: operations/external/path.c:54 operations/external/vector-fill.c:40
-#: operations/external/vector-stroke.c:41
-msgid "Vector"
-msgstr "Διάνυσμα"
-
-#: operations/external/path.c:55 operations/external/vector-fill.c:41
-#: operations/external/vector-stroke.c:42
-msgid "A GeglVector representing the path of the stroke"
-msgstr "Ένα GeglVector αναπαριστά τη διαδρομή της πινελιάς"
-
 #: operations/external/path.c:584
 msgid "Render Path"
 msgstr "Απόδοση μονοπατιού"
@@ -8347,35 +8452,6 @@ msgid "Video4Linux input, webcams framegrabbers and similar devices."
 msgstr ""
 "Είσοδος Video4Linux, κάμερες ιστού, άρπαγες πλαισίου και παρόμοιων συσκευών."
 
-#: operations/external/vector-fill.c:27
-msgid "Color of paint to use for filling."
-msgstr "Χρώμα βαφής για γέμισμα."
-
-#: operations/external/vector-fill.c:30
-msgid "The fill opacity to use."
-msgstr "Η αδιαφάνεια γεμίσματος για χρήση."
-
-#. XXX: replace with enum?
-#: operations/external/vector-fill.c:34
-msgid "Fill rule."
-msgstr "Κανόνας γεμίσματος."
-
-#: operations/external/vector-fill.c:35
-msgid "how to determine what to fill (nonzero|evenodd)"
-msgstr "προσδιορισμός γεμίσματος (μη μηδενικός|ζυγός-μονός)"
-
-#: operations/external/vector-fill.c:38 operations/external/vector-stroke.c:39
-msgid "svg style description of transform."
-msgstr "περιγραφή τεχνοτροπίας SVG του μετασχηματισμού."
-
-#: operations/external/vector-fill.c:322
-msgid "Fill Path"
-msgstr "Μονοπάτι συμπλήρωσης"
-
-#: operations/external/vector-fill.c:325
-msgid "Renders a filled region"
-msgstr "Αποδίδει μια γεμάτη περιοχή"
-
 #: operations/external/vector-stroke.c:28
 msgid "Color of paint to use for stroking."
 msgstr "Χρώμα βαφής πινελιάς."
@@ -8702,7 +8778,7 @@ msgstr "Στοίχιση περιγράμματος"
 #: operations/transform/border-align.c:183
 msgid ""
 "Aligns box of input rectangle with border of compositing target or aux' "
-"bounding-box border, if aux pad is not connectd the op tries to figure out "
+"bounding-box border, if aux pad is not connected the op tries to figure out "
 "which bounding box' border applies."
 msgstr ""
 "Στοιχίζει το πλαίσιο ορθογωνίου εισόδου με το περίγραμμα του στόχου σύνθεσης "
@@ -8943,11 +9019,11 @@ msgstr "Άκρο ζώνης"
 
 #: operations/workshop/band-tune.c:41
 msgid ""
-"Features size for edge band, used to compensate for loos of edges in detail "
+"Features size for edge band, used to compensate for loss of edges in detail "
 "pass."
 msgstr ""
-"Μέγεθος γνωρισμάτων για ζώνη άκρου, χρησιμοποιείται για αντιστάθμιση "
-"απώλειας άκρων σε λεπτομερή διέλευση."
+"Χαρακτηριστικά μεγέθους για ζώνη άκρων, που χρησιμοποιείται για να "
+"αντισταθμίσει την απώλεια των άκρων με λεπτομέρεια."
 
 #: operations/workshop/band-tune.c:45
 msgid ""
@@ -9645,6 +9721,24 @@ msgstr "Επιλεκτικός κορεσμός χροιάς"
 #: operations/workshop/selective-hue-saturation.c:173
 msgid "Selective adjust Hue, Saturation and Lightness"
 msgstr "Επιλεκτική ρύθμιση χροιάς, κορεσμού και φωτεινότητας (Lightness)"
+
+#~ msgid "Filter cyan"
+#~ msgstr "Φίλτρο κυανού"
+
+#~ msgid "Filter magenta"
+#~ msgstr "Φίλτρο ματζέντα"
+
+#~ msgid "Filter yellow"
+#~ msgstr "Φίλτρο κίτρινου"
+
+#~ msgid ""
+#~ "Preflash the negative with cyan light to reduce contrast of the print"
+#~ msgstr ""
+#~ "Προαναλαμπή του αρνητικού με κυανό φως για μείωση της αντίθεσης της "
+#~ "εκτύπωσης"
+
+#~ msgid "Magenta preflash"
+#~ msgstr "Προαναλαμπή ματζέντα"
 
 #~ msgid ""
 #~ "Crops a buffer, if the aux pad is connected the bounding box of the node "
