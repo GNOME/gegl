@@ -9,9 +9,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2021-08-17 19:48+0000\n"
-"PO-Revision-Date: 2021-08-29 12:35+0200\n"
-"Last-Translator: miles\n"
+"POT-Creation-Date: 2021-09-04 22:16+0000\n"
+"PO-Revision-Date: 2021-09-29 13:02+0200\n"
+"Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language: sl_SI\n"
 "MIME-Version: 1.0\n"
@@ -263,16 +263,18 @@ msgid "Arithmetic add"
 msgstr "Aritmetično seštevanje"
 
 #: gegl/gegl-enums.c:39
+#, fuzzy
 msgid "Arithmetic add covariant"
-msgstr ""
+msgstr "Aritmetično seštevanje, kovarianca"
 
 #: gegl/gegl-enums.c:40
 msgid "Arithmetic xor"
 msgstr "Aritmetični xor"
 
 #: gegl/gegl-enums.c:41
+#, fuzzy
 msgid "Arithmetic xor covariant"
-msgstr ""
+msgstr "Aritmetični izključni ALI (XOR), kovarianca"
 
 #: gegl/gegl-enums.c:42
 msgid "Blue Noise"
@@ -398,7 +400,7 @@ msgstr "Neobravnavana pot podatkov %s:%s\n"
 #: gegl/gegl-serialize.c:528
 #, c-format
 msgid "op '%s' not found, partial matches: "
-msgstr ""
+msgstr "op »%s« ni mogoče najti, delni zadetki: "
 
 #: gegl/gegl-serialize.c:557
 #, c-format
@@ -990,7 +992,7 @@ msgstr "Nasičenost"
 #. FIXME: With a large angle, we lose AreaFilter's flavours
 #: operations/common/color-assimilation-grid.c:35
 #: operations/common/long-shadow.c:49 operations/common/motion-blur-linear.c:32
-#: operations/common/newsprint.c:159
+#: operations/common/newsprint.c:158
 #: operations/common-gpl3+/linear-sinusoid.c:65
 #: operations/common-gpl3+/motion-blur-circular.c:51
 #: operations/common-gpl3+/ripple.c:45
@@ -1565,7 +1567,7 @@ msgid "Alpha channel"
 msgstr "Kanal alfa"
 
 #: operations/common/convolution-matrix.c:64
-#: operations/common-cxx/distance-transform.cc:46
+#: operations/common-cxx/distance-transform.cc:55
 #: operations/workshop/connected-components.c:41
 msgid "Normalize"
 msgstr "Normaliziraj"
@@ -1925,8 +1927,9 @@ msgid "Relative brightness change in stops"
 msgstr "Relativna sprememba svetlosti v vrednostih zaslonke"
 
 #: operations/common/exposure.c:484
+#, fuzzy
 msgid "Change exposure of an image in shutter speed stops"
-msgstr ""
+msgstr "Spremeni ekspozicijo slike po korakih zaklepa"
 
 #: operations/common/fattal02.c:32
 msgid "Gradient threshold for detail enhancement"
@@ -2000,8 +2003,9 @@ msgid "Filter"
 msgstr "Filter"
 
 #: operations/common/gaussian-blur.c:55 operations/common/gblur-1d.c:58
+#, fuzzy
 msgid "How the gaussian kernel is discretized"
-msgstr ""
+msgstr "Kako je gaussovo jedro diskretizirano"
 
 #: operations/common/gaussian-blur.c:57 operations/common/gblur-1d.c:60
 #: operations/common/map-absolute.c:26 operations/common/map-relative.c:30
@@ -2024,7 +2028,6 @@ msgid "Clip to the input extent"
 msgstr "Poreži na velikost vhoda"
 
 #: operations/common/gaussian-blur.c:62 operations/common/gblur-1d.c:65
-#, fuzzy
 msgid "Should the output extent be clipped to the input extent"
 msgstr "Ali naj bo izhodni obseg porezan v vhodnem obsegu"
 
@@ -2627,7 +2630,7 @@ msgstr "Vmesna točka"
 
 #: operations/common/long-shadow.c:67
 msgid "Shadow fade midpoint"
-msgstr ""
+msgstr "Srednja točka pojemanja sence"
 
 #: operations/common/long-shadow.c:72
 msgid "Midpoint (relative)"
@@ -2635,7 +2638,7 @@ msgstr "Vmesna točka (relativno)"
 
 #: operations/common/long-shadow.c:73
 msgid "Shadow fade midpoint, as a factor of the shadow length"
-msgstr ""
+msgstr "Srednja točka pojemanja sence, kot faktor dolžine sence"
 
 #: operations/common/long-shadow.c:84
 msgid "Shadow color"
@@ -3044,19 +3047,19 @@ msgstr ""
 
 #: operations/common/negative-darkroom.c:63
 msgid "Dodge/burn multiplier"
-msgstr ""
+msgstr "Multiplikator posvetli/potemni"
 
 #: operations/common/negative-darkroom.c:64
 msgid "The f-stop of dodge/burn for pure white/black auxiliary input"
-msgstr ""
+msgstr "Zaslonka posvetli/potemni za čisti dodani vhod bele/črne"
 
 #: operations/common/negative-darkroom.c:68
 msgid "Enable preflashing"
-msgstr ""
+msgstr "Omogoči vnaprejšnjo osvetlitev"
 
 #: operations/common/negative-darkroom.c:69
 msgid "Show preflash controls"
-msgstr ""
+msgstr "Pokaži kontrolnike vnaprejšnje osvetlitve"
 
 #: operations/common/negative-darkroom.c:71
 msgid "Red preflash"
@@ -3065,6 +3068,7 @@ msgstr "Rumena predosvetlitev"
 #: operations/common/negative-darkroom.c:72
 msgid "Preflash the negative with red light to reduce contrast of the print"
 msgstr ""
+"Vnaprej osvetli negativ z rdečo svetlobo, za zmanjšanje kontrasta slike"
 
 #: operations/common/negative-darkroom.c:76
 msgid "Green preflash"
@@ -3073,6 +3077,7 @@ msgstr "Zelena predosvetlitev"
 #: operations/common/negative-darkroom.c:77
 msgid "Preflash the negative with green light to reduce contrast of the print"
 msgstr ""
+"Vnaprej osvetli negativ z zeleno svetlobo, za zmanjšanje kontrasta slike"
 
 #: operations/common/negative-darkroom.c:81
 msgid "Blue preflash"
@@ -3081,13 +3086,13 @@ msgstr "Modra predosvetlitev"
 #: operations/common/negative-darkroom.c:82
 msgid "Preflash the negative with blue light to reduce contrast of the print"
 msgstr ""
+"Vnaprej osvetli negativ z modro svetlobo, za zmanjšanje kontrasta slike"
 
 #: operations/common/negative-darkroom.c:86
 msgid "Illuminant adjustment"
 msgstr "Prilagoditev osvetljevalca"
 
 #: operations/common/negative-darkroom.c:87
-#, fuzzy
 msgid "Show illuminant controls"
 msgstr "Pokaži kontrolnike osvetljevalca"
 
@@ -3322,74 +3327,74 @@ msgstr "Črn vzorec"
 msgid "Pattern"
 msgstr "Vzorec"
 
-#: operations/common/newsprint.c:139 operations/common/newsprint.c:148
+#: operations/common/newsprint.c:139 operations/common/newsprint.c:147
 msgid "Black period"
 msgstr "Črna perioda"
 
-#: operations/common/newsprint.c:142 operations/common/newsprint.c:154
-msgid "Angle offset for patterns"
-msgstr "Kotni odmik za vzorce"
-
-#: operations/common/newsprint.c:147 operations/common-gpl3+/ripple.c:38
+#: operations/common/newsprint.c:146 operations/common-gpl3+/ripple.c:38
 #: operations/common-gpl3+/waves.c:39
 msgid "Period"
 msgstr "Perioda"
 
-#: operations/common/newsprint.c:150 operations/common/newsprint.c:160
+#: operations/common/newsprint.c:149 operations/common/newsprint.c:159
 msgid "Black angle"
 msgstr "Črni kot"
 
-#: operations/common/newsprint.c:162
+#: operations/common/newsprint.c:153
+msgid "Angle offset for patterns"
+msgstr "Kotni odmik za vzorce"
+
+#: operations/common/newsprint.c:161
 msgid "Black pullout"
 msgstr ""
 
-#: operations/common/newsprint.c:164
+#: operations/common/newsprint.c:163
 msgid "How much of common gray to pull out of CMY"
 msgstr "Koliko navadne sivine iztisne iz CMY"
 
-#: operations/common/newsprint.c:167
+#: operations/common/newsprint.c:166
 msgid "Anti-alias oversampling factor"
 msgstr "Faktor prevzorčenja glajenja robov"
 
-#: operations/common/newsprint.c:169
+#: operations/common/newsprint.c:168
 msgid "Number of samples that are averaged for antialiasing the result."
 msgstr "Število vzorcev, povprečenih za glajenje robov rezultata."
 
-#: operations/common/newsprint.c:171 operations/common-gpl3+/plasma.c:36
+#: operations/common/newsprint.c:170 operations/common-gpl3+/plasma.c:36
 msgid "Turbulence"
 msgstr "Turbulenca"
 
 #. rename to wave-pinch or period-pinch?
-#: operations/common/newsprint.c:173
+#: operations/common/newsprint.c:172
 msgid "Color saturation dependent compression of period"
 msgstr "Od nasičenosti barv odvisno stiskanje periode"
 
-#: operations/common/newsprint.c:175
+#: operations/common/newsprint.c:174
 msgid "Blocksize"
 msgstr "Velikost bloka"
 
-#: operations/common/newsprint.c:177
+#: operations/common/newsprint.c:176
 msgid ""
 "Number of periods per tile, this tiling avoids high frequency anomaly that "
 "angle boost causes"
 msgstr ""
 
-#: operations/common/newsprint.c:179
+#: operations/common/newsprint.c:178
 msgid "Angle Boost"
 msgstr "Kotna okrepitev"
 
-#: operations/common/newsprint.c:181
+#: operations/common/newsprint.c:180
 msgid ""
 "Multiplication factor for desired rotation of the local space for texture, "
 "the way this is computed makes it weak for desaturated colors and possibly "
 "stronger where there is color."
 msgstr ""
 
-#: operations/common/newsprint.c:654
+#: operations/common/newsprint.c:653
 msgid "Newsprint"
 msgstr "Časopisni tisk"
 
-#: operations/common/newsprint.c:659
+#: operations/common/newsprint.c:658
 msgid "Digital halftoning with optional modulations. "
 msgstr ""
 
@@ -3651,12 +3656,10 @@ msgid "Generate a tileable map"
 msgstr "Ustvari tlakovalen izhod"
 
 #: operations/common/normal-map.c:248
-#, fuzzy
 msgid "Normal Map"
-msgstr "Poslikaj navadno"
+msgstr "Navadna preslikava"
 
 #: operations/common/normal-map.c:252
-#, fuzzy
 msgid "Generate a normal map from a height map"
 msgstr "Ustvari navadno poslikavo iz višinske poslikave"
 
@@ -4075,7 +4078,6 @@ msgid "Regions size"
 msgstr "Velikost področij"
 
 #: operations/common/slic.c:29
-#, fuzzy
 msgid "Size of a region side"
 msgstr "Velikost strani območja"
 
@@ -4495,7 +4497,6 @@ msgid "Gradient smoothness"
 msgstr "Gladkost preliva"
 
 #: operations/common/waterpixels.c:47
-#, fuzzy
 msgid "Spatial regularization"
 msgstr "Prostorska regularizacija"
 
@@ -4581,41 +4582,57 @@ msgstr "Zapiši medpomnilnik"
 msgid "Write input data into an existing GEGL buffer destination surface."
 msgstr "Zapiše vhodne podatke v obstoječo ciljno površino medpomnilnika GEGL."
 
-#: operations/common-cxx/distance-transform.cc:30
+#: operations/common-cxx/distance-transform.cc:31
+msgid "Above threshold"
+msgstr "Nad pragom"
+
+#: operations/common-cxx/distance-transform.cc:32
+msgid "Below threshold"
+msgstr "Pod pragom"
+
+#: operations/common-cxx/distance-transform.cc:35
 #: operations/workshop/external/voronoi-diagram.cc:24
 msgid "Metric"
 msgstr "Metrika"
 
-#: operations/common-cxx/distance-transform.cc:32
+#: operations/common-cxx/distance-transform.cc:37
 #: operations/workshop/external/voronoi-diagram.cc:27
 msgid "Metric to use for the distance calculation"
 msgstr "Uporabljena metrika za izračun oddaljenosti"
 
-#: operations/common-cxx/distance-transform.cc:34
+#: operations/common-cxx/distance-transform.cc:39
+msgid "Edge handling"
+msgstr "Ravnanje z robovi"
+
+#: operations/common-cxx/distance-transform.cc:41
+msgid "How areas outside the input are considered when calculating distance"
+msgstr ""
+
+#: operations/common-cxx/distance-transform.cc:43
 msgid "Threshold low"
 msgstr "Spodnji prag"
 
-#: operations/common-cxx/distance-transform.cc:37
+#: operations/common-cxx/distance-transform.cc:46
 msgid "Threshold high"
 msgstr "Zgornji prag"
 
-#: operations/common-cxx/distance-transform.cc:40
+#: operations/common-cxx/distance-transform.cc:49
 msgid "Grayscale Averaging"
 msgstr "Sivinsko povprečenje"
 
-#: operations/common-cxx/distance-transform.cc:41
+#: operations/common-cxx/distance-transform.cc:50
 msgid "Number of computations for grayscale averaging"
 msgstr "Število izračunov za sivinsko povprečenje"
 
-#: operations/common-cxx/distance-transform.cc:47
+#: operations/common-cxx/distance-transform.cc:56
 msgid "Normalize output to range 0.0 to 1.0."
 msgstr "Normaliziraj izhod v obsegu 0,0 do 1,0."
 
-#: operations/common-cxx/distance-transform.cc:481
+#: operations/common-cxx/distance-transform.cc:532
 msgid "Distance Transform"
 msgstr "Preoblikuj z oddaljenostjo"
 
-#: operations/common-cxx/distance-transform.cc:485
+#: operations/common-cxx/distance-transform.cc:536
 msgid "Calculate a distance transform"
 msgstr "Izračunaj preoblikovanje z oddaljevanjem"
 
@@ -4711,13 +4728,10 @@ msgid "Blur the image around a focal point"
 msgstr "Razostri sliko okoli točke pozornosti"
 
 #: operations/common-cxx/lens-blur.cc:46
-#, fuzzy
-#| msgid "Clip to the input extent"
 msgid "Clip to input extents"
 msgstr "Poreži na velikost vhoda"
 
 #: operations/common-cxx/lens-blur.cc:47
-#, fuzzy
 msgid "Clip output to the input extents"
 msgstr "Poreži izhod na velikost vhoda"
 
@@ -6842,9 +6856,9 @@ msgid "Upper threshold"
 msgstr "Zgornji prag"
 
 #: operations/common-gpl3+/value-propagate.c:47
-#, fuzzy
 msgid "The maximum difference in value at which to propagate a pixel"
-msgstr "Največja razlika vrednosti med dvema slikovnima točkama."
+msgstr ""
+"Najmanjša razlika v vrednosti, pri kateri bo posredovana slikovni točki"
 
 #: operations/common-gpl3+/value-propagate.c:50
 msgid "Propagating rate"
@@ -8975,7 +8989,7 @@ msgstr "Odštej"
 
 #: operations/workshop/external/paint-select.cc:37
 msgid "Either to add to or subtract from the mask"
-msgstr ""
+msgstr "Seštevanje ali odštevanje od maske"
 
 #: operations/workshop/external/paint-select.cc:39
 msgid "Use local region"
