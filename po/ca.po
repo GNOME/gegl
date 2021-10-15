@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2021-05-15 20:55+0000\n"
+"POT-Creation-Date: 2021-09-09 19:39+0000\n"
 "PO-Revision-Date: 2020-12-06 22:15+0100\n"
 "Last-Translator: Jordi Mas <jmas@softcatala.org>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
@@ -966,12 +966,12 @@ msgstr "Renderitza un patró del tipus tauler d'escacs"
 #: operations/common/color.c:24 operations/common/color.c:87
 #: operations/common/color-overlay.c:26 operations/common/dropshadow.c:67
 #: operations/common/grid.c:64 operations/common/long-shadow.c:83
-#: operations/common/rectangle.c:48 operations/common/vignette.c:36
-#: operations/common-gpl3+/color-to-alpha.c:29
+#: operations/common/rectangle.c:48 operations/common/vector-fill.c:26
+#: operations/common/vignette.c:36 operations/common-gpl3+/color-to-alpha.c:29
 #: operations/common-gpl3+/supernova.c:60
 #: operations/common-gpl3+/tile-paper.c:31
 #: operations/common-gpl3+/value-propagate.c:54 operations/external/text.c:37
-#: operations/external/vector-fill.c:26 operations/external/vector-stroke.c:27
+#: operations/external/vector-stroke.c:27
 msgid "Color"
 msgstr "Color"
 
@@ -1004,7 +1004,7 @@ msgstr "Saturació"
 #. FIXME: With a large angle, we lose AreaFilter's flavours
 #: operations/common/color-assimilation-grid.c:35
 #: operations/common/long-shadow.c:49
-#: operations/common/motion-blur-linear.c:32 operations/common/newsprint.c:159
+#: operations/common/motion-blur-linear.c:32 operations/common/newsprint.c:158
 #: operations/common-gpl3+/linear-sinusoid.c:65
 #: operations/common-gpl3+/motion-blur-circular.c:51
 #: operations/common-gpl3+/ripple.c:45
@@ -1596,7 +1596,7 @@ msgid "Alpha channel"
 msgstr "Canal alfa"
 
 #: operations/common/convolution-matrix.c:64
-#: operations/common-cxx/distance-transform.cc:46
+#: operations/common-cxx/distance-transform.cc:55
 #: operations/workshop/connected-components.c:41
 msgid "Normalize"
 msgstr "Normalitza"
@@ -1857,7 +1857,7 @@ msgstr "El color de l'ombra (per defecte és «negre»)"
 #. * for example)
 #: operations/common/dropshadow.c:74 operations/common/layer.c:33
 #: operations/common/opacity.c:25 operations/common/opacity.c:289
-#: operations/external/vector-fill.c:29 operations/external/vector-stroke.c:34
+#: operations/common/vector-fill.c:29 operations/external/vector-stroke.c:34
 msgid "Opacity"
 msgstr "Opacitat"
 
@@ -3113,57 +3113,92 @@ msgstr ""
 "d'un monitor en comparació al paper fotogràfic"
 
 #: operations/common/negative-darkroom.c:57
+msgid "Contrast boost"
+msgstr "Augment del contrast"
+
+#: operations/common/negative-darkroom.c:58
+msgid ""
+"Increase contrast for papers with fixed contrast (usually color papers)"
+msgstr ""
+"Augmenta el contrast per als papers amb contrast fix (generalment papers de "
+"color)"
+
+#: operations/common/negative-darkroom.c:63
 msgid "Dodge/burn multiplier"
 msgstr "Multiplicador d'Esvaïment/Cremat"
 
-#: operations/common/negative-darkroom.c:58
-msgid "The f-stop of dodge/burn for pure white/black auxillary input"
+#: operations/common/negative-darkroom.c:64
+msgid "The f-stop of dodge/burn for pure white/black auxiliary input"
 msgstr ""
 "L'aturada f d'Esvaïment/Cremat per a l'entrada auxiliar de blanc/negre pur"
 
-#: operations/common/negative-darkroom.c:62
+#: operations/common/negative-darkroom.c:68
 msgid "Enable preflashing"
 msgstr "Habilita el preflaix"
 
-#: operations/common/negative-darkroom.c:63
+#: operations/common/negative-darkroom.c:69
 msgid "Show preflash controls"
 msgstr "Mostra els controls de preflaix"
 
-#: operations/common/negative-darkroom.c:65
+#: operations/common/negative-darkroom.c:71
 msgid "Red preflash"
 msgstr "Preflaix vermell"
 
-#: operations/common/negative-darkroom.c:66
+#: operations/common/negative-darkroom.c:72
 msgid "Preflash the negative with red light to reduce contrast of the print"
 msgstr ""
 "Fes preflaix del negatiu amb llum vermella per a reduir el contrast de la "
 "impressió"
 
-#: operations/common/negative-darkroom.c:70
+#: operations/common/negative-darkroom.c:76
 msgid "Green preflash"
 msgstr "Preflaix verd"
 
-#: operations/common/negative-darkroom.c:71
+#: operations/common/negative-darkroom.c:77
 msgid "Preflash the negative with green light to reduce contrast of the print"
 msgstr ""
 "Fes preflaix del negatiu amb llum verda per a reduir el contrast de la "
 "impressió"
 
-#: operations/common/negative-darkroom.c:75
+#: operations/common/negative-darkroom.c:81
 msgid "Blue preflash"
 msgstr "Preflaix blau"
 
-#: operations/common/negative-darkroom.c:76
+#: operations/common/negative-darkroom.c:82
 msgid "Preflash the negative with blue light to reduce contrast of the print"
 msgstr ""
 "Fes preflaix del negatiu amb llum blava per a reduir el contrast de la "
 "impressió"
 
-#: operations/common/negative-darkroom.c:336
+#: operations/common/negative-darkroom.c:86
+msgid "Illuminant adjustment"
+msgstr "Ajustament d'il·luminat"
+
+#: operations/common/negative-darkroom.c:87
+msgid "Show illuminant controls"
+msgstr "Mostra els controls d'il·luminat"
+
+#: operations/common/negative-darkroom.c:88
+msgid "X multiplier"
+msgstr "Multiplicador X"
+
+#: operations/common/negative-darkroom.c:89
+msgid "Adjust the X tristimulus value for output"
+msgstr "Ajusta el valor de triestímul «X» per a la sortida"
+
+#: operations/common/negative-darkroom.c:92
+msgid "Z multiplier"
+msgstr "Multiplicador Z"
+
+#: operations/common/negative-darkroom.c:93
+msgid "Adjust the Z tristimulus value for output"
+msgstr "Ajusta el valor de triestímul Z per a la sortida"
+
+#: operations/common/negative-darkroom.c:386
 msgid "Negative Darkroom"
 msgstr "Cambra fosca negativa"
 
-#: operations/common/negative-darkroom.c:339
+#: operations/common/negative-darkroom.c:389
 msgid "Simulate a negative film enlargement in an analog darkroom."
 msgstr ""
 "Simula una ampliació de pel·lícula negativa en una cambra fosca analògica."
@@ -3374,53 +3409,53 @@ msgstr "Patró negre"
 msgid "Pattern"
 msgstr "Patró"
 
-#: operations/common/newsprint.c:139 operations/common/newsprint.c:148
+#: operations/common/newsprint.c:139 operations/common/newsprint.c:147
 msgid "Black period"
 msgstr "Període negre"
 
-#: operations/common/newsprint.c:142 operations/common/newsprint.c:154
-msgid "Angle offset for patterns"
-msgstr "Desplaçament de l'angle per patrons"
-
-#: operations/common/newsprint.c:147 operations/common-gpl3+/ripple.c:38
+#: operations/common/newsprint.c:146 operations/common-gpl3+/ripple.c:38
 #: operations/common-gpl3+/waves.c:39
 msgid "Period"
 msgstr "Període"
 
-#: operations/common/newsprint.c:150 operations/common/newsprint.c:160
+#: operations/common/newsprint.c:149 operations/common/newsprint.c:159
 msgid "Black angle"
 msgstr "Angle negre"
 
-#: operations/common/newsprint.c:162
+#: operations/common/newsprint.c:153
+msgid "Angle offset for patterns"
+msgstr "Desplaçament de l'angle per patrons"
+
+#: operations/common/newsprint.c:161
 msgid "Black pullout"
 msgstr "Extracció de negre"
 
-#: operations/common/newsprint.c:164
+#: operations/common/newsprint.c:163
 msgid "How much of common gray to pull out of CMY"
 msgstr "Quant de gris comú per a treure del CMY"
 
-#: operations/common/newsprint.c:167
+#: operations/common/newsprint.c:166
 msgid "Anti-alias oversampling factor"
 msgstr "Factor de sobremostrarge suavitzador"
 
-#: operations/common/newsprint.c:169
+#: operations/common/newsprint.c:168
 msgid "Number of samples that are averaged for antialiasing the result."
 msgstr "Nombre de mostres per a la mitjana per a suavitzar el resultat."
 
-#: operations/common/newsprint.c:171 operations/common-gpl3+/plasma.c:36
+#: operations/common/newsprint.c:170 operations/common-gpl3+/plasma.c:36
 msgid "Turbulence"
 msgstr "Turbulència"
 
 #. rename to wave-pinch or period-pinch?
-#: operations/common/newsprint.c:173
+#: operations/common/newsprint.c:172
 msgid "Color saturation dependent compression of period"
 msgstr "Compressió de període dependent de la saturació de color"
 
-#: operations/common/newsprint.c:175
+#: operations/common/newsprint.c:174
 msgid "Blocksize"
 msgstr "Mida del bloc"
 
-#: operations/common/newsprint.c:177
+#: operations/common/newsprint.c:176
 msgid ""
 "Number of periods per tile, this tiling avoids high frequency anomaly that "
 "angle boost causes"
@@ -3428,11 +3463,11 @@ msgstr ""
 "Nombre de períodes per tessel·la, aquest enrajolat evita anomalies d'alta "
 "freqüència que causa l'increment d'angle"
 
-#: operations/common/newsprint.c:179
+#: operations/common/newsprint.c:178
 msgid "Angle Boost"
 msgstr "Increment d'angle"
 
-#: operations/common/newsprint.c:181
+#: operations/common/newsprint.c:180
 msgid ""
 "Multiplication factor for desired rotation of the local space for texture, "
 "the way this is computed makes it weak for desaturated colors and possibly "
@@ -3442,11 +3477,11 @@ msgstr ""
 "textura, la manera com és calculat el fa dèbil per colors dessaturats i "
 "possiblement més fort on hi ha color."
 
-#: operations/common/newsprint.c:654
+#: operations/common/newsprint.c:653
 msgid "Newsprint"
 msgstr "Paper premsa"
 
-#: operations/common/newsprint.c:659
+#: operations/common/newsprint.c:658
 msgid "Digital halftoning with optional modulations. "
 msgstr "Semitons digitals amb modulacions."
 
@@ -3915,9 +3950,10 @@ msgstr "Rectangle"
 msgid "A rectangular source of a fixed size with a solid color"
 msgstr "Una font rectangular, de mida fixa i d'un color sòlid"
 
-#: operations/common/recursive-transform.c:28 operations/external/path.c:47
-#: operations/external/vector-fill.c:37 operations/external/vector-stroke.c:38
-#: operations/transform/transform.c:24 operations/transform/transform.c:62
+#: operations/common/recursive-transform.c:28
+#: operations/common/vector-fill.c:37 operations/external/path.c:47
+#: operations/external/vector-stroke.c:38 operations/transform/transform.c:24
+#: operations/transform/transform.c:62
 msgid "Transform"
 msgstr "Transforma"
 
@@ -4457,6 +4493,47 @@ msgstr ""
 "Inverteix el component de valor, el resultat té la lluminositat invertida, "
 "mantenint el color."
 
+#: operations/common/vector-fill.c:27
+msgid "Color of paint to use for filling."
+msgstr "El color de pintura que s'utilitzarà per a emplenar."
+
+#: operations/common/vector-fill.c:30
+msgid "The fill opacity to use."
+msgstr "L'opacitat de l'emplenat que s'utilitzarà."
+
+#. XXX: replace with enum?
+#: operations/common/vector-fill.c:34
+msgid "Fill rule."
+msgstr "Norma d'emplenat."
+
+#: operations/common/vector-fill.c:35
+msgid "how to determine what to fill (nonzero|evenodd)"
+msgstr ""
+"Forma en què es determina el que s'emplenarà (diferent de zero | parell o "
+"senar)"
+
+#: operations/common/vector-fill.c:38 operations/external/vector-stroke.c:39
+msgid "svg style description of transform."
+msgstr "Descripció de l'estil SVG de la transformació."
+
+#: operations/common/vector-fill.c:40 operations/external/path.c:54
+#: operations/external/vector-stroke.c:41
+msgid "Vector"
+msgstr "Vector"
+
+#: operations/common/vector-fill.c:41 operations/external/path.c:55
+#: operations/external/vector-stroke.c:42
+msgid "A GeglVector representing the path of the stroke"
+msgstr "Un vector Gegl que representa el camí del traç"
+
+#: operations/common/vector-fill.c:320
+msgid "Fill Path"
+msgstr "Emplena el camí"
+
+#: operations/common/vector-fill.c:323
+msgid "Renders a filled region"
+msgstr "Renderitza una regió emplenada"
+
 #: operations/common/vignette.c:32
 msgid "Vignette shape"
 msgstr "Forma de la vinyeta"
@@ -4642,41 +4719,58 @@ msgstr ""
 "Escriu les dades d'entrada en una superfície de destinació de la memòria "
 "intermèdia GEGL."
 
-#: operations/common-cxx/distance-transform.cc:30
+#: operations/common-cxx/distance-transform.cc:31
+msgid "Above threshold"
+msgstr "Per sobre del llindar"
+
+#: operations/common-cxx/distance-transform.cc:32
+msgid "Below threshold"
+msgstr "Sota llindar"
+
+#: operations/common-cxx/distance-transform.cc:35
 #: operations/workshop/external/voronoi-diagram.cc:24
 msgid "Metric"
 msgstr "Mètrica"
 
-#: operations/common-cxx/distance-transform.cc:32
+#: operations/common-cxx/distance-transform.cc:37
 #: operations/workshop/external/voronoi-diagram.cc:27
 msgid "Metric to use for the distance calculation"
 msgstr "Mètrica que s'utilitza per al càlcul de distàncies"
 
-#: operations/common-cxx/distance-transform.cc:34
+#: operations/common-cxx/distance-transform.cc:39
+msgid "Edge handling"
+msgstr "Gestió de vores"
+
+#: operations/common-cxx/distance-transform.cc:41
+msgid "How areas outside the input are considered when calculating distance"
+msgstr ""
+"Com es consideren les àrees fora de l'entrada en calcular la distància"
+
+#: operations/common-cxx/distance-transform.cc:43
 msgid "Threshold low"
 msgstr "Llindar baix"
 
-#: operations/common-cxx/distance-transform.cc:37
+#: operations/common-cxx/distance-transform.cc:46
 msgid "Threshold high"
 msgstr "Llindar alt"
 
-#: operations/common-cxx/distance-transform.cc:40
+#: operations/common-cxx/distance-transform.cc:49
 msgid "Grayscale Averaging"
 msgstr "Mitjana en escala de grisos"
 
-#: operations/common-cxx/distance-transform.cc:41
+#: operations/common-cxx/distance-transform.cc:50
 msgid "Number of computations for grayscale averaging"
 msgstr "Nombre de càlculs per a la mitjana de l'escala de grisos"
 
-#: operations/common-cxx/distance-transform.cc:47
+#: operations/common-cxx/distance-transform.cc:56
 msgid "Normalize output to range 0.0 to 1.0."
 msgstr "Normalitza la sortida a una franja de 0.0 a 1.0."
 
-#: operations/common-cxx/distance-transform.cc:481
+#: operations/common-cxx/distance-transform.cc:532
 msgid "Distance Transform"
 msgstr "Transformació de la distància"
 
-#: operations/common-cxx/distance-transform.cc:485
+#: operations/common-cxx/distance-transform.cc:536
 msgid "Calculate a distance transform"
 msgstr "Calcula la transformació de la distància"
 
@@ -7970,16 +8064,6 @@ msgstr "Opacitat de l'emplenament"
 msgid "The fill opacity to use"
 msgstr "L'opacitat de l'emplenament que s'utilitzarà"
 
-#: operations/external/path.c:54 operations/external/vector-fill.c:40
-#: operations/external/vector-stroke.c:41
-msgid "Vector"
-msgstr "Vector"
-
-#: operations/external/path.c:55 operations/external/vector-fill.c:41
-#: operations/external/vector-stroke.c:42
-msgid "A GeglVector representing the path of the stroke"
-msgstr "Un vector Gegl que representa el camí del traç"
-
 #: operations/external/path.c:584
 msgid "Render Path"
 msgstr "Dibuixa el camí"
@@ -8385,37 +8469,6 @@ msgstr ""
 "Entrada de Video4Linux, càmeres web, capturadores de fotogrames i "
 "dispositius semblants."
 
-#: operations/external/vector-fill.c:27
-msgid "Color of paint to use for filling."
-msgstr "El color de pintura que s'utilitzarà per a emplenar."
-
-#: operations/external/vector-fill.c:30
-msgid "The fill opacity to use."
-msgstr "L'opacitat de l'emplenat que s'utilitzarà."
-
-#. XXX: replace with enum?
-#: operations/external/vector-fill.c:34
-msgid "Fill rule."
-msgstr "Norma d'emplenat."
-
-#: operations/external/vector-fill.c:35
-msgid "how to determine what to fill (nonzero|evenodd)"
-msgstr ""
-"Forma en què es determina el que s'emplenarà (diferent de zero | parell o "
-"senar)"
-
-#: operations/external/vector-fill.c:38 operations/external/vector-stroke.c:39
-msgid "svg style description of transform."
-msgstr "Descripció de l'estil SVG de la transformació."
-
-#: operations/external/vector-fill.c:322
-msgid "Fill Path"
-msgstr "Emplena el camí"
-
-#: operations/external/vector-fill.c:325
-msgid "Renders a filled region"
-msgstr "Renderitza una regió emplenada"
-
 #: operations/external/vector-stroke.c:28
 msgid "Color of paint to use for stroking."
 msgstr "El color de la pintura que s'utilitza per al traçat."
@@ -8748,7 +8801,7 @@ msgstr "Alineació de la vora"
 #: operations/transform/border-align.c:183
 msgid ""
 "Aligns box of input rectangle with border of compositing target or aux' "
-"bounding-box border, if aux pad is not connectd the op tries to figure out "
+"bounding-box border, if aux pad is not connected the op tries to figure out "
 "which bounding box' border applies."
 msgstr ""
 "Alinea la casella d'entrada amb el marge de la composició o el marge de "
@@ -8984,7 +9037,7 @@ msgstr "Banda de la vora"
 
 #: operations/workshop/band-tune.c:41
 msgid ""
-"Features size for edge band, used to compensate for loos of edges in detail "
+"Features size for edge band, used to compensate for loss of edges in detail "
 "pass."
 msgstr ""
 "Mides de les funcions per la banda de la vora, s'utilitza per a compensar la"
@@ -9688,19 +9741,3 @@ msgstr "Saturació-to selectiva"
 msgid "Selective adjust Hue, Saturation and Lightness"
 msgstr "Ajust selectiu del to, saturació i lluminositat"
 
-#~ msgid "Filter cyan"
-#~ msgstr "Filtre cian"
-
-#~ msgid "Filter magenta"
-#~ msgstr "Filtre magenta"
-
-#~ msgid "Filter yellow"
-#~ msgstr "Filtre groc"
-
-#~ msgid "Preflash the negative with cyan light to reduce contrast of the print"
-#~ msgstr ""
-#~ "Fes preflaix del negatiu amb llum cian per a reduir el contrast de la "
-#~ "impressió"
-
-#~ msgid "Magenta preflash"
-#~ msgstr "Preflaix magenta"
