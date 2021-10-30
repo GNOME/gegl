@@ -91,6 +91,11 @@ install_headers(gegl_headers,
 
 gegl_ldflags = os_osx ? ['-framework', 'OpenCL'] : []
 
+opencl_dep = declare_dependency(
+    sources : [opencl_headers],
+    link_with : [gegl_sources],
+)
+
 gegl_lib = library(api_name,
   gegl_sources,
   include_directories: [rootInclude, geglInclude],
