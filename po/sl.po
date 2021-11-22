@@ -9,9 +9,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2021-09-04 22:16+0000\n"
-"PO-Revision-Date: 2021-10-02 00:15+0200\n"
-"Last-Translator: miles\n"
+"POT-Creation-Date: 2021-11-17 21:41+0000\n"
+"PO-Revision-Date: 2021-11-20 17:57+0100\n"
+"Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language: sl_SI\n"
 "MIME-Version: 1.0\n"
@@ -441,19 +441,16 @@ msgid "Output pad for generated image buffer."
 msgstr "Izhodna beležka za ustvarjeni medpomnilnik slike."
 
 #: gegl/operation/gegl-operation-composer3.c:86
-#, fuzzy
 msgid "Input pad, for image buffer input."
 msgstr "Vhodni prostor, za vhod medpomnilnika slik."
 
 #: gegl/operation/gegl-operation-composer3.c:95
 #: gegl/operation/gegl-operation-composer.c:94
 #: operations/transform/border-align.c:157
-#, fuzzy
 msgid "Auxiliary image buffer input pad."
 msgstr "Pomožni vhodni slikovni medpomnilniški prostor."
 
 #: gegl/operation/gegl-operation-composer3.c:104
-#, fuzzy
 msgid "Second auxiliary image buffer input pad."
 msgstr "Drugi pomožni vhodni slikovni medpomnilniški prostor."
 
@@ -1015,6 +1012,9 @@ msgid ""
 "produces the illusion that the grayscale grid cells themselves also have "
 "color."
 msgstr ""
+"Pretvori sliko v sivinsko in prekrije prenasičeno mrežo - pri barvni "
+"asimilaciji, ki se vrši v človeškem vizualnem sistemu, pri nekaterih mrežnih "
+"lestvicah to povzroča iluzijo, da so tudi same celice sive mreže barvne."
 
 #: operations/common/color-enhance.c:276
 msgid "Color Enhance"
@@ -1131,6 +1131,9 @@ msgid ""
 "they had this hue and saturation\n"
 "Change to this: Change gray colors to this hue and saturation"
 msgstr ""
+"Obravnavano: sive barve iznad izvornega območja so obravnavane, kot da bi "
+"imele ta odtenek in nasičenost.\n"
+"Spremenjeno: spremeni sive barve v ta odtenek in nasičenost."
 
 #: operations/common/color-rotate.c:79 operations/common/component-extract.c:28
 #: operations/common/hue-chroma.c:25 operations/common/noise-cie-lch.c:35
@@ -1281,8 +1284,9 @@ msgid "weight 7"
 msgstr "Teža 7"
 
 #: operations/common/color-warp.c:68
+#, fuzzy
 msgid "global weight scale"
-msgstr ""
+msgstr "splošno merilo teže"
 
 #: operations/common/color-warp.c:70
 msgid "amount"
@@ -2008,7 +2012,6 @@ msgid "Filter"
 msgstr "Filter"
 
 #: operations/common/gaussian-blur.c:55 operations/common/gblur-1d.c:58
-#, fuzzy
 msgid "How the gaussian kernel is discretized"
 msgstr "Kako je gaussovo jedro diskretizirano"
 
@@ -3006,15 +3009,16 @@ msgid ""
 "Blur pixels in a direction, simulates blurring caused by moving camera in a "
 "straight line during exposure."
 msgstr ""
+"Razostri slikoven točke v smeri, simulira neostrino, ki jo povzroča "
+"premikanje kamere v ravni črti med ekspozicijo."
 
 #: operations/common/negative-darkroom.c:25
 msgid "Characteristic curve"
 msgstr "Karakteristična krivulja"
 
 #: operations/common/negative-darkroom.c:27
-#, fuzzy
 msgid "Hardcoded characteristic curve and color data"
-msgstr "Vnaprej določena značilna krivulja in barvni podatki"
+msgstr "Nespremenljiva značilna krivulja in barvni podatki"
 
 #: operations/common/negative-darkroom.c:30
 msgid "Base enlargement exposure"
@@ -3045,12 +3049,14 @@ msgid "Yellow filter compensation for the negative image"
 msgstr "Kompenzacija rumenega filtra za sliko negativa"
 
 #: operations/common/negative-darkroom.c:49
+#, fuzzy
 msgid "Clip base + fog"
-msgstr ""
+msgstr "Poreži osnovo + megla"
 
 #: operations/common/negative-darkroom.c:50
+#, fuzzy
 msgid "Clip base + fog to have a pure white output value"
-msgstr ""
+msgstr "Poreži osnovno in megla, da bo izhodna vrednost čista belina"
 
 #: operations/common/negative-darkroom.c:52
 msgid "Density boost"
@@ -3061,6 +3067,8 @@ msgid ""
 "Boost paper density to take advantage of increased dynamic range of a "
 "monitor compared to a photographic paper"
 msgstr ""
+"Poveča gostoto papirja, da izkoristiti povečan dinamični razpon zaslona v "
+"primerjavi s fotografskim papirjem"
 
 #: operations/common/negative-darkroom.c:57
 msgid "Contrast boost"
@@ -3230,8 +3238,9 @@ msgstr "Rdeč in cianast vzorec"
 
 #: operations/common/newsprint.c:46 operations/common/newsprint.c:74
 #: operations/common/newsprint.c:102 operations/common/newsprint.c:130
+#, fuzzy
 msgid "Halftoning/dot pattern to use"
-msgstr ""
+msgstr "Vzorec poltoniranja/pik za uporabo"
 
 #: operations/common/newsprint.c:50
 msgid "Red pattern"
@@ -3403,10 +3412,13 @@ msgid "Blocksize"
 msgstr "Velikost bloka"
 
 #: operations/common/newsprint.c:176
+#, fuzzy
 msgid ""
 "Number of periods per tile, this tiling avoids high frequency anomaly that "
 "angle boost causes"
 msgstr ""
+"Število period na tlakovec, to tlakovanje se izogiba anomaliji visoke "
+"frekvence, ki jih povzroča povečanje kota"
 
 #: operations/common/newsprint.c:178
 msgid "Angle Boost"
@@ -3418,6 +3430,9 @@ msgid ""
 "the way this is computed makes it weak for desaturated colors and possibly "
 "stronger where there is color."
 msgstr ""
+"Faktor množenja za želeno vrtenje krajevnega prostora za teksturo; način, "
+"kako se to izračuna, je šibkejši za nenasičene barve in morda močnejši, kjer "
+"je barva."
 
 #: operations/common/newsprint.c:653
 msgid "Newsprint"
@@ -3425,7 +3440,7 @@ msgstr "Časopisni tisk"
 
 #: operations/common/newsprint.c:658
 msgid "Digital halftoning with optional modulations. "
-msgstr ""
+msgstr "Digitalno poltoniranje z izbirnimi modulacijami. "
 
 #: operations/common/noise-cell.c:37 operations/common/noise-simplex.c:32
 msgid "The scale of the noise function"
@@ -3584,6 +3599,8 @@ msgid ""
 "Use a gaussian noise distribution, when unticked a linear noise distribution "
 "is used instead"
 msgstr ""
+"Uporabite gaussovo porazdelitev šuma, če ni potrjeno, se namesto tega "
+"uporabi linearna porazdelitev šuma"
 
 #: operations/common/noise-rgb.c:39 operations/common/normal-map.c:25
 msgid "Red"
@@ -3764,10 +3781,14 @@ msgid "Panorama Projection"
 msgstr "Panoramska projekcija"
 
 #: operations/common/panorama-projection.c:543
+#, fuzzy
 msgid ""
 "Do panorama viewer rendering mapping or its inverse for an equirectangular "
 "input image. (2:1 ratio containing 360x180 degree panorama)."
 msgstr ""
+"Naredite kartiranje upodobljanja ogledovalnika panorame ali njegovo "
+"inverzijo za pravokotno vhodno sliko (razmerje 2:1, ki vsebuje panoramo "
+"360x180 stopinj)."
 
 #: operations/common/pixelize.c:27
 msgid "Round"
@@ -4054,9 +4075,12 @@ msgid "Interpolation Color Space"
 msgstr "Barvni prostor interpolacije"
 
 #: operations/common/saturation.c:37
+#, fuzzy
 msgid ""
 "Set at Native if uncertain, the CIE based spaces might introduce hue shifts."
 msgstr ""
+"Če niste prepričani, nastavite na Domorodno, saj prostori, ki temeljijo na "
+"CIE, lahko uvedejo zamike obarvanosti."
 
 #: operations/common/saturation.c:409
 msgid "Changes the saturation"
@@ -4176,8 +4200,9 @@ msgid "Curvature"
 msgstr "Ukrivljenost"
 
 #: operations/common/spherize.c:41
+#, fuzzy
 msgid "Spherical cap apex angle, as a fraction of the co-angle of view"
-msgstr ""
+msgstr "Kot vrha krogelne kapice, kot ulomek soležnega kota pogleda"
 
 #. note that the code can handle negative curvatures
 #. * (in the [-1, 0) range), in which case the image is
@@ -4205,7 +4230,7 @@ msgstr "Sferiziraj"
 
 #: operations/common/spherize.c:324
 msgid "Wrap image around a spherical cap"
-msgstr ""
+msgstr "Zavij sliko okoli krogelne kapice"
 
 #: operations/common/stress.c:28
 msgid ""
@@ -4228,6 +4253,8 @@ msgid ""
 "When enabled also enhances shadow regions - when disabled a more natural "
 "result is yielded"
 msgstr ""
+"Ko je omogočeno, izboljša tudi območja v senci - ko je onemogočeno, daje "
+"bolj naraven rezultat."
 
 #: operations/common/stress.c:267 operations/common/stress.c:275
 msgid "Spatio Temporal Retinex-like Envelope with Stochastic Sampling"
@@ -4396,6 +4423,8 @@ msgid ""
 "Sharpen image, by adding difference to blurred image, a technique for "
 "sharpening originally used in darkrooms."
 msgstr ""
+"Izostri sliko, z dodajanjem razlike neostri sliki, kar je tehnika za "
+"ostrenje, prvotno uporabljena v temnicah."
 
 #: operations/common/value-invert.c:149
 msgid "Value Invert"
@@ -4551,8 +4580,9 @@ msgid "Waterpixels"
 msgstr "Vodene slikovne točke"
 
 #: operations/common/waterpixels.c:545
+#, fuzzy
 msgid "Superpixels based on the watershed transformation"
-msgstr ""
+msgstr "Super slikovne točke, temelječe na razvodni transformaciji"
 
 #: operations/common/watershed-transform.c:26
 #: operations/common/watershed-transform.c:27
@@ -4565,11 +4595,12 @@ msgstr "zastava"
 
 #: operations/common/watershed-transform.c:31
 msgid "Pointer to flag value for unlabelled pixels"
-msgstr ""
+msgstr "Kazalec na vrednost zastavice za neoznačene slikovne točke"
 
 #: operations/common/watershed-transform.c:489
+#, fuzzy
 msgid "Watershed Transform"
-msgstr ""
+msgstr "Razvodna transformacija"
 
 #: operations/common/watershed-transform.c:493
 msgid ""
@@ -4789,15 +4820,13 @@ msgid "Number of blend levels"
 msgstr "Število ravni spajanja"
 
 #: operations/common-cxx/piecewise-blend.cc:34
-#, fuzzy
 msgid "Gamma factor for blend-level spacing"
-msgstr "Faktor gama za razmik med ravnmi spajanja"
+msgstr "Faktor gama za razmik na ravni spajanja"
 
 #: operations/common-cxx/piecewise-blend.cc:346
 #, fuzzy
-#| msgid "Weighted Blend"
 msgid "Piecewise Blend"
-msgstr "Uteženo zlivanje"
+msgstr "Zlivanje po koščkih"
 
 #: operations/common-cxx/piecewise-blend.cc:348
 msgid "Blend a chain of inputs using a mask"
@@ -5106,15 +5135,14 @@ msgid "Cartoon"
 msgstr "Karikatura"
 
 #: operations/common-gpl3+/cartoon.c:326
-#, fuzzy
 msgid ""
 "Simulates a cartoon, its result is similar to a black felt pen drawing "
 "subsequently shaded with color. This is achieved by enhancing edges and "
 "darkening areas that are already distinctly darker than their neighborhood"
 msgstr ""
-"Simulira risanko, njen rezultat je podoben risbi s črnim svinčnikom, nato "
-"senčeni z barvami. To dosežemo z izboljšanjem robov in potemnitvijo območij, "
-"ki so že zdaj bolj temna kot njihova okolica."
+"Simulira strip, rezultat je podoben risbi s črnim flomastrom, nato senčeni z "
+"barvami. To dosežemo z izboljšanjem robov in potemnitvijo območij, ki so že "
+"zdaj opazno temna od svoje okolice."
 
 #. Red channel
 #: operations/common-gpl3+/channel-mixer.c:33
@@ -6226,7 +6254,7 @@ msgstr "Transfokacija zabrisanosti gibanja"
 #: operations/common-gpl3+/noise-slur.c:157
 #, fuzzy
 msgid "Noise Slur"
-msgstr "Nerazločen brbot"
+msgstr "Nerazločen/Razmazan šum"
 
 #: operations/common-gpl3+/noise-slur.c:161
 msgid "Randomly slide some pixels downward (similar to melting)"
@@ -6285,10 +6313,13 @@ msgstr ""
 "medpomnilnikom na zunanjem (aux) prostoru."
 
 #: operations/common-gpl3+/oilify.c:35
+#, fuzzy
 msgid ""
 "Exponent for processing; controls smoothness - can be scaled per pixel with "
 "a buffer on the aux2 pad."
 msgstr ""
+"Eksponent za obdelavo; nadzira gladkost - se lahko pomeri na slikovno točko "
+"z medpomnilnikom na tablici aux2."
 
 #: operations/common-gpl3+/oilify.c:38
 msgid "Number of intensities"
@@ -6973,6 +7004,8 @@ msgid ""
 "Propagate certain values to neighboring pixels. Erode and dilate any color "
 "or opacity."
 msgstr ""
+"Razširite določene vrednosti na sosednje slikovne točke. Razjejte in "
+"razširite poljubno barvo ali prekrivnost."
 
 #: operations/common-gpl3+/video-degradation.c:34
 msgid "Staggered"
@@ -7217,7 +7250,6 @@ msgid "File system path to ICC matrix profile to load"
 msgstr "Sistemska datotečna pot do profila matrike ICC za nalaganje"
 
 #: operations/core/cast-space.c:127
-#, fuzzy
 msgid "Cast color space"
 msgstr "Oddaj barvni prostor"
 
@@ -7240,10 +7272,14 @@ msgid "Clone"
 msgstr "Kloniraj"
 
 #: operations/core/clone.c:110
+#, fuzzy
 msgid ""
 "Clone a buffer, this is the same as gegl:nop but can get special treatment "
 "to get more human readable references in serializations/UI."
 msgstr ""
+"Klonira medpomnilnik, to je enako kot gegl:nop, vendar lahko dobi posebno "
+"obravnavo, da bi dobili več človeško berljivih referenc v serializacijah/"
+"grafičnem uporabniškem vmesniku."
 
 #: operations/core/convert-format.c:99
 msgid "Convert Format"
@@ -7472,48 +7508,49 @@ msgid "video bitrate tolerance"
 msgstr "Toleranca bitne hitrosti videa"
 
 #: operations/external/ff-save.c:61
+#, fuzzy
 msgid "keyint-min"
-msgstr ""
+msgstr "keyint-min"
 
 #: operations/external/ff-save.c:62
-#, fuzzy
 msgid "trellis"
 msgstr "trellis"
 
 #: operations/external/ff-save.c:63
-#, fuzzy
 msgid "qmin"
-msgstr "qnajm"
+msgstr "qmin"
 
 #: operations/external/ff-save.c:64
-#, fuzzy
 msgid "qmax"
-msgstr "qnajv"
+msgstr "qmax"
 
 #: operations/external/ff-save.c:65
+#, fuzzy
 msgid "max_qdiff"
-msgstr ""
+msgstr "max_qdiff"
 
 #: operations/external/ff-save.c:66
+#, fuzzy
 msgid "me_range"
-msgstr ""
+msgstr "me_range"
 
 #: operations/external/ff-save.c:67
+#, fuzzy
 msgid "max_b_frames"
-msgstr ""
+msgstr "max_b_frames"
 
 #: operations/external/ff-save.c:68
+#, fuzzy
 msgid "gop-size"
-msgstr ""
+msgstr "gop-size"
 
 #: operations/external/ff-save.c:69
 msgid "qcompress"
 msgstr "qcompress"
 
 #: operations/external/ff-save.c:70
-#, fuzzy
 msgid "qblur"
-msgstr "kvzabriši"
+msgstr "qblur"
 
 #: operations/external/ff-save.c:71
 msgid "i-quant-factor"
@@ -7524,8 +7561,9 @@ msgid "i-quant-offset"
 msgstr "i-kvant-odmik"
 
 #: operations/external/ff-save.c:73
+#, fuzzy
 msgid "me-subpel-quality"
-msgstr ""
+msgstr "me-subpel-quality"
 
 #: operations/external/ff-save.c:1135
 msgid "FFmpeg Frame Saver"
@@ -8867,11 +8905,16 @@ msgid "Band tune"
 msgstr ""
 
 #: operations/workshop/band-tune.c:219
+#, fuzzy
 msgid ""
 "Parametric band equalizer for tuning frequency bands of image, the op "
 "provides abstracted input parameters that control two difference of "
 "gaussians driven band pass filters used as adjustments of the image signal."
 msgstr ""
+"Parametrični izenačevalnik pasu za uglaševanje frekvenčnih pasov slike, op "
+"zagotavlja abstraktne vhodne parametre, ki nadzorujejo dve razliki gaussovih "
+"filtrov pasovnega prehoda, ki se uporabljajo kot prilagoditve slikovnega "
+"signala."
 
 #: operations/workshop/bilateral-filter-fast.c:39
 msgid "Smoothness"
@@ -8882,8 +8925,9 @@ msgid "Level of smoothness"
 msgstr "Raven uglajenosti"
 
 #: operations/workshop/bilateral-filter-fast.c:501
+#, fuzzy
 msgid "Bilateral Box Filter"
-msgstr ""
+msgstr "Filter dvostranskega polja"
 
 #: operations/workshop/bilateral-filter-fast.c:506
 msgid ""
@@ -8942,10 +8986,13 @@ msgid "Connected Components"
 msgstr "Povezane komponente"
 
 #: operations/workshop/connected-components.c:290
+#, fuzzy
 msgid ""
 "Fills each connected region of the input, separated from the rest of the "
 "input by a given color, with a unique color."
 msgstr ""
+"Vsako povezano območje vhoda, ločeno od preostalega vhoda z dano barvo, "
+"zapolni z edinstveno barvo."
 
 #: operations/workshop/demosaic-bimedian.c:26
 #: operations/workshop/demosaic-simple.c:25
@@ -8963,7 +9010,7 @@ msgstr ""
 
 #: operations/workshop/demosaic-bimedian.c:220
 msgid "Demosaic With Bimedian Interpolation"
-msgstr ""
+msgstr "Odmozaiči z bi-medialno interpolacijo"
 
 #: operations/workshop/demosaic-bimedian.c:223
 msgid ""
@@ -8975,7 +9022,7 @@ msgstr ""
 
 #: operations/workshop/demosaic-simple.c:152
 msgid "Demosaic Without Interpolation"
-msgstr ""
+msgstr "Odmozaiči brez interpolacije"
 
 #: operations/workshop/demosaic-simple.c:155
 msgid ""
@@ -9022,7 +9069,7 @@ msgstr "Na voljo kot splošna spremenljivai 'user_value' v lua."
 
 #: operations/workshop/external/gluas.c:1008
 msgid "gluas"
-msgstr ""
+msgstr "gluas"
 
 #: operations/workshop/external/gluas.c:1010
 msgid ""
@@ -9047,8 +9094,9 @@ msgid "Use local region"
 msgstr "Uporabi krajevno področje"
 
 #: operations/workshop/external/paint-select.cc:40
+#, fuzzy
 msgid "Perform graphcut in a local region"
-msgstr ""
+msgstr "Izvajanje grafičnih izrezov v lokalnem področju"
 
 #: operations/workshop/external/paint-select.cc:42
 msgid "region-x"
@@ -9286,7 +9334,6 @@ msgid "Moving Gear Teeth"
 msgstr "Zobci gibljivega zobnika"
 
 #: operations/workshop/external/spyrograph.c:41
-#, fuzzy
 msgid ""
 "Number of teeth in moving gear. Radius of moving gear, relative to radius of "
 "fixed gear, is determined by the proportion between the number of teeth in "
@@ -9301,7 +9348,6 @@ msgid "Hole Percent"
 msgstr "Odstotek luknje"
 
 #: operations/workshop/external/spyrograph.c:47
-#, fuzzy
 msgid ""
 "How far the hole is from the center of the moving gear. 100 means that the "
 "hole is at the gear's edge."
@@ -9466,7 +9512,6 @@ msgid "Integral Image"
 msgstr "Integralna slika"
 
 #: operations/workshop/integral-image.c:254
-#, fuzzy
 msgid "Compute integral and squared integral image"
 msgstr "Izračunaj integralno in kvadratno integralno sliko"
 
