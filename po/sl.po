@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2021-11-17 21:41+0000\n"
-"PO-Revision-Date: 2021-11-20 17:57+0100\n"
+"POT-Creation-Date: 2021-11-22 16:04+0000\n"
+"PO-Revision-Date: 2021-12-05 12:33+0100\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language: sl_SI\n"
@@ -1284,9 +1284,8 @@ msgid "weight 7"
 msgstr "Teža 7"
 
 #: operations/common/color-warp.c:68
-#, fuzzy
 msgid "global weight scale"
-msgstr "splošno merilo teže"
+msgstr "globalna tehtnica"
 
 #: operations/common/color-warp.c:70
 msgid "amount"
@@ -1302,6 +1301,8 @@ msgid ""
 "factors, color pairs which are black to black get ignored when constructing "
 "the mapping."
 msgstr ""
+"Ukrivi barve slike med barve z uteženimi faktorji popačenja, barvni pari s "
+"črno do črne so prezrti pri izdelavi preslikave."
 
 #: operations/common/component-extract.c:25
 msgid "RGB Red"
@@ -2586,11 +2587,9 @@ msgid "Little Planet"
 msgstr "Majhen planet"
 
 #: operations/common/little-planet.c:532
-#, fuzzy
 msgid "Do a stereographic/little planet transform of an equirectangular image."
 msgstr ""
-"Opravite stereografsko/majhno planetarno preoblikovanje enakopravokotne "
-"slike."
+"Opravi stereografsko/majhno planetarno preoblikovanje enakopravokotne slike."
 
 #: operations/common/long-shadow.c:27
 msgid "Finite"
@@ -2966,7 +2965,7 @@ msgstr "Mešano"
 
 #: operations/common/mix.c:116
 msgid "Do a lerp, linear interpolation (lerp) between input and aux"
-msgstr ""
+msgstr "Izvedi linearno interpolacijo (lerp) med vhodom in izhodom"
 
 #: operations/common/mono-mixer.c:24 operations/common-gpl3+/channel-mixer.c:30
 msgid "Preserve luminosity"
@@ -3022,7 +3021,7 @@ msgstr "Nespremenljiva značilna krivulja in barvni podatki"
 
 #: operations/common/negative-darkroom.c:30
 msgid "Base enlargement exposure"
-msgstr ""
+msgstr "Ekspozicija povečave osnove"
 
 #: operations/common/negative-darkroom.c:34
 msgid "Cyan filter"
@@ -3049,14 +3048,12 @@ msgid "Yellow filter compensation for the negative image"
 msgstr "Kompenzacija rumenega filtra za sliko negativa"
 
 #: operations/common/negative-darkroom.c:49
-#, fuzzy
 msgid "Clip base + fog"
 msgstr "Poreži osnovo + megla"
 
 #: operations/common/negative-darkroom.c:50
-#, fuzzy
 msgid "Clip base + fog to have a pure white output value"
-msgstr "Poreži osnovno in megla, da bo izhodna vrednost čista belina"
+msgstr "Poreži osnovo in megla, da bo izhodna vrednost čista belina"
 
 #: operations/common/negative-darkroom.c:52
 msgid "Density boost"
@@ -3238,7 +3235,6 @@ msgstr "Rdeč in cianast vzorec"
 
 #: operations/common/newsprint.c:46 operations/common/newsprint.c:74
 #: operations/common/newsprint.c:102 operations/common/newsprint.c:130
-#, fuzzy
 msgid "Halftoning/dot pattern to use"
 msgstr "Vzorec poltoniranja/pik za uporabo"
 
@@ -3382,7 +3378,6 @@ msgid "Angle offset for patterns"
 msgstr "Kotni odmik za vzorce"
 
 #: operations/common/newsprint.c:161
-#, fuzzy
 msgid "Black pullout"
 msgstr "Črni izvlek"
 
@@ -3412,7 +3407,6 @@ msgid "Blocksize"
 msgstr "Velikost bloka"
 
 #: operations/common/newsprint.c:176
-#, fuzzy
 msgid ""
 "Number of periods per tile, this tiling avoids high frequency anomaly that "
 "angle boost causes"
@@ -3489,7 +3483,7 @@ msgstr "Tvori celično teksturo."
 
 #: operations/common/noise-cie-lch.c:25 operations/common/noise-hsv.c:27
 msgid "Dulling"
-msgstr ""
+msgstr "Brez leska"
 
 #: operations/common/noise-cie-lch.c:27 operations/common/noise-hsv.c:29
 msgid "A high value lowers the randomness of the noise"
@@ -3696,9 +3690,8 @@ msgid "Tileable"
 msgstr "Tlakovalnost"
 
 #: operations/common/normal-map.c:55
-#, fuzzy
 msgid "Generate a tileable map"
-msgstr "Ustvari tlakovalen zemljevid"
+msgstr "Ustvari poslikavo s tlakovci"
 
 #: operations/common/normal-map.c:248
 msgid "Normal Map"
@@ -3781,14 +3774,13 @@ msgid "Panorama Projection"
 msgstr "Panoramska projekcija"
 
 #: operations/common/panorama-projection.c:543
-#, fuzzy
 msgid ""
 "Do panorama viewer rendering mapping or its inverse for an equirectangular "
 "input image. (2:1 ratio containing 360x180 degree panorama)."
 msgstr ""
-"Naredite kartiranje upodobljanja ogledovalnika panorame ali njegovo "
-"inverzijo za pravokotno vhodno sliko (razmerje 2:1, ki vsebuje panoramo "
-"360x180 stopinj)."
+"Naredi preslikavo upodabljanja ogledovalnika panorame ali njegovo inverzijo "
+"za pravokotno vhodno sliko (razmerje 2:1, ki vsebuje panoramo 360x180 "
+"stopinj)."
 
 #: operations/common/pixelize.c:27
 msgid "Round"
@@ -4075,7 +4067,6 @@ msgid "Interpolation Color Space"
 msgstr "Barvni prostor interpolacije"
 
 #: operations/common/saturation.c:37
-#, fuzzy
 msgid ""
 "Set at Native if uncertain, the CIE based spaces might introduce hue shifts."
 msgstr ""
@@ -4200,9 +4191,8 @@ msgid "Curvature"
 msgstr "Ukrivljenost"
 
 #: operations/common/spherize.c:41
-#, fuzzy
 msgid "Spherical cap apex angle, as a fraction of the co-angle of view"
-msgstr "Kot vrha krogelne kapice, kot ulomek soležnega kota pogleda"
+msgstr "Kot vrha krogelne kapice, kot ulomek soležnega zornega kota"
 
 #. note that the code can handle negative curvatures
 #. * (in the [-1, 0) range), in which case the image is
@@ -4223,6 +4213,8 @@ msgid ""
 "Displacement scaling factor (negative values refer to the inverse "
 "displacement)"
 msgstr ""
+"Faktor spremembe velikosti razmestitve (negativne vrednosti se nanašajo na "
+"inverzno razmestitev)"
 
 #: operations/common/spherize.c:320
 msgid "Spherize"
@@ -4278,6 +4270,8 @@ msgid ""
 "When set operate on gamma corrected values instead of linear RGB - acting "
 "like the old normalize filter in GIMP"
 msgstr ""
+"Ko nastavite delovanje na gama popravljenih vrednostih namesto na linearni "
+"RGB - deluje kot stari filter normalizacije v GIMP"
 
 #: operations/common/stretch-contrast.c:582
 msgid "Stretch Contrast"
@@ -4398,13 +4392,15 @@ msgstr ""
 
 #: operations/common/unpremultiply.c:78
 msgid "Unpremultiply alpha"
-msgstr ""
+msgstr "Odmnoži vnaprej pomnoženo alfo"
 
 #: operations/common/unpremultiply.c:80
 msgid ""
 "Unpremultiplies a buffer that contains pre-multiplied colors (but according "
 "to the babl format is not.)"
 msgstr ""
+"Odmnoži medpomnilnik, ki vsebuje vnaprej pomnožene barve (vendar to glede na "
+"zapis babl niso)."
 
 #: operations/common/unsharp-mask.c:25
 msgid "Expressed as standard deviation, in pixels"
@@ -4566,6 +4562,7 @@ msgstr "Prostorska regularizacija"
 msgid ""
 "trade-off between superpixel regularity and adherence to object boundaries"
 msgstr ""
+"Kompromis med regularnostjo slikovnih nadtočk in upoštevanjem meja predmeta"
 
 #: operations/common/waterpixels.c:52
 msgid "Superpixels color"
@@ -4580,14 +4577,13 @@ msgid "Waterpixels"
 msgstr "Vodene slikovne točke"
 
 #: operations/common/waterpixels.c:545
-#, fuzzy
 msgid "Superpixels based on the watershed transformation"
 msgstr "Super slikovne točke, temelječe na razvodni transformaciji"
 
 #: operations/common/watershed-transform.c:26
 #: operations/common/watershed-transform.c:27
 msgid "Index of component flagging unlabelled pixels"
-msgstr ""
+msgstr "Indeks označevanja neoznačenih slikovnih točk s komponentami"
 
 #: operations/common/watershed-transform.c:30
 msgid "flag"
@@ -4598,7 +4594,6 @@ msgid "Pointer to flag value for unlabelled pixels"
 msgstr "Kazalec na vrednost zastavice za neoznačene slikovne točke"
 
 #: operations/common/watershed-transform.c:489
-#, fuzzy
 msgid "Watershed Transform"
 msgstr "Razvodna transformacija"
 
@@ -4611,6 +4606,13 @@ msgid ""
 "absent, all labellized pixels have the same priority and propagated labels "
 "have a lower priority."
 msgstr ""
+"Razmnoževanje oznake z razvodno transformacijo. Izhodni medpomnilnik bo "
+"obdržal vnosno obliko. Neoznačene slikovne točke so označene z dano "
+"vrednostjo zastavice (privzeto: zadnja komponenta z vrednostjo NULL). "
+"Zunanji medpomnilnik (aux) je slika »Y u8«, ki predstavlja prednostne ravni "
+"(nižja vrednost predstavlja višjo prioriteto). Če zunanjega (aux) ni, imajo "
+"vse označene slikovne točke enako prednost, razmnoževalne oznake pa imajo "
+"nižjo prednost."
 
 #: operations/common/wavelet-blur-1d.c:29 operations/common/wavelet-blur.c:28
 msgid "Radius of the wavelet blur"
@@ -4625,6 +4627,8 @@ msgid ""
 "This blur is used for the wavelet decomposition filter, each pixel is "
 "computed from another by the HAT transform"
 msgstr ""
+"Ta zabrisanost se uporablja za filter razgradnje valčkov, vsaka slikovna "
+"točka se izračuna iz druge s pomočjo HAT-transformacije"
 
 #: operations/common/weighted-blend.c:176
 msgid "Weighted Blend"
@@ -4670,7 +4674,7 @@ msgstr "Ravnanje z robovi"
 
 #: operations/common-cxx/distance-transform.cc:41
 msgid "How areas outside the input are considered when calculating distance"
-msgstr ""
+msgstr "Kako se pri izračunu razdalje upoštevajo območja zunaj vhoda"
 
 #: operations/common-cxx/distance-transform.cc:43
 msgid "Threshold low"
@@ -4824,7 +4828,6 @@ msgid "Gamma factor for blend-level spacing"
 msgstr "Faktor gama za razmik na ravni spajanja"
 
 #: operations/common-cxx/piecewise-blend.cc:346
-#, fuzzy
 msgid "Piecewise Blend"
 msgstr "Zlivanje po koščkih"
 
@@ -5634,7 +5637,7 @@ msgstr "Bočenje"
 
 #: operations/common-gpl3+/emboss.c:27
 msgid "Bumpmap (preserve original colors)"
-msgstr ""
+msgstr "Preslikaj odtis (ohrani izvirne barve)"
 
 #: operations/common-gpl3+/emboss.c:30
 msgid "Emboss Type"
@@ -6252,9 +6255,8 @@ msgid "Zoom motion blur"
 msgstr "Transfokacija zabrisanosti gibanja"
 
 #: operations/common-gpl3+/noise-slur.c:157
-#, fuzzy
 msgid "Noise Slur"
-msgstr "Nerazločen/Razmazan šum"
+msgstr "Nerazločen šum"
 
 #: operations/common-gpl3+/noise-slur.c:161
 msgid "Randomly slide some pixels downward (similar to melting)"
@@ -6313,7 +6315,6 @@ msgstr ""
 "medpomnilnikom na zunanjem (aux) prostoru."
 
 #: operations/common-gpl3+/oilify.c:35
-#, fuzzy
 msgid ""
 "Exponent for processing; controls smoothness - can be scaled per pixel with "
 "a buffer on the aux2 pad."
@@ -7193,12 +7194,18 @@ msgid ""
 "buffer where gegl_buffer_list_valid_rectangles returns the part of the cache "
 "that is valid."
 msgstr ""
+"NULL ali GeglBuffer, ki vsebuje predpomnjene rezultate upodabljanja, je to "
+"poseben medpomnilnik, gegl_buffer_list_valid_rectangles vrne del "
+"predpomnilnika, ki je veljaven."
 
 #: operations/core/cache.c:87
 msgid ""
 "An explicit caching node, caches results and should provide faster "
 "recomputation if what is cached by it is expensive but isn't changing."
 msgstr ""
+"Izrecni predpomnilno vozlišče, predpomni rezultate in bi moralo zagotoviti "
+"hitrejši ponovni izračun, če je to, kar je predpomnjeno, drago, vendar se ne "
+"spreminja."
 
 #: operations/core/cast-format.c:25
 msgid "Input format"
@@ -7213,7 +7220,6 @@ msgid "Output format"
 msgstr "Izhodni zapis"
 
 #: operations/core/cast-format.c:110
-#, fuzzy
 msgid "Cast Format"
 msgstr "Oddaj zapis"
 
@@ -7222,6 +7228,8 @@ msgid ""
 "Cast the data between input_format and output_format, both formats must have "
 "the same bpp"
 msgstr ""
+"Oddajte podatke med vhodnim_zapisom in izhodnim_zapisom, obe obliki morata "
+"imeti enak bpp"
 
 #: operations/core/cast-space.c:25
 msgid "Name"
@@ -7258,6 +7266,9 @@ msgid ""
 "Override the specified color space setting a pointer to a format override "
 "the string property and setting an aux pad overrides both. "
 msgstr ""
+"Preglasi navedeno nastavitev barvnega prostora; kazalec na preglasitev "
+"lastnosti niza z zapisom in določitvijo pomožnega medpomnilniškega prostora "
+"preglasi oba. "
 
 #: operations/core/clone.c:25
 msgid "Reference"
@@ -7272,7 +7283,6 @@ msgid "Clone"
 msgstr "Kloniraj"
 
 #: operations/core/clone.c:110
-#, fuzzy
 msgid ""
 "Clone a buffer, this is the same as gegl:nop but can get special treatment "
 "to get more human readable references in serializations/UI."
@@ -7304,6 +7314,10 @@ msgid ""
 "management, setting a pointer to a format overrides the string property and "
 "setting an aux pad overrides both. "
 msgstr ""
+"Nastavite barvni prostor, s katerim so ustvarjeni naslednji zapisi babl v "
+"cevovodu, in profil ICC, potencialno vgrajen za zunanje upravljanje barv, "
+"tako da nastavi kazalec na obliko, kar preglasi lastnost niza in nastavitev "
+"zunanjega prostora (aux) preglasi oboje. "
 
 #: operations/core/crop.c:45 operations/transform/reset-origin.c:95
 msgid "Reset origin"
@@ -7320,6 +7334,10 @@ msgid ""
 "nothing is connected on aux, the bounding box of the node at the producing "
 "end of the input chain is used."
 msgstr ""
+"Obreže medpomnilnik, če je pomožni medpomnilniški prostor povezan z "
+"uporabljenim obrobnim okvirom povezanega vozlišča. Če je področje obrezave "
+"nastavljeno na 0x0 pri 0,0 in ni nič povezano na vhod, je uporabljen obrobni "
+"okvir vozlišča pri izdelujočem koncu vhodne verige."
 
 #: operations/core/load.c:31 operations/external/jp2-load.c:27
 #: operations/external/jpg-load.c:26 operations/external/pdf-load.c:27
@@ -7508,7 +7526,6 @@ msgid "video bitrate tolerance"
 msgstr "Toleranca bitne hitrosti videa"
 
 #: operations/external/ff-save.c:61
-#, fuzzy
 msgid "keyint-min"
 msgstr "keyint-min"
 
@@ -7525,22 +7542,18 @@ msgid "qmax"
 msgstr "qmax"
 
 #: operations/external/ff-save.c:65
-#, fuzzy
 msgid "max_qdiff"
 msgstr "max_qdiff"
 
 #: operations/external/ff-save.c:66
-#, fuzzy
 msgid "me_range"
 msgstr "me_range"
 
 #: operations/external/ff-save.c:67
-#, fuzzy
 msgid "max_b_frames"
 msgstr "max_b_frames"
 
 #: operations/external/ff-save.c:68
-#, fuzzy
 msgid "gop-size"
 msgstr "gop-size"
 
@@ -7561,7 +7574,6 @@ msgid "i-quant-offset"
 msgstr "i-kvant-odmik"
 
 #: operations/external/ff-save.c:73
-#, fuzzy
 msgid "me-subpel-quality"
 msgstr "me-subpel-quality"
 
@@ -8414,6 +8426,10 @@ msgid ""
 "aux as operands. The result is the evaluation of the expression result = "
 "input + value"
 msgstr ""
+"Matematična operacija seštevanja, izvede operacijo na posamezni slikovni "
+"točki, pri tem pa uporabi konstanto v »vrednosti« ali ustrezno slikovno "
+"točko iz medpomnilnika iz zunanjosti (aux) kot operanda. Rezultat je "
+"vrednotenje rezultata izraza = vnos + vrednost"
 
 #: operations/generated/clear.c:133
 msgid "Porter Duff operation clear (d = 0.0f)"
@@ -8462,6 +8478,10 @@ msgid ""
 "aux as operands. The result is the evaluation of the expression result = "
 "value==0.0f?0.0f:input/value"
 msgstr ""
+"Matematična operacija deljenja, izvede operacijo na posamezni slikovni "
+"točki, pri tem pa uporabi konstanto v »vrednosti« ali ustrezno slikovno "
+"točko iz medpomnilnika iz zunanjosti (aux) kot operanda. Rezultat je "
+"vrednotenje rezultata izraza = vnos ==0.0f?0.0f:vnos/vrednost"
 
 #: operations/generated/dst-atop.c:133
 msgid "Porter Duff operation dst-atop (d = cB * aA + cA * (1.0f - aB))"
@@ -8498,6 +8518,11 @@ msgid ""
 "aux as operands. The result is the evaluation of the expression result = "
 "(input >= 0.0f ? powf (input, value) : -powf (-input, value))"
 msgstr ""
+"Matematična operacija gama, izvaja operacijo na posamezni slikovni točki, z "
+"uporabo konstante, ki je določena v »vrednosti« ali ustrezni slikovni točki "
+"iz medpomnilnika iz zunanjosti (aux) kot operanda. Rezultat je vrednotenje "
+"izraza rezultat = (vhod >= 0.0f ? powf (vhod, vrednost) : -powf (-vhod, "
+"vrednost))"
 
 #: operations/generated/hard-light.c:188
 msgid ""
@@ -8524,6 +8549,10 @@ msgid ""
 "aux as operands. The result is the evaluation of the expression result = "
 "input * value"
 msgstr ""
+"Matematična operacija množenja, izvede operacijo na posamezni slikovni "
+"točki, pri tem pa uporabi konstanto v »vrednosti« ali ustrezno slikovno "
+"točko iz medpomnilnika iz zunanjosti (aux) kot operanda. Rezultat je "
+"vrednotenje rezultata izraza = vnos * vrednost"
 
 #: operations/generated/overlay.c:188
 msgid ""
@@ -8582,6 +8611,10 @@ msgid ""
 "aux as operands. The result is the evaluation of the expression result = "
 "input - value"
 msgstr ""
+"Matematična operacija odštevanja, izvede operacijo na posamezni slikovni "
+"točki, pri tem pa uporabi konstanto v »vrednosti« ali ustrezno slikovno "
+"točko iz medpomnilnika iz zunanjosti (aux) kot operanda. Rezultat je "
+"vrednotenje rezultata izraza = vnos - vrednost"
 
 #: operations/generated/xor.c:155
 msgid "Porter Duff operation xor (d = cA * (1.0f - aB)+ cB * (1.0f - aA))"
@@ -8663,6 +8696,9 @@ msgid ""
 "bounding-box border, if aux pad is not connected the op tries to figure out "
 "which bounding box' border applies."
 msgstr ""
+"Poravna polje vhodnega pravokotnika z obrobo cilja skladanja ali obrobo "
+"zunanjega okvira; če pomožni medpomnilniški prostor ni povezan z "
+"operatorjem, skuša ugotoviti, katera obroba zunanjega okvira je veljavna."
 
 #: operations/transform/reflect.c:27
 msgid "Direction vector's X component"
@@ -8677,6 +8713,8 @@ msgid ""
 "Reflect an image about a line, whose direction is specified by the vector "
 "that is defined by the x and y properties. "
 msgstr ""
+"Odseva sliko po črti, katere smer določa vektor, ki ga določata lastnosti x "
+"in y. "
 
 #: operations/transform/reset-origin.c:98
 msgid "Translate top-left to 0,0."
@@ -8845,6 +8883,13 @@ msgid ""
 "RRT; without desaturation of highlights and shadows nor red hue "
 "modifications."
 msgstr ""
+"Krivulja za preverjanje/kartiranje HDR na SDR, ki je približek ACES RRT "
+"(referenčna transformacija upodabljanja). Pri podajanju prizoru prisojenih "
+"posnetkov v to operacijo je rezultat primeren za prikaz napotenemu "
+"preoblikovanju v SRGB ali izhodni zaslon z uporabo običajnih matričnih "
+"profilov ICC, kakršen je ODT. Upoštevajte, da je za zdaj to le približevanje "
+"ACES RRT; brez desaturacije poudarkov in senc ter brez rdečih sprememb "
+"obarvanosti."
 
 #: operations/workshop/band-tune.c:24
 msgid "Detail band"
@@ -8853,12 +8898,15 @@ msgstr "Podrobni pas"
 #: operations/workshop/band-tune.c:25
 msgid "Features size for detail band, used for noise removal."
 msgstr ""
+"Odlikuje ga velikost za pas podrobnosti, uporablja se za odstranjevanje šuma."
 
 #: operations/workshop/band-tune.c:29
 msgid ""
 "Detail scale, negative values diminish signal in detail band, positive "
 "values increase signal."
 msgstr ""
+"Podrobna merska lestvica, negativne vrednosti oslabijo signal v podrobnem "
+"pasu, pozitivne vrednosti ojačajo signal"
 
 #: operations/workshop/band-tune.c:30 operations/workshop/band-tune.c:46
 msgid ""
@@ -8902,19 +8950,18 @@ msgstr "Vizualiziraj masko za prilagajanje"
 
 #: operations/workshop/band-tune.c:217
 msgid "Band tune"
-msgstr ""
+msgstr "Pasovno uglaševanje"
 
 #: operations/workshop/band-tune.c:219
-#, fuzzy
 msgid ""
 "Parametric band equalizer for tuning frequency bands of image, the op "
 "provides abstracted input parameters that control two difference of "
 "gaussians driven band pass filters used as adjustments of the image signal."
 msgstr ""
-"Parametrični izenačevalnik pasu za uglaševanje frekvenčnih pasov slike, op "
-"zagotavlja abstraktne vhodne parametre, ki nadzorujejo dve razliki gaussovih "
-"filtrov pasovnega prehoda, ki se uporabljajo kot prilagoditve slikovnega "
-"signala."
+"Parametrični izenačevalnik po pasovih za uglaševanje frekvenčnih pasov "
+"slike, op zagotavlja abstraktne vhodne parametre, ki nadzorujejo dve razliki "
+"Gaussovih filtrov pasovnega prehoda, ki se uporabljajo kot prilagoditve "
+"slikovnega signala."
 
 #: operations/workshop/bilateral-filter-fast.c:39
 msgid "Smoothness"
@@ -8925,9 +8972,8 @@ msgid "Level of smoothness"
 msgstr "Raven uglajenosti"
 
 #: operations/workshop/bilateral-filter-fast.c:501
-#, fuzzy
 msgid "Bilateral Box Filter"
-msgstr "Filter dvostranskega polja"
+msgstr "Dvostranski filter polja"
 
 #: operations/workshop/bilateral-filter-fast.c:506
 msgid ""
@@ -8986,7 +9032,6 @@ msgid "Connected Components"
 msgstr "Povezane komponente"
 
 #: operations/workshop/connected-components.c:290
-#, fuzzy
 msgid ""
 "Fills each connected region of the input, separated from the rest of the "
 "input by a given color, with a unique color."
@@ -9076,6 +9121,8 @@ msgid ""
 "Pixel level filter/composer scripting prototyping with lua. See http://"
 "pippin.gimp.org/image-processing/ for further details."
 msgstr ""
+"Skriptiranje prototipov filtra/skladatelja z lua na ravni slikovne točke. "
+"Glejte http://pippin.gimp.org/image-processing/ za več podrobnosti."
 
 #: operations/workshop/external/paint-select.cc:30
 msgid "Add"
@@ -9094,9 +9141,8 @@ msgid "Use local region"
 msgstr "Uporabi krajevno področje"
 
 #: operations/workshop/external/paint-select.cc:40
-#, fuzzy
 msgid "Perform graphcut in a local region"
-msgstr "Izvajanje grafičnih izrezov v lokalnem področju"
+msgstr "Izvajanje grafičnih izrezov v krajevnem področju"
 
 #: operations/workshop/external/paint-select.cc:42
 msgid "region-x"
