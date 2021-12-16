@@ -27,7 +27,7 @@ build-image:
     - mkdir -p /kaniko/.docker
     - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
     - echo "FROM archlinux:base-20210214.0.15477" > Dockerfile
-    - echo "RUN pacman -Syu --noconfirm --ignore glibc --needed git base-devel ccache meson lcms2 gobject-introspection vala pacman-contrib && pacman -Scc " >> Dockerfile
+    - echo "RUN pacman -Sy archlinux-keyring && pacman -Syu --noconfirm --ignore glibc --needed git base-devel ccache meson lcms2 gobject-introspection vala pacman-contrib && pacman -Scc " >> Dockerfile
 
     - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $CI_REGISTRY_IMAGE:ci-latest --cache=true --cache-ttl=120h
 
@@ -40,6 +40,7 @@ build-image:
     GIT_DEPTH: "5"
     CCACHE_MAXSIZE: "32Mi"
   before_script:
+    - pacman -Sy archlinux-keyring
     - pacman -Syu --ignore glibc --noconfirm --needed git base-devel ccache meson lcms2 gobject-introspection vala
     - git clone --depth=$GIT_DEPTH https://gitlab.gnome.org/GNOME/babl.git _babl
     - cd _babl
@@ -75,6 +76,7 @@ babl-master:
     paths:
     - _build/meson-logs/*
   before_script:
+    - pacman -Sy archlinux-keyring
     - pacman -Syu --ignore glibc --noconfirm --needed
         base-devel ccache meson
         asciidoc
