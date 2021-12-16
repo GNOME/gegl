@@ -53,7 +53,8 @@ load_cache (GeglProperties *op_magick_load)
 
       argv[1] = g_strdup_printf ("%s[0]", op_magick_load->path);
       argv[2] = filename;
-      if (!g_spawn_sync (NULL, argv, NULL, G_SPAWN_DEFAULT, 
+      if (!g_spawn_sync (NULL, argv, NULL,
+                         G_SPAWN_STDOUT_TO_DEV_NULL|G_SPAWN_STDERR_TO_DEV_NULL,
                          NULL, NULL, NULL, NULL, NULL, NULL))
         g_warning ("Error executing ImageMagick convert program");
 
