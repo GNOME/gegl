@@ -55,7 +55,7 @@ static void path_changed (GeglPath *path,
                           gpointer userdata);
 
 #include "gegl-op.h"
-#include "ctx.h"
+#include "ctx/ctx.h"
 
 static void path_changed (GeglPath *path,
                           const GeglRectangle *roi,

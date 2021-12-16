@@ -118,6 +118,9 @@ gegl_common_sources = files(
   'write-buffer.c',
 )
 
+gegl_common_sources += 'ctx/ctx.c'
+gegl_common_sources += 'ctx/ctx.h'
+
 gegl_common_sources += custom_target('module_common.c',
   input : [ gegl_common_sources ],
   output: [ 'module_common.c' ],
