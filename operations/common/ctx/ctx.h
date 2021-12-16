@@ -1,4 +1,4 @@
-/* ctx git commit: 4f1952c */
+/* ctx git commit: 6bfbdd4 */
 /* 
  * ctx.h is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -49,7 +49,9 @@ extern "C" {
 #include <stdint.h>
 #include <string.h>
 #include <stdio.h>
+#if CTX_EVENTS
 #include <sys/select.h> // XXX if events?
+#endif
 #endif
 
 typedef struct _Ctx            Ctx;
@@ -1824,11 +1826,12 @@ float ctx_term_get_cell_height (Ctx *ctx);
 #if 1 // CTX_VT
 
 typedef struct _VT VT;
-void vt_feed_keystring  (VT *vt, CtxEvent *event, const char *str);
-void vt_paste           (VT *vt, const char *str);
-char *vt_get_selection  (VT *vt);
-long vt_rev             (VT *vt);
-int  vt_has_blink       (VT *vt);
+void vt_feed_keystring    (VT *vt, CtxEvent *event, const char *str);
+void vt_paste             (VT *vt, const char *str);
+char *vt_get_selection    (VT *vt);
+long vt_rev               (VT *vt);
+int  vt_has_blink         (VT *vt);
+int ctx_vt_had_alt_screen (VT *vt);
 
 int  ctx_clients_need_redraw   (Ctx *ctx);
 void ctx_clients_handle_events (Ctx *ctx);
@@ -4793,7 +4796,9 @@ static inline CtxList *ctx_list_find_custom (CtxList *list,
 #define CTX_MAX_THREADS          8 // runtime is max of cores/2 and this
 #endif
 
-
+#ifndef CTX_FRAGMENT_SPECIALIZE
+#define CTX_FRAGMENT_SPECIALIZE 1
+#endif
 
 #define CTX_RASTERIZER_EDGE_MULTIPLIER  1024
                                         // increasing this to 2048
@@ -4906,12 +4911,18 @@ int ctx_a85len (const char *src, int count);
 #ifndef __CTX_EXTRA_H
 #define __CTX_EXTRA_H
 
+#if CTX_FORCE_INLINES
+#define CTX_INLINE inline __attribute__((always_inline))
+#else
+#define CTX_INLINE inline
+#endif
+
 
 #define CTX_CLAMP(val,min,max) ((val)<(min)?(min):(val)>(max)?(max):(val))
-static inline int   ctx_mini (int a, int b)     { return (a < b) * a + (a >= b) * b; }
-static inline float ctx_minf (float a, float b) { return (a < b) * a + (a >= b) * b; }
-static inline int   ctx_maxi (int a, int b)     { return (a > b) * a + (a <= b) * b; }
-static inline float ctx_maxf (float a, float b) { return (a > b) * a + (a <= b) * b; }
+static CTX_INLINE int   ctx_mini (int a, int b)     { return (a < b) * a + (a >= b) * b; }
+static CTX_INLINE float ctx_minf (float a, float b) { return (a < b) * a + (a >= b) * b; }
+static CTX_INLINE int   ctx_maxi (int a, int b)     { return (a > b) * a + (a <= b) * b; }
+static CTX_INLINE float ctx_maxf (float a, float b) { return (a > b) * a + (a <= b) * b; }
 
 
 typedef enum CtxOutputmode
@@ -4929,16 +4940,11 @@ typedef enum CtxOutputmode
 
 
 
-#if CTX_FORCE_INLINES
-#define CTX_INLINE inline __attribute__((always_inline))
-#else
-#define CTX_INLINE inline
-#endif
 
 static inline float ctx_pow2 (float a) { return a * a; }
 #if CTX_MATH
 
-static inline float
+static CTX_INLINE float
 ctx_fabsf (float x)
 {
   union
@@ -4950,7 +4956,7 @@ ctx_fabsf (float x)
   return u.f;
 }
 
-static inline float
+static CTX_INLINE float
 ctx_invsqrtf (float x)
 {
   union
@@ -4967,7 +4973,7 @@ ctx_invsqrtf (float x)
   return x;
 }
 
-static inline float
+static CTX_INLINE float
 ctx_invsqrtf_fast (float x)
 {
   union
@@ -5055,7 +5061,7 @@ ctx_sinf (float x)
          (x + CTX_PI - 0.00000008742278f) * p1 * x;
 }
 
-static inline float ctx_atan2f (float y, float x)
+static CTX_INLINE float ctx_atan2f (float y, float x)
 {
   float atan, z;
   if ( x == 0.0f )
@@ -5086,17 +5092,17 @@ static inline float ctx_atan2f (float y, float x)
 }
 
 
-static inline float ctx_atanf (float a)
+static CTX_INLINE float ctx_atanf (float a)
 {
   return ctx_atan2f ( (a), 1.0f);
 }
 
-static inline float ctx_asinf (float x)
+static CTX_INLINE float ctx_asinf (float x)
 {
   return ctx_atanf ( (x) * (ctx_invsqrtf (1.0f-ctx_pow2 (x) ) ) );
 }
 
-static inline float ctx_acosf (float x)
+static CTX_INLINE float ctx_acosf (float x)
 {
   return ctx_atanf ( (ctx_sqrtf (1.0f-ctx_pow2 (x) ) / (x) ) );
 }
@@ -5106,16 +5112,16 @@ CTX_INLINE static float ctx_cosf (float a)
   return ctx_sinf ( (a) + CTX_PI/2.0f);
 }
 
-static inline float ctx_tanf (float a)
+static CTX_INLINE float ctx_tanf (float a)
 {
   return (ctx_cosf (a) /ctx_sinf (a) );
 }
-static inline float
+static CTX_INLINE float
 ctx_floorf (float x)
 {
   return (int)x; // XXX
 }
-static inline float
+static CTX_INLINE float
 ctx_expf (float x)
 {
   union { uint32_t i; float f; } v =
@@ -8634,6 +8640,8 @@ ctx_base642bin (const char    *ascii,
 #include <stdio.h>
 #include <string.h>
 
+#if CTX_FORMATTER
+
 static int ctx_yenc (const char *src, char *dst, int count)
 {
   int out_len = 0;
@@ -8664,7 +8672,9 @@ static int ctx_yenc (const char *src, char *dst, int count)
   dst[out_len]=0;
   return out_len;
 }
+#endif
 
+#if CTX_PARSER
 static int ctx_ydec (const char *tmp_src, char *dst, int count)
 {
   const char *src = tmp_src;
@@ -8712,6 +8722,7 @@ static int ctx_ydec (const char *tmp_src, char *dst, int count)
 #endif
   return out_len;
 }
+#endif
 
 #if 0
 int main (){
@@ -8989,7 +9000,7 @@ __ctx_file_get_contents (const char     *path,
 
 
 
-static inline int
+static CTX_INLINE int
 ctx_conts_for_entry (CtxEntry *entry)
 {
     switch (entry->code)
@@ -9606,18 +9617,18 @@ ctx_add_data (Ctx *ctx, void *data, int length)
 
 int ctx_drawlist_add_u32 (CtxDrawlist *drawlist, CtxCode code, uint32_t u32[2])
 {
-  CtxEntry entry = {code, {{0},}};
-  entry.data.u32[0] = u32[0];
-  entry.data.u32[1] = u32[1];
-  return ctx_drawlist_add_single (drawlist, &entry);
+  CtxEntry entry[3] = {{code, {{0},}},};
+  entry[0].data.u32[0] = u32[0];
+  entry[0].data.u32[1] = u32[1];
+  return ctx_drawlist_add_single (drawlist, &entry[0]);
 }
 
 int ctx_drawlist_add_data (CtxDrawlist *drawlist, const void *data, int length)
 {
-  CtxEntry entry = {CTX_DATA, {{0},}};
-  entry.data.u32[0] = 0;
-  entry.data.u32[1] = 0;
-  int ret = ctx_drawlist_add_single (drawlist, &entry);
+  CtxEntry entry[3] = {{CTX_DATA, {{0},}}};
+  entry[0].data.u32[0] = 0;
+  entry[0].data.u32[1] = 0;
+  int ret = ctx_drawlist_add_single (drawlist, &entry[0]);
   if (CTX_UNLIKELY(!data)) { return -1; }
   int length_in_blocks;
   if (length <= 0) { length = strlen ( (char *) data) + 1; }
@@ -9633,10 +9644,11 @@ int ctx_drawlist_add_data (CtxDrawlist *drawlist, const void *data, int length)
   memcpy (&drawlist->entries[ret+1], data, length);
   {
     //int reverse = ctx_drawlist_add (drawlist, CTX_DATA_REV);
-    CtxEntry entry = {CTX_DATA_REV, {{0},}};
-    entry.data.u32[0] = length;
-    entry.data.u32[1] = length_in_blocks;
-    ctx_drawlist_add_single (drawlist, &entry);
+    CtxEntry entry[3] = {{CTX_DATA_REV, {{0},}}};
+    entry[0].data.u32[0] = length;
+    entry[0].data.u32[1] = length_in_blocks;
+    ctx_drawlist_add_single (drawlist, &entry[0]);
+
     /* this reverse marker exist to enable more efficient
        front to back traversal, can be ignored in other
        direction, is this needed after string setters as well?
@@ -10090,7 +10102,7 @@ ctx_drawlist_bitpack (CtxDrawlist *drawlist, int start_pos)
 
 #endif
 
-static void
+static inline void
 ctx_drawlist_compact (CtxDrawlist *drawlist)
 {
 #if CTX_BITPACK_PACKER
@@ -11027,6 +11039,7 @@ void ctx_cmyk (Ctx *ctx, float c, float m, float y, float k)
   ctx_color_raw (ctx, CTX_CMYK, components, 0);
 }
 
+#if 0
 static void ctx_dcmyk_raw (Ctx *ctx, float c, float m, float y, float k, int stroke)
 {
   float components[5]={c,m,y,k,1.0f};
@@ -11043,6 +11056,7 @@ static void ctx_dcmyka_raw (Ctx *ctx, float c, float m, float y, float k, float 
   };
   ctx_process (ctx, command);
 }
+#endif
 
 void ctx_dcmyk_stroke   (Ctx *ctx, float c, float m, float y, float k)
 {
@@ -12303,6 +12317,8 @@ ctx_fragment_image_rgb8_RGBA8_box_swap_red_green (CtxRasterizer *rasterizer,
   ctx_fragment_swap_red_green_u8 (out, count);
 }
 
+
+#if CTX_FRAGMENT_SPECIALIZE
 static void
 ctx_fragment_image_rgb8_RGBA8_bi (CtxRasterizer *rasterizer,
                                   float x,
@@ -12926,6 +12942,7 @@ ctx_fragment_image_rgba8_RGBA8_bi (CtxRasterizer *rasterizer,
     rgba += 4;
   }
 }
+#endif
 
 #define ctx_clampi(val,min,max) \
      ctx_mini (ctx_maxi ((val), (min)), (max))
@@ -13034,6 +13051,8 @@ ctx_fragment_image_yuv420_RGBA8_nearest (CtxRasterizer *rasterizer,
   }
 }
 
+#if CTX_FRAGMENT_SPECIALIZE
+
 static void
 ctx_fragment_image_rgba8_RGBA8_box_swap_red_green (CtxRasterizer *rasterizer,
                                     float x,
@@ -13112,6 +13131,7 @@ ctx_fragment_image_rgba8_RGBA8 (CtxRasterizer *rasterizer,
                       rasterizer->format->dither_green);
 #endif
 }
+#endif
 
 static void
 ctx_fragment_image_gray1_RGBA8 (CtxRasterizer *rasterizer, float x, float y, void *out, int count, float dx, float dy)
@@ -13332,9 +13352,11 @@ static void ctx_fragment_image_RGBAF (CtxRasterizer *rasterizer, float x, float 
   CtxBuffer *buffer = gstate->source_fill.texture.buffer;
   switch (buffer->format->bpp)
     {
+#if CTX_FRAGMENT_SPECIALIZE
       case 1:  ctx_fragment_image_gray1_RGBA8 (rasterizer, x, y, rgba, count, dx, dy); break;
       case 24: ctx_fragment_image_rgb8_RGBA8 (rasterizer, x, y, rgba, count, dx, dy);  break;
       case 32: ctx_fragment_image_rgba8_RGBA8 (rasterizer, x, y, rgba, count, dx, dy); break;
+#endif
       default: ctx_fragment_image_RGBA8 (rasterizer, x, y, rgba, count, dx, dy);       break;
     }
   for (int c = 0; c < 4 * count; c ++) { outf[c] = ctx_u8_to_float (rgba[c]); }
@@ -13371,6 +13393,7 @@ static CtxFragment ctx_rasterizer_get_fragment_RGBA8 (CtxRasterizer *rasterizer)
           return ctx_fragment_image_yuv420_RGBA8_nearest;
         }
         else
+#if CTX_FRAGMENT_SPECIALIZE
         switch (buffer->format->bpp)
           {
             case 1:  return ctx_fragment_image_gray1_RGBA8;
@@ -13445,6 +13468,10 @@ static CtxFragment ctx_rasterizer_get_fragment_RGBA8 (CtxRasterizer *rasterizer)
               }
             default: return ctx_fragment_image_RGBA8;
           }
+#else
+          return ctx_fragment_image_RGBA8;
+#endif
+
       case CTX_SOURCE_COLOR:           return ctx_fragment_color_RGBA8;
 #if CTX_GRADIENTS
       case CTX_SOURCE_LINEAR_GRADIENT: return ctx_fragment_linear_gradient_RGBA8;
@@ -14414,7 +14441,7 @@ ctx_float_clear_normal (int components, CTX_COMPOSITE_ARGUMENTS)
 }
 
 
-static void
+static inline void
 ctx_float_source_over_normal_color (int components, CTX_COMPOSITE_ARGUMENTS)
 {
   float *dstf = (float*)dst;
@@ -14884,7 +14911,7 @@ ctx_RGBAF_clear_normal (CTX_COMPOSITE_ARGUMENTS)
   ctx_float_clear_normal (4, rasterizer, dst, src, x0, coverage, count);
 }
 
-#if 1
+#if 0
 static void
 ctx_RGBAF_source_over_normal_color (CTX_COMPOSITE_ARGUMENTS)
 {
@@ -15053,9 +15080,11 @@ static void ctx_fragment_image_GRAYAF (CtxRasterizer *rasterizer, float x, float
   CtxBuffer *buffer = gstate->source_fill.texture.buffer;
   switch (buffer->format->bpp)
     {
+#if CTX_FRAGMENT_SPECIALIZE
       case 1:  ctx_fragment_image_gray1_RGBA8 (rasterizer, x, y, rgba, count, dx, dy); break;
       case 24: ctx_fragment_image_rgb8_RGBA8 (rasterizer, x, y, rgba, count, dx, dy);  break;
       case 32: ctx_fragment_image_rgba8_RGBA8 (rasterizer, x, y, rgba, count, dx, dy); break;
+#endif
       default: ctx_fragment_image_RGBA8 (rasterizer, x, y, rgba, count, dx, dy);       break;
     }
   for (int c = 0; c < 2 * count; c ++) { 
@@ -15991,9 +16020,11 @@ static void ctx_fragment_image_GRAYA8 (CtxRasterizer *rasterizer, float x, float
   CtxBuffer *buffer = gstate->source_fill.texture.buffer;
   switch (buffer->format->bpp)
     {
+#if CTX_FRAGMENT_SPECIALIZE
       case 1:  ctx_fragment_image_gray1_RGBA8 (rasterizer, x, y, rgba, count, dx, dy); break;
       case 24: ctx_fragment_image_rgb8_RGBA8 (rasterizer, x, y, rgba, count, dx, dy);  break;
       case 32: ctx_fragment_image_rgba8_RGBA8 (rasterizer, x, y, rgba, count, dx, dy); break;
+#endif
       default: ctx_fragment_image_RGBA8 (rasterizer, x, y, rgba, count, dx, dy);       break;
     }
   for (int i = 0; i < count; i++)
@@ -16913,7 +16944,7 @@ ctx_bezier_sample_1d (float x0, float x1, float x2, float x3, float dt)
   return ctx_lerpf (abbc, bccd, dt);
 }
 
-inline static void
+CTX_INLINE static void
 ctx_bezier_sample (float x0, float y0,
                    float x1, float y1,
                    float x2, float y2,
@@ -19354,6 +19385,7 @@ ctx_rasterizer_rel_quad_to (CtxRasterizer *rasterizer,
 }
 
 #define LENGTH_OVERSAMPLE 1
+#if 0
 static void
 ctx_rasterizer_pset (CtxRasterizer *rasterizer, int x, int y, uint8_t cov)
 {
@@ -19390,6 +19422,7 @@ ctx_rasterizer_pset (CtxRasterizer *rasterizer, int x, int y, uint8_t cov)
     }
   rasterizer->format->from_comp (rasterizer, x, &pixel[0], dst, 1);
 }
+#endif
 
 #if 0
 static void
@@ -21253,6 +21286,7 @@ void ctx_buffer_free (CtxBuffer *buffer)
   free (buffer);
 }
 
+#if 0
 static int
 ctx_texture_check_eid (Ctx *ctx, const char *eid, int *tw, int *th)
 {
@@ -21270,6 +21304,7 @@ ctx_texture_check_eid (Ctx *ctx, const char *eid, int *tw, int *th)
   }
   return -1;
 }
+#endif
 
 const char* ctx_texture_init (Ctx           *ctx,
                               const char    *eid,
@@ -26504,7 +26539,7 @@ static inline void ctx_parser_feed_byte (CtxParser *parser, char byte)
         parser->prev_byte = byte;
         return;
     }
-    else if (CTX_LIKELY(parser->state == CTX_PARSER_STRING_A85))
+    else if (parser->state == CTX_PARSER_STRING_A85)
     {
         /* since these are our largest bulk transfers, minimize
          * overhead for this case. */
