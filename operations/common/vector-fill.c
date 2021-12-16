@@ -203,9 +203,9 @@ process (GeglOperation       *operation,
         if (!is_cmyk)
         {
           if (device_space)
-            ctx_colorspace (ctx, CTX_COLOR_SPACE_DEVICE_RGB, device_space_ascii, strlen (device_space_ascii)+1);
+            ctx_colorspace (ctx, CTX_COLOR_SPACE_DEVICE_RGB, (guint8*)device_space_ascii, strlen (device_space_ascii)+1);
           if (color_space)
-            ctx_colorspace (ctx, CTX_COLOR_SPACE_USER_RGB, color_space_ascii, strlen (color_space_ascii)+1);
+            ctx_colorspace (ctx, CTX_COLOR_SPACE_USER_RGB, (guint8*)color_space_ascii, strlen (color_space_ascii)+1);
         }
 
         ctx_translate (ctx, -result->x, -result->y);
