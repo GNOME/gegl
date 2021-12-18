@@ -1,3 +1,33 @@
+GEGL-0.4.34 2021-12-19
+----------------------
+
+Operations:
+~~~~~~~~~~~
+
+magick-load: use g_spawn_async instead of system to run the image magick
+convert fallback - preventing shell expansion on non-escaped/filtered
+paths in constructed commandline.
+
+ripple: avoid a possible division by zero.
+
+Build:
+~~~~~~
+
+Explicit dependency specification in meson for generated CL files.
+
+ctx has been moved to be part of gegl-common.so nearer to the operations
+using it avoiding polluting the GEGL library symbol table with the ctx
+symbols.
+
+Contributors to this release:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Anders Jonsson, Asier Sarasua Garmendia, Boyuan Yang, dimspingos,
+Gavin Cui, Hugo Carvalho, Jehan Jordi Mas, krzygorz, Lukas Oberhuber,
+Marco Ciampa, Matej Urbančič, Øyvind Kolås, Rodrigo Lledó,
+Rūdolfs Mazurs and Simon McVittie.
+
+
 GEGL-0.4.32 2021-09-05
 ----------------------
 
