@@ -52,6 +52,10 @@ load_cache (GeglProperties *op_magick_load)
       filename = g_build_filename (g_get_tmp_dir (), "gegl-magick.png", NULL);
 
       argv[1] = g_strdup_printf ("%s[0]", op_magick_load->path);
+      if (argv[1][0]=='-') /* clobber argument if path starts with a dash     */
+        argv[1][0]='_';    /* which when controlling the file system leads
+                              to being able to selection parameters for
+                              imagemagic.  */
       argv[2] = filename;
       if (!g_spawn_sync (NULL, argv, NULL,
                          G_SPAWN_STDOUT_TO_DEV_NULL|G_SPAWN_STDERR_TO_DEV_NULL,
