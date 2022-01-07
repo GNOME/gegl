@@ -20,6 +20,7 @@
 #include "config.h"
 #include <glib.h>
 
+#include "gegl.h"
 #include "gegl-operation-handlers.h"
 #include "gegl-operation-handlers-private.h"
 
@@ -92,10 +93,27 @@ gegl_operation_handlers_get_util (GHashTable *handlers,
   if (handler != NULL)
     return handler;
 
-  g_warning ("No %s for content type \"%s\", falling back to \"%s\"",
-             handler_type, content_type, fallback);
+  if (fallback)
+    {
+      if (gegl_has_operation (fallback))
+        {
+          g_warning ("No %s for content type \"%s\", falling back to \"%s\"",
+                     handler_type, content_type, fallback);
+          return fallback;
+        }
+      else
+        {
+          g_warning ("No %s for content type \"%s\". Fallback \"%s\" is not available.",
+                     handler_type, content_type, fallback);
+        }
+    }
+  else
+    {
+      g_warning ("No %s for content type \"%s\"",
+                 handler_type, content_type);
+    }
 
-  return fallback;
+  return NULL;
 }
 
 const gchar *
