@@ -178,7 +178,6 @@ process (GeglOperation       *operation,
                                        0, 0, o->square_size);
         }
 
-      model->reference_image = input_image;
       model->display = display;
       props->first_run = FALSE;
     }
@@ -186,6 +185,9 @@ process (GeglOperation       *operation,
   if (have_model)
     {
       display = model->display;
+
+      display->image.gegl_buffer = output;
+      model->reference_image->gegl_buffer = input;
 
       npd_set_deformation_type (model, o->asap_deformation, o->mls_weights);
 
