@@ -82,3 +82,47 @@ gegl_common_gpl3 = shared_library('gegl-common-gpl3',
 )
 
 gegl_operations += gegl_common_gpl3
+
+if host_cpu_family == 'x86_64'
+
+  gegl_common_gpl3_x86_64_v2 = shared_library('gegl-common-gpl3-x86_64-v2',
+    gegl_common_gpl3_sources,
+    opencl_headers,
+    include_directories: [ rootInclude, geglInclude, ],
+    dependencies: [
+      babl,
+      glib,
+      json_glib,
+      math,
+    ],
+    link_with: [
+      gegl_lib,
+    ],
+    c_args: [ '-DGEGL_OP_BUNDLE' ] + x86_64_v2_flags,
+    name_prefix: '',
+    install: true,
+    install_dir: get_option('libdir') / api_name,
+  )
+  gegl_operations += gegl_common_gpl3_x86_64_v2
+  
+  gegl_common_gpl3_x86_64_v3 = shared_library('gegl-common-gpl3-x86_64-v3',
+    gegl_common_gpl3_sources,
+    opencl_headers,
+    include_directories: [ rootInclude, geglInclude, ],
+    dependencies: [
+      babl,
+      glib,
+      json_glib,
+      math,
+    ],
+    link_with: [
+      gegl_lib,
+    ],
+    c_args: [ '-DGEGL_OP_BUNDLE' ] + x86_64_v3_flags,
+    name_prefix: '',
+    install: true,
+    install_dir: get_option('libdir') / api_name,
+  )
+  gegl_operations += gegl_common_gpl3_x86_64_v3
+
+endif
