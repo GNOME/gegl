@@ -217,6 +217,42 @@ extern void (*gegl_buffer_ext_flush) (GeglBuffer *buffer, const GeglRectangle *r
 extern void (*gegl_buffer_ext_invalidate) (GeglBuffer *buffer, const GeglRectangle *rect);
 
 
+extern void (*gegl_resample_bilinear) (guchar *dest_buf,
+                                       const guchar *source_buf,
+                                       const GeglRectangle *dst_rect,
+                                       const GeglRectangle *src_rect,
+                                       gint                 s_rowstride,
+                                       gdouble              scale,
+                                       const Babl          *format,
+                                       gint                 d_rowstride);
+
+extern void (*gegl_resample_boxfilter)(guchar *dest_buf,
+                                       const guchar *source_buf,
+                                       const GeglRectangle *dst_rect,
+                                       const GeglRectangle *src_rect,
+                                       gint                 s_rowstride,
+                                       gdouble              scale,
+                                       const Babl          *format,
+                                       gint                 d_rowstride);
+
+extern void (*gegl_resample_nearest)(guchar *dest_buf,
+                                     const guchar *source_buf,
+                                     const GeglRectangle *dst_rect,
+                                     const GeglRectangle *src_rect,
+                                     gint                 s_rowstride,
+                                     gdouble              scale,
+                                     const gint           bpp,
+                                     gint                 d_rowstride);
+
+extern void (*gegl_downscale_2x2) (const Babl *format,
+                                   gint        src_width,
+                                   gint        src_height,
+                                   guchar     *src_data,
+                                   gint        src_rowstride,
+                                   guchar     *dst_data,
+                                   gint        dst_rowstride);
+
+
 #ifndef __GEGL_TILE_H__
 #define gegl_tile_get_data(tile)  ((tile)->data)
 #endif

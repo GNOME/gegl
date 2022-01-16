@@ -1,4 +1,3 @@
-
 gegl_library_build_dir = meson.current_build_dir()
 
 geglInclude = include_directories(
@@ -96,6 +95,13 @@ opencl_dep = declare_dependency(
     link_with : [gegl_sources],
 )
 
+
+if host_cpu_family == 'x86_64'
+  x86_64_extra = [lib_gegl_x86_64_v2, lib_gegl_x86_64_v3]
+else
+  x86_64_extra = []
+endif
+
 gegl_lib = library(api_name,
   gegl_sources,
   include_directories: [rootInclude, geglInclude],
@@ -107,6 +113,8 @@ gegl_lib = library(api_name,
     gmodule,
   ],
   c_args: gegl_cflags,
+
+  link_with: x86_64_extra,
   link_args: gegl_ldflags,
   install: true,
   version: so_version,

@@ -32,6 +32,7 @@
 #include "gegl-tile-storage.h"
 #include "gegl-buffer-private.h"
 #include "gegl-algorithms.h"
+#include "gegl-cpuaccel.h"
 
 
 G_DEFINE_TYPE (GeglTileHandlerZoom, gegl_tile_handler_zoom,
@@ -61,7 +62,17 @@ downscale (GeglTileHandlerZoom *zoom,
       if (src)
         {
           if (!zoom->downscale_2x2)
-            zoom->downscale_2x2 = gegl_downscale_2x2_get_fun (format);
+          {
+#ifdef ARCH_X86_64
+             GeglCpuAccelFlags cpu_accel = gegl_cpu_accel_get_support ();
+             if (cpu_accel & GEGL_CPU_ACCEL_X86_64_V3)
+               zoom->downscale_2x2 = gegl_downscale_2x2_get_fun_x86_64_v3 (format);
+             else if (cpu_accel & GEGL_CPU_ACCEL_X86_64_V2)
+               zoom->downscale_2x2 = gegl_downscale_2x2_get_fun_x86_64_v2 (format);
+             else
+#endif
+             zoom->downscale_2x2 = gegl_downscale_2x2_get_fun_generic (format);
+          }
 
           zoom->downscale_2x2 (format,
                                width, height,

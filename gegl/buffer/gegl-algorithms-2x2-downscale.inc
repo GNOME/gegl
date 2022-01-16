@@ -1,6 +1,6 @@
 #define S(a)   ((DOWNSCALE_SUM)(a))
 
-void
+static void
 DOWNSCALE_FUNCNAME (const Babl *format,
                     gint        src_width,
                     gint        src_height,

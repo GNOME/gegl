@@ -1,3 +1,18 @@
+if host_cpu_family == 'x86_64'
+
+  lib_gegl_x86_64_v2 = static_library('gegl-x86-64-v2', 'gegl-algorithms-x86-64-v2.c',
+    include_directories:[geglInclude, rootInclude],
+    dependencies:[glib, babl],
+    c_args: [gegl_cflags ] + x86_64_v2_flags
+  )
+
+  lib_gegl_x86_64_v3 = static_library('gegl-x86-64-v3', 'gegl-algorithms-x86-64-v3.c',
+    include_directories:[geglInclude, rootInclude],
+    dependencies:[glib, babl],
+    c_args: [gegl_cflags ] + x86_64_v3_flags
+  )
+endif
+
 gegl_sources += files(
   'gegl-algorithms.c',
   'gegl-buffer-access.c',

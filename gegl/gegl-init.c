@@ -83,6 +83,7 @@ guint gegl_debug_flags = 0;
 #include "graph/gegl-node-private.h"
 #include "gegl-random-private.h"
 #include "gegl-parallel-private.h"
+#include "gegl-cpuaccel.h"
 
 static gboolean  gegl_post_parse_hook (GOptionContext *context,
                                        GOptionGroup   *group,
@@ -164,7 +165,7 @@ gboolean gegl_is_main_thread (void)
   return g_thread_self () == main_thread;
 }
 
-void _gegl_init_u8_lut (void);
+void _gegl_init_buffer (int x86_64_version);
 
 void
 gegl_init (gint    *argc,
@@ -540,7 +541,13 @@ gegl_post_parse_hook (GOptionContext *context,
   gegl_config_parse_env (config);
 
   babl_init ();
-  _gegl_init_u8_lut ();
+
+  GeglCpuAccelFlags cpu_accel = gegl_cpu_accel_get_support ();
+  int x86_64_version = 0;
+  if (cpu_accel & GEGL_CPU_ACCEL_X86_64_V2) x86_64_version = 2;
+  if (cpu_accel & GEGL_CPU_ACCEL_X86_64_V3) x86_64_version = 3;
+
+  _gegl_init_buffer (x86_64_version);
 
 #ifdef GEGL_ENABLE_DEBUG
   {

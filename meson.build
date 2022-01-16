@@ -98,6 +98,8 @@ dep_ver += {
 }
 
 
+
+
 ################################################################################
 # Project infos
 
@@ -202,6 +204,12 @@ cflags_cpp = cflags_common + cflags_cpp
 
 add_project_arguments(cc.get_supported_arguments(cflags_c), language: 'c')
 add_project_arguments(cpp.get_supported_arguments(cflags_cpp), language: 'cpp')
+
+
+if host_cpu_family == 'x86_64'
+  x86_64_v2_flags = cc.get_supported_arguments(['-march=x86-64','-msse2', '-msse2','-msse4.1','-msse4.2','-mpopcnt','-mssse3'])
+  x86_64_v3_flags = x86_64_v2_flags + cc.get_supported_arguments(['-mavx','-mavx2','-mf16c','-mfma','-mmovbe', '-mbmi', '-mbmi2'])
+endif
 
 ################################################################################
 # Build Utilities
