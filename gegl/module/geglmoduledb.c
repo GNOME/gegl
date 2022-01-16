@@ -22,6 +22,7 @@
 #include "geglmodule.h"
 #include "geglmoduledb.h"
 #include "gegldatafiles.h"
+#include "gegl-cpuaccel.h"
 #include "gegl-config.h"
 
 enum
@@ -39,6 +40,8 @@ enum
 static void         gegl_module_db_finalize            (GObject      *object);
 
 static void         gegl_module_db_module_initialize   (const GeglDatafileData *file_data,
+                                                        gpointer                user_data);
+static void         gegl_module_db_module_search       (const GeglDatafileData *file_data,
                                                         gpointer                user_data);
 
 static GeglModule * gegl_module_db_module_find_by_path (GeglModuleDB *db,
@@ -225,6 +228,89 @@ gegl_module_db_get_load_inhibit (GeglModuleDB *db)
   return db->load_inhibit;
 }
 
+#ifdef ARCH_X86_64
+
+static gboolean
+gegl_str_has_one_of_suffixes (const char *str,
+                              char **suffixes)
+{
+  for (int i = 0; suffixes[i]; i++)
+  {
+    if (g_str_has_suffix (str, suffixes[i]))
+      return TRUE;
+  }
+  return FALSE;
+}
+
+static void
+gegl_module_db_remove_duplicates (GeglModuleDB *db)
+{
+#ifdef __APPLE__ /* G_MODULE_SUFFIX is defined to .so instead of .dylib */
+  char *suffix_list[] = {"-x86_64-v2.dylib","-x86_64-v3.dylib", NULL};
+#else
+  char *suffix_list[] = {"-x86_64-v2.so","-x86_64-v3.so", NULL};
+#endif
+
+  GList *suffix_entries = NULL;
+  int preferred = -1;
+  GeglCpuAccelFlags cpu_accel = gegl_cpu_accel_get_support ();
+  if (cpu_accel & GEGL_CPU_ACCEL_X86_64_V3) preferred = 1;
+  else if (cpu_accel & GEGL_CPU_ACCEL_X86_64_V2) preferred = 0;
+
+
+  for (GList *l = db->to_load; l; l = l->next)
+  {
+    char *filename = l->data;
+    if (gegl_str_has_one_of_suffixes (filename, suffix_list))
+    {
+       suffix_entries = g_list_prepend (suffix_entries, filename);
+    }
+  }
+
+  for (GList *l = suffix_entries; l; l = l->next)
+  {
+    db->to_load = g_list_remove (db->to_load, l->data);
+  }
+
+  if (preferred>-1)
+  {
+  
+  for (GList *l = suffix_entries; l; l = l->next)
+  {
+    char *filename = l->data;
+    if (g_str_has_suffix (filename, suffix_list[preferred]))
+    {
+       char *expected = g_strdup (filename);
+       char *e = strrchr (expected, '.');
+       char *p = e;
+       while (p && p>expected && *p != 'x' ) p--;
+       if (p && *p == 'x' && p[-1] == '-'){
+         p--;
+         strcpy (p, e);
+       }
+       for (GList *l2 = db->to_load; l2; l2=l2->next)
+       {
+         char *filename2 = l2->data;
+         if (!strcmp (filename2, expected))
+         {
+           g_free (l2->data);
+           l2->data = g_strdup (filename);
+         }
+       }
+       g_free (expected);
+    }
+  }
+
+  }
+
+  while (suffix_entries)
+  {
+    g_free (suffix_entries->data);
+    suffix_entries = g_list_remove (suffix_entries, suffix_entries->data);
+  }
+}
+#endif
+
 /**
  * gegl_module_db_load:
  * @db:          A #GeglModuleDB.
@@ -243,10 +329,37 @@ gegl_module_db_load (GeglModuleDB *db,
   g_return_if_fail (module_path != NULL);
 
   if (g_module_supported ())
+  {
+    GeglModule   *module;
+    gboolean load_inhibit;
+
     gegl_datafiles_read_directories (module_path,
                                      G_FILE_TEST_EXISTS,
-                                     gegl_module_db_module_initialize,
+                                     gegl_module_db_module_search,
                                      db);
+#if ARCH_X86_64
+    gegl_module_db_remove_duplicates (db);
+#endif
+    while (db->to_load)
+    {
+      char *filename = db->to_load->data;
+      load_inhibit = is_in_inhibit_list (filename,
+                                         db->load_inhibit);
+
+      module = gegl_module_new (filename,
+                                load_inhibit,
+                                db->verbose);
+
+      g_signal_connect (module, "modified",
+                        G_CALLBACK (gegl_module_db_module_modified),
+                        db);
+
+      db->modules = g_list_append (db->modules, module);
+      g_signal_emit (db, db_signals[ADD], 0, module);
+      db->to_load = g_list_remove (db->to_load, filename);
+      g_free (filename);
+    }
+  }
 
 #ifdef DUMP_DB
   g_list_foreach (db->modules, gegl_module_db_dump_module, NULL);
@@ -270,6 +383,7 @@ void
 gegl_module_db_refresh (GeglModuleDB *db,
                         const gchar  *module_path)
 {
+#if 0
   GList *kill_list = NULL;
 
   g_return_if_fail (GEGL_IS_MODULE_DB (db));
@@ -289,6 +403,7 @@ gegl_module_db_refresh (GeglModuleDB *db,
                                    G_FILE_TEST_EXISTS,
                                    gegl_module_db_module_initialize,
                                    db);
+#endif
 }
 
 /* name must be of the form lib*.so (Unix) or *.dll (Win32) */
@@ -308,10 +423,9 @@ valid_module_name (const gchar *filename)
         }
     }
 #ifdef __APPLE__ /* G_MODULE_SUFFIX is defined to .so instead of .dylib */
-  if (! gegl_datafiles_check_extension (basename, ".dylib" ) ||
-      strstr (filename, ".dSYM"))
+  if (! g_str_has_suffix (basename, ".dylib" ) || strstr (filename, ".dSYM"))
 #else
-  if (! gegl_datafiles_check_extension (basename, "." G_MODULE_SUFFIX))
+  if (! g_str_has_suffix (basename, "." G_MODULE_SUFFIX))
 #endif
     {
       g_free (basename);
@@ -324,9 +438,11 @@ valid_module_name (const gchar *filename)
   return TRUE;
 }
 
+
+
 static void
-gegl_module_db_module_initialize (const GeglDatafileData *file_data,
-                                  gpointer                user_data)
+gegl_module_db_module_search (const GeglDatafileData *file_data,
+                              gpointer                user_data)
 {
   GeglModuleDB *db = GEGL_MODULE_DB (user_data);
   GeglModule   *module;
@@ -335,12 +451,11 @@ gegl_module_db_module_initialize (const GeglDatafileData *file_data,
   if (! valid_module_name (file_data->filename))
     return;
 
-  /* don't load if we already know about it */
-  if (gegl_module_db_module_find_by_path (db, file_data->filename))
-    return;
-
+  db->to_load = g_list_prepend (db->to_load, g_strdup (file_data->filename));
+#if 0
   load_inhibit = is_in_inhibit_list (file_data->filename,
                                      db->load_inhibit);
+  g_warning ("[%s]", file_data->filename);
 
   module = gegl_module_new (file_data->filename,
                             load_inhibit,
@@ -352,6 +467,7 @@ gegl_module_db_module_initialize (const GeglDatafileData *file_data,
 
   db->modules = g_list_append (db->modules, module);
   g_signal_emit (db, db_signals[ADD], 0, module);
+#endif
 }
 
 static GeglModule *

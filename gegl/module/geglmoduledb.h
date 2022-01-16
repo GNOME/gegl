@@ -37,6 +37,7 @@ struct _GeglModuleDB
 
   /*< private >*/
   GList    *modules;
+  GList    *to_load;
 
   gchar    *load_inhibit;
   gboolean  verbose;
