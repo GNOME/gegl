@@ -117,6 +117,22 @@ enum
 enum
 {
   ARCH_X86_INTEL_FEATURE_PNI      = 1 << 0
+  ARCH_X86_INTEL_FEATURE_SSSE3    = 1 << 9,
+  ARCH_X86_INTEL_FEATURE_FMA      = 1 << 12,
+  ARCH_X86_INTEL_FEATURE_SSE4_1   = 1 << 19,
+  ARCH_X86_INTEL_FEATURE_SSE4_2   = 1 << 20,
+  ARCH_X86_INTEL_FEATURE_MOVBE    = 1 << 22,
+  ARCH_X86_INTEL_FEATURE_POPCNT   = 1 << 23,
+  ARCH_X86_INTEL_FEATURE_XSAVE    = 1 << 26,
+  ARCH_X86_INTEL_FEATURE_OSXSAVE  = 1 << 27,
+  ARCH_X86_INTEL_FEATURE_AVX      = 1 << 28,
+  ARCH_X86_INTEL_FEATURE_F16C     = 1 << 29
+
+ // extended features
+
+  ARCH_X86_INTEL_FEATURE_BMI1     = 1 << 3,
+  ARCH_X86_INTEL_FEATURE_BMI2     = 1 << 8,
+  ARCH_X86_INTEL_FEATURE_AVX2     = 1 << 5,
 };
 
 #if !defined(ARCH_X86_64) && (defined(PIC) || defined(__PIC__))
@@ -240,6 +256,50 @@ arch_accel_intel (void)
 
     if (ecx & ARCH_X86_INTEL_FEATURE_PNI)
       caps |= GEGL_CPU_ACCEL_X86_SSE3;
+
+    if (ecx & ARCH_X86_INTEL_FEATURE_SSSE3)
+      caps |= GEGL_CPU_ACCEL_X86_SSSE3;
+
+    if (ecx & ARCH_X86_INTEL_FEATURE_SSE4_1)
+      caps |= GEGL_CPU_ACCEL_X86_SSE4_1;
+
+    if (ecx & ARCH_X86_INTEL_FEATURE_SSE4_2)
+      caps |= GEGL_CPU_ACCEL_X86_SSE4_2;
+
+    if (ecx & ARCH_X86_INTEL_FEATURE_AVX)
+      caps |= GEGL_CPU_ACCEL_X86_AVX;
+
+    if (ecx & ARCH_X86_INTEL_FEATURE_POPCNT)
+      caps |= GEGL_CPU_ACCEL_X86_POPCNT;
+
+    if (ecx & ARCH_X86_INTEL_FEATURE_XSAVE)
+      caps |= GEGL_CPU_ACCEL_X86_XSAVE;
+
+    if (ecx & ARCH_X86_INTEL_FEATURE_OSXSAVE)
+      caps |= GEGL_CPU_ACCEL_X86_OSXSAVE;
+
+    if (ecx & ARCH_X86_INTEL_FEATURE_FMA)
+      caps |= GEGL_CPU_ACCEL_X86_FMA;
+
+    if (ecx & ARCH_X86_INTEL_FEATURE_F16C)
+      caps |= GEGL_CPU_ACCEL_X86_F16C;
+
+    if (ecx & ARCH_X86_INTEL_FEATURE_MOVBE)
+      caps |= GEGL_CPU_ACCEL_X86_MOVBE;
+
+    cpuid (0, eax, ebx, ecx, edx);
+    if (eax >= 7)
+    {
+      cpuid (7, eax, ebx, ecs, edx);
+      if (ebx & ARCH_X86_INTEL_FEATURE_AVX2)
+        caps |= GEGL_CPU_ACCEL_X86_AVX2;
+      if (ebx & ARCH_X86_INTEL_FEATURE_BMI1)
+        caps |= GEGL_CPU_ACCEL_X86_BMI1;
+      if (ebx & ARCH_X86_INTEL_FEATURE_BMI2)
+        caps |= GEGL_CPU_ACCEL_X86_BMI2;
+    }
+
+
 #endif /* USE_SSE */
   }
 #endif /* USE_MMX */
