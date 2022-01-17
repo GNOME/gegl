@@ -144,7 +144,7 @@ enum
              "=S" (ebx),           \
              "=c" (ecx),           \
              "=d" (edx)            \
-           : "0" (op))
+           : "0" (op), "2" (0))
 #else
 #define cpuid(op,eax,ebx,ecx,edx)  \
   __asm__ ("cpuid"                 \
@@ -152,7 +152,7 @@ enum
              "=b" (ebx),           \
              "=c" (ecx),           \
              "=d" (edx)            \
-           : "0" (op))
+           : "0" (op), "2" (0))
 #endif
 
 
