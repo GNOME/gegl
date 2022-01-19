@@ -264,7 +264,7 @@ static GeglNode *detect (GeglOperation *operation,
                          gint           y)
 {
   GeglProperties *o = GEGL_PROPERTIES (operation);
-  Ctx     *ctx = ctx_new ();
+  Ctx     *ctx = ctx_new_drawlist (-1, -1);
   gboolean result = FALSE;
 
   gegl_path_ctx_play (o->d, ctx);
