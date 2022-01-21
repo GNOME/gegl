@@ -161,7 +161,6 @@ elif host_cpu_family == 'ppc64'
 elif host_cpu_family == 'arm'
   have_arm = true
   config.set10('ARCH_ARM',    true)
-endif
 elif host_cpu_family == 'aarch64'
   have_aarch64 = true
   config.set10('ARCH_AARCH64',    true)
