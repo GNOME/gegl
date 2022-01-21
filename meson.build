@@ -162,6 +162,10 @@ elif host_cpu_family == 'arm'
   have_arm = true
   config.set10('ARCH_ARM',    true)
 endif
+elif host_cpu_family == 'aarch64'
+  have_aarch64 = true
+  config.set10('ARCH_AARCH64',    true)
+endif
 
 # Only try to run compiled programs if native compile or cross-compile
 # and have exe wrapper. If we don't need a wrapper (e.g. 32 bit build in
@@ -202,19 +206,23 @@ if os_win32
   cflags_common += '-D_FILE_OFFSET_BITS=64'
 endif
 
+
+cflags_common += cc.get_supported_arguments(['-ftree-vectorize'])
+
+if host_cpu_family == 'x86_64'
+  x86_64_v2_flags = cc.get_supported_arguments(['-march=x86-64','-msse2', '-msse2','-msse4.1','-msse4.2','-mpopcnt','-mssse3'])
+  x86_64_v3_flags = x86_64_v2_flags + cc.get_supported_arguments(['-mavx','-mavx2','-mf16c','-mfma','-mmovbe', '-mbmi', '-mbmi2'])
+elif host_cpu_family == 'arm'
+  arm_neon_flags = cc.get_supported_arguments(['-mfpu=neon'])
+elif host_cpu_family == 'aarch64'
+  cflags_common = cc.get_supported_arguments(['-mfpu=neon'])
+endif
+
 cflags_c   = cflags_common + cflags_c
 cflags_cpp = cflags_common + cflags_cpp
 
 add_project_arguments(cc.get_supported_arguments(cflags_c), language: 'c')
 add_project_arguments(cpp.get_supported_arguments(cflags_cpp), language: 'cpp')
-
-
-if host_cpu_family == 'x86_64'
-  x86_64_v2_flags = cc.get_supported_arguments(['-ftree-vectorize','-march=x86-64','-msse2', '-msse2','-msse4.1','-msse4.2','-mpopcnt','-mssse3'])
-  x86_64_v3_flags = x86_64_v2_flags + cc.get_supported_arguments(['-ftree-vectorize','-mavx','-mavx2','-mf16c','-mfma','-mmovbe', '-mbmi', '-mbmi2'])
-elif host_cpu_family == 'arm'
-  arm_neon_flags = cc.get_supported_arguments(['-ftree-vectorize','-mfpu=neon'])
-endif
 
 ################################################################################
 # Build Utilities
