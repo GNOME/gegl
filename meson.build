@@ -214,7 +214,7 @@ if host_cpu_family == 'x86_64'
 elif host_cpu_family == 'arm'
   arm_neon_flags = cc.get_supported_arguments(['-mfpu=neon'])
 elif host_cpu_family == 'aarch64'
-  cflags_common = cc.get_supported_arguments(['-mfpu=neon'])
+  cflags_common += cc.get_supported_arguments(['-mfpu=neon'])
 endif
 
 cflags_c   = cflags_common + cflags_c
