@@ -33,6 +33,11 @@
 #define ARCH_SIMD
 #endif
 
+#ifdef __APPLE__ /* G_MODULE_SUFFIX is defined to .so instead of .dylib */
+#define MODULE_SUFFIX "dylib"
+#else
+#define MODULE_SUFFIX G_MODULE_SUFFIX
+#endif
 
 enum
 {
@@ -256,11 +261,7 @@ gegl_module_db_remove_duplicates (GeglModuleDB *db)
 {
 #ifdef ARCH_X86_64
 
-#ifdef __APPLE__ /* G_MODULE_SUFFIX is defined to .so instead of .dylib */
-  char *suffix_list[] = {"-x86_64-v2.dylib","-x86_64-v3.dylib", NULL};
-#else
-  char *suffix_list[] = {"-x86_64-v2.so","-x86_64-v3.so", NULL};
-#endif
+  char *suffix_list[] = {"-x86_64-v2." MODULE_SUFFIX,"-x86_64-v3." MODULE_SUFFIX, NULL};
 
   GList *suffix_entries = NULL;
   int preferred = -1;
@@ -270,11 +271,7 @@ gegl_module_db_remove_duplicates (GeglModuleDB *db)
 
 #endif
 #ifdef ARCH_ARM
-#ifdef __APPLE__ /* G_MODULE_SUFFIX is defined to .so instead of .dylib */
-  char *suffix_list[] = {"-arm-neon.dylib", NULL};
-#else
-  char *suffix_list[] = {"-arm-neon.so", NULL};
-#endif
+  char *suffix_list[] = {"-arm-neon." MODULE_SUFFIX, NULL};
 
   GList *suffix_entries = NULL;
   int preferred = -1;
