@@ -60,4 +60,18 @@ if host_cpu_family == 'x86_64'
   )
   gegl_operations += gegl_transformops_x86_64_v3
 
+elif host_cpu_family == 'arm'
+
+  gegl_transformops_arm_neon = shared_library('gegl-transformops-arm-neon',
+    gegl_transformops_sources, opencl_headers,
+    include_directories: [ rootInclude, geglInclude, ],
+    dependencies: [ babl, glib, json_glib, math, ],
+    link_with: [ gegl_lib, ],
+    c_args: arm_neon_flags,
+    name_prefix: '',
+    install: true,
+    install_dir: get_option('libdir') / api_name,
+  )
+  gegl_operations += gegl_transformops_arm_neon
+
 endif

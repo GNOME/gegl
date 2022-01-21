@@ -96,9 +96,11 @@ opencl_dep = declare_dependency(
 
 
 if host_cpu_family == 'x86_64'
-  x86_64_extra = [lib_gegl_x86_64_v2, lib_gegl_x86_64_v3]
+  simd_extra = [lib_gegl_x86_64_v2, lib_gegl_x86_64_v3]
+elif host_cpu_family == 'arm'
+  simd_extra = [lib_gegl_arm_neon]
 else
-  x86_64_extra = []
+  simd_extra = []
 endif
 
 gegl_lib = library(api_name,
@@ -114,7 +116,7 @@ gegl_lib = library(api_name,
   ],
   c_args: gegl_cflags,
 
-  link_with: x86_64_extra,
+  link_with: simd_extra,
   link_args: gegl_ldflags,
   install: true,
   version: so_version,

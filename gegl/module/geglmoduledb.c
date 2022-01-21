@@ -25,6 +25,15 @@
 #include "gegl-cpuaccel.h"
 #include "gegl-config.h"
 
+
+#ifdef ARCH_X86_64
+#define ARCH_SIMD
+#endif
+#ifdef ARCH_ARM
+#define ARCH_SIMD
+#endif
+
+
 enum
 {
   ADD,
@@ -228,7 +237,7 @@ gegl_module_db_get_load_inhibit (GeglModuleDB *db)
   return db->load_inhibit;
 }
 
-#ifdef ARCH_X86_64
+#ifdef ARCH_SIMD
 
 static gboolean
 gegl_str_has_one_of_suffixes (const char *str,
@@ -245,6 +254,8 @@ gegl_str_has_one_of_suffixes (const char *str,
 static void
 gegl_module_db_remove_duplicates (GeglModuleDB *db)
 {
+#ifdef ARCH_X86_64
+
 #ifdef __APPLE__ /* G_MODULE_SUFFIX is defined to .so instead of .dylib */
   char *suffix_list[] = {"-x86_64-v2.dylib","-x86_64-v3.dylib", NULL};
 #else
@@ -257,6 +268,20 @@ gegl_module_db_remove_duplicates (GeglModuleDB *db)
   if (cpu_accel & GEGL_CPU_ACCEL_X86_64_V3) preferred = 1;
   else if (cpu_accel & GEGL_CPU_ACCEL_X86_64_V2) preferred = 0;
 
+#endif
+#ifdef ARCH_ARM
+#ifdef __APPLE__ /* G_MODULE_SUFFIX is defined to .so instead of .dylib */
+  char *suffix_list[] = {"-arm-neon.dylib", NULL};
+#else
+  char *suffix_list[] = {"-arm-neon.so", NULL};
+#endif
+
+  GList *suffix_entries = NULL;
+  int preferred = -1;
+
+  GeglCpuAccelFlags cpu_accel = gegl_cpu_accel_get_support ();
+  if (cpu_accel & GEGL_CPU_ACCEL_ARM_NEON) preferred = 0;
+#endif
 
   for (GList *l = db->to_load; l; l = l->next)
   {
@@ -337,7 +362,7 @@ gegl_module_db_load (GeglModuleDB *db,
                                      G_FILE_TEST_EXISTS,
                                      gegl_module_db_module_search,
                                      db);
-#if ARCH_X86_64
+#ifdef ARCH_SIMD
     gegl_module_db_remove_duplicates (db);
 #endif
     while (db->to_load)

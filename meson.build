@@ -158,6 +158,9 @@ elif host_cpu_family == 'ppc64'
   have_ppc = true
   config.set10('ARCH_PPC',    true)
   config.set10('ARCH_PPC64',  true)
+elif host_cpu_family == 'arm'
+  have_arm = true
+  config.set10('ARCH_ARM',    true)
 endif
 
 # Only try to run compiled programs if native compile or cross-compile
@@ -207,8 +210,10 @@ add_project_arguments(cpp.get_supported_arguments(cflags_cpp), language: 'cpp')
 
 
 if host_cpu_family == 'x86_64'
-  x86_64_v2_flags = cc.get_supported_arguments(['-march=x86-64','-msse2', '-msse2','-msse4.1','-msse4.2','-mpopcnt','-mssse3'])
-  x86_64_v3_flags = x86_64_v2_flags + cc.get_supported_arguments(['-mavx','-mavx2','-mf16c','-mfma','-mmovbe', '-mbmi', '-mbmi2'])
+  x86_64_v2_flags = cc.get_supported_arguments(['-ftree-vectorize','-march=x86-64','-msse2', '-msse2','-msse4.1','-msse4.2','-mpopcnt','-mssse3'])
+  x86_64_v3_flags = x86_64_v2_flags + cc.get_supported_arguments(['-ftree-vectorize','-mavx','-mavx2','-mf16c','-mfma','-mmovbe', '-mbmi', '-mbmi2'])
+elif host_cpu_family == 'arm'
+  arm_neon_flags = cc.get_supported_arguments(['-ftree-vectorize','-mfpu=neon'])
 endif
 
 ################################################################################

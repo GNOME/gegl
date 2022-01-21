@@ -11,6 +11,13 @@ if host_cpu_family == 'x86_64'
     dependencies:[glib, babl],
     c_args: [gegl_cflags ] + x86_64_v3_flags
   )
+elif host_cpu_family == 'arm'
+  lib_gegl_arm_neon = static_library('gegl-arm-neon', 'gegl-algorithms-arm-neon.c',
+    include_directories:[geglInclude, rootInclude],
+    dependencies:[glib, babl],
+    c_args: [gegl_cflags ] + arm_neon_flags
+  )
+
 endif
 
 gegl_sources += files(

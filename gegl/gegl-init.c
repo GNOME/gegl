@@ -542,12 +542,17 @@ gegl_post_parse_hook (GOptionContext *context,
 
   babl_init ();
 
+#if ARCH_ARM
+  GeglCpuAccelFlags cpu_accel = gegl_cpu_accel_get_support ();
+  _gegl_init_buffer ((cpu_accel & GEGL_CPU_ACCEL_ARM_NEON) != 0);
+#else
   GeglCpuAccelFlags cpu_accel = gegl_cpu_accel_get_support ();
   int x86_64_version = 0;
   if (cpu_accel & GEGL_CPU_ACCEL_X86_64_V2) x86_64_version = 2;
   if (cpu_accel & GEGL_CPU_ACCEL_X86_64_V3) x86_64_version = 3;
 
   _gegl_init_buffer (x86_64_version);
+#endif
 
 #ifdef GEGL_ENABLE_DEBUG
   {

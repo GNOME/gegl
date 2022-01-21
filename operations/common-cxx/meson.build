@@ -81,4 +81,26 @@ if host_cpu_family == 'x86_64'
   )
   gegl_operations += gegl_common_cxx_x86_64_v3
 
+elif host_cpu_family == 'arm'
+
+  gegl_common_cxx_arm_neon = shared_library('gegl-common-cxx-arm-neon',
+    gegl_common_cxx_sources, opencl_headers,
+    include_directories: [ rootInclude, geglInclude, ],
+    dependencies: [
+      babl,
+      glib,
+      json_glib,
+      math,
+    ],
+    link_with: [
+      gegl_lib,
+    ],
+    c_args: [ '-DGEGL_OP_BUNDLE' ] + arm_neon_flags,
+    cpp_args: [ '-DGEGL_OP_BUNDLE' ] + arm_neon_flags,
+    name_prefix: '',
+    install: true,
+    install_dir: get_option('libdir') / api_name,
+  )
+  gegl_operations += gegl_common_cxx_arm_neon
+
 endif

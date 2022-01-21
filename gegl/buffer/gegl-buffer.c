@@ -1426,13 +1426,54 @@ void gegl_downscale_2x2_x86_64_v3 (const Babl *format,
 
 #endif
 
+#ifdef ARCH_ARM
+
+void gegl_resample_bilinear_arm_neon (guchar *dest_buf,
+                                      const guchar *source_buf,
+                                      const GeglRectangle *dst_rect,
+                                      const GeglRectangle *src_rect,
+                                      gint                 s_rowstride,
+                                      gdouble              scale,
+                                      const Babl          *format,
+                                      gint                 d_rowstride);
+
+
+void gegl_resample_boxfilter_arm_neon (guchar *dest_buf,
+                                       const guchar *source_buf,
+                                       const GeglRectangle *dst_rect,
+                                       const GeglRectangle *src_rect,
+                                       gint                 s_rowstride,
+                                       gdouble              scale,
+                                       const Babl          *format,
+                                       gint                 d_rowstride);
+
+
+void gegl_resample_nearest_arm_neon (guchar *dest_buf,
+                                     const guchar *source_buf,
+                                     const GeglRectangle *dst_rect,
+                                     const GeglRectangle *src_rect,
+                                     gint                 s_rowstride,
+                                     gdouble              scale,
+                                     const gint           bpp,
+                                     gint                 d_rowstride);
+
+void gegl_downscale_2x2_arm_neon (const Babl *format,
+                                  gint        src_width,
+                                  gint        src_height,
+                                  guchar     *src_data,
+                                  gint        src_rowstride,
+                                  guchar     *dst_data,
+                                  gint        dst_rowstride);
+
+#endif
+
 guint16 gegl_lut_u8_to_u16[256];
 gfloat  gegl_lut_u8_to_u16f[256];
 guint8  gegl_lut_u16_to_u8[65536/GEGL_ALGORITHMS_LUT_DIVISOR];
 
 
-void _gegl_init_buffer (int x86_64_version);
-void _gegl_init_buffer (int x86_64_version)
+void _gegl_init_buffer (int variant);
+void _gegl_init_buffer (int variant)
 {
   static int inited = 0;
   guint8 u8_ramp[256];
@@ -1457,8 +1498,17 @@ void _gegl_init_buffer (int x86_64_version)
   babl_process (babl_fish (babl_format ("Y u16"), babl_format("Y' u8")),
                 &u16_ramp[0], &gegl_lut_u16_to_u8[0],
                 65536/GEGL_ALGORITHMS_LUT_DIVISOR);
+#ifdef ARCH_ARM
+  if (variant)
+  {
+    gegl_resample_bilinear  = gegl_resample_bilinear_arm_neon;
+    gegl_resample_boxfilter = gegl_resample_boxfilter_arm_neon;
+    gegl_resample_nearest   = gegl_resample_nearest_arm_neon;
+    gegl_downscale_2x2      = gegl_downscale_2x2_arm_neon;
+  }
+#endif
 #ifdef ARCH_X86_64
-  switch (x86_64_version)
+  switch (variant)
   {
     case 0:
     case 1: break;
