@@ -290,7 +290,7 @@ arch_accel_intel (void)
     cpuid (0, eax, ebx, ecx, edx);
     if (eax >= 7)
     {
-      cpuid (7, eax, ebx, ecs, edx);
+      cpuid (7, eax, ebx, ecx, edx);
       if (ebx & ARCH_X86_INTEL_FEATURE_AVX2)
         caps |= GEGL_CPU_ACCEL_X86_AVX2;
       if (ebx & ARCH_X86_INTEL_FEATURE_BMI1)
