@@ -211,10 +211,15 @@ cflags_common += cc.get_supported_arguments(['-ftree-vectorize'])
 if host_cpu_family == 'x86_64'
   x86_64_v2_flags = cc.get_supported_arguments(['-march=x86-64','-msse2', '-msse2','-msse4.1','-msse4.2','-mpopcnt','-mssse3'])
   x86_64_v3_flags = x86_64_v2_flags + cc.get_supported_arguments(['-mavx','-mavx2','-mf16c','-mfma','-mmovbe', '-mbmi', '-mbmi2'])
+
+  x86_64_v2_flags += ['-DSIMD_X86_64_V2']
+  x86_64_v3_flags += ['-DSIMD_X86_64_V3']
+
 elif host_cpu_family == 'arm'
-  arm_neon_flags = cc.get_supported_arguments(['-mfpu=neon'])
+  arm_neon_flags = cc.get_supported_arguments(['-mfpu=neon-vfpv4'])
+  arm_neon_flags += ['-DSIMD_ARM_NEON']
 elif host_cpu_family == 'aarch64'
-  cflags_common += cc.get_supported_arguments(['-mfpu=neon'])
+  cflags_common += cc.get_supported_arguments(['-mfpu=neon-vfpv4'])
 endif
 
 cflags_c   = cflags_common + cflags_c

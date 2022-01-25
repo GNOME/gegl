@@ -1,18 +1,18 @@
 if host_cpu_family == 'x86_64'
 
-  lib_gegl_x86_64_v2 = static_library('gegl-x86-64-v2', 'gegl-algorithms-x86-64-v2.c',
+  lib_gegl_x86_64_v2 = static_library('gegl-x86-64-v2', 'gegl-algorithms.c',
     include_directories:[geglInclude, rootInclude],
     dependencies:[glib, babl],
     c_args: [gegl_cflags ] + x86_64_v2_flags
   )
 
-  lib_gegl_x86_64_v3 = static_library('gegl-x86-64-v3', 'gegl-algorithms-x86-64-v3.c',
+  lib_gegl_x86_64_v3 = static_library('gegl-x86-64-v3', 'gegl-algorithms.c',
     include_directories:[geglInclude, rootInclude],
     dependencies:[glib, babl],
     c_args: [gegl_cflags ] + x86_64_v3_flags
   )
 elif host_cpu_family == 'arm'
-  lib_gegl_arm_neon = static_library('gegl-arm-neon', 'gegl-algorithms-arm-neon.c',
+  lib_gegl_arm_neon = static_library('gegl-arm-neon', 'gegl-algorithms.c',
     include_directories:[geglInclude, rootInclude],
     dependencies:[glib, babl],
     c_args: [gegl_cflags ] + arm_neon_flags

@@ -25,9 +25,22 @@ G_BEGIN_DECLS
 
 #define GEGL_SCALE_EPSILON 1.e-6
 
+#ifdef SIMD_X86_64_V2
+#define GEGL_SIMD_SUFFIX(symbol)  symbol##_x86_64_v2
+#endif
+#ifdef SIMD_X86_64_V3
+#define GEGL_SIMD_SUFFIX(symbol)  symbol##_x86_64_v3
+#endif
+#ifdef SIMD_ARM_NEON
+#define GEGL_SIMD_SUFFIX(symbol)  symbol##_arm_neon
+#endif
 #ifndef GEGL_SIMD_SUFFIX
 #define GEGL_SIMD_SUFFIX(symbol)  symbol##_generic
+#ifndef SIMD_GENERIC
+#define SIMD_GENERIC
 #endif
+#endif
+
 
 void GEGL_SIMD_SUFFIX(gegl_downscale_2x2) (const Babl *format,
                          gint        src_width,
