@@ -1,17 +1,17 @@
 # Swedish translation for gegl.
-# Copyright © 2012, 2016-2021 Free Software Foundation, Inc.
+# Copyright © 2012, 2016-2022 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gegl package.
 # Daniel Nylander <po@danielnylander.se>, 2012.
 # Sebastian Rasmussen <sebras@gmail.com>, 2016, 2017, 2018.
-# Anders Jonsson <anders.jonsson@norsjovallen.se>, 2017, 2018, 2019, 2020, 2021.
+# Anders Jonsson <anders.jonsson@norsjovallen.se>, 2017, 2018, 2019, 2020, 2021, 2022.
 # Luna Jernberg <droidbittin@gmail.com>, 2021.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2021-09-15 19:01+0000\n"
-"PO-Revision-Date: 2021-10-02 17:14+0200\n"
+"POT-Creation-Date: 2021-10-02 15:18+0000\n"
+"PO-Revision-Date: 2022-01-31 17:12+0100\n"
 "Last-Translator: Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.0\n"
+"X-Generator: Poedit 3.0.1\n"
 
 #: bin/gegl.c:179
 #, c-format
@@ -1556,7 +1556,7 @@ msgstr "(5,5)"
 
 #: operations/common/convolution-matrix.c:51
 msgid "Divisor"
-msgstr "Avgränsare"
+msgstr "Delare"
 
 #: operations/common/convolution-matrix.c:55
 #: operations/common-gpl3+/bayer-matrix.c:63
