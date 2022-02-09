@@ -1920,7 +1920,7 @@ gegl_sampler_nohalo_get (      GeglSampler*    restrict  self,
       /*
        * Ship out the result:
        */
-      babl_process (self->fish, newval, output, 1);
+      self->fish_process (self->fish, (void*)newval, (void*)output, 1, NULL);
       return;
     }
   }

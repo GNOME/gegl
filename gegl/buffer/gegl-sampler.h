@@ -90,6 +90,7 @@ struct _GeglSampler
   gint                       interpolate_components;
 
   GeglSamplerLevel           level[GEGL_SAMPLER_MIPMAP_LEVELS];
+  BablFishProcess            fish_process;
 };
 
 struct _GeglSamplerClass

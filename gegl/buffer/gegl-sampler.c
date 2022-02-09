@@ -265,7 +265,10 @@ gegl_sampler_prepare (GeglSampler *self)
   }
 
   if (!self->fish)
+  {
     self->fish = babl_fish (self->interpolate_format, self->format);
+    self->fish_process = babl_fish_get_process (self->fish);
+  }
 
   /*
    * This makes the cache rect invalid, in case the data in the buffer

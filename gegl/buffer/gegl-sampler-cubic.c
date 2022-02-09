@@ -227,7 +227,7 @@ gegl_sampler_cubic_get (      GeglSampler       *self,
     gegl_sampler_cubic_interpolate (self, absolute_x, absolute_y, result,
                                     repeat_mode);
 
-    babl_process (self->fish, result, output, 1);
+    self->fish_process (self->fish, (void*)result, (void*)output, 1, NULL);
   }
 }
 
