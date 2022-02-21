@@ -65,13 +65,7 @@ struct _GeglModuleDBClass
 GType          gegl_module_db_get_type         (void) G_GNUC_CONST;
 GeglModuleDB * gegl_module_db_new              (gboolean      verbose);
 
-void           gegl_module_db_set_load_inhibit (GeglModuleDB *db,
-                                                const gchar  *load_inhibit);
-const gchar  * gegl_module_db_get_load_inhibit (GeglModuleDB *db);
-
 void           gegl_module_db_load             (GeglModuleDB *db,
-                                                const gchar  *module_path);
-void           gegl_module_db_refresh          (GeglModuleDB *db,
                                                 const gchar  *module_path);
 
 
