@@ -1,3 +1,22 @@
+
+GEGL-0.4.36 2022-02-21
+----------------------
+
+The primary addition in this release is SIMD dispatch, buffer access functions
+get built for x86-64 v2 and v3 microarchitecture levels as well as ARM neon.
+the same applies to core operations where we have .so bundles for the variants
+as well as a generic build.
+
+Operations:
+
+The npd operation fixed with multiple threads.
+
+Contrubutors to this release
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Alan Mortensen, Anders Jonsson, Caleb Xu, Jehan, Øyvind Kolås and zamfofex.
+
+
 GEGL-0.4.34 2021-12-19
 ----------------------
 
