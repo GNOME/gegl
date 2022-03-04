@@ -108,6 +108,7 @@ typedef struct
   AVOutputFormat *fmt;
   AVFormatContext *oc;
   AVStream *video_st;
+  AVCodecContext *video_ctx;
 
   AVFrame  *picture, *tmp_picture;
   uint8_t  *video_outbuf;
@@ -119,6 +120,7 @@ typedef struct
      * using gggl directly,. without needing to link with the oxide library
      */
   AVStream *audio_st;
+  AVCodecContext *audio_ctx;
 
   uint32_t  sample_rate;
   uint32_t  bits;
@@ -284,7 +286,7 @@ static void write_audio_frame (GeglProperties      *o,
 static AVStream *
 add_audio_stream (GeglProperties *o, AVFormatContext * oc, int codec_id)
 {
-  AVCodecContext *c;
+  AVCodecParameters *cp;
   AVStream *st;
 
   st = avformat_new_stream (oc, NULL);
@@ -294,35 +296,10 @@ add_audio_stream (GeglProperties *o, AVFormatContext * oc, int codec_id)
       exit (1);
     }
 
-  c = st->codec;
-  c->codec_id = codec_id;
-  c->codec_type = AVMEDIA_TYPE_AUDIO;
-
-  if (oc->oformat->flags & AVFMT_GLOBALHEADER)
-    c->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
-
-  return st;
-}
-#endif
-
-static gboolean
-open_audio (GeglProperties *o, AVFormatContext * oc, AVStream * st)
-{
-  AVCodecContext *c;
-  AVCodec  *codec;
-  int i;
-
-  c = st->codec;
-
-  /* find the audio encoder */
-  codec = avcodec_find_encoder (c->codec_id);
-  if (!codec)
-    {
-      fprintf (stderr, "codec not found\n");
-      return FALSE;
-    }
-  c->bit_rate = o->audio_bit_rate * 1000;
-  c->sample_fmt = codec->sample_fmts ? codec->sample_fmts[0] : AV_SAMPLE_FMT_FLTP;
+  cp = st->codecpar;
+  cp->codec_id = codec_id;
+  cp->codec_type = AVMEDIA_TYPE_AUDIO;
+  cp->bit_rate = o->audio_bit_rate * 1000;
 
   if (o->audio_sample_rate == -1)
   {
@@ -335,22 +312,56 @@ open_audio (GeglProperties *o, AVFormatContext * oc, AVStream * st)
       o->audio_sample_rate = gegl_audio_fragment_get_sample_rate (o->audio);
     }
   }
-  c->sample_rate = o->audio_sample_rate;
-  c->channel_layout = AV_CH_LAYOUT_STEREO;
-  c->channels = 2;
+  cp->sample_rate = o->audio_sample_rate;
 
+  cp->channel_layout = AV_CH_LAYOUT_STEREO;
+  cp->channels = 2;
 
-  if (codec->supported_samplerates)
-  {
-    c->sample_rate = codec->supported_samplerates[0];
-    for (i = 0; codec->supported_samplerates[i]; i++)
+  return st;
+}
+#endif
+
+static gboolean
+open_audio (GeglProperties *o, AVFormatContext * oc, AVStream * st)
+{
+  Priv           *p = (Priv*)o->user_data;
+  AVCodecContext *c;
+  AVCodecParameters *cp;
+  const AVCodec  *codec;
+  int i;
+
+  cp = st->codecpar;
+
+  /* find the audio encoder */
+  codec = avcodec_find_encoder (cp->codec_id);
+  if (!codec)
     {
-      if (codec->supported_samplerates[i] == o->audio_sample_rate)
-         c->sample_rate = o->audio_sample_rate;
+      p->audio_ctx = NULL;
+      fprintf (stderr, "codec not found\n");
+      return FALSE;
     }
-  }
-  //st->time_base = (AVRational){1, c->sample_rate};
-  st->time_base = (AVRational){1, o->audio_sample_rate};
+  p->audio_ctx = c = avcodec_alloc_context3 (codec);
+  cp->format = codec->sample_fmts ? codec->sample_fmts[0] : AV_SAMPLE_FMT_FLTP;
+  if (codec->supported_samplerates)
+    {
+      for (i = 0; codec->supported_samplerates[i]; i++)
+        {
+          if (codec->supported_samplerates[i] == cp->sample_rate)
+             break;
+        }
+      if (!codec->supported_samplerates[i])
+        cp->sample_rate = codec->supported_samplerates[0];
+    }
+  if (avcodec_parameters_to_context (c, cp) < 0)
+    {
+      fprintf (stderr, "cannot copy codec parameters\n");
+      return FALSE;
+    }
+  if (p->oc->oformat->flags & AVFMT_GLOBALHEADER)
+    c->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
+
+  st->time_base = (AVRational){1, c->sample_rate};
+  //st->time_base = (AVRational){1, o->audio_sample_rate};
 
   c->strict_std_compliance = FF_COMPLIANCE_EXPERIMENTAL; // ffmpeg AAC is not quite stable yet
 
@@ -360,7 +371,11 @@ open_audio (GeglProperties *o, AVFormatContext * oc, AVStream * st)
       fprintf (stderr, "could not open codec\n");
       return FALSE;
     }
-
+  if (avcodec_parameters_from_context (cp, c) < 0)
+    {
+      fprintf (stderr, "cannot copy back the audio codec parameters\n");
+      return FALSE;
+    }
   return TRUE;
 }
 
@@ -395,7 +410,7 @@ static void encode_audio_fragments (Priv *p, AVFormatContext *oc, AVStream *st, 
 {
   while (p->audio_pos - p->audio_read_pos > frame_size)
   {
-    AVCodecContext *c = st->codec;
+    AVCodecContext *c = p->audio_ctx;
     long i;
     int ret;
     int got_packet = 0;
@@ -479,7 +494,7 @@ static void encode_audio_fragments (Priv *p, AVFormatContext *oc, AVStream *st, 
     }
     if (got_packet)
     {
-      av_packet_rescale_ts (&pkt, st->codec->time_base, st->time_base);
+      av_packet_rescale_ts (&pkt, c->time_base, st->time_base);
       pkt.stream_index = st->index;
       av_interleaved_write_frame (oc, &pkt);
       av_packet_unref (&pkt);
@@ -494,7 +509,7 @@ void
 write_audio_frame (GeglProperties *o, AVFormatContext * oc, AVStream * st)
 {
   Priv *p = (Priv*)o->user_data;
-  AVCodecContext *c = st->codec;
+  AVCodecContext *c = p->audio_ctx;
   int sample_count = 100000;
 
   if (o->audio)
@@ -551,8 +566,7 @@ write_audio_frame (GeglProperties *o, AVFormatContext * oc, AVStream * st)
 void
 close_audio (Priv * p, AVFormatContext * oc, AVStream * st)
 {
-  avcodec_close (st->codec);
-
+  avcodec_free_context (&p->audio_ctx);
 }
 
 /* add a video output stream */
@@ -561,7 +575,7 @@ add_video_stream (GeglProperties *o, AVFormatContext * oc, int codec_id)
 {
   Priv *p = (Priv*)o->user_data;
 
-  AVCodecContext *c;
+  AVCodecParameters *cp;
   AVStream *st;
 
   st = avformat_new_stream (oc, NULL);
@@ -571,78 +585,23 @@ add_video_stream (GeglProperties *o, AVFormatContext * oc, int codec_id)
       exit (1);
     }
 
-  c = st->codec;
-  c->codec_id = codec_id;
-  c->codec_type = AVMEDIA_TYPE_VIDEO;
+  cp = st->codecpar;
+  cp->codec_id = codec_id;
+  cp->codec_type = AVMEDIA_TYPE_VIDEO;
   /* put sample propeters */
-  c->bit_rate = o->video_bit_rate * 1000;
+  cp->bit_rate = o->video_bit_rate * 1000;
 #ifdef USE_FINE_GRAINED_FFMPEG
-  c->rc_min_rate = o->video_bit_rate_min * 1000;
-  c->rc_max_rate = o->video_bit_rate_max * 1000;
+  cp->rc_min_rate = o->video_bit_rate_min * 1000;
+  cp->rc_max_rate = o->video_bit_rate_max * 1000;
   if (o->video_bit_rate_tolerance >= 0)
-    c->bit_rate_tolerance = o->video_bit_rate_tolerance * 1000;
+    cp->bit_rate_tolerance = o->video_bit_rate_tolerance * 1000;
 #endif
   /* resolution must be a multiple of two */
-  c->width = p->width;
-  c->height = p->height;
+  cp->width = p->width;
+  cp->height = p->height;
   /* frames per second */
   st->time_base =(AVRational){1000, o->frame_rate * 1000};
-  c->time_base = st->time_base;
-
-  c->pix_fmt = AV_PIX_FMT_YUV420P;
-
-  if (c->codec_id == AV_CODEC_ID_MPEG2VIDEO)
-    {
-      c->max_b_frames = 2;
-    }
-
-  if (c->codec_id == AV_CODEC_ID_H264)
-   {
-     c->qcompress = 0.6;  // qcomp=0.6
-     c->me_range = 16;    // me_range=16
-     c->gop_size = 250;   // g=250
-     c->max_b_frames = 3; // bf=3
-   }
-
-  if (o->video_bufsize)
-    c->rc_buffer_size = o->video_bufsize * 1000;
-#if USE_FINE_GRAINED_FFMPEG
-  if (o->global_quality)
-     c->global_quality = o->global_quality;
-  if (o->qcompress != 0.0)
-     c->qcompress = o->qcompress;
-  if (o->qblur != 0.0)
-     c->qblur = o->qblur;
-  if (o->max_qdiff != 0)
-     c->max_qdiff = o->max_qdiff;
-  if (o->me_subpel_quality != 0)
-     c->me_subpel_quality = o->me_subpel_quality;
-  if (o->i_quant_factor != 0.0)
-     c->i_quant_factor = o->i_quant_factor;
-  if (o->i_quant_offset != 0.0)
-     c->i_quant_offset = o->i_quant_offset;
-  if (o->max_b_frames)
-    c->max_b_frames = o->max_b_frames;
-  if (o->me_range)
-    c->me_range = o->me_range;
-  if (o->noise_reduction)
-    c->noise_reduction = o->noise_reduction;
-  if (o->scenechange_threshold)
-    c->scenechange_threshold = o->scenechange_threshold;
-  if (o->trellis)
-    c->trellis = o->trellis;
-  if (o->qmin)
-    c->qmin = o->qmin;
-  if (o->qmax)
-    c->qmax = o->qmax;
-  if (o->gop_size)
-    c->gop_size = o->gop_size;
-  if (o->keyint_min)
-    c->keyint_min = o->keyint_min;
-#endif
-
-   if (oc->oformat->flags & AVFMT_GLOBALHEADER)
-     c->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
+  cp->format = AV_PIX_FMT_YUV420P;
 
   return st;
 }
@@ -673,34 +632,97 @@ static gboolean
 open_video (GeglProperties *o, AVFormatContext * oc, AVStream * st)
 {
   Priv           *p = (Priv*)o->user_data;
-  AVCodec  *codec;
+  const AVCodec  *codec;
   AVCodecContext *c;
+  AVCodecParameters *cp;
   AVDictionary *codec_options = {0};
   int           ret;
 
-  c = st->codec;
+  cp = st->codecpar;
 
   /* find the video encoder */
-  codec = avcodec_find_encoder (c->codec_id);
+  codec = avcodec_find_encoder (cp->codec_id);
   if (!codec)
     {
+      p->video_ctx = NULL;
       fprintf (stderr, "codec not found\n");
       return FALSE;
     }
-
-  if (codec->pix_fmts){
-    int i = 0;
-    c->pix_fmt = codec->pix_fmts[0];
-    while (codec->pix_fmts[i] !=-1)
+  p->video_ctx = c = avcodec_alloc_context3 (codec);
+  if (codec->pix_fmts)
     {
-      if (codec->pix_fmts[i] ==  AV_PIX_FMT_RGB24)
-         c->pix_fmt = AV_PIX_FMT_RGB24;
-      i++;
+      int i = 0;
+      cp->format = codec->pix_fmts[0];
+      while (codec->pix_fmts[i] != -1)
+        {
+          if (codec->pix_fmts[i] ==  AV_PIX_FMT_RGB24)
+            {
+              cp->format = AV_PIX_FMT_RGB24;
+              break;
+            }
+          i++;
+        }
     }
-  }
+  if (avcodec_parameters_to_context (c, cp) < 0)
+    {
+      fprintf (stderr, "cannot copy codec parameters\n");
+      return FALSE;
+    }
+  c->time_base = st->time_base;
+  if (cp->codec_id == AV_CODEC_ID_MPEG2VIDEO)
+    {
+      c->max_b_frames = 2;
+    }
+  if (cp->codec_id == AV_CODEC_ID_H264)
+   {
+     c->qcompress = 0.6;  // qcomp=0.6
+     c->me_range = 16;    // me_range=16
+     c->gop_size = 250;   // g=250
+     c->max_b_frames = 3; // bf=3
+   }
+  if (o->video_bufsize)
+    c->rc_buffer_size = o->video_bufsize * 1000;
+  if (p->oc->oformat->flags & AVFMT_GLOBALHEADER)
+    c->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
+
 #if 0
   if (o->video_preset[0])
     av_dict_set (&codec_options, "preset", o->video_preset, 0);
+#endif
+
+#if USE_FINE_GRAINED_FFMPEG
+  if (o->global_quality)
+    c->global_quality = o->global_quality;
+  if (o->qcompress != 0.0)
+    c->qcompress = o->qcompress;
+  if (o->qblur != 0.0)
+    c->qblur = o->qblur;
+  if (o->max_qdiff != 0)
+    c->max_qdiff = o->max_qdiff;
+  if (o->me_subpel_quality != 0)
+    c->me_subpel_quality = o->me_subpel_quality;
+  if (o->i_quant_factor != 0.0)
+    c->i_quant_factor = o->i_quant_factor;
+  if (o->i_quant_offset != 0.0)
+    c->i_quant_offset = o->i_quant_offset;
+  if (o->max_b_frames)
+    c->max_b_frames = o->max_b_frames;
+  if (o->me_range)
+    c->me_range = o->me_range;
+  if (o->noise_reduction)
+    c->noise_reduction = o->noise_reduction;
+  if (o->scenechange_threshold)
+    c->scenechange_threshold = o->scenechange_threshold;
+  if (o->trellis)
+    c->trellis = o->trellis;
+  if (o->qmin)
+    c->qmin = o->qmin;
+  if (o->qmax)
+    c->qmax = o->qmax;
+  if (o->gop_size)
+    c->gop_size = o->gop_size;
+  if (o->keyint_min)
+    c->keyint_min = o->keyint_min;
 #endif
 
   /* open the codec */
@@ -741,6 +763,11 @@ open_video (GeglProperties *o, AVFormatContext * oc, AVStream * st)
           return FALSE;
         }
     }
+  if (avcodec_parameters_from_context (cp, c) < 0)
+    {
+      fprintf (stderr, "cannot copy back the video codec parameters\n");
+      return FALSE;
+    }
 
   return TRUE;
 }
@@ -748,7 +775,7 @@ open_video (GeglProperties *o, AVFormatContext * oc, AVStream * st)
 static void
 close_video (Priv * p, AVFormatContext * oc, AVStream * st)
 {
-  avcodec_close (st->codec);
+  avcodec_free_context (&p->video_ctx);
   av_free (p->picture->data[0]);
   av_free (p->picture);
   if (p->tmp_picture)
@@ -780,7 +807,7 @@ write_video_frame (GeglProperties *o,
   AVCodecContext *c;
   AVFrame        *picture_ptr;
 
-  c = st->codec;
+  c = p->video_ctx;
 
   if (c->pix_fmt != AV_PIX_FMT_RGB24)
     {
@@ -968,7 +995,7 @@ tfile (GeglProperties *o)
     }
   if (p->fmt->audio_codec != AV_CODEC_ID_NONE)
     {
-     p->audio_st = add_audio_stream (o, p->oc, p->fmt->audio_codec);
+      p->audio_st = add_audio_stream (o, p->oc, p->fmt->audio_codec);
     }
 
 
@@ -1007,7 +1034,7 @@ static void flush_audio (GeglProperties *o)
 
   got_packet = 0;
   av_init_packet (&pkt);
-  ret = avcodec_encode_audio2 (p->audio_st->codec, &pkt, NULL, &got_packet);
+  ret = avcodec_encode_audio2 (p->audio_ctx, &pkt, NULL, &got_packet);
   if (ret < 0)
   {
     fprintf (stderr, "audio enc trouble\n");
@@ -1015,7 +1042,7 @@ static void flush_audio (GeglProperties *o)
   if (got_packet)
     {
       pkt.stream_index = p->audio_st->index;
-      av_packet_rescale_ts (&pkt, p->audio_st->codec->time_base, p->audio_st->time_base);
+      av_packet_rescale_ts (&pkt, p->audio_ctx->time_base, p->audio_st->time_base);
       av_interleaved_write_frame (p->oc, &pkt);
       av_packet_unref (&pkt);
     }
@@ -1071,7 +1098,7 @@ static void flush_video (GeglProperties *o)
     int ret;
     got_packet = 0;
     av_init_packet (&pkt);
-    ret = avcodec_encode_video2 (p->video_st->codec, &pkt, NULL, &got_packet);
+    ret = avcodec_encode_video2 (p->video_ctx, &pkt, NULL, &got_packet);
     if (ret < 0)
       return;
 
@@ -1080,7 +1107,7 @@ static void flush_video (GeglProperties *o)
        pkt.stream_index = p->video_st->index;
        pkt.pts = ts;
        pkt.dts = ts++;
-       av_packet_rescale_ts (&pkt, p->video_st->codec->time_base, p->video_st->time_base);
+       av_packet_rescale_ts (&pkt, p->video_ctx->time_base, p->video_st->time_base);
        av_interleaved_write_frame (p->oc, &pkt);
        av_packet_unref (&pkt);
      }
