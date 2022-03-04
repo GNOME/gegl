@@ -223,13 +223,22 @@ decode_audio (GeglOperation *operation,
           static AVFrame frame;
           int got_frame;
 
-          decoded_bytes = avcodec_decode_audio4(p->audio_ctx,
-                                     &frame, &got_frame, &pkt);
-
+          decoded_bytes = avcodec_send_packet (p->audio_ctx, &pkt);
           if (decoded_bytes < 0)
             {
-              fprintf (stderr, "avcodec_decode_audio4 failed for %s\n",
+              fprintf (stderr, "avcodec_send_packet failed for %s\n",
                                 o->path);
+            }
+          else
+            {
+              decoded_bytes = avcodec_receive_frame (p->audio_ctx, &frame);
+              if (decoded_bytes < 0)
+                {
+                  fprintf (stderr, "avcodec_receive_frame failed for %s\n",
+                                    o->path);
+                }
+              else
+                got_frame = 1;
             }
 
           if (got_frame) {
@@ -356,14 +365,23 @@ decode_frame (GeglOperation *operation,
           }
           while (pkt.stream_index != p->video_index);
 
-          decoded_bytes = avcodec_decode_video2 (
-                 p->video_ctx, p->lavc_frame,
-                 &got_picture, &pkt);
+          decoded_bytes = avcodec_send_packet (p->video_ctx, &pkt);
           if (decoded_bytes < 0)
             {
-              fprintf (stderr, "avcodec_decode_video failed for %s\n",
+              fprintf (stderr, "avcodec_send_packet failed for %s\n",
                        o->path);
               return -1;
+            }
+          else
+            {
+              decoded_bytes = avcodec_receive_frame (p->video_ctx, p->lavc_frame);
+              if (decoded_bytes < 0)
+                {
+                  fprintf (stderr, "avcodec_receive_frame failed for %s\n",
+                                    o->path);
+                }
+              else
+                got_picture = 1;
             }
 
           if(got_picture)
