@@ -626,14 +626,15 @@ alloc_picture (int pix_fmt, int width, int height)
   picture = av_frame_alloc ();
   if (!picture)
     return NULL;
-  size = avpicture_get_size (pix_fmt, width + 1, height + 1);
+  size = av_image_get_buffer_size(pix_fmt, width + 1, height + 1, 1);
   picture_buf = malloc (size);
   if (!picture_buf)
     {
       av_free (picture);
       return NULL;
     }
-  avpicture_fill ((AVPicture *) picture, picture_buf, pix_fmt, width, height);
+  av_image_fill_arrays (picture->data, picture->linesize,
+      picture_buf, pix_fmt, width, height, 1);
   return picture;
 }
 
@@ -984,7 +985,8 @@ tfile (GeglProperties *o)
     else
       {
         fprintf (stderr, "didn't find video encoder \"%s\"\navailable codecs: ", o->video_codec);
-        while ((codec = av_codec_next (codec)))
+        void *opaque = NULL;
+        while ((codec = av_codec_iterate (&opaque)))
           if (av_codec_is_encoder (codec) &&
               avcodec_get_type (codec->id) == AVMEDIA_TYPE_VIDEO)
           fprintf (stderr, "%s ", codec->name);
@@ -1000,7 +1002,8 @@ tfile (GeglProperties *o)
     else
       {
         fprintf (stderr, "didn't find audio encoder \"%s\"\navailable codecs: ", o->audio_codec);
-        while ((codec = av_codec_next (codec)))
+        void *opaque = NULL;
+        while ((codec = av_codec_iterate (&opaque)))
           if (av_codec_is_encoder (codec) &&
               avcodec_get_type (codec->id) == AVMEDIA_TYPE_AUDIO)
                 fprintf (stderr, "%s ", codec->name);
