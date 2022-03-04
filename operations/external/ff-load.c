@@ -76,11 +76,12 @@ typedef struct
   gint             height;
   gdouble          fps;
   gint             codec_delay;
+  int64_t          first_dts;
 
   gchar           *loadedfilename; /* to remember which file is "cached"     */
 
   AVFormatContext *audio_fcontext;
-  AVCodec         *audio_codec;
+  const AVCodec   *audio_codec;
   int              audio_index;
   GList           *audio_track;
   long             audio_cursor_pos;
@@ -95,7 +96,7 @@ typedef struct
   AVCodecContext  *video_ctx;
   AVStream        *audio_stream;
   AVCodecContext  *audio_ctx;
-  AVCodec         *video_codec;
+  const AVCodec   *video_codec;
   AVFrame         *lavc_frame;
   AVFrame         *rgb_frame;
   glong            prevframe;      /* previously decoded frame number */
@@ -381,6 +382,8 @@ decode_frame (GeglOperation *operation,
             }
           while (ret == 0)
             {
+              if (!p->first_dts)
+                p->first_dts = pkt.dts;
               ret = avcodec_receive_frame (p->video_ctx, p->lavc_frame);
               if (ret == AVERROR(EAGAIN))
                 {
@@ -397,8 +400,12 @@ decode_frame (GeglOperation *operation,
               got_picture = 1;
               if ((pkt.dts == pkt.pts) || (p->lavc_frame->key_frame!=0))
                 {
+                  // cur_dts and first_dts are moved to libavformat/internal.h
+                  /*
                   p->lavc_frame->pts = (p->video_stream->cur_dts -
                                         p->video_stream->first_dts);
+                  */
+                  p->lavc_frame->pts = pkt.dts - p->first_dts;
                   p->prevpts =  av_rescale_q (p->lavc_frame->pts,
                                               p->video_stream->time_base,
                                               AV_TIME_BASE_Q) * 1.0 / AV_TIME_BASE;

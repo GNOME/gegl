@@ -251,8 +251,6 @@ init (GeglProperties *o)
 
   if (!inited)
     {
-      av_register_all ();
-      avcodec_register_all ();
       inited = 1;
     }
 
@@ -877,7 +875,7 @@ write_video_frame (GeglProperties *o,
   else
 #endif
     {
-      int got_packet = 0;
+      // int got_packet = 0;
       int key_frame = 0;
       ret = avcodec_send_frame (c, picture_ptr);
       while (ret == 0)
@@ -901,8 +899,10 @@ write_video_frame (GeglProperties *o,
               break;
             }
           // out_size = 0;
-          got_packet = 1;
+          // got_packet = 1;
           key_frame = !!(pkt2.flags & AV_PKT_FLAG_KEY);
+      // coded_frame is removed by https://github.com/FFmpeg/FFmpeg/commit/11bc79089378a5ec00547d0f85bc152afdf30dfa
+      /*
       if (!out_size && got_packet && c->coded_frame)
         {
           c->coded_frame->pts       = pkt2.pts;
@@ -910,6 +910,7 @@ write_video_frame (GeglProperties *o,
           if (c->codec->capabilities & AV_CODEC_CAP_INTRA_ONLY)
               c->coded_frame->pict_type = AV_PICTURE_TYPE_I;
         }
+      */
           if (pkt2.side_data_elems > 0)
             {
               int i;
@@ -971,14 +972,15 @@ tfile (GeglProperties *o)
 
   p->oc->oformat = p->fmt;
 
-  snprintf (p->oc->filename, sizeof (p->oc->filename), "%s", o->path);
+  // The "avio_open" below fills "url" field instead of the "filename"
+  // snprintf (p->oc->filename, sizeof (p->oc->filename), "%s", o->path);
 
   p->video_st = NULL;
   p->audio_st = NULL;
 
   if (strcmp (o->video_codec, "auto"))
   {
-    AVCodec *codec = avcodec_find_encoder_by_name (o->video_codec);
+    const AVCodec *codec = avcodec_find_encoder_by_name (o->video_codec);
     p->fmt->video_codec = AV_CODEC_ID_NONE;
     if (codec)
       p->fmt->video_codec = codec->id;
@@ -995,7 +997,7 @@ tfile (GeglProperties *o)
   }
   if (strcmp (o->audio_codec, "auto"))
   {
-    AVCodec *codec = avcodec_find_encoder_by_name (o->audio_codec);
+    const AVCodec *codec = avcodec_find_encoder_by_name (o->audio_codec);
     p->fmt->audio_codec = AV_CODEC_ID_NONE;
     if (codec)
       p->fmt->audio_codec = codec->id;
