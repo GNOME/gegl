@@ -82,6 +82,8 @@ property_int (me_subpel_quality, _("me-subpel-quality"), 0)
 
 #include "gegl-op.h"
 
+#include <libavutil/channel_layout.h>
+#include <libavutil/imgutils.h>
 #include <libavformat/avformat.h>
 #include <libavcodec/avcodec.h>
 #include <libavutil/avutil.h>

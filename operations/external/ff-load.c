@@ -62,9 +62,11 @@ property_audio_fragment (audio, _("audio"), 0)
 #include <limits.h>
 #include <stdlib.h>
 
+#include <libavutil/channel_layout.h>
 #include <libavutil/avutil.h>
 #include <libavutil/imgutils.h>
 #include <libavformat/avformat.h>
+#include <libavcodec/avcodec.h>
 #include <libswscale/swscale.h>
 
 
