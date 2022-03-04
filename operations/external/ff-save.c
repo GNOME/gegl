@@ -486,12 +486,23 @@ static void encode_audio_fragments (Priv *p, AVFormatContext *oc, AVStream *st, 
     frame->pts = p->next_apts;
     p->next_apts += frame_size;
 
-    //ret = avcodec_send_frame (c, frame);
-    ret = avcodec_encode_audio2 (c, &pkt, frame, &got_packet);
-
-    if (ret < 0) {
-      fprintf (stderr, "Error encoding audio frame: %s\n", av_err2str (ret));
-    }
+    ret = avcodec_send_frame (c, frame);
+    if (ret < 0)
+      {
+        fprintf (stderr, "avcodec_send_frame failed: %s\n", av_err2str (ret));
+      }
+    else
+      {
+        ret = avcodec_receive_packet (c, &pkt);
+        if (ret < 0)
+          {
+            fprintf (stderr, "avcodec_receive_packet failed: %s\n", av_err2str (ret));
+          }
+        else
+          {
+            got_packet = 1;
+          }
+      }
     if (got_packet)
     {
       av_packet_rescale_ts (&pkt, c->time_base, st->time_base);
@@ -874,7 +885,15 @@ write_video_frame (GeglProperties *o,
       pkt2.data = p->video_outbuf;
       pkt2.size = p->video_outbuf_size;
 
-      out_size = avcodec_encode_video2(c, &pkt2, picture_ptr, &got_packet);
+      out_size = avcodec_send_frame (c, picture_ptr);
+      if (!out_size)
+        {
+          out_size = avcodec_receive_packet (c, &pkt2);
+          if (!out_size)
+            {
+              got_packet = 1;
+            }
+        }
 
       if (!out_size && got_packet && c->coded_frame)
         {
@@ -1034,11 +1053,23 @@ static void flush_audio (GeglProperties *o)
 
   got_packet = 0;
   av_init_packet (&pkt);
-  ret = avcodec_encode_audio2 (p->audio_ctx, &pkt, NULL, &got_packet);
+  ret = avcodec_send_frame (p->audio_ctx, NULL);
   if (ret < 0)
   {
-    fprintf (stderr, "audio enc trouble\n");
+    fprintf (stderr, "avcodec_send_frame failed\n");
   }
+  else
+    {
+      ret = avcodec_receive_packet (p->audio_ctx, &pkt);
+      if (ret < 0)
+        {
+          fprintf (stderr, "avcodec_receive_packet failed\n");
+        }
+      else
+        {
+          got_packet = 1;
+        }
+    }
   if (got_packet)
     {
       pkt.stream_index = p->audio_st->index;
@@ -1098,9 +1129,13 @@ static void flush_video (GeglProperties *o)
     int ret;
     got_packet = 0;
     av_init_packet (&pkt);
-    ret = avcodec_encode_video2 (p->video_ctx, &pkt, NULL, &got_packet);
+    ret = avcodec_send_frame (p->video_ctx, NULL);
     if (ret < 0)
       return;
+    ret = avcodec_receive_packet (p->video_ctx, &pkt);
+    if (ret < 0)
+      return;
+    got_packet = 1;
 
      if (got_packet)
      {
