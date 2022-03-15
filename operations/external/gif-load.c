@@ -50,8 +50,8 @@ property_int (frame_delay, _("frame-delay"), 100)
 #include <gegl-gio-private.h>
 
 /* since libnsgif is nice and simple we directly embed it in the .so  */
-#include "subprojects/libnsgif/libnsgif.h"
-#include "subprojects/libnsgif/libnsgif.c"
+#include "subprojects/libnsgif/nsgif.h"
+#include "subprojects/libnsgif/gif.c"
 #include "subprojects/libnsgif/lzw.c"
 
 #define IO_BUFFER_SIZE 4096
@@ -61,7 +61,8 @@ typedef struct
   GFile *file;
   GInputStream *stream;
 
-  gif_animation gif;
+  nsgif_t *gif;
+  const nsgif_info_t *info;
   unsigned char *gif_data;
 
   const Babl *format;
@@ -78,7 +79,7 @@ cleanup(GeglOperation *operation)
 
   if (p != NULL)
     {
-      gif_finalise (&p->gif);
+      nsgif_destroy (p->gif);
       if (p->gif_data) g_free (p->gif_data);
 
       if (p->stream != NULL)
@@ -97,18 +98,6 @@ static void *bitmap_create(int width, int height)
   return calloc(width * height, 4);
 }
 
-static void bitmap_set_opaque(void *bitmap, bool opaque)
-{
-  (void) opaque;  /* unused */
-  assert(bitmap);
-}
-
-static bool bitmap_test_opaque(void *bitmap)
-{
-  assert(bitmap);
-  return false;
-}
-
 static unsigned char *bitmap_get_buffer(void *bitmap)
 {
   assert(bitmap);
@@ -119,12 +108,6 @@ static void bitmap_destroy(void *bitmap)
 {
   assert(bitmap);
   free(bitmap);
-}
-
-static void bitmap_modified(void *bitmap)
-{
-  assert(bitmap);
-  return;
 }
 
 static void
@@ -141,20 +124,32 @@ prepare (GeglOperation *operation)
   if (p->gif_data == NULL)
     {
       gsize length;
-      gif_bitmap_callback_vt bitmap_callbacks = {
+      nsgif_error code;
+      nsgif_bitmap_cb_vt bitmap_callbacks = {
         bitmap_create,
         bitmap_destroy,
         bitmap_get_buffer,
-        bitmap_set_opaque,
-        bitmap_test_opaque,
-        bitmap_modified
       };
       g_file_get_contents (o->path, (void*)&p->gif_data, &length, NULL);
-      gif_create(&p->gif, &bitmap_callbacks);
-      gif_initialise(&p->gif, length, p->gif_data);
-
-      o->frames = p->gif.frame_count;
       g_assert (p->gif_data != NULL);
+
+      code = nsgif_create (&bitmap_callbacks, &p->gif);
+      if (code != NSGIF_OK)
+        g_warning ("nsgif_create: %s\n", nsgif_strerror(code));
+
+      code = nsgif_data_scan (p->gif, length, p->gif_data);
+
+      p->info = nsgif_get_info (p->gif);
+      g_assert (p->info != NULL);
+
+      if (p->info->frame_count == 0) {
+        if (code != NSGIF_OK)
+          g_warning ("nsgif_data_scan: %s\n", nsgif_strerror(code));
+        else
+          g_warning ("nsgif_data_scan: No frames found in GIF\n");
+      }
+
+      o->frames = p->info->frame_count;
     }
 
   gegl_operation_set_format (operation, "output", p->format);
@@ -167,8 +162,8 @@ get_bounding_box (GeglOperation *operation)
   GeglRectangle result = { 0, 0, 0, 0 };
   Priv *p = (Priv*) o->user_data;
 
-  result.width = p->gif.width;
-  result.height = p->gif.height;
+  result.width = p->info->width;
+  result.height = p->info->height;
 
   return result;
 }
@@ -180,20 +175,24 @@ process (GeglOperation       *operation,
          gint                 level)
 {
   GeglProperties *o = GEGL_PROPERTIES (operation);
+  const nsgif_frame_info_t *frame_info;
   Priv *p = (Priv*) o->user_data;
-  int code;
+  nsgif_bitmap_t *bitmap;
+  nsgif_error code;
 
   if (o->frame > o->frames-1) o->frame = o->frames-1;
   if (o->frame < 0) o->frame = 0;
 
-  code = gif_decode_frame (&p->gif, o->frame);
-  if (code != GIF_OK)
-    g_warning ("gif_decode_frame:%i\n", code);
+  code = nsgif_frame_decode (p->gif, o->frame, &bitmap);
+  if (code != NSGIF_OK)
+    g_warning ("gif_decode_frame: %s\n", nsgif_strerror(code));
 
   gegl_buffer_set (output, result, 0, p->format,
-                   p->gif.frame_image,
-                   p->gif.width * 4);
-  o->frame_delay = p->gif.frames[o->frame].frame_delay * 10;
+                   bitmap,
+                   p->info->width * 4);
+  frame_info = nsgif_get_frame_info (p->gif, o->frame);
+  g_assert (frame_info != NULL);
+  o->frame_delay = frame_info->delay * 10;
   return FALSE;
 }
 
