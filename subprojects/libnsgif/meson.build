@@ -5,7 +5,7 @@ project('libnsgif',
 
 
 libnsgif_lib = static_library('nsgif',
-  'libnsgif.c',
+  'gif.c',
   'lzw.c',
 )
 
