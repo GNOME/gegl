@@ -211,7 +211,7 @@ decode_audio (GeglOperation *operation,
   while (p->prevapts <= pts2)
     {
       AVPacket  pkt = {0,};
-      int       decoded_bytes;
+      int       ret;
 
       if (av_read_frame (p->audio_fcontext, &pkt) < 0)
          {
@@ -221,86 +221,93 @@ decode_audio (GeglOperation *operation,
       if (pkt.stream_index==p->audio_index && p->audio_stream)
         {
           static AVFrame frame;
-          int got_frame;
 
-          decoded_bytes = avcodec_send_packet (p->audio_ctx, &pkt);
-          if (decoded_bytes < 0)
+          ret = avcodec_send_packet (p->audio_ctx, &pkt);
+          if (ret < 0)
             {
               fprintf (stderr, "avcodec_send_packet failed for %s\n",
                                 o->path);
             }
-          else
+          while (ret == 0)
             {
-              decoded_bytes = avcodec_receive_frame (p->audio_ctx, &frame);
-              if (decoded_bytes < 0)
+              ret = avcodec_receive_frame (p->audio_ctx, &frame);
+              if (ret == AVERROR(EAGAIN))
+                {
+                  // no more frames; should send the next packet now
+                  ret = 0;
+                  break;
+                }
+              else if (ret < 0)
                 {
                   fprintf (stderr, "avcodec_receive_frame failed for %s\n",
                                     o->path);
+                  break;
                 }
-              else
-                got_frame = 1;
+              int samples_left = frame.nb_samples;
+              int si = 0;
+
+              while (samples_left)
+              {
+                 int sample_count = samples_left;
+                 int channels = MIN(p->audio_stream->codecpar->channels, GEGL_MAX_AUDIO_CHANNELS);
+                 GeglAudioFragment *af = gegl_audio_fragment_new (o->audio_sample_rate, channels,
+                            AV_CH_LAYOUT_STEREO, samples_left);
+  //);
+                 switch (p->audio_ctx->sample_fmt)
+                 {
+                   case AV_SAMPLE_FMT_FLT:
+                     for (gint i = 0; i < sample_count; i++)
+                       for (gint c = 0; c < channels; c++)
+                         af->data[c][i] = ((int16_t *)frame.data[0])[(i + si) * channels + c];
+                     break;
+                   case AV_SAMPLE_FMT_FLTP:
+                     for (gint i = 0; i < sample_count; i++)
+                       for (gint c = 0; c < channels; c++)
+                         {
+                           af->data[c][i] = ((float *)frame.data[c])[i + si];
+                         }
+                     break;
+                   case AV_SAMPLE_FMT_S16:
+                     for (gint i = 0; i < sample_count; i++)
+                       for (gint c = 0; c < channels; c++)
+                         af->data[c][i] = ((int16_t *)frame.data[0])[(i + si) * channels + c] / 32768.0;
+                     break;
+                   case AV_SAMPLE_FMT_S16P:
+                     for (gint i = 0; i < sample_count; i++)
+                       for (gint c = 0; c < channels; c++)
+                         af->data[c][i] = ((int16_t *)frame.data[c])[i + si] / 32768.0;
+                     break;
+                   case AV_SAMPLE_FMT_S32:
+                     for (gint i = 0; i < sample_count; i++)
+                       for (gint c = 0; c < channels; c++)
+                         af->data[c][i] = ((int32_t *)frame.data[0])[(i + si) * channels + c] / 2147483648.0;
+                    break;
+                  case AV_SAMPLE_FMT_S32P:
+                     for (gint i = 0; i < sample_count; i++)
+                      for (gint c = 0; c < channels; c++)
+                        af->data[c][i] = ((int32_t *)frame.data[c])[i + si] / 2147483648.0;
+                    break;
+                  default:
+                    g_warning ("undealt with sample format\n");
+                  }
+                  gegl_audio_fragment_set_sample_count (af, sample_count);
+                  gegl_audio_fragment_set_pos (
+                    af,
+                    (long int)av_rescale_q (
+                      (pkt.pts),
+                      p->audio_stream->time_base,
+                      AV_TIME_BASE_Q
+                    ) * o->audio_sample_rate / AV_TIME_BASE
+                  );
+
+                  p->audio_pos += sample_count;
+                  p->audio_track = g_list_append (p->audio_track, af);
+
+                  samples_left -= sample_count;
+                  si += sample_count;
+                }
+              p->prevapts = pkt.pts * av_q2d (p->audio_stream->time_base);
             }
-
-          if (got_frame) {
-            int samples_left = frame.nb_samples;
-            int si = 0;
-
-            while (samples_left)
-            {
-               int sample_count = samples_left;
-               int channels = MIN(p->audio_stream->codecpar->channels, GEGL_MAX_AUDIO_CHANNELS);
-               GeglAudioFragment *af = gegl_audio_fragment_new (o->audio_sample_rate, channels,
-                          AV_CH_LAYOUT_STEREO, samples_left);
-//);
-               switch (p->audio_ctx->sample_fmt)
-               {
-                 case AV_SAMPLE_FMT_FLT:
-                   for (gint i = 0; i < sample_count; i++)
-                     for (gint c = 0; c < channels; c++)
-                       af->data[c][i] = ((int16_t *)frame.data[0])[(i + si) * channels + c];
-                   break;
-                 case AV_SAMPLE_FMT_FLTP:
-                   for (gint i = 0; i < sample_count; i++)
-                     for (gint c = 0; c < channels; c++)
-                       {
-                         af->data[c][i] = ((float *)frame.data[c])[i + si];
-                       }
-                   break;
-                 case AV_SAMPLE_FMT_S16:
-                   for (gint i = 0; i < sample_count; i++)
-                     for (gint c = 0; c < channels; c++)
-                       af->data[c][i] = ((int16_t *)frame.data[0])[(i + si) * channels + c] / 32768.0;
-                   break;
-                 case AV_SAMPLE_FMT_S16P:
-                   for (gint i = 0; i < sample_count; i++)
-                     for (gint c = 0; c < channels; c++)
-                       af->data[c][i] = ((int16_t *)frame.data[c])[i + si] / 32768.0;
-                   break;
-                 case AV_SAMPLE_FMT_S32:
-                   for (gint i = 0; i < sample_count; i++)
-                     for (gint c = 0; c < channels; c++)
-                       af->data[c][i] = ((int32_t *)frame.data[0])[(i + si) * channels + c] / 2147483648.0;
-                  break;
-                case AV_SAMPLE_FMT_S32P:
-                   for (gint i = 0; i < sample_count; i++)
-                    for (gint c = 0; c < channels; c++)
-                      af->data[c][i] = ((int32_t *)frame.data[c])[i + si] / 2147483648.0;
-                  break;
-                default:
-                  g_warning ("undealt with sample format\n");
-                }
-                gegl_audio_fragment_set_sample_count (af, sample_count);
-                gegl_audio_fragment_set_pos (af, 
-  (long int)av_rescale_q ((pkt.pts), p->audio_stream->time_base, AV_TIME_BASE_Q) * o->audio_sample_rate /AV_TIME_BASE);
-
-                p->audio_pos += sample_count;
-                p->audio_track = g_list_append (p->audio_track, af);
-
-                samples_left -= sample_count;
-                si += sample_count;
-              }
-            p->prevapts = pkt.pts * av_q2d (p->audio_stream->time_base);
-          }
         }
       av_packet_unref (&pkt);
     }
@@ -351,7 +358,7 @@ decode_frame (GeglOperation *operation,
       int       got_picture = 0;
       do
         {
-          int       decoded_bytes;
+          int       ret;
           AVPacket  pkt = {0,};
 
           do
@@ -365,42 +372,46 @@ decode_frame (GeglOperation *operation,
           }
           while (pkt.stream_index != p->video_index);
 
-          decoded_bytes = avcodec_send_packet (p->video_ctx, &pkt);
-          if (decoded_bytes < 0)
+          ret = avcodec_send_packet (p->video_ctx, &pkt);
+          if (ret < 0)
             {
               fprintf (stderr, "avcodec_send_packet failed for %s\n",
                        o->path);
               return -1;
             }
-          else
+          while (ret == 0)
             {
-              decoded_bytes = avcodec_receive_frame (p->video_ctx, p->lavc_frame);
-              if (decoded_bytes < 0)
+              ret = avcodec_receive_frame (p->video_ctx, p->lavc_frame);
+              if (ret == AVERROR(EAGAIN))
+                {
+                  // no more frames; should send the next packet now
+                  ret = 0;
+                  break;
+                }
+              else if (ret < 0)
                 {
                   fprintf (stderr, "avcodec_receive_frame failed for %s\n",
                                     o->path);
+                  break;
+                }
+              got_picture = 1;
+              if ((pkt.dts == pkt.pts) || (p->lavc_frame->key_frame!=0))
+                {
+                  p->lavc_frame->pts = (p->video_stream->cur_dts -
+                                        p->video_stream->first_dts);
+                  p->prevpts =  av_rescale_q (p->lavc_frame->pts,
+                                              p->video_stream->time_base,
+                                              AV_TIME_BASE_Q) * 1.0 / AV_TIME_BASE;
+                  decodeframe = roundf( p->prevpts * o->frame_rate);
                 }
               else
-                got_picture = 1;
+                {
+                  p->prevpts += 1.0 / o->frame_rate;
+                  decodeframe = roundf ( p->prevpts * o->frame_rate);
+                }
+              if (decodeframe > frame + p->codec_delay)
+                break;
             }
-
-          if(got_picture)
-          {
-             if ((pkt.dts == pkt.pts) || (p->lavc_frame->key_frame!=0))
-             {
-               p->lavc_frame->pts = (p->video_stream->cur_dts -
-                                     p->video_stream->first_dts);
-               p->prevpts =  av_rescale_q (p->lavc_frame->pts,
-                                           p->video_stream->time_base,
-                                           AV_TIME_BASE_Q) * 1.0 / AV_TIME_BASE;
-               decodeframe = roundf( p->prevpts * o->frame_rate);
-             }
-             else
-             {
-               p->prevpts += 1.0 / o->frame_rate;
-               decodeframe = roundf ( p->prevpts * o->frame_rate);
-             }
-          }
 #if 0
           if (decoded_bytes != pkt.size)
             fprintf (stderr, "bytes left!\n");

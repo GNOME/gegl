@@ -413,15 +413,9 @@ static void encode_audio_fragments (Priv *p, AVFormatContext *oc, AVStream *st, 
     AVCodecContext *c = p->audio_ctx;
     long i;
     int ret;
-    int got_packet = 0;
   static AVPacket  pkt = { 0 };  /* XXX: static, should be stored in instance somehow */
     AVFrame *frame = alloc_audio_frame (c->sample_fmt, c->channel_layout,
                                         c->sample_rate, frame_size);
-
-  if (pkt.size == 0)
-  {
-    av_init_packet (&pkt);
-  }
 
     av_frame_make_writable (frame);
     switch (c->sample_fmt) {
@@ -491,25 +485,29 @@ static void encode_audio_fragments (Priv *p, AVFormatContext *oc, AVStream *st, 
       {
         fprintf (stderr, "avcodec_send_frame failed: %s\n", av_err2str (ret));
       }
-    else
+    while (ret == 0)
       {
+        if (pkt.size == 0)
+          {
+            av_init_packet (&pkt);
+          }
         ret = avcodec_receive_packet (c, &pkt);
-        if (ret < 0)
+        if (ret == AVERROR(EAGAIN))
+          {
+            // no more packets; should send the next frame now
+          }
+        else if (ret < 0)
           {
             fprintf (stderr, "avcodec_receive_packet failed: %s\n", av_err2str (ret));
           }
         else
           {
-            got_packet = 1;
+            av_packet_rescale_ts (&pkt, c->time_base, st->time_base);
+            pkt.stream_index = st->index;
+            av_interleaved_write_frame (oc, &pkt);
+            av_packet_unref (&pkt);
           }
       }
-    if (got_packet)
-    {
-      av_packet_rescale_ts (&pkt, c->time_base, st->time_base);
-      pkt.stream_index = st->index;
-      av_interleaved_write_frame (oc, &pkt);
-      av_packet_unref (&pkt);
-    }
     av_frame_free (&frame);
     p->audio_read_pos += frame_size;
   }
@@ -878,23 +876,32 @@ write_video_frame (GeglProperties *o,
   else
 #endif
     {
-      /* encode the image */
-      AVPacket pkt2;
       int got_packet = 0;
-      av_init_packet(&pkt2);
-      pkt2.data = p->video_outbuf;
-      pkt2.size = p->video_outbuf_size;
-
-      out_size = avcodec_send_frame (c, picture_ptr);
-      if (!out_size)
+      int key_frame = 0;
+      ret = avcodec_send_frame (c, picture_ptr);
+      while (ret == 0)
         {
-          out_size = avcodec_receive_packet (c, &pkt2);
-          if (!out_size)
+          /* encode the image */
+          AVPacket pkt2;
+          av_init_packet(&pkt2);
+          // pkt2 will use its own buffer
+          // we may remove video_outbuf and video_outbuf_size too
+          //pkt2.data = p->video_outbuf;
+          //pkt2.size = p->video_outbuf_size;
+          ret = avcodec_receive_packet (c, &pkt2);
+          if (ret == AVERROR(EAGAIN))
             {
-              got_packet = 1;
+              // no more packets
+              ret = 0;
+              break;
             }
-        }
-
+          else if (ret < 0)
+            {
+              break;
+            }
+          // out_size = 0;
+          got_packet = 1;
+          key_frame = !!(pkt2.flags & AV_PKT_FLAG_KEY);
       if (!out_size && got_packet && c->coded_frame)
         {
           c->coded_frame->pts       = pkt2.pts;
@@ -902,38 +909,31 @@ write_video_frame (GeglProperties *o,
           if (c->codec->capabilities & AV_CODEC_CAP_INTRA_ONLY)
               c->coded_frame->pict_type = AV_PICTURE_TYPE_I;
         }
-
-      if (pkt2.side_data_elems > 0)
-        {
-          int i;
-          for (i = 0; i < pkt2.side_data_elems; i++)
-            av_free(pkt2.side_data[i].data);
-          av_freep(&pkt2.side_data);
-          pkt2.side_data_elems = 0;
-        }
-
-      if (!out_size)
-        out_size = pkt2.size;
-
-      /* if zero size, it means the image was buffered */
-      if (out_size != 0)
-        {
-          AVPacket  pkt;
-          av_init_packet (&pkt);
-          if (c->coded_frame->key_frame)
-            pkt.flags |= AV_PKT_FLAG_KEY;
-          pkt.stream_index = st->index;
-          pkt.data = p->video_outbuf;
-          pkt.size = out_size;
-          pkt.pts = picture_ptr->pts;
-          pkt.dts = picture_ptr->pts;
-          av_packet_rescale_ts (&pkt, c->time_base, st->time_base);
-          /* write the compressed frame in the media file */
-          ret = av_write_frame (oc, &pkt);
-        }
-      else
-        {
-          ret = 0;
+          if (pkt2.side_data_elems > 0)
+            {
+              int i;
+              for (i = 0; i < pkt2.side_data_elems; i++)
+                av_free(pkt2.side_data[i].data);
+              av_freep(&pkt2.side_data);
+              pkt2.side_data_elems = 0;
+            }
+          out_size = pkt2.size;
+          /* if zero size, it means the image was buffered */
+          if (out_size != 0)
+            {
+              AVPacket  pkt;
+              av_init_packet (&pkt);
+              if (key_frame)
+                pkt.flags |= AV_PKT_FLAG_KEY;
+              pkt.stream_index = st->index;
+              pkt.data = pkt2.data;
+              pkt.size = out_size;
+              pkt.pts = picture_ptr->pts;
+              pkt.dts = picture_ptr->pts;
+              av_packet_rescale_ts (&pkt, c->time_base, st->time_base);
+              /* write the compressed frame in the media file */
+              ret = av_write_frame (oc, &pkt);
+            }
         }
     }
   if (ret != 0)
@@ -1045,37 +1045,35 @@ static void flush_audio (GeglProperties *o)
 {
   Priv *p = (Priv*)o->user_data;
   AVPacket  pkt = { 0 };
-  int ret;
+  int ret = 0;
 
-  int got_packet = 0;
   if (!p->audio_st)
     return;
 
-  got_packet = 0;
-  av_init_packet (&pkt);
   ret = avcodec_send_frame (p->audio_ctx, NULL);
   if (ret < 0)
-  {
-    fprintf (stderr, "avcodec_send_frame failed\n");
-  }
-  else
+    {
+      fprintf (stderr, "avcodec_send_frame failed while entering to draining mode: %s\n", av_err2str (ret));
+    }
+  av_init_packet (&pkt);
+  while (ret == 0)
     {
       ret = avcodec_receive_packet (p->audio_ctx, &pkt);
-      if (ret < 0)
+      if (ret == AVERROR_EOF)
         {
-          fprintf (stderr, "avcodec_receive_packet failed\n");
+          // no more packets
+        }
+      else if (ret < 0)
+        {
+          fprintf (stderr, "avcodec_receive_packet failed: %s\n", av_err2str (ret));
         }
       else
         {
-          got_packet = 1;
+          pkt.stream_index = p->audio_st->index;
+          av_packet_rescale_ts (&pkt, p->audio_ctx->time_base, p->audio_st->time_base);
+          av_interleaved_write_frame (p->oc, &pkt);
+          av_packet_unref (&pkt);
         }
-    }
-  if (got_packet)
-    {
-      pkt.stream_index = p->audio_st->index;
-      av_packet_rescale_ts (&pkt, p->audio_ctx->time_base, p->audio_st->time_base);
-      av_interleaved_write_frame (p->oc, &pkt);
-      av_packet_unref (&pkt);
     }
 }
 
@@ -1122,31 +1120,35 @@ process (GeglOperation       *operation,
 static void flush_video (GeglProperties *o)
 {
   Priv *p = (Priv*)o->user_data;
-  int got_packet = 0;
   long ts = p->frame_count;
-  do {
-    AVPacket  pkt = { 0 };
-    int ret;
-    got_packet = 0;
-    av_init_packet (&pkt);
-    ret = avcodec_send_frame (p->video_ctx, NULL);
-    if (ret < 0)
-      return;
-    ret = avcodec_receive_packet (p->video_ctx, &pkt);
-    if (ret < 0)
-      return;
-    got_packet = 1;
-
-     if (got_packet)
-     {
-       pkt.stream_index = p->video_st->index;
-       pkt.pts = ts;
-       pkt.dts = ts++;
-       av_packet_rescale_ts (&pkt, p->video_ctx->time_base, p->video_st->time_base);
-       av_interleaved_write_frame (p->oc, &pkt);
-       av_packet_unref (&pkt);
-     }
-  } while (got_packet);
+  AVPacket  pkt = { 0 };
+  int ret = 0;
+  ret = avcodec_send_frame (p->video_ctx, NULL);
+  if (ret < 0)
+    {
+      fprintf (stderr, "avcodec_send_frame failed while entering to draining mode: %s\n", av_err2str (ret));
+    }
+  av_init_packet (&pkt);
+  while (ret == 0)
+    {
+      ret = avcodec_receive_packet (p->video_ctx, &pkt);
+      if (ret == AVERROR_EOF)
+        {
+          // no more packets
+        }
+      else if (ret < 0)
+        {
+        }
+      else
+        {
+          pkt.stream_index = p->video_st->index;
+          pkt.pts = ts;
+          pkt.dts = ts++;
+          av_packet_rescale_ts (&pkt, p->video_ctx->time_base, p->video_st->time_base);
+          av_interleaved_write_frame (p->oc, &pkt);
+          av_packet_unref (&pkt);
+        }
+    }
 }
 
 static void
