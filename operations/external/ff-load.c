@@ -467,6 +467,7 @@ prepare (GeglOperation *operation)
       if (err < 0)
         {
           print_error (o->path, err);
+          return;
         }
       err = avformat_find_stream_info (p->video_fcontext, NULL);
       if (err < 0)
@@ -478,6 +479,7 @@ prepare (GeglOperation *operation)
       if (err < 0)
         {
           print_error (o->path, err);
+          return;
         }
       err = avformat_find_stream_info (p->audio_fcontext, NULL);
       if (err < 0)
