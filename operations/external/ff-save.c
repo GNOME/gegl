@@ -951,17 +951,18 @@ tfile (GeglProperties *o)
 {
   Priv *p = (Priv*)o->user_data;
 
+  const AVOutputFormat *shared_fmt;
   if (strcmp (o->container_format, "auto"))
-    p->fmt = av_guess_format (o->container_format, o->path, NULL);
+    shared_fmt = av_guess_format (o->container_format, o->path, NULL);
   else
-    p->fmt = av_guess_format (NULL, o->path, NULL);
+    shared_fmt = av_guess_format (NULL, o->path, NULL);
 
-  if (!p->fmt)
+  if (!shared_fmt)
     {
       fprintf (stderr,
                "ff_save couldn't deduce outputformat from file extension: using MPEG.\n%s",
                "");
-      p->fmt = av_guess_format ("mpeg", NULL, NULL);
+      shared_fmt = av_guess_format ("mpeg", NULL, NULL);
     }
   p->oc = avformat_alloc_context ();
   if (!p->oc)
@@ -970,20 +971,20 @@ tfile (GeglProperties *o)
       return -1;
     }
 
-  p->oc->oformat = p->fmt;
-
   // The "avio_open" below fills "url" field instead of the "filename"
   // snprintf (p->oc->filename, sizeof (p->oc->filename), "%s", o->path);
 
   p->video_st = NULL;
   p->audio_st = NULL;
 
+  enum AVCodecID audio_codec = shared_fmt->audio_codec;
+  enum AVCodecID video_codec = shared_fmt->video_codec;
   if (strcmp (o->video_codec, "auto"))
   {
     const AVCodec *codec = avcodec_find_encoder_by_name (o->video_codec);
-    p->fmt->video_codec = AV_CODEC_ID_NONE;
+    video_codec = AV_CODEC_ID_NONE;
     if (codec)
-      p->fmt->video_codec = codec->id;
+      video_codec = codec->id;
     else
       {
         fprintf (stderr, "didn't find video encoder \"%s\"\navailable codecs: ", o->video_codec);
@@ -998,9 +999,9 @@ tfile (GeglProperties *o)
   if (strcmp (o->audio_codec, "auto"))
   {
     const AVCodec *codec = avcodec_find_encoder_by_name (o->audio_codec);
-    p->fmt->audio_codec = AV_CODEC_ID_NONE;
+    audio_codec = AV_CODEC_ID_NONE;
     if (codec)
-      p->fmt->audio_codec = codec->id;
+      audio_codec = codec->id;
     else
       {
         fprintf (stderr, "didn't find audio encoder \"%s\"\navailable codecs: ", o->audio_codec);
@@ -1012,16 +1013,20 @@ tfile (GeglProperties *o)
         fprintf (stderr, "\n");
       }
   }
+  p->fmt = av_malloc (sizeof(AVOutputFormat));
+  *(p->fmt) = *shared_fmt;
+  p->fmt->video_codec = video_codec;
+  p->fmt->audio_codec = audio_codec;
+  p->oc->oformat = p->fmt;
 
-  if (p->fmt->video_codec != AV_CODEC_ID_NONE)
+  if (video_codec != AV_CODEC_ID_NONE)
     {
-      p->video_st = add_video_stream (o, p->oc, p->fmt->video_codec);
+      p->video_st = add_video_stream (o, p->oc, video_codec);
     }
-  if (p->fmt->audio_codec != AV_CODEC_ID_NONE)
+  if (audio_codec != AV_CODEC_ID_NONE)
     {
-      p->audio_st = add_audio_stream (o, p->oc, p->fmt->audio_codec);
+      p->audio_st = add_audio_stream (o, p->oc, audio_codec);
     }
-
 
   if (p->video_st && ! open_video (o, p->oc, p->video_st))
     return -1;
@@ -1178,6 +1183,7 @@ finalize (GObject *object)
         }
 
       avio_closep (&p->oc->pb);
+      av_freep (&p->fmt);
       avformat_free_context (p->oc);
 
       g_clear_pointer (&o->user_data, g_free);
