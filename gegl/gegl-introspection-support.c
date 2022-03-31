@@ -136,6 +136,7 @@ gegl_color_get_components (GeglColor *color,
       else
         {
           g_free (result);
+          result = NULL;
           *components_length = 0;
         }
 

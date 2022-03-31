@@ -61,6 +61,7 @@ gegl_format_get_name (GValue *format);
  * Get the component values of the color in @format.
  *
  * Return value: (transfer full) (array length=components_length): The color components
+ * If value format not supported return NULL and components_length set to 0.
  */
 gdouble *
 gegl_color_get_components (GeglColor *color, GValue *format, gint *components_length);
