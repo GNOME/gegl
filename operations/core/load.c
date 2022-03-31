@@ -213,15 +213,13 @@ do_setup (GeglOperation *operation, const gchar *path, const gchar *uri)
       if ((!g_str_has_prefix (content_type, "image/") &&
            !g_str_has_prefix (content_type, ".")) || uncertain)
         {
-          g_free (content_type);
-
           if (!read_from_stream (stream, &buffer, &size, &error))
             {
               g_warning ("%s", error->message);
               g_clear_error (&error);
               goto cleanup;
             }
-
+          g_free (content_type);
           content_type = g_content_type_guess (filename, buffer, size, NULL);
         }
     }
