@@ -261,11 +261,7 @@ gegl_module_db_remove_duplicates (GeglModuleDB *db)
 
   }
 
-  while (suffix_entries)
-  {
-    g_free (suffix_entries->data);
-    suffix_entries = g_list_remove (suffix_entries, suffix_entries->data);
-  }
+  g_list_free_full(suffix_entries, g_free);
 }
 #endif
 
