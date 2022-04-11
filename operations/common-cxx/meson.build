@@ -1,5 +1,6 @@
 
 gegl_common_cxx_sources = files(
+  'denoise-dct.cc',
   'distance-transform.cc',
   'focus-blur.c',
   'lens-blur.cc',
