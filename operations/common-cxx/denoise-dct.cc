@@ -36,7 +36,7 @@ property_enum (patch_size, _("Patch size"),
     description (_("Size of patches used to denoise"))
 
 property_double (sigma, _("Strength"), 5.0)
-    description (_("Noise standart deviation"))
+    description (_("Noise standard deviation"))
     value_range (1., 100.)
 
 #else
