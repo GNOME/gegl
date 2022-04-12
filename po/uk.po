@@ -2,20 +2,21 @@
 # Copyright (C) 2018 gegl's COPYRIGHT HOLDER
 # This file is distributed under the same license as the gegl package.
 #
-# yurchor <yurchor@ukr.net>, 2018, 2020, 2021.
+# yurchor <yurchor@ukr.net>, 2018, 2020, 2021, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2021-09-04 22:16+0000\n"
-"PO-Revision-Date: 2021-09-05 14:17+0300\n"
+"POT-Creation-Date: 2022-04-11 19:34+0000\n"
+"PO-Revision-Date: 2022-04-12 08:32+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Plural-Forms: nplurals=4; plural=n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : n"
+"%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Lokalize 20.12.0\n"
 
 #: bin/gegl.c:179
@@ -349,42 +350,42 @@ msgstr "Ніколи"
 msgid "Always"
 msgstr "Завжди"
 
-#: gegl/gegl-init.c:212
+#: gegl/gegl-init.c:213
 msgid "Where GEGL stores its swap"
 msgstr "Місце, де GEGL зберігатиме файл резервної пам'яті"
 
-#: gegl/gegl-init.c:217
+#: gegl/gegl-init.c:218
 msgid "Compression algorithm used for data stored in the swap"
 msgstr "Алгоритм стискання для даних, які зберігаються у резервній пам'яті"
 
-#: gegl/gegl-init.c:222
+#: gegl/gegl-init.c:223
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr ""
 "Об'єм пам'яті (приблизно), який слід використовувати для кешування даних "
 "зображень"
 
-#: gegl/gegl-init.c:227
+#: gegl/gegl-init.c:228
 msgid "Default size of tiles in GeglBuffers"
 msgstr "Типовий розмір плиток у GeglBuffer-ах"
 
-#: gegl/gegl-init.c:232
+#: gegl/gegl-init.c:233
 msgid "The count of pixels to compute simultaneously"
 msgstr "Кількість пікселів, значення для яких слід обчислювати одночасно"
 
-#: gegl/gegl-init.c:237
+#: gegl/gegl-init.c:238
 msgid ""
 "The quality of rendering, a value between 0.0 (fast) and 1.0 (reference)"
 msgstr "Якість обробки. Значення від 0.0 (швидко) до 1.0 (ідеально)"
 
-#: gegl/gegl-init.c:242
+#: gegl/gegl-init.c:243
 msgid "The number of concurrent processing threads to use"
 msgstr "Кількість паралельних потоків обробки"
 
-#: gegl/gegl-init.c:247
+#: gegl/gegl-init.c:248
 msgid "Disable OpenCL"
 msgstr "Вимкнути OpenCL"
 
-#: gegl/gegl-init.c:259
+#: gegl/gegl-init.c:260
 msgid "Show GEGL Options"
 msgstr "Показати параметри GEGL"
 
@@ -682,7 +683,8 @@ msgid "Glow radius"
 msgstr "Радіус сяйва"
 
 #: operations/common/bloom.c:42 operations/common/noise-reduction.c:26
-#: operations/common-cxx/warp.cc:34 operations/common-gpl3+/wind.c:64
+#: operations/common-cxx/denoise-dct.cc:38 operations/common-cxx/warp.cc:34
+#: operations/common-gpl3+/wind.c:64
 msgid "Strength"
 msgstr "Сила"
 
@@ -2710,7 +2712,7 @@ msgstr "Створити ефект довгої тіні"
 msgid "Path of file to load."
 msgstr "Шлях для завантаження файлу."
 
-#: operations/common/magick-load.c:144
+#: operations/common/magick-load.c:171
 msgid "Image Magick wrapper using the png op."
 msgstr "Обгортка Image Magick з використанням дії png."
 
@@ -4698,12 +4700,10 @@ msgid "Write input data into an existing GEGL buffer destination surface."
 msgstr "Записати вхідні дані до поверхні призначення наявного буфера GEGL."
 
 #: operations/common-cxx/distance-transform.cc:31
-#| msgid "Lower threshold"
 msgid "Above threshold"
 msgstr "Вище порогового значення"
 
 #: operations/common-cxx/distance-transform.cc:32
-#| msgid "Lower threshold"
 msgid "Below threshold"
 msgstr "Нижче порогового значення"
 
@@ -4718,14 +4718,12 @@ msgid "Metric to use for the distance calculation"
 msgstr "Метрика, яку слід використовувати для обчислення відстаней"
 
 #: operations/common-cxx/distance-transform.cc:39
-#| msgid "Edge band"
 msgid "Edge handling"
 msgstr "Обробка країв"
 
 #: operations/common-cxx/distance-transform.cc:41
 msgid "How areas outside the input are considered when calculating distance"
-msgstr ""
-"Спосіб врахування ділянок поза вхідними даними при обчисленні відстані"
+msgstr "Спосіб врахування ділянок поза вхідними даними при обчисленні відстані"
 
 #: operations/common-cxx/distance-transform.cc:43
 msgid "Threshold low"
@@ -4845,6 +4843,29 @@ msgstr "Фокусне розмивання"
 #: operations/common-cxx/focus-blur.c:323
 msgid "Blur the image around a focal point"
 msgstr "Розмиття зображення навколо точки фокусування"
+
+#: operations/common-cxx/denoise-dct.cc:33
+#| msgid "Vertical size"
+msgid "Patch size"
+msgstr "Розмір латки"
+
+#: operations/common-cxx/denoise-dct.cc:36
+msgid "Size of patches used to denoise"
+msgstr "Розмір латок, які буде використано для усування шуму"
+
+#: operations/common-cxx/denoise-dct.cc:39
+#| msgid "Expressed as standard deviation, in pixels"
+msgid "Noise standart deviation"
+msgstr "Стандартне відхилення шуму"
+
+#: operations/common-cxx/denoise-dct.cc:480
+msgid "Denoise DCT"
+msgstr "Усування шуму з ДКП"
+
+#: operations/common-cxx/denoise-dct.cc:482
+msgid "Denoising algorithm using a per-patch DCT thresholding"
+msgstr ""
+"Алгоритм усування шуму з використанням порогових значень ДКП для окремих латок"
 
 #: operations/common-cxx/lens-blur.cc:46
 msgid "Clip to input extents"
@@ -7423,7 +7444,7 @@ msgstr "Адреса файлу для завантаження."
 msgid "Object to supply image metadata"
 msgstr "Об'єкт для надання метаданих зображення"
 
-#: operations/core/load.c:374
+#: operations/core/load.c:372
 msgid ""
 "Multipurpose file loader, that uses other native handlers, and fallback "
 "conversion using Image Magick's convert."
@@ -7495,11 +7516,11 @@ msgstr "Аудіокодек"
 msgid "audio"
 msgstr "Звук"
 
-#: operations/external/ff-load.c:806
+#: operations/external/ff-load.c:866
 msgid "FFmpeg Frame Loader"
 msgstr "Завантажувач кадрів FFmpeg"
 
-#: operations/external/ff-load.c:808
+#: operations/external/ff-load.c:868
 msgid "FFmpeg video frame importer."
 msgstr "Імпортер кадрів відео FFmpeg"
 
@@ -7644,11 +7665,11 @@ msgstr "i-quant-offset"
 msgid "me-subpel-quality"
 msgstr "me-subpel-quality"
 
-#: operations/external/ff-save.c:1135
+#: operations/external/ff-save.c:1212
 msgid "FFmpeg Frame Saver"
 msgstr "Записувач кадрів FFmpeg"
 
-#: operations/external/ff-save.c:1137
+#: operations/external/ff-save.c:1214
 msgid "FFmpeg video output sink"
 msgstr "Приймач вихідного відео FFmpeg"
 
@@ -7672,11 +7693,11 @@ msgstr "затримка кадру"
 msgid "Delay in ms for last decoded frame"
 msgstr "Затримка у мілісекундах для останнього декодованого кадру"
 
-#: operations/external/gif-load.c:239
+#: operations/external/gif-load.c:238
 msgid "GIF File Loader"
 msgstr "Завантажувач файлів GIF"
 
-#: operations/external/gif-load.c:241
+#: operations/external/gif-load.c:240
 msgid "GIF image loader."
 msgstr "Завантажувач файлів GIF."
 
@@ -7962,7 +7983,7 @@ msgstr "Якщо має значення «TRUE», модель не буде з
 msgid "Sampler used internally"
 msgstr "Засіб дискретизації, який використовуватиметься на внутрішньому рівні"
 
-#: operations/external/npd.c:256
+#: operations/external/npd.c:258
 msgid "Performs n-point image deformation"
 msgstr "Виконує n-точкову деформацію зображення"
 
