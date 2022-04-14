@@ -54,6 +54,17 @@ property_boolean (use_inten, _("Intensity Mode"), TRUE)
 
 #define NUM_INTENSITIES       256
 
+static void
+clamp_buffer_values (gfloat  *buf,
+                     gint     n_components,
+                     gint     n_pixels)
+{
+  gint  i;
+
+  for (i = 0; i < n_pixels * n_components; i++)
+    buf[i] = CLAMP (buf[i], 0.f, 1.f);
+}
+
 /* Get the pixel from x, y offset from the center pixel src_pix */
 
 static void
@@ -479,6 +490,7 @@ process (GeglOperation       *operation,
 
   gegl_buffer_get (input, &src_rect, 1.0, format, src_buf,
                    GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_CLAMP);
+  clamp_buffer_values (src_buf, 4, total_pixels);
 
   if (o->use_inten)
     {
@@ -486,6 +498,7 @@ process (GeglOperation       *operation,
 
       gegl_buffer_get (input, &src_rect, 1.0, y_format, inten_buf,
                        GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_CLAMP);
+      clamp_buffer_values (inten_buf, 1, total_pixels);
     }
 
   if (aux)

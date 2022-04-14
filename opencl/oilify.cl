@@ -29,10 +29,10 @@ kernel void kernel_oilify(global float4 *in,
         if (i*i + j*j <= radius_sq)
           {
             temp_pixel = in[x + i + (y + j) * src_width];
-            hist[(int)(temp_pixel.x * (intensities - 1))].x+=1;
-            hist[(int)(temp_pixel.y * (intensities - 1))].y+=1;
-            hist[(int)(temp_pixel.z * (intensities - 1))].z+=1;
-            hist[(int)(temp_pixel.w * (intensities - 1))].w+=1;
+            hist[(int)(clamp(temp_pixel.x, 0.f, 1.f) * (intensities - 1))].x+=1;
+            hist[(int)(clamp(temp_pixel.y, 0.f, 1.f) * (intensities - 1))].y+=1;
+            hist[(int)(clamp(temp_pixel.z, 0.f, 1.f) * (intensities - 1))].z+=1;
+            hist[(int)(clamp(temp_pixel.w, 0.f, 1.f) * (intensities - 1))].w+=1;
           }
       }
   }
@@ -89,6 +89,10 @@ kernel void kernel_oilify_inten(global float4 *in,
         if (i*i + j*j <= radius_sq)
           {
             temp_pixel = in[x + i + (y + j) * src_width];
+            temp_pixel.x = clamp(temp_pixel.x, 0.f, 1.f);
+            temp_pixel.y = clamp(temp_pixel.y, 0.f, 1.f);
+            temp_pixel.z = clamp(temp_pixel.z, 0.f, 1.f);
+            temp_pixel.w = clamp(temp_pixel.w, 0.f, 1.f);
             /*Calculate intensity on the fly, GPU does it fast*/
             intensity = (int)((0.299 * temp_pixel.x
                       +0.587 * temp_pixel.y
