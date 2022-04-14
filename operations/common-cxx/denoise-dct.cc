@@ -26,8 +26,8 @@
 #ifdef GEGL_PROPERTIES
 
 enum_start (gegl_denoise_dct_patchsize)
-    enum_value (GEGL_DENOISE_DCT_8X8,  "8x8", "8x8")
-    enum_value (GEGL_DENOISE_DCT_16X16, "16x16", "16x16")
+    enum_value (GEGL_DENOISE_DCT_8X8,   "size8x8",   "8x8")
+    enum_value (GEGL_DENOISE_DCT_16X16, "size16x16", "16x16")
 enum_end (GeglDenoiseDctPatchsize)
 
 property_enum (patch_size, _("Patch size"),
