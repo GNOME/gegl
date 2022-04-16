@@ -13,16 +13,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl.master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2021-09-04 22:16+0000\n"
-"PO-Revision-Date: 2021-09-06 13:43+0200\n"
-"Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
+"POT-Creation-Date: 2022-04-11 19:34+0000\n"
+"PO-Revision-Date: 2022-04-12 15:59+0200\n"
+"Last-Translator: Rodrigo Lledó Milanca <rodhos92@gmail.com>\n"
 "Language-Team: Spanish - Spain <gnome-es-list@gnome.org>\n"
 "Language: es_ES\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.0\n"
+"X-Generator: Poedit 3.0.1\n"
 
 #: bin/gegl.c:179
 #, c-format
@@ -357,41 +357,41 @@ msgstr "Nunca"
 msgid "Always"
 msgstr "Siempre"
 
-#: gegl/gegl-init.c:212
+#: gegl/gegl-init.c:213
 msgid "Where GEGL stores its swap"
 msgstr "Dónde almacena GEGL su espacio de intercambio"
 
-#: gegl/gegl-init.c:217
+#: gegl/gegl-init.c:218
 msgid "Compression algorithm used for data stored in the swap"
 msgstr "Algoritmo de compresión usado para datos almacenados en el intercambio"
 
-#: gegl/gegl-init.c:222
+#: gegl/gegl-init.c:223
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr "Cuánta memoria (aproximadamente) usar para el cacheo de las imágenes"
 
-#: gegl/gegl-init.c:227
+#: gegl/gegl-init.c:228
 msgid "Default size of tiles in GeglBuffers"
 msgstr "Tamaño predeterminado de las baldosas en GeglBuffers"
 
-#: gegl/gegl-init.c:232
+#: gegl/gegl-init.c:233
 msgid "The count of pixels to compute simultaneously"
 msgstr "Cuántos píxeles calcular simultáneamente"
 
-#: gegl/gegl-init.c:237
+#: gegl/gegl-init.c:238
 msgid ""
 "The quality of rendering, a value between 0.0 (fast) and 1.0 (reference)"
 msgstr ""
 "La calidad del renderizado, un valor entre 0.0 (rápido) y 1.0 (referencia)"
 
-#: gegl/gegl-init.c:242
+#: gegl/gegl-init.c:243
 msgid "The number of concurrent processing threads to use"
 msgstr "Número de hilos de procesado concurrente que usar"
 
-#: gegl/gegl-init.c:247
+#: gegl/gegl-init.c:248
 msgid "Disable OpenCL"
 msgstr "Desactivar OpenCL"
 
-#: gegl/gegl-init.c:259
+#: gegl/gegl-init.c:260
 msgid "Show GEGL Options"
 msgstr "Mostrar las opciones de GEGL"
 
@@ -690,7 +690,8 @@ msgid "Glow radius"
 msgstr "Radio del resplandor"
 
 #: operations/common/bloom.c:42 operations/common/noise-reduction.c:26
-#: operations/common-cxx/warp.cc:34 operations/common-gpl3+/wind.c:64
+#: operations/common-cxx/denoise-dct.cc:38 operations/common-cxx/warp.cc:34
+#: operations/common-gpl3+/wind.c:64
 msgid "Strength"
 msgstr "Fuerza"
 
@@ -2727,7 +2728,7 @@ msgstr "Crea un efecto de sombra alargada"
 msgid "Path of file to load."
 msgstr "Ruta del archivo que cargar."
 
-#: operations/common/magick-load.c:144
+#: operations/common/magick-load.c:171
 msgid "Image Magick wrapper using the png op."
 msgstr ""
 "Instrucción envolvente de ImageMagick que usa el código de operación de png."
@@ -4888,6 +4889,27 @@ msgstr "Enfoque del desenfoque"
 #: operations/common-cxx/focus-blur.c:323
 msgid "Blur the image around a focal point"
 msgstr "Desenfocar la imagen alrededor de un punto focal"
+
+#: operations/common-cxx/denoise-dct.cc:33
+msgid "Patch size"
+msgstr "Tamaño del parche"
+
+#: operations/common-cxx/denoise-dct.cc:36
+msgid "Size of patches used to denoise"
+msgstr "Tamaño de los parches utilizados para eliminar el ruido"
+
+#: operations/common-cxx/denoise-dct.cc:39
+msgid "Noise standart deviation"
+msgstr "Desviación estándar del ruido"
+
+# DCT: Transformada del coseno discreta
+#: operations/common-cxx/denoise-dct.cc:480
+msgid "Denoise DCT"
+msgstr "DCT para eliminación de ruido"
+
+#: operations/common-cxx/denoise-dct.cc:482
+msgid "Denoising algorithm using a per-patch DCT thresholding"
+msgstr "Algoritmo de eliminación de ruido mediante un umbral DCT por parche"
 
 #: operations/common-cxx/lens-blur.cc:46
 msgid "Clip to input extents"
@@ -7464,7 +7486,7 @@ msgstr "URI del archivo que cargar."
 msgid "Object to supply image metadata"
 msgstr "Objeto que proporciona los metadatos de la imagen"
 
-#: operations/core/load.c:374
+#: operations/core/load.c:372
 msgid ""
 "Multipurpose file loader, that uses other native handlers, and fallback "
 "conversion using Image Magick's convert."
@@ -7537,11 +7559,11 @@ msgstr "Códec de sonido"
 msgid "audio"
 msgstr "sonido"
 
-#: operations/external/ff-load.c:806
+#: operations/external/ff-load.c:866
 msgid "FFmpeg Frame Loader"
 msgstr "Cargador de fotogramas FFmpeg"
 
-#: operations/external/ff-load.c:808
+#: operations/external/ff-load.c:868
 msgid "FFmpeg video frame importer."
 msgstr "Importador de fotogramas de vídeo FFmpeg."
 
@@ -7686,11 +7708,11 @@ msgstr "i-despl-cant"
 msgid "me-subpel-quality"
 msgstr "me-calidad-subpel"
 
-#: operations/external/ff-save.c:1135
+#: operations/external/ff-save.c:1212
 msgid "FFmpeg Frame Saver"
 msgstr "Guardador de fotogramas FFmpeg"
 
-#: operations/external/ff-save.c:1137
+#: operations/external/ff-save.c:1214
 msgid "FFmpeg video output sink"
 msgstr "Receptor de salida de vídeo FFmpeg"
 
@@ -7714,11 +7736,11 @@ msgstr "retardo-de-fotogramas"
 msgid "Delay in ms for last decoded frame"
 msgstr "Retardo en ms del último fotograma decodificado"
 
-#: operations/external/gif-load.c:239
+#: operations/external/gif-load.c:238
 msgid "GIF File Loader"
 msgstr "Cargador de archivos GIF"
 
-#: operations/external/gif-load.c:241
+#: operations/external/gif-load.c:240
 msgid "GIF image loader."
 msgstr "Cargador de imágenes GIF."
 
@@ -8007,7 +8029,7 @@ msgstr "Cuando es verdadero el modelo no se libera"
 msgid "Sampler used internally"
 msgstr "Muestreador usado internamente"
 
-#: operations/external/npd.c:256
+#: operations/external/npd.c:258
 msgid "Performs n-point image deformation"
 msgstr "Realiza deformación de la imagen n-punto"
 
@@ -10219,10 +10241,6 @@ msgstr "Ajustar selectivamente tono, saturación y brillo"
 #~ msgstr ""
 #~ "Establece el píxel objetivo al color que corresponde a un percentil dado "
 #~ "cuando los colores se ordenan por luminancia."
-
-#, fuzzy
-#~ msgid "Standard deviation X"
-#~ msgstr "Desviación estándar (factor de escala espacial)"
 
 #, fuzzy
 #~ msgid "Standard deviation Y"
