@@ -1,19 +1,19 @@
 # Polish translation for gegl.
-# Copyright © 1999-2021 the gegl authors.
+# Copyright © 1999-2022 the gegl authors.
 # This file is distributed under the same license as the gegl package.
 # Paweł Dziekoński, 1999-2000.
 # Bartosz Kosiorek <gang65@poczta.onet.pl>, 2005-2011.
 # Piotr Zaryk <pzaryk@aviary.pl>, 2008.
 # Robert Gomulka <carramba@epf.pl>, 2008.
-# Piotr Drąg <piotrdrag@gmail.com>, 2011-2021.
-# Aviary.pl <community-poland@mozilla.org>, 2011-2021.
+# Piotr Drąg <piotrdrag@gmail.com>, 2011-2022.
+# Aviary.pl <community-poland@mozilla.org>, 2011-2022.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2021-09-04 22:16+0000\n"
-"PO-Revision-Date: 2021-09-05 17:33+0200\n"
+"POT-Creation-Date: 2022-04-11 19:34+0000\n"
+"PO-Revision-Date: 2022-04-17 16:50+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -352,41 +352,41 @@ msgstr "Nigdy"
 msgid "Always"
 msgstr "Zawsze"
 
-#: gegl/gegl-init.c:212
+#: gegl/gegl-init.c:213
 msgid "Where GEGL stores its swap"
 msgstr "Gdzie biblioteka GEGL przechowuje obszar wymiany"
 
-#: gegl/gegl-init.c:217
+#: gegl/gegl-init.c:218
 msgid "Compression algorithm used for data stored in the swap"
 msgstr ""
 "Algorytm kompresji używany dla danych przechowywanych w obszarze wymiany"
 
-#: gegl/gegl-init.c:222
+#: gegl/gegl-init.c:223
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr "Ile pamięci (w przybliżeniu) do użycia do pamięci tymczasowej obrazów"
 
-#: gegl/gegl-init.c:227
+#: gegl/gegl-init.c:228
 msgid "Default size of tiles in GeglBuffers"
 msgstr "Domyślny rozmiar kafla w GeglBuffer"
 
-#: gegl/gegl-init.c:232
+#: gegl/gegl-init.c:233
 msgid "The count of pixels to compute simultaneously"
 msgstr "Liczba pikseli do jednoczesnego obliczania"
 
-#: gegl/gegl-init.c:237
+#: gegl/gegl-init.c:238
 msgid ""
 "The quality of rendering, a value between 0.0 (fast) and 1.0 (reference)"
 msgstr "Jakość wyświetlania, wartość między 0,0 (szybkie) a 1,0 (standardowe)"
 
-#: gegl/gegl-init.c:242
+#: gegl/gegl-init.c:243
 msgid "The number of concurrent processing threads to use"
 msgstr "Liczba jednocześnie używanych wątków przetwarzania"
 
-#: gegl/gegl-init.c:247
+#: gegl/gegl-init.c:248
 msgid "Disable OpenCL"
 msgstr "Wyłącza OpenCL"
 
-#: gegl/gegl-init.c:259
+#: gegl/gegl-init.c:260
 msgid "Show GEGL Options"
 msgstr "Wyświetla opcje biblioteki GEGL"
 
@@ -684,7 +684,8 @@ msgid "Glow radius"
 msgstr "Promień poświaty"
 
 #: operations/common/bloom.c:42 operations/common/noise-reduction.c:26
-#: operations/common-cxx/warp.cc:34 operations/common-gpl3+/wind.c:64
+#: operations/common-cxx/denoise-dct.cc:38 operations/common-cxx/warp.cc:34
+#: operations/common-gpl3+/wind.c:64
 msgid "Strength"
 msgstr "Siła"
 
@@ -2709,7 +2710,7 @@ msgstr "Tworzy efekt długiego cienia"
 msgid "Path of file to load."
 msgstr "Ścieżka pliku do wczytania."
 
-#: operations/common/magick-load.c:144
+#: operations/common/magick-load.c:171
 msgid "Image Magick wrapper using the png op."
 msgstr "Wrapper programu Image Magick używający działania png."
 
@@ -4824,6 +4825,26 @@ msgstr "Rozmycie ostrości"
 #: operations/common-cxx/focus-blur.c:323
 msgid "Blur the image around a focal point"
 msgstr "Rozmycie obrazu wokół ogniska"
+
+#: operations/common-cxx/denoise-dct.cc:33
+msgid "Patch size"
+msgstr "Rozmiar łat"
+
+#: operations/common-cxx/denoise-dct.cc:36
+msgid "Size of patches used to denoise"
+msgstr "Rozmiar łat używanych do usuwania szumu"
+
+#: operations/common-cxx/denoise-dct.cc:39
+msgid "Noise standart deviation"
+msgstr "Odchylenie standardowe szumu"
+
+#: operations/common-cxx/denoise-dct.cc:480
+msgid "Denoise DCT"
+msgstr "Usuń szum (DCT)"
+
+#: operations/common-cxx/denoise-dct.cc:482
+msgid "Denoising algorithm using a per-patch DCT thresholding"
+msgstr "Algorytm usuwania szumu za pomocą progowania DCT na każdą łatę"
 
 #: operations/common-cxx/lens-blur.cc:46
 msgid "Clip to input extents"
@@ -7383,7 +7404,7 @@ msgstr "Adres URI pliku do wczytania."
 msgid "Object to supply image metadata"
 msgstr "Obiekt, któremu dostarczyć metadane obrazu"
 
-#: operations/core/load.c:374
+#: operations/core/load.c:372
 msgid ""
 "Multipurpose file loader, that uses other native handlers, and fallback "
 "conversion using Image Magick's convert."
@@ -7455,11 +7476,11 @@ msgstr "kodek-dźwięku"
 msgid "audio"
 msgstr "dźwięk"
 
-#: operations/external/ff-load.c:806
+#: operations/external/ff-load.c:866
 msgid "FFmpeg Frame Loader"
 msgstr "Wczytywanie klatek biblioteki FFmpeg"
 
-#: operations/external/ff-load.c:808
+#: operations/external/ff-load.c:868
 msgid "FFmpeg video frame importer."
 msgstr "Importer klatek wideo biblioteki FFmpeg."
 
@@ -7604,11 +7625,11 @@ msgstr "i-quant-offset"
 msgid "me-subpel-quality"
 msgstr "me-subpel-quality"
 
-#: operations/external/ff-save.c:1135
+#: operations/external/ff-save.c:1212
 msgid "FFmpeg Frame Saver"
 msgstr "Zapisywanie klatek biblioteki FFmpeg"
 
-#: operations/external/ff-save.c:1137
+#: operations/external/ff-save.c:1214
 msgid "FFmpeg video output sink"
 msgstr "Odpływ wyjścia wideo biblioteki FFmpeg"
 
@@ -7632,11 +7653,11 @@ msgstr "opóźnienie-klatek"
 msgid "Delay in ms for last decoded frame"
 msgstr "Opóźnienie w milisekundach dla ostatniej zdekodowanej klatki"
 
-#: operations/external/gif-load.c:239
+#: operations/external/gif-load.c:238
 msgid "GIF File Loader"
 msgstr "Wczytywanie plików GIF"
 
-#: operations/external/gif-load.c:241
+#: operations/external/gif-load.c:240
 msgid "GIF image loader."
 msgstr "Wczytywanie obrazów GIF."
 
@@ -7924,7 +7945,7 @@ msgstr "Kiedy wynosi „true”, to model nie będzie zwalniany"
 msgid "Sampler used internally"
 msgstr "Wewnętrznie używana próbka"
 
-#: operations/external/npd.c:256
+#: operations/external/npd.c:258
 msgid "Performs n-point image deformation"
 msgstr "Wykonuje zniekształcenie obrazu za pomocą wielu punktów"
 
