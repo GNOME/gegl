@@ -4,13 +4,13 @@
 #
 # Softcatala <gimp a llistes.softcatala.org>, 2000-2013.
 # Albert F. <lakonfrariadelavila@gmail.com>, 2012, 2014.
-# Jordi Mas <jmas@softcatala.org>, 2015-2021
+# Jordi Mas <jmas@softcatala.org>, 2015-2022
 msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2021-09-09 19:39+0000\n"
-"PO-Revision-Date: 2020-12-06 22:15+0100\n"
+"POT-Creation-Date: 2022-04-11 19:34+0000\n"
+"PO-Revision-Date: 2022-04-11 19:34+0000\n"
 "Last-Translator: Jordi Mas <jmas@softcatala.org>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "Language: ca\n"
@@ -349,46 +349,46 @@ msgstr "Mai"
 msgid "Always"
 msgstr "Sempre"
 
-#: gegl/gegl-init.c:212
+#: gegl/gegl-init.c:213
 msgid "Where GEGL stores its swap"
 msgstr "On la GEGL emmagatzema la seva memòria d'intercanvi"
 
-#: gegl/gegl-init.c:217
+#: gegl/gegl-init.c:218
 msgid "Compression algorithm used for data stored in the swap"
 msgstr ""
 "Algoritme de compressió usat per a emmagatzemar dades a la memòria "
 "d'intercanvi"
 
-#: gegl/gegl-init.c:222
+#: gegl/gegl-init.c:223
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr ""
 "Quanta memòria es pot utilitzar, aproximadament, per a la memòria cau "
 "d'imatges"
 
-#: gegl/gegl-init.c:227
+#: gegl/gegl-init.c:228
 msgid "Default size of tiles in GeglBuffers"
 msgstr "La mida, per defecte, de les tessel·les en els GeglBuffers"
 
-#: gegl/gegl-init.c:232
+#: gegl/gegl-init.c:233
 msgid "The count of pixels to compute simultaneously"
 msgstr "El nombre de píxels que es poden calcular simultàniament"
 
-#: gegl/gegl-init.c:237
+#: gegl/gegl-init.c:238
 msgid ""
 "The quality of rendering, a value between 0.0 (fast) and 1.0 (reference)"
 msgstr ""
 "La qualitat de la renderització, un valor entre 0.0 (ràpid) i 1.0 "
 "(referència)"
 
-#: gegl/gegl-init.c:242
+#: gegl/gegl-init.c:243
 msgid "The number of concurrent processing threads to use"
 msgstr "El nombre de fils de processament simultani que es poden utilitzar"
 
-#: gegl/gegl-init.c:247
+#: gegl/gegl-init.c:248
 msgid "Disable OpenCL"
 msgstr "Inhabilita l'OpenCL"
 
-#: gegl/gegl-init.c:259
+#: gegl/gegl-init.c:260
 msgid "Show GEGL Options"
 msgstr "Mostra les opcions de GEGL"
 
@@ -688,7 +688,8 @@ msgid "Glow radius"
 msgstr "Radi de la lluentor"
 
 #: operations/common/bloom.c:42 operations/common/noise-reduction.c:26
-#: operations/common-cxx/warp.cc:34 operations/common-gpl3+/wind.c:64
+#: operations/common-cxx/denoise-dct.cc:38 operations/common-cxx/warp.cc:34
+#: operations/common-gpl3+/wind.c:64
 msgid "Strength"
 msgstr "Força"
 
@@ -2730,7 +2731,7 @@ msgstr "Crea un efecte d'ombra llarga"
 msgid "Path of file to load."
 msgstr "Camí del fitxer que es vol carregar."
 
-#: operations/common/magick-load.c:144
+#: operations/common/magick-load.c:171
 msgid "Image Magick wrapper using the png op."
 msgstr "Embolcall de l'Image Magick que utilitza l'operació png."
 
@@ -4866,6 +4867,26 @@ msgstr "Difuminat centrat"
 #: operations/common-cxx/focus-blur.c:323
 msgid "Blur the image around a focal point"
 msgstr "Difumina la imatge al voltant d'un punt focal"
+
+#: operations/common-cxx/denoise-dct.cc:33
+msgid "Patch size"
+msgstr "Mida del pedaç"
+
+#: operations/common-cxx/denoise-dct.cc:36
+msgid "Size of patches used to denoise"
+msgstr "Mida dels pedaços utilitzats per eliminar el soroll"
+
+#: operations/common-cxx/denoise-dct.cc:39
+msgid "Noise standart deviation"
+msgstr "Desviació estàndard del so"
+
+#: operations/common-cxx/denoise-dct.cc:480
+msgid "Denoise DCT"
+msgstr "DCT per eliminar el soroll"
+
+#: operations/common-cxx/denoise-dct.cc:482
+msgid "Denoising algorithm using a per-patch DCT thresholding"
+msgstr "Algorisme per eliminar el soroll usant un llindar DCT per pedaç"
 
 #: operations/common-cxx/lens-blur.cc:46
 msgid "Clip to input extents"
@@ -7442,7 +7463,7 @@ msgstr "URI del fitxer que s'ha de carregar."
 msgid "Object to supply image metadata"
 msgstr "Objecte per a subministrar metadades d'imatge"
 
-#: operations/core/load.c:374
+#: operations/core/load.c:372
 msgid ""
 "Multipurpose file loader, that uses other native handlers, and fallback "
 "conversion using Image Magick's convert."
@@ -7514,11 +7535,11 @@ msgstr "Còdec d'àudio"
 msgid "audio"
 msgstr "Àudio"
 
-#: operations/external/ff-load.c:806
+#: operations/external/ff-load.c:866
 msgid "FFmpeg Frame Loader"
 msgstr "Carregador de fotogrames FFmpeg"
 
-#: operations/external/ff-load.c:808
+#: operations/external/ff-load.c:868
 msgid "FFmpeg video frame importer."
 msgstr "Importador de fotogrames de vídeo FFmpeg."
 
@@ -7665,11 +7686,11 @@ msgstr "I-quant-desplaçament"
 msgid "me-subpel-quality"
 msgstr "me-subpel-qualitat"
 
-#: operations/external/ff-save.c:1135
+#: operations/external/ff-save.c:1212
 msgid "FFmpeg Frame Saver"
 msgstr "Desador de fotogrames FFmpeg"
 
-#: operations/external/ff-save.c:1137
+#: operations/external/ff-save.c:1214
 msgid "FFmpeg video output sink"
 msgstr "Conducte de sortida de vídeo FFmpeg"
 
@@ -7693,11 +7714,11 @@ msgstr "retard-fotograma"
 msgid "Delay in ms for last decoded frame"
 msgstr "Retard en ms per al darrer fotograma descodificat"
 
-#: operations/external/gif-load.c:239
+#: operations/external/gif-load.c:238
 msgid "GIF File Loader"
 msgstr "Carregador de fitxers GIF"
 
-#: operations/external/gif-load.c:241
+#: operations/external/gif-load.c:240
 msgid "GIF image loader."
 msgstr "Carregador d'imatges GIF."
 
@@ -7987,7 +8008,7 @@ msgstr "Quan és TRUE no s'alliberarà el model"
 msgid "Sampler used internally"
 msgstr "Mostrejador d'ús intern"
 
-#: operations/external/npd.c:256
+#: operations/external/npd.c:258
 msgid "Performs n-point image deformation"
 msgstr "Realitza n-punts de la imatge de deformació"
 
@@ -9740,4 +9761,3 @@ msgstr "Saturació-to selectiva"
 #: operations/workshop/selective-hue-saturation.c:173
 msgid "Selective adjust Hue, Saturation and Lightness"
 msgstr "Ajust selectiu del to, saturació i lluminositat"
-
