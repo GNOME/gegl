@@ -133,7 +133,9 @@ prepare (GeglOperation *operation)
       g_file_get_contents (o->path, (void*)&p->gif_data, &length, NULL);
       g_assert (p->gif_data != NULL);
 
-      code = nsgif_create (&bitmap_callbacks, &p->gif);
+      code = nsgif_create (&bitmap_callbacks,
+                           NSGIF_BITMAP_FMT_R8G8B8A8,
+                           &p->gif);
       if (code != NSGIF_OK)
         g_warning ("nsgif_create: %s\n", nsgif_strerror(code));
 
