@@ -493,6 +493,38 @@ subdir('libs/rgbe')
 subdir('opencl')
 subdir('gegl')
 subdir('libs/npd')
+
+# pkg-config file
+gegl_pub_deps = [
+  glib,
+  gobject,
+  gmodule,
+  gio,
+  json_glib,
+  babl,
+]
+
+pkgconfig.generate(gegl_lib,
+  filebase: 'gegl-' + api_version,
+  name: 'GEGL',
+  description: 'Generic Graphics Library',
+  version: meson.project_version(),
+  variables: 'pluginsdir=' + '${prefix}' / get_option('libdir') / api_name,
+  libraries: gegl_pub_deps,
+  libraries_private: gegl_npd_lib,
+  subdirs: api_name,
+)
+
+gegl_dep = declare_dependency(link_with: gegl_lib,
+  include_directories: geglInclude,
+  dependencies: [gegl_pub_deps, libnpd],
+  sources: g_ir.found() ? gegl_gir : [],
+)
+
+if meson.version().version_compare('>=0.54.0')
+  meson.override_dependency('gegl-' + api_version, gegl_dep)
+endif
+
 subdir('seamless-clone')
 subdir('bin')
 subdir('tools')
@@ -537,28 +569,6 @@ if w3m.found()
     )
   endif
 endif
-
-# pkg-config file
-pkgconfig.generate(filebase: 'gegl-' + api_version,
-  name: 'GEGL',
-  description: 'Generic Graphics Library',
-  version: meson.project_version(),
-  variables: 'pluginsdir=' + '${prefix}' / get_option('libdir') / api_name,
-  requires: [
-    gobject,
-    gmodule,
-    gio,
-    json_glib,
-    babl,
-  ],
-  libraries: [
-    gegl_lib,
-    gegl_npd_lib,
-    math,
-  ],
-  subdirs: api_name,
-)
-
 
 ################################################################################
 # Build summary

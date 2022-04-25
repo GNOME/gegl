@@ -137,6 +137,7 @@ if g_ir.found()
     symbol_prefix: 'gegl',
     header: 'gegl.h',
     includes: [ 'GLib-2.0', 'GObject-2.0', 'Babl-0.1' ],
+    dependencies: [babl],
     export_packages: 'gegl-' + api_version,
     install: true,
   )
