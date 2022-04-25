@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2022-01-31 16:59+0000\n"
-"PO-Revision-Date: 2022-02-02 21:30+0100\n"
+"POT-Creation-Date: 2022-04-25 03:59+0000\n"
+"PO-Revision-Date: 2022-04-25 21:51+0200\n"
 "Last-Translator: Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -685,7 +685,8 @@ msgid "Glow radius"
 msgstr "Glödradie"
 
 #: operations/common/bloom.c:42 operations/common/noise-reduction.c:26
-#: operations/common-cxx/warp.cc:34 operations/common-gpl3+/wind.c:64
+#: operations/common-cxx/denoise-dct.cc:38 operations/common-cxx/warp.cc:34
+#: operations/common-gpl3+/wind.c:64
 msgid "Strength"
 msgstr "Styrka"
 
@@ -4802,6 +4803,26 @@ msgstr "Fokusoskärpa"
 msgid "Blur the image around a focal point"
 msgstr "Gör bilden oskarp runt en fokuspunkt"
 
+#: operations/common-cxx/denoise-dct.cc:33
+msgid "Patch size"
+msgstr "Lappstorlek"
+
+#: operations/common-cxx/denoise-dct.cc:36
+msgid "Size of patches used to denoise"
+msgstr "Storlek på lappar att använda för brusreducering"
+
+#: operations/common-cxx/denoise-dct.cc:39
+msgid "Noise standard deviation"
+msgstr "Standardavvikelse för brus"
+
+#: operations/common-cxx/denoise-dct.cc:480
+msgid "Denoise DCT"
+msgstr "Brusreducera (DCT)"
+
+#: operations/common-cxx/denoise-dct.cc:482
+msgid "Denoising algorithm using a per-patch DCT thresholding"
+msgstr "Brusreduceringsalgoritm som använder DCT-tröskelvärde per lapp"
+
 #: operations/common-cxx/lens-blur.cc:46
 msgid "Clip to input extents"
 msgstr "Klipp till indatautsträckning"
@@ -5012,7 +5033,7 @@ msgstr "Värdeposition"
 
 #: operations/common-gpl3+/bayer-matrix.c:68
 #: operations/common-gpl3+/linear-sinusoid.c:76
-#: operations/common-gpl3+/oilify.c:34 operations/common-gpl3+/sinus.c:71
+#: operations/common-gpl3+/oilify.c:35 operations/common-gpl3+/sinus.c:71
 msgid "Exponent"
 msgstr "Exponent"
 
@@ -6321,7 +6342,7 @@ msgstr ""
 "Cirkelradie runt bildpunkt, kan också skalas per bildpunkt med en buffert på "
 "aux-kontakten."
 
-#: operations/common-gpl3+/oilify.c:35
+#: operations/common-gpl3+/oilify.c:36
 msgid ""
 "Exponent for processing; controls smoothness - can be scaled per pixel with "
 "a buffer on the aux2 pad."
@@ -6329,27 +6350,27 @@ msgstr ""
 "Exponent för bearbetning, styr mjukhet - kan skalas per bildpunkt med en "
 "buffert på aux2-kontakten."
 
-#: operations/common-gpl3+/oilify.c:38
+#: operations/common-gpl3+/oilify.c:40
 msgid "Number of intensities"
 msgstr "Antal intensiteter"
 
-#: operations/common-gpl3+/oilify.c:39
+#: operations/common-gpl3+/oilify.c:41
 msgid "Histogram size"
 msgstr "Histogramstorlek"
 
-#: operations/common-gpl3+/oilify.c:42
+#: operations/common-gpl3+/oilify.c:44
 msgid "Intensity Mode"
 msgstr "Intensitetsläge"
 
-#: operations/common-gpl3+/oilify.c:43
+#: operations/common-gpl3+/oilify.c:45
 msgid "Use pixel luminance values"
 msgstr "Använd bildpunkters luminansvärden"
 
-#: operations/common-gpl3+/oilify.c:522
+#: operations/common-gpl3+/oilify.c:587
 msgid "Mask radius buffer"
 msgstr "Maskradiebuffert"
 
-#: operations/common-gpl3+/oilify.c:523
+#: operations/common-gpl3+/oilify.c:588
 msgid ""
 "Per pixel buffer for modulating the mask radius, expecting a scaling factor "
 "in range 0.0-1.0"
@@ -6357,11 +6378,11 @@ msgstr ""
 "Buffert per bildpunkt för att modulera maskradie, förväntar en skalfaktor i "
 "intervallet 0,0-1,0"
 
-#: operations/common-gpl3+/oilify.c:524
+#: operations/common-gpl3+/oilify.c:591
 msgid "Exponent buffer"
 msgstr "Exponentbuffert"
 
-#: operations/common-gpl3+/oilify.c:525
+#: operations/common-gpl3+/oilify.c:592
 msgid ""
 "Per pixel buffer for modulating the exponent parameter, expecting a scaling "
 "factor in range 0.0-1.0"
@@ -6369,11 +6390,11 @@ msgstr ""
 "Buffert per bildpunkt för att modulera exponentparametern, förväntar en "
 "skalfaktor i intervallet 0,0-1,0"
 
-#: operations/common-gpl3+/oilify.c:534
+#: operations/common-gpl3+/oilify.c:603
 msgid "Oilify"
 msgstr "Oljifiera"
 
-#: operations/common-gpl3+/oilify.c:538
+#: operations/common-gpl3+/oilify.c:607
 msgid "Emulate an oil painting"
 msgstr "Emulera en oljemålning"
 
@@ -7364,7 +7385,7 @@ msgid "Object to supply image metadata"
 msgstr "Objekt för att tillhandahålla bildmetadata"
 
 # sebras: convert här refererar alltså till kommandoradsprogrammet convert, inte ordet konvertering.
-#: operations/core/load.c:374
+#: operations/core/load.c:372
 msgid ""
 "Multipurpose file loader, that uses other native handlers, and fallback "
 "conversion using Image Magick's convert."
@@ -7435,11 +7456,11 @@ msgstr "ljudkodek"
 msgid "audio"
 msgstr "ljud"
 
-#: operations/external/ff-load.c:806
+#: operations/external/ff-load.c:866
 msgid "FFmpeg Frame Loader"
 msgstr "FFmpegs bildläsare"
 
-#: operations/external/ff-load.c:808
+#: operations/external/ff-load.c:868
 msgid "FFmpeg video frame importer."
 msgstr "FFmpegs videobildsimportör."
 
@@ -7584,11 +7605,11 @@ msgstr "i-quant-position"
 msgid "me-subpel-quality"
 msgstr "me-subpel-kvalitet"
 
-#: operations/external/ff-save.c:1135
+#: operations/external/ff-save.c:1212
 msgid "FFmpeg Frame Saver"
 msgstr "FFmpegs bildsparare"
 
-#: operations/external/ff-save.c:1137
+#: operations/external/ff-save.c:1214
 msgid "FFmpeg video output sink"
 msgstr "FFmpeg utdatautgång för video"
 
@@ -7612,11 +7633,11 @@ msgstr "bildfördröjning"
 msgid "Delay in ms for last decoded frame"
 msgstr "Fördröjning i ms för sista avkodad bildruta"
 
-#: operations/external/gif-load.c:239
+#: operations/external/gif-load.c:240
 msgid "GIF File Loader"
 msgstr "GIF-filinläsare"
 
-#: operations/external/gif-load.c:241
+#: operations/external/gif-load.c:242
 msgid "GIF image loader."
 msgstr "GIF-bildläsare."
 
@@ -9695,9 +9716,6 @@ msgstr "Justera selektivt nyans, mättnad och ljushet"
 #~ msgstr ""
 #~ "Rendera en stereografisk mappning, ett lutningsvärde på 90, vilket "
 #~ "betyder att titta på nadir ger ett bra standardvärde."
-
-#~ msgid "Standard Deviation"
-#~ msgstr "Standardavvikelse"
 
 #~ msgid "Chessboard"
 #~ msgstr "Schackbräde"
