@@ -1920,7 +1920,12 @@ gegl_sampler_nohalo_get (      GeglSampler*    restrict  self,
       /*
        * Ship out the result:
        */
-      self->fish_process (self->fish, (void*)newval, (void*)output, 1, NULL);
+#if (BABL_MINOR_VERSION >=1) && (BABL_MICRO_VERSION >= 90)
+      self->fish_process
+#else
+      babl_process
+#endif
+         (self->fish, (void*)newval, (void*)output, 1, NULL);
       return;
     }
   }
