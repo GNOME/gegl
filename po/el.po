@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2021-09-09 19:39+0000\n"
-"PO-Revision-Date: 2021-09-14 15:16+0300\n"
+"POT-Creation-Date: 2022-04-25 03:59+0000\n"
+"PO-Revision-Date: 2022-04-25 13:42+0300\n"
 "Last-Translator: Dimitris Spingos (Δημήτρης Σπίγγος) <dmtrs32@gmail.com>\n"
 "Language-Team: team@lists.gnome.gr\n"
 "Language: el\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.4.2\n"
+"X-Generator: Poedit 3.0.1\n"
 "X-Project-Style: gnome\n"
 
 #: bin/gegl.c:179
@@ -350,42 +350,42 @@ msgstr "Ποτέ"
 msgid "Always"
 msgstr "Πάντα"
 
-#: gegl/gegl-init.c:212
+#: gegl/gegl-init.c:213
 msgid "Where GEGL stores its swap"
 msgstr "Πού αποθηκεύει το GEGL την εναλλακτική μνήμη"
 
-#: gegl/gegl-init.c:217
+#: gegl/gegl-init.c:218
 msgid "Compression algorithm used for data stored in the swap"
 msgstr ""
 "Ο χρησιμοποιούμενος αλγόριθμος συμπίεσης για αποθηκευμένα δεδομένα στην "
 "εικονική μνήμη (swap)"
 
-#: gegl/gegl-init.c:222
+#: gegl/gegl-init.c:223
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr "Πόση μνήμη για χρήση (περίπου) για επαναποθήκευση εικόνας"
 
-#: gegl/gegl-init.c:227
+#: gegl/gegl-init.c:228
 msgid "Default size of tiles in GeglBuffers"
 msgstr "Προεπιλεγμένο μέγεθος παραθέσεων στο GeglBuffers"
 
-#: gegl/gegl-init.c:232
+#: gegl/gegl-init.c:233
 msgid "The count of pixels to compute simultaneously"
 msgstr "Ο αριθμός των εικονοστοιχείων για ταυτόχρονο υπολογισμό"
 
-#: gegl/gegl-init.c:237
+#: gegl/gegl-init.c:238
 msgid ""
 "The quality of rendering, a value between 0.0 (fast) and 1.0 (reference)"
 msgstr "Η ποιότητα απόδοσης, μια τιμή μεταξύ 0,0 (γρήγορη) και 1,0 (αναφορά)"
 
-#: gegl/gegl-init.c:242
+#: gegl/gegl-init.c:243
 msgid "The number of concurrent processing threads to use"
 msgstr "Ο αριθμός των σύγχρονων νημάτων επεξεργασίας για χρήση"
 
-#: gegl/gegl-init.c:247
+#: gegl/gegl-init.c:248
 msgid "Disable OpenCL"
 msgstr "Απενεργοποίηση OpenCL"
 
-#: gegl/gegl-init.c:259
+#: gegl/gegl-init.c:260
 msgid "Show GEGL Options"
 msgstr "Εμφάνιση επιλογών GEGL"
 
@@ -684,7 +684,8 @@ msgid "Glow radius"
 msgstr "Ακτίνα λάμψης"
 
 #: operations/common/bloom.c:42 operations/common/noise-reduction.c:26
-#: operations/common-cxx/warp.cc:34 operations/common-gpl3+/wind.c:64
+#: operations/common-cxx/denoise-dct.cc:38 operations/common-cxx/warp.cc:34
+#: operations/common-gpl3+/wind.c:64
 msgid "Strength"
 msgstr "Ισχύς"
 
@@ -2711,7 +2712,7 @@ msgstr "Δημιουργεί εφέ μεγάλης σκιάς"
 msgid "Path of file to load."
 msgstr "Διαδρομή αρχείου για φόρτωση."
 
-#: operations/common/magick-load.c:144
+#: operations/common/magick-load.c:171
 msgid "Image Magick wrapper using the png op."
 msgstr "Κέλυφος εικόνας Magick χρησιμοποιώντας την επιλογή png."
 
@@ -4846,6 +4847,26 @@ msgstr "Θόλωση εστίασης"
 msgid "Blur the image around a focal point"
 msgstr "Θόλωση της εικόνας γύρω από εστιακό σημείο"
 
+#: operations/common-cxx/denoise-dct.cc:33
+msgid "Patch size"
+msgstr "Μέγεθος επιδιόρθωσης"
+
+#: operations/common-cxx/denoise-dct.cc:36
+msgid "Size of patches used to denoise"
+msgstr "Μέγεθος επιδιορθώσεων που χρησιμοποιούνται για αποθορυβοποίηση"
+
+#: operations/common-cxx/denoise-dct.cc:39
+msgid "Noise standard deviation"
+msgstr "Τυπική απόκλιση θορύβου"
+
+#: operations/common-cxx/denoise-dct.cc:480
+msgid "Denoise DCT"
+msgstr "Αποθορυβοποίηση DCT"
+
+#: operations/common-cxx/denoise-dct.cc:482
+msgid "Denoising algorithm using a per-patch DCT thresholding"
+msgstr "Αλγόριθμος αποθορυβοποίησης με χρήση κατωφλίου DCT ανά επιδιόρθωση"
+
 #: operations/common-cxx/lens-blur.cc:46
 msgid "Clip to input extents"
 msgstr "Περικοπή στα μεγέθη εισόδου"
@@ -5056,7 +5077,7 @@ msgstr "Μετατόπιση τιμής"
 
 #: operations/common-gpl3+/bayer-matrix.c:68
 #: operations/common-gpl3+/linear-sinusoid.c:76
-#: operations/common-gpl3+/oilify.c:34 operations/common-gpl3+/sinus.c:71
+#: operations/common-gpl3+/oilify.c:35 operations/common-gpl3+/sinus.c:71
 msgid "Exponent"
 msgstr "Εκθέτης"
 
@@ -6381,7 +6402,7 @@ msgstr ""
 "Η ακτίνα του κύκλου γύρω από το εικονοστοιχείο, μπορεί επίσης να κλιμακωθεί "
 "ανά εικονοστοιχείο από ένα ενδιάμεσο (buffer) στο βοηθητικό χειριστήριο."
 
-#: operations/common-gpl3+/oilify.c:35
+#: operations/common-gpl3+/oilify.c:36
 msgid ""
 "Exponent for processing; controls smoothness - can be scaled per pixel with "
 "a buffer on the aux2 pad."
@@ -6389,27 +6410,27 @@ msgstr ""
 "Εκθέτης για επεξεργασία· ελέγχει την ομαλότητα - μπορεί να κλιμακωθεί ανά "
 "εικονοστοιχείο με ενδιάμεσο (buffer) στο χειριστήριο aux2."
 
-#: operations/common-gpl3+/oilify.c:38
+#: operations/common-gpl3+/oilify.c:40
 msgid "Number of intensities"
 msgstr "Αριθμός εντάσεων"
 
-#: operations/common-gpl3+/oilify.c:39
+#: operations/common-gpl3+/oilify.c:41
 msgid "Histogram size"
 msgstr "Μέγεθος ιστογράμματος"
 
-#: operations/common-gpl3+/oilify.c:42
+#: operations/common-gpl3+/oilify.c:44
 msgid "Intensity Mode"
 msgstr "Κατάσταση έντασης"
 
-#: operations/common-gpl3+/oilify.c:43
+#: operations/common-gpl3+/oilify.c:45
 msgid "Use pixel luminance values"
 msgstr "Χρήση τιμών λαμπρότητας εικονοστοιχείου"
 
-#: operations/common-gpl3+/oilify.c:522
+#: operations/common-gpl3+/oilify.c:587
 msgid "Mask radius buffer"
 msgstr "Ενδιάμεσο (buffer) ακτίνας μάσκας"
 
-#: operations/common-gpl3+/oilify.c:523
+#: operations/common-gpl3+/oilify.c:588
 msgid ""
 "Per pixel buffer for modulating the mask radius, expecting a scaling factor "
 "in range 0.0-1.0"
@@ -6417,11 +6438,11 @@ msgstr ""
 "Ενδιάμεσο (buffer) ανά εικονοστοιχείο για τη διαμόρφωση της ακτίνας μάσκας, "
 "αναμένοντας συντελεστή κλιμάκωσης στην περιοχή 0,0-1,0"
 
-#: operations/common-gpl3+/oilify.c:524
+#: operations/common-gpl3+/oilify.c:591
 msgid "Exponent buffer"
 msgstr "Ενδιάμεσο (buffer) εκθέτη"
 
-#: operations/common-gpl3+/oilify.c:525
+#: operations/common-gpl3+/oilify.c:592
 msgid ""
 "Per pixel buffer for modulating the exponent parameter, expecting a scaling "
 "factor in range 0.0-1.0"
@@ -6429,11 +6450,11 @@ msgstr ""
 "Το ενδιάμεσο (buffer) ανά εικονοστοιχείο για ρύθμιση της παραμέτρου του "
 "εκθέτη, αναμένοντας έναν συντελεστή κλιμάκωσης στην περιοχή 0,0-1,0"
 
-#: operations/common-gpl3+/oilify.c:534
+#: operations/common-gpl3+/oilify.c:603
 msgid "Oilify"
 msgstr "Ελαιοποίηση"
 
-#: operations/common-gpl3+/oilify.c:538
+#: operations/common-gpl3+/oilify.c:607
 msgid "Emulate an oil painting"
 msgstr "Απομίμηση ελαιογραφίας"
 
@@ -7431,7 +7452,7 @@ msgstr "URI του αρχείου για φόρτωση."
 msgid "Object to supply image metadata"
 msgstr "Αντικείμενο για παροχή μεταδεδομένων εικόνας"
 
-#: operations/core/load.c:374
+#: operations/core/load.c:372
 msgid ""
 "Multipurpose file loader, that uses other native handlers, and fallback "
 "conversion using Image Magick's convert."
@@ -7505,11 +7526,11 @@ msgstr "κωδικοποιητής-ήχου"
 msgid "audio"
 msgstr "ήχος"
 
-#: operations/external/ff-load.c:806
+#: operations/external/ff-load.c:866
 msgid "FFmpeg Frame Loader"
 msgstr "Φόρτωση πλαισίου FFmpeg"
 
-#: operations/external/ff-load.c:808
+#: operations/external/ff-load.c:868
 msgid "FFmpeg video frame importer."
 msgstr "Εισαγωγή πλαισίου βίντεο FFmpeg."
 
@@ -7654,11 +7675,11 @@ msgstr "μετατόπιση κβαντισμού i (i-quant-offset)"
 msgid "me-subpel-quality"
 msgstr "ποιότητα εικονοστοιχείων εκτίμησης κίνησης (me-subpel-quality)"
 
-#: operations/external/ff-save.c:1135
+#: operations/external/ff-save.c:1212
 msgid "FFmpeg Frame Saver"
 msgstr "Αποθηκευτής πλαισίου FFmpeg"
 
-#: operations/external/ff-save.c:1137
+#: operations/external/ff-save.c:1214
 msgid "FFmpeg video output sink"
 msgstr "Δέκτης εξόδου βίντεο FFmpeg"
 
@@ -7682,11 +7703,11 @@ msgstr "καθυστέρηση καρέ"
 msgid "Delay in ms for last decoded frame"
 msgstr "Καθυστέρηση σε ms για το τελευταίο αποκωδικοποιημένο καρέ"
 
-#: operations/external/gif-load.c:239
+#: operations/external/gif-load.c:240
 msgid "GIF File Loader"
 msgstr "Φορτωτής αρχείου GIF"
 
-#: operations/external/gif-load.c:241
+#: operations/external/gif-load.c:242
 msgid "GIF image loader."
 msgstr "Φορτωτής εικόνας GIF."
 
@@ -7975,7 +7996,7 @@ msgstr "Όταν είναι αληθές, το μοντέλο θα ελευθε�
 msgid "Sampler used internally"
 msgstr "Εσωτερικά χρησιμοποιούμενη δειγματοληψία"
 
-#: operations/external/npd.c:256
+#: operations/external/npd.c:258
 msgid "Performs n-point image deformation"
 msgstr "Εκτελεί παραμόρφωση εικόνας n σημείου"
 
@@ -10117,9 +10138,6 @@ msgstr "Επιλεκτική ρύθμιση χροιάς, κορεσμού κα�
 #~ msgstr ""
 #~ "Ορίζει το εικονοστοιχείο στόχου στο αντίστοιχο χρώμα σε δοσμένο ποσοστό "
 #~ "όταν τα χρώματα ταξινομούνται κατά φωτεινότητα."
-
-#~ msgid "Standard deviation X"
-#~ msgstr "Τυπική απόκλιση Χ"
 
 #~ msgid "Standard deviation Y"
 #~ msgstr "Τυπική απόκλιση Υ"
