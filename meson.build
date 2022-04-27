@@ -231,7 +231,7 @@ add_project_arguments(cpp.get_supported_arguments(cflags_cpp), language: 'cpp')
 ################################################################################
 # Build Utilities
 
-env               = find_program('env')
+env               = find_program('env', required: false)
 
 asciidoc          = find_program('asciidoc',
                      required: false, native: true)
@@ -465,7 +465,7 @@ if get_option('docs') == 'auto'
   if meson.is_cross_build()
     build_docs = false
     message('configure with -Ddocs=true to cross-build docs')
-  elif not asciidoc.found()
+  elif not asciidoc.found() or not env.found()
     build_docs = false
   endif
 elif get_option('docs') == 'false'
