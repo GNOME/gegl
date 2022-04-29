@@ -1,0 +1,46 @@
+include:
+  - remote: 'https://gitlab.freedesktop.org/freedesktop/ci-templates/-/raw/master/templates/fedora.yml'
+
+stages:
+  - "build docker"
+  - build
+
+.fedora image:
+  variables:
+    ###
+    # IMPORTANT
+    # These are the version tags for the docker images the CI runs against.
+    # If you are hacking on them or need a them to rebuild, its enough
+    # to change any part of the string of the image you want.
+    ###
+    FDO_DISTRIBUTION_TAG: '2022-04-29.5'
+    FDO_DISTRIBUTION_VERSION: '35'
+    FDO_DISTRIBUTION_PACKAGES: >
+      meson ninja-build gcc g++ git gettext glib2-devel libjpeg-turbo-devel
+      libpng-devel json-glib-devel lcms2-devel
+    FDO_UPSTREAM_REPO: gnome/gegl
+
+fedora image:
+  stage: "build docker"
+  extends:
+    - .fedora image
+    - .fdo.container-build@fedora
+
+fedora-x86_64:
+  extends:
+    - .fedora image
+    - .fdo.distribution-image@fedora
+  stage: build
+  needs: ["fedora image"]
+  script:
+    - meson --buildtype debug
+            --fatal-meson-warnings
+            --default-library=both
+            _build
+    - ninja -C _build
+  artifacts:
+    name: "gegl-${CI_JOB_NAME}-${CI_COMMIT_REF_NAME}"
+    when: always
+    expire_in: 1 week
+    paths:
+      - "_build/meson-logs"
