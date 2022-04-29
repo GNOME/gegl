@@ -510,8 +510,7 @@ pkgconfig.generate(gegl_lib,
   description: 'Generic Graphics Library',
   version: meson.project_version(),
   variables: 'pluginsdir=' + '${prefix}' / get_option('libdir') / api_name,
-  libraries: gegl_pub_deps,
-  libraries_private: gegl_npd_lib,
+  libraries: [gegl_pub_deps, gegl_npd_lib],
   subdirs: api_name,
 )
 
