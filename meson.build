@@ -510,8 +510,11 @@ pkgconfig.generate(gegl_lib,
   description: 'Generic Graphics Library',
   version: meson.project_version(),
   variables: 'pluginsdir=' + '${prefix}' / get_option('libdir') / api_name,
-  libraries: gegl_pub_deps,
-  libraries_private: gegl_npd_lib,
+  # gegl_npd_lib API is actually used by software, such as GIMP. It must
+  # not be removed, even though adding it like this is not so proper. If
+  # one wants to clean up this dependency, a proper port must be done
+  # first so that using application still build and don't lose features.
+  libraries: gegl_pub_deps + [ gegl_npd_lib ],
   subdirs: api_name,
 )
 
