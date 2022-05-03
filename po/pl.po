@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2022-04-11 19:34+0000\n"
+"POT-Creation-Date: 2022-05-02 11:01+0000\n"
 "PO-Revision-Date: 2022-04-17 16:50+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
@@ -4835,7 +4835,7 @@ msgid "Size of patches used to denoise"
 msgstr "Rozmiar łat używanych do usuwania szumu"
 
 #: operations/common-cxx/denoise-dct.cc:39
-msgid "Noise standart deviation"
+msgid "Noise standard deviation"
 msgstr "Odchylenie standardowe szumu"
 
 #: operations/common-cxx/denoise-dct.cc:480
@@ -5056,7 +5056,7 @@ msgstr "Przesunięcie wartości"
 
 #: operations/common-gpl3+/bayer-matrix.c:68
 #: operations/common-gpl3+/linear-sinusoid.c:76
-#: operations/common-gpl3+/oilify.c:34 operations/common-gpl3+/sinus.c:71
+#: operations/common-gpl3+/oilify.c:35 operations/common-gpl3+/sinus.c:71
 msgid "Exponent"
 msgstr "Wykładnik potęgi"
 
@@ -6365,7 +6365,7 @@ msgstr ""
 "Promień okręgu wokół piksela, może być także skalowany na każdy piksel przez "
 "bufor na dodatkowym bloku."
 
-#: operations/common-gpl3+/oilify.c:35
+#: operations/common-gpl3+/oilify.c:36
 msgid ""
 "Exponent for processing; controls smoothness - can be scaled per pixel with "
 "a buffer on the aux2 pad."
@@ -6373,27 +6373,27 @@ msgstr ""
 "Wykładnik do przetworzenia. Steruje gładkością — może być skalowany na każdy "
 "piksel za pomocą bufora na drugim dodatkowym bloku."
 
-#: operations/common-gpl3+/oilify.c:38
+#: operations/common-gpl3+/oilify.c:40
 msgid "Number of intensities"
 msgstr "Liczba intensywności"
 
-#: operations/common-gpl3+/oilify.c:39
+#: operations/common-gpl3+/oilify.c:41
 msgid "Histogram size"
 msgstr "Rozmiar histogramu"
 
-#: operations/common-gpl3+/oilify.c:42
+#: operations/common-gpl3+/oilify.c:44
 msgid "Intensity Mode"
 msgstr "Tryb intensywności"
 
-#: operations/common-gpl3+/oilify.c:43
+#: operations/common-gpl3+/oilify.c:45
 msgid "Use pixel luminance values"
 msgstr "Użyj wartości luminancji pikseli"
 
-#: operations/common-gpl3+/oilify.c:522
+#: operations/common-gpl3+/oilify.c:587
 msgid "Mask radius buffer"
 msgstr "Bufor promienia maski"
 
-#: operations/common-gpl3+/oilify.c:523
+#: operations/common-gpl3+/oilify.c:588
 msgid ""
 "Per pixel buffer for modulating the mask radius, expecting a scaling factor "
 "in range 0.0-1.0"
@@ -6401,11 +6401,11 @@ msgstr ""
 "Bufor na każdy piksel do modulowania promienia maski, oczekuje współczynnika "
 "skalowania w zakresie 0,0-1,0"
 
-#: operations/common-gpl3+/oilify.c:524
+#: operations/common-gpl3+/oilify.c:591
 msgid "Exponent buffer"
 msgstr "Bufor wykładnika"
 
-#: operations/common-gpl3+/oilify.c:525
+#: operations/common-gpl3+/oilify.c:592
 msgid ""
 "Per pixel buffer for modulating the exponent parameter, expecting a scaling "
 "factor in range 0.0-1.0"
@@ -6413,11 +6413,11 @@ msgstr ""
 "Bufor na każdy piksel do modulowania parametru współczynnika, oczekuje "
 "współczynnika skalowania w zakresie 0,0-1,0"
 
-#: operations/common-gpl3+/oilify.c:534
+#: operations/common-gpl3+/oilify.c:603
 msgid "Oilify"
 msgstr "Farba olejna"
 
-#: operations/common-gpl3+/oilify.c:538
+#: operations/common-gpl3+/oilify.c:607
 msgid "Emulate an oil painting"
 msgstr "Emuluj obraz olejny"
 
@@ -7653,11 +7653,11 @@ msgstr "opóźnienie-klatek"
 msgid "Delay in ms for last decoded frame"
 msgstr "Opóźnienie w milisekundach dla ostatniej zdekodowanej klatki"
 
-#: operations/external/gif-load.c:238
+#: operations/external/gif-load.c:240
 msgid "GIF File Loader"
 msgstr "Wczytywanie plików GIF"
 
-#: operations/external/gif-load.c:240
+#: operations/external/gif-load.c:242
 msgid "GIF image loader."
 msgstr "Wczytywanie obrazów GIF."
 
