@@ -60,9 +60,10 @@ typedef struct
 
 
 static inline gfloat
-get_distance (gfloat         *c1,
-              gfloat         *c2,
-              GeglProperties *o)
+get_distance (gfloat *c1,
+              gfloat *c2,
+              gint    cluster_size,
+              gint    compactness)
 {
   gfloat color_dist = sqrtf (POW2(c2[0] - c1[0]) +
                              POW2(c2[1] - c1[1]) +
@@ -72,12 +73,12 @@ get_distance (gfloat         *c1,
                                POW2(c2[4] - c1[4]));
 
   return sqrtf (POW2(color_dist) +
-                POW2(o->compactness) * POW2(spacial_dist / o->cluster_size));
+                POW2(compactness) * POW2(spacial_dist / cluster_size));
 }
 
 static GArray *
 init_clusters (GeglBuffer     *input,
-               GeglProperties *o,
+               gint            cluster_size,
                gint            level,
                const Babl     *format)
 {
@@ -90,17 +91,17 @@ init_clusters (GeglBuffer     *input,
   gint width  = gegl_buffer_get_width (input);
   gint height = gegl_buffer_get_height (input);
 
-  gint n_h_clusters = width / o->cluster_size;
-  gint n_v_clusters = height / o->cluster_size;
+  gint n_h_clusters = width / cluster_size;
+  gint n_v_clusters = height / cluster_size;
 
-  if (width % o->cluster_size)
+  if (width % cluster_size)
    n_h_clusters++;
 
-  if (height % o->cluster_size)
+  if (height % cluster_size)
     n_v_clusters++;
 
-  h_offset = (width % o->cluster_size) ? (width % o->cluster_size) / 2 : o->cluster_size / 2;
-  v_offset = (height % o->cluster_size) ? (height % o->cluster_size) / 2 : o->cluster_size / 2;
+  h_offset = (width % cluster_size) ? (width % cluster_size) / 2 : cluster_size / 2;
+  v_offset = (height % cluster_size) ? (height % cluster_size) / 2 : cluster_size / 2;
 
   n_clusters = n_h_clusters * n_v_clusters;
 
@@ -116,8 +117,8 @@ init_clusters (GeglBuffer     *input,
       gfloat pixel[3];
       Cluster c;
 
-      cx = x * o->cluster_size + h_offset;
-      cy = y * o->cluster_size + v_offset;
+      cx = x * cluster_size + h_offset;
+      cy = y * cluster_size + v_offset;
 
       gegl_sampler_get (sampler, cx, cy, NULL,
                         pixel, GEGL_ABYSS_CLAMP);
@@ -136,10 +137,10 @@ init_clusters (GeglBuffer     *input,
 
       c.n_pixels = 0;
 
-      c.search_window.x = cx - o->cluster_size;
-      c.search_window.y = cy - o->cluster_size;
+      c.search_window.x = cx - cluster_size;
+      c.search_window.y = cy - cluster_size;
       c.search_window.width  =
-      c.search_window.height = o->cluster_size * 2 + 1;
+      c.search_window.height = cluster_size * 2 + 1;
 
       g_array_append_val (clusters, c);
 
@@ -157,11 +158,12 @@ init_clusters (GeglBuffer     *input,
 }
 
 static void
-assign_labels (GeglBuffer     *labels,
-               GeglBuffer     *input,
-               GArray         *clusters,
-               GeglProperties *o,
-               const Babl     *format)
+assign_labels (GeglBuffer *labels,
+               GeglBuffer *input,
+               GArray     *clusters,
+               gint        cluster_size,
+               gint        compactness,
+               const Babl *format)
 {
   GeglBufferIterator *iter;
   GArray  *clusters_index;
@@ -228,7 +230,8 @@ assign_labels (GeglBuffer     *labels,
                   y >= tmp->search_window.y + tmp->search_window.height)
                 continue;
 
-              distance = get_distance (tmp->center, feature, o);
+              distance = get_distance (tmp->center, feature,
+                                       cluster_size, compactness);
 
               if (distance < min_distance)
                 {
@@ -265,8 +268,8 @@ assign_labels (GeglBuffer     *labels,
 }
 
 static gboolean
-update_clusters (GArray         *clusters,
-                 GeglProperties *o)
+update_clusters (GArray *clusters,
+                 gint    cluster_size)
 {
   gint i;
 
@@ -288,8 +291,8 @@ update_clusters (GArray         *clusters,
 
       c->n_pixels = 0;
 
-      c->search_window.x = (gint) c->center[3] - o->cluster_size;
-      c->search_window.y = (gint) c->center[4] - o->cluster_size;
+      c->search_window.x = (gint) c->center[3] - cluster_size;
+      c->search_window.y = (gint) c->center[4] - cluster_size;
     }
 
   return TRUE;
@@ -379,21 +382,33 @@ process (GeglOperation       *operation,
   const GeglRectangle *src_region = gegl_buffer_get_extent (input);
   GeglBuffer *labels;
   GArray     *clusters;
+  gint        max_dim;
+  gint        cluster_size;
   gint        i;
 
   labels = gegl_buffer_new (src_region, babl_format_n (babl_type ("u32"), 1));
 
+  /* restrict cluster size to the maximum buffer dimension */
+
+  max_dim = MAX(src_region->width, src_region->height);
+  cluster_size = o->cluster_size > max_dim ? max_dim : o->cluster_size;
+
   /* clusters initialization */
 
-  clusters = init_clusters (input, o, level, format);
+  clusters = init_clusters (input, cluster_size, level, format);
 
   /* perform segmentation */
 
   for (i = 0; i < o->iterations; i++)
     {
-      assign_labels (labels, input, clusters, o, format);
+      assign_labels (labels,
+                     input,
+                     clusters,
+                     cluster_size,
+                     o->compactness,
+                     format);
 
-      update_clusters (clusters, o);
+      update_clusters (clusters, cluster_size);
     }
 
   /* apply clusters colors to output */
