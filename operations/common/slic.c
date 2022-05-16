@@ -387,6 +387,8 @@ process (GeglOperation       *operation,
   gint        n_iterations;
   gint        i;
 
+  gegl_operation_progress (operation, 0.0, "");
+
   labels = gegl_buffer_new (src_region, babl_format_n (babl_type ("u32"), 1));
 
   /* restrict cluster size to the maximum buffer dimension */
@@ -412,11 +414,17 @@ process (GeglOperation       *operation,
                      format);
 
       update_clusters (clusters, cluster_size);
+
+      gegl_operation_progress (operation,
+                               (gdouble) (i+0.5) / n_iterations,
+                               "");
     }
 
   /* apply clusters colors to output */
 
   set_output (output, labels, clusters, format);
+
+  gegl_operation_progress (operation, 1.0, "");
 
   g_object_unref (labels);
   g_array_free (clusters, TRUE);
