@@ -384,6 +384,7 @@ process (GeglOperation       *operation,
   GArray     *clusters;
   gint        max_dim;
   gint        cluster_size;
+  gint        n_iterations;
   gint        i;
 
   labels = gegl_buffer_new (src_region, babl_format_n (babl_type ("u32"), 1));
@@ -399,7 +400,9 @@ process (GeglOperation       *operation,
 
   /* perform segmentation */
 
-  for (i = 0; i < o->iterations; i++)
+  n_iterations = clusters->len > 1 ? o->iterations : 1;
+
+  for (i = 0; i < n_iterations; i++)
     {
       assign_labels (labels,
                      input,
