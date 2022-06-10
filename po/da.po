@@ -17,8 +17,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl gegl-0-2\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2021-09-04 22:16+0000\n"
-"PO-Revision-Date: 2022-01-29 17:55+0100\n"
+"POT-Creation-Date: 2022-05-16 09:17+0000\n"
+"PO-Revision-Date: 2022-06-08 18:32+0200\n"
 "Last-Translator: Alan Mortensen <alanmortensen.am@gmail.com>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "Language: da\n"
@@ -365,43 +365,43 @@ msgstr "Aldrig"
 msgid "Always"
 msgstr "Altid"
 
-#: gegl/gegl-init.c:212
+#: gegl/gegl-init.c:213
 msgid "Where GEGL stores its swap"
 msgstr "Hvor GEGL gemmer sin swap"
 
-#: gegl/gegl-init.c:217
+#: gegl/gegl-init.c:218
 msgid "Compression algorithm used for data stored in the swap"
 msgstr "Komprimeringsalgoritme brugt på data gemt på swap"
 
-#: gegl/gegl-init.c:222
+#: gegl/gegl-init.c:223
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr "Hvor meget hukommelse der (ca.) skal bruges til cache til billeder"
 
 # Der er tale om data i swap: https://docs.gimp.org/en/gimp-using-setup-tile-cache.html
-#: gegl/gegl-init.c:227
+#: gegl/gegl-init.c:228
 msgid "Default size of tiles in GeglBuffers"
 msgstr "Standardstørrelse på databidder i GeglBuffers"
 
-#: gegl/gegl-init.c:232
+#: gegl/gegl-init.c:233
 msgid "The count of pixels to compute simultaneously"
 msgstr "Antal pixels der skal beregnes samtidigt"
 
-#: gegl/gegl-init.c:237
+#: gegl/gegl-init.c:238
 msgid ""
 "The quality of rendering, a value between 0.0 (fast) and 1.0 (reference)"
 msgstr ""
 "Gengivelseskvaliteten angivet som en værdi mellem 0,0 (hurtig) og 1,0 "
 "(reference)"
 
-#: gegl/gegl-init.c:242
+#: gegl/gegl-init.c:243
 msgid "The number of concurrent processing threads to use"
 msgstr "Antallet af samtidige beregningstråde der skal bruges"
 
-#: gegl/gegl-init.c:247
+#: gegl/gegl-init.c:248
 msgid "Disable OpenCL"
 msgstr "Deaktivér OpenCL"
 
-#: gegl/gegl-init.c:259
+#: gegl/gegl-init.c:260
 msgid "Show GEGL Options"
 msgstr "Vis GEGL-tilvalg"
 
@@ -701,7 +701,8 @@ msgid "Glow radius"
 msgstr "Glødradius"
 
 #: operations/common/bloom.c:42 operations/common/noise-reduction.c:26
-#: operations/common-cxx/warp.cc:34 operations/common-gpl3+/wind.c:64
+#: operations/common-cxx/denoise-dct.cc:38 operations/common-cxx/warp.cc:34
+#: operations/common-gpl3+/wind.c:64
 msgid "Strength"
 msgstr "Styrke"
 
@@ -2736,7 +2737,7 @@ msgstr "Laver en lang skyggeeffekt"
 msgid "Path of file to load."
 msgstr "Sti til filen der skal indlæses."
 
-#: operations/common/magick-load.c:144
+#: operations/common/magick-load.c:171
 msgid "Image Magick wrapper using the png op."
 msgstr "Image Magick-wrapper som bruger png-operationen."
 
@@ -3075,7 +3076,6 @@ msgid "Base enlargement exposure"
 msgstr "Basisforøgelse af eksponering"
 
 #: operations/common/negative-darkroom.c:34
-#| msgid "Cyan pattern"
 msgid "Cyan filter"
 msgstr "Cyan filter"
 
@@ -3084,7 +3084,6 @@ msgid "Cyan filter compensation for the negative image"
 msgstr "Cyan filter-kompensation til det negative billede"
 
 #: operations/common/negative-darkroom.c:39
-#| msgid "Magenta pattern"
 msgid "Magenta filter"
 msgstr "Magenta filter"
 
@@ -4199,12 +4198,12 @@ msgstr "Kompakthed"
 msgid "Cluster size"
 msgstr "Klyngestørrelse"
 
-#: operations/common/slic.c:455
+#: operations/common/slic.c:481
 msgid "Simple Linear Iterative Clustering"
 msgstr "Simpel lineær iterativ klyngedannelse"
 
 # Wikipedia på en række sprog har k-means
-#: operations/common/slic.c:458
+#: operations/common/slic.c:484
 msgid "Superpixels based on k-means clustering"
 msgstr "Superpixels baseret på k-means-klyngedannelse"
 
@@ -4876,6 +4875,27 @@ msgstr "Fokussløring"
 msgid "Blur the image around a focal point"
 msgstr "Slør billedet rundt om et fokuspunkt"
 
+#: operations/common-cxx/denoise-dct.cc:33
+msgid "Patch size"
+msgstr "Feltstørrelse"
+
+# DCT: diskret cosinus transformation
+#: operations/common-cxx/denoise-dct.cc:36
+msgid "Size of patches used to denoise"
+msgstr "Størrelsen på felterne brugt til støjfjerning"
+
+#: operations/common-cxx/denoise-dct.cc:39
+msgid "Noise standard deviation"
+msgstr "Standardafvigelse for støj"
+
+#: operations/common-cxx/denoise-dct.cc:480
+msgid "Denoise DCT"
+msgstr "Støjfjerning med DCT"
+
+#: operations/common-cxx/denoise-dct.cc:482
+msgid "Denoising algorithm using a per-patch DCT thresholding"
+msgstr "Støjfjerningsalgoritme som bruger en DCT-tærskelværdi pr. felt"
+
 #: operations/common-cxx/lens-blur.cc:46
 msgid "Clip to input extents"
 msgstr "Klip til inputområdet"
@@ -5089,7 +5109,7 @@ msgstr "Forskydning af værdi"
 
 #: operations/common-gpl3+/bayer-matrix.c:68
 #: operations/common-gpl3+/linear-sinusoid.c:76
-#: operations/common-gpl3+/oilify.c:34 operations/common-gpl3+/sinus.c:71
+#: operations/common-gpl3+/oilify.c:35 operations/common-gpl3+/sinus.c:71
 msgid "Exponent"
 msgstr "Eksponent"
 
@@ -6414,7 +6434,7 @@ msgstr ""
 "Radius af cirkel omkring pixel. Kan også skaleres pr. pixel med en buffer på "
 "\"aux pad\"."
 
-#: operations/common-gpl3+/oilify.c:35
+#: operations/common-gpl3+/oilify.c:36
 msgid ""
 "Exponent for processing; controls smoothness - can be scaled per pixel with "
 "a buffer on the aux2 pad."
@@ -6422,27 +6442,27 @@ msgstr ""
 "Eksponent til behandling. Styrer glatheden; kan skaleres pr. pixel med en "
 "buffer på \"aux2 pad\"."
 
-#: operations/common-gpl3+/oilify.c:38
+#: operations/common-gpl3+/oilify.c:40
 msgid "Number of intensities"
 msgstr "Antal intensiteter"
 
-#: operations/common-gpl3+/oilify.c:39
+#: operations/common-gpl3+/oilify.c:41
 msgid "Histogram size"
 msgstr "Histogramstørrelse"
 
-#: operations/common-gpl3+/oilify.c:42
+#: operations/common-gpl3+/oilify.c:44
 msgid "Intensity Mode"
 msgstr "Intensitetstilstand"
 
-#: operations/common-gpl3+/oilify.c:43
+#: operations/common-gpl3+/oilify.c:45
 msgid "Use pixel luminance values"
 msgstr "Brug pixels' lysstyrkeværdier"
 
-#: operations/common-gpl3+/oilify.c:522
+#: operations/common-gpl3+/oilify.c:587
 msgid "Mask radius buffer"
 msgstr "Maskeradiusbuffer"
 
-#: operations/common-gpl3+/oilify.c:523
+#: operations/common-gpl3+/oilify.c:588
 msgid ""
 "Per pixel buffer for modulating the mask radius, expecting a scaling factor "
 "in range 0.0-1.0"
@@ -6450,11 +6470,11 @@ msgstr ""
 "Pixelvis buffer til modulering af maskeradius. Skaleringsfaktoren skal være "
 "0 til 1."
 
-#: operations/common-gpl3+/oilify.c:524
+#: operations/common-gpl3+/oilify.c:591
 msgid "Exponent buffer"
 msgstr "Eksponentbuffer"
 
-#: operations/common-gpl3+/oilify.c:525
+#: operations/common-gpl3+/oilify.c:592
 msgid ""
 "Per pixel buffer for modulating the exponent parameter, expecting a scaling "
 "factor in range 0.0-1.0"
@@ -6462,11 +6482,11 @@ msgstr ""
 "Pixelvis buffer til modulering af eksponenten. Skaleringsfaktoren skal være "
 "0 til 1."
 
-#: operations/common-gpl3+/oilify.c:534
+#: operations/common-gpl3+/oilify.c:603
 msgid "Oilify"
 msgstr "Oliemaleri"
 
-#: operations/common-gpl3+/oilify.c:538
+#: operations/common-gpl3+/oilify.c:607
 msgid "Emulate an oil painting"
 msgstr "Efterligner et oliemaleri"
 
@@ -7467,7 +7487,7 @@ msgstr "URI til fil som skal indlæses."
 msgid "Object to supply image metadata"
 msgstr "Objekt som leverer billedets metadata"
 
-#: operations/core/load.c:374
+#: operations/core/load.c:372
 msgid ""
 "Multipurpose file loader, that uses other native handlers, and fallback "
 "conversion using Image Magick's convert."
@@ -7541,11 +7561,11 @@ msgstr "Lydcodec"
 msgid "audio"
 msgstr "Lyd"
 
-#: operations/external/ff-load.c:806
+#: operations/external/ff-load.c:866
 msgid "FFmpeg Frame Loader"
 msgstr "FFmpeg-stillbilledindlæser"
 
-#: operations/external/ff-load.c:808
+#: operations/external/ff-load.c:868
 msgid "FFmpeg video frame importer."
 msgstr "FFmpeg-videostillbilledindlæser."
 
@@ -7692,11 +7712,11 @@ msgstr "i-quant-offset"
 msgid "me-subpel-quality"
 msgstr "me-subpel-quality"
 
-#: operations/external/ff-save.c:1135
+#: operations/external/ff-save.c:1212
 msgid "FFmpeg Frame Saver"
 msgstr "FFmpeg-stillbilledskriver"
 
-#: operations/external/ff-save.c:1137
+#: operations/external/ff-save.c:1214
 msgid "FFmpeg video output sink"
 msgstr "FFmpeg — datamodtager af videooutput"
 
@@ -7721,11 +7741,11 @@ msgstr "Billedforsinkelse"
 msgid "Delay in ms for last decoded frame"
 msgstr "Forsinkelse i ms for det sidst afkodede stillbillede"
 
-#: operations/external/gif-load.c:239
+#: operations/external/gif-load.c:240
 msgid "GIF File Loader"
 msgstr "GIF-filindlæser"
 
-#: operations/external/gif-load.c:241
+#: operations/external/gif-load.c:242
 msgid "GIF image loader."
 msgstr "GIF-billedindlæser."
 
@@ -8014,7 +8034,7 @@ msgid "Sampler used internally"
 msgstr "Sampler brugt internt"
 
 # Har udeladt "billede", så det ikke blev for langt. Det er jo et billedbehandlingsprogram, så det giver også sig selv.
-#: operations/external/npd.c:256
+#: operations/external/npd.c:258
 msgid "Performs n-point image deformation"
 msgstr "Udfører n-punktsdeformation"
 
@@ -9818,9 +9838,6 @@ msgstr "Justér farvetone, mæthed og lyshed selektivt"
 # Label propagation svarer til flooding: http://www.cs.tut.fi/~moncef/publications/parallel-image-component.pdf, som er lidt nemmere at oversætte meningsfyldt
 #~ msgid "Labels propagation by watershed transformation"
 #~ msgstr "Vandskelstransformering ved oversvømmelse"
-
-#~ msgid "Standard Deviation"
-#~ msgstr "Standardafvigelse"
 
 #~ msgid "Chessboard"
 #~ msgstr "Skakbræt"
