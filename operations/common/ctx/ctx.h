@@ -1,4 +1,4 @@
-/* ctx git commit: 7b477b2c */
+/* ctx git commit: 7bf32187 */
 /* 
  * ctx.h is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -42933,6 +42933,7 @@ ctx_path_extents (Ctx *ctx, float *ex1, float *ey1, float *ex2, float *ey2)
           got_coord++;
           break;
         default:
+          break;
      }
           //fprintf(stderr, "[%c]", command->code);
     if (got_coord)
