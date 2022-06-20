@@ -465,7 +465,7 @@ gegl_op_class_init (GeglOpClass *klass)
       "categories",  "hidden:blur",
       "title",       _("1D Box Blur"),
       "description", _("Blur resulting from averaging the colors of a row "
-                       "neighbourhood."),
+                       "neighborhood."),
       NULL);
 }
 

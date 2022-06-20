@@ -43,11 +43,11 @@ property_double (zoom, _("Zoom"), 0.0)
     value_range (-100, 100.0)
 
 property_double (x_shift, _("Shift X"), 0.0)
-    description (_("Effect centre offset in X"))
+    description (_("Effect center offset in X"))
     value_range (-100.0, 100.0)
 
 property_double (y_shift, _("Shift Y"), 0.0)
-    description (_("Effect centre offset in Y"))
+    description (_("Effect center offset in Y"))
     value_range (-100.0, 100.0)
 
 property_double (brighten, _("Brighten"), 0.0)

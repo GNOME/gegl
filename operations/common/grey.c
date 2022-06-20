@@ -135,7 +135,7 @@ gegl_op_class_init (GeglOpClass *klass)
   gegl_operation_class_set_keys (operation_class,
       "name",        "gegl:gray",
       "compat-name", "gegl:grey",
-      "title",       _("Make Grey"),
+      "title",       _("Make Gray"),
       "categories" , "grayscale:color",
       "reference-hash", "c5623beeef052a9b47acd178dd420864",
       "reference-hashB", "43ddd80572ab34095298ac7c36368b0c",

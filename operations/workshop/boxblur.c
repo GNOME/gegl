@@ -74,7 +74,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "categories",  "blur",
     "title",       _("BoxBlur"),
     "description", _("Blur resulting from averaging the colors of a square "
-                     "neighbourhood."),
+                     "neighborhood."),
     NULL);
 }
 
