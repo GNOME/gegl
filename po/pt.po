@@ -3,16 +3,16 @@
 # This file is distributed under the same license as the gegl package.
 # Pedro Albuquerque <palbuquerque73@gmail.com>, 2015.
 # Tiago Santos <tiagofsantos81@sapo.pt>, 2014 - 2017.
-# Sara Campos <lalocas@protonmail.com>, 2021.
+# Sara Campos <lalocas@protonmail.com>, 2021, 2022.
 # Hugo Carvalho <hugokarvalho@hotmail.com>, 2021, 2022.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Gegl-master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2022-04-25 03:59+0000\n"
-"PO-Revision-Date: 2022-04-26 10:47+0100\n"
-"Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>\n"
+"POT-Creation-Date: 2022-06-20 20:42+0000\n"
+"PO-Revision-Date: 2022-06-21 19:19+0100\n"
+"Last-Translator: Sara Campos <lalocas@protonmail.com>\n"
 "Language-Team: Português <https://l10n.gnome.org/teams/pt/>\n"
 "Language: pt\n"
 "MIME-Version: 1.0\n"
@@ -1827,7 +1827,7 @@ msgstr "Desvio vertical da sombra"
 
 #: operations/common/dropshadow.c:53
 msgid "Grow shape"
-msgstr "Forma do aumento"
+msgstr "Forma da expansão"
 
 #: operations/common/dropshadow.c:56
 msgid "The shape to expand or contract the shadow in"
@@ -1835,7 +1835,7 @@ msgstr "A forma para expandir ou contrair a sombra a entrar"
 
 #: operations/common/dropshadow.c:58
 msgid "Grow radius"
-msgstr "Raio do aumento"
+msgstr "Raio da expansão"
 
 #: operations/common/dropshadow.c:65
 msgid ""
@@ -3436,7 +3436,8 @@ msgstr "Fator de sobreamostragem de anti-alias"
 
 #: operations/common/newsprint.c:168
 msgid "Number of samples that are averaged for antialiasing the result."
-msgstr "Número de amostras cuja média é calculada para suavizar o resultado."
+msgstr ""
+"Número de amostras cuja média é calculada para antiserrilhar o resultado."
 
 #: operations/common/newsprint.c:170 operations/common-gpl3+/plasma.c:36
 msgid "Turbulence"
@@ -4188,11 +4189,11 @@ msgstr "Compacidade"
 msgid "Cluster size"
 msgstr "Tamanho do aglomerado"
 
-#: operations/common/slic.c:455
+#: operations/common/slic.c:481
 msgid "Simple Linear Iterative Clustering"
 msgstr "Aglomerado iterativo linear simples"
 
-#: operations/common/slic.c:458
+#: operations/common/slic.c:484
 msgid "Superpixels based on k-means clustering"
 msgstr "Superpíxeis baseados na aglomeração “k-means”"
 
@@ -4935,7 +4936,7 @@ msgstr "Mover píxeis"
 
 #: operations/common-cxx/warp.cc:26
 msgid "Grow area"
-msgstr "Aumentar área"
+msgstr "Alargar área"
 
 #: operations/common-cxx/warp.cc:27
 msgid "Shrink area"
@@ -4988,13 +4989,12 @@ msgstr "Calcula um mapeamento de deslocamento relativo de um traço"
 
 #: operations/common-gpl3+/antialias.c:293
 msgid "Scale3X Antialiasing"
-msgstr "Suavização Scale3X"
+msgstr "Antisserrilhado Scale3X"
 
 #: operations/common-gpl3+/antialias.c:298
 msgid "Antialias using the Scale3X edge-extrapolation algorithm"
 msgstr ""
-"Suavização (antisserilhamento) usando o algoritmo de extrapolação de margens "
-"Scale3X"
+"Antisserilhamento usando o algoritmo de extrapolação de margens Scale3X"
 
 #: operations/common-gpl3+/apply-lens.c:36
 msgid "Lens refraction index"
@@ -6294,7 +6294,7 @@ msgstr "Direção da fonte de luz (em graus)"
 
 #: operations/common-gpl3+/mosaic.c:86
 msgid "Antialiasing"
-msgstr "Suavização"
+msgstr "Antisserrilhado"
 
 #: operations/common-gpl3+/mosaic.c:87
 msgid "Enables smoother tile output"
@@ -6875,11 +6875,11 @@ msgstr ""
 
 #: operations/common-gpl3+/texturize-canvas.c:4380
 msgid "Texturize Canvas"
-msgstr "Texturizar a tela"
+msgstr "Texturizar a tela de pintura"
 
 #: operations/common-gpl3+/texturize-canvas.c:4385
 msgid "Textures the image as if it were an artist's canvas."
-msgstr "Texturiza a imagem como se fosse a tela de um artista."
+msgstr "Texturiza a imagem como se fosse a tela de pintura de um artista."
 
 #: operations/common-gpl3+/tile-glass.c:28
 #: operations/common-gpl3+/tile-paper.c:40
