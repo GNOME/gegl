@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
 "POT-Creation-Date: 2022-06-20 20:42+0000\n"
-"PO-Revision-Date: 2022-06-22 07:13+0200\n"
+"PO-Revision-Date: 2022-06-25 11:47+0200\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <(nothing)>\n"
 "Language: ka\n"
@@ -80,7 +80,7 @@ msgstr ""
 
 #: bin/gegl-options.c:127
 msgid "Print XML"
-msgstr ""
+msgstr "XML-ის დაბეჭდვა"
 
 #: bin/gegl-options.c:129
 msgid "Output in a file"
@@ -88,11 +88,11 @@ msgstr ""
 
 #: bin/gegl-options.c:131
 msgid "Display help information"
-msgstr ""
+msgstr "დახმარების ჩვენება"
 
 #: bin/gegl-options.c:134
 msgid "unknown mode"
-msgstr "უცნობი რეჟიმი "
+msgstr "უცნობი რეჟიმი"
 
 #: bin/gegl-options.c:139
 #, c-format
@@ -188,7 +188,7 @@ msgstr "LoHalo"
 
 #: gegl/buffer/gegl-buffer-enums.c:117
 msgid "Subset"
-msgstr ""
+msgstr "ქვესეტი"
 
 #: gegl/buffer/gegl-buffer-enums.c:118
 msgid "Superset"
@@ -228,7 +228,7 @@ msgstr ""
 
 #: gegl/gegl-enums.c:42
 msgid "Blue Noise"
-msgstr ""
+msgstr "ლურჯი ხმაური"
 
 #: gegl/gegl-enums.c:43
 msgid "Blue Noise Covariant"
@@ -236,7 +236,7 @@ msgstr ""
 
 #: gegl/gegl-enums.c:68
 msgid "Euclidean"
-msgstr ""
+msgstr "ევკლიდური"
 
 #: gegl/gegl-enums.c:69
 msgid "Manhattan"
@@ -244,7 +244,7 @@ msgstr "მანჰეტენი"
 
 #: gegl/gegl-enums.c:70
 msgid "Chebyshev"
-msgstr ""
+msgstr "ჩემიშევი"
 
 #: gegl/gegl-enums.c:95 operations/common/edge-sobel.c:27
 #: operations/common/noise-spread.c:29 operations/common/spherize.c:26
@@ -264,7 +264,7 @@ msgstr "მცურავი"
 
 #: gegl/gegl-enums.c:122
 msgid "Non-linear"
-msgstr ""
+msgstr "არაწრფივი"
 
 #: gegl/gegl-enums.c:123 operations/external/lcms-from-profile.c:31
 msgid "Perceptual"
@@ -334,11 +334,11 @@ msgstr ""
 
 #: gegl/gegl-init.c:248
 msgid "Disable OpenCL"
-msgstr ""
+msgstr "OpenCL-ის გამორთვა"
 
 #: gegl/gegl-init.c:260
 msgid "Show GEGL Options"
-msgstr ""
+msgstr "GEGL-ის პარამეტრების ჩვენება"
 
 #: gegl/gegl-serialize.c:296
 #, c-format
@@ -367,7 +367,7 @@ msgstr ""
 
 #: gegl/module/geglmodule.c:339
 msgid "Module error"
-msgstr ""
+msgstr "მოდულის შეცდომა"
 
 #: gegl/module/geglmodule.c:340
 msgid "Loaded"
@@ -424,7 +424,7 @@ msgstr "HSL"
 
 #: operations/common/alien-map.c:32
 msgid "Color model"
-msgstr ""
+msgstr "ფერის მოდელი"
 
 #: operations/common/alien-map.c:35
 msgid "What color model used for the transformation"
@@ -450,7 +450,7 @@ msgstr ""
 #: operations/common/alien-map.c:50
 #: operations/common-gpl3+/diffraction-patterns.c:33
 msgid "Green frequency"
-msgstr ""
+msgstr "მწვანის სიხშირე"
 
 #: operations/common/alien-map.c:51
 msgid "Saturation frequency"
@@ -475,7 +475,7 @@ msgstr ""
 
 #: operations/common/alien-map.c:67
 msgid "Red phase shift"
-msgstr ""
+msgstr "წითლის ფაზის წანაცვლება"
 
 #: operations/common/alien-map.c:68
 msgid "Hue phase shift"
@@ -487,7 +487,7 @@ msgstr ""
 
 #: operations/common/alien-map.c:76
 msgid "Green phase shift"
-msgstr ""
+msgstr "მწვანის ფაზის წანაცვლება"
 
 #: operations/common/alien-map.c:77
 msgid "Saturation phase shift"
@@ -499,7 +499,7 @@ msgstr ""
 
 #: operations/common/alien-map.c:85
 msgid "Blue phase shift"
-msgstr ""
+msgstr "ლურჯის ფაზის წანაცვლება"
 
 #: operations/common/alien-map.c:86
 msgid "Lightness phase shift"
@@ -687,11 +687,11 @@ msgstr "სიკა_შკაშე"
 
 #: operations/common/brightness-contrast.c:37
 msgid "Amount to increase brightness"
-msgstr ""
+msgstr "სიკაშკაშის გაზრდის რაოდენობა"
 
 #: operations/common/brightness-contrast.c:165
 msgid "Brightness Contrast"
-msgstr ""
+msgstr "სიკაშკაშე-კონტრასტი"
 
 #: operations/common/brightness-contrast.c:170
 #, no-c-format
@@ -703,7 +703,7 @@ msgstr ""
 
 #: operations/common/buffer-sink.c:25 operations/common/write-buffer.c:25
 msgid "Buffer location"
-msgstr ""
+msgstr "ბაფერის მდებარეობა"
 
 #: operations/common/buffer-sink.c:26
 msgid "The location where to store the output GeglBuffer"
@@ -728,7 +728,7 @@ msgstr ""
 
 #: operations/common/buffer-source.c:25
 msgid "Input buffer"
-msgstr ""
+msgstr "შეტანის ბაფერი"
 
 #: operations/common/buffer-source.c:26
 msgid "The GeglBuffer to load into the pipeline"
@@ -736,7 +736,7 @@ msgstr ""
 
 #: operations/common/buffer-source.c:219
 msgid "Buffer Source"
-msgstr ""
+msgstr "ბაფერის წყარო"
 
 #: operations/common/buffer-source.c:221
 msgid "Use an existing in-memory GeglBuffer as image source."
@@ -971,7 +971,7 @@ msgstr ""
 #: operations/generated/src-in.c:38 operations/generated/src-out.c:38
 #: operations/generated/xor.c:38 operations/workshop/gradient-map.c:35
 msgid "sRGB"
-msgstr ""
+msgstr "sRGB"
 
 #: operations/common/color-overlay.c:31 operations/common/over.c:26
 #: operations/common/sepia.c:29 operations/generated/clear.c:39
@@ -1109,11 +1109,11 @@ msgstr ""
 
 #: operations/common/color-warp.c:36
 msgid "From 0"
-msgstr ""
+msgstr "0-დან"
 
 #: operations/common/color-warp.c:37
 msgid "To 0"
-msgstr ""
+msgstr "0-მდე"
 
 #: operations/common/color-warp.c:38
 msgid "weight 0"
@@ -1121,11 +1121,11 @@ msgstr ""
 
 #: operations/common/color-warp.c:40
 msgid "From 1"
-msgstr ""
+msgstr "1-დან"
 
 #: operations/common/color-warp.c:41
 msgid "To 1"
-msgstr ""
+msgstr "1-მდე"
 
 #: operations/common/color-warp.c:42
 msgid "weight 1"
@@ -1133,11 +1133,11 @@ msgstr ""
 
 #: operations/common/color-warp.c:44
 msgid "From 2"
-msgstr ""
+msgstr "2-დან"
 
 #: operations/common/color-warp.c:45
 msgid "To 2"
-msgstr ""
+msgstr "2-მდე"
 
 #: operations/common/color-warp.c:46
 msgid "weight 2"
@@ -1145,11 +1145,11 @@ msgstr ""
 
 #: operations/common/color-warp.c:48
 msgid "From 3"
-msgstr ""
+msgstr "3-დან"
 
 #: operations/common/color-warp.c:49
 msgid "To 3"
-msgstr ""
+msgstr "3-მდე"
 
 #: operations/common/color-warp.c:50
 msgid "weight 3"
@@ -1157,11 +1157,11 @@ msgstr ""
 
 #: operations/common/color-warp.c:52
 msgid "From 4"
-msgstr ""
+msgstr "4-დან"
 
 #: operations/common/color-warp.c:53
 msgid "To 4"
-msgstr ""
+msgstr "4-მდე"
 
 #: operations/common/color-warp.c:54
 msgid "weight 4"
@@ -1169,11 +1169,11 @@ msgstr ""
 
 #: operations/common/color-warp.c:56
 msgid "From 5"
-msgstr ""
+msgstr "5-დან"
 
 #: operations/common/color-warp.c:57
 msgid "To 5"
-msgstr ""
+msgstr "5-მდე"
 
 #: operations/common/color-warp.c:58
 msgid "weight 5"
@@ -1181,11 +1181,11 @@ msgstr ""
 
 #: operations/common/color-warp.c:60
 msgid "From 6"
-msgstr ""
+msgstr "6-დან"
 
 #: operations/common/color-warp.c:61
 msgid "To 6"
-msgstr ""
+msgstr "6-მდე"
 
 #: operations/common/color-warp.c:62
 msgid "weight 6"
@@ -1193,11 +1193,11 @@ msgstr ""
 
 #: operations/common/color-warp.c:64
 msgid "From 7"
-msgstr ""
+msgstr "7-დან"
 
 #: operations/common/color-warp.c:65
 msgid "To 7"
-msgstr ""
+msgstr "7-მდე"
 
 #: operations/common/color-warp.c:66
 msgid "weight 7"
@@ -1209,7 +1209,7 @@ msgstr ""
 
 #: operations/common/color-warp.c:70
 msgid "amount"
-msgstr ""
+msgstr "რაოდენობა"
 
 #: operations/common/color-warp.c:337
 msgid "Color warp"
@@ -1224,15 +1224,15 @@ msgstr ""
 
 #: operations/common/component-extract.c:25
 msgid "RGB Red"
-msgstr ""
+msgstr "RGB წითელი"
 
 #: operations/common/component-extract.c:26
 msgid "RGB Green"
-msgstr ""
+msgstr "RGB მწვანე"
 
 #: operations/common/component-extract.c:27
 msgid "RGB Blue"
-msgstr ""
+msgstr "RGB ლურჯი"
 
 #: operations/common/component-extract.c:29
 msgid "HSV Saturation"
@@ -1252,19 +1252,19 @@ msgstr ""
 
 #: operations/common/component-extract.c:33
 msgid "CMYK Cyan"
-msgstr ""
+msgstr "CMYK ცისფერი"
 
 #: operations/common/component-extract.c:34
 msgid "CMYK Magenta"
-msgstr ""
+msgstr "CMYK ალისფერი"
 
 #: operations/common/component-extract.c:35
 msgid "CMYK Yellow"
-msgstr ""
+msgstr "CMYK ყვითელი"
 
 #: operations/common/component-extract.c:36
 msgid "CMYK Key"
-msgstr ""
+msgstr "CMYK გასაღები"
 
 #: operations/common/component-extract.c:37
 msgid "Y'CbCr Y'"
@@ -1309,11 +1309,11 @@ msgstr "კომპონენტი"
 
 #: operations/common/component-extract.c:51
 msgid "Component to extract"
-msgstr ""
+msgstr "გამოსატანი ობიექტი"
 
 #: operations/common/component-extract.c:53
 msgid "Invert component"
-msgstr ""
+msgstr "კომპონენტის ინვერსია"
 
 #: operations/common/component-extract.c:54
 msgid "Invert the extracted component"
@@ -1322,7 +1322,7 @@ msgstr ""
 #: operations/common/component-extract.c:56
 #: operations/workshop/connected-components.c:45
 msgid "Linear output"
-msgstr ""
+msgstr "ხაზოვანი"
 
 #: operations/common/component-extract.c:57
 msgid "Use linear output instead of gamma corrected"
@@ -1330,7 +1330,7 @@ msgstr ""
 
 #: operations/common/component-extract.c:260
 msgid "Extract Component"
-msgstr ""
+msgstr "კომპონენტის გამოყოფა"
 
 #: operations/common/component-extract.c:264
 msgid "Extract a color model component"
@@ -1338,7 +1338,7 @@ msgstr ""
 
 #: operations/common/contrast-curve.c:25
 msgid "Sample points"
-msgstr ""
+msgstr "სემპლის წერტილები"
 
 #: operations/common/contrast-curve.c:26
 msgid "Number of curve sampling points.  0 for exact calculation."
@@ -1529,15 +1529,15 @@ msgstr ""
 
 #: operations/common/difference-of-gaussians.c:24
 msgid "Radius 1"
-msgstr ""
+msgstr "რადიუსი 1"
 
 #: operations/common/difference-of-gaussians.c:29
 msgid "Radius 2"
-msgstr ""
+msgstr "რადიუსი 2"
 
 #: operations/common/difference-of-gaussians.c:85
 msgid "Difference of Gaussians"
-msgstr ""
+msgstr "გაუსის მიხედვით სხვაობა"
 
 #: operations/common/difference-of-gaussians.c:88
 msgid ""
@@ -1548,7 +1548,7 @@ msgstr ""
 #: operations/common/display.c:23 operations/external/sdl2-display.c:28
 #: operations/external/sdl-display.c:25
 msgid "Window title"
-msgstr ""
+msgstr "ფანჯრის სათაური"
 
 #: operations/common/display.c:24 operations/external/sdl2-display.c:29
 #: operations/external/sdl-display.c:26
@@ -1565,7 +1565,7 @@ msgstr ""
 
 #: operations/common/dither.c:25
 msgid "Red levels"
-msgstr ""
+msgstr "წითლის დონეები"
 
 #: operations/common/dither.c:26
 msgid "Number of levels for red channel"
@@ -1573,7 +1573,7 @@ msgstr ""
 
 #: operations/common/dither.c:30
 msgid "Green levels"
-msgstr ""
+msgstr "მწვანის დონეები"
 
 #: operations/common/dither.c:31
 msgid "Number of levels for green channel"
@@ -1581,7 +1581,7 @@ msgstr ""
 
 #: operations/common/dither.c:35
 msgid "Blue levels"
-msgstr ""
+msgstr "ლურჯის დონეები"
 
 #: operations/common/dither.c:36
 msgid "Number of levels for blue channel"
@@ -1589,7 +1589,7 @@ msgstr ""
 
 #: operations/common/dither.c:40
 msgid "Alpha levels"
-msgstr ""
+msgstr "ალფას დონეები"
 
 #: operations/common/dither.c:41
 msgid "Number of levels for alpha channel"
@@ -1879,15 +1879,15 @@ msgstr ""
 
 #: operations/common/gaussian-blur.c:25 operations/common/gblur-1d.c:40
 msgid "FIR"
-msgstr ""
+msgstr "FIR"
 
 #: operations/common/gaussian-blur.c:26 operations/common/gblur-1d.c:41
 msgid "IIR"
-msgstr ""
+msgstr "IIR"
 
 #: operations/common/gaussian-blur.c:36
 msgid "Size X"
-msgstr ""
+msgstr "X ზომა"
 
 #: operations/common/gaussian-blur.c:37
 msgid "Standard deviation for the horizontal axis"
@@ -1895,7 +1895,7 @@ msgstr ""
 
 #: operations/common/gaussian-blur.c:44
 msgid "Size Y"
-msgstr ""
+msgstr "Y ზომა"
 
 #: operations/common/gaussian-blur.c:45 operations/common/gblur-1d.c:45
 #: operations/common/high-pass.c:25
@@ -1904,7 +1904,7 @@ msgstr ""
 
 #: operations/common/gaussian-blur.c:52 operations/common/gblur-1d.c:55
 msgid "Filter"
-msgstr ""
+msgstr "ფილტრი"
 
 #: operations/common/gaussian-blur.c:55 operations/common/gblur-1d.c:58
 msgid "How the gaussian kernel is discretized"
@@ -2351,7 +2351,7 @@ msgstr "Y2"
 #: operations/common/linear-gradient.c:41
 #: operations/common/radial-gradient.c:29
 msgid "Start Color"
-msgstr ""
+msgstr "საწყისი ფერი"
 
 #: operations/common/linear-gradient.c:42
 #: operations/common/radial-gradient.c:30
@@ -2361,7 +2361,7 @@ msgstr ""
 #: operations/common/linear-gradient.c:45
 #: operations/common/radial-gradient.c:31
 msgid "End Color"
-msgstr ""
+msgstr "საბოლოო ფერი"
 
 #: operations/common/linear-gradient.c:46
 #: operations/common/radial-gradient.c:32
@@ -2370,7 +2370,7 @@ msgstr ""
 
 #: operations/common/linear-gradient.c:137
 msgid "Linear Gradient"
-msgstr ""
+msgstr "ხაზოვანი გრადიენტი"
 
 #: operations/common/linear-gradient.c:142
 msgid "Linear gradient renderer"
@@ -2536,7 +2536,7 @@ msgstr ""
 
 #: operations/common/long-shadow.c:84
 msgid "Shadow color"
-msgstr ""
+msgstr "ჩრდილის ფერი"
 
 #: operations/common/long-shadow.c:87
 msgid "Composition"
@@ -2548,7 +2548,7 @@ msgstr ""
 
 #: operations/common/long-shadow.c:1691
 msgid "Long Shadow"
-msgstr ""
+msgstr "გრძელი ჩრდილი"
 
 #: operations/common/long-shadow.c:1696
 msgid "Creates a long-shadow effect"
@@ -2559,7 +2559,7 @@ msgstr ""
 #: operations/external/raw-load.c:37 operations/external/rgbe-load.c:27
 #: operations/workshop/rawbayer-load.c:26
 msgid "Path of file to load."
-msgstr ""
+msgstr "ჩასატვირთი ფაილის ბილიკი."
 
 #: operations/common/magick-load.c:171
 msgid "Image Magick wrapper using the png op."
@@ -6867,11 +6867,11 @@ msgstr ""
 
 #: operations/common-gpl3+/wind.c:33
 msgid "Left"
-msgstr ""
+msgstr "მარცხენა"
 
 #: operations/common-gpl3+/wind.c:34
 msgid "Right"
-msgstr ""
+msgstr "მარჯვენა"
 
 #: operations/common-gpl3+/wind.c:35
 msgid "Top"
@@ -6944,7 +6944,7 @@ msgstr ""
 
 #: operations/core/cast-format.c:27 operations/core/convert-format.c:27
 msgid "Output format"
-msgstr ""
+msgstr "გამოტანის ფორმატი"
 
 #: operations/core/cast-format.c:110
 msgid "Cast Format"
@@ -6976,7 +6976,7 @@ msgstr ""
 #: operations/external/pdf-load.c:24 operations/external/v4l.c:26
 #: operations/workshop/external/v4l2.c:24
 msgid "Path"
-msgstr ""
+msgstr "ბილიკი"
 
 #: operations/core/cast-space.c:30 operations/core/convert-space.c:30
 msgid "File system path to ICC matrix profile to load"
@@ -8708,7 +8708,7 @@ msgstr ""
 
 #: operations/workshop/external/paint-select.cc:30
 msgid "Add"
-msgstr ""
+msgstr "_დამატება"
 
 #: operations/workshop/external/paint-select.cc:31
 msgid "Subtract"
