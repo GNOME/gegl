@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2022-05-02 11:01+0000\n"
-"PO-Revision-Date: 2022-05-02 22:07+0200\n"
+"POT-Creation-Date: 2022-07-02 11:49+0000\n"
+"PO-Revision-Date: 2022-07-03 12:18+0200\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language: sl_SI\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n"
 "%100==4 ? 3 : 0);\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Generator: Poedit 3.0.1\n"
+"X-Generator: Poedit 3.1\n"
 
 #: bin/gegl.c:179
 #, c-format
@@ -635,9 +635,8 @@ msgstr "Dvostranski filter"
 
 #: operations/common/bilateral-filter.c:299
 msgid ""
-"Like a gaussian blur; but where the contribution for each neighbourhood "
-"pixel is also weighted by the color difference with the original center "
-"pixel."
+"Like a gaussian blur; but where the contribution for each neighborhood pixel "
+"is also weighted by the color difference with the original center pixel."
 msgstr ""
 "Kot Gaussova zabrisanost, vendar je prispevek vseh sosednjih slikovnih točk "
 "utežen tudi z barvno razliko od izvorne središčne slikovne točke."
@@ -719,7 +718,7 @@ msgid "Box Blur"
 msgstr "Pravokotna zabrisanost"
 
 #: operations/common/box-blur.c:407 operations/workshop/boxblur.c:76
-msgid "Blur resulting from averaging the colors of a square neighbourhood."
+msgid "Blur resulting from averaging the colors of a square neighborhood."
 msgstr "Zabrisanost iz povprečenja barv v kvadratni okolici."
 
 #. Here in the top of the file the properties of the operation is declared,
@@ -2143,7 +2142,7 @@ msgstr ""
 "kot nekaj, kar je povezano z zunanjim prostorom (aux)."
 
 #: operations/common/grey.c:138
-msgid "Make Grey"
+msgid "Make Gray"
 msgstr "Naredi sivinsko"
 
 #: operations/common/grey.c:142
@@ -4138,11 +4137,11 @@ msgstr "Strnjenost"
 msgid "Cluster size"
 msgstr "Velikost gruče"
 
-#: operations/common/slic.c:455
+#: operations/common/slic.c:481
 msgid "Simple Linear Iterative Clustering"
 msgstr "Enostavno linearno iterativno grozdenje"
 
-#: operations/common/slic.c:458
+#: operations/common/slic.c:484
 msgid "Superpixels based on k-means clustering"
 msgstr "Super slikovne točke na podlagi gruče srednjih vrednosti k"
 
@@ -4155,13 +4154,13 @@ msgid "Number of pairs; higher number preserves more acute features"
 msgstr "Število parov; višje število ohrani bolj kritične lastnosti"
 
 #: operations/common/snn-mean.c:383
-msgid "Symmetric Nearest Neighbour"
+msgid "Symmetric Nearest Neighbor"
 msgstr "Simetrično najbližji sosed"
 
 #: operations/common/snn-mean.c:387
 msgid ""
 "Noise reducing edge preserving blur filter based on Symmetric Nearest "
-"Neighbours"
+"Neighbors"
 msgstr ""
 "Filter zabrisanosti za ohranjevanje robov in zmanjševanje šuma, ki temelji "
 "na simetričnih najbližjih sosedih."
@@ -5978,11 +5977,11 @@ msgid "Rescale overall image size"
 msgstr "Spremeni velikost celotne slike"
 
 #: operations/common-gpl3+/lens-distortion.c:46
-msgid "Effect centre offset in X"
+msgid "Effect center offset in X"
 msgstr "Zamik središča učinka v X"
 
 #: operations/common-gpl3+/lens-distortion.c:50
-msgid "Effect centre offset in Y"
+msgid "Effect center offset in Y"
 msgstr "Zamik središča učinka v Y"
 
 #: operations/common-gpl3+/lens-distortion.c:53
@@ -9013,7 +9012,7 @@ msgid "1D Box Blur"
 msgstr "Vrstična zabrisanost (1D Box)"
 
 #: operations/workshop/boxblur-1d.c:467
-msgid "Blur resulting from averaging the colors of a row neighbourhood."
+msgid "Blur resulting from averaging the colors of a row neighborhood."
 msgstr "Zabrisanost iz povprečenja barv v okolici vrstice."
 
 #: operations/workshop/boxblur.c:75
