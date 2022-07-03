@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl.master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2022-04-25 03:59+0000\n"
-"PO-Revision-Date: 2022-05-01 10:58+0200\n"
+"POT-Creation-Date: 2022-07-02 11:49+0000\n"
+"PO-Revision-Date: 2022-07-03 14:54+0200\n"
 "Last-Translator: Rodrigo Lledó Milanca <rodhos92@gmail.com>\n"
 "Language-Team: Spanish - Spain <gnome-es-list@gnome.org>\n"
 "Language: es_ES\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.0.1\n"
+"X-Generator: Poedit 3.1\n"
 
 #: bin/gegl.c:179
 #, c-format
@@ -641,12 +641,11 @@ msgstr "Filtro bilateral"
 
 #: operations/common/bilateral-filter.c:299
 msgid ""
-"Like a gaussian blur; but where the contribution for each neighbourhood "
-"pixel is also weighted by the color difference with the original center "
-"pixel."
+"Like a gaussian blur; but where the contribution for each neighborhood pixel "
+"is also weighted by the color difference with the original center pixel."
 msgstr ""
 "Como un desenfoque gaussiano; pero donde la contribución para cada píxel "
-"vecinal también se pondera por la diferencia de color con el píxel central "
+"vecino también se pondera por la diferencia de color con el píxel central "
 "original."
 
 #: operations/common/bloom.c:26 operations/common/threshold.c:25
@@ -727,9 +726,8 @@ msgid "Box Blur"
 msgstr "Desenfoque de rectángulo"
 
 #: operations/common/box-blur.c:407 operations/workshop/boxblur.c:76
-msgid "Blur resulting from averaging the colors of a square neighbourhood."
-msgstr ""
-"Desenfoque resultante de la media de los colores de un entorno cuadrado."
+msgid "Blur resulting from averaging the colors of a square neighborhood."
+msgstr "Desenfoque resultante de promediar los colores de un entorno cuadrado."
 
 #. Here in the top of the file the properties of the operation is declared,
 #. *  this causes the declaration of a structure for containing the data.
@@ -2174,7 +2172,7 @@ msgstr ""
 "almohadilla auxiliar."
 
 #: operations/common/grey.c:138
-msgid "Make Grey"
+msgid "Make Gray"
 msgstr "Hacer gris"
 
 #: operations/common/grey.c:142
@@ -4202,14 +4200,14 @@ msgstr "Compactibilidad"
 msgid "Cluster size"
 msgstr "Tamaño del grupo"
 
-#: operations/common/slic.c:455
+#: operations/common/slic.c:481
 msgid "Simple Linear Iterative Clustering"
 msgstr "Agrupación iterativa lineal simple"
 
 # Wikipedia: K-means es un método de agrupamiento, que tiene como objetivo la partición de un conjunto de n observaciones en k grupos en el que cada observación pertenece al grupo cuyo valor medio es más cercano.
 #
 # O se deja en inglés «k-means» o lo traducimos a «medias-k».
-#: operations/common/slic.c:458
+#: operations/common/slic.c:484
 msgid "Superpixels based on k-means clustering"
 msgstr "Superpíxeles basados en agrupaciones k-means"
 
@@ -4222,16 +4220,16 @@ msgid "Number of pairs; higher number preserves more acute features"
 msgstr "Número de pares; un número mayor preserva detalles más precisos"
 
 #: operations/common/snn-mean.c:383
-msgid "Symmetric Nearest Neighbour"
-msgstr "Simétrica del vecino más cercano"
+msgid "Symmetric Nearest Neighbor"
+msgstr "Vecino simétrico más cercano"
 
 #: operations/common/snn-mean.c:387
 msgid ""
 "Noise reducing edge preserving blur filter based on Symmetric Nearest "
-"Neighbours"
+"Neighbors"
 msgstr ""
-"Filtro de desenfoque que resalta los bordes y reduce el ruido, basado en los "
-"vecinos simétricos más próximos"
+"Filtro de desenfoque que mantiene los bordes y reduce el ruido, basado en "
+"los vecinos simétricos más próximos"
 
 #: operations/common/spherize.c:25
 msgid "Radial"
@@ -6078,11 +6076,11 @@ msgid "Rescale overall image size"
 msgstr "Cambiar la escala del tamaño de la imagen completa"
 
 #: operations/common-gpl3+/lens-distortion.c:46
-msgid "Effect centre offset in X"
+msgid "Effect center offset in X"
 msgstr "Efecto de desplazamiento del centro en X"
 
 #: operations/common-gpl3+/lens-distortion.c:50
-msgid "Effect centre offset in Y"
+msgid "Effect center offset in Y"
 msgstr "Efecto de desplazamiento del centro en Y"
 
 #: operations/common-gpl3+/lens-distortion.c:53
@@ -9147,9 +9145,8 @@ msgid "1D Box Blur"
 msgstr "Desenfoque de rectángulo 1D"
 
 #: operations/workshop/boxblur-1d.c:467
-msgid "Blur resulting from averaging the colors of a row neighbourhood."
-msgstr ""
-"Desenfoque resultante de la media de los colores en un entorno de fila."
+msgid "Blur resulting from averaging the colors of a row neighborhood."
+msgstr "Desenfoque resultante de promediar los colores en un entorno de fila."
 
 #: operations/workshop/boxblur.c:75
 msgid "BoxBlur"
