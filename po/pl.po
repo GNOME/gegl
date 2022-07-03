@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2022-05-02 11:01+0000\n"
+"POT-Creation-Date: 2022-07-02 11:49+0000\n"
 "PO-Revision-Date: 2022-04-17 16:50+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
@@ -636,9 +636,8 @@ msgstr "Filtr dwustronny"
 
 #: operations/common/bilateral-filter.c:299
 msgid ""
-"Like a gaussian blur; but where the contribution for each neighbourhood "
-"pixel is also weighted by the color difference with the original center "
-"pixel."
+"Like a gaussian blur; but where the contribution for each neighborhood pixel "
+"is also weighted by the color difference with the original center pixel."
 msgstr ""
 "Podobny do rozmycia Gaussa, ale wpływ każdego sąsiedniego piksela jest "
 "ważony także przez różnicę kolorów z pierwotnego środkowego piksela."
@@ -721,7 +720,7 @@ msgid "Box Blur"
 msgstr "Rozmycie prostopadłościenne"
 
 #: operations/common/box-blur.c:407 operations/workshop/boxblur.c:76
-msgid "Blur resulting from averaging the colors of a square neighbourhood."
+msgid "Blur resulting from averaging the colors of a square neighborhood."
 msgstr ""
 "Rozmycie wynikające z uśredniania kolorów sąsiedniego prostopadłościanu."
 
@@ -2160,7 +2159,7 @@ msgstr ""
 "źródłem jako coś podłączonego do dodatkowego bloku."
 
 #: operations/common/grey.c:138
-msgid "Make Grey"
+msgid "Make Gray"
 msgstr "Zmień na odcienie szarości"
 
 #: operations/common/grey.c:142
@@ -4168,11 +4167,11 @@ msgstr "Zwartość"
 msgid "Cluster size"
 msgstr "Rozmiar klastra"
 
-#: operations/common/slic.c:455
+#: operations/common/slic.c:481
 msgid "Simple Linear Iterative Clustering"
 msgstr "SLIC"
 
-#: operations/common/slic.c:458
+#: operations/common/slic.c:484
 msgid "Superpixels based on k-means clustering"
 msgstr "Nadpiksele na podstawie klastrów k-średnich"
 
@@ -4185,13 +4184,13 @@ msgid "Number of pairs; higher number preserves more acute features"
 msgstr "Liczna par; wyższy numer zachowuje ostrzejsze cechy"
 
 #: operations/common/snn-mean.c:383
-msgid "Symmetric Nearest Neighbour"
+msgid "Symmetric Nearest Neighbor"
 msgstr "Symetryczni najbliżsi sąsiedzi"
 
 #: operations/common/snn-mean.c:387
 msgid ""
 "Noise reducing edge preserving blur filter based on Symmetric Nearest "
-"Neighbours"
+"Neighbors"
 msgstr ""
 "Filtr rozmycia zmniejszający szum i zachowujący krawędzie na podstawie "
 "symetrycznych najbliższych sąsiadów"
@@ -6008,11 +6007,11 @@ msgid "Rescale overall image size"
 msgstr "Przeskalowanie wszystkich wymiarów obrazu"
 
 #: operations/common-gpl3+/lens-distortion.c:46
-msgid "Effect centre offset in X"
+msgid "Effect center offset in X"
 msgstr "Przesunięcie środka efektu na osi X"
 
 #: operations/common-gpl3+/lens-distortion.c:50
-msgid "Effect centre offset in Y"
+msgid "Effect center offset in Y"
 msgstr "Przesunięcie środka efektu na osi Y"
 
 #: operations/common-gpl3+/lens-distortion.c:53
@@ -9038,7 +9037,7 @@ msgid "1D Box Blur"
 msgstr "Jednowymiarowe rozmycie prostopadłościenne"
 
 #: operations/workshop/boxblur-1d.c:467
-msgid "Blur resulting from averaging the colors of a row neighbourhood."
+msgid "Blur resulting from averaging the colors of a row neighborhood."
 msgstr "Rozmycie wynikające z uśredniania kolorów sąsiedniego rzędu."
 
 #: operations/workshop/boxblur.c:75
