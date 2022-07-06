@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2022-04-25 03:59+0000\n"
-"PO-Revision-Date: 2022-04-25 21:51+0200\n"
+"POT-Creation-Date: 2022-07-02 11:49+0000\n"
+"PO-Revision-Date: 2022-07-02 21:43+0200\n"
 "Last-Translator: Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.0.1\n"
+"X-Generator: Poedit 3.1\n"
 
 #: bin/gegl.c:179
 #, c-format
@@ -636,9 +636,8 @@ msgstr "Bilateralt filter"
 
 #: operations/common/bilateral-filter.c:299
 msgid ""
-"Like a gaussian blur; but where the contribution for each neighbourhood "
-"pixel is also weighted by the color difference with the original center "
-"pixel."
+"Like a gaussian blur; but where the contribution for each neighborhood pixel "
+"is also weighted by the color difference with the original center pixel."
 msgstr ""
 "Som en gaussisk oskärpa, men där bidraget för varje omkringliggande "
 "bildpunkt också viktas med avseende på färgskillnaden mot originalets "
@@ -722,7 +721,7 @@ msgid "Box Blur"
 msgstr "Boxoskärpa"
 
 #: operations/common/box-blur.c:407 operations/workshop/boxblur.c:76
-msgid "Blur resulting from averaging the colors of a square neighbourhood."
+msgid "Blur resulting from averaging the colors of a square neighborhood."
 msgstr ""
 "Oskärpa som resultat från medelvärdesbildning av färgerna i en "
 "omkringliggande kvadrat."
@@ -2152,7 +2151,7 @@ msgstr ""
 "med en källa som något anslutet till en aux-kontakt."
 
 #: operations/common/grey.c:138
-msgid "Make Grey"
+msgid "Make Gray"
 msgstr "Gör om till gråskala"
 
 #: operations/common/grey.c:142
@@ -4144,11 +4143,11 @@ msgstr "Kompakthet"
 msgid "Cluster size"
 msgstr "Klusterstorlek"
 
-#: operations/common/slic.c:455
+#: operations/common/slic.c:481
 msgid "Simple Linear Iterative Clustering"
 msgstr "Enkel linjär iterativ klustring"
 
-#: operations/common/slic.c:458
+#: operations/common/slic.c:484
 msgid "Superpixels based on k-means clustering"
 msgstr "Superbildpunkter baserade på k-medelklustring"
 
@@ -4161,13 +4160,13 @@ msgid "Number of pairs; higher number preserves more acute features"
 msgstr "Antal par; högre tal bibehåller spetsigare detaljer"
 
 #: operations/common/snn-mean.c:383
-msgid "Symmetric Nearest Neighbour"
+msgid "Symmetric Nearest Neighbor"
 msgstr "Symmetriskt närmaste grannar"
 
 #: operations/common/snn-mean.c:387
 msgid ""
 "Noise reducing edge preserving blur filter based on Symmetric Nearest "
-"Neighbours"
+"Neighbors"
 msgstr ""
 "Brusreducerande kantbibehållande oskärpefilter baserat på symmetriskt "
 "närmaste grannar"
@@ -5985,11 +5984,11 @@ msgid "Rescale overall image size"
 msgstr "Skala om den övergripande bildstorleken"
 
 #: operations/common-gpl3+/lens-distortion.c:46
-msgid "Effect centre offset in X"
+msgid "Effect center offset in X"
 msgstr "Centrumposition för effekt i X"
 
 #: operations/common-gpl3+/lens-distortion.c:50
-msgid "Effect centre offset in Y"
+msgid "Effect center offset in Y"
 msgstr "Centrumposition för effekt i Y"
 
 #: operations/common-gpl3+/lens-distortion.c:53
@@ -9019,7 +9018,7 @@ msgid "1D Box Blur"
 msgstr "1D-Boxoskärpa"
 
 #: operations/workshop/boxblur-1d.c:467
-msgid "Blur resulting from averaging the colors of a row neighbourhood."
+msgid "Blur resulting from averaging the colors of a row neighborhood."
 msgstr ""
 "Oskärpa som resultat från medelvärdesbildning av färgerna i en "
 "omkringliggande rad."
