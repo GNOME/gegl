@@ -10,16 +10,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Gegl-master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2022-06-20 20:42+0000\n"
-"PO-Revision-Date: 2022-06-21 19:19+0100\n"
-"Last-Translator: Sara Campos <lalocas@protonmail.com>\n"
+"POT-Creation-Date: 2022-07-02 11:49+0000\n"
+"PO-Revision-Date: 2022-07-07 12:18+0100\n"
+"Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>\n"
 "Language-Team: Português <https://l10n.gnome.org/teams/pt/>\n"
 "Language: pt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\\n;\n"
-"X-Generator: Poedit 3.0.1\n"
+"X-Generator: Poedit 3.1\n"
 "X-Project-Style: gnome\n"
 "X-Language: pt_PT\n"
 "X-Source-Language: C\n"
@@ -641,9 +641,8 @@ msgstr "Filtro bilateral"
 
 #: operations/common/bilateral-filter.c:299
 msgid ""
-"Like a gaussian blur; but where the contribution for each neighbourhood "
-"pixel is also weighted by the color difference with the original center "
-"pixel."
+"Like a gaussian blur; but where the contribution for each neighborhood pixel "
+"is also weighted by the color difference with the original center pixel."
 msgstr ""
 "Como uma desfocagem gaussiana; mas onde a contribuição para cada píxel "
 "vizinho é também ponderada pela diferença de cor com o píxel central "
@@ -726,7 +725,7 @@ msgid "Box Blur"
 msgstr "Desfocagem em caixa"
 
 #: operations/common/box-blur.c:407 operations/workshop/boxblur.c:76
-msgid "Blur resulting from averaging the colors of a square neighbourhood."
+msgid "Blur resulting from averaging the colors of a square neighborhood."
 msgstr "Desfocar usando a média das cores de uma vizinhança quadrada."
 
 #. Here in the top of the file the properties of the operation is declared,
@@ -2173,7 +2172,7 @@ msgstr ""
 "auxiliar."
 
 #: operations/common/grey.c:138
-msgid "Make Grey"
+msgid "Make Gray"
 msgstr "Tornar cinzento"
 
 #: operations/common/grey.c:142
@@ -4208,13 +4207,13 @@ msgstr ""
 "precisas"
 
 #: operations/common/snn-mean.c:383
-msgid "Symmetric Nearest Neighbour"
+msgid "Symmetric Nearest Neighbor"
 msgstr "Vizinho simétrico mais próximo"
 
 #: operations/common/snn-mean.c:387
 msgid ""
 "Noise reducing edge preserving blur filter based on Symmetric Nearest "
-"Neighbours"
+"Neighbors"
 msgstr ""
 "Filtro de desfocagem com redução de ruído e preservação da margem, baseado "
 "em vizinhos simetricamente próximos"
@@ -6041,11 +6040,11 @@ msgid "Rescale overall image size"
 msgstr "Redimensionar tamanho geral da imagem"
 
 #: operations/common-gpl3+/lens-distortion.c:46
-msgid "Effect centre offset in X"
+msgid "Effect center offset in X"
 msgstr "Desvio X do centro do efeito"
 
 #: operations/common-gpl3+/lens-distortion.c:50
-msgid "Effect centre offset in Y"
+msgid "Effect center offset in Y"
 msgstr "Desvio Y do centro do efeito"
 
 #: operations/common-gpl3+/lens-distortion.c:53
@@ -9093,7 +9092,7 @@ msgid "1D Box Blur"
 msgstr "Desfocagem em caixa 1D"
 
 #: operations/workshop/boxblur-1d.c:467
-msgid "Blur resulting from averaging the colors of a row neighbourhood."
+msgid "Blur resulting from averaging the colors of a row neighborhood."
 msgstr "Desfocar usando a média das cores de uma vizinhança de linha."
 
 #: operations/workshop/boxblur.c:75
