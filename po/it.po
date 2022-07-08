@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: GEGL_0_2_0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-08 17:58+0200\n"
-"PO-Revision-Date: 2021-09-08 18:36+0200\n"
+"PO-Revision-Date: 2022-07-09 00:20+0200\n"
 "Last-Translator: Marco Ciampa <ciampix@posteo.net>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -1761,7 +1761,7 @@ msgstr "Il metodo dithering da usare"
 #: ../operations/common-gpl3+/wind.c:68
 #: ../operations/workshop/segment-kmeans.c:37
 msgid "Random seed"
-msgstr "Seme casuale"
+msgstr "Seme casualità"
 
 #: ../operations/common/dither.c:619
 msgid "Dither"
@@ -3561,7 +3561,7 @@ msgstr "Riempie ogni cella con un colore casuale"
 
 #: ../operations/common/noise-cell.c:56 ../operations/common/noise-simplex.c:40
 msgid "The random seed for the noise function"
-msgstr "Il seme casuale per la funzione di rumore"
+msgstr "Il seme della casualità per la funzione di rumore"
 
 #: ../operations/common/noise-cell.c:431
 msgid "Cell Noise"
@@ -6871,7 +6871,7 @@ msgstr "Il colore della supernova."
 
 #: ../operations/common-gpl3+/supernova.c:64
 msgid "The random seed for spokes and random hue"
-msgstr "Il seme casuale per le punte e la tonalità casuale"
+msgstr "Il seme della casualità per le punte e la tonalità casuale"
 
 #: ../operations/common-gpl3+/supernova.c:342
 msgid "Supernova"
