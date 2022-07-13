@@ -726,11 +726,15 @@ rgbe_write_line (FILE *f, gchar *line)
 {
   size_t written;
   guint  len = strlen (line);
+  gboolean has_endline = g_str_has_suffix (line, "\n");
 
-  g_return_val_if_fail (g_str_has_suffix (line, "\n"), FALSE);
+  if (!has_endline) {
+    g_free (line);
+    g_return_val_if_fail (has_endline, FALSE);
+  }
+
   written = fwrite (line, sizeof (line[0]), len, f);
   g_free (line);
-
   return written == len ? TRUE : FALSE;
 }
 
@@ -827,7 +831,13 @@ rgbe_header_write (const rgbe_header *header,
                      "\n-Y %hu +X %hu\n",
                      header->y_axis.size,
                      header->x_axis.size);
-    if (err < 0 || !rgbe_write_line (f, line))
+
+    if (err < 0) {
+        g_free(line);
+        goto cleanup;
+    }
+
+    if (!rgbe_write_line (f, line))
         goto cleanup;
   }
 
