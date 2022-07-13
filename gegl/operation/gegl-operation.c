@@ -560,12 +560,14 @@ gegl_operation_get_format (GeglOperation *self,
 {
   GeglPad *pad;
 
-  g_return_val_if_fail (GEGL_IS_OPERATION (self), NULL);
-  g_return_val_if_fail (pad_name != NULL, NULL);
+  g_return_val_if_fail (GEGL_IS_OPERATION (self) && pad_name != NULL,
+                  gegl_babl_rgba_linear_float ());
 
   pad = gegl_node_get_pad (self->node, pad_name);
 
-  g_return_val_if_fail (pad != NULL, NULL);
+  if (pad == NULL ||
+      pad->format == NULL)
+    return gegl_babl_rgba_linear_float ();
 
   return pad->format;
 }

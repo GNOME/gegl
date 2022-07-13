@@ -323,13 +323,6 @@ gegl_operation_context_get_target (GeglOperationContext *context,
   node = operation->node; /* <ick */
   format = gegl_operation_get_format (operation, padname);
 
-  if (format == NULL)
-    {
-      g_warning ("no format for %s presuming RGBA float\n",
-                 gegl_node_get_debug_name (node));
-      format = gegl_babl_rgba_linear_float ();
-    }
-  g_assert (format != NULL);
 
   result = &context->result_rect;
 
