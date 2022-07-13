@@ -1,3 +1,46 @@
+GEGL-0.4.38 2022-07-13
+----------------------
+
+Operations:
+~~~~~~~~~~~
+
+ - denoise-dct: a NEW denoising operation which decomposes the input buffer to
+sliding overlapping patches, calculates the DCT denoising in each patch, and
+then aggregates the denoised patches to the output buffer averaging the
+overlapped pixels.
+ - ff-load and ff-save: big cleanup API cleanup, now ffmpeg-5.0 compatible
+ - gif-load: updated to latest upstream libnsgif version
+ - slic: progress reporting and improved parameter handling.
+ - vector-fill: updated to latest upstream ctx version
+ - oilify: clamp inputs to avoid nan in output
+ - gegl:load fix possible double free
+ - rgbe-write: plug leaks in error paths
+
+    
+Core:
+~~~~~
+
+Fixes of some potential NULL dereferences on custom dataformats for malformed
+inputs.
+
+
+Build
+~~~~~
+
+gegl can now be used as a subproject.
+
+The CI rule used on gitlab is now a much simpler one based on fedora, the arch
+based build started being fragile in working around kernel version dependancy.
+
+Contributors to this release:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Alan Mortensen, Anders Jonsson, Axel Viala, Behnam Momeni, darnuria,
+dimspingos, Felix Schwarz, Hugo Carvalho, Jehan, Jordi Mas, Luming Zh, Marcia
+van den Hout, Marco Ciampa, Martin, Michael Drake, Øyvind Kolås, Piotr Drąg,
+Rodrigo Lledó, Sabri Ünal, Thomas Manni, Tim Sabsch, Xavier Claessens, Yuri
+Chornoivan and Zurab Kargareteli.
+
 
 GEGL-0.4.36 2022-02-21
 ----------------------
@@ -8,10 +51,11 @@ the same applies to core operations where we have .so bundles for the variants
 as well as a generic build.
 
 Operations:
+~~~~~~~~~~~
 
 The npd operation fixed with multiple threads.
 
-Contrubutors to this release
+Contributors to this release
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Alan Mortensen, Anders Jonsson, Caleb Xu, Jehan, Øyvind Kolås and zamfofex.
