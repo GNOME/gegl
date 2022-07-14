@@ -198,7 +198,7 @@ gegl_sampler_get_pixel (GeglSampler    *sampler,
 #if (BABL_MINOR_VERSION >=1) && (BABL_MICRO_VERSION >= 90)
         sampler->fish_process
 #else
-        babl_proces
+        babl_process
 #endif
           (sampler->fish, (void*)tp, (void*)buf, 1, NULL);
       }
