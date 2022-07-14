@@ -375,7 +375,7 @@ process (GeglOperation       *operation,
 
            for (int c = 0; c < 3; c++)
              out_pixel[c] = gray;
-           out_pixel[3] = 1.0;
+           out_pixel[3] = in_pixel[3];
 
            out_pixel += 4;
            in_pixel  += 4;
@@ -403,7 +403,7 @@ process (GeglOperation       *operation,
 
            for (int c = 0; c < 3; c++)
              out_pixel[c] = gray;
-           out_pixel[3] = 1.0;
+           out_pixel[3] = in_pixel[3];
 
            out_pixel += 4;
            in_pixel  += 4;
@@ -447,7 +447,7 @@ process (GeglOperation       *operation,
                                    o->angleboost,
                                    degrees_to_radians (o->angle4),
                                    o->aa_samples);
-           out_pixel[3] = 1.0;
+           out_pixel[3] = in_pixel[3];
 
            out_pixel += 4;
            in_pixel  += 4;
