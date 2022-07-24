@@ -5,20 +5,19 @@
 # osoitz <oelkoro@gmail.com>, 2013.
 # Iñaki Larrañaga Murgoitio <dooteo@zundan.com>, 2013, 2018.
 # Edurne Labaka <elabaka@uzei.com>, 2015.
-# Asier Sarasua Garmendia <asiersarasua@ni.eus>, 2018, 2019, 2020, 2021.
+# Asier Sarasua Garmendia <asiersarasua@ni.eus>, 2018, 2019, 2020, 2021, 2022.
 #
 msgid ""
 msgstr "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2021-09-04 22:16+0000\n"
-"PO-Revision-Date: 2021-10-30 10:00+0100\n"
+"POT-Creation-Date: 2022-07-07 20:03+0000\n"
+"PO-Revision-Date: 2022-07-24 10:00+0100\n"
 "Last-Translator: Asier Sarasua Garmendia <asiersarasua@ni.eus>\n"
 "Language-Team: Basque <librezale@librezale.eus>\n"
 "Language: eu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 1.5\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: bin/gegl.c:179
@@ -347,40 +346,40 @@ msgstr "Inoiz ez"
 msgid "Always"
 msgstr "Beti"
 
-#: gegl/gegl-init.c:212
+#: gegl/gegl-init.c:213
 msgid "Where GEGL stores its swap"
 msgstr "GEGL-ek trukatzeko datuak gordetzen dituen lekua"
 
-#: gegl/gegl-init.c:217
+#: gegl/gegl-init.c:218
 msgid "Compression algorithm used for data stored in the swap"
 msgstr "Trukatze-fitxategian gordetako datuekin erabilitako konpresio-algoritmoa"
 
-#: gegl/gegl-init.c:222
+#: gegl/gegl-init.c:223
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr "Irudien cache gisa erabiliko den memoria kopurua (gutxi gorabehera)"
 
-#: gegl/gegl-init.c:227
+#: gegl/gegl-init.c:228
 msgid "Default size of tiles in GeglBuffers"
 msgstr "Lehenetsitako lauzen tamaina GeglBuffer-etan"
 
-#: gegl/gegl-init.c:232
+#: gegl/gegl-init.c:233
 msgid "The count of pixels to compute simultaneously"
 msgstr "Aldi berean kalkulatuko diren pixel kopurua"
 
-#: gegl/gegl-init.c:237
+#: gegl/gegl-init.c:238
 msgid ""
 "The quality of rendering, a value between 0.0 (fast) and 1.0 (reference)"
 msgstr "Errendatzearen kalitatea, 0.0 (azkarra) eta 1.0 (erreferentziazkoa) bitarteko balio bat"
 
-#: gegl/gegl-init.c:242
+#: gegl/gegl-init.c:243
 msgid "The number of concurrent processing threads to use"
 msgstr "Aldi berean erabiliko diren prozesu-hari kopurua"
 
-#: gegl/gegl-init.c:247
+#: gegl/gegl-init.c:248
 msgid "Disable OpenCL"
 msgstr "Desgaitu OpenCL"
 
-#: gegl/gegl-init.c:259
+#: gegl/gegl-init.c:260
 msgid "Show GEGL Options"
 msgstr "Erakutsi GEGL aukerak"
 
@@ -624,9 +623,8 @@ msgstr "Aldebiko iragazkia"
 
 #: operations/common/bilateral-filter.c:299
 msgid ""
-"Like a gaussian blur; but where the contribution for each neighbourhood "
-"pixel is also weighted by the color difference with the original center "
-"pixel."
+"Like a gaussian blur; but where the contribution for each neighborhood pixel "
+"is also weighted by the color difference with the original center pixel."
 msgstr "Gaussen lausotzea bezalakoa; baina gertuko pixel bakoitzaren ekarpena jatorrizko erdiko pixelarekiko kolore-diferentziarekin ere haztatuta dagoela."
 
 #: operations/common/bloom.c:26 operations/common/threshold.c:25
@@ -670,7 +668,8 @@ msgid "Glow radius"
 msgstr "Dirdiraren erradioa"
 
 #: operations/common/bloom.c:42 operations/common/noise-reduction.c:26
-#: operations/common-cxx/warp.cc:34 operations/common-gpl3+/wind.c:64
+#: operations/common-cxx/denoise-dct.cc:38 operations/common-cxx/warp.cc:34
+#: operations/common-gpl3+/wind.c:64
 msgid "Strength"
 msgstr "Sendotasuna"
 
@@ -704,7 +703,7 @@ msgid "Box Blur"
 msgstr "Kutxa-lausotzea"
 
 #: operations/common/box-blur.c:407 operations/workshop/boxblur.c:76
-msgid "Blur resulting from averaging the colors of a square neighbourhood."
+msgid "Blur resulting from averaging the colors of a square neighborhood."
 msgstr "Gertuko karratu bateko pixelen koloreen batez bestekoa aterata sortzen den lausotzea."
 
 #. Here in the top of the file the properties of the operation is declared,
@@ -2073,8 +2072,8 @@ msgid ""
 msgstr "Eragiketen kate bat gauzatu, eragiketa-izen bakoitzen ondoren dauden gako=balio bikoteak propietateak ezartzeko direlarik. Eta aux=[iturburu-iragazkia] bigarren mailako konexio-puntu batean iturburua duen kate bat adierazteko."
 
 #: operations/common/grey.c:138
-msgid "Make Grey"
-msgstr "Bihurtu grisera"
+msgid "Make Gray"
+msgstr "Bihurtu gris"
 
 #: operations/common/grey.c:142
 msgid "Turns the image grayscale"
@@ -2605,7 +2604,7 @@ msgstr "Itzal luzearen efektua sortzen du"
 msgid "Path of file to load."
 msgstr "Fitxategiaren bide-izena kargatzeko."
 
-#: operations/common/magick-load.c:144
+#: operations/common/magick-load.c:171
 msgid "Image Magick wrapper using the png op."
 msgstr "Image Magick bildukiak png eragilea darabil."
 
@@ -3989,11 +3988,11 @@ msgstr "Trinkotasuna"
 msgid "Cluster size"
 msgstr "Multzoen tamaina"
 
-#: operations/common/slic.c:455
+#: operations/common/slic.c:481
 msgid "Simple Linear Iterative Clustering"
 msgstr "Multzoen sorrera iteratibo lineal sinplea"
 
-#: operations/common/slic.c:458
+#: operations/common/slic.c:484
 msgid "Superpixels based on k-means clustering"
 msgstr "k-means lukutzean oinarritutako superpixelak"
 
@@ -4006,13 +4005,13 @@ msgid "Number of pairs; higher number preserves more acute features"
 msgstr "Pare kopurua; zenbaki altuago batek eginbide zehatzagoak mantentzen ditu"
 
 #: operations/common/snn-mean.c:383
-msgid "Symmetric Nearest Neighbour"
+msgid "Symmetric Nearest Neighbor"
 msgstr "Gertueneko balio simetrikoa"
 
 #: operations/common/snn-mean.c:387
 msgid ""
 "Noise reducing edge preserving blur filter based on Symmetric Nearest "
-"Neighbours"
+"Neighbors"
 msgstr "Zarata murrizten eta ertzak babesten dituen lausotze-iragazkia, gertueneko simetrikoetan oinarritua"
 
 #: operations/common/spherize.c:25
@@ -4596,6 +4595,26 @@ msgstr "Fokuratze-lausotzea"
 msgid "Blur the image around a focal point"
 msgstr "Lausotu irudia foku-puntu baten inguruan"
 
+#: operations/common-cxx/denoise-dct.cc:33
+msgid "Patch size"
+msgstr "Adabaki-tamaina"
+
+#: operations/common-cxx/denoise-dct.cc:36
+msgid "Size of patches used to denoise"
+msgstr "Zarata murrizteko erabiliko diren adabakien tamaina"
+
+#: operations/common-cxx/denoise-dct.cc:39
+msgid "Noise standard deviation"
+msgstr "Zarataren desbideratze estandarra"
+
+#: operations/common-cxx/denoise-dct.cc:480
+msgid "Denoise DCT"
+msgstr "Murriztu zarata DCT bidez"
+
+#: operations/common-cxx/denoise-dct.cc:482
+msgid "Denoising algorithm using a per-patch DCT thresholding"
+msgstr "Zarata murrizteko algoritmoa adabakien araberako DCT atalasea erabiliz"
+
 #: operations/common-cxx/lens-blur.cc:46
 msgid "Clip to input extents"
 msgstr "Moztu sarrerako hedaduretan"
@@ -4804,7 +4823,7 @@ msgstr "Balio-desplazamendua"
 
 #: operations/common-gpl3+/bayer-matrix.c:68
 #: operations/common-gpl3+/linear-sinusoid.c:76
-#: operations/common-gpl3+/oilify.c:34 operations/common-gpl3+/sinus.c:71
+#: operations/common-gpl3+/oilify.c:35 operations/common-gpl3+/sinus.c:71
 msgid "Exponent"
 msgstr "Berretzailea"
 
@@ -5742,11 +5761,11 @@ msgid "Rescale overall image size"
 msgstr "Aldatu irudi osoaren tamaina"
 
 #: operations/common-gpl3+/lens-distortion.c:46
-msgid "Effect centre offset in X"
+msgid "Effect center offset in X"
 msgstr "Efektu-zentroaren desplazamendua X norabidean"
 
 #: operations/common-gpl3+/lens-distortion.c:50
-msgid "Effect centre offset in Y"
+msgid "Effect center offset in Y"
 msgstr "Efektu-zentroaren desplazamendua Y norabidean"
 
 #: operations/common-gpl3+/lens-distortion.c:53
@@ -6094,53 +6113,53 @@ msgid ""
 "the aux pad."
 msgstr "Pixelaren inguruko zirkuluaren erradioa, pixelez pixel ere eskalatu daiteke aux konexio-puntuan."
 
-#: operations/common-gpl3+/oilify.c:35
+#: operations/common-gpl3+/oilify.c:36
 msgid ""
 "Exponent for processing; controls smoothness - can be scaled per pixel with "
 "a buffer on the aux2 pad."
 msgstr "Berretzailea prozesatzerako; leuntasuna kontrolatzen du - pixelez eskalatu daiteke aux2 konexio-puntuko buffer batekin."
 
-#: operations/common-gpl3+/oilify.c:38
+#: operations/common-gpl3+/oilify.c:40
 msgid "Number of intensities"
 msgstr "Intentsitate kopurua"
 
-#: operations/common-gpl3+/oilify.c:39
+#: operations/common-gpl3+/oilify.c:41
 msgid "Histogram size"
 msgstr "Histograma-tamaina"
 
-#: operations/common-gpl3+/oilify.c:42
+#: operations/common-gpl3+/oilify.c:44
 msgid "Intensity Mode"
 msgstr "Intentsitatearen modua"
 
-#: operations/common-gpl3+/oilify.c:43
+#: operations/common-gpl3+/oilify.c:45
 msgid "Use pixel luminance values"
 msgstr "Erabili pixelen luminantziaren balioak"
 
-#: operations/common-gpl3+/oilify.c:522
+#: operations/common-gpl3+/oilify.c:587
 msgid "Mask radius buffer"
 msgstr "Maskara-erradioaren bufferra"
 
-#: operations/common-gpl3+/oilify.c:523
+#: operations/common-gpl3+/oilify.c:588
 msgid ""
 "Per pixel buffer for modulating the mask radius, expecting a scaling factor "
 "in range 0.0-1.0"
 msgstr "Pixelez pixeleko bufferra maskara-erradioa modulatzeko, 0.0-1.0 barrutiko eskalatze-faktorea espero du"
 
-#: operations/common-gpl3+/oilify.c:524
+#: operations/common-gpl3+/oilify.c:591
 msgid "Exponent buffer"
 msgstr "Buffer berretzailea"
 
-#: operations/common-gpl3+/oilify.c:525
+#: operations/common-gpl3+/oilify.c:592
 msgid ""
 "Per pixel buffer for modulating the exponent parameter, expecting a scaling "
 "factor in range 0.0-1.0"
 msgstr "Pixelez pixeleko bufferra berretzaile-parametroa modulatzeko, 0.0-1.0 barrutiko eskalatze-faktorea espero du"
 
-#: operations/common-gpl3+/oilify.c:534
+#: operations/common-gpl3+/oilify.c:603
 msgid "Oilify"
 msgstr "Olioz pintatu"
 
-#: operations/common-gpl3+/oilify.c:538
+#: operations/common-gpl3+/oilify.c:607
 msgid "Emulate an oil painting"
 msgstr "Emulatu olioz pintatzea"
 
@@ -7056,7 +7075,7 @@ msgid ""
 "with, and the ICC profile potentially embedded for external color "
 "management, setting a pointer to a format overrides the string property and "
 "setting an aux pad overrides both. "
-msgstr ""
+msgstr "Ezarri hurrengo babl-formats-ek kanalizazioan sortzeko erabili den kolore-espazioa, eta kanpoko kolore-kudeaketarako potentzialki kapsulatutako ICC profila, formatu bati eraskusle bat ezarrita kate-propietatea indagabetzen du eta betegarri osagarri bat ezartzea biak indargabetzen ditu. "
 
 #: operations/core/crop.c:45 operations/transform/reset-origin.c:95
 msgid "Reset origin"
@@ -7072,7 +7091,7 @@ msgid ""
 "connected is used. When the crop area is configured to 0x0 at 0,0 and "
 "nothing is connected on aux, the bounding box of the node at the producing "
 "end of the input chain is used."
-msgstr ""
+msgstr "Buffer bat mozten du, betegarri osagarria konektatuta badago, konektatutako nodoaren muga-koadroa erabiliko da. Mozte-area 0,0 puntuko 0x0 gisa konfiguratuta badago eta ezer ez badago osagarrian konektatuta, sarrerako katearen amaierako ekoizpeneko nodoaren muga-koadroa erabiliko da."
 
 #: operations/core/load.c:31 operations/external/jp2-load.c:27
 #: operations/external/jpg-load.c:26 operations/external/pdf-load.c:27
@@ -7091,7 +7110,7 @@ msgstr "Kargatuko den fitxategiaren URIa."
 msgid "Object to supply image metadata"
 msgstr "Irudien metadatuak hornituko dituen objektua"
 
-#: operations/core/load.c:374
+#: operations/core/load.c:372
 msgid ""
 "Multipurpose file loader, that uses other native handlers, and fallback "
 "conversion using Image Magick's convert."
@@ -7159,11 +7178,11 @@ msgstr "audio-kodeka"
 msgid "audio"
 msgstr "audioa"
 
-#: operations/external/ff-load.c:806
+#: operations/external/ff-load.c:866
 msgid "FFmpeg Frame Loader"
 msgstr "FFmpeg fotograma-kargatzailea"
 
-#: operations/external/ff-load.c:808
+#: operations/external/ff-load.c:868
 msgid "FFmpeg video frame importer."
 msgstr "FFmpeg bideo-fotogramen inportatzailea."
 
@@ -7302,11 +7321,11 @@ msgstr "i-quant-offset"
 msgid "me-subpel-quality"
 msgstr "me-subpel-quality"
 
-#: operations/external/ff-save.c:1135
+#: operations/external/ff-save.c:1212
 msgid "FFmpeg Frame Saver"
 msgstr "FFmpeg fotograma-gordetzailea"
 
-#: operations/external/ff-save.c:1137
+#: operations/external/ff-save.c:1214
 msgid "FFmpeg video output sink"
 msgstr "FFmpeg bideo-irteeraren kolektorea"
 
@@ -7330,11 +7349,11 @@ msgstr "marko-atzerapena"
 msgid "Delay in ms for last decoded frame"
 msgstr "Atzerapena milisegundotan azken deskodetutako markorako"
 
-#: operations/external/gif-load.c:239
+#: operations/external/gif-load.c:240
 msgid "GIF File Loader"
 msgstr "GIF fitxategi-kargatzailea"
 
-#: operations/external/gif-load.c:241
+#: operations/external/gif-load.c:242
 msgid "GIF image loader."
 msgstr "GIF irudi-kargatzailea."
 
@@ -7478,11 +7497,11 @@ msgstr "Sarrerako datuetako ICC profilari dagokion cmsHPROFILE profila."
 
 #: operations/external/lcms-from-profile.c:33
 msgid "Relative Colorimetric"
-msgstr "Koloremetria erlatiboa"
+msgstr "Kolorimetria erlatiboa"
 
 #: operations/external/lcms-from-profile.c:37
 msgid "Absolute Colorimetric"
-msgstr "Koloremetria absolutua"
+msgstr "Kolorimetria absolutua"
 
 #: operations/external/lcms-from-profile.c:41
 msgid "Rendering intent"
@@ -7614,7 +7633,7 @@ msgstr "TRUE (egia) denean, eredua ez da askatuko"
 msgid "Sampler used internally"
 msgstr "Barnean erabilitako lagina"
 
-#: operations/external/npd.c:256
+#: operations/external/npd.c:258
 msgid "Performs n-point image deformation"
 msgstr "N punturen irudi-deformazioa gauzatzen du"
 
@@ -8342,7 +8361,7 @@ msgid ""
 "Aligns box of input rectangle with border of compositing target or aux' "
 "bounding-box border, if aux pad is not connected the op tries to figure out "
 "which bounding box' border applies."
-msgstr ""
+msgstr "Sarrerako laukizuzenaren koadroa konposizio-helburuaren edo bounding-box osagarriaren ertzarekin lerrokatzen du, betegarri osagarria konektatuta ez badago op saiatuko da zein muga-koadro aplikatuko den asmatzen."
 
 #: operations/transform/reflect.c:27
 msgid "Direction vector's X component"
@@ -8608,8 +8627,8 @@ msgid "1D Box Blur"
 msgstr "1D kutxa-lausotzea"
 
 #: operations/workshop/boxblur-1d.c:467
-msgid "Blur resulting from averaging the colors of a row neighbourhood."
-msgstr "Errenkadako gertukoen koloreen batezbestekotik kalkulatutako lausotzea."
+msgid "Blur resulting from averaging the colors of a row neighborhood."
+msgstr "Gertuko errenkada bateko pixelen koloreen batez bestekoa aterata sortzen den lausotzea."
 
 #: operations/workshop/boxblur.c:75
 msgid "BoxBlur"
@@ -9263,9 +9282,6 @@ msgstr "Selektiboki doitu ñabardura, saturazioa eta argitasuna"
 
 #~ msgid "Image resampling method to use"
 #~ msgstr "Irudia birlagintzeko erabiliko den metodoa"
-
-#~ msgid "Standard Deviation"
-#~ msgstr "Desbiderapen estandarra"
 
 #~ msgid "Labels propagation by watershed transformation"
 #~ msgstr "Etiketen hedatzea arroen eraldaketaren bidez"
