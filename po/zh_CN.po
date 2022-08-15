@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl-master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2022-04-25 16:49+0000\n"
-"PO-Revision-Date: 2022-04-26 18:45+0800\n"
+"POT-Creation-Date: 2022-07-07 20:03+0000\n"
+"PO-Revision-Date: 2022-07-10 10:52+0800\n"
 "Last-Translator: lumingzh <lumingzh@qq.com>\n"
 "Language-Team: Chinese - China <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
@@ -629,9 +629,8 @@ msgstr "双向滤镜"
 
 #: operations/common/bilateral-filter.c:299
 msgid ""
-"Like a gaussian blur; but where the contribution for each neighbourhood "
-"pixel is also weighted by the color difference with the original center "
-"pixel."
+"Like a gaussian blur; but where the contribution for each neighborhood pixel "
+"is also weighted by the color difference with the original center pixel."
 msgstr ""
 "类似高斯模糊；但为每个相邻像素的贡献同样被与原始中心像素的色差权重衡量。"
 
@@ -711,7 +710,7 @@ msgid "Box Blur"
 msgstr "盒子模糊"
 
 #: operations/common/box-blur.c:407 operations/workshop/boxblur.c:76
-msgid "Blur resulting from averaging the colors of a square neighbourhood."
+msgid "Blur resulting from averaging the colors of a square neighborhood."
 msgstr "模糊结果取自对相邻方块区域颜色的平均。"
 
 #. Here in the top of the file the properties of the operation is declared,
@@ -2098,7 +2097,7 @@ msgstr ""
 "定命令串使用 aux=[ 源过滤器 ] 作为连接到辅助平板的设备。"
 
 #: operations/common/grey.c:138
-msgid "Make Grey"
+msgid "Make Gray"
 msgstr "变成灰色"
 
 #: operations/common/grey.c:142
@@ -4031,11 +4030,11 @@ msgstr "紧密"
 msgid "Cluster size"
 msgstr "聚类大小"
 
-#: operations/common/slic.c:455
+#: operations/common/slic.c:481
 msgid "Simple Linear Iterative Clustering"
 msgstr "简单线性迭代聚类"
 
-#: operations/common/slic.c:458
+#: operations/common/slic.c:484
 msgid "Superpixels based on k-means clustering"
 msgstr "基于 k-means 聚类算法的超像素"
 
@@ -4048,13 +4047,13 @@ msgid "Number of pairs; higher number preserves more acute features"
 msgstr "对数；较多对数会保留更多的锐利特征"
 
 #: operations/common/snn-mean.c:383
-msgid "Symmetric Nearest Neighbour"
+msgid "Symmetric Nearest Neighbor"
 msgstr "对称的最近相邻"
 
 #: operations/common/snn-mean.c:387
 msgid ""
 "Noise reducing edge preserving blur filter based on Symmetric Nearest "
-"Neighbours"
+"Neighbors"
 msgstr "基于对称最近相邻的降噪边缘保留模糊滤镜"
 
 #: operations/common/spherize.c:25
@@ -5830,11 +5829,11 @@ msgid "Rescale overall image size"
 msgstr "改变整张图像的大小"
 
 #: operations/common-gpl3+/lens-distortion.c:46
-msgid "Effect centre offset in X"
+msgid "Effect center offset in X"
 msgstr "效果中心 X 偏移"
 
 #: operations/common-gpl3+/lens-distortion.c:50
-msgid "Effect centre offset in Y"
+msgid "Effect center offset in Y"
 msgstr "效果中心 Y 偏移"
 
 #: operations/common-gpl3+/lens-distortion.c:53
@@ -8767,7 +8766,7 @@ msgid "1D Box Blur"
 msgstr "1D 盒子模糊"
 
 #: operations/workshop/boxblur-1d.c:467
-msgid "Blur resulting from averaging the colors of a row neighbourhood."
+msgid "Blur resulting from averaging the colors of a row neighborhood."
 msgstr "模糊结果取自对行相邻区域颜色的平均。"
 
 #: operations/workshop/boxblur.c:75
