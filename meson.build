@@ -388,6 +388,10 @@ openexr   = dependency('OpenEXR',
   version: dep_ver.get('openexr'),
   required: get_option('openexr')
 )
+openmp    = dependency('openmp',
+  required: get_option('openmp')
+)
+config.set('HAVE_OPENMP', openmp.found())
 poppler = dependency('poppler-glib',
   version: dep_ver.get('poppler'),
   required: get_option('poppler')
@@ -619,11 +623,12 @@ if meson.version().version_compare('>=0.53.0')
       'Luajit'            : lua.found(),
       'maxflow'           : maxflow.found(),
       'mrg'               : mrg.found(),
+      'OpenEXR'           : openexr.found(),
+      'openMP'            : openmp.found(),
       'Pango'             : pango.found(),
       'pangocairo'        : pangocairo.found(),
       'poly2tri-c'        : poly2tri_c.found(),
       'poppler'           : poppler.found(),
-      'OpenEXR'           : openexr.found(),
       'rsvg'              : librsvg.found(),
       'SDL1'              : sdl1.found(),
       'SDL2'              : sdl2.found(),
@@ -667,11 +672,12 @@ else
   '  Luajit:            @0@'.format(lua.found()),
   '  maxflow:           @0@'.format(maxflow.found()),
   '  mrg:               @0@'.format(mrg.found()),
+  '  OpenEXR:           @0@'.format(openexr.found()),
+  '  openMP:            @0@'.format(openmp.found()),
   '  Pango:             @0@'.format(pango.found()),
   '  pangocairo:        @0@'.format(pangocairo.found()),
   '  poly2tri-c:        @0@ (@1@)'.format(poly2tri_c.found(),poly2tri_c.type_name()),
   '  poppler:           @0@'.format(poppler.found()),
-  '  OpenEXR:           @0@'.format(openexr.found()),
   '  rsvg:              @0@'.format(librsvg.found()),
   '  SDL1:              @0@'.format(sdl1.found()),
   '  SDL2:              @0@'.format(sdl2.found()),
