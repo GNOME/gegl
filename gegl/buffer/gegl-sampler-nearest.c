@@ -196,11 +196,10 @@ gegl_sampler_get_pixel (GeglSampler    *sampler,
              (offsety * tile_width + offsetx) * nearest_sampler->buffer_bpp;
 
 #if (BABL_MINOR_VERSION >=1) && (BABL_MICRO_VERSION >= 90)
-        sampler->fish_process
+    sampler->fish_process (sampler->fish, (void*)tp, (void*)buf, 1, NULL);
 #else
-        babl_process
+    babl_process (sampler->fish, (void*)tp, (void*)buf, 1);
 #endif
-          (sampler->fish, (void*)tp, (void*)buf, 1, NULL);
       }
   }
 

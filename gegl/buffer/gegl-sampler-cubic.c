@@ -228,11 +228,10 @@ gegl_sampler_cubic_get (      GeglSampler       *self,
                                     repeat_mode);
 
 #if (BABL_MINOR_VERSION >=1) && (BABL_MICRO_VERSION >= 90)
-    self->fish_process 
+    self->fish_process (self->fish, (void*)result, (void*)output, 1, NULL);
 #else
-    babl_process
+    babl_process (self->fish, (void*)result, (void*)output, 1);
 #endif
-    (self->fish, (void*)result, (void*)output, 1, NULL);
   }
 }
 
