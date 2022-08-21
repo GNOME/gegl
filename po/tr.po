@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2022-04-25 03:59+0000\n"
-"PO-Revision-Date: 2022-04-29 01:31+0300\n"
+"POT-Creation-Date: 2022-07-02 11:49+0000\n"
+"PO-Revision-Date: 2022-08-16 21:59+0300\n"
 "Last-Translator: Sabri Ünal <libreajans@gmail.com>\n"
 "Language-Team: Türkçe <gnome-turk@gnome.org>\n"
 "Language: tr\n"
@@ -21,7 +21,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 3.0.1\n"
+"X-Generator: Poedit 3.1.1\n"
 "X-POOTLE-MTIME: 1437504675.000000\n"
 
 #: bin/gegl.c:179
@@ -691,9 +691,8 @@ msgstr "Çift Taraflı Süz"
 #| "pixel is also weighted by the color difference with the original center "
 #| "pixel. "
 msgid ""
-"Like a gaussian blur; but where the contribution for each neighbourhood "
-"pixel is also weighted by the color difference with the original center "
-"pixel."
+"Like a gaussian blur; but where the contribution for each neighborhood pixel "
+"is also weighted by the color difference with the original center pixel."
 msgstr ""
 "Gaussian bulanıklığı gibidir; ancak her bir komşu beneğin katkısı ayrıca "
 "özgün merkez piksel ile olan renk farkına göre de ağırlıklandırılır. "
@@ -749,10 +748,8 @@ msgid "Strength"
 msgstr "Kuvvet"
 
 #: operations/common/bloom.c:43
-#, fuzzy
-#| msgid "Strength"
 msgid "Glow strength"
-msgstr "Kuvvet"
+msgstr "Parlama kuvveti"
 
 #: operations/common/bloom.c:47
 #, fuzzy
@@ -767,8 +764,9 @@ msgid "Don't over-expose highlights"
 msgstr "Vurgu pozlamasını ayarla"
 
 #: operations/common/bloom.c:207
+#, fuzzy
 msgid "Bloom"
-msgstr ""
+msgstr "Filizlenme"
 
 #: operations/common/bloom.c:210
 msgid "Add glow around bright areas"
@@ -786,7 +784,9 @@ msgid "Box Blur"
 msgstr "Kutu Bulanıklığı"
 
 #: operations/common/box-blur.c:407 operations/workshop/boxblur.c:76
-msgid "Blur resulting from averaging the colors of a square neighbourhood."
+#, fuzzy
+#| msgid "Blur resulting from averaging the colors of a square neighbourhood."
+msgid "Blur resulting from averaging the colors of a square neighborhood."
 msgstr "Kare bir bölgenin renklerinin ortalamalarından kaynaklanan bulanıklık."
 
 #. Here in the top of the file the properties of the operation is declared,
@@ -1880,26 +1880,23 @@ msgid "Vertical shadow offset"
 msgstr "Dikey gölge konumu"
 
 #: operations/common/dropshadow.c:53
-#, fuzzy
-#| msgid "Grow area"
 msgid "Grow shape"
-msgstr "Alanı büyüt"
+msgstr "Büyüme şekli"
 
 #: operations/common/dropshadow.c:56
 msgid "The shape to expand or contract the shadow in"
-msgstr ""
+msgstr "Gölgenin büyüme veya küçülme şekli"
 
 #: operations/common/dropshadow.c:58
-#, fuzzy
-#| msgid "Glow radius"
 msgid "Grow radius"
-msgstr "Parıltı yarıçapı"
+msgstr "Büyüme yarıçapı"
 
 #: operations/common/dropshadow.c:65
 msgid ""
 "The distance to expand the shadow before blurring; a negative value will "
 "contract the shadow instead"
 msgstr ""
+"Bulanıklaştırmadan önce gölgenin büyüme mesafesi; eksi değer gölgeyi küçültür"
 
 #. TRANSLATORS: the string 'black' should not be translated
 #: operations/common/dropshadow.c:69
@@ -2221,7 +2218,7 @@ msgstr ""
 "zinciri belirtmek için yapısını kullanabilirsiniz."
 
 #: operations/common/grey.c:138
-msgid "Make Grey"
+msgid "Make Gray"
 msgstr "Gri Yap"
 
 #: operations/common/grey.c:142
@@ -2399,8 +2396,6 @@ msgid "Image Gradient"
 msgstr "Görüntü Renk Geçişi"
 
 #: operations/common/image-gradient.c:228
-#, fuzzy
-#| msgid "Compute gradient magnitude and/or direction by central differencies"
 msgid "Compute gradient magnitude and/or direction by central differences"
 msgstr "Merkezi farklara göre renk geçişi büyüklüğünü ve/veya yönünü hesapla"
 
@@ -3819,29 +3814,31 @@ msgstr ""
 
 #: operations/common/pack.c:24
 msgid "Gap"
-msgstr ""
+msgstr "Aralık"
 
 #: operations/common/pack.c:25
 msgid "How many pixels of space between items"
-msgstr ""
+msgstr "Ögeler arasında kaç piksel boşluk olacağı"
 
 #: operations/common/pack.c:26
 msgid "Align"
-msgstr ""
+msgstr "Hizala"
 
 #: operations/common/pack.c:27
 msgid "How to align items, 0.0 is start 0.5 middle and 1.0 end."
-msgstr ""
+msgstr "Ögelerin nasıl hizalanacağı, 0.0 başlangıç 0.5 orta ve 1.0 bitiş."
 
 #: operations/common/pack.c:182
 msgid "Pack"
-msgstr ""
+msgstr "Paketle"
 
 #: operations/common/pack.c:184
 msgid ""
 "Packs an image horizontally or vertically next to each other with optional "
 "gap, aux right of input."
 msgstr ""
+"Girdinin sağındaki isteğe bağlı boşluk ile bir görüntüyü yatay veya dikey "
+"olarak yan yana paketler."
 
 #: operations/common/panorama-projection.c:537
 msgid "Panorama Projection"
@@ -4212,11 +4209,11 @@ msgid "Cluster size"
 msgstr "Küme boyutu"
 
 # Menü olması sebebiyle kısaltılmış çeviri tercih edilmiştir.
-#: operations/common/slic.c:455
+#: operations/common/slic.c:481
 msgid "Simple Linear Iterative Clustering"
 msgstr "Doğrusal Kümeleme"
 
-#: operations/common/slic.c:458
+#: operations/common/slic.c:484
 msgid "Superpixels based on k-means clustering"
 msgstr "K-ortalamalar kümesi temelli süperpikseller"
 
@@ -4229,13 +4226,19 @@ msgid "Number of pairs; higher number preserves more acute features"
 msgstr "Çiftlerin sayısı; daha büyük numara daha ilerlemiş özellikleri korur"
 
 #: operations/common/snn-mean.c:383
-msgid "Symmetric Nearest Neighbour"
+#, fuzzy
+#| msgid "Symmetric Nearest Neighbour"
+msgid "Symmetric Nearest Neighbor"
 msgstr "Simetrik En Yakın Komşu"
 
 #: operations/common/snn-mean.c:387
+#, fuzzy
+#| msgid ""
+#| "Noise reducing edge preserving blur filter based on Symmetric Nearest "
+#| "Neighbours"
 msgid ""
 "Noise reducing edge preserving blur filter based on Symmetric Nearest "
-"Neighbours"
+"Neighbors"
 msgstr ""
 "Simetrik En Yakın Komşulara dayanan gürültü azaltıcı kenar koruyucu "
 "bulanıklık süzgeci"
@@ -6058,11 +6061,15 @@ msgid "Rescale overall image size"
 msgstr "Tüm görüntü boyutunu yeniden ölçekle"
 
 #: operations/common-gpl3+/lens-distortion.c:46
-msgid "Effect centre offset in X"
+#, fuzzy
+#| msgid "Effect centre offset in X"
+msgid "Effect center offset in X"
 msgstr "Etki merkezi konumu X"
 
 #: operations/common-gpl3+/lens-distortion.c:50
-msgid "Effect centre offset in Y"
+#, fuzzy
+#| msgid "Effect centre offset in Y"
+msgid "Effect center offset in Y"
 msgstr "Etki merkezi konumu Y"
 
 #: operations/common-gpl3+/lens-distortion.c:53
@@ -8737,10 +8744,8 @@ msgid "Vertical justification 0.0 is top 0.5 middle and 1.0 bottom."
 msgstr ""
 
 #: operations/transform/border-align.c:180
-#, fuzzy
-#| msgid "Border"
 msgid "Border Align"
-msgstr "Kenar"
+msgstr "Kenar Hizalama"
 
 #: operations/transform/border-align.c:183
 msgid ""
@@ -9027,7 +9032,9 @@ msgid "1D Box Blur"
 msgstr "1D Kutu Bulanıklığı"
 
 #: operations/workshop/boxblur-1d.c:467
-msgid "Blur resulting from averaging the colors of a row neighbourhood."
+#, fuzzy
+#| msgid "Blur resulting from averaging the colors of a row neighbourhood."
+msgid "Blur resulting from averaging the colors of a row neighborhood."
 msgstr "Satır komşusunun renklerinin ortalamasından kaynaklanan bulanıklık"
 
 #: operations/workshop/boxblur.c:75
@@ -9657,104 +9664,3 @@ msgstr "Seçilebilir Renk Tonu Doygunluğu"
 #: operations/workshop/selective-hue-saturation.c:173
 msgid "Selective adjust Hue, Saturation and Lightness"
 msgstr "Seçilebilir ayarlanabilir renk tonu, doygunluk ve aydınlık"
-
-#, fuzzy
-#~| msgid "Filter"
-#~ msgid "Filter cyan"
-#~ msgstr "Süzgeç"
-
-#, fuzzy
-#~| msgid "Filter width"
-#~ msgid "Filter magenta"
-#~ msgstr "Süzgeç genişliği"
-
-#, fuzzy
-#~| msgid "Filter width"
-#~ msgid "Filter yellow"
-#~ msgstr "Süzgeç genişliği"
-
-#~ msgid "Neighborhood radius"
-#~ msgstr "Komşuluk yarıçapı"
-
-#~ msgid ""
-#~ "Crops a buffer, if the aux pad is connected the bounding box of the node "
-#~ "connected is used."
-#~ msgstr ""
-#~ "Bir tamponu kırpar, eğer aux ped bağlanmışsa, bağlanan düğümün "
-#~ "sınırlayıcı kutusu kullanılır."
-
-#~ msgid "Pixbuf location"
-#~ msgstr "Pixbuf konumu"
-
-#~ msgid "The location where to store the output GdkPixbuf."
-#~ msgstr "GdkPixbuf çıktısının depolanacağı konum."
-
-#~ msgid ""
-#~ "Horizontally stack inputs, (in \"output\" \"aux\" is placed to the right "
-#~ "of \"input\")"
-#~ msgstr ""
-#~ "Girdileri yatay yığ, (\"çıktı\" ve \"aux\" değerleri \"girdi\" değerinin "
-#~ "sağına konumlandırılır)"
-
-#~ msgid "Black and green angle"
-#~ msgstr "Siyah ve yeşil açı"
-
-#~ msgid "Radius of circle around pixel"
-#~ msgstr "Piksel etrafındaki dairenin yarıçapı"
-
-#~ msgid "Box filter"
-#~ msgstr "Kutu süzgeci"
-
-#~ msgid "Crop a buffer"
-#~ msgstr "Arabelleği kırp"
-
-#~ msgid "Red bits"
-#~ msgstr "Kırmızı bitler"
-
-#~ msgid "Green bits"
-#~ msgstr "Yeşil bitler"
-
-#~ msgid "Offset value added"
-#~ msgstr "Konum değeri eklendi"
-
-#~ msgid "Gamma correction"
-#~ msgstr "Gama düzeltmesi"
-
-#~ msgid "Clone a buffer"
-#~ msgstr "Bir tampon bellek kopyala"
-
-#~ msgid "Path to SVG file to load"
-#~ msgstr "Yüklenecek SVG dosya yolu"
-
-#~ msgid "Target file path."
-#~ msgstr "Hedef dosya yolu."
-
-#~ msgid "Debug width"
-#~ msgstr "Hata ayıklama genişliği"
-
-#~ msgid "Real coordinate"
-#~ msgstr "Gerçek koordinat"
-
-#~ msgid "Depth value"
-#~ msgstr "Derinlik değeri"
-
-#~ msgid "X shift"
-#~ msgstr "X kaydırma"
-
-#~ msgid "Y shift"
-#~ msgstr "Y kaydırma"
-
-#~ msgid "Factor"
-#~ msgstr "Çarpan"
-
-#~ msgid "x1"
-#~ msgstr "x1"
-
-#~ msgid "y1"
-#~ msgstr "y1"
-
-#~ msgid "x2"
-#~ msgstr "x2"
-
-#~ msgid "y2"
-#~ msgstr "y2"
