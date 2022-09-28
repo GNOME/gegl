@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: GEGL_0_2_0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-08 17:58+0200\n"
-"PO-Revision-Date: 2022-09-28 10:27+0200\n"
+"PO-Revision-Date: 2022-09-28 10:36+0200\n"
 "Last-Translator: Marco Ciampa <ciampix@posteo.net>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -3030,7 +3030,7 @@ msgstr "Ritaglia il risultato alla dimensione in ingresso"
 
 #: ../operations/common/mirrors.c:86
 msgid "Wrap input"
-msgstr "A capo l'ingresso"
+msgstr "Avvolgi l'ingresso"
 
 #: ../operations/common/mirrors.c:87
 msgid "Fill full output area"
