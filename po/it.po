@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: GEGL_0_2_0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-08 17:58+0200\n"
-"PO-Revision-Date: 2022-09-28 10:22+0200\n"
+"PO-Revision-Date: 2022-09-28 10:27+0200\n"
 "Last-Translator: Marco Ciampa <ciampix@posteo.net>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -2946,7 +2946,7 @@ msgstr ""
 
 #: ../operations/common/mirrors.c:30
 msgid "Mirror rotation"
-msgstr "Rotazione specchio"
+msgstr "Rotazione specchi"
 
 #: ../operations/common/mirrors.c:31
 msgid "Rotation applied to the mirrors"
