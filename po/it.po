@@ -10,13 +10,12 @@
 # * smoothing = smussamento, levigatura, omogeneizzazione
 # * clustering = clustering (metodo statistico detto anche analisi dei gruppi)
 # * K-means = K-means (metodo di clustering)
-# * Bloom = bloom (effetto alone) invariato
 msgid ""
 msgstr ""
 "Project-Id-Version: GEGL_0_2_0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-08 17:58+0200\n"
-"PO-Revision-Date: 2022-09-28 10:36+0200\n"
+"POT-Creation-Date: 2022-10-10 09:34+0200\n"
+"PO-Revision-Date: 2022-10-10 10:31+0200\n"
 "Last-Translator: Marco Ciampa <ciampix@posteo.net>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -361,41 +360,41 @@ msgstr "Mai"
 msgid "Always"
 msgstr "Sempre"
 
-#: ../gegl/gegl-init.c:212
+#: ../gegl/gegl-init.c:213
 msgid "Where GEGL stores its swap"
 msgstr "Dove GEGL memorizza la propria swap"
 
-#: ../gegl/gegl-init.c:217
+#: ../gegl/gegl-init.c:218
 msgid "Compression algorithm used for data stored in the swap"
 msgstr "Algoritmo di compressione usato per i dati immagazzinati nello swap"
 
-#: ../gegl/gegl-init.c:222
+#: ../gegl/gegl-init.c:223
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr "Quanta memoria usare (approssimativamente) per la cache immagini"
 
-#: ../gegl/gegl-init.c:227
+#: ../gegl/gegl-init.c:228
 msgid "Default size of tiles in GeglBuffers"
 msgstr "Dimensione predefinita delle tile in GeglBuffers"
 
-#: ../gegl/gegl-init.c:232
+#: ../gegl/gegl-init.c:233
 msgid "The count of pixels to compute simultaneously"
 msgstr "Il numero di pixel da elaborare simultaneamente"
 
-#: ../gegl/gegl-init.c:237
+#: ../gegl/gegl-init.c:238
 msgid ""
 "The quality of rendering, a value between 0.0 (fast) and 1.0 (reference)"
 msgstr ""
 "La qualità del rendering, un valore tra 0.0 (veloce) e 1.0 (riferimento)"
 
-#: ../gegl/gegl-init.c:242
+#: ../gegl/gegl-init.c:243
 msgid "The number of concurrent processing threads to use"
 msgstr "Il numero di thread concorrenti da usare"
 
-#: ../gegl/gegl-init.c:247
+#: ../gegl/gegl-init.c:248
 msgid "Disable OpenCL"
 msgstr "Disabilita OpenCL"
 
-#: ../gegl/gegl-init.c:259
+#: ../gegl/gegl-init.c:260
 msgid "Show GEGL Options"
 msgstr "Mostra opzioni GEGL"
 
@@ -647,9 +646,8 @@ msgstr "Filtro bilaterale"
 
 #: ../operations/common/bilateral-filter.c:299
 msgid ""
-"Like a gaussian blur; but where the contribution for each neighbourhood "
-"pixel is also weighted by the color difference with the original center "
-"pixel."
+"Like a gaussian blur; but where the contribution for each neighborhood pixel "
+"is also weighted by the color difference with the original center pixel."
 msgstr ""
 "Come uno sfocamento gaussiano; ma dove il contributo dei pixel adiacenti è "
 "pesato anche in base alla differenza di colore con il pixel centrale "
@@ -665,7 +663,7 @@ msgstr "Soglia"
 
 #: ../operations/common/bloom.c:27
 msgid "Glow-area brightness threshold"
-msgstr "Soglia luminosità area-bagliore"
+msgstr "Soglia luminosità area chiarore"
 
 #: ../operations/common/bloom.c:30 ../operations/common/vignette.c:46
 msgid "Softness"
@@ -673,7 +671,7 @@ msgstr "Morbidezza"
 
 #: ../operations/common/bloom.c:31
 msgid "Glow-area edge softness"
-msgstr "Gradualità bordo area-bagliore"
+msgstr "Gradualità bordo area chiarore"
 
 #: ../operations/common/bloom.c:35 ../operations/common/box-blur.c:25
 #: ../operations/common/c2g.c:28 ../operations/common/edge-neon.c:47
@@ -696,20 +694,21 @@ msgstr "Raggio"
 
 #: ../operations/common/bloom.c:36 ../operations/common-gpl3+/softglow.c:26
 msgid "Glow radius"
-msgstr "Raggio bagliore"
+msgstr "Raggio chiarore"
 
 #: ../operations/common/bloom.c:42 ../operations/common/noise-reduction.c:26
+#: ../operations/common-cxx/denoise-dct.cc:38
 #: ../operations/common-cxx/warp.cc:34 ../operations/common-gpl3+/wind.c:64
 msgid "Strength"
 msgstr "Forza"
 
 #: ../operations/common/bloom.c:43
 msgid "Glow strength"
-msgstr "Forza bagliore"
+msgstr "Forza chiarore"
 
 #: ../operations/common/bloom.c:47
 msgid "Limit exposure"
-msgstr "Limita esposizione"
+msgstr "Limita l'esposizione"
 
 #: ../operations/common/bloom.c:48
 msgid "Don't over-expose highlights"
@@ -735,10 +734,8 @@ msgid "Box Blur"
 msgstr "Sfocatura scatola"
 
 #: ../operations/common/box-blur.c:407 ../operations/workshop/boxblur.c:76
-msgid "Blur resulting from averaging the colors of a square neighbourhood."
-msgstr ""
-"La sfocatura risultante dalla media dei colori di un quadrato di punti "
-"vicini."
+msgid "Blur resulting from averaging the colors of a square neighborhood."
+msgstr "La sfocatura risultante dalla media dei colori di un quadrato di punti vicini."
 
 #. Here in the top of the file the properties of the operation is declared,
 #. *  this causes the declaration of a structure for containing the data.
@@ -2219,7 +2216,7 @@ msgstr ""
 "appunti ausiliari."
 
 #: ../operations/common/grey.c:138
-msgid "Make Grey"
+msgid "Make Gray"
 msgstr "Rendi grigia"
 
 #: ../operations/common/grey.c:142
@@ -2777,7 +2774,7 @@ msgstr "Crea un effetto ombra lunga"
 msgid "Path of file to load."
 msgstr "Percorso del file da caricare."
 
-#: ../operations/common/magick-load.c:144
+#: ../operations/common/magick-load.c:171
 msgid "Image Magick wrapper using the png op."
 msgstr "Incapsulatore di ImageMagick usando l'op. png"
 
@@ -3169,7 +3166,9 @@ msgstr "Incremento contrasto"
 
 #: ../operations/common/negative-darkroom.c:58
 msgid "Increase contrast for papers with fixed contrast (usually color papers)"
-msgstr "Aumenta il contrasto per carta con contrasto fisso (solitamente carta colorata)"
+msgstr ""
+"Aumenta il contrasto per carta con contrasto fisso (solitamente carta "
+"colorata)"
 
 #: ../operations/common/negative-darkroom.c:63
 msgid "Dodge/burn multiplier"
@@ -3193,7 +3192,9 @@ msgstr "Preflash rosso"
 
 #: ../operations/common/negative-darkroom.c:72
 msgid "Preflash the negative with red light to reduce contrast of the print"
-msgstr "Fa il preflash al negativo con luce rossa per ridurre il contrasto della stampa"
+msgstr ""
+"Fa il preflash al negativo con luce rossa per ridurre il contrasto della "
+"stampa"
 
 #: ../operations/common/negative-darkroom.c:76
 msgid "Green preflash"
@@ -3201,7 +3202,9 @@ msgstr "Preflash verde"
 
 #: ../operations/common/negative-darkroom.c:77
 msgid "Preflash the negative with green light to reduce contrast of the print"
-msgstr "Fa il preflash al negativo con luce verde per ridurre il contrasto della stampa"
+msgstr ""
+"Fa il preflash al negativo con luce verde per ridurre il contrasto della "
+"stampa"
 
 #: ../operations/common/negative-darkroom.c:81
 msgid "Blue preflash"
@@ -3209,7 +3212,8 @@ msgstr "Preflash blu"
 
 #: ../operations/common/negative-darkroom.c:82
 msgid "Preflash the negative with blue light to reduce contrast of the print"
-msgstr "Fa il preflash al negativo con luce blu per ridurre il contrasto della stampa"
+msgstr ""
+"Fa il preflash al negativo con luce blu per ridurre il contrasto della stampa"
 
 #: ../operations/common/negative-darkroom.c:86
 msgid "Illuminant adjustment"
@@ -4234,11 +4238,11 @@ msgstr "Compattezza"
 msgid "Cluster size"
 msgstr "Dimensione raggruppamento"
 
-#: ../operations/common/slic.c:455
+#: ../operations/common/slic.c:481
 msgid "Simple Linear Iterative Clustering"
 msgstr "Semplice clustering iterativo lineare"
 
-#: ../operations/common/slic.c:458
+#: ../operations/common/slic.c:484
 msgid "Superpixels based on k-means clustering"
 msgstr "Superpixel basati su clastering secondo il metodo K-means"
 
@@ -4252,16 +4256,14 @@ msgstr ""
 "Numero di coppie; numeri elevari preservano le caratteristiche più acute"
 
 #: ../operations/common/snn-mean.c:383
-msgid "Symmetric Nearest Neighbour"
+msgid "Symmetric Nearest Neighbor"
 msgstr "Vicino più prossimo simmetrico"
 
 #: ../operations/common/snn-mean.c:387
 msgid ""
 "Noise reducing edge preserving blur filter based on Symmetric Nearest "
-"Neighbours"
-msgstr ""
-"Filtro sfocatura a riduzione del rumore e mantenimento dei bordi basato sul "
-"metodo degli elementi simmetrici più vicini"
+"Neighbors"
+msgstr "Filtro sfocatura a riduzione del rumore e mantenimento dei bordi basato sul metodo degli elementi simmetrici più vicini"
 
 #: ../operations/common/spherize.c:25
 msgid "Radial"
@@ -4783,7 +4785,9 @@ msgstr "Gestione bordo"
 
 #: ../operations/common-cxx/distance-transform.cc:41
 msgid "How areas outside the input are considered when calculating distance"
-msgstr "Come le aree fuori dall'ingresso vengono considerate nel calcolo della distanza"
+msgstr ""
+"Come le aree fuori dall'ingresso vengono considerate nel calcolo della "
+"distanza"
 
 #: ../operations/common-cxx/distance-transform.cc:43
 msgid "Threshold low"
@@ -4911,6 +4915,26 @@ msgstr "Sfocatura fuoco"
 #: ../operations/common-cxx/focus-blur.c:323
 msgid "Blur the image around a focal point"
 msgstr "Sfoca l'immagine attorno ad un punto focale"
+
+#: ../operations/common-cxx/denoise-dct.cc:33
+msgid "Patch size"
+msgstr "Dimensione area"
+
+#: ../operations/common-cxx/denoise-dct.cc:36
+msgid "Size of patches used to denoise"
+msgstr "Dimensione delle aree usate per la rimozione del rumore"
+
+#: ../operations/common-cxx/denoise-dct.cc:39
+msgid "Noise standard deviation"
+msgstr "Deviazione standard rumore"
+
+#: ../operations/common-cxx/denoise-dct.cc:480
+msgid "Denoise DCT"
+msgstr "Rimozione rumore DCT"
+
+#: ../operations/common-cxx/denoise-dct.cc:482
+msgid "Denoising algorithm using a per-patch DCT thresholding"
+msgstr "Algoritmo di riduzione del rumore che usa una soglia DCT per area"
 
 #: ../operations/common-cxx/lens-blur.cc:46
 msgid "Clip to input extents"
@@ -5124,7 +5148,7 @@ msgstr "Scostamento valore"
 
 #: ../operations/common-gpl3+/bayer-matrix.c:68
 #: ../operations/common-gpl3+/linear-sinusoid.c:76
-#: ../operations/common-gpl3+/oilify.c:34 ../operations/common-gpl3+/sinus.c:71
+#: ../operations/common-gpl3+/oilify.c:35 ../operations/common-gpl3+/sinus.c:71
 msgid "Exponent"
 msgstr "Esponente"
 
@@ -6091,11 +6115,11 @@ msgid "Rescale overall image size"
 msgstr "Riscala la dimensione generale dell'immagine"
 
 #: ../operations/common-gpl3+/lens-distortion.c:46
-msgid "Effect centre offset in X"
+msgid "Effect center offset in X"
 msgstr "Scostamento in X del centro dell'effetto"
 
 #: ../operations/common-gpl3+/lens-distortion.c:50
-msgid "Effect centre offset in Y"
+msgid "Effect center offset in Y"
 msgstr "Scostamento in Y del centro dell'effetto"
 
 #: ../operations/common-gpl3+/lens-distortion.c:53
@@ -6451,7 +6475,7 @@ msgstr ""
 "Raggio del cerchio attorno al pixel, può essere anche scalato per pixel da "
 "un buffer sul pad aux."
 
-#: ../operations/common-gpl3+/oilify.c:35
+#: ../operations/common-gpl3+/oilify.c:36
 msgid ""
 "Exponent for processing; controls smoothness - can be scaled per pixel with "
 "a buffer on the aux2 pad."
@@ -6459,27 +6483,27 @@ msgstr ""
 "Esponente per l'elaborazione; controlla lo smussamento - può essere anche "
 "scalato per pixel con un buffer sul pad aux2."
 
-#: ../operations/common-gpl3+/oilify.c:38
+#: ../operations/common-gpl3+/oilify.c:40
 msgid "Number of intensities"
 msgstr "Numero di intensità"
 
-#: ../operations/common-gpl3+/oilify.c:39
+#: ../operations/common-gpl3+/oilify.c:41
 msgid "Histogram size"
 msgstr "Dimensione istogramma"
 
-#: ../operations/common-gpl3+/oilify.c:42
+#: ../operations/common-gpl3+/oilify.c:44
 msgid "Intensity Mode"
 msgstr "Modalità intensità"
 
-#: ../operations/common-gpl3+/oilify.c:43
+#: ../operations/common-gpl3+/oilify.c:45
 msgid "Use pixel luminance values"
 msgstr "Usa i valori di luminanza dei pixel"
 
-#: ../operations/common-gpl3+/oilify.c:522
+#: ../operations/common-gpl3+/oilify.c:587
 msgid "Mask radius buffer"
 msgstr "Buffer raggio maschera"
 
-#: ../operations/common-gpl3+/oilify.c:523
+#: ../operations/common-gpl3+/oilify.c:588
 msgid ""
 "Per pixel buffer for modulating the mask radius, expecting a scaling factor "
 "in range 0.0-1.0"
@@ -6487,21 +6511,21 @@ msgstr ""
 "Per buffer pixel per la modulazione del raggio della maschera, aspettandosi "
 "un fattore di scala nel campo 0.0-1.0"
 
-#: ../operations/common-gpl3+/oilify.c:524
+#: ../operations/common-gpl3+/oilify.c:591
 msgid "Exponent buffer"
 msgstr "Buffer esponente"
 
-#: ../operations/common-gpl3+/oilify.c:525
+#: ../operations/common-gpl3+/oilify.c:592
 msgid ""
 "Per pixel buffer for modulating the exponent parameter, expecting a scaling "
 "factor in range 0.0-1.0"
 msgstr " stile svg"
 
-#: ../operations/common-gpl3+/oilify.c:534
+#: ../operations/common-gpl3+/oilify.c:603
 msgid "Oilify"
 msgstr "Pittura ad olio"
 
-#: ../operations/common-gpl3+/oilify.c:538
+#: ../operations/common-gpl3+/oilify.c:607
 msgid "Emulate an oil painting"
 msgstr "Emula la pittura ad olio"
 
@@ -7488,7 +7512,7 @@ msgstr "URI del file da caricare."
 msgid "Object to supply image metadata"
 msgstr "Oggetto che deve fornire i metadati immagine"
 
-#: ../operations/core/load.c:374
+#: ../operations/core/load.c:372
 msgid ""
 "Multipurpose file loader, that uses other native handlers, and fallback "
 "conversion using Image Magick's convert."
@@ -7560,11 +7584,11 @@ msgstr "audio-codec"
 msgid "audio"
 msgstr "audio"
 
-#: ../operations/external/ff-load.c:806
+#: ../operations/external/ff-load.c:866
 msgid "FFmpeg Frame Loader"
 msgstr "Caricatore quadro FFmpeg"
 
-#: ../operations/external/ff-load.c:808
+#: ../operations/external/ff-load.c:868
 msgid "FFmpeg video frame importer."
 msgstr "Importatore quadri video FFmpeg."
 
@@ -7709,11 +7733,11 @@ msgstr "i-quant-offset"
 msgid "me-subpel-quality"
 msgstr "me-subpel-quality"
 
-#: ../operations/external/ff-save.c:1135
+#: ../operations/external/ff-save.c:1212
 msgid "FFmpeg Frame Saver"
 msgstr "Salvatore quadro FFmpeg"
 
-#: ../operations/external/ff-save.c:1137
+#: ../operations/external/ff-save.c:1214
 msgid "FFmpeg video output sink"
 msgstr "Ricezione uscita video FFmpeg"
 
@@ -7737,11 +7761,11 @@ msgstr "ritardo di quadro"
 msgid "Delay in ms for last decoded frame"
 msgstr "Ritardo in ms per l'ultimo quadro decodificato"
 
-#: ../operations/external/gif-load.c:239
+#: ../operations/external/gif-load.c:240
 msgid "GIF File Loader"
 msgstr "Caricatore file GIF"
 
-#: ../operations/external/gif-load.c:241
+#: ../operations/external/gif-load.c:242
 msgid "GIF image loader."
 msgstr "Caricatore immagini GIF."
 
@@ -8029,7 +8053,7 @@ msgstr "Se questo valore è vero il modello non sarà liberato"
 msgid "Sampler used internally"
 msgstr "Campionatore usato internamente"
 
-#: ../operations/external/npd.c:256
+#: ../operations/external/npd.c:258
 msgid "Performs n-point image deformation"
 msgstr "Esegue una deformazione dell'immagine a n-punti"
 
@@ -9142,7 +9166,7 @@ msgid "1D Box Blur"
 msgstr "Sfocatura scatola 1D"
 
 #: ../operations/workshop/boxblur-1d.c:467
-msgid "Blur resulting from averaging the colors of a row neighbourhood."
+msgid "Blur resulting from averaging the colors of a row neighborhood."
 msgstr "La sfocatura risultante dalla media dei colori vicini ad una riga."
 
 #: ../operations/workshop/boxblur.c:75
