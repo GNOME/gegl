@@ -15,7 +15,7 @@ msgstr ""
 "Project-Id-Version: GEGL_0_2_0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-10-10 09:34+0200\n"
-"PO-Revision-Date: 2022-10-10 10:31+0200\n"
+"PO-Revision-Date: 2022-10-10 10:47+0200\n"
 "Last-Translator: Marco Ciampa <ciampix@posteo.net>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -716,11 +716,11 @@ msgstr "Non sovraesporre le alteluci"
 
 #: ../operations/common/bloom.c:207
 msgid "Bloom"
-msgstr "Bloom"
+msgstr "Fiore"
 
 #: ../operations/common/bloom.c:210
 msgid "Add glow around bright areas"
-msgstr "Aggiunge un bagliore attorno alle aree luminose"
+msgstr "Aggiunge un chiarore attorno alle aree luminose"
 
 #: ../operations/common/box-blur.c:26 ../operations/common/snn-mean.c:27
 #: ../operations/workshop/boxblur.c:25
