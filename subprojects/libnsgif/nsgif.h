@@ -23,6 +23,9 @@
 /** Representation of infinity. */
 #define NSGIF_INFINITE (UINT32_MAX)
 
+/** Maximum colour table size */
+#define NSGIF_MAX_COLOURS 256
+
 /**
  * Opaque type used by LibNSGIF to represent a GIF object in memory.
  */
@@ -85,6 +88,11 @@ typedef enum {
 	 * Unexpected end of GIF source data.
 	 */
 	NSGIF_ERR_END_OF_DATA,
+
+	/**
+	 * Can't supply more data after calling \ref nsgif_data_complete.
+	 */
+	NSGIF_ERR_DATA_COMPLETE,
 
 	/**
 	 * The current frame cannot be displayed.
@@ -162,6 +170,11 @@ typedef enum nsgif_bitmap_fmt {
  * but they are owned by a \ref nsgif_t.
  *
  * See \ref nsgif_bitmap_fmt for pixel format information.
+ *
+ * The bitmap may have a row_span greater than the bitmap width, but the
+ * difference between row span and width must be a whole number of pixels
+ * (a multiple of four bytes). If row span is greater than width, the
+ * \ref get_rowspan callback must be provided.
  */
 typedef void nsgif_bitmap_t;
 
@@ -186,7 +199,8 @@ typedef struct nsgif_bitmap_cb_vt {
 	/**
 	 * Get pointer to pixel buffer in a bitmap.
 	 *
-	 * The pixel buffer must be `width * height * sizeof(uint32_t)`.
+	 * The pixel buffer must be `(width + N) * height * sizeof(uint32_t)`.
+	 * Where `N` is any number greater than or equal to 0.
 	 * Note that the returned pointer to uint8_t must be 4-byte aligned.
 	 *
 	 * \param[in]  bitmap  The bitmap.
@@ -218,6 +232,15 @@ typedef struct nsgif_bitmap_cb_vt {
 	 * \param[in]  bitmap  The bitmap.
 	 */
 	void (*modified)(nsgif_bitmap_t *bitmap);
+
+	/**
+	 * Get row span in pixels.
+	 *
+	 * If this callback is not provided, LibNSGIF will use the width.
+	 *
+	 * \param[in]  bitmap  The bitmap.
+	 */
+	uint32_t (*get_rowspan)(nsgif_bitmap_t *bitmap);
 } nsgif_bitmap_cb_vt;
 
 /**
@@ -259,6 +282,8 @@ void nsgif_destroy(nsgif_t *gif);
  * several times, as more data is available (e.g. slow network fetch) the data
  * already given to \ref nsgif_data_scan must be provided each time.
  *
+ * Once all the data has been provided, call \ref nsgif_data_complete.
+ *
  * For example, if you call \ref nsgif_data_scan with 25 bytes of data, and then
  * fetch another 10 bytes, you would need to call \ref nsgif_data_scan with a
  * size of 35 bytes, and the whole 35 bytes must be contiguous memory. It is
@@ -282,11 +307,33 @@ nsgif_error nsgif_data_scan(
 		const uint8_t *data);
 
 /**
+ * Tell libnsgif that all the gif data has been provided.
+ *
+ * Call this after calling \ref nsgif_data_scan with the the entire GIF
+ * source data. You can call \ref nsgif_data_scan multiple times up until
+ * this is called, and after this is called, \ref nsgif_data_scan will
+ * return an error.
+ *
+ * You can decode a GIF before this is called, however, it will fail to
+ * decode any truncated final frame data and will not perform loops when
+ * driven via \ref nsgif_frame_prepare (because it doesn't know if there
+ * will be more frames supplied in future data).
+ *
+ * \param[in]  gif     The \ref nsgif_t object.
+ */
+void nsgif_data_complete(
+		nsgif_t *gif);
+
+/**
  * Prepare to show a frame.
  *
  * If this is the last frame of an animation with a finite loop count, the
  * returned `delay_cs` will be \ref NSGIF_INFINITE, indicating that the frame
  * should be shown forever.
+ *
+ * Note that if \ref nsgif_data_complete has not been called on this gif,
+ * animated GIFs will not loop back to the start. Instead it will return
+ * \ref NSGIF_ERR_END_OF_DATA.
  *
  * \param[in]  gif        The \ref nsgif_t object.
  * \param[out] area       The area in pixels that must be redrawn.
@@ -345,6 +392,8 @@ typedef struct nsgif_info {
 	int loop_max;
 	/** background colour in same pixel format as \ref nsgif_bitmap_t. */
 	uint32_t background;
+	/** whether the GIF has a global colour table */
+	bool global_palette;
 } nsgif_info_t;
 
 /**
@@ -377,6 +426,8 @@ typedef struct nsgif_frame_info {
 	bool display;
 	/** whether the frame may have transparency */
 	bool transparency;
+	/** whether the frame has a local colour table */
+	bool local_palette;
 
 	/** Disposal method for previous frame; affects plotting */
 	uint8_t disposal;
@@ -407,6 +458,43 @@ const nsgif_info_t *nsgif_get_info(const nsgif_t *gif);
 const nsgif_frame_info_t *nsgif_get_frame_info(
 		const nsgif_t *gif,
 		uint32_t frame);
+
+/**
+ * Get the global colour palette.
+ *
+ * If the GIF has no global colour table, this will return the default
+ * colour palette.
+ *
+ * Colours in same pixel format as \ref nsgif_bitmap_t.
+ *
+ * \param[in]  gif      The \ref nsgif_t object.
+ * \param[out] table    Client buffer to hold the colour table.
+ * \param[out] entries  The number of used entries in the colour table.
+ */
+void nsgif_global_palette(
+		const nsgif_t *gif,
+		uint32_t table[NSGIF_MAX_COLOURS],
+		size_t *entries);
+
+/**
+ * Get the local colour palette for a frame.
+ *
+ * Frames may have no local palette. In this case they use the global palette.
+ * This function returns false if the frame has no local palette.
+ *
+ * Colours in same pixel format as \ref nsgif_bitmap_t.
+ *
+ * \param[in]  gif      The \ref nsgif_t object.
+ * \param[in]  frame    The \ref frame to get the palette for.
+ * \param[out] table    Client buffer to hold the colour table.
+ * \param[out] entries  The number of used entries in the colour table.
+ * \return true if a palette is returned, false otherwise.
+ */
+bool nsgif_local_palette(
+		const nsgif_t *gif,
+		uint32_t frame,
+		uint32_t table[NSGIF_MAX_COLOURS],
+		size_t *entries);
 
 /**
  * Configure handling of small frame delays.
