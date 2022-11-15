@@ -140,6 +140,7 @@ prepare (GeglOperation *operation)
         g_warning ("nsgif_create: %s\n", nsgif_strerror(code));
 
       code = nsgif_data_scan (p->gif, length, p->gif_data);
+      nsgif_data_complete (p->gif);
 
       p->info = nsgif_get_info (p->gif);
       g_assert (p->info != NULL);
