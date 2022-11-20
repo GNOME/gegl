@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
 "POT-Creation-Date: 2022-09-10 01:29+0000\n"
-"PO-Revision-Date: 2022-10-22 19:34+0000\n"
+"PO-Revision-Date: 2022-11-20 19:34+0000\n"
 "Last-Translator: Jordi Mas i Hernàndez <jmas@softcatala.org>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "Language: ca\n"
@@ -2535,7 +2535,7 @@ msgstr "Renderització lineal del degradat"
 #: operations/common/little-planet.c:21
 #: operations/common/panorama-projection.c:21
 msgid "Pan"
-msgstr "Pan"
+msgstr "Panoràmica"
 
 #: operations/common/little-planet.c:22
 #: operations/common/panorama-projection.c:22
