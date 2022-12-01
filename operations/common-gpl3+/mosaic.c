@@ -372,6 +372,8 @@ mosaic (GeglOperation       *operation,
 
   o = GEGL_PROPERTIES (operation);
 
+  bzero (&mdatas, sizeof (mdatas));
+
   input_buf = g_new (gfloat, NB_CPN * result->width * result->height);
 
   gegl_buffer_get (drawable, result,
@@ -400,6 +402,9 @@ mosaic (GeglOperation       *operation,
 
   /*  Find the gradients  */
   find_gradients (input_buf, STD_DEV, result, &mdatas);
+
+  mdatas.grid.row_pad = 1;
+  mdatas.grid.col_pad = 1;
 
   /*  Create the tile geometry grid  */
   switch (o->tile_type)
