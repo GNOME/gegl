@@ -17,10 +17,10 @@
 
 void      perlin_init (void);
 double    noise1 (double);
-double    noise2 (double *);
-double    noise3 (double *);
-void      normalize3 (double *);
-void      normalize2 (double *);
+double    noise2 (double[2]);
+double    noise3 (double[3]);
+void      normalize3 (double[3]);
+void      normalize2 (double[2]);
 
 double    PerlinNoise1D (double, double, double, int);
 double    PerlinNoise2D (double, double, double, double, int);
