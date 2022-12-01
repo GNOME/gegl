@@ -180,7 +180,7 @@ static GeglBufferItem *read_block (int           fd,
         if(sz_read != -1)
           byte_read += sz_read;
       }
-      ret->block.length = own_size;
+      *((guint32*)ret) = own_size;
     }
   else if (block.length < own_size)
     {
@@ -192,7 +192,7 @@ static GeglBufferItem *read_block (int           fd,
 		if(sz_read != -1)
 		  byte_read += sz_read;
       }
-      ret->block.length = own_size;
+      *((guint32*)ret) = own_size;
     }
   else
     {
@@ -215,12 +215,13 @@ gegl_buffer_read_index (int           i,
   for (item = read_block (i, offset); item; item = read_block (i, offset))
     {
       g_assert (item);
-      GEGL_NOTE (GEGL_DEBUG_BUFFER_LOAD,"loaded item: %i, %i, %i offset:%i next:%i", item->tile.x,
-                 item->tile.y,
-                 item->tile.z,
-                 (guint)item->tile.offset,
-                 (guint)item->block.next);
-      *offset = item->block.next;
+      GEGL_NOTE (GEGL_DEBUG_BUFFER_LOAD,"loaded item: %i, %i, %i offset:%i next:%i", 
+                 ((GeglBufferTile*)item)->x,
+                 ((GeglBufferTile*)item)->y,
+                 ((GeglBufferTile*)item)->z,
+                 (guint)((GeglBufferTile*)item)->offset,
+                 (guint)((GeglBufferBlock*)item)->next);
+      *offset = ((GeglBufferBlock*)item)->next;
       ret = g_list_prepend (ret, item);
     }
   ret = g_list_reverse (ret);
