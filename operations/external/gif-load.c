@@ -180,15 +180,18 @@ process (GeglOperation       *operation,
   GeglProperties *o = GEGL_PROPERTIES (operation);
   const nsgif_frame_info_t *frame_info;
   Priv *p = (Priv*) o->user_data;
-  nsgif_bitmap_t *bitmap;
+  nsgif_bitmap_t *bitmap = NULL;
   nsgif_error code;
 
   if (o->frame > o->frames-1) o->frame = o->frames-1;
   if (o->frame < 0) o->frame = 0;
 
   code = nsgif_frame_decode (p->gif, o->frame, &bitmap);
-  if (code != NSGIF_OK)
+  if (code != NSGIF_OK || bitmap == NULL)
+  {
     g_warning ("gif_decode_frame: %s\n", nsgif_strerror(code));
+    return FALSE;
+  }
 
   gegl_buffer_set (output, result, 0, p->format,
                    bitmap,
