@@ -119,6 +119,9 @@ gegl_compression_rle_compress_pass (const guint8 *data,
   state = STATE_UNKNOWN;
   count = 0;
 
+  last_val = 0; // compiler complains about possible unused otherwise
+  val = 0;
+
   while (TRUE)
     {
       switch (state)
