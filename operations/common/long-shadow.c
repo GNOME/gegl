@@ -380,51 +380,6 @@ init_geometry (Context *ctx)
     }
 }
 
-static inline void
-transform_coords_to_filter (Context *ctx,
-                            gdouble  ix,
-                            gdouble  iy,
-                            gdouble *fx,
-                            gdouble *fy)
-{
-  if (ctx->flip_diagonally)
-    SWAP (gdouble, ix, iy);
-
-  if (ctx->flip_horizontally)
-    ix = -ix;
-
-  if (ctx->flip_vertically)
-    iy = -iy;
-
-  ix *= ctx->scale;
-  iy *= ctx->scale;
-
-  *fx = ix;
-  *fy = iy;
-}
-
-static inline void
-transform_coords_to_image (Context *ctx,
-                           gdouble  fx,
-                           gdouble  fy,
-                           gdouble *ix,
-                           gdouble *iy)
-{
-  fx *= ctx->scale_inv;
-  fy *= ctx->scale_inv;
-
-  if (ctx->flip_vertically)
-    fy = -fy;
-
-  if (ctx->flip_horizontally)
-    fx = -fx;
-
-  if (ctx->flip_diagonally)
-    SWAP (gdouble, fx, fy);
-
-  *ix = fx;
-  *iy = fy;
-}
 
 static inline void
 transform_rect_to_filter (Context             *ctx,
