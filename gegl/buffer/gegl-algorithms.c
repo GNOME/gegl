@@ -1311,7 +1311,8 @@ GEGL_SIMD_SUFFIX(gegl_resample_boxfilter) (guchar              *dest_buf,
   const gint bpp = babl_format_get_bytes_per_pixel (format);
   BablModelFlag model_flags = babl_get_model_flags (model);
 
-  if (func);
+  if (func)
+  ;
 
   if ((model_flags & BABL_MODEL_FLAG_LINEAR)||
       (model_flags & BABL_MODEL_FLAG_CMYK))
