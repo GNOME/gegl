@@ -89,7 +89,6 @@ static void c2g (GeglOperation       *op,
 #if 0
     float total_pix = dst_rect->width * dst_rect->height;
 #endif
-    int pix_done = 0.0;
 
     while (gegl_buffer_iterator_next (i))
     {
@@ -148,8 +147,6 @@ static void c2g (GeglOperation       *op,
                 dst_offset+=2;
               }
             }
-
-            pix_done += roi.width;
           }
       }
       else
@@ -201,12 +198,8 @@ static void c2g (GeglOperation       *op,
                 dst_offset+=2;
               }
             }
-            pix_done += roi.width;
           }
       }
-#if 0
-        gegl_operation_progress (op, pix_done / total_pix, "");
-#endif
     g_object_unref (sampler);
   }
 }
