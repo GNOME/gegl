@@ -257,7 +257,13 @@ math    = cc.find_library('m',  required: false)
 libdl   = cc.find_library('dl', required : false)
 thread  = dependency('threads')
 
-babl      = dependency('babl',        version: dep_ver.get('babl'))
+babl      = dependency('babl-0.1',    version: dep_ver.get('babl'), required: false)
+if not babl.found()
+  # babl changed its pkg-config name from 'babl' to 'babl-0.1' in version
+  # 0.1.100 (0.1.99 dev cycle more exactly). 'babl-0.1' is checked in priority
+  # because it would be a newer version.
+  babl    = dependency('babl',        version: dep_ver.get('babl'))
+endif
 glib      = dependency('glib-2.0',    version: dep_ver.get('glib'))
 gobject   = dependency('gobject-2.0', version: dep_ver.get('glib'))
 gmodule   = dependency('gmodule-2.0', version: dep_ver.get('glib'))
