@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2022-07-02 11:49+0000\n"
-"PO-Revision-Date: 2022-08-16 21:59+0300\n"
+"POT-Creation-Date: 2022-11-20 22:49+0000\n"
+"PO-Revision-Date: 2022-12-11 02:10+0300\n"
 "Last-Translator: Sabri Ünal <libreajans@gmail.com>\n"
 "Language-Team: Türkçe <gnome-turk@gnome.org>\n"
 "Language: tr\n"
@@ -394,30 +394,30 @@ msgstr "Asla"
 msgid "Always"
 msgstr "Her Zaman"
 
-#: gegl/gegl-init.c:213
+#: gegl/gegl-init.c:225
 msgid "Where GEGL stores its swap"
 msgstr "GEGL takas alanının depolandığı yer"
 
-#: gegl/gegl-init.c:218
+#: gegl/gegl-init.c:230
 msgid "Compression algorithm used for data stored in the swap"
 msgstr ""
 "Takas alanında depolanan veriler için kullanılacak sıkıştırma algoritması"
 
-#: gegl/gegl-init.c:223
+#: gegl/gegl-init.c:235
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr ""
 "Görüntülerin önbelleğe alınması için ne kadar bellek kullanılacağı (yaklaşık "
 "olarak)"
 
-#: gegl/gegl-init.c:228
+#: gegl/gegl-init.c:240
 msgid "Default size of tiles in GeglBuffers"
 msgstr "GeglBuffers içindeki döşemelerin varsayılan boyutu"
 
-#: gegl/gegl-init.c:233
+#: gegl/gegl-init.c:245
 msgid "The count of pixels to compute simultaneously"
 msgstr "Aynı anda hesaplamak için piksel sayısı"
 
-#: gegl/gegl-init.c:238
+#: gegl/gegl-init.c:250
 #, fuzzy
 #| msgid ""
 #| "The quality of rendering a value between 0.0(fast) and 1.0(reference)"
@@ -426,17 +426,17 @@ msgid ""
 msgstr ""
 "0.0 (hızlı) ve 1.0 (kaynak) arasındaki bir değerin görselleştirme kalitesi"
 
-#: gegl/gegl-init.c:243
+#: gegl/gegl-init.c:255
 msgid "The number of concurrent processing threads to use"
 msgstr "Kullanılacak eşzamanlı işlem parçaçıkları"
 
-#: gegl/gegl-init.c:248
+#: gegl/gegl-init.c:260
 msgid "Disable OpenCL"
 msgstr "OpenCL Kapat"
 
-#: gegl/gegl-init.c:260
+#: gegl/gegl-init.c:272
 msgid "Show GEGL Options"
-msgstr ""
+msgstr "GEGL Seçeneklerini Göster"
 
 #: gegl/gegl-serialize.c:296
 #, c-format
@@ -705,20 +705,16 @@ msgid "Threshold"
 msgstr "Eşik"
 
 #: operations/common/bloom.c:27
-#, fuzzy
-#| msgid "Lower threshold"
 msgid "Glow-area brightness threshold"
-msgstr "Daha düşük eşik"
+msgstr "Parlama alanı parlaklık eşiği"
 
 #: operations/common/bloom.c:30 operations/common/vignette.c:46
 msgid "Softness"
 msgstr "Yumuşaklık"
 
 #: operations/common/bloom.c:31
-#, fuzzy
-#| msgid "Gradient smoothness"
 msgid "Glow-area edge softness"
-msgstr "Renk geçişi pürüzsüzlüğü"
+msgstr "Parlama alanı kenar yumuşaklığı"
 
 #: operations/common/bloom.c:35 operations/common/box-blur.c:25
 #: operations/common/c2g.c:28 operations/common/edge-neon.c:47
@@ -752,25 +748,20 @@ msgid "Glow strength"
 msgstr "Parlama kuvveti"
 
 #: operations/common/bloom.c:47
-#, fuzzy
-#| msgid "Combine Exposures"
 msgid "Limit exposure"
-msgstr "Pozlamaları Birleştir"
+msgstr "Pozlamayı sınırla"
 
 #: operations/common/bloom.c:48
-#, fuzzy
-#| msgid "Adjust exposure of highlights"
 msgid "Don't over-expose highlights"
-msgstr "Vurgu pozlamasını ayarla"
+msgstr "Vurguları aşırı pozlama"
 
 #: operations/common/bloom.c:207
-#, fuzzy
 msgid "Bloom"
-msgstr "Filizlenme"
+msgstr "Bahar"
 
 #: operations/common/bloom.c:210
 msgid "Add glow around bright areas"
-msgstr ""
+msgstr "Parlak alanların etrafına parlama ekle"
 
 #: operations/common/box-blur.c:26 operations/common/snn-mean.c:27
 #: operations/workshop/boxblur.c:25
@@ -1774,7 +1765,6 @@ msgstr "Kullanılacak renk taklidi yöntemi"
 #: operations/common-gpl3+/supernova.c:63
 #: operations/common-gpl3+/tile-paper.c:81 operations/common-gpl3+/wind.c:68
 #: operations/workshop/segment-kmeans.c:37
-#, fuzzy
 msgid "Random seed"
 msgstr "Rastgele parçacık"
 
@@ -4156,11 +4146,11 @@ msgstr "Kaydedilecek dosyanın yolu."
 #: operations/external/png-save.c:34 operations/external/tiff-load.c:39
 #: operations/external/tiff-save.c:34
 msgid "Metadata"
-msgstr ""
+msgstr "Üst veri"
 
 #: operations/common/save.c:29
 msgid "Object providing image metadata"
-msgstr ""
+msgstr "Görüntü üst verisi sağlayan nesne"
 
 #: operations/common/save.c:208
 msgid "Save"
@@ -4718,16 +4708,12 @@ msgid "Write input data into an existing GEGL buffer destination surface."
 msgstr "Girdi verisini varolan bir GEGL arabellek hedef yüzeyine yaz."
 
 #: operations/common-cxx/distance-transform.cc:31
-#, fuzzy
-#| msgid "Lower threshold"
 msgid "Above threshold"
-msgstr "Daha düşük eşik"
+msgstr "Eşiğin üstünde"
 
 #: operations/common-cxx/distance-transform.cc:32
-#, fuzzy
-#| msgid "Lower threshold"
 msgid "Below threshold"
-msgstr "Daha düşük eşik"
+msgstr "Eşiğin altında"
 
 #: operations/common-cxx/distance-transform.cc:35
 #: operations/workshop/external/voronoi-diagram.cc:24
@@ -4740,14 +4726,12 @@ msgid "Metric to use for the distance calculation"
 msgstr "Mesafe hesaplaması için kullanılacak metrikler"
 
 #: operations/common-cxx/distance-transform.cc:39
-#, fuzzy
-#| msgid "Edge behavior"
 msgid "Edge handling"
-msgstr "Kenar davranışı"
+msgstr "Kenar işleme"
 
 #: operations/common-cxx/distance-transform.cc:41
 msgid "How areas outside the input are considered when calculating distance"
-msgstr ""
+msgstr "Mesafe hesaplanırken girdi dışındaki alanlar nasıl değerlendirilecek?"
 
 #: operations/common-cxx/distance-transform.cc:43
 msgid "Threshold low"
@@ -4811,7 +4795,7 @@ msgstr "Vurgu eşiği (yüksek)"
 
 #: operations/common-cxx/focus-blur.c:86
 msgid "Focus-region outer radius"
-msgstr ""
+msgstr "Odak bölgesi dış yarıçapı"
 
 #: operations/common-cxx/focus-blur.c:91 operations/common-gpl3+/photocopy.c:29
 #: operations/common-gpl3+/softglow.c:33
@@ -4820,11 +4804,11 @@ msgstr "Keskinlik"
 
 #: operations/common-cxx/focus-blur.c:92
 msgid "Focus-region inner limit"
-msgstr ""
+msgstr "Odak bölgesi iç yarıçapı"
 
 #: operations/common-cxx/focus-blur.c:96
 msgid "Focus-transition midpoint"
-msgstr ""
+msgstr "Odak geçiş orta noktası"
 
 #: operations/common-cxx/focus-blur.c:99 operations/common-gpl3+/waves.c:46
 msgid "Aspect ratio"
@@ -4837,20 +4821,18 @@ msgstr "Bulanıklık düzeyleri"
 
 #: operations/common-cxx/focus-blur.c:110
 #: operations/common-cxx/variable-blur.c:43
-#, fuzzy
-#| msgid "Number of clusters"
 msgid "Number of blur levels"
-msgstr "Küme sayısı"
+msgstr "Bulanıklık düzeyi sayısı"
 
 #: operations/common-cxx/focus-blur.c:114
 #: operations/common-cxx/variable-blur.c:46
 msgid "Blur gamma"
-msgstr ""
+msgstr "Bulanıklık gama"
 
 #: operations/common-cxx/focus-blur.c:115
 #: operations/common-cxx/variable-blur.c:47
 msgid "Gamma factor for blur-level spacing"
-msgstr ""
+msgstr "Bulanıklık düzeyi aralığı için gama faktörü"
 
 #: operations/common-cxx/focus-blur.c:122
 #: operations/common-cxx/variable-blur.c:53
@@ -4860,7 +4842,7 @@ msgstr "Yüksek kalite"
 #: operations/common-cxx/focus-blur.c:123
 #: operations/common-cxx/variable-blur.c:54
 msgid "Generate more accurate and consistent output (slower)"
-msgstr ""
+msgstr "Daha doğru ve tutarlı çıktı oluştur (daha yavaş)"
 
 #: operations/common-cxx/focus-blur.c:320
 msgid "Focus Blur"
@@ -4871,28 +4853,24 @@ msgid "Blur the image around a focal point"
 msgstr "Görüntüyü odak noktası çevresinde bulanıklaştır"
 
 #: operations/common-cxx/denoise-dct.cc:33
-#, fuzzy
-#| msgid "Vertical size"
 msgid "Patch size"
-msgstr "Dikey boyut"
+msgstr "Yama boyutu"
 
 #: operations/common-cxx/denoise-dct.cc:36
 msgid "Size of patches used to denoise"
-msgstr ""
+msgstr "Gürültü kaldırma için kullanılan yamaların boyutu"
 
 #: operations/common-cxx/denoise-dct.cc:39
-#, fuzzy
-#| msgid "Expressed as standard deviation, in pixels"
 msgid "Noise standard deviation"
-msgstr "Standart sapma olarak ifade edilir, piksel olarak"
+msgstr "Gürültü standart sapma"
 
 #: operations/common-cxx/denoise-dct.cc:480
 msgid "Denoise DCT"
-msgstr ""
+msgstr "Gürültü Kaldırma DCT"
 
 #: operations/common-cxx/denoise-dct.cc:482
 msgid "Denoising algorithm using a per-patch DCT thresholding"
-msgstr ""
+msgstr "Yama başına DCT eşikleme kullanan gürültü kaldırma algoritması"
 
 #: operations/common-cxx/lens-blur.cc:46
 msgid "Clip to input extents"
@@ -4900,7 +4878,7 @@ msgstr "Girdi ölçülerine kırp"
 
 #: operations/common-cxx/lens-blur.cc:47
 msgid "Clip output to the input extents"
-msgstr "Girdi ölçülerine kırp"
+msgstr "Çıktıyı girdi ölçülerine kırp"
 
 #: operations/common-cxx/lens-blur.cc:49
 #: operations/common-cxx/piecewise-blend.cc:38
@@ -4919,14 +4897,12 @@ msgid "Simulate out-of-focus lens blur"
 msgstr "Odak dışı lens bulanıklığına benzet"
 
 #: operations/common-cxx/piecewise-blend.cc:30
-#, fuzzy
-#| msgid "Number of downsampled levels to use"
 msgid "Number of blend levels"
-msgstr "Kullanılacak aşağı örneklenmiş düzey sayısı"
+msgstr "Harmanlama düzeyi sayısı"
 
 #: operations/common-cxx/piecewise-blend.cc:34
 msgid "Gamma factor for blend-level spacing"
-msgstr ""
+msgstr "Harmanlama düzeyi aralığı için gama faktörü"
 
 #: operations/common-cxx/piecewise-blend.cc:346
 msgid "Piecewise Blend"
@@ -4934,7 +4910,7 @@ msgstr "Parçalı Karıştır"
 
 #: operations/common-cxx/piecewise-blend.cc:348
 msgid "Blend a chain of inputs using a mask"
-msgstr ""
+msgstr "Maske kullanarak girdi zincirini harmanla"
 
 #: operations/common-cxx/variable-blur.c:31
 msgid "Maximal blur radius"
@@ -4946,7 +4922,7 @@ msgstr "Değişken Bulanıklık"
 
 #: operations/common-cxx/variable-blur.c:210
 msgid "Blur the image by a varying amount using a mask"
-msgstr ""
+msgstr "Maske kullanarak görüntüyü değişen oranda bulanıklaştır"
 
 #: operations/common-cxx/warp.cc:25
 msgid "Move pixels"
@@ -7392,7 +7368,7 @@ msgstr "Verileri belirtilen biçime dönüştür"
 
 #: operations/core/convert-space.c:25
 msgid "Space name"
-msgstr ""
+msgstr "Uzay adı"
 
 #: operations/core/convert-space.c:113
 msgid "Convert color space"
@@ -8983,14 +8959,13 @@ msgid ""
 msgstr ""
 
 #: operations/workshop/band-tune.c:50
+#, fuzzy
 msgid "Edge bandwidth"
-msgstr ""
+msgstr "Kenar bant genişliği"
 
 #: operations/workshop/band-tune.c:54
-#, fuzzy
-#| msgid "Hue adjustment"
 msgid "Visualize Adjustment Mask"
-msgstr "Renk tonu ayarı"
+msgstr "Ayarlama Maskesini Görselleştir"
 
 #: operations/workshop/band-tune.c:217
 msgid "Band tune"
@@ -9167,47 +9142,43 @@ msgstr ""
 
 #: operations/workshop/external/paint-select.cc:30
 msgid "Add"
-msgstr ""
+msgstr "Ekle"
 
 #: operations/workshop/external/paint-select.cc:31
 msgid "Subtract"
-msgstr ""
+msgstr "Çıkar"
 
 #: operations/workshop/external/paint-select.cc:37
 msgid "Either to add to or subtract from the mask"
-msgstr ""
+msgstr "Maskeye ekle veya maskeden çıkar"
 
 #: operations/workshop/external/paint-select.cc:39
 msgid "Use local region"
-msgstr ""
+msgstr "Yerel bölgeyi kullan"
 
 #: operations/workshop/external/paint-select.cc:40
 msgid "Perform graphcut in a local region"
-msgstr ""
+msgstr "Yerel bölgede grafik kesim gerçekleştir"
 
 #: operations/workshop/external/paint-select.cc:42
 msgid "region-x"
-msgstr ""
+msgstr "bölge-x"
 
 #: operations/workshop/external/paint-select.cc:45
 msgid "region-y"
-msgstr ""
+msgstr "bölge-y"
 
 #: operations/workshop/external/paint-select.cc:48
-#, fuzzy
-#| msgid "Line width"
 msgid "region-width"
-msgstr "Satır genişliği"
+msgstr "bölge-genişliği"
 
 #: operations/workshop/external/paint-select.cc:51
-#, fuzzy
-#| msgid "Line height"
 msgid "region-height"
-msgstr "Satır yüksekliği"
+msgstr "bölge-yüksekliği"
 
 #: operations/workshop/external/paint-select.cc:1287
 msgid "Paint Select"
-msgstr ""
+msgstr "Boya Seç"
 
 #: operations/workshop/external/lens-correct.c:28
 msgid "Maker"
