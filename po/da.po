@@ -17,8 +17,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl gegl-0-2\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2022-05-16 09:17+0000\n"
-"PO-Revision-Date: 2022-06-08 18:32+0200\n"
+"POT-Creation-Date: 2022-09-10 01:29+0000\n"
+"PO-Revision-Date: 2022-12-27 18:45+0100\n"
 "Last-Translator: Alan Mortensen <alanmortensen.am@gmail.com>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "Language: da\n"
@@ -26,7 +26,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.3\n"
+"X-Generator: Poedit 3.0.1\n"
 "X-Language: da_DK\n"
 "X-Source-Language: C\n"
 
@@ -653,9 +653,8 @@ msgstr "Bilateralt filter"
 
 #: operations/common/bilateral-filter.c:299
 msgid ""
-"Like a gaussian blur; but where the contribution for each neighbourhood "
-"pixel is also weighted by the color difference with the original center "
-"pixel."
+"Like a gaussian blur; but where the contribution for each neighborhood pixel "
+"is also weighted by the color difference with the original center pixel."
 msgstr ""
 "Som gaussisk sløring, men hvor bidraget fra hver nærliggende pixel også "
 "vægtes med farveforskellen til den oprindelige centrumspixel."
@@ -736,7 +735,7 @@ msgid "Box Blur"
 msgstr "Kassesløring"
 
 #: operations/common/box-blur.c:407 operations/workshop/boxblur.c:76
-msgid "Blur resulting from averaging the colors of a square neighbourhood."
+msgid "Blur resulting from averaging the colors of a square neighborhood."
 msgstr ""
 "Sløring opnået ved at tage gennemsnittet af farverne i et nærliggende "
 "kvadratisk område."
@@ -780,9 +779,9 @@ msgid ""
 "light, 'contrast' is a scale factor around 50% gray, and 'brightness' a "
 "constant offset to apply after contrast scaling."
 msgstr ""
-"Ændrer lysstyrken og kontrasten. Operationen virker i lineært lys, \"kontrast"
-"\" er en skaleringsfaktor omkring middelgrå og \"lysstyrke\" en konstant "
-"forskydning, der anvendes efter kontrastskaleringen."
+"Ændrer lysstyrken og kontrasten. Operationen virker i lineært lys, "
+"\"kontrast\" er en skaleringsfaktor omkring middelgrå og \"lysstyrke\" en "
+"konstant forskydning, der anvendes efter kontrastskaleringen."
 
 #: operations/common/buffer-sink.c:25 operations/common/write-buffer.c:25
 msgid "Buffer location"
@@ -2185,7 +2184,7 @@ msgstr ""
 "pad\"."
 
 #: operations/common/grey.c:138
-msgid "Make Grey"
+msgid "Make Gray"
 msgstr "Gør grå"
 
 #: operations/common/grey.c:142
@@ -4217,13 +4216,13 @@ msgid "Number of pairs; higher number preserves more acute features"
 msgstr "Højere tal bevarer finere detaljer"
 
 #: operations/common/snn-mean.c:383
-msgid "Symmetric Nearest Neighbour"
+msgid "Symmetric Nearest Neighbor"
 msgstr "Symmetrisk nærmeste nabo"
 
 #: operations/common/snn-mean.c:387
 msgid ""
 "Noise reducing edge preserving blur filter based on Symmetric Nearest "
-"Neighbours"
+"Neighbors"
 msgstr ""
 "Støjreducerende, kantbevarende sløringsfilter baseret på symmetriske "
 "nærmeste naboer"
@@ -6075,11 +6074,11 @@ msgid "Rescale overall image size"
 msgstr "Skalér billedets overordnede størrelse"
 
 #: operations/common-gpl3+/lens-distortion.c:46
-msgid "Effect centre offset in X"
+msgid "Effect center offset in X"
 msgstr "x-forskydning af effektens centrum"
 
 #: operations/common-gpl3+/lens-distortion.c:50
-msgid "Effect centre offset in Y"
+msgid "Effect center offset in Y"
 msgstr "y-forskydning af effektens centrum"
 
 # Tilsyneladende kan det både gøres lysere og mørkere i hjørnerne
@@ -7967,9 +7966,9 @@ msgid ""
 "Given a sparse user supplied tri-map and an input image, create a foreground "
 "alpha mat. Set white as selected, black as unselected, for the tri-map."
 msgstr ""
-"Opretter en alfamattering på baggrund af et inputbillede og en tynd \"tri-map"
-"\" leveret af brugeren. Forgrunden sættes til valgt og baggrunden til ikke-"
-"valgt for \"tri-mappen\"."
+"Opretter en alfamattering på baggrund af et inputbillede og en tynd \"tri-"
+"map\" leveret af brugeren. Forgrunden sættes til valgt og baggrunden til "
+"ikke-valgt for \"tri-mappen\"."
 
 #: operations/external/npd.c:23
 msgid "Model"
@@ -9141,7 +9140,7 @@ msgid "1D Box Blur"
 msgstr "1D-kassesløring"
 
 #: operations/workshop/boxblur-1d.c:467
-msgid "Blur resulting from averaging the colors of a row neighbourhood."
+msgid "Blur resulting from averaging the colors of a row neighborhood."
 msgstr ""
 "Sløring opnået ved at tage gennemsnittet af farverne i et nærliggende "
 "rækkeområde."
@@ -9801,8 +9800,8 @@ msgstr "Justér farvetone, mæthed og lyshed selektivt"
 #~ "Horizontally stack inputs, (in \"output\" \"aux\" is placed to the right "
 #~ "of \"input\")"
 #~ msgstr ""
-#~ "Stabl input vandret (i \"output\" er aux\" placeret til højre for \"input"
-#~ "\")"
+#~ "Stabl input vandret (i \"output\" er aux\" placeret til højre for "
+#~ "\"input\")"
 
 #~ msgid "Box filter"
 #~ msgstr "Kassefilter"
