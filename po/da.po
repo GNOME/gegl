@@ -119,7 +119,7 @@ msgstr ""
 #: bin/gegl-options.c:86
 #, c-format
 msgid "ERROR: '%s' option expected argument\n"
-msgstr "FEJL: tilvalget \"%s\" forventede et argument\n"
+msgstr "FEJL: tilvalget “%s” forventede et argument\n"
 
 #: bin/gegl-options.c:125
 msgid "Display on screen"
@@ -175,14 +175,14 @@ msgid ""
 msgstr ""
 "\n"
 "\n"
-"argumentet \"%s\" er ukendt; giver dig hjælp i stedet\n"
+"argumentet “%s” er ukendt; giver dig hjælp i stedet\n"
 "\n"
 "\n"
 
 #: bin/ui-core.c:4382 gegl/gegl-serialize.c:658
 #, c-format
 msgid "BablFormat \"%s\" does not exist."
-msgstr "BablFormat \"%s\" findes ikke."
+msgstr "BablFormat “%s” findes ikke."
 
 #: gegl/buffer/gegl-buffer-enums.c:32 gegl/gegl-enums.c:33
 #: operations/common/gaussian-blur.c:30 operations/common/gblur-1d.c:32
@@ -415,7 +415,7 @@ msgstr "stidata %s ikke håndteret:%s\n"
 #: gegl/gegl-serialize.c:528
 #, c-format
 msgid "op '%s' not found, partial matches: "
-msgstr "op. \"%s\" ikke fundet. Delvise match: "
+msgstr "op. “%s” ikke fundet. Delvise match: "
 
 #: gegl/gegl-serialize.c:557
 #, c-format
@@ -430,7 +430,7 @@ msgstr "%s har ikke nogen %s-egenskab. Egenskaber: "
 #: gegl/gegl-serialize.c:794
 #, c-format
 msgid "No such op '%s'"
-msgstr "Ingen operation \"%s\""
+msgstr "Ingen operation “%s”"
 
 #: gegl/module/geglmodule.c:339
 msgid "Module error"
@@ -451,7 +451,7 @@ msgstr "Ikke indlæst"
 #: gegl/module/geglmodule.c:388
 #, c-format
 msgid "Module '%s' load error: %s"
-msgstr "Indlæsningsfejl for modulet \"%s\": %s"
+msgstr "Indlæsningsfejl for modulet “%s”: %s"
 
 # http://gegl.org/operation-api.html
 #: gegl/operation/gegl-operation-composer3.c:77
@@ -780,7 +780,7 @@ msgid ""
 "constant offset to apply after contrast scaling."
 msgstr ""
 "Ændrer lysstyrken og kontrasten. Operationen virker i lineært lys, "
-"\"kontrast\" er en skaleringsfaktor omkring middelgrå og \"lysstyrke\" en "
+"“kontrast” er en skaleringsfaktor omkring middelgrå og “lysstyrke” en "
 "konstant forskydning, der anvendes efter kontrastskaleringen."
 
 #: operations/common/buffer-sink.c:25 operations/common/write-buffer.c:25
@@ -817,7 +817,7 @@ msgstr "Inputbuffer"
 
 #: operations/common/buffer-source.c:26
 msgid "The GeglBuffer to load into the pipeline"
-msgstr "GeglBufferen som skal indlæses i \"pipeline\""
+msgstr "GeglBufferen som skal indlæses i “pipeline”"
 
 #: operations/common/buffer-source.c:219
 msgid "Buffer Source"
@@ -2019,7 +2019,7 @@ msgstr ""
 "Tilpasser et billede, som kan have et stort dynamisk område, til visning med "
 "et lille dynamisk område. Denne operation dæmper størrelsen af lokale "
 "billedgradienter og giver lysstyrke i området 0–1. Denne tilgang, kaldet "
-"\"tone mapping\", blev oprindeligt præsenteret af Fattal, Lischinski og "
+"“tone mapping”, blev oprindeligt præsenteret af Fattal, Lischinski og "
 "Werman ved konferencen SIGGRAPH 2002: Gradient Domain High Dynamic Range "
 "Compression (http://www.cs.huji.ac.il/~danix/hdr/)."
 
@@ -2148,7 +2148,7 @@ msgstr "GeglBuffer-filskriver."
 
 #: operations/common/gegl.c:68
 msgid "pipeline"
-msgstr "\"pipeline\""
+msgstr "“pipeline”"
 
 #: operations/common/gegl.c:69
 msgid "[op [property=value] [property=value]] [[op] [property=value]"
@@ -2180,8 +2180,8 @@ msgid ""
 msgstr ""
 "Foretager en kæde af operationer, hvor egenskaber for hver operation angives "
 "med par af nøgle=værdi efter operationens navn. Brug aux = [ kildefilter ] "
-"for at angive en kæde med en kilde som noget, der er forbundet til en \"aux "
-"pad\"."
+"for at angive en kæde med en kilde som noget, der er forbundet til en “aux "
+"pad”."
 
 #: operations/common/grey.c:138
 msgid "Make Gray"
@@ -2387,7 +2387,7 @@ msgid ""
 "corresponding \"negative\" image."
 msgstr ""
 "Inverterer komponenterne (undtagen alfa) perceptuelt. Resultatet er det "
-"tilsvarende \"negativ\"."
+"tilsvarende “negativ”."
 
 #: operations/common/invert-linear.c:54 operations/common-gpl3+/bump-map.c:45
 #: operations/workshop/connected-components.c:28
@@ -2401,7 +2401,7 @@ msgid ""
 "corresponding \"negative\" image."
 msgstr ""
 "Inverterer komponenterne (undtagen alfa) i lineært lys. Resultatet er det "
-"tilsvarende \"negativ\"."
+"tilsvarende “negativ”."
 
 #: operations/common/layer.c:30
 msgid "Operation"
@@ -2814,9 +2814,9 @@ msgid ""
 "alpha matte. Set white as foreground, black as background for the tri-map. "
 "Everything else will be treated as unknown and filled in."
 msgstr ""
-"Opretter en alfamattering på baggrund af en tynd \"tri-map\" leveret af "
+"Opretter en alfamattering på baggrund af en tynd “tri-map” leveret af "
 "brugeren og et inputbillede. Forgrunden sættes til hvid og baggrunden til "
-"sort for \"tri-mappen\". Alt andet behandles som ukendt og fyldes ud."
+"sort for “tri-mappen”. Alt andet behandles som ukendt og fyldes ud."
 
 # Mon ikke det skulle have været dampening?
 #: operations/common/mblur.c:25
@@ -4366,7 +4366,7 @@ msgid ""
 msgstr ""
 "Skalerer bufferens komponenter til at være 0–1. Forbedrer billeder, som "
 "udnytter den tilgængelige kontrast dårligt (billeder med lav kontrast eller "
-"som er meget mørke eller lyse). I modsætning til \"Stræk kontrast\" virker "
+"som er meget mørke eller lyse). I modsætning til “Stræk kontrast” virker "
 "denne i HSV-rummet og bevarer farvetonen."
 
 #: operations/common/svg-huerotate.c:27 operations/common/svg-matrix.c:27
@@ -4553,7 +4553,7 @@ msgid ""
 "Defaults to 'black', you can use transparency here to erase portions of an "
 "image"
 msgstr ""
-"Som standard \"black\". Du kan bruge gennemsigtighed her for at slette dele "
+"Som standard “black”. Du kan bruge gennemsigtighed her for at slette dele "
 "af et billede."
 
 #: operations/common/vignette.c:41
@@ -5226,8 +5226,8 @@ msgid ""
 "takes a buffer to be applied as a bump map to another buffer and produces a "
 "nice embossing effect."
 msgstr ""
-"Dette udvidelsesmodul bruger algoritmen beskrevet af John Schlag, \"Fast "
-"Embossing Effects on Raster Image Data\" i Graphics GEMS IV (ISBN "
+"Dette udvidelsesmodul bruger algoritmen beskrevet af John Schlag, “Fast "
+"Embossing Effects on Raster Image Data” i Graphics GEMS IV (ISBN "
 "0-12-336155-9). Det tager en buffer, som anvendes som en ujævnhedsafbildning "
 "på en anden buffer for at lave en flot reliefeffekt."
 
@@ -5936,7 +5936,7 @@ msgstr "Loglog-udglatning"
 #: operations/common-gpl3+/fractal-explorer.c:374
 #, c-format
 msgid "Unsupported fractal type: %d"
-msgstr "Fraktaltypen \"%d\" understøttes ikke"
+msgstr "Fraktaltypen “%d” understøttes ikke"
 
 #: operations/common-gpl3+/fractal-explorer.c:431
 msgid "Fractal Explorer"
@@ -6431,7 +6431,7 @@ msgid ""
 "the aux pad."
 msgstr ""
 "Radius af cirkel omkring pixel. Kan også skaleres pr. pixel med en buffer på "
-"\"aux pad\"."
+"“aux pad”."
 
 #: operations/common-gpl3+/oilify.c:36
 msgid ""
@@ -6439,7 +6439,7 @@ msgid ""
 "a buffer on the aux2 pad."
 msgstr ""
 "Eksponent til behandling. Styrer glatheden; kan skaleres pr. pixel med en "
-"buffer på \"aux2 pad\"."
+"buffer på “aux2 pad”."
 
 #: operations/common-gpl3+/oilify.c:40
 msgid "Number of intensities"
@@ -7070,7 +7070,7 @@ msgstr "Styrken hvormed en pixel udbredes til dens naboer"
 
 #: operations/common-gpl3+/value-propagate.c:55
 msgid "Color to use for the \"Only color\" and \"Color to peaks\" modes"
-msgstr "Farve for tilstandene \"Kun farve\" og \"Farve til toppe\""
+msgstr "Farve for tilstandene “Kun farve” og “Farve til toppe”"
 
 #: operations/common-gpl3+/value-propagate.c:60
 msgid "To top"
@@ -7464,7 +7464,7 @@ msgid ""
 "nothing is connected on aux, the bounding box of the node at the producing "
 "end of the input chain is used."
 msgstr ""
-"Beskærer en buffer, hvis \"aux pad\" er forbundet til knudens "
+"Beskærer en buffer, hvis “aux pad” er forbundet til knudens "
 "afgrænsningsramme og i brug. Når beskæringsområdet er indstillet til 0x0 ved "
 "0,0 og intet er forbundet til aux, bruges knudens afgrænsningsramme i den "
 "producerende ende af inputkæden."
@@ -7571,7 +7571,7 @@ msgstr "FFmpeg-videostillbilledindlæser."
 #: operations/external/ff-save.c:30 operations/external/png-save.c:27
 #: operations/external/ppm-save.c:26 operations/external/rgbe-save.c:27
 msgid "Target path and filename, use '-' for stdout."
-msgstr "Målsti og filnavn. Brug \"-\" for standardoutput."
+msgstr "Målsti og filnavn. Brug “-” for standardoutput."
 
 #: operations/external/ff-save.c:33
 msgid "Audio codec"
@@ -7832,7 +7832,7 @@ msgstr "Indlæsning af JPEG 2000-billeder med brug af libjpeg"
 #: operations/external/jpg-save.c:26 operations/external/npy-save.c:32
 #: operations/external/tiff-save.c:26 operations/external/webp-save.c:26
 msgid "Target path and filename, use '-' for stdout"
-msgstr "Målsti og filnavn. Brug \"-\"  for standardoutput."
+msgstr "Målsti og filnavn. Brug “-”  for standardoutput."
 
 #: operations/external/jpg-save.c:29
 msgid "JPEG compression quality (between 1 and 100)"
@@ -7966,9 +7966,9 @@ msgid ""
 "Given a sparse user supplied tri-map and an input image, create a foreground "
 "alpha mat. Set white as selected, black as unselected, for the tri-map."
 msgstr ""
-"Opretter en alfamattering på baggrund af et inputbillede og en tynd \"tri-"
-"map\" leveret af brugeren. Forgrunden sættes til valgt og baggrunden til "
-"ikke-valgt for \"tri-mappen\"."
+"Opretter en alfamattering på baggrund af et inputbillede og en tynd “tri-"
+"map” leveret af brugeren. Forgrunden sættes til valgt og baggrunden til "
+"ikke-valgt for “tri-mappen”."
 
 #: operations/external/npd.c:23
 msgid "Model"
@@ -8376,7 +8376,7 @@ msgstr "Skriftstørrelse i pixels."
 #. TRANSLATORS: the string 'black' should not be translated
 #: operations/external/text.c:39
 msgid "Color for the text (defaults to 'black')"
-msgstr "Tekstfarve (som standard \"black\")"
+msgstr "Tekstfarve (som standard “black”)"
 
 #: operations/external/text.c:41
 msgid "Wrap width"
@@ -8568,7 +8568,7 @@ msgid ""
 "input + value"
 msgstr ""
 "Aritmetisk addition. Udfører operationen pixelvis med brug af enten "
-"konstanten i \"Værdi\" eller den tilsvarende pixel fra bufferen på aux som "
+"konstanten i “Værdi” eller den tilsvarende pixel fra bufferen på aux som "
 "operand. Resultatet er beregningen af udtrykket resultat = input + værdi"
 
 # https://en.wikipedia.org/wiki/Alpha_compositing#Examples
@@ -8583,7 +8583,7 @@ msgid ""
 "cA * (1 - aB) + cB * (1 - aA) otherwise: d = (cA == 0 ? 1 : (aA * (cA * aB + "
 "cB * aA - aA * aB) / cA) + cA * (1 - aB) + cB * (1 - aA))</code>)"
 msgstr ""
-"SVG-blandingsoperationen \"color-burn\"  (<code>hvis cA * aB + cB * aA <= aA "
+"SVG-blandingsoperationen “color-burn”  (<code>hvis cA * aB + cB * aA <= aA "
 "* aB: d = cA * (1 - aB) + cB * (1 - aA) ellers: d = (cA == 0 ? 1 : (aA * (cA "
 "* aB + cB * aA - aA * aB) / cA) + cA * (1 - aB) + cB * (1 - aA))</code>)"
 
@@ -8593,7 +8593,7 @@ msgid ""
 "aA * aB + cA * (1 - aB) + cB * (1 - aA) otherwise: d = (cA == aA ? 1 : cB * "
 "aA / (aA == 0 ? 1 : 1 - cA / aA)) + cA * (1 - aB) + cB * (1 - aA)</code>)"
 msgstr ""
-"SVG-blandingsoperationen \"color-dodge\" (<code>hvis cA * aB + cB * aA >= aA "
+"SVG-blandingsoperationen “color-dodge” (<code>hvis cA * aB + cB * aA >= aA "
 "* aB: d = aA * aB + cA * (1 - aB) + cB * (1 - aA) ellers: d = (cA == aA ? "
 "1 : cB * aA / (aA == 0 ? 1 : 1 - cA / aA)) + cA * (1 - aB) + cB * (1 - aA)</"
 "code>)"
@@ -8603,7 +8603,7 @@ msgid ""
 "SVG blend operation darken (<code>d = MIN (cA * aB, cB * aA) + cA * (1 - aB) "
 "+ cB * (1 - aA)</code>)"
 msgstr ""
-"SVG-blandingsoperationen \"darken\"  (<code>d = MIN (cA * aB, cB * aA) + cA "
+"SVG-blandingsoperationen “darken”  (<code>d = MIN (cA * aB, cB * aA) + cA "
 "* (1 - aB) + cB * (1 - aA)</code>)"
 
 #: operations/generated/difference.c:184
@@ -8611,7 +8611,7 @@ msgid ""
 "SVG blend operation difference (<code>d = cA + cB - 2 * (MIN (cA * aB, cB * "
 "aA))</code>)"
 msgstr ""
-"SVG-blandingsoperationen \"difference\" (<code>d = cA + cB - 2 * (MIN (cA * "
+"SVG-blandingsoperationen “difference” (<code>d = cA + cB - 2 * (MIN (cA * "
 "aB, cB * aA))</code>)"
 
 #: operations/generated/divide.c:137
@@ -8622,7 +8622,7 @@ msgid ""
 "value==0.0f?0.0f:input/value"
 msgstr ""
 "Aritmetisk division. Udfører operationen pixelvis med brug af enten "
-"konstanten i \"Værdi\" eller den tilsvarende pixel fra bufferen på aux som "
+"konstanten i “Værdi” eller den tilsvarende pixel fra bufferen på aux som "
 "operand. Resultatet er beregningen af udtrykket resultat = værdi==0.0f?0.0f:"
 "input/værdi"
 
@@ -8651,7 +8651,7 @@ msgid ""
 "SVG blend operation exclusion (<code>d = (cA * aB + cB * aA - 2 * cA * cB) + "
 "cA * (1 - aB) + cB * (1 - aA)</code>)"
 msgstr ""
-"SVG-blandingsoperationen \"exclusion\" (<code>d = (cA * aB + cB * aA - 2 * "
+"SVG-blandingsoperationen “exclusion” (<code>d = (cA * aB + cB * aA - 2 * "
 "cA * cB) + cA * (1 - aB) + cB * (1 - aA)</code>)"
 
 #: operations/generated/gamma.c:137
@@ -8662,7 +8662,7 @@ msgid ""
 "(input >= 0.0f ? powf (input, value) : -powf (-input, value))"
 msgstr ""
 "Potensfunktion (gamma). Udfører operationen pixelvis med brug af enten "
-"konstanten i \"Værdi\" eller den tilsvarende pixel fra bufferen på aux som "
+"konstanten i “Værdi” eller den tilsvarende pixel fra bufferen på aux som "
 "operand. Resultatet er beregningen af udtrykket resultat = (input >= 0,0f ? "
 "powf (input, værdi) : -powf (-input, værdi))"
 
@@ -8672,7 +8672,7 @@ msgid ""
 "(1 - aB) + cB * (1 - aA) otherwise: d = aA * aB - 2 * (aB - cB) * (aA - cA) "
 "+ cA * (1 - aB) + cB * (1 - aA)</code>)"
 msgstr ""
-"SVG-blandingsoperationen \"hard-light\" (<code>hvis 2 * cA < aA: d = 2 * cA "
+"SVG-blandingsoperationen “hard-light” (<code>hvis 2 * cA < aA: d = 2 * cA "
 "* cB + cA * (1 - aB) + cB * (1 - aA) ellers: d = aA * aB - 2 * (aB - cB) * "
 "(aA - cA) + cA * (1 - aB) + cB * (1 - aA)</code>)"
 
@@ -8681,7 +8681,7 @@ msgid ""
 "SVG blend operation lighten (<code>d = MAX (cA * aB, cB * aA) + cA * (1 - "
 "aB) + cB * (1 - aA)</code>)"
 msgstr ""
-"SVG-blandingsoperationen \"lighten\" (<code>d = MAX (cA * aB, cB * aA) + cA "
+"SVG-blandingsoperationen “lighten” (<code>d = MAX (cA * aB, cB * aA) + cA "
 "* (1 - aB) + cB * (1 - aA)</code>)"
 
 #: operations/generated/multiply.c:137
@@ -8692,7 +8692,7 @@ msgid ""
 "input * value"
 msgstr ""
 "Aritmetisk multiplikation. Udfører operationen pixelvis med brug af enten "
-"konstanten i \"Værdi\" eller den tilsvarende pixel fra bufferen på aux som "
+"konstanten i “Værdi” eller den tilsvarende pixel fra bufferen på aux som "
 "operand. Resultatet er beregningen af udtrykket resultat = input × værdi"
 
 #: operations/generated/overlay.c:188
@@ -8701,18 +8701,18 @@ msgid ""
 "- aB) + cB * (1 - aA) otherwise: d = aA * aB - 2 * (aB - cB) * (aA - cA) + "
 "cA * (1 - aB) + cB * (1 - aA)</code>)"
 msgstr ""
-"SVG-blandingsoperationen \"overlay\" (<code>hvis 2 * cB > aB: d = 2 * cA * "
+"SVG-blandingsoperationen “overlay” (<code>hvis 2 * cB > aB: d = 2 * cA * "
 "cB + cA * (1 - aB) + cB * (1 - aA) ellers: d = aA * aB - 2 * (aB - cB) * (aA "
 "- cA) + cA * (1 - aB) + cB * (1 - aA)</code>)"
 
 #: operations/generated/plus.c:186
 msgid "SVG blend operation plus (<code>d = cA + cB</code>)"
-msgstr "SVG-blandingsoperationen \"plus\" (<code>d = cA + cB</code>)"
+msgstr "SVG-blandingsoperationen “plus” (<code>d = cA + cB</code>)"
 
 #: operations/generated/screen.c:184
 msgid "SVG blend operation screen (<code>d = cA + cB - cA * cB</code>)"
 msgstr ""
-"SVG-blandingsoperationen \"screen\" (<kode>d = cA + cB - cA * cB</kode>)"
+"SVG-blandingsoperationen “screen” (<kode>d = cA + cB - cA * cB</kode>)"
 
 #: operations/generated/soft-light.c:191
 msgid ""
@@ -8723,7 +8723,7 @@ msgid ""
 "(aA * cB + (aB == 0 ? 0 : sqrt (cB / aB) * aB - cB) * (2 * cA - aA)) + cA * "
 "(1 - aB) + cB * (1 - aA)</code>)"
 msgstr ""
-"SVG-blandingsoperationen \"soft-light\" (<code>hvis 2 * cA < aA: d = cB * "
+"SVG-blandingsoperationen “soft-light” (<code>hvis 2 * cA < aA: d = cB * "
 "(aA - (aB == 0 ? 1 : 1 - cB / aB) * (2 * cA - aA)) + cA * (1 - aB) + cB * (1 "
 "- aA); if 8 * cB <= aB: d = cB * (aA - (aB == 0 ? 1 : 1 - cB / aB) * (2 * cA "
 "- aA) * (aB == 0 ? 3 : 3 - 8 * cB / aB)) + cA * (1 - aB) + cB * (1 - aA); "
@@ -8754,7 +8754,7 @@ msgid ""
 "input - value"
 msgstr ""
 "Aritmetisk subtraktion. Udfører operationen pixelvis med brug af enten "
-"konstanten i \"Værdi\" eller den tilsvarende pixel fra bufferen på aux som "
+"konstanten i “Værdi” eller den tilsvarende pixel fra bufferen på aux som "
 "operand. Resultatet er beregningen af udtrykket resultat = input − værdi"
 
 #: operations/generated/xor.c:155
@@ -8838,7 +8838,7 @@ msgid ""
 "which bounding box' border applies."
 msgstr ""
 "Justerer inputrektanglets kasse efter sammensætningsmålets kant eller aux's "
-"afgrænsningsrammes kant. Er \"aux pad\" ikke forbundet, prøver operationen "
+"afgrænsningsrammes kant. Er “aux pad” ikke forbundet, prøver operationen "
 "at regne ud, hvilken afgrænsningsrammes kant som gælder."
 
 #: operations/transform/reflect.c:27
@@ -9262,7 +9262,7 @@ msgstr "Brugerværdi"
 
 #: operations/workshop/external/gluas.c:41
 msgid "Available as a global variable 'user_value' in lua."
-msgstr "Tilgængelig som en globale variabel \"user_value\" i lua."
+msgstr "Tilgængelig som en globale variabel “user_value” i lua."
 
 #: operations/workshop/external/gluas.c:1008
 msgid "gluas"
@@ -9626,28 +9626,28 @@ msgstr ""
 
 #: operations/workshop/generated/average.c:110
 msgid "Image blending operation 'average' (<tt>c = (cA + aB)/2</tt>)"
-msgstr "Billedblandingsoperationen \"average\" (<tt>c = (cA + aB)/2</tt>)"
+msgstr "Billedblandingsoperationen “average” (<tt>c = (cA + aB)/2</tt>)"
 
 #: operations/workshop/generated/blend-reflect.c:110
 msgid ""
 "Image blending operation 'blend-reflect' (<tt>c = cB>=1.0?1.0:cA*cA / (1.0-"
 "cB)</tt>)"
 msgstr ""
-"Billedblandingsoperationen \"blend-reflect\" (<tt>c = cB>=1.0?1.0:cA*cA / "
+"Billedblandingsoperationen “blend-reflect” (<tt>c = cB>=1.0?1.0:cA*cA / "
 "(1.0-cB)</tt>)"
 
 #: operations/workshop/generated/negation.c:110
 msgid ""
 "Image blending operation 'negation' (<tt>c = 1.0 - fabs(1.0-cA-cB)</tt>)"
 msgstr ""
-"Billedblandingsoperationen \"negation\" (<tt>c = 1.0 - fabs(1.0-cA-cB)</tt>)"
+"Billedblandingsoperationen “negation” (<tt>c = 1.0 - fabs(1.0-cA-cB)</tt>)"
 
 #: operations/workshop/generated/soft-burn.c:110
 msgid ""
 "Image blending operation 'soft-burn' (<tt>c = (cA+cB<1.0)?0.5*cB / (1.0 - "
 "cA):1.0-0.5*(1.0 - cA) / cB</tt>)"
 msgstr ""
-"Billedblandingsoperationen \"soft-burn\" (<tt>c = (cA+cB<1.0)?0.5*cB / (1.0 "
+"Billedblandingsoperationen “soft-burn” (<tt>c = (cA+cB<1.0)?0.5*cB / (1.0 "
 "- cA):1.0-0.5*(1.0 - cA) / cB</tt>)"
 
 #: operations/workshop/generated/soft-dodge.c:110
@@ -9655,12 +9655,12 @@ msgid ""
 "Image blending operation 'soft-dodge' (<tt>c = (cA+cB<1.0)?0.5*cA / (1.0 - "
 "cB):1.0-0.5*(1.0 - cB)/cA</tt>)"
 msgstr ""
-"Billedblandingsoperationen \"soft-dodge\" (<tt>c = (cA+cB<1.0)?0.5*cA / (1.0 "
+"Billedblandingsoperationen “soft-dodge” (<tt>c = (cA+cB<1.0)?0.5*cA / (1.0 "
 "- cB):1.0-0.5*(1.0 - cB)/cA</tt>)"
 
 #: operations/workshop/generated/subtractive.c:110
 msgid "Image blending operation 'subtractive' (<tt>c = cA+cB-1.0</tt>)"
-msgstr "Billedblandingsoperationen \"subtractive\"(<tt>c = cA+cB-1.0</tt>)"
+msgstr "Billedblandingsoperationen “subtractive”(<tt>c = cA+cB-1.0</tt>)"
 
 #: operations/workshop/gradient-map.c:26
 msgid "Stop 1"
@@ -9787,7 +9787,7 @@ msgstr "Justér farvetone, mæthed og lyshed selektivt"
 #~ "Crops a buffer, if the aux pad is connected the bounding box of the node "
 #~ "connected is used."
 #~ msgstr ""
-#~ "Beskærer en buffer. Er \"aux pad\" tilsluttet, bruges den tilsluttede "
+#~ "Beskærer en buffer. Er “aux pad\" tilsluttet, bruges den tilsluttede "
 #~ "knudes afgrænsningsramme."
 
 #~ msgid "Pixbuf location"
