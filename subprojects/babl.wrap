@@ -3,4 +3,4 @@ url=https://gitlab.gnome.org/GNOME/babl.git
 revision=master
 
 [provide]
-dependency_names=babl
+dependency_names=babl-0.1
