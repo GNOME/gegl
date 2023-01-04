@@ -262,7 +262,22 @@ if not babl.found()
   # babl changed its pkg-config name from 'babl' to 'babl-0.1' in version
   # 0.1.100 (0.1.99 dev cycle more exactly). 'babl-0.1' is checked in priority
   # because it would be a newer version.
-  babl    = dependency('babl',        version: dep_ver.get('babl'))
+  babl    = dependency('babl',        version: dep_ver.get('babl'), required: false)
+
+  if not babl.found()
+    # OK this is ugly as hell and you might wonder why we need to do this
+    # tri-test, once with the new name, then with the old name, and finally
+    # again with the new name. This is because when using babl as a subproject,
+    # it seems that meson is only looking for the required dep. So without this
+    # third redundant test, it searches for 'babl' which it doesn't find since
+    # babl's meson code ran meson.override_dependency('babl-0.1', ...).
+    # This is why we need to make the latest name search first AND last.
+    #
+    # Note that when we will bump meson requirement to >= 0.60, we will be able
+    # to simply write both names as a list in dependency(), which should
+    # simplify the whole tri-test meson code into one single call.
+    babl  = dependency('babl-0.1',    version: dep_ver.get('babl'))
+  endif
 endif
 glib      = dependency('glib-2.0',    version: dep_ver.get('glib'))
 gobject   = dependency('gobject-2.0', version: dep_ver.get('glib'))
