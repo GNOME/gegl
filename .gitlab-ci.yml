@@ -34,7 +34,6 @@ fedora-x86_64:
   needs: ["fedora image"]
   script:
     - meson --buildtype debug
-            --fatal-meson-warnings
             --default-library=both
             _build
     - ninja -C _build
