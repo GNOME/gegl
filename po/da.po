@@ -18,7 +18,7 @@ msgstr ""
 "Project-Id-Version: gegl gegl-0-2\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
 "POT-Creation-Date: 2022-09-10 01:29+0000\n"
-"PO-Revision-Date: 2023-01-03 16:06+0100\n"
+"PO-Revision-Date: 2023-01-10 19:25+0100\n"
 "Last-Translator: Alan Mortensen <alanmortensen.am@gmail.com>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "Language: da\n"
@@ -668,7 +668,7 @@ msgstr "Tærskel"
 
 #: operations/common/bloom.c:27
 msgid "Glow-area brightness threshold"
-msgstr "Lysstyrketærskel for glødområdet"
+msgstr "Lysstyrketærskel for skærområdet"
 
 #: operations/common/bloom.c:30 operations/common/vignette.c:46
 msgid "Softness"
@@ -676,7 +676,7 @@ msgstr "Blødhed"
 
 #: operations/common/bloom.c:31
 msgid "Glow-area edge softness"
-msgstr "Glødområdets kantblødhed"
+msgstr "Skærområdets kantblødhed"
 
 #: operations/common/bloom.c:35 operations/common/box-blur.c:25
 #: operations/common/c2g.c:28 operations/common/edge-neon.c:47
@@ -697,7 +697,7 @@ msgstr "Radius"
 
 #: operations/common/bloom.c:36 operations/common-gpl3+/softglow.c:26
 msgid "Glow radius"
-msgstr "Glødradius"
+msgstr "Skærets radius"
 
 #: operations/common/bloom.c:42 operations/common/noise-reduction.c:26
 #: operations/common-cxx/denoise-dct.cc:38 operations/common-cxx/warp.cc:34
@@ -707,7 +707,7 @@ msgstr "Styrke"
 
 #: operations/common/bloom.c:43
 msgid "Glow strength"
-msgstr "Glødstyrke"
+msgstr "Skærets styrke"
 
 #: operations/common/bloom.c:47
 msgid "Limit exposure"
@@ -723,7 +723,7 @@ msgstr "Udstråling"
 
 #: operations/common/bloom.c:210
 msgid "Add glow around bright areas"
-msgstr "Tilføj glød omkring lyse områder"
+msgstr "Tilføjer et skær omkring lyse områder"
 
 #: operations/common/box-blur.c:26 operations/common/snn-mean.c:27
 #: operations/workshop/boxblur.c:25
