@@ -22,8 +22,10 @@ link:operations/GeglOperationSource.html[image loading] and
 link:operations/GeglOperationSink.html[storing],
 link:operations/color.html[color adjustments],
 link:operations/artistic.html[GIMPs artistic] filters and more
-forms of link:features.html[image processing] GEGL can also be used
-from the link:commandline.html[command-line].
+forms of link:features.html[image processing] GEGL can be used
+on the link:commandline.html[command-line] with the same syntax
+that can be used for creating processing flows interactively
+with text from link:https://barefootliam.blogspot.com/2022/12/gegl-plug-ins-for-gimp-part-two-gegl.html[GIMP using gegl-graph].
 
 The primary repository for the GEGL source code is in the
 link:http://git.gnome.org/browse/gegl/[GNOME git repository]. Release
