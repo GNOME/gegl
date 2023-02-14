@@ -1,19 +1,18 @@
 # Turkish translation for GEGL.
-#
-# Copyright (C) 2014-2022 gegl's COPYRIGHT HOLDER
+# Copyright (C) 2014-2023 gegl's COPYRIGHT HOLDER
 # This file is distributed under the same license as the gegl package.
 #
 # Muhammet Kara <muhammetk@gmail.com>, 2014.
 # Simge Sezgin <simgesezgin88@gmail.com>, 2015.
-# Sabri Ünal <libreajans@gmail.com>, 2019, 2020, 2021, 2022.
-# Emin Tufan Çetin <etcetin@gmail.com>, 2019, 2020, 2021, 2022.
+# Sabri Ünal <libreajans@gmail.com>, 2019-2023.
+# Emin Tufan Çetin <etcetin@gmail.com>, 2019-2023.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2022-11-20 22:49+0000\n"
-"PO-Revision-Date: 2022-12-11 02:10+0300\n"
+"POT-Creation-Date: 2023-02-12 12:23+0000\n"
+"PO-Revision-Date: 2023-02-14 04:13+0300\n"
 "Last-Translator: Sabri Ünal <libreajans@gmail.com>\n"
 "Language-Team: Türkçe <gnome-turk@gnome.org>\n"
 "Language: tr\n"
@@ -411,7 +410,7 @@ msgstr ""
 
 #: gegl/gegl-init.c:240
 msgid "Default size of tiles in GeglBuffers"
-msgstr "GeglBuffers içindeki döşemelerin varsayılan boyutu"
+msgstr "GeglBuffers içindeki döşemelerin öntanımlı boyutu"
 
 #: gegl/gegl-init.c:245
 msgid "The count of pixels to compute simultaneously"
@@ -904,7 +903,7 @@ msgstr "Gölgeleri İyileştir"
 msgid "When enabled details in shadows are boosted at the expense of noise"
 msgstr "Etkin olduğunda, gölge ayrıntıları gürültü pahasına artırılır"
 
-#: operations/common/c2g.c:468
+#: operations/common/c2g.c:461
 msgid ""
 "Color to grayscale conversion, uses envelopes formed with the STRESS "
 "approach to perform local color-difference preserving grayscale generation."
@@ -2742,11 +2741,11 @@ msgstr "Kompozisyon"
 msgid "Output composition"
 msgstr "Çıktı kompozisyon"
 
-#: operations/common/long-shadow.c:1691
+#: operations/common/long-shadow.c:1646
 msgid "Long Shadow"
 msgstr "Uzun Gölge"
 
-#: operations/common/long-shadow.c:1696
+#: operations/common/long-shadow.c:1651
 msgid "Creates a long-shadow effect"
 msgstr "Uzun gölge etkisi oluştur"
 
@@ -6300,12 +6299,12 @@ msgstr "Kenar Yumuşatma"
 msgid "Enables smoother tile output"
 msgstr "Daha pürüzsüz döşeme çıktılarını etkinleştir"
 
-#: operations/common-gpl3+/mosaic.c:2466
+#: operations/common-gpl3+/mosaic.c:2471
 msgid "Mosaic"
 msgstr "Mozaik"
 
 # menü komutu ipucu olduğu için cümle sonunda nokta yer almaması gerekiyor
-#: operations/common-gpl3+/mosaic.c:2471
+#: operations/common-gpl3+/mosaic.c:2476
 msgid ""
 "Mosaic is a filter which transforms an image into what appears to be a "
 "mosaic, composed of small primitives, each of constant color and of an "
@@ -7510,7 +7509,7 @@ msgstr "Ses kodlayıcı"
 msgid ""
 "Audio codec to use, or auto to use a good default based on container format."
 msgstr ""
-"Kullanılacak ses kodlayıcı, veya kapsayıcı biçimine göre varsayılanı seçmek "
+"Kullanılacak ses kodlayıcı, veya kapsayıcı biçimine göre öntanımlıyı seçmek "
 "için kendiliğinden kullanın."
 
 #: operations/external/ff-save.c:35
@@ -7666,11 +7665,11 @@ msgstr "çerçeve gecikmesi"
 msgid "Delay in ms for last decoded frame"
 msgstr "Son çözülen çerçeve için ms cinsinden gecikme"
 
-#: operations/external/gif-load.c:240
+#: operations/external/gif-load.c:244
 msgid "GIF File Loader"
 msgstr "GIF Dosya Yükleyici"
 
-#: operations/external/gif-load.c:242
+#: operations/external/gif-load.c:246
 msgid "GIF image loader."
 msgstr "GIF görüntü yükleyicisi."
 
@@ -8191,7 +8190,7 @@ msgstr "Renk uzayı"
 msgid "Color space to use for loaded data"
 msgstr "Yüklenen veri için kullanılacak renk uzayı"
 
-#: operations/external/raw-load.c:281
+#: operations/external/raw-load.c:285
 msgid "libraw File Loader"
 msgstr "libraw Dosya Yükleyici"
 
