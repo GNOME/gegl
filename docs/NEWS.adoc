@@ -1,3 +1,24 @@
+GEGL-0.4.42 2023-02-20
+----------------------
+
+Operations:
+~~~~~~~~~~~
+
+ - raw-load: add conditional support for 0.21.0 API
+ - rgb-clib: improved ui-ranges
+ - perlin, mosiac, c2g, long-shadow: small cleanups
+ - gif-load: update vendored dependency, including code updates.
+
+Build:
+~~~~~~
+ - keeping up with babl
+
+Contributors to this release:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Alan Mortensen, Chris Mayo, Jehan, Jordi Mas, Michael Drakei, Øyvind Kolås
+and Sabri Ünal
+
+
 GEGL-0.4.40 2022-11-13
 ----------------------
 
