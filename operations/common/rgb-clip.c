@@ -27,7 +27,7 @@ property_boolean (clip_low, _("Clip low pixel values"), TRUE)
 
 property_double (low_limit, _("Low limit"), 0.0)
     value_range (-G_MAXDOUBLE, G_MAXDOUBLE)
-    ui_range    (-2.0, 0.0)
+    ui_range    (-1.0, 1.0)
     description (_("Pixels values lower than this limit will be set to it"))
     ui_meta     ("sensitive", "clip-low")
 
@@ -36,7 +36,7 @@ property_boolean (clip_high, _("Clip high pixel values"), TRUE)
 
 property_double (high_limit, _("High limit"), 1.0)
     value_range (-G_MAXDOUBLE, G_MAXDOUBLE)
-    ui_range    (1.0, 3.0)
+    ui_range    (0.0, 2.0)
     description (_("Pixels values higher than this limit will be set to it"))
     ui_meta     ("sensitive", "clip-high")
 
