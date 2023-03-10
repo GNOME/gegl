@@ -6,7 +6,7 @@ project('gegl',
   meson_version: '>=0.50.0',
   default_options: [
     'c_std=gnu11',
-    'cpp_std=gnu++14',
+    'cpp_std=gnu++17',
     'buildtype=debugoptimized',
   ],
 )
@@ -258,6 +258,9 @@ libdl   = cc.find_library('dl', required : false)
 thread  = dependency('threads')
 
 babl      = dependency('babl-0.1',    version: dep_ver.get('babl'), required: false)
+
+zombie = dependency('zombie', method: 'cmake', modules: ['zombie_lib'])
+
 if not babl.found()
   # babl changed its pkg-config name from 'babl' to 'babl-0.1' in version
   # 0.1.100 (0.1.99 dev cycle more exactly). 'babl-0.1' is checked in priority
@@ -527,6 +530,7 @@ gegl_pub_deps = [
   gio,
   json_glib,
   babl,
+  zombie,
 ]
 
 pkgconfig.generate(gegl_lib,

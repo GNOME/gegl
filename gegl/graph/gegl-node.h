@@ -145,6 +145,16 @@ gboolean      gegl_node_connect_to       (GeglNode      *source,
 void          gegl_node_link             (GeglNode      *source,
                                           GeglNode      *sink);
 
+typedef struct _GeglEvalManager GeglEvalManager;
+GeglEvalManager *
+gegl_node_get_eval_manager (GeglNode *self);
+
+
+GeglBuffer *
+gegl_node_apply_roi (GeglNode            *self,
+                     const GeglRectangle *roi,
+                     gint                 level);
+
 /**
  * gegl_node_link_many:
  * @source: the producer of data.
@@ -302,6 +312,10 @@ void          gegl_node_blit_buffer      (GeglNode            *node,
                                           const GeglRectangle *roi,
                                           int                  level,
                                           GeglAbyssPolicy      abyss_policy);
+
+void          gegl_node_blit_cache      (GeglNode            *node,
+					 const GeglRectangle *roi,
+					 int                  level);
 
 /**
  * gegl_node_process:
@@ -502,6 +516,9 @@ const gchar * gegl_node_get_operation    (const GeglNode *node);
  * associated with this node or NULL if there is no op associated.
  */
 GeglOperation *gegl_node_get_gegl_operation   (GeglNode *node);
+
+typedef struct _GeglZombieManager GeglZombieManager;
+GeglZombieManager *gegl_node_get_zombie_manager   (GeglNode *node);
 
 /**
  * gegl_node_get_output_proxy:

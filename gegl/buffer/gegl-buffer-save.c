@@ -357,7 +357,8 @@ gegl_buffer_save (GeglBuffer          *buffer,
         tile = gegl_tile_source_get_tile (GEGL_TILE_SOURCE (buffer),
                                           entry->x,
                                           entry->y,
-                                          entry->z);
+                                          entry->z,
+					  GEGL_TILE_GET_READ);
         g_assert (tile);
         data = gegl_tile_get_data (tile);
         g_assert (data);

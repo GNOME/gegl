@@ -8,6 +8,7 @@ gegl_sources += files(
   'gegl-region-generic.c',
   'gegl-visitable.c',
   'gegl-visitor.c',
+  'gegl-zombie-manager.cpp'
 )
 
 gegl_introspectable_headers += files(

@@ -23,6 +23,7 @@
 #include "gegl-types-internal.h"
 #include "gegl-buffer.h"
 #include "gegl-buffer-private.h"
+#include "gegl-zombie-manager.h"
 
 G_BEGIN_DECLS
 
@@ -39,10 +40,11 @@ typedef struct _GeglCacheClass GeglCacheClass;
 
 struct _GeglCache
 {
-  GeglBuffer    parent_instance;
+  GeglBuffer         parent_instance;
 
-  GeglRegion   *valid_region[GEGL_CACHE_VALID_MIPMAPS];
-  GMutex        mutex;
+  GeglRegion         *valid_region[GEGL_CACHE_VALID_MIPMAPS];
+  GeglZombieManager  *zombie;
+  GMutex             mutex;
 };
 
 struct _GeglCacheClass
@@ -50,13 +52,15 @@ struct _GeglCacheClass
   GeglBufferClass  parent_class;
 };
 
-GType    gegl_cache_get_type    (void) G_GNUC_CONST;
-void     gegl_cache_invalidate  (GeglCache           *self,
-                                 const GeglRectangle *roi);
-void     gegl_cache_computed    (GeglCache           *self,
-                                 const GeglRectangle *rect,
-                                 gint                 level);
+GType    gegl_cache_get_type       (void) G_GNUC_CONST;
+void     gegl_cache_invalidate     (GeglCache           *self,
+				    const GeglRectangle *roi);
+void     gegl_cache_computed       (GeglCache           *self,
+				    const GeglRectangle *rect,
+				    gint                 level);
 
+void gegl_cache_set_zombie_manager (GeglCache            *self,
+				    GeglZombieManager    *zombie);
 G_END_DECLS
 
 #endif /* __GEGL_CACHE_H__ */

@@ -151,7 +151,8 @@ static GeglTile *
 get_tile (GeglTileSource *gegl_tile_source,
           gint            x,
           gint            y,
-          gint            z)
+          gint            z,
+	  GeglTileGetState s)
 {
   GeglTileSource      *source = ((GeglTileHandler *) gegl_tile_source)->source;
   GeglTileHandlerZoom *zoom   = (GeglTileHandlerZoom *) gegl_tile_source;
@@ -161,7 +162,7 @@ get_tile (GeglTileSource *gegl_tile_source,
   gint                 tile_height;
 
   if (source)
-    tile = gegl_tile_source_get_tile (source, x, y, z);
+    tile = gegl_tile_source_get_tile (source, x, y, z, s);
 
   if (z == 0 || (tile && ! tile->damage))
     return tile;
@@ -207,9 +208,8 @@ get_tile (GeglTileSource *gegl_tile_source,
 
               /* we get the tile from ourselves, to make successive rescales
                * work correctly */
-              source_tile[i][j] = gegl_tile_source_get_tile (
-                gegl_tile_source, x * 2 + i, y * 2 + j, z - 1);
-
+              source_tile[i][j] = gegl_tile_source_get_tile (gegl_tile_source, x * 2 + i, y * 2 + j, z - 1, s);
+	      
               if (source_tile[i][j])
                 {
                   if (source_tile[i][j]->is_zero_tile)
@@ -310,7 +310,7 @@ gegl_tile_handler_zoom_command (GeglTileSource  *tile_store,
   GeglTileHandler *handler  = (void*)tile_store;
 
   if (command == GEGL_TILE_GET)
-    return get_tile (tile_store, x, y, z);
+    return get_tile (tile_store, x, y, z, (GeglTileGetState)data);
   else
     return gegl_tile_handler_source_command (handler, command, x, y, z, data);
 }

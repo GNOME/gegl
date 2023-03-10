@@ -42,14 +42,15 @@ static GeglTile *
 get_tile (GeglTileSource *gegl_tile_source,
           gint            x,
           gint            y,
-          gint            z)
+          gint            z,
+	  GeglTileGetState s)
 {
   GeglTileSource       *source = ((GeglTileHandler *) gegl_tile_source)->source;
   GeglTileHandlerEmpty *empty  = (GeglTileHandlerEmpty *) gegl_tile_source;
   GeglTile             *tile   = NULL;
 
   if (source)
-    tile = gegl_tile_source_get_tile (source, x, y, z);
+    tile = gegl_tile_source_get_tile (source, x, y, z, s);
   if (tile)
     return tile;
 
@@ -89,7 +90,7 @@ gegl_tile_handler_empty_command (GeglTileSource  *buffer,
                                  gpointer         data)
 {
   if (command == GEGL_TILE_GET)
-    return get_tile (buffer, x, y, z);
+    return get_tile (buffer, x, y, z, (GeglTileGetState)data);
 
   return gegl_tile_handler_source_command (buffer, command, x, y, z, data);
 }

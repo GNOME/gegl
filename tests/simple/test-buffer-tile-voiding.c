@@ -96,8 +96,8 @@ test_buffer_copy (void)
   for (i = 0; i < 2; ++i)
     for (j = 0; j < 2; ++j)
       {
-        GeglTile *tile_a = gegl_tile_source_get_tile ((GeglTileSource *) bufferA, i, j, 0);
-        GeglTile *tile_b = gegl_tile_source_get_tile ((GeglTileSource *) bufferB, i, j, 0);
+        GeglTile *tile_a = gegl_tile_source_get_tile ((GeglTileSource *) bufferA, i, j, 0, GEGL_TILE_GET_READ);
+        GeglTile *tile_b = gegl_tile_source_get_tile ((GeglTileSource *) bufferB, i, j, 0, GEGL_TILE_GET_READ);
 
         if (gegl_tile_get_data (tile_a) != gegl_tile_get_data (tile_b))
           {

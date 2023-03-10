@@ -168,10 +168,22 @@ gegl_cache_class_init (GeglCacheClass *klass)
                   GEGL_TYPE_RECTANGLE);
 }
 
+static gpointer
+command (GeglTileSource  *self,
+	 GeglTileCommand  command,
+	 gint             x,
+	 gint             y,
+	 gint             z,
+	 gpointer         data) {
+  return zombie_manager_command(GEGL_CACHE(self)->zombie, command, x, y, z, data);
+}
+
 static void
 gegl_cache_init (GeglCache *self)
 {
   g_mutex_init (&self->mutex);
+  self->zombie = NULL;
+  ((GeglTileSource*)self)->command = command;
 }
 
 static void
@@ -335,4 +347,10 @@ gegl_buffer_list_valid_rectangles (GeglBuffer     *buffer,
                               rectangles, n_rectangles);
 
   return TRUE;
+}
+
+void gegl_cache_set_zombie_manager (GeglCache            *self,
+				    GeglZombieManager    *zombie) {
+  self->zombie = zombie;
+  zombie_manager_set_cache(zombie, self);
 }

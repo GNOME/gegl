@@ -305,7 +305,8 @@ gegl_buffer_load (const gchar *path)
         tile = gegl_tile_source_get_tile (GEGL_TILE_SOURCE (ret),
                                           entry->x,
                                           entry->y,
-                                          entry->z);
+                                          entry->z,
+					  GEGL_TILE_GET_FULL_WRITE);
 
         if (info->offset != entry->offset)
           {

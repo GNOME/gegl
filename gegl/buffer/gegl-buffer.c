@@ -571,7 +571,7 @@ gegl_buffer_constructor (GType                  type,
               if (buffer->extent.width == -1 || buffer->extent.height == -1)
                 buffer->extent = gegl_tile_backend_get_extent (backend);
             }
-          else
+	  else
             {
               backend = g_object_new (GEGL_TYPE_TILE_BACKEND_SWAP,
                                       "tile-width",  buffer->tile_width,
@@ -718,7 +718,8 @@ static GeglTile *
 gegl_buffer_get_tile_int (GeglTileSource *source,
                           gint            x,
                           gint            y,
-                          gint            z)
+                          gint            z,
+			  gpointer data)
 {
   GeglTileHandler *handler = (GeglTileHandler*) (source);
   GeglTile        *tile   = NULL;
@@ -726,7 +727,7 @@ gegl_buffer_get_tile_int (GeglTileSource *source,
   source = handler->source;
 
   if (source)
-    tile = gegl_tile_source_get_tile (source, x, y, z);
+    tile = gegl_tile_source_get_tile (source, x, y, z, (GeglTileGetState)data);
   else
     g_assert (0);
 
@@ -756,7 +757,7 @@ gegl_buffer_get_tile_int (GeglTileSource *source,
 }
 
 
-static gpointer
+gpointer
 gegl_buffer_command (GeglTileSource *source,
                      GeglTileCommand command,
                      gint            x,
@@ -769,7 +770,7 @@ gegl_buffer_command (GeglTileSource *source,
   switch (command)
     {
       case GEGL_TILE_GET:
-        return gegl_buffer_get_tile_int (source, x, y, z);
+        return gegl_buffer_get_tile_int (source, x, y, z, data);
       default:
         return gegl_tile_handler_source_command (handler, command, x, y, z, data);
     }

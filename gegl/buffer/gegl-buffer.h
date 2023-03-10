@@ -54,6 +54,7 @@ struct _GeglRectangle
  * backend, a GPU memory backend and a network backend for buffers.
  */
 
+
 /**
  * gegl_buffer_new: (skip)
  * @extent: the geometry of the buffer (origin, width and height) a
@@ -239,6 +240,21 @@ gboolean          gegl_buffer_set_abyss      (GeglBuffer          *buffer,
  * Returns the number of pixels of the extent of the buffer.
  */
 #define gegl_buffer_get_pixel_count(buffer) (gegl_buffer_get_width(buffer) * gegl_buffer_get_height(buffer))
+
+
+typedef void (* GeglBufferTileFunc) (GeglBuffer          *buffer,
+                                     gint                 tile_x,
+                                     gint                 tile_y,
+                                     gpointer             data);
+typedef void (* GeglBufferRectFunc) (GeglBuffer          *buffer,
+                                     const GeglRectangle *rect,
+                                     gpointer             data);
+
+void gegl_buffer_foreach_tile (GeglBuffer          *buffer,
+			       const GeglRectangle *rect,
+			       GeglBufferTileFunc   tile_func,
+			       GeglBufferRectFunc   rect_func,
+			       gpointer             data);
 
 /**
  * gegl_buffer_get: (skip)

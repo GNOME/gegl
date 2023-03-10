@@ -165,7 +165,7 @@ gegl_buffer_linear_open (GeglBuffer          *buffer,
                                 * the copying case.
                                 */
       tile = gegl_tile_source_get_tile ((GeglTileSource*) (buffer),
-                                        0,0,0);
+                                        0,0,0, GEGL_TILE_GET_SENTRY); // todo: what should this be?
       g_assert (tile);
       gegl_tile_lock (tile);
 

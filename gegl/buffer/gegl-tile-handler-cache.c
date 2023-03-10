@@ -182,7 +182,8 @@ static GeglTile *
 gegl_tile_handler_cache_get_tile_command (GeglTileSource *tile_store,
                                           gint        x,
                                           gint        y,
-                                          gint        z)
+                                          gint        z,
+					  GeglTileGetState data)
 {
   GeglTileHandlerCache *cache    = (GeglTileHandlerCache*) (tile_store);
   GeglTileSource       *source   = ((GeglTileHandler*) (tile_store))->source;
@@ -203,7 +204,7 @@ gegl_tile_handler_cache_get_tile_command (GeglTileSource *tile_store,
   cache_misses++;
 
   if (source)
-    tile = gegl_tile_source_get_tile (source, x, y, z);
+    tile = gegl_tile_source_get_tile (source, x, y, z, data);
 
   if (tile)
     gegl_tile_handler_cache_insert (cache, tile, x, y, z);
@@ -247,7 +248,7 @@ gegl_tile_handler_cache_command (GeglTileSource  *tile_store,
          * generator after the cache, this would have to be possible to disable
          * to work in sync operation with backend.
          */
-        return gegl_tile_handler_cache_get_tile_command (tile_store, x, y, z);
+        return gegl_tile_handler_cache_get_tile_command (tile_store, x, y, z, (GeglTileGetState)data);
       case GEGL_TILE_IS_CACHED:
         return GINT_TO_POINTER(gegl_tile_handler_cache_has_tile (cache, x, y, z));
       case GEGL_TILE_EXIST:

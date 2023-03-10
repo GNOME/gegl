@@ -435,7 +435,6 @@ render_rectangle (GeglProcessor *processor)
   const gint  max_area = processor->chunk_size * (1<<processor->level) * (1<<processor->level) * gegl_config_threads();
   GeglCache  *cache    = NULL;
   const Babl *format   = NULL;
-
   /* Retrieve the cache if the processor's node is not buffered if its
    * operation is a sink and it doesn't use the full area  */
   buffered = !(GEGL_IS_OPERATION_SINK(processor->real_node->operation) &&
@@ -445,6 +444,7 @@ render_rectangle (GeglProcessor *processor)
       cache = gegl_node_get_cache (processor->input);
       format = gegl_buffer_get_format ((GeglBuffer *)cache);
     }
+
 
   if (processor->dirty_rectangles)
     {
@@ -513,7 +513,6 @@ render_rectangle (GeglProcessor *processor)
               gegl_node_blit (processor->input, 1.0/(1<<processor->level),
                               dr, format, NULL,
                               GEGL_AUTO_ROWSTRIDE, GEGL_BLIT_CACHE);
-
               /* tells the cache that the rectangle (dr) has been computed */
               gegl_cache_computed (cache, dr, processor->level);
             }

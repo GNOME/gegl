@@ -240,6 +240,7 @@ gegl_node_init (GeglNode *self)
   self->operation        = NULL;
   self->is_graph         = FALSE;
   self->cache            = NULL;
+  self->zombie           = make_zombie_manager (self);
   self->output_visitable = gegl_node_output_visitable_new (self);
   g_mutex_init (&self->mutex);
 
@@ -259,6 +260,18 @@ static void
 gegl_node_dispose (GObject *gobject)
 {
   GeglNode *self = GEGL_NODE (gobject);
+
+  // note: this must be at the top of the function.
+  // sometimes, cache will have external references,
+  // but since zombie oversee the cache,
+  // and will recompute evicted value with the help of GeglNode,
+  // destorying GeglNode leave cache in a invalid state.
+  // We have to make the GeglCache just a normal buffer again,
+  // to get pass this issue.
+  if (self->zombie != NULL) {
+    destroy_zombie_manager (self->zombie);
+    self->zombie = NULL;
+  }
 
   if (self->priv->parent != NULL)
     {
@@ -290,7 +303,7 @@ gegl_node_finalize (GObject *gobject)
   g_clear_object (&self->output_visitable);
   g_free (self->priv->name);
   g_free (self->priv->debug_name);
-
+  
   g_mutex_clear (&self->mutex);
 
   G_OBJECT_CLASS (gegl_node_parent_class)->finalize (gobject);
@@ -425,6 +438,7 @@ gegl_node_get_pad (GeglNode    *self,
 
   return NULL;
 }
+
 
 gboolean
 gegl_node_has_pad (GeglNode      *self,
@@ -1088,7 +1102,7 @@ gegl_node_link_many (GeglNode *source,
   va_end (var_args);
 }
 
-static GeglEvalManager *
+GeglEvalManager *
 gegl_node_get_eval_manager (GeglNode *self)
 {
   if (!self->priv->eval_manager)
@@ -1096,7 +1110,7 @@ gegl_node_get_eval_manager (GeglNode *self)
   return self->priv->eval_manager;
 }
 
-static GeglBuffer *
+GeglBuffer *
 gegl_node_apply_roi (GeglNode            *self,
                      const GeglRectangle *roi,
                      gint                 level)
@@ -1149,6 +1163,13 @@ gegl_node_blit_buffer (GeglNode            *self,
 static inline gboolean gegl_mipmap_rendering_enabled (void)
 {
   return gegl_config()->mipmap_rendering;
+}
+
+void gegl_node_blit_cache(GeglNode *self,
+			  const GeglRectangle *roi,
+			  int level) {
+  gegl_node_blit_buffer (self, GEGL_BUFFER(self->cache), roi, 0, GEGL_ABYSS_NONE);
+  gegl_cache_computed (self->cache, roi, 0);
 }
 
 void
@@ -1207,13 +1228,11 @@ gegl_node_blit (GeglNode            *self,
               const GeglRectangle unscaled_roi = _gegl_get_required_for_scale (roi, scale);
               gint  level = gegl_mipmap_rendering_enabled()?gegl_level_from_scale (scale):0;
 
-              gegl_node_blit_buffer (self, buffer, &unscaled_roi, level, GEGL_ABYSS_NONE);
-              gegl_cache_computed (cache, &unscaled_roi, level);
+              gegl_node_blit_cache (self, &unscaled_roi, level);
             }
           else
             {
-              gegl_node_blit_buffer (self, buffer, roi, 0, GEGL_ABYSS_NONE);
-              gegl_cache_computed (cache, roi, 0);
+              gegl_node_blit_cache (self, roi, 0);
             }
         }
 
@@ -2035,6 +2054,11 @@ gegl_node_use_cache (GeglNode *node)
   g_return_val_if_reached (FALSE);
 }
 
+GeglZombieManager *
+gegl_node_get_zombie_manager (GeglNode *self) {
+  return self->zombie;
+}
+
 GeglCache *
 gegl_node_get_cache (GeglNode *node)
 {
@@ -2079,6 +2103,8 @@ gegl_node_get_cache (GeglNode *node)
         "format",      format,
         "initialized", gegl_operation_context_get_init_output (),
         NULL);
+
+      gegl_cache_set_zombie_manager (cache, node->zombie);
 
       gegl_object_set_has_forked (G_OBJECT (cache));
       gegl_buffer_set_extent (GEGL_BUFFER (cache), &node->have_rect);

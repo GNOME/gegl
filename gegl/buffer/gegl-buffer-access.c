@@ -136,7 +136,8 @@ gegl_buffer_get_pixel (GeglBuffer     *buffer,
 
         tile = gegl_tile_source_get_tile ((GeglTileSource *) (buffer),
                                           indice_x, indice_y,
-                                          0);
+                                          0,
+					  GEGL_TILE_GET_READ);
 
         g_rec_mutex_unlock (&buffer->tile_storage->mutex);
       }
@@ -221,7 +222,8 @@ __gegl_buffer_set_pixel (GeglBuffer     *buffer,
 
         tile = gegl_tile_source_get_tile ((GeglTileSource *) (buffer),
                                           indice_x, indice_y,
-                                          0);
+                                          0,
+					  GEGL_TILE_GET_PARTIAL_WRITE);
 
         g_rec_mutex_unlock (&buffer->tile_storage->mutex);
       }
@@ -996,7 +998,8 @@ gegl_buffer_iterate_read_simple (GeglBuffer          *buffer,
           tile = gegl_tile_source_get_tile ((GeglTileSource *) (buffer),
                                           gegl_tile_indice (tiledx, tile_width),
                                           gegl_tile_indice (tiledy, tile_height),
-                                          level);
+					    level,
+					    GEGL_TILE_GET_READ);
           g_rec_mutex_unlock (&buffer->tile_storage->mutex);
 
           if (!tile)
@@ -2557,7 +2560,7 @@ gegl_buffer_copy (GeglBuffer          *src,
                     GeglTile *src_tile;
                     GeglTile *dst_tile;
 
-                    src_tile = gegl_tile_source_get_tile (source, stx, sty, 0);
+                    src_tile = gegl_tile_source_get_tile (source, stx, sty, 0, GEGL_TILE_GET_READ);
 
                     dst_tile = gegl_tile_dup (src_tile);
                     dst_tile->tile_storage = dst->tile_storage;
@@ -2649,20 +2652,11 @@ gegl_buffer_copy (GeglBuffer          *src,
   gegl_buffer_emit_changed_signal (dst, dst_rect);
 }
 
-typedef void (* GeglBufferTileFunc) (GeglBuffer          *buffer,
-                                     gint                 tile_x,
-                                     gint                 tile_y,
-                                     gpointer             data);
-typedef void (* GeglBufferRectFunc) (GeglBuffer          *buffer,
-                                     const GeglRectangle *rect,
-                                     gpointer             data);
-
-static void
-gegl_buffer_foreach_tile (GeglBuffer          *buffer,
-                          const GeglRectangle *rect,
-                          GeglBufferTileFunc   tile_func,
-                          GeglBufferRectFunc   rect_func,
-                          gpointer             data)
+void gegl_buffer_foreach_tile (GeglBuffer          *buffer,
+			       const GeglRectangle *rect,
+			       GeglBufferTileFunc   tile_func,
+			       GeglBufferRectFunc   rect_func,
+			       gpointer             data)
 {
   if (! rect)
     rect = gegl_buffer_get_extent (buffer);

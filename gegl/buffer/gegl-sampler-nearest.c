@@ -175,7 +175,8 @@ gegl_sampler_get_pixel (GeglSampler    *sampler,
 
         tile = gegl_tile_source_get_tile ((GeglTileSource *) (buffer),
                                           indice_x, indice_y,
-                                          0);
+                                          0,
+					  GEGL_TILE_GET_READ);
         nearest_sampler->hot_tile = tile;
 
         gegl_tile_read_lock (tile);

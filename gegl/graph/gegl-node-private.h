@@ -34,6 +34,7 @@ G_BEGIN_DECLS
 
 typedef struct _GeglNodeClass   GeglNodeClass;
 typedef struct _GeglNodePrivate GeglNodePrivate;
+typedef struct _GeglZombieManager GeglZombieManager;
 
 struct _GeglNode
 {
@@ -71,6 +72,8 @@ struct _GeglNode
    * requests for the cache object.
    */
   GeglCache      *cache;
+
+  GeglZombieManager *zombie;
 
   /* Used for traversing the graph in the output direction, rather
    * than the input direction.

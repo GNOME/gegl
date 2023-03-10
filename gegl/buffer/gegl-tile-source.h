@@ -46,6 +46,15 @@ typedef gpointer  (*GeglTileSourceCommand)  (GeglTileSource  *gegl_tile_source,
                          gint             z,
                          gpointer         data);
 
+gpointer
+gegl_buffer_command (GeglTileSource *source,
+                     GeglTileCommand command,
+                     gint            x,
+                     gint            y,
+                     gint            z,
+                     gpointer        data);
+
+
 struct _GeglTileSource
 {
   GObject               parent_instance;
@@ -72,6 +81,14 @@ gegl_tile_source_command (GeglTileSource  *source,
   return source->command (source, command, x, y, z, data);
 }
 
+typedef enum
+{
+  GEGL_TILE_GET_SENTRY = 0,
+  GEGL_TILE_GET_READ,
+  GEGL_TILE_GET_PARTIAL_WRITE,
+  GEGL_TILE_GET_FULL_WRITE,
+} GeglTileGetState;
+
 /**
  * gegl_tile_source_get_tile:
  * @source: a GeglTileSource *
@@ -89,14 +106,15 @@ static inline GeglTile *
 gegl_tile_source_get_tile (GeglTileSource *source,
                            gint            x,
                            gint            y,
-                           gint            z)
+                           gint            z,
+			   GeglTileGetState state)
 {
   
   GeglTile *tile;
   
 
   tile = (GeglTile *) gegl_tile_source_command (source, GEGL_TILE_GET,
-                                                x, y, z, NULL);
+                                                x, y, z, (gpointer)state);
 
   return tile;
 }

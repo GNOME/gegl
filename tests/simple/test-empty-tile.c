@@ -13,7 +13,7 @@ assert_is_empty (GeglBuffer *buf,
                  gpointer    shared_data)
 {
   gboolean  result = TRUE;
-  GeglTile *tile = gegl_tile_source_get_tile (GEGL_TILE_SOURCE (buf), x, y, 0);
+  GeglTile *tile = gegl_tile_source_get_tile (GEGL_TILE_SOURCE (buf), x, y, 0, GEGL_TILE_GET_READ);
 
   if (!tile->is_zero_tile)
     {
@@ -38,7 +38,7 @@ assert_is_unshared (GeglBuffer *buf,
                     gpointer    shared_data)
 {
   gboolean  result = TRUE;
-  GeglTile *tile = gegl_tile_source_get_tile (GEGL_TILE_SOURCE (buf), x, y, 0);
+  GeglTile *tile = gegl_tile_source_get_tile (GEGL_TILE_SOURCE (buf), x, y, 0, GEGL_TILE_GET_READ);
 
   if (!tile->is_zero_tile)
     {
@@ -72,7 +72,7 @@ int main(int argc, char **argv)
   buf_small_lin = gegl_buffer_linear_new (&buffer_rect, babl_format("RGBA float"));
   buf_big_lin = gegl_buffer_linear_new (GEGL_RECTANGLE(0, 0, 1024, 1024), babl_format("RGBA float"));
 
-  tile = gegl_tile_source_get_tile (GEGL_TILE_SOURCE (buf_a), 0, 0, 0);
+  tile = gegl_tile_source_get_tile (GEGL_TILE_SOURCE (buf_a), 0, 0, 0, GEGL_TILE_GET_READ);
   shared_data = gegl_tile_get_data(tile);
   gegl_tile_unref (tile);
 
