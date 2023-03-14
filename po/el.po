@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2022-04-25 03:59+0000\n"
-"PO-Revision-Date: 2022-04-25 15:02+0300\n"
+"POT-Creation-Date: 2023-02-12 12:23+0000\n"
+"PO-Revision-Date: 2023-03-14 21:42+0200\n"
 "Last-Translator: Dimitris Spingos (Δημήτρης Σπίγγος) <dmtrs32@gmail.com>\n"
 "Language-Team: team@lists.gnome.gr\n"
 "Language: el\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.0.1\n"
+"X-Generator: Poedit 3.2.2\n"
 "X-Project-Style: gnome\n"
 
 #: bin/gegl.c:179
@@ -350,42 +350,42 @@ msgstr "Ποτέ"
 msgid "Always"
 msgstr "Πάντα"
 
-#: gegl/gegl-init.c:213
+#: gegl/gegl-init.c:225
 msgid "Where GEGL stores its swap"
 msgstr "Πού αποθηκεύει το GEGL την εναλλακτική μνήμη"
 
-#: gegl/gegl-init.c:218
+#: gegl/gegl-init.c:230
 msgid "Compression algorithm used for data stored in the swap"
 msgstr ""
 "Ο χρησιμοποιούμενος αλγόριθμος συμπίεσης για αποθηκευμένα δεδομένα στην "
 "εικονική μνήμη (swap)"
 
-#: gegl/gegl-init.c:223
+#: gegl/gegl-init.c:235
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr "Πόση μνήμη για χρήση (περίπου) για επαναποθήκευση εικόνας"
 
-#: gegl/gegl-init.c:228
+#: gegl/gegl-init.c:240
 msgid "Default size of tiles in GeglBuffers"
 msgstr "Προεπιλεγμένο μέγεθος παραθέσεων στο GeglBuffers"
 
-#: gegl/gegl-init.c:233
+#: gegl/gegl-init.c:245
 msgid "The count of pixels to compute simultaneously"
 msgstr "Ο αριθμός των εικονοστοιχείων για ταυτόχρονο υπολογισμό"
 
-#: gegl/gegl-init.c:238
+#: gegl/gegl-init.c:250
 msgid ""
 "The quality of rendering, a value between 0.0 (fast) and 1.0 (reference)"
 msgstr "Η ποιότητα απόδοσης, μια τιμή μεταξύ 0,0 (γρήγορη) και 1,0 (αναφορά)"
 
-#: gegl/gegl-init.c:243
+#: gegl/gegl-init.c:255
 msgid "The number of concurrent processing threads to use"
 msgstr "Ο αριθμός των σύγχρονων νημάτων επεξεργασίας για χρήση"
 
-#: gegl/gegl-init.c:248
+#: gegl/gegl-init.c:260
 msgid "Disable OpenCL"
 msgstr "Απενεργοποίηση OpenCL"
 
-#: gegl/gegl-init.c:260
+#: gegl/gegl-init.c:272
 msgid "Show GEGL Options"
 msgstr "Εμφάνιση επιλογών GEGL"
 
@@ -635,9 +635,8 @@ msgstr "Αμφίπλευρο φίλτρο"
 
 #: operations/common/bilateral-filter.c:299
 msgid ""
-"Like a gaussian blur; but where the contribution for each neighbourhood "
-"pixel is also weighted by the color difference with the original center "
-"pixel."
+"Like a gaussian blur; but where the contribution for each neighborhood pixel "
+"is also weighted by the color difference with the original center pixel."
 msgstr ""
 "Όπως μια θόλωση Γκάους· αλλά όπου η συνεισφορά για κάθε γειτονικό "
 "εικονοστοιχείο είναι επίσης σταθμισμένη από τη χρωματική διαφορά με το "
@@ -721,7 +720,7 @@ msgid "Box Blur"
 msgstr "Θόλωση πλαισίου"
 
 #: operations/common/box-blur.c:407 operations/workshop/boxblur.c:76
-msgid "Blur resulting from averaging the colors of a square neighbourhood."
+msgid "Blur resulting from averaging the colors of a square neighborhood."
 msgstr ""
 "Θόλωση ως αποτέλεσμα από τον μέσο όρο των χρωμάτων ενός γειτονικού "
 "τετραγώνου."
@@ -855,7 +854,7 @@ msgstr ""
 "Όταν ενεργοποιούνται οι λεπτομέρειες στις σκιές ενισχύονται σε βάρος του "
 "θορύβου"
 
-#: operations/common/c2g.c:468
+#: operations/common/c2g.c:461
 msgid ""
 "Color to grayscale conversion, uses envelopes formed with the STRESS "
 "approach to perform local color-difference preserving grayscale generation."
@@ -2162,7 +2161,7 @@ msgstr ""
 "χειριστήριο."
 
 #: operations/common/grey.c:138
-msgid "Make Grey"
+msgid "Make Gray"
 msgstr "Δημιουργία γκρίζου"
 
 #: operations/common/grey.c:142
@@ -2697,11 +2696,11 @@ msgstr "Σύσταση"
 msgid "Output composition"
 msgstr "Σύσταση εξόδου"
 
-#: operations/common/long-shadow.c:1691
+#: operations/common/long-shadow.c:1646
 msgid "Long Shadow"
 msgstr "Μεγάλη σκιά"
 
-#: operations/common/long-shadow.c:1696
+#: operations/common/long-shadow.c:1651
 msgid "Creates a long-shadow effect"
 msgstr "Δημιουργεί εφέ μεγάλης σκιάς"
 
@@ -4176,11 +4175,11 @@ msgstr "Συνεκτικότητα"
 msgid "Cluster size"
 msgstr "Μέγεθος συμπλέγματος"
 
-#: operations/common/slic.c:455
+#: operations/common/slic.c:481
 msgid "Simple Linear Iterative Clustering"
 msgstr "Απλή γραμμική επαναληπτική ομαδοποίηση"
 
-#: operations/common/slic.c:458
+#: operations/common/slic.c:484
 msgid "Superpixels based on k-means clustering"
 msgstr "Υπερεικονοστοιχεία με βάση την ομαδοποίηση Κ-μέσων"
 
@@ -4194,13 +4193,13 @@ msgstr ""
 "Αριθμός ζευγών· υψηλότερος αριθμός διατηρεί περισσότερο οξέα γνωρίσματα"
 
 #: operations/common/snn-mean.c:383
-msgid "Symmetric Nearest Neighbour"
+msgid "Symmetric Nearest Neighbor"
 msgstr "Συμμετρικός πλησιέστερος γείτονας"
 
 #: operations/common/snn-mean.c:387
 msgid ""
 "Noise reducing edge preserving blur filter based on Symmetric Nearest "
-"Neighbours"
+"Neighbors"
 msgstr ""
 "Μείωση θορύβου άκρης διατηρώντας το φίλτρο θόλωσης με βάση τους συμμετρικούς "
 "πολύ κοντινούς γείτονες"
@@ -6040,11 +6039,11 @@ msgid "Rescale overall image size"
 msgstr "Ανακλιμάκωση γενικού μεγέθους εικόνας"
 
 #: operations/common-gpl3+/lens-distortion.c:46
-msgid "Effect centre offset in X"
+msgid "Effect center offset in X"
 msgstr "Μετατόπιση κέντρου εφέ στο Χ"
 
 #: operations/common-gpl3+/lens-distortion.c:50
-msgid "Effect centre offset in Y"
+msgid "Effect center offset in Y"
 msgstr "Μετατόπιση κέντρου εφέ στο Υ"
 
 #: operations/common-gpl3+/lens-distortion.c:53
@@ -6300,11 +6299,11 @@ msgstr "Εξομάλυνση"
 msgid "Enables smoother tile output"
 msgstr "Ενεργοποιεί πιο ομαλή έξοδο παράθεσης"
 
-#: operations/common-gpl3+/mosaic.c:2466
+#: operations/common-gpl3+/mosaic.c:2471
 msgid "Mosaic"
 msgstr "Μωσαϊκό"
 
-#: operations/common-gpl3+/mosaic.c:2471
+#: operations/common-gpl3+/mosaic.c:2476
 msgid ""
 "Mosaic is a filter which transforms an image into what appears to be a "
 "mosaic, composed of small primitives, each of constant color and of an "
@@ -7703,11 +7702,11 @@ msgstr "καθυστέρηση καρέ"
 msgid "Delay in ms for last decoded frame"
 msgstr "Καθυστέρηση σε ms για το τελευταίο αποκωδικοποιημένο καρέ"
 
-#: operations/external/gif-load.c:240
+#: operations/external/gif-load.c:244
 msgid "GIF File Loader"
 msgstr "Φορτωτής αρχείου GIF"
 
-#: operations/external/gif-load.c:242
+#: operations/external/gif-load.c:246
 msgid "GIF image loader."
 msgstr "Φορτωτής εικόνας GIF."
 
@@ -8233,7 +8232,7 @@ msgstr "Χρωματικός χώρος"
 msgid "Color space to use for loaded data"
 msgstr "Χρωματικός χώρος για χρήση σε φορτωμένα δεδομένα"
 
-#: operations/external/raw-load.c:281
+#: operations/external/raw-load.c:285
 msgid "libraw File Loader"
 msgstr "φορτωτής αρχείου libraw"
 
@@ -9107,7 +9106,7 @@ msgid "1D Box Blur"
 msgstr "Θόλωση πλαισίου 1Δ"
 
 #: operations/workshop/boxblur-1d.c:467
-msgid "Blur resulting from averaging the colors of a row neighbourhood."
+msgid "Blur resulting from averaging the colors of a row neighborhood."
 msgstr ""
 "Θόλωση ως αποτέλεσμα του μέσου όρου των χρωμάτων μιας γειτονικής γραμμής."
 
