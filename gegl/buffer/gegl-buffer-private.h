@@ -142,7 +142,6 @@ struct _GeglTile
 {
  /* GObject          parent_instance;*/
   gint             ref_count;
-
   guchar          *data;        /* actual pixel data for tile, a linear buffer*/
   gint             size;        /* The size of the linear buffer */
 
@@ -180,6 +179,9 @@ struct _GeglTile
                                  * counter indicates how many of those tiles
                                  * are in the cache.
                                  */
+
+  gint             clones;       // data storage for n_clones
+  gint             cached_clones;//
 
   guint64          damage;
 

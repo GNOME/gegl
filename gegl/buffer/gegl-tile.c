@@ -79,8 +79,6 @@ void gegl_tile_unref (GeglTile *tile)
            */
           if (tile->data && tile->destroy_notify)
             tile->destroy_notify (tile->destroy_notify_data);
-
-          g_slice_free1 (2 * sizeof (gint), tile->n_clones);
         }
     }
 
@@ -107,8 +105,7 @@ GeglTile *
 gegl_tile_new_bare (void)
 {
   GeglTile *tile = gegl_tile_new_bare_internal ();
-
-  tile->n_clones                    = g_slice_alloc (2 * sizeof (gint));
+  tile->n_clones                    = &tile->clones;
   *gegl_tile_n_clones (tile)        = 1;
   *gegl_tile_n_cached_clones (tile) = 0;
 
@@ -175,8 +172,7 @@ gegl_tile_new (gint size)
   /* gegl_tile_alloc() guarantees that there's enough room for the n_clones
    * array in front of the data buffer.
    */
-  tile->n_clones                    = (gint *) (tile->data -
-                                                INLINE_N_CLONES_OFFSET);
+  tile->n_clones                    = &tile->clones;
   *gegl_tile_n_clones (tile)        = 1;
   *gegl_tile_n_cached_clones (tile) = 0;
 
