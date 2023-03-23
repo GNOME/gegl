@@ -172,7 +172,8 @@ gegl_tile_new (gint size)
   /* gegl_tile_alloc() guarantees that there's enough room for the n_clones
    * array in front of the data buffer.
    */
-  tile->n_clones                    = &tile->clones;
+  tile->n_clones                    = (gint *) (tile->data -
+                                                INLINE_N_CLONES_OFFSET);
   *gegl_tile_n_clones (tile)        = 1;
   *gegl_tile_n_cached_clones (tile) = 0;
 
