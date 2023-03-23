@@ -76,6 +76,15 @@ set_data_full (void)
   g_assert (callback_called);
 }
 
+static void
+dup_tile (void)
+{
+  GeglTile *tile = gegl_tile_new (1);
+  GeglTile *tile2 = gegl_tile_dup (tile);
+  gegl_tile_unref (tile);
+  gegl_tile_unref (tile2);
+}
+
 int
 main (int    argc,
       char **argv)
@@ -85,6 +94,7 @@ main (int    argc,
 
   ADD_TEST (set_unlock_notify);
   ADD_TEST (set_data_full);
+  ADD_TEST (dup_tile);
 
   return g_test_run ();
 }
