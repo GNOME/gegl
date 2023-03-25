@@ -1,4 +1,4 @@
-/* ctx git commit: d81dd602 */
+/* ctx git commit: cf7e5375 */
 /* 
  * ctx.h is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -2261,7 +2261,10 @@ void ctx_windowtitle (Ctx *ctx, const char *text);
 struct _CtxBackend
 {
   Ctx                      *ctx;
+
   void  (*process)         (Ctx *ctx, CtxCommand *entry);
+
+  /* for interactive/event-handling backends */
   void  (*start_frame)     (Ctx *ctx);
   void  (*end_frame)       (Ctx *ctx);
 
@@ -2527,6 +2530,10 @@ uint32_t    ctx_strhash (const char *str);
 
 void _ctx_write_png (const char *dst_path, int w, int h, int num_chans, void *data);
 
+
+void ctx_vt_write (Ctx *ctx, uint8_t byte);
+int ctx_vt_has_data (Ctx *ctx);
+int ctx_vt_read (Ctx *ctx);
 
 #ifdef __cplusplus
 }
@@ -5770,6 +5777,10 @@ static inline CtxList *ctx_list_find_custom (CtxList *list,
 #define SQUOZE_USE_INTERN             0
 #endif
 #endif
+
+#ifndef CTX_PTY
+#define CTX_PTY 1
+#endif
  /* Copyright (C) 2020 Øyvind Kolås <pippin@gimp.org>
  */
 
@@ -6047,7 +6058,7 @@ int _ctx_is_rasterizer (Ctx *ctx);
 
 int ctx_color (Ctx *ctx, const char *string);
 typedef struct _CtxState CtxState;
-CtxColor *ctx_color_new ();
+CtxColor *ctx_color_new (void);
 CtxState *ctx_get_state (Ctx *ctx);
 void ctx_color_get_rgba (CtxState *state, CtxColor *color, float *out);
 void ctx_color_set_rgba (CtxState *state, CtxColor *color, float r, float g, float b, float a);
@@ -11081,7 +11092,7 @@ static void
 ctx_matrix_set (CtxMatrix *matrix, float a, float b, float c, float d, float e, float f, float g, float h, float i);
 
 
-static void ctx_font_setup ();
+static void ctx_font_setup (Ctx *ctx);
 static float ctx_state_get (CtxState *state, uint32_t hash);
 
 #if CTX_RASTERIZER
@@ -37357,10 +37368,12 @@ ctx_utf8_to_unichar (const char *input)
 #if CTX_TERMINAL_EVENTS
 
 #if !__COSMOPOLITAN__
-#include <termios.h>
 
 #include <fcntl.h>
+#if CTX_PTY
+#include <termios.h>
 #include <sys/ioctl.h>
+#endif
 #endif
 
 #if 0
@@ -37465,36 +37478,52 @@ int ctx_terminal_height (void)
 
 int ctx_terminal_width (void)
 {
+#if CTX_PTY
   struct winsize ws; 
   if (ioctl(0,TIOCGWINSZ,&ws)!=0)
     return 640;
   return ws.ws_xpixel;
+#else
+  return 240;
+#endif
 } 
 
 int ctx_terminal_height (void)
 {
+#if CTX_PTY
   struct winsize ws; 
   if (ioctl(0,TIOCGWINSZ,&ws)!=0)
     return 450;
   return ws.ws_ypixel;
+#else
+  return 240;
+#endif
 }
 
 #endif
 
 int ctx_terminal_cols (void)
 {
+#if CTX_PTY
   struct winsize ws; 
   if (ioctl(0,TIOCGWINSZ,&ws)!=0)
     return 80;
   return ws.ws_col;
+#else
+  return 40;
+#endif
 } 
 
 int ctx_terminal_rows (void)
 {
+#if CTX_PTY
   struct winsize ws; 
   if (ioctl(0,TIOCGWINSZ,&ws)!=0)
     return 25;
   return ws.ws_row;
+#else
+  return 16;
+#endif
 }
 
 
@@ -37513,7 +37542,9 @@ int ctx_terminal_rows (void)
 /*************************** input handling *************************/
 
 #if !__COSMOPOLITAN__
+#if CTX_PTY
 #include <termios.h>
+#endif
 #include <errno.h>
 #include <signal.h>
 #endif
@@ -37525,7 +37556,9 @@ int ctx_terminal_rows (void)
 #endif
 
 static int  size_changed = 0;       /* XXX: global state */
+#if CTX_PTY
 static int  ctx_term_signal_installed = 0;   /* XXX: global state */
+#endif
 
 static const char *mouse_modes[]=
 {TERMINAL_MOUSE_OFF,
@@ -37709,16 +37742,19 @@ static const NcKeyCode keycodes[]={
   {"ok",        "",     "\033[0n"},
   {NULL, }
 };
-
+#if CTX_PTY
 static struct termios orig_attr;    /* in order to restore at exit */
 static int    nc_is_raw = 0;
 static int    atexit_registered = 0;
+#endif
 static int    mouse_mode = NC_MOUSE_NONE;
 
 static void _nc_noraw (void)
 {
+#if CTX_PTY
   if (nc_is_raw && tcsetattr (STDIN_FILENO, TCSAFLUSH, &orig_attr) != -1)
     nc_is_raw = 0;
+#endif
 }
 
 void
@@ -37847,7 +37883,7 @@ static int mouse_has_event (Ctx *n)
   return retval != 0;
 }
 
-
+#if CTX_PTY
 static int _nc_raw (void)
 {
   struct termios raw;
@@ -37874,6 +37910,7 @@ static int _nc_raw (void)
 #endif
   return 0;
 }
+#endif
 
 static int match_keycode (const char *buf, int length, const NcKeyCode **ret)
 {
@@ -37925,13 +37962,11 @@ int ctx_nct_has_event (Ctx  *n, int delay_ms)
 
 const char *ctx_nct_get_event (Ctx *n, int timeoutms, int *x, int *y)
 {
-  unsigned char buf[20];
-  int length;
-
-
   if (x) *x = -1;
   if (y) *y = -1;
-
+#if CTX_PTY
+  unsigned char buf[20];
+  int length;
   if (!ctx_term_signal_installed)
     {
       _nc_raw ();
@@ -38093,6 +38128,9 @@ const char *ctx_nct_get_event (Ctx *n, int timeoutms, int *x, int *y)
     else
       return "key read eek";
   return "fail";
+#else
+  return "NYI.";
+#endif
 }
 
 void ctx_nct_consume_events (Ctx *ctx)
@@ -38178,6 +38216,7 @@ void ctx_nct_consume_events (Ctx *ctx)
 
 const char *ctx_native_get_event (Ctx *n, int timeoutms)
 {
+#if CTX_PTY
   static unsigned char buf[256];
   int length;
 
@@ -38235,6 +38274,7 @@ const char *ctx_native_get_event (Ctx *n, int timeoutms)
       }
       got_event = ctx_nct_has_event (n, 5);
     }
+#endif
   return NULL;
 }
 
@@ -38274,8 +38314,20 @@ void _ctx_mouse (Ctx *term, int mode)
 #define usecs(time)    ((uint64_t)(time.tv_sec - start_time.tv_sec) * 1000000 + time.     tv_usec)
 
 #if !__COSMOPOLITAN__
-static struct timeval start_time;
 
+#if CTX_PTY==0
+#include "pico/stdlib.h"
+#include "hardware/timer.h"
+static uint64_t pico_get_time(void) {
+    // Reading low latches the high value
+    uint32_t lo = timer_hw->timelr;
+    uint32_t hi = timer_hw->timehr;
+    return ((uint64_t) hi << 32u) | lo;
+}
+static uint64_t start_time;
+#else
+static struct timeval start_time;
+#endif
 static void
 _ctx_init_ticks (void)
 {
@@ -38283,15 +38335,24 @@ _ctx_init_ticks (void)
   if (done)
     return;
   done = 1;
+#if CTX_PTY==0
+  start_time = pico_get_time();
+#else
   gettimeofday (&start_time, NULL);
+#endif
 }
 
 static inline unsigned long
 _ctx_ticks (void)
 {
+#if CTX_PTY==0
+  uint64_t measure_time =  pico_get_time();
+  return measure_time - start_time;
+#else
   struct timeval measure_time;
   gettimeofday (&measure_time, NULL);
   return usecs (measure_time) - usecs (start_time);
+#endif
 }
 
 CTX_EXPORT unsigned long
@@ -38394,6 +38455,7 @@ static uint32_t ctx_ms (Ctx *ctx)
 
 static int is_in_ctx (void)
 {
+#if CTX_PTY
   char buf[1024];
   struct termios orig_attr;
   struct termios raw;
@@ -38436,6 +38498,7 @@ static int is_in_ctx (void)
   {
     return 1;
   }
+#endif
   return 0;
 }
 #endif
@@ -40088,6 +40151,7 @@ static const char *ctx_keycode_to_keyname (CtxModifierState modifier_state,
        temp[0]=keycode-65+'A';
      else
        temp[0]=keycode-65+'a';
+     temp[1]=0;
    }
    else if (keycode >= 112 && keycode <= 123)
    {
@@ -40170,6 +40234,7 @@ static const char *ctx_keycode_to_keyname (CtxModifierState modifier_state,
            if (keycode >= 48 && keycode <=66)
            {
              temp[0]=keycode-48+'0';
+             temp[1]=0;
            }
            else
            {
@@ -40641,9 +40706,14 @@ void _ctx_remove_listen_fd (int fd)
 #ifdef EMSCRIPTEN
 extern int em_in_len;
 #endif
+#if CTX_VT
+extern int ctx_dummy_in_len;
+#endif
 
 int ctx_input_pending (Ctx *ctx, int timeout)
 {
+  int retval = 0;
+#if CTX_PTY
   struct timeval tv;
   fd_set fdset;
   FD_ZERO (&fdset);
@@ -40662,7 +40732,7 @@ int ctx_input_pending (Ctx *ctx, int timeout)
   tv.tv_usec = timeout;
   tv.tv_sec = timeout / 1000000;
   tv.tv_usec = timeout % 1000000;
-  int retval = select (_ctx_listen_max_fd + 1, &fdset, NULL, NULL, &tv);
+  retval = select (_ctx_listen_max_fd + 1, &fdset, NULL, NULL, &tv);
   if (retval == -1)
   {
 #if CTX_BAREMETAL==0
@@ -40670,8 +40740,12 @@ int ctx_input_pending (Ctx *ctx, int timeout)
 #endif
     return 0;
   }
+#endif
 #ifdef EMSCRIPTEN
   retval += em_in_len;
+#endif
+#if CTX_VT
+  retval += ctx_dummy_in_len;
 #endif
   return retval;
 }
@@ -40707,10 +40781,10 @@ static void ctx_events_deinit (Ctx *ctx)
 
 #if CTX_TERMINAL_EVENTS
 
-
-static int mice_has_event ();
-static char *mice_get_event ();
-static void mice_destroy ();
+#if CTX_PTY
+static int mice_has_event (void);
+static char *mice_get_event (void);
+static void mice_destroy (void);
 static int mice_get_fd (EvSource *ev_source);
 static void mice_set_coord (EvSource *ev_source, double x, double y);
 
@@ -40759,13 +40833,13 @@ static int mmm_evsource_mice_init ()
   return 0;
 }
 
-static void mice_destroy ()
+static void mice_destroy (void)
 {
   if (mrg_mice_this->fd != -1)
     close (mrg_mice_this->fd);
 }
 
-static int mice_has_event ()
+static int mice_has_event (void)
 {
   struct timeval tv;
   int retval;
@@ -40783,7 +40857,7 @@ static int mice_has_event ()
   return 0;
 }
 
-static char *mice_get_event ()
+static char *mice_get_event (void)
 {
   const char *ret = "pm";
   double relx, rely;
@@ -40931,6 +41005,7 @@ static inline EvSource *evsource_mice_new (void)
     }
   return NULL;
 }
+#endif
 
 static int evsource_kb_term_has_event (void);
 static char *evsource_kb_term_get_event (void);
@@ -40947,10 +41022,13 @@ static EvSource ctx_ev_src_kb_term = {
   NULL
 };
 
+#if CTX_PTY
 static struct termios orig_attr;
+#endif
 
 static void real_evsource_kb_term_destroy (int sign)
 {
+#if CTX_PTY
   static int done = 0;
 
   if (sign == 0)
@@ -40975,6 +41053,7 @@ static void real_evsource_kb_term_destroy (int sign)
   }
   tcsetattr (STDIN_FILENO, TCSAFLUSH, &orig_attr);
   //fprintf (stderr, "evsource kb destroy\n");
+#endif
 }
 
 static void evsource_kb_term_destroy (int sign)
@@ -40984,6 +41063,7 @@ static void evsource_kb_term_destroy (int sign)
 
 static int evsource_kb_term_init ()
 {
+#if CTX_PTY
 //  ioctl(STDIN_FILENO, KDSKBMODE, K_RAW);
   //atexit ((void*) real_evsource_kb_term_destroy);
   signal (SIGSEGV, (void*) real_evsource_kb_term_destroy);
@@ -41007,19 +41087,20 @@ static int evsource_kb_term_init ()
   raw.c_cc[VMIN] = 1; raw.c_cc[VTIME] = 0; /* 1 byte, no timer */
   if (tcsetattr (STDIN_FILENO, TCSAFLUSH, &raw) < 0)
     return 0; // XXX? return other value?
-
+#endif
   return 0;
 }
 static int evsource_kb_term_has_event (void)
 {
+  int retval = 0;
+#if CTX_PTY
   struct timeval tv;
-  int retval;
-
   fd_set rfds;
   FD_ZERO (&rfds);
   FD_SET(STDIN_FILENO, &rfds);
   tv.tv_sec = 0; tv.tv_usec = 0;
   retval = select (STDIN_FILENO+1, &rfds, NULL, NULL, &tv);
+#endif
   return retval == 1;
 }
 
@@ -45595,6 +45676,7 @@ ctx_pdf_process (Ctx *ctx, CtxCommand *c)
         break;
 
       case CTX_COLOR:
+        {
         int space =  ((int) ctx_arg_float (0)) & 511;
         switch (space) // XXX remove 511 after stroke source is complete
         {
@@ -45635,6 +45717,7 @@ ctx_pdf_process (Ctx *ctx, CtxCommand *c)
               ctx_pdf_print("G\n");
               break;
             }
+        }
         break;
 
       case CTX_SET_RGBA_U8:
@@ -46172,6 +46255,7 @@ ctx_cairo_process (Ctx *ctx, CtxCommand *c)
         break;
 
       case CTX_COLOR:
+      {
         int space =  ((int) ctx_arg_float (0)) & 511;
         switch (space) // XXX remove 511 after stroke source is complete
         {
@@ -46195,6 +46279,7 @@ ctx_cairo_process (Ctx *ctx, CtxCommand *c)
              cairo_set_source_rgba (cr, c->graya.g, c->graya.g, c->graya.g, 1.0f);
              break;
             }
+        }
         break;
 
 #if 0
@@ -47420,8 +47505,10 @@ static char *ctx_headless_get_clipboard (Ctx *ctx)
 
 static inline int ctx_headless_get_mice_fd (Ctx *ctx)
 {
+#if CTX_PTY
   //CtxHeadless *fb = (void*)ctx->backend;
   return _ctx_mice_fd;
+#endif
 }
 
 typedef struct _CtxHeadless CtxHeadless;
@@ -47664,7 +47751,9 @@ Ctx *ctx_new_headless (int width, int height)
 
 #if !__COSMOPOLITAN__
 #include <fcntl.h>
+#if CTX_PTY
 #include <sys/ioctl.h>
+#endif
 #include <signal.h>
 #endif
 
@@ -47677,8 +47766,10 @@ static int ctx_fb_single_buffer = 0;  // used with the framebuffer this
 
 static int ctx_fb_get_mice_fd (Ctx *ctx)
 {
+#if CTX_PTY
   //CtxFb *fb = (void*)ctx->backend;
   return _ctx_mice_fd;
+#endif
 }
 
 static void ctx_fb_get_event_fds (Ctx *ctx, int *fd, int *count)
@@ -48264,7 +48355,10 @@ Ctx *ctx_new_fb (int width, int height)
     tiled->evsource[tiled->evsource_count++] = kb;
     kb->priv = fb;
   }
-  EvSource *mice  = evsource_mice_new ();
+  EvSource *mice  = NULL;
+#if CTX_PTY
+  mice = evsource_mice_new ();
+#endif
   if (mice)
   {
     tiled->evsource[tiled->evsource_count++] = mice;
@@ -48309,7 +48403,9 @@ Ctx *ctx_new_fb (int width, int height)
 
 #if !__COSMOPOLITAN__
 #include <fcntl.h>
+#if CTX_PTY
 #include <sys/ioctl.h>
+#endif
 #include <signal.h>
 #endif
 
@@ -48786,8 +48882,10 @@ static void vt_switch_cb (int sig)
 
 static int ctx_kms_get_mice_fd (Ctx *ctx)
 {
+#if CTX_PTY
   //CtxKMS *fb = (void*)ctx->backend;
   return _ctx_mice_fd;
+#endif
 }
 
 Ctx *ctx_new_kms (int width, int height)
@@ -48887,7 +48985,10 @@ Ctx *ctx_new_kms (int width, int height)
     tiled->evsource[tiled->evsource_count++] = kb;
     kb->priv = fb;
   }
-  EvSource *mice  = evsource_mice_new ();
+  EvSource *mice  = NULL;
+#if CTX_PTY
+  mice = evsource_mice_new ();
+#endif
   if (mice)
   {
     tiled->evsource[tiled->evsource_count++] = mice;
@@ -56154,9 +56255,17 @@ ctx_new_drawlist (int width, int height)
 static Ctx *ctx_new_ui (int width, int height, const char *backend);
 #endif
 
+#if CTX_PTY==0
+Ctx *ctx_pico_init (void);
+#endif
+
 CTX_EXPORT Ctx *
 ctx_new (int width, int height, const char *backend)
 {
+#if CTX_PTY==0
+  return ctx_pico_init ();
+#endif
+
 #if CTX_EVENTS
   if (backend && !ctx_strcmp (backend, "drawlist"))
 #endif
@@ -56817,6 +56926,18 @@ CtxMediaTypeClass ctx_media_type_class (const char *media_type)
   return ret;
 }
 
+#else
+int
+ctx_get_contents (const char     *uri,
+                  unsigned char **contents,
+                  long           *length)
+{
+  *contents = NULL;
+  *length = -1;
+  return -1;
+//ctx_get_contents2 (uri, contents, length, 1024*1024*1024);
+}
+
 #endif
 
 
@@ -56863,7 +56984,7 @@ float ctx_y (Ctx *ctx)
   return y;
 }
 
-CtxBackendType __ctx_backend_type (Ctx *ctx)
+static CtxBackendType __ctx_backend_type (Ctx *ctx)
 {
   if (!ctx)
     return CTX_BACKEND_NONE;
@@ -56914,7 +57035,7 @@ CtxBackendType ctx_backend_type (Ctx *ctx)
   {
     CtxBackendType computed = __ctx_backend_type (ctx);
     backend->type = computed;
-    fprintf (stderr, "did a caching set of %i\n", computed);
+    //fprintf (stderr, "did a caching set of %i\n", computed);
     return computed;
   }
 
@@ -57987,7 +58108,12 @@ void        vt_paste              (VT *vt, const char *str);
 //void        vt_feed_byte          (VT *vt, int byte);
 
 //)#define DEFAULT_SCROLLBACK   (1<<16)
+
+#if CTX_PTY
 #define DEFAULT_SCROLLBACK   (1<<13)
+#else
+#define DEFAULT_SCROLLBACK   (2)
+#endif
 #define DEFAULT_ROWS         24
 #define DEFAULT_COLS         80
 
@@ -59644,6 +59770,7 @@ void vt_audio (VT *vt, const char *command)
  *
  */
 
+int ctx_dummy_in_len = 0;
 #if CTX_TERMINAL_EVENTS
 
 #include <sys/stat.h>
@@ -59661,8 +59788,10 @@ void vt_audio (VT *vt, const char *command)
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <sys/time.h>
+#if CTX_PTY
 #include <sys/ioctl.h>
 #include <termios.h>
+#endif
 
 #include "ctx.h"
 
@@ -59916,6 +60045,7 @@ static Image *image_add (int width,
 
 void vtpty_resize (void *data, int cols, int rows, int px_width, int px_height)
 {
+#if CTX_PTY
   VtPty *vtpty = data;
   struct winsize ws;
   ws.ws_row = rows;
@@ -59923,6 +60053,7 @@ void vtpty_resize (void *data, int cols, int rows, int px_width, int px_height)
   ws.ws_xpixel = px_width;
   ws.ws_ypixel = px_height;
   ioctl (vtpty->pty, TIOCSWINSZ, &ws);
+#endif
 }
 
 ssize_t vtpty_write (void *data, const void *buf, size_t count)
@@ -60216,6 +60347,7 @@ void vt_set_line_spacing (VT *vt, float line_spacing)
 
 static void ctx_clients_signal_child (int signum)
 {
+#if CTX_PTY
   pid_t pid;
   int   status;
   if ( (pid = waitpid (-1, &status, WNOHANG) ) != -1)
@@ -60233,6 +60365,7 @@ static void ctx_clients_signal_child (int signum)
             }
         }
     }
+#endif
 }
 
 static void vt_init (VT *vt, int width, int height, float font_size, float line_spacing, int id, int can_launch)
@@ -60280,6 +60413,7 @@ static void vt_init (VT *vt, int width, int height, float font_size, float line_
   vt->bg_color[2] = 0;
 }
 
+#if CTX_PTY
 static pid_t
 vt_forkpty (int  *amaster,
             char *aname,
@@ -60331,6 +60465,7 @@ vt_forkpty (int  *amaster,
   *amaster = master;
   return pid;
 }
+#endif
 
 static void
 ctx_child_prepare_env (int was_pidone, const char *term)
@@ -60432,18 +60567,94 @@ ssize_t em_read    (void *serial_obj, void *buf, size_t count)
   }
   return 0;
 }
-  int     em_waitdata (void *serial_obj, int timeout)
+
+int     em_waitdata (void *serial_obj, int timeout)
 {
   return em_in_len;
 }
 
-  void    em_resize  (void *serial_obj, int cols, int rows, int px_width, int px_height)
+#endif
+
+#define CTX_VT_INBUFSIZE  128
+#define CTX_VT_OUTBUFSIZE 128
+
+static char ctx_dummy_inbuf[CTX_VT_INBUFSIZE]="";
+static char ctx_dummy_outbuf[CTX_VT_OUTBUFSIZE]="";
+static int ctx_dummy_in_pos = 0;
+static int ctx_dummy_in_read_pos = 0;
+static int ctx_dummy_out_len = 0;
+static int ctx_dummy_out_pos = 0;
+static int ctx_dummy_out_read_pos = 0;
+
+void ctx_vt_write (Ctx *ctx, uint8_t byte)
 {
+  if (ctx_dummy_in_len < CTX_VT_INBUFSIZE)
+  {
+    ctx_dummy_inbuf[ctx_dummy_in_pos++] = byte;
+    ctx_dummy_in_len++;
+    if (ctx_dummy_in_pos >= CTX_VT_INBUFSIZE)ctx_dummy_in_pos = 0;
+  }
+  else
+  {
+    fprintf (stderr, "ctx uart overflow\n");
+  }
+}
+
+int ctx_vt_has_data (Ctx *ctx)
+{
+  return ctx_dummy_out_len;
+}
+
+int ctx_vt_read (Ctx *ctx)
+{
+  int ret = -1;
+  if (ctx_dummy_out_len)
+  {
+    ret = ctx_dummy_outbuf[ctx_dummy_out_read_pos++];
+    --ctx_dummy_out_len;
+    if (ctx_dummy_out_read_pos>=CTX_VT_OUTBUFSIZE)ctx_dummy_out_read_pos = 0;
+  }
+  return ret;
 }
 
 
-#endif
+static ssize_t ctx_dummy_write (void *s, const void *buf, size_t count)
+{
+  const char *src = (const char*)buf;
+  unsigned int i;
+  for (i = 0; i < count && ctx_dummy_out_len < CTX_VT_OUTBUFSIZE; i ++)
+  {
+    ctx_dummy_outbuf[ctx_dummy_out_pos++] = src[i];
+    ctx_dummy_out_len++;
+    if (ctx_dummy_out_pos >= CTX_VT_OUTBUFSIZE)ctx_dummy_out_pos = 0;
+  }
+  if (ctx_dummy_out_len >= CTX_VT_OUTBUFSIZE)
+    printf ("ctx_dummy_outbuf overflow\n");
 
+  return i;
+}
+
+static ssize_t ctx_dummy_read    (void *serial_obj, void *buf, size_t count)
+{
+  char *dst = (char*)buf;
+  if (ctx_dummy_in_len)
+  {
+    *dst = ctx_dummy_inbuf[ctx_dummy_in_read_pos++];
+    --ctx_dummy_in_len;
+    if (ctx_dummy_in_read_pos>=CTX_VT_INBUFSIZE)ctx_dummy_in_read_pos = 0;
+    return 1;
+  }
+  return 0;
+}
+
+static int ctx_dummy_waitdata (void *serial_obj, int timeout)
+{
+  return ctx_dummy_in_len;
+}
+
+void ctx_dummy_resize  (void *serial_obj, int cols, int rows, int px_width, int px_height)
+{
+}
 
 static void vt_run_argv (VT *vt, char **argv, const char *term)
 {
@@ -60451,24 +60662,39 @@ static void vt_run_argv (VT *vt, char **argv, const char *term)
         vt->read = em_read;
         vt->write = em_write;
         vt->waitdata = em_waitdata;
-        vt->resize = em_resize;
-
-        printf ("aaa?\n");
+        vt->resize = dummy_resize;
 #else
-  struct winsize ws;
-  //signal (SIGCHLD,signal_child);
+
 #if 0
   int was_pidone = (getpid () == 1);
 #else
   int was_pidone = 0; // do no special treatment, all child processes belong
                       // to root
 #endif
+
+#if CTX_PTY==1
+  if (!argv)
+#endif
+  {
+    vt->read = ctx_dummy_read;
+    vt->write = ctx_dummy_write;
+    vt->waitdata = ctx_dummy_waitdata;
+    vt->resize = ctx_dummy_resize;
+    return;
+  }
+
+
+#if CTX_PTY
+
+  struct winsize ws;
+  //signal (SIGCHLD,signal_child);
   signal (SIGINT,SIG_DFL);
   ws.ws_row = vt->rows;
   ws.ws_col = vt->cols;
   ws.ws_xpixel = ws.ws_col * vt->cw;
   ws.ws_ypixel = ws.ws_row * vt->ch;
   vt->vtpty.pid = vt_forkpty (&vt->vtpty.pty, NULL, NULL, &ws);
+#endif
   if (vt->vtpty.pid == 0)
     {
       ctx_child_prepare_env (was_pidone, term);
@@ -60493,7 +60719,7 @@ VT *vt_new_argv (char **argv, int width, int height, float font_size, float line
   vt_init (vt, width, height, font_size, line_spacing, id, can_launch);
   vt_set_font_size (vt, font_size);
   vt_set_line_spacing (vt, line_spacing);
-  if (argv)
+  //if (argv)
     {
       vt_run_argv (vt, argv, NULL);
     }
@@ -60566,6 +60792,8 @@ static char *string_chop_head (char *orig) /* return pointer to reset after arg 
 
 VT *vt_new (const char *command, int width, int height, float font_size, float line_spacing, int id, int can_launch)
 {
+  if (!command)
+    return vt_new_argv (NULL, width, height, font_size, line_spacing, id, can_launch);
   char *cargv[32];
   int   cargc;
   char *rest, *copy;
@@ -60622,7 +60850,7 @@ static int vt_trimlines (VT *vt, int max)
       ctx_list_remove (&chop_point, chop_point->data);
       vt->line_count--;
     }
-  if (vt->scrollback_count > vt->scrollback_limit + 1024)
+  if (vt->scrollback_count > vt->scrollback_limit)
     {
       CtxList *l = vt->scrollback;
       int no = 0;
@@ -61000,7 +61228,7 @@ static void vtcmd_set_left_and_right_margins (VT *vt, const char *sequence)
 
 static inline int parse_int (const char *arg, int def_val)
 {
-  if (!isdigit (arg[1]) || strlen (arg) == 2)
+  if (!((arg[1]>='0' && arg[1]<='9')) || strlen (arg) == 2)
     { return def_val; }
   return atoi (arg+1);
 }
@@ -62162,6 +62390,10 @@ qagain:
                     vt->current_line->frame = ctx_string_new ("");
 #endif
                   }
+
+                if (!vt->ctxp)
+                {
+
                 if (vt->ctxp)
                   ctx_parser_destroy (vt->ctxp);
 
@@ -62169,6 +62401,7 @@ qagain:
                                            vt->cols * vt->cw, vt->rows * vt->ch,
                                            vt->cw, vt->ch, vt->cursor_x, vt->cursor_y,
                                            (void*)vt_set_prop, (void*)vt_get_prop, vt, vt_ctx_exit, vt);
+                }
                 vt->utf8_holding[vt->utf8_pos=0]=0; // XXX : needed?
                 vt->state = vt_state_ctx;
               }
@@ -65202,6 +65435,7 @@ void vt_paste (VT *vt, const char *str)
 
 const char *ctx_find_shell_command (void)
 {
+#if CTX_PTY
 #ifdef EMSCRIPTEN
   return NULL;  
 #else
@@ -65246,6 +65480,9 @@ const char *ctx_find_shell_command (void)
     }
   return command;
 #endif
+#else
+  return NULL;
+#endif
 }
 
 
@@ -65253,6 +65490,7 @@ const char *ctx_find_shell_command (void)
 
 static void vt_run_command (VT *vt, const char *command, const char *term)
 {
+#if CTX_PTY
 #ifdef EMSCRIPTEN
         printf ("run command %s\n", command);
 #else
@@ -65282,6 +65520,7 @@ static void vt_run_command (VT *vt, const char *command, const char *term)
     }
   fcntl(vt->vtpty.pty, F_SETFL, O_NONBLOCK|O_NOCTTY);
   _ctx_add_listen_fd (vt->vtpty.pty);
+#endif
 #endif
 }
 
@@ -67882,7 +68121,7 @@ void vt_draw (VT *vt, Ctx *ctx, double x0, double y0)
   //if (vt->scroll || full)
     {
       ctx_begin_path (ctx);
-#if 1
+#if CTX_PTY
       ctx_rectangle (ctx, 0, 0, vt->width, //(vt->cols) * vt->cw,
                      (vt->rows) * vt->ch);
       if (vt->reverse_video)
@@ -67896,6 +68135,9 @@ void vt_draw (VT *vt, Ctx *ctx, double x0, double y0)
           //ctx_rgba (ctx,0,0,0,1.0f);
           ctx_fill  (ctx);
         }
+#else
+          //ctx_rgba (ctx,0,0,0,1.0f);
+          ctx_fill  (ctx);
 #endif
       if (vt->scroll != 0.0f)
         ctx_translate (ctx, 0.0, vt->ch * vt->scroll);
@@ -68264,9 +68506,10 @@ void vt_set_local (VT *vt, int local)
   vt->local_editing = local;
 }
 
+#if CTX_PTY
 static unsigned long prev_press_time = 0;
 static int short_count = 0;
-
+#endif
 
 void terminal_set_primary (const char *text)
 {
@@ -68276,7 +68519,9 @@ void terminal_set_primary (const char *text)
 }
 
 void terminal_long_tap (Ctx *ctx, VT *vt);
+#if CTX_PTY
 static int long_tap_cb_id = 0;
+#endif
 static int single_tap (Ctx *ctx, void *data)
 {
 #if 0 // XXX
@@ -68289,6 +68534,7 @@ static int single_tap (Ctx *ctx, void *data)
 
 void vt_mouse (VT *vt, CtxEvent *event, VtMouseEvent type, int button, int x, int y, int px_x, int px_y)
 {
+#if CTX_PTY
  char buf[64]="";
  int button_state = 0;
  ctx_client_rev_inc (vt->client);
@@ -68505,6 +68751,7 @@ void vt_mouse (VT *vt, CtxEvent *event, VtMouseEvent type, int button, int x, in
      vt_write (vt, buf, strlen (buf) );
      fsync (vt->vtpty.pty);
    }
+#endif
 }
 
 pid_t vt_get_pid (VT *vt)
@@ -68541,7 +68788,7 @@ float ctx_target_fps = 100.0; /* this might end up being the resolution of our
 #include <string.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-#include <sys/ioctl.h>
+//#include <sys/ioctl.h>
 #include <signal.h>
 #include <math.h>
 #include <sys/time.h>
@@ -69606,8 +69853,8 @@ float ctx_client_max_y_pos (Ctx *ctx)
 void ctx_client_titlebar_draw (Ctx *ctx, CtxClient *client,
                                float x, float y, float width, float titlebar_height)
 {
-#if 0
-  ctx_move_to (ctx, x, y + height * 0.8);
+#if CTX_PTY==0
+  ctx_move_to (ctx, x, y + titlebar_height * 0.8);
   if (client == ctx->events.active)
     ctx_rgba (ctx, 1, 1,0.4, 1.0);
   else
@@ -69745,7 +69992,11 @@ int ctx_clients_draw (Ctx *ctx, int layer2)
          !flag_is_set(client->flags, ITK_CLIENT_MAXIMIZED) &&
          flag_is_set(client->flags, ITK_CLIENT_UI_RESIZABLE))
       {
+#if CTX_PTY
         itk_style_color (ctx, "titlebar-focused-bg");
+#else
+        ctx_rgb(ctx,0.1,0.2,0.3);
+#endif
 
         ctx_rectangle (ctx,
                        client->x,
