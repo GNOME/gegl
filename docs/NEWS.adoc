@@ -1,3 +1,23 @@
+GEGL-0.4.44 2023-03-26
+----------------------
+
+GeglBuffer:
+~~~~~~~~~~~
+
+Fixed a invalid free that gets umasked by GLib 2.75.3 and newer.
+
+ctx:
+~~~~
+
+Updated vendored library from upstream.
+
+
+Contributors to this release:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Øyvind Kolås, Tim Sabsch, dimspingos and Jan Tojnar.
+
+
 GEGL-0.4.42 2023-02-20
 ----------------------
 
