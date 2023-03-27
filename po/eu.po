@@ -5,13 +5,13 @@
 # osoitz <oelkoro@gmail.com>, 2013.
 # Iñaki Larrañaga Murgoitio <dooteo@zundan.com>, 2013, 2018.
 # Edurne Labaka <elabaka@uzei.com>, 2015.
-# Asier Sarasua Garmendia <asiersarasua@ni.eus>, 2018, 2019, 2020, 2021, 2022.
+# Asier Sarasua Garmendia <asiersarasua@ni.eus>, 2018, 2019, 2020, 2021, 2022, 2023.
 #
 msgid ""
 msgstr "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2022-07-07 20:03+0000\n"
-"PO-Revision-Date: 2022-07-24 10:00+0100\n"
+"POT-Creation-Date: 2023-02-12 12:23+0000\n"
+"PO-Revision-Date: 2023-03-27 10:00+0100\n"
 "Last-Translator: Asier Sarasua Garmendia <asiersarasua@ni.eus>\n"
 "Language-Team: Basque <librezale@librezale.eus>\n"
 "Language: eu\n"
@@ -346,40 +346,40 @@ msgstr "Inoiz ez"
 msgid "Always"
 msgstr "Beti"
 
-#: gegl/gegl-init.c:213
+#: gegl/gegl-init.c:225
 msgid "Where GEGL stores its swap"
 msgstr "GEGL-ek trukatzeko datuak gordetzen dituen lekua"
 
-#: gegl/gegl-init.c:218
+#: gegl/gegl-init.c:230
 msgid "Compression algorithm used for data stored in the swap"
 msgstr "Trukatze-fitxategian gordetako datuekin erabilitako konpresio-algoritmoa"
 
-#: gegl/gegl-init.c:223
+#: gegl/gegl-init.c:235
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr "Irudien cache gisa erabiliko den memoria kopurua (gutxi gorabehera)"
 
-#: gegl/gegl-init.c:228
+#: gegl/gegl-init.c:240
 msgid "Default size of tiles in GeglBuffers"
 msgstr "Lehenetsitako lauzen tamaina GeglBuffer-etan"
 
-#: gegl/gegl-init.c:233
+#: gegl/gegl-init.c:245
 msgid "The count of pixels to compute simultaneously"
 msgstr "Aldi berean kalkulatuko diren pixel kopurua"
 
-#: gegl/gegl-init.c:238
+#: gegl/gegl-init.c:250
 msgid ""
 "The quality of rendering, a value between 0.0 (fast) and 1.0 (reference)"
 msgstr "Errendatzearen kalitatea, 0.0 (azkarra) eta 1.0 (erreferentziazkoa) bitarteko balio bat"
 
-#: gegl/gegl-init.c:243
+#: gegl/gegl-init.c:255
 msgid "The number of concurrent processing threads to use"
 msgstr "Aldi berean erabiliko diren prozesu-hari kopurua"
 
-#: gegl/gegl-init.c:248
+#: gegl/gegl-init.c:260
 msgid "Disable OpenCL"
 msgstr "Desgaitu OpenCL"
 
-#: gegl/gegl-init.c:260
+#: gegl/gegl-init.c:272
 msgid "Show GEGL Options"
 msgstr "Erakutsi GEGL aukerak"
 
@@ -820,7 +820,7 @@ msgstr "Nabarmendu itzalak"
 msgid "When enabled details in shadows are boosted at the expense of noise"
 msgstr "Gaituta dagoenean, itzaletako xehetasunak nabarmendu egiten dira zarataren kaltetan"
 
-#: operations/common/c2g.c:468
+#: operations/common/c2g.c:461
 msgid ""
 "Color to grayscale conversion, uses envelopes formed with the STRESS "
 "approach to perform local color-difference preserving grayscale generation."
@@ -2589,11 +2589,11 @@ msgstr "Konposizioa"
 msgid "Output composition"
 msgstr "Irteerako konposizioa"
 
-#: operations/common/long-shadow.c:1691
+#: operations/common/long-shadow.c:1646
 msgid "Long Shadow"
 msgstr "Itzal luzea"
 
-#: operations/common/long-shadow.c:1696
+#: operations/common/long-shadow.c:1651
 msgid "Creates a long-shadow effect"
 msgstr "Itzal luzearen efektua sortzen du"
 
@@ -6020,11 +6020,11 @@ msgstr "Antialiasinga"
 msgid "Enables smoother tile output"
 msgstr "Lauza-irteera leunagoa gaitzen du"
 
-#: operations/common-gpl3+/mosaic.c:2466
+#: operations/common-gpl3+/mosaic.c:2471
 msgid "Mosaic"
 msgstr "Mosaikoa"
 
-#: operations/common-gpl3+/mosaic.c:2471
+#: operations/common-gpl3+/mosaic.c:2476
 msgid ""
 "Mosaic is a filter which transforms an image into what appears to be a "
 "mosaic, composed of small primitives, each of constant color and of an "
@@ -7349,11 +7349,11 @@ msgstr "marko-atzerapena"
 msgid "Delay in ms for last decoded frame"
 msgstr "Atzerapena milisegundotan azken deskodetutako markorako"
 
-#: operations/external/gif-load.c:240
+#: operations/external/gif-load.c:244
 msgid "GIF File Loader"
 msgstr "GIF fitxategi-kargatzailea"
 
-#: operations/external/gif-load.c:242
+#: operations/external/gif-load.c:246
 msgid "GIF image loader."
 msgstr "GIF irudi-kargatzailea."
 
@@ -7864,7 +7864,7 @@ msgstr "Kolore-espazioa"
 msgid "Color space to use for loaded data"
 msgstr "Kargatutako datuetarako erabiliko den kolore-espazioa"
 
-#: operations/external/raw-load.c:281
+#: operations/external/raw-load.c:285
 msgid "libraw File Loader"
 msgstr "libraw fitxategi-kargatzailea"
 
@@ -8539,7 +8539,7 @@ msgid ""
 "that for the time being, this is a luminance only approximation of the ACES "
 "RRT; without desaturation of highlights and shadows nor red hue "
 "modifications."
-msgstr ""
+msgstr "HDR sistematik SDR sistemara igarotzea probatzeko iragazki/mapatze kurba, ACEA RRT (Reference Rendering Transform) sistemaren hurbilketa dena. Aukera honetan eszenei erreferentzia egiten dien irudiak sartzen direnean, emaitza erreferentziatutako transformazioa sRGB profilean bistaratzeko egokia da, eta baita bistaratzea ODT bezalako ICC matrize-profilak erabiliz ateratzeko ere. Kontuan izan, momentuz, hau luminantzia soilik kontuan hartzen duen ACES RRT sistemaren hurbilketa bat dela; argiak eta itzalak desaturatu gabe eta ñabardura gorriaren aldaketarik gabe."
 
 #: operations/workshop/band-tune.c:24
 msgid "Detail band"
