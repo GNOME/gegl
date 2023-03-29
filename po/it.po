@@ -1,7 +1,7 @@
 # Italian translation for the gegl package.
 # Copyright (C) 2012 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gegl package.
-# Marco Ciampa <ciampix@posteo.net>, 2012-2021.
+# Marco Ciampa <ciampix@posteo.net>, 2012-2023.
 #
 # Elenco termini adottati per uniformità:
 #
@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GEGL_0_2_0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-10 09:34+0200\n"
-"PO-Revision-Date: 2022-10-10 10:47+0200\n"
+"POT-Creation-Date: 2023-03-29 16:47+0200\n"
+"PO-Revision-Date: 2023-03-29 16:48+0200\n"
 "Last-Translator: Marco Ciampa <ciampix@posteo.net>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -360,41 +360,41 @@ msgstr "Mai"
 msgid "Always"
 msgstr "Sempre"
 
-#: ../gegl/gegl-init.c:213
+#: ../gegl/gegl-init.c:225
 msgid "Where GEGL stores its swap"
 msgstr "Dove GEGL memorizza la propria swap"
 
-#: ../gegl/gegl-init.c:218
+#: ../gegl/gegl-init.c:230
 msgid "Compression algorithm used for data stored in the swap"
 msgstr "Algoritmo di compressione usato per i dati immagazzinati nello swap"
 
-#: ../gegl/gegl-init.c:223
+#: ../gegl/gegl-init.c:235
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr "Quanta memoria usare (approssimativamente) per la cache immagini"
 
-#: ../gegl/gegl-init.c:228
+#: ../gegl/gegl-init.c:240
 msgid "Default size of tiles in GeglBuffers"
 msgstr "Dimensione predefinita delle tile in GeglBuffers"
 
-#: ../gegl/gegl-init.c:233
+#: ../gegl/gegl-init.c:245
 msgid "The count of pixels to compute simultaneously"
 msgstr "Il numero di pixel da elaborare simultaneamente"
 
-#: ../gegl/gegl-init.c:238
+#: ../gegl/gegl-init.c:250
 msgid ""
 "The quality of rendering, a value between 0.0 (fast) and 1.0 (reference)"
 msgstr ""
 "La qualità del rendering, un valore tra 0.0 (veloce) e 1.0 (riferimento)"
 
-#: ../gegl/gegl-init.c:243
+#: ../gegl/gegl-init.c:255
 msgid "The number of concurrent processing threads to use"
 msgstr "Il numero di thread concorrenti da usare"
 
-#: ../gegl/gegl-init.c:248
+#: ../gegl/gegl-init.c:260
 msgid "Disable OpenCL"
 msgstr "Disabilita OpenCL"
 
-#: ../gegl/gegl-init.c:260
+#: ../gegl/gegl-init.c:272
 msgid "Show GEGL Options"
 msgstr "Mostra opzioni GEGL"
 
@@ -735,7 +735,9 @@ msgstr "Sfocatura scatola"
 
 #: ../operations/common/box-blur.c:407 ../operations/workshop/boxblur.c:76
 msgid "Blur resulting from averaging the colors of a square neighborhood."
-msgstr "La sfocatura risultante dalla media dei colori di un quadrato di punti vicini."
+msgstr ""
+"La sfocatura risultante dalla media dei colori di un quadrato di punti "
+"vicini."
 
 #. Here in the top of the file the properties of the operation is declared,
 #. *  this causes the declaration of a structure for containing the data.
@@ -869,7 +871,7 @@ msgstr ""
 "Se abilitata i dettagli nelle ombre vengono aumentati a discapito dei "
 "disturbi"
 
-#: ../operations/common/c2g.c:468
+#: ../operations/common/c2g.c:461
 msgid ""
 "Color to grayscale conversion, uses envelopes formed with the STRESS "
 "approach to perform local color-difference preserving grayscale generation."
@@ -1868,7 +1870,7 @@ msgstr "Scostamento verticale dell'ombra"
 
 #: ../operations/common/dropshadow.c:53
 msgid "Grow shape"
-msgstr "Forma bagliore"
+msgstr "Forma crescita"
 
 #: ../operations/common/dropshadow.c:56
 msgid "The shape to expand or contract the shadow in"
@@ -1876,7 +1878,7 @@ msgstr "La forma a cui espandere o contrarre l'ombra"
 
 #: ../operations/common/dropshadow.c:58
 msgid "Grow radius"
-msgstr "Raggio accrescimento"
+msgstr "Raggio crescita"
 
 #: ../operations/common/dropshadow.c:65
 msgid ""
@@ -2759,11 +2761,11 @@ msgstr "Composizione"
 msgid "Output composition"
 msgstr "Composizione in uscita"
 
-#: ../operations/common/long-shadow.c:1691
+#: ../operations/common/long-shadow.c:1646
 msgid "Long Shadow"
 msgstr "Ombra lunga"
 
-#: ../operations/common/long-shadow.c:1696
+#: ../operations/common/long-shadow.c:1651
 msgid "Creates a long-shadow effect"
 msgstr "Crea un effetto ombra lunga"
 
@@ -4263,7 +4265,9 @@ msgstr "Vicino più prossimo simmetrico"
 msgid ""
 "Noise reducing edge preserving blur filter based on Symmetric Nearest "
 "Neighbors"
-msgstr "Filtro sfocatura a riduzione del rumore e mantenimento dei bordi basato sul metodo degli elementi simmetrici più vicini"
+msgstr ""
+"Filtro sfocatura a riduzione del rumore e mantenimento dei bordi basato sul "
+"metodo degli elementi simmetrici più vicini"
 
 #: ../operations/common/spherize.c:25
 msgid "Radial"
@@ -6374,11 +6378,11 @@ msgstr "Antialiasing"
 msgid "Enables smoother tile output"
 msgstr "Risultati piastrelle più levigate"
 
-#: ../operations/common-gpl3+/mosaic.c:2466
+#: ../operations/common-gpl3+/mosaic.c:2471
 msgid "Mosaic"
 msgstr "Mosaico"
 
-#: ../operations/common-gpl3+/mosaic.c:2471
+#: ../operations/common-gpl3+/mosaic.c:2476
 msgid ""
 "Mosaic is a filter which transforms an image into what appears to be a "
 "mosaic, composed of small primitives, each of constant color and of an "
@@ -7761,11 +7765,11 @@ msgstr "ritardo di quadro"
 msgid "Delay in ms for last decoded frame"
 msgstr "Ritardo in ms per l'ultimo quadro decodificato"
 
-#: ../operations/external/gif-load.c:240
+#: ../operations/external/gif-load.c:244
 msgid "GIF File Loader"
 msgstr "Caricatore file GIF"
 
-#: ../operations/external/gif-load.c:242
+#: ../operations/external/gif-load.c:246
 msgid "GIF image loader."
 msgstr "Caricatore immagini GIF."
 
@@ -8296,7 +8300,7 @@ msgstr "Spazio colore"
 msgid "Color space to use for loaded data"
 msgstr "Spazio colore da usare per i dati caricati"
 
-#: ../operations/external/raw-load.c:281
+#: ../operations/external/raw-load.c:285
 msgid "libraw File Loader"
 msgstr "Caricatore immagini libraw"
 
