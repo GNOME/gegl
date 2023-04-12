@@ -230,6 +230,7 @@ struct _GeglZombieManager {
           GetTile(k, lg).recompute();
         }
       }
+    }
     case GEGL_TILE_GET_PARTIAL_WRITE:
       return forward();
     case GEGL_TILE_GET_FULL_WRITE:
@@ -354,8 +355,8 @@ void zombie_manager_prepare(GeglZombieManager* self) {
 }
 
 void zombie_manager_commit(GeglZombieManager*   self,
-			   GeglBuffer*          buffer, 
-			   const GeglRectangle* roi,
+                           GeglBuffer*          buffer,
+                           const GeglRectangle* roi,
 			   gint                 level) {
   self->commit(*roi, buffer, level);
 }
