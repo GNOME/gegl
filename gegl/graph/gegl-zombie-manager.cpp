@@ -125,7 +125,6 @@ struct _GeglZombieManager {
   bool initialized = false;
   std::optional<GeglRectangle> tile;
   std::unordered_map<Key, ZombieTile> map;
-  std::unordered_set<Key> computing;
   std::mutex mutex;
 
   _GeglZombieManager(GeglNode* node) : node(node) {
@@ -194,53 +193,56 @@ struct _GeglZombieManager {
     };
     GeglRectangle tile = this->tile.value();
     Key k { tile.x + x * tile.width, tile.y + y * tile.height, z };
-    bool should_work = [&](){
-      lock_guard lg(mutex);
-      return (computing.count(k) == 0) && (map.count(k) != 0) && (GetTile(k, lg).evicted());
-    }();
-    if (should_work) {
-      GeglRectangle tile = this->tile.value();
-      GeglRectangle roi = *GEGL_RECTANGLE(std::get<0>(k), std::get<1>(k), tile.width, tile.height);
-      {
-        GeglRegion *temp_region = gegl_region_rectangle (&roi);
-        g_mutex_lock(&node->cache->mutex);
-        gegl_region_subtract(node->cache->valid_region[z], temp_region);
-        g_mutex_unlock(&node->cache->mutex);
-        gegl_region_destroy(temp_region);
-      }
-      {
+    switch (s) {
+    case GEGL_TILE_GET_SENTRY:
+      std::cout << "GEGL TILE GET SENTRY!";
+      assert(false);
+      exit(1);
+    case GEGL_TILE_GET_READ: {
+      bool should_work = [&](){
         lock_guard lg(mutex);
-        computing.insert(k);
+        return (map.count(k) != 0) && (GetTile(k, lg).evicted());
+      }();
+      if (should_work) {
+        GeglRectangle tile = this->tile.value();
+        GeglRectangle roi = *GEGL_RECTANGLE(std::get<0>(k), std::get<1>(k), tile.width, tile.height);
+        {
+          GeglRegion *temp_region = gegl_region_rectangle (&roi);
+          g_mutex_lock(&node->cache->mutex);
+          gegl_region_subtract(node->cache->valid_region[z], temp_region);
+          g_mutex_unlock(&node->cache->mutex);
+          gegl_region_destroy(temp_region);
+        }
+        // this is being called by some code which lock the cache.
+        // recomputing will write to cache, which will also aquire the lock,
+        // so it will dead lock.
+        // since we are not touching the cache here,
+        // we can revert the lock.
+        // may god forgive my sin.
+        g_rec_mutex_unlock(&GEGL_BUFFER(node->cache)->tile_storage->mutex);
+        GeglEvalManager * em = gegl_eval_manager_new(node, "output");
+        gegl_eval_manager_apply(em, &roi, z);
+        g_rec_mutex_lock(&GEGL_BUFFER(node->cache)->tile_storage->mutex);
+        gegl_cache_computed(node->cache, &roi, z);
+        {
+          lock_guard lg(mutex);
+          lock_guard zombie_lg(zombie_mutex);
+          GetTile(k, lg).recompute();
+        }
       }
-      // this is being called by some code which lock the cache.
-      // recomputing will write to cache, which will also aquire the lock,
-      // so it will dead lock.
-      // since we are not touching the cache here,
-      // we can revert the lock.
-      // may god forgive my sin.
-      g_rec_mutex_unlock(&GEGL_BUFFER(node->cache)->tile_storage->mutex);
-      GeglEvalManager * em = gegl_eval_manager_new(node, "output");
-      gegl_eval_manager_apply(em, &roi, z);
-      g_rec_mutex_lock(&GEGL_BUFFER(node->cache)->tile_storage->mutex);
-      {
-        lock_guard lg(mutex);
-        computing.erase(k);
-      }
-      gegl_cache_computed(node->cache, &roi, z);
-      {
-        lock_guard lg(mutex);
-        lock_guard zombie_lg(zombie_mutex);
-        GetTile(k, lg).recompute();
-      }
-    }
+    case GEGL_TILE_GET_PARTIAL_WRITE:
+      return forward();
+    case GEGL_TILE_GET_FULL_WRITE:
+      return forward();
+    };
     return forward();
   }
 
   gpointer command(GeglTileCommand   command,
-		   gint              x,
-		   gint              y,
-		   gint              z,
-		   gpointer          data) {
+                   gint              x,
+                   gint              y,
+                   gint              z,
+                   gpointer          data) {
     auto forward = [&](){
       // why not gegl_node_get_cache? because if this is ever called cache had been set.
       return gegl_buffer_command (GEGL_TILE_SOURCE (node->cache), command, x, y, z, data);
@@ -250,44 +252,18 @@ struct _GeglZombieManager {
       return forward();
     } else {
       switch (command) {
-      case GEGL_TILE_IDLE:
-        std::cout << "zombie_command_idle" << std::endl;
-        break;
-        // return NULL;
       case GEGL_TILE_GET: {
         return tile_get(x, y, z, *reinterpret_cast<GeglTileGetState*>(&data));
         break;
       }
-      case GEGL_TILE_SET:
-        std::cout << "zombie_command_set" << std::endl;
-        break;
       case GEGL_TILE_IS_CACHED:
         // todo: maybe implement.
         // no code seems to rely on this though.
         return forward();
-      case GEGL_TILE_EXIST:
-        std::cout << "zombie_command_exist" << std::endl;
-        break;
-      case GEGL_TILE_VOID:
-        std::cout << "zombie_command_void" << std::endl;
-        break;
-      case GEGL_TILE_FLUSH:
-        std::cout << "zombie_command_flush" << std::endl;
-        break;
-        // return NULL;
-      case GEGL_TILE_REFETCH:
-        std::cout << "zombie_command_refetch" << std::endl;
-        break;
-      case GEGL_TILE_REINIT:
-        std::cout << "zombie_command_reinit" << std::endl;
-        break;
-      case GEGL_TILE_COPY:
-        std::cout << "zombie_command_copy" << std::endl;
-        break;
       default:
-        std::cout << "zombie_command_default " << command << std::endl;
         break;
       }
+      std::cout << TileCommandName(command) << std::endl;
       assert(false);
       return forward();
     }
