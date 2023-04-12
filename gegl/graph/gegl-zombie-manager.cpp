@@ -190,7 +190,7 @@ struct _GeglZombieManager {
   gpointer tile_get(gint x, gint y, gint z, GeglTileGetState s) {
     auto forward = [&](){
       // why not gegl_node_get_cache? because if this is ever called cache had been set.
-      return gegl_buffer_command (GEGL_TILE_SOURCE (node->cache), command, x, y, z, reinterpret_cast<gpointer>(s);
+      return gegl_buffer_command (GEGL_TILE_SOURCE (node->cache), command, x, y, z, reinterpret_cast<gpointer>(s));
     };
     GeglRectangle tile = this->tile.value();
     Key k { tile.x + x * tile.width, tile.y + y * tile.height, z };
@@ -230,7 +230,7 @@ struct _GeglZombieManager {
       {
         lock_guard lg(mutex);
         lock_guard zombie_lg(zombie_mutex);
-        GetTile(k).recompute();
+        GetTile(k, lg).recompute();
       }
     }
     return forward();
@@ -255,7 +255,7 @@ struct _GeglZombieManager {
         break;
         // return NULL;
       case GEGL_TILE_GET: {
-        return tile_get(x, y, z, reinterpret_cast<GeglTileGetState>(data));
+        return tile_get(x, y, z, *reinterpret_cast<GeglTileGetState*>(&data));
         break;
       }
       case GEGL_TILE_SET:
