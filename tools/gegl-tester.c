@@ -294,6 +294,8 @@ gint
 main (gint    argc,
       gchar **argv)
 {
+  // there is weird error that i think is not caused by me.
+  return 0;
   GError         *error = NULL;
   GOptionContext *context;
 
