@@ -465,7 +465,8 @@ gegl_buffer_iterate_write (GeglBuffer          *buffer,
 
           tile = gegl_tile_handler_get_tile ((GeglTileHandler *) buffer,
                                              index_x, index_y, level,
-                                             ! whole_tile);
+                                             ! whole_tile,
+                                             GEGL_TILE_GET_PARTIAL_WRITE);
 
           g_rec_mutex_unlock (&buffer->tile_storage->mutex);
 
