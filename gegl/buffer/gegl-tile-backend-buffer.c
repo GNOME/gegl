@@ -184,7 +184,7 @@ gegl_tile_backend_buffer_command (GeglTileSource  *tile_source,
     {
     case GEGL_TILE_GET:
       return gegl_tile_backend_buffer_get_tile (tile_backend_buffer,
-                                                x, y, z, data);
+                                                x, y, z, (GeglTileGetState)data);
 
     case GEGL_TILE_SET:
       gegl_tile_backend_buffer_set_tile (tile_backend_buffer,
