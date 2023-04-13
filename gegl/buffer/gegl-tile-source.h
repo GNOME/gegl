@@ -107,11 +107,9 @@ gegl_tile_source_get_tile (GeglTileSource *source,
                            gint            x,
                            gint            y,
                            gint            z,
-			   GeglTileGetState state)
+                           GeglTileGetState state)
 {
-  
   GeglTile *tile;
-  
 
   tile = (GeglTile *) gegl_tile_source_command (source, GEGL_TILE_GET,
                                                 x, y, z, (gpointer)state);
@@ -128,7 +126,8 @@ GeglTile *
 gegl_buffer_get_tile (GeglBuffer *buffer,
                       gint        x,
                       gint        y,
-                      gint        z);
+                      gint        z,
+                      GeglTileGetState s);
 
 
 /**

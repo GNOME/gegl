@@ -719,7 +719,7 @@ gegl_buffer_get_tile_int (GeglTileSource *source,
                           gint            x,
                           gint            y,
                           gint            z,
-			  gpointer data)
+                          gpointer data)
 {
   GeglTileHandler *handler = (GeglTileHandler*) (source);
   GeglTile        *tile   = NULL;
@@ -1281,7 +1281,8 @@ GeglTile *
 gegl_buffer_get_tile (GeglBuffer *buffer,
                       gint        x,
                       gint        y,
-                      gint        z)
+                      gint        z,
+                      GeglTileState s)
 {
   GeglTileSource  *source  = (GeglTileSource*)buffer;
   GeglTile *tile;
@@ -1294,7 +1295,7 @@ gegl_buffer_get_tile (GeglBuffer *buffer,
   g_rec_mutex_lock (&tile_storage->mutex);
 
   tile = gegl_tile_source_command (source, GEGL_TILE_GET,
-                                   x, y, z, NULL);
+                                   x, y, z, (gpointer) s);
 
   g_rec_mutex_unlock (&tile_storage->mutex);
   }
