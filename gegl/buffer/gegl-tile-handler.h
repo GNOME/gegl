@@ -125,7 +125,8 @@ GeglTile * gegl_tile_handler_get_source_tile (GeglTileHandler *handler,
                                               gint             x,
                                               gint             y,
                                               gint             z,
-                                              gboolean         preserve_data);
+                                              gboolean         preserve_data,
+                                              GeglTileGetState s);
 
 /**
  * gegl_tile_handler_dup_tile: (skip)

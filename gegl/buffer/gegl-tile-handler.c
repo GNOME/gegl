@@ -253,12 +253,14 @@ gegl_tile_handler_get_source_tile (GeglTileHandler *handler,
                                    gint             x,
                                    gint             y,
                                    gint             z,
-                                   gboolean         preserve_data)
+                                   gboolean         preserve_data,
+                                   GeglTileGetState s)
 {
   return gegl_tile_handler_get_tile_internal (handler,
                                               handler->source,
                                               x, y, z,
-                                              preserve_data);
+                                              preserve_data,
+                                              s);
 }
 
 GeglTile *
