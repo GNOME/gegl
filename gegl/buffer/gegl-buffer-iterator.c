@@ -378,11 +378,19 @@ get_tile (GeglBufferIterator *iter,
 
       g_rec_mutex_lock (&buf->tile_storage->mutex);
 
+      GeglTileGetState s;
+      if (sub->access_mode & GEGL_ACCESS_WRITE) {
+        s = GEGL_TILE_GET_PARTIAL_WRITE;
+      } else {
+        s = GEGL_TILE_GET_READ;
+      }
+
       sub->current_tile = gegl_tile_handler_get_tile (
         (GeglTileHandler *) buf,
         tile_x, tile_y, sub->level,
         ! (sub->can_discard_data &&
-           gegl_rectangle_contains (&sub->full_rect, &sub->real_roi)));
+           gegl_rectangle_contains (&sub->full_rect, &sub->real_roi)),
+        s);
 
       g_rec_mutex_unlock (&buf->tile_storage->mutex);
 
@@ -579,11 +587,19 @@ prepare_iteration (GeglBufferIterator *iter)
             {
               g_rec_mutex_lock (&buf->tile_storage->mutex);
 
+              GeglTileGetState s;
+              if (sub->access_mode & GEGL_ACCESS_WRITE) {
+                s = GEGL_TILE_GET_PARTIAL_WRITE;
+              } else {
+                s = GEGL_TILE_GET_READ;
+              }
+
               sub->linear_tile = gegl_tile_handler_get_tile (
                 (GeglTileHandler *) buf,
                 0, 0, 0,
                 ! (sub->can_discard_data &&
-                   gegl_rectangle_contains (&sub->full_rect, &buf->extent)));
+                   gegl_rectangle_contains (&sub->full_rect, &buf->extent)),
+                s);
 
               g_rec_mutex_unlock (&buf->tile_storage->mutex);
 
