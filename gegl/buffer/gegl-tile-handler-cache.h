@@ -71,8 +71,7 @@ void              gegl_tile_handler_cache_remove             (GeglTileHandlerCac
 GeglTile        * gegl_tile_handler_cache_get_tile           (GeglTileHandlerCache *cache,
                                                               gint                  x,
                                                               gint                  y,
-                                                              gint                  z,
-                                                              GeglTileGetState      s);
+                                                              gint                  z);
 void              gegl_tile_handler_cache_tile_uncloned      (GeglTileHandlerCache *cache,
                                                               GeglTile             *tile);
 
