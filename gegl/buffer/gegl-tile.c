@@ -23,7 +23,7 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-#include <cassert>
+#include <assert.h>
 #include <glib-object.h>
 
 #include "gegl-buffer.h"
