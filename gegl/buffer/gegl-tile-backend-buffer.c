@@ -60,7 +60,8 @@ static gpointer   gegl_tile_backend_buffer_command             (GeglTileSource  
 static GeglTile * gegl_tile_backend_buffer_get_tile            (GeglTileBackendBuffer *tile_backend_buffer,
                                                                 gint                   x,
                                                                 gint                   y,
-                                                                gint                   z);
+                                                                gint                   z,
+                                                                GeglTileGetState       s);
 static void       gegl_tile_backend_buffer_set_tile            (GeglTileBackendBuffer *tile_backend_buffer,
                                                                 GeglTile              *tile,
                                                                 gint                   x,
