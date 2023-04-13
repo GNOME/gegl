@@ -17,7 +17,7 @@ std::mutex zombie_mutex;
 using lock_guard = std::lock_guard<std::mutex>;
 
 std::string getEnvVar(const std::string& key) {
-  char const* val = getenv(key.c_str()); 
+  char const* val = getenv(key.c_str());
   return val == nullptr ? std::string() : std::string(val);
 }
 
@@ -341,7 +341,10 @@ gpointer zombie_manager_command (GeglZombieManager *self,
 				 gint              y,
 				 gint              z,
 				 gpointer          data) {
-  return self->command(command, x, y, z, data);
+  std::cout << "working on command " << TileString(command) << " ..." << std::endl;
+  auto ret = self->command(command, x, y, z, data);
+  std::cout << "command " << TileString(command) << " ok!" << std::endl;
+  rerturn ret;
 }
 
 void zombie_manager_set_cache (GeglZombieManager *self,
