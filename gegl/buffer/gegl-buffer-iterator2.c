@@ -362,7 +362,14 @@ get_tile (GeglBufferIterator2 *iter,
       int tile_x = gegl_tile_indice (iter->items[index].roi.x + shift_x, tile_width);
       int tile_y = gegl_tile_indice (iter->items[index].roi.y + shift_y, tile_height);
 
-      sub->current_tile = gegl_buffer_get_tile (buf, tile_x, tile_y, sub->level);
+      GeglTileGetState s;
+      if (sub->access_mode & GEGL_ACCESS_WRITE) {
+        s = GEGL_TILE_GET_PARTIAL_WRITE;
+      } else {
+        s = GEGL_TILE_GET_READ;
+      }
+
+      sub->current_tile = gegl_buffer_get_tile (buf, tile_x, tile_y, sub->level, s);
 
       if (sub->access_mode & GEGL_ACCESS_WRITE)
         gegl_tile_lock (sub->current_tile);
