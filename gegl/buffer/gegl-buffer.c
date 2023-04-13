@@ -1282,7 +1282,7 @@ gegl_buffer_get_tile (GeglBuffer *buffer,
                       gint        x,
                       gint        y,
                       gint        z,
-                      GeglTileState s)
+                      GeglTileGetState s)
 {
   GeglTileSource  *source  = (GeglTileSource*)buffer;
   GeglTile *tile;
