@@ -517,7 +517,13 @@ prepare_iteration (GeglBufferIterator2 *iter)
               (buf->extent.width  == buf->tile_width) &&
               (buf->extent.height == buf->tile_height))
             {
-              sub->linear_tile = gegl_buffer_get_tile (sub->buffer, 0, 0, 0);
+              GeglTileGetState s;
+              if (sub->access_mode & GEGL_ACCESS_WRITE) {
+                s = GEGL_TILE_GET_PARTIAL_WRITE;
+              } else {
+                s = GEGL_TILE_GET_READ;
+              }
+              sub->linear_tile = gegl_buffer_get_tile (sub->buffer, 0, 0, 0, s);
 
               if (sub->access_mode & GEGL_ACCESS_WRITE)
                 gegl_tile_lock (sub->linear_tile);
