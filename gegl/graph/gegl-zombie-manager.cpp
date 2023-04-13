@@ -186,6 +186,7 @@ struct _GeglZombieManager {
     SetTile(k, lg);
   }
 
+  // todo: avoid tile get reentrant
   gpointer tile_get(gint x, gint y, gint z, GeglTileGetState s) {
     auto forward = [&](){
       // why not gegl_node_get_cache? because if this is ever called cache had been set.
