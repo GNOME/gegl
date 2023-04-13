@@ -192,7 +192,7 @@ gegl_tile_handler_cache_get_tile_command (GeglTileSource *tile_store,
   if (gegl_tile_handler_cache_ext_flush)
     gegl_tile_handler_cache_ext_flush (cache, NULL);
 
-  tile = gegl_tile_handler_cache_get_tile (cache, x, y, z, data);
+  tile = gegl_tile_handler_cache_get_tile (cache, x, y, z);
   if (tile)
     {
       /* we don't bother making cache_{hits,misses} atomic, since they're only
