@@ -341,7 +341,7 @@ gpointer zombie_manager_command (GeglZombieManager *self,
 				 gint              y,
 				 gint              z,
 				 gpointer          data) {
-  std::cout << "working on command " << TileString(command) << " ..." << std::endl;
+  std::cout << "working on command " << CommandString(command) << " ..." << std::endl;
   auto ret = self->command(command, x, y, z, data);
   std::cout << "command " << TileString(command) << " ok!" << std::endl;
   rerturn ret;
