@@ -123,7 +123,7 @@ gegl_tile_dup (GeglTile *src)
 {
   GeglTile *tile;
 
-  assert (src->lock_count == 0);
+  gegl_tile_read_lock(src);
   g_warn_if_fail (src->lock_count == 0);
   g_warn_if_fail (! src->damage);
 
@@ -162,6 +162,7 @@ gegl_tile_dup (GeglTile *src)
    */
   tile->rev++;
 
+  gegl_tile_read_unlock(src);
   return tile;
 }
 
