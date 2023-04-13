@@ -221,7 +221,7 @@ gegl_tile_handler_get_tile_internal (GeglTileHandler *handler,
     }
   else if (handler->priv->cache)
     {
-      tile = gegl_tile_handler_cache_get_tile (handler->priv->cache, x, y, z, s);
+      tile = gegl_tile_handler_cache_get_tile (handler->priv->cache, x, y, z);
 
       if (tile)
         tile->damage = ~(guint64) 0;
