@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2023-02-12 12:23+0000\n"
-"PO-Revision-Date: 2023-02-14 04:13+0300\n"
+"POT-Creation-Date: 2023-02-14 21:20+0000\n"
+"PO-Revision-Date: 2023-03-08 00:52+0300\n"
 "Last-Translator: Sabri Ünal <libreajans@gmail.com>\n"
 "Language-Team: Türkçe <gnome-turk@gnome.org>\n"
 "Language: tr\n"
@@ -491,17 +491,17 @@ msgstr "Oluşturulan görüntü arabelleği için Çıktı pedi."
 #: gegl/operation/gegl-operation-composer3.c:86
 #, fuzzy
 msgid "Input pad, for image buffer input."
-msgstr "Görüntü arabellek girdisi için girdi pedi."
+msgstr "Görüntü tampon girdisi için girdi pedi."
 
 #: gegl/operation/gegl-operation-composer3.c:95
 #: gegl/operation/gegl-operation-composer.c:94
 #: operations/transform/border-align.c:157
 msgid "Auxiliary image buffer input pad."
-msgstr "Ek görüntü arabellek girdi pedi."
+msgstr "Ek görüntü tampon girdi pedi."
 
 #: gegl/operation/gegl-operation-composer3.c:104
 msgid "Second auxiliary image buffer input pad."
-msgstr "İkinci ek görüntü arabellek girdi pedi."
+msgstr "İkinci ek görüntü tampon girdi pedi."
 
 #: operations/common/absolute.c:72
 msgid "Absolute"
@@ -835,8 +835,7 @@ msgstr "babl biçimi"
 msgid ""
 "The babl format of the output GeglBuffer, NULL to use input buffer format"
 msgstr ""
-"GeglBuffer çıktısının babl biçimi, girdi arabellek biçimini kullanmak için "
-"NULL"
+"GeglBuffer çıktısının babl biçimi, girdi tampon biçimini kullanmak için NULL"
 
 #: operations/common/buffer-sink.c:86
 msgid "Buffer Sink"
@@ -1030,7 +1029,7 @@ msgid ""
 "Generates a buffer entirely filled with the specified color, use gegl:crop "
 "to get smaller dimensions."
 msgstr ""
-"Belirtilen renklerle tümüyle doldurulmuş bir arabellek oluşturur, daha küçük "
+"Belirtilen renklerle tümüyle doldurulmuş bir tampon oluşturur, daha küçük "
 "boyutları almak için gegl:crop kullanır."
 
 #: operations/common/color-assimilation-grid.c:25
@@ -1663,7 +1662,7 @@ msgstr "Arabellek"
 msgid ""
 "An already existing GeglBuffer to write incoming buffer data to, or NULL."
 msgstr ""
-"Gelen arabellek verisinin yazılacağı halihazırda var olan GeglBuffer'ı, veya "
+"Gelen tampon verisinin yazılacağı halihazırda var olan GeglBuffer'ı, veya "
 "NULL."
 
 #: operations/common/copy-buffer.c:153
@@ -2354,7 +2353,7 @@ msgid ""
 "in the properties and a visual difference image is produced as a visual "
 "result. "
 msgstr ""
-"Eğer girdi ve aux arabellekleri farklıysa karşılaştırır. Genel istatistikler "
+"Eğer girdi ve aux tamponları farklıysa karşılaştırır. Genel istatistikler "
 "özelliklerde kaydedilir ve görsel bir sonuç olarak görsel bir fark görüntüsü "
 "üretilir. "
 
@@ -2795,7 +2794,7 @@ msgid ""
 "sample input with an auxiliary buffer that contain absolute source "
 "coordinates"
 msgstr ""
-"mutlak kaynak koordinatlarını içeren bir yardımcı arabellek ile örnek girdi"
+"mutlak kaynak koordinatlarını içeren bir yardımcı tampon ile örnek girdi"
 
 #: operations/common/map-relative.c:22
 msgid "Scaling"
@@ -2819,7 +2818,7 @@ msgid ""
 "sample input with an auxiliary buffer that contain relative source "
 "coordinates"
 msgstr ""
-"göreceli kaynak koordinatlarını içeren bir yardımcı arabellek ile örnek girdi"
+"göreceli kaynak koordinatlarını içeren bir yardımcı tampon ile örnek girdi"
 
 #: operations/common/matting-global.c:599
 msgid "Matting Global"
@@ -4695,7 +4694,7 @@ msgstr "alfa değerlerini ağırlık olarak kullanarak iki görüntüyü karış
 #: operations/common/write-buffer.c:26
 msgid "A pre-existing GeglBuffer to write incoming buffer data to."
 msgstr ""
-"Gelen arabellek verisinin yazılacağı daha önceden var olan GeglBuffer "
+"Gelen tampon verisinin yazılacağı daha önceden var olan GeglBuffer "
 "arabelleği."
 
 #: operations/common/write-buffer.c:176
@@ -4704,7 +4703,7 @@ msgstr "Arabellek Yaz"
 
 #: operations/common/write-buffer.c:178
 msgid "Write input data into an existing GEGL buffer destination surface."
-msgstr "Girdi verisini varolan bir GEGL arabellek hedef yüzeyine yaz."
+msgstr "Girdi verisini varolan bir GEGL tampon hedef yüzeyine yaz."
 
 #: operations/common-cxx/distance-transform.cc:31
 msgid "Above threshold"
@@ -7268,7 +7267,7 @@ msgid ""
 msgstr ""
 "NULL veya önbelleğe alınmış gerçeklenmiş sonuçları içeren bir GeglBuffer, "
 "bu, geçerli olan önbelleğin parçasını dönen "
-"gegl_buffer_list_valid_rectangles özel bir arabellektir."
+"gegl_buffer_list_valid_rectangles özel bir tampondur."
 
 #: operations/core/cache.c:87
 msgid ""
@@ -8784,7 +8783,7 @@ msgstr "Merkezde döndür"
 
 #: operations/transform/rotate-on-center.c:169
 msgid "Rotate the buffer around its center, taking care of possible offsets."
-msgstr "Olası konumları koruyarak arabellek merkezini kendi etrafında döndür."
+msgstr "Olası konumları koruyarak tampon merkezini kendi etrafında döndür."
 
 #: operations/transform/scale-ratio.c:26
 msgid "Horizontal scale factor"
@@ -8896,7 +8895,7 @@ msgid ""
 "passed a fast-path without resampling is used"
 msgstr ""
 "Tamsayı koordinatları yeniden örnekleme olmadan hızlıca geçirilirse, "
-"arabellekleri (altpiksel hassasiyetiyle) yeniden konumlandırır"
+"tamponları (altpiksel hassasiyetiyle) yeniden konumlandırır"
 
 #: operations/workshop/aces-rrt.c:133
 msgid "ACES RRT"
@@ -9363,7 +9362,7 @@ msgid ""
 "size."
 msgstr ""
 "Girdi arabelleğinde belirtilen satır boyunca kırmızı, yeşil ve mavi "
-"bileşenler için, çizilerek belirtilmiş arabellek boyunca, parlaklık profili "
+"bileşenler için, çizilerek belirtilmiş tampon boyunca, parlaklık profili "
 "görselleştir."
 
 #: operations/workshop/external/spyrograph.c:27
