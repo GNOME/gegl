@@ -123,10 +123,22 @@ gegl_tile_dup (GeglTile *src)
 {
   GeglTile *tile;
 
-  // added by zombie. since we are running bunch of stuff in parallel, this does not hold.
-  // instead we grab a read lock.
+  // commented out by zombie.
   // g_warn_if_fail (src->lock_count == 0);
-  gegl_tile_read_lock(src);
+  // we will fail this in the following case:
+  //   thread A try to access a evicted tile,
+  //     causing recomputation on said tile.
+  //     however, gegl may decide to do extra work in batch,
+  //     causing neighboring tile to also get written.
+  //   meanwhile, thread B try to access that neighboring tile.
+  // as it is just writing the same data, we dont need any locking -
+  //   not even a read lock!
+  // extra work is still being done though.
+  // to fix it, I think we have to add a Recompute Mode to EvalManager,
+  // stopping it from stretching, and getting everything to be tile sized.
+  // below is some useful test code.
+  // gegl_tile_read_lock(src);
+  // assert(src->lock_count == 0);
   g_warn_if_fail (! src->damage);
 
   if (! src->keep_identity)
@@ -164,7 +176,7 @@ gegl_tile_dup (GeglTile *src)
    */
   tile->rev++;
 
-  gegl_tile_read_unlock(src);
+  //gegl_tile_read_unlock(src);
   return tile;
 }
 

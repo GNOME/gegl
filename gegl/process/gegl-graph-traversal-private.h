@@ -25,6 +25,7 @@ struct _GeglGraphTraversal
   GQueue      path;
   gboolean    rects_dirty;
   GeglBuffer *shared_empty;
+  bool recompute;
 };
 
 #endif /* __GEGL_GRAPH_TRAVERSAL_PRIVATE_H__ */

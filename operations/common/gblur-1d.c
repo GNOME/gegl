@@ -25,6 +25,8 @@
 
 #include "config.h"
 #include <glib/gi18n-lib.h>
+#include <stdio.h>
+#include "gegl/buffer/gegl-buffer.h"
 
 #ifdef GEGL_PROPERTIES
 
@@ -604,7 +606,7 @@ iir_young_blur_1D_rgbA (gfloat           *buf,
 static void
 iir_young_hor_blur (IirYoungBlur1dFunc   real_blur_1D,
                     GeglBuffer          *src,
-                    const GeglRectangle *rect,
+                    const GeglRectangle *input_rect,
                     GeglBuffer          *dst,
                     const gdouble       *b,
                     gdouble            (*m)[3],
@@ -612,6 +614,11 @@ iir_young_hor_blur (IirYoungBlur1dFunc   real_blur_1D,
                     const Babl          *format,
                     gint                 level)
 {
+  gint extend = 256;
+  const GeglRectangle* extent = gegl_buffer_get_extent(src);
+  gint left = MAX(input_rect->x - extend, extent->x);
+  gint right = MIN(input_rect->x + input_rect->width + extend, extent->x + extent->width);
+  GeglRectangle* rect = GEGL_RECTANGLE(left, input_rect->y, right - left, input_rect->height);
   GeglRectangle  cur_row = *rect;
   const gint     nc = babl_format_get_n_components (format);
   gfloat        *row = g_new (gfloat, (3 + rect->width + 3) * nc);
@@ -633,7 +640,7 @@ iir_young_hor_blur (IirYoungBlur1dFunc   real_blur_1D,
       get_boundaries (policy, row, rect->width, nc, &iminus, &uplus);
       real_blur_1D (row, tmp, b, m, iminus, uplus, rect->width, nc, policy);
 
-      gegl_buffer_set (dst, &cur_row, level, format, &row[3 * nc],
+      gegl_buffer_set (dst, GEGL_RECTANGLE(input_rect->x, cur_row.y, input_rect->width, cur_row.height), level, format, &row[(3 + input_rect->x - rect->x) * nc],
                        GEGL_AUTO_ROWSTRIDE);
     }
 
@@ -644,7 +651,7 @@ iir_young_hor_blur (IirYoungBlur1dFunc   real_blur_1D,
 static void
 iir_young_ver_blur (IirYoungBlur1dFunc   real_blur_1D,
                     GeglBuffer          *src,
-                    const GeglRectangle *rect,
+                    const GeglRectangle *input_rect,
                     GeglBuffer          *dst,
                     const gdouble       *b,
                     gdouble            (*m)[3],
@@ -652,6 +659,11 @@ iir_young_ver_blur (IirYoungBlur1dFunc   real_blur_1D,
                     const Babl          *format,
                     gint                 level)
 {
+  int extend = 256;
+  const GeglRectangle* extent = gegl_buffer_get_extent(src);
+  gint up = MAX(input_rect->y - extend, extent->y);
+  gint down = MIN(input_rect->y + input_rect->height + extend, extent->y + extent->height);
+  GeglRectangle* rect = GEGL_RECTANGLE(input_rect->x, up, input_rect->width, down - up);
   GeglRectangle  cur_col = *rect;
   const gint     nc = babl_format_get_n_components (format);
   gfloat        *col = g_new (gfloat, (3 + rect->height + 3) * nc);
@@ -673,7 +685,7 @@ iir_young_ver_blur (IirYoungBlur1dFunc   real_blur_1D,
       get_boundaries (policy, col, rect->height, nc, &iminus, &uplus);
       real_blur_1D (col, tmp, b, m, iminus, uplus, rect->height, nc, policy);
 
-      gegl_buffer_set (dst, &cur_col, level, format, &col[3 * nc],
+      gegl_buffer_set (dst, GEGL_RECTANGLE(cur_col.x, input_rect->y, cur_col.width, input_rect->height), level, format, &col[(3 + input_rect->y - rect->y) * nc],
                        GEGL_AUTO_ROWSTRIDE);
     }
 

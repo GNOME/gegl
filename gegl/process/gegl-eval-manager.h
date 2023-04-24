@@ -49,6 +49,7 @@ struct _GeglEvalManager
   GObject    parent_instance;
   GeglNode  *node;
   gchar     *pad_name;
+  gboolean recompute;
 
   GeglGraphTraversal    *traversal;
   GeglEvalManagerStates  state;
@@ -69,6 +70,8 @@ GeglRectangle     gegl_eval_manager_get_bounding_box (GeglEvalManager     *self)
 GeglBuffer *      gegl_eval_manager_apply    (GeglEvalManager     *self,
                                               const GeglRectangle *roi,
                                               gint                 level);
+
+void              gegl_eval_manager_recompute(GeglEvalManager     *self);
 GeglEvalManager * gegl_eval_manager_new      (GeglNode        *node,
                                               const gchar     *pad_name);
 

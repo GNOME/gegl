@@ -170,6 +170,11 @@ gegl_config_set_property (GObject      *gobject,
         config->swap_compression = g_value_dup_string (value);
         break;
       case PROP_THREADS:
+        if (g_getenv("USE_ZOMBIE")) {
+          if (g_value_get_int (value) > 1) {
+            //raise(SIGINT);
+          }
+        }
         _gegl_threads = g_value_get_int (value);
         return;
       case PROP_USE_OPENCL:
@@ -375,11 +380,12 @@ gegl_config_class_init (GeglConfigClass *klass)
 
   _gegl_threads = g_get_num_processors ();
   _gegl_threads = MIN (_gegl_threads, GEGL_MAX_THREADS);
+  _gegl_threads = 1;
   g_object_class_install_property (gobject_class, PROP_THREADS,
                                    g_param_spec_int ("threads",
                                                      "Number of threads",
                                                      "Number of concurrent evaluation threads",
-                                                     0, GEGL_MAX_THREADS,
+                                                      0, GEGL_MAX_THREADS,
                                                      _gegl_threads,
                                                      G_PARAM_READWRITE |
                                                      G_PARAM_STATIC_STRINGS |

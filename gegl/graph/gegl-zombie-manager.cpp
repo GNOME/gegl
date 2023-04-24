@@ -32,8 +32,17 @@ void gegl_zombie_link_test() {
 using Key = std::tuple<gint, gint, gint>;
 
 struct Proxy {
+  size_t size;
+  explicit Proxy(size_t size) : size(size) { }
+  Proxy() = delete;
 };
 
+template<>
+struct GetSize<Proxy> {
+  size_t operator()(const Proxy& p) {
+    return p.size;
+  }
+};
 // A Zombified Tile.
 using ZombieTile = Zombie<Proxy>;
 
@@ -160,16 +169,23 @@ struct _GeglZombieManager {
     return GetTile(k, lg);
   }
 
+  size_t GetTileSize() const {
+    assert(tile);
+    // 4 from rgba
+    return tile.value().width * tile.value().height * 4;
+  }
+
   ZombieTile MakeZombieTile(Key k) {
     lock_guard lg(zombie_mutex);
     // todo: calculate parent dependency
+    auto tile_size = GetTileSize();
     if (node->cache != nullptr) {
-      ZombieTile zt(bindZombie([](){ return ZombieTile(Proxy { }); }));
+      ZombieTile zt(bindZombie([tile_size](){ return ZombieTile(Proxy{tile_size}); }));
       zt.evict(); // doing a single eviction to make sure we can recompute
       return zt;
     } else {
-      return bindZombie([](){
-        ZombieTile zt(Proxy { });
+      return bindZombie([tile_size](){
+        ZombieTile zt(Proxy{tile_size});
         zt.evict();
         return zt;
       });
@@ -222,6 +238,7 @@ struct _GeglZombieManager {
         // may god forgive my sin.
         g_rec_mutex_unlock(&GEGL_BUFFER(node->cache)->tile_storage->mutex);
         GeglEvalManager * em = gegl_eval_manager_new(node, "output");
+        gegl_eval_manager_recompute(em);
         gegl_eval_manager_apply(em, &roi, z);
         g_rec_mutex_lock(&GEGL_BUFFER(node->cache)->tile_storage->mutex);
         gegl_cache_computed(node->cache, &roi, z);
@@ -240,6 +257,7 @@ struct _GeglZombieManager {
     return forward();
   }
 
+  // TODO: I dont think the handling of level is correct
   gpointer command(GeglTileCommand   command,
                    gint              x,
                    gint              y,
@@ -275,7 +293,7 @@ struct _GeglZombieManager {
     // todo: we want to record time here
   }
 
-  std::vector<GeglRectangle> split_to_tiles(const GeglRectangle& roi) const {
+  std::vector<GeglRectangle> SplitToTiles(const GeglRectangle& roi) const {
     assert(initialized);
     std::vector<GeglRectangle> ret;
     if (this->tile) {
@@ -318,7 +336,7 @@ struct _GeglZombieManager {
         initialized = true;
         this->tile = tile;
       }
-      for (const GeglRectangle& r: split_to_tiles(roi)) {
+      for (const GeglRectangle& r: SplitToTiles(roi)) {
         // todo: we may want more fine grained tracking
         GetTile({r.x, r.y, level}, lg);
       }
