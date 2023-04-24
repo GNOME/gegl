@@ -346,9 +346,6 @@ struct _GeglZombieManager {
 };
 
 GeglZombieManager* make_zombie_manager(GeglNode* node) {
-  if (use_zombie()) {
-    std::cout << "make zombie!" << std::endl;
-  }
   return new GeglZombieManager(node);
 }
 
