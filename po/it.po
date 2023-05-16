@@ -15,7 +15,7 @@ msgstr ""
 "Project-Id-Version: GEGL_0_2_0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-03-29 16:47+0200\n"
-"PO-Revision-Date: 2023-05-16 17:41+0200\n"
+"PO-Revision-Date: 2023-05-16 18:04+0200\n"
 "Last-Translator: Marco Ciampa <ciampix@posteo.net>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -4837,27 +4837,27 @@ msgstr "Raggio sfocatura fuori-fuoco"
 #: ../operations/common-cxx/focus-blur.c:52
 #: ../operations/common-cxx/lens-blur.cc:31
 msgid "Highlight factor"
-msgstr "Fattore alteluci"
+msgstr "Fattore evidenziazione"
 
 #: ../operations/common-cxx/focus-blur.c:53
 #: ../operations/common-cxx/lens-blur.cc:32
 msgid "Relative highlight strength"
-msgstr "Forza alteluci relativa"
+msgstr "Intensità evidenziazione relativa"
 
 #: ../operations/common-cxx/focus-blur.c:57
 #: ../operations/common-cxx/lens-blur.cc:35
 msgid "Highlight threshold (low)"
-msgstr "Soglia (bassa) alteluci"
+msgstr "Soglia evidenziazione (bassa)"
 
 #: ../operations/common-cxx/focus-blur.c:61
 #: ../operations/common-cxx/lens-blur.cc:39
 msgid "Highlight threshold"
-msgstr "Soglia alteluci"
+msgstr "Soglia evidenziazione"
 
 #: ../operations/common-cxx/focus-blur.c:64
 #: ../operations/common-cxx/lens-blur.cc:41
 msgid "Highlight threshold (high)"
-msgstr "Soglia (alta) alteluci"
+msgstr "Soglia evidenziazione (alta)"
 
 #: ../operations/common-cxx/focus-blur.c:86
 msgid "Focus-region outer radius"
