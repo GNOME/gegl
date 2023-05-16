@@ -15,7 +15,7 @@ msgstr ""
 "Project-Id-Version: GEGL_0_2_0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-03-29 16:47+0200\n"
-"PO-Revision-Date: 2023-03-29 16:48+0200\n"
+"PO-Revision-Date: 2023-05-16 17:41+0200\n"
 "Last-Translator: Marco Ciampa <ciampix@posteo.net>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -621,7 +621,7 @@ msgstr ""
 #: ../operations/common-gpl3+/gaussian-blur-selective.c:29
 #: ../operations/workshop/bilateral-filter-fast.c:43
 msgid "Blur radius"
-msgstr "Raggio di sfocamento"
+msgstr "Raggio di sfocatura"
 
 #: ../operations/common/bilateral-filter.c:27
 #: ../operations/common-gpl3+/gaussian-blur-selective.c:30
