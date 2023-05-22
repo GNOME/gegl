@@ -518,6 +518,7 @@ subdir('libs/rgbe')
 subdir('opencl')
 subdir('gegl')
 subdir('libs/npd')
+subdir('libs/ctx')
 
 # pkg-config file
 gegl_pub_deps = [
@@ -543,7 +544,7 @@ pkgconfig.generate(gegl_lib,
   subdirs: api_name,
 )
 
-gegl_dep = declare_dependency(link_with: gegl_lib,
+gegl_dep = declare_dependency(link_with: [gegl_lib, gegl_ctx_lib],
   include_directories: geglInclude,
   dependencies: [gegl_pub_deps, libnpd],
   sources: g_ir.found() ? gegl_gir : [],

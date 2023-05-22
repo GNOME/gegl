@@ -108,7 +108,6 @@ gegl_common_sources = files(
   'unpremultiply.c',
   'unsharp-mask.c',
   'value-invert.c',
-  'vector-fill.c',
   'vignette.c',
   'waterpixels.c',
   'watershed-transform.c',
@@ -117,9 +116,6 @@ gegl_common_sources = files(
   'weighted-blend.c',
   'write-buffer.c',
 )
-
-gegl_common_sources += 'ctx/ctx.c'
-gegl_common_sources += 'ctx/ctx.h'
 
 gegl_common_sources += custom_target('module_common.c',
   input : [ gegl_common_sources ],

@@ -3,6 +3,7 @@ operations = [
   { 'name': 'ppm-load' },
   { 'name': 'ppm-save' },
   { 'name': 'npy-save' },
+  { 'name': 'vector-fill', 'deps': libgegl_ctx },
   { 'name': 'rgbe-load', 'deps': librgbe },
   { 'name': 'rgbe-save', 'deps': librgbe },
   { 'name': 'gif-load',  'deps': libnsgif },
