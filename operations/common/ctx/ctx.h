@@ -1,4 +1,4 @@
-/* ctx git commit: cf7e5375 */
+/* ctx git commit: 29fdb790 */
 /* 
  * ctx.h is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -47,6 +47,7 @@ extern "C" {
 
 #include <stdint.h>
 #include <string.h>
+#include <strings.h>
 #include <stdio.h>
 
 typedef struct _Ctx            Ctx;
@@ -7098,6 +7099,7 @@ static const char *squoze_id_decode_r (int squoze_dim, uint64_t hash, char *ret,
   }
 }
 
+const char *squoze_id_decode (int squoze_dim, uint64_t id, int is_utf5, char *dest);
 const char *squoze_id_decode (int squoze_dim, uint64_t id, int is_utf5, char *dest)
 {
   if (id == 0 || ((id & 1) == 0)) {dest[0]=0;return NULL; }
@@ -10445,8 +10447,8 @@ struct _CtxKeyDbEntry
 
 struct _CtxState
 {
-  int           has_moved:1;
-  int           has_clipped:1;
+  unsigned int  has_moved:1;
+  unsigned int  has_clipped:1;
   int8_t        source; // used for the single-shifting to stroking
                 // 0  = fill
                 // 1  = start_stroke
@@ -52819,6 +52821,14 @@ ctx_stroke_text (Ctx *ctx, const char *string,
   ctx_move_to (ctx, x, y);
   ctx_text_stroke (ctx, string);
 }
+
+
+int
+ctx_font_get_vmetrics (Ctx *ctx,
+                       CtxFont *font,
+                       float   *ascent,
+                       float   *descent,
+                       float   *linegap);
 
 int
 ctx_font_get_vmetrics (Ctx *ctx,
