@@ -1,5 +1,6 @@
 gegl_common_sources = files(
   'absolute.c',
+  'adaptive-threshold.c',
   'alien-map.c',
   'bilateral-filter.c',
   'bloom.c',
