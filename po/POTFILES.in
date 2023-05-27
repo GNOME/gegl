@@ -13,6 +13,7 @@ gegl/module/geglmodule.c
 gegl/operation/gegl-operation-composer3.c
 gegl/operation/gegl-operation-composer.c
 operations/common/absolute.c
+operations/common/adaptive-threshold.c
 operations/common/alien-map.c
 operations/common/bilateral-filter.c
 operations/common/bloom.c
@@ -122,7 +123,6 @@ operations/common/tile-seamless.c
 operations/common/unpremultiply.c
 operations/common/unsharp-mask.c
 operations/common/value-invert.c
-operations/common/vector-fill.c
 operations/common/vignette.c
 operations/common/waterpixels.c
 operations/common/watershed-transform.c
@@ -225,6 +225,7 @@ operations/external/text.c
 operations/external/tiff-load.c
 operations/external/tiff-save.c
 operations/external/v4l.c
+operations/external/vector-fill.c
 operations/external/vector-stroke.c
 operations/external/webp-load.c
 operations/external/webp-save.c
