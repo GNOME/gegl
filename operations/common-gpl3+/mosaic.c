@@ -373,7 +373,7 @@ mosaic (GeglOperation       *operation,
 
   o = GEGL_PROPERTIES (operation);
 
-  bzero (&mdatas, sizeof (mdatas));
+  memset (&mdatas, 0, sizeof (mdatas));
 
   input_buf = g_new (gfloat, NB_CPN * result->width * result->height);
 
