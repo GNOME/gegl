@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2022-07-02 11:49+0000\n"
-"PO-Revision-Date: 2022-07-03 12:18+0200\n"
+"POT-Creation-Date: 2023-05-27 16:04+0000\n"
+"PO-Revision-Date: 2023-05-28 17:10+0200\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language: sl_SI\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n"
 "%100==4 ? 3 : 0);\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Generator: Poedit 3.1\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: bin/gegl.c:179
 #, c-format
@@ -351,42 +351,42 @@ msgstr "Nikoli"
 msgid "Always"
 msgstr "Vedno"
 
-#: gegl/gegl-init.c:213
+#: gegl/gegl-init.c:225
 msgid "Where GEGL stores its swap"
 msgstr "Kje GEGL hrani svojo vmesno datoteko"
 
-#: gegl/gegl-init.c:218
+#: gegl/gegl-init.c:230
 msgid "Compression algorithm used for data stored in the swap"
 msgstr ""
 "Uporabljeni algoritem stiskanja za podatke, shranjene v izmenjalni datoteki."
 
-#: gegl/gegl-init.c:223
+#: gegl/gegl-init.c:235
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr "Koliko pomnilnika (približno) uporabiti za predpomnenje podob"
 
-#: gegl/gegl-init.c:228
+#: gegl/gegl-init.c:240
 msgid "Default size of tiles in GeglBuffers"
 msgstr "Privzeta velikost tlakovcev za GeglBuffer"
 
-#: gegl/gegl-init.c:233
+#: gegl/gegl-init.c:245
 msgid "The count of pixels to compute simultaneously"
 msgstr "Število slikovnih točk, ki naj se izračunajo hkrati"
 
-#: gegl/gegl-init.c:238
+#: gegl/gegl-init.c:250
 msgid ""
 "The quality of rendering, a value between 0.0 (fast) and 1.0 (reference)"
 msgstr ""
 "Kakovost izrisovanja, vrednost med 0,0 (hitro) in 1,0 (referenčna kakovost)"
 
-#: gegl/gegl-init.c:243
+#: gegl/gegl-init.c:255
 msgid "The number of concurrent processing threads to use"
 msgstr "Število uporabljenih vzporednih procesnih niti."
 
-#: gegl/gegl-init.c:248
+#: gegl/gegl-init.c:260
 msgid "Disable OpenCL"
 msgstr "Onemogoči OpenCL"
 
-#: gegl/gegl-init.c:260
+#: gegl/gegl-init.c:272
 msgid "Show GEGL Options"
 msgstr "Pokaži možnosti GEGL"
 
@@ -465,6 +465,40 @@ msgid ""
 msgstr ""
 "Vsaka linearna komponenta RGB postane svoja absolutna vrednost, "
 "fabs(vhodna_vrednost)"
+
+#: operations/common/adaptive-threshold.c:24 operations/common/bloom.c:35
+#: operations/common/box-blur.c:25 operations/common/c2g.c:28
+#: operations/common/edge-neon.c:47 operations/common/median-blur.c:42
+#: operations/common/snn-mean.c:26 operations/common/stress.c:27
+#: operations/common/unsharp-mask.c:24 operations/common/vignette.c:40
+#: operations/common/wavelet-blur-1d.c:28 operations/common/wavelet-blur.c:27
+#: operations/common-cxx/focus-blur.c:85 operations/common-cxx/lens-blur.cc:24
+#: operations/common-cxx/variable-blur.c:30
+#: operations/common-gpl3+/shadows-highlights.c:40
+#: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:44
+#: operations/common-gpl3+/whirl-pinch.c:46
+#: operations/external/matting-levin.c:29 operations/workshop/boxblur-1d.c:27
+#: operations/workshop/boxblur.c:24
+#: operations/workshop/external/spyrograph.c:63
+msgid "Radius"
+msgstr "Radij"
+
+#: operations/common/adaptive-threshold.c:31
+msgid "Anti alias"
+msgstr "Zgladi robove"
+
+#: operations/common/adaptive-threshold.c:119
+msgid "Adaptive Threshold"
+msgstr "Prag prilagajanja"
+
+#: operations/common/adaptive-threshold.c:121
+#, fuzzy
+msgid "Applies a threshold against the average of a spatial neighbourhood."
+msgstr "Uveljavi prag za povprečje prostorske soseščine."
+
+#: operations/common/adaptive-threshold.c:123
+msgid "Adaptive Threshold..."
+msgstr "Prag prilagajanja …"
 
 #: operations/common/alien-map.c:28 operations/common/newsprint.c:35
 msgid "RGB"
@@ -660,23 +694,6 @@ msgstr "Mehkoba"
 msgid "Glow-area edge softness"
 msgstr "Neostrina področja žarenja robov"
 
-#: operations/common/bloom.c:35 operations/common/box-blur.c:25
-#: operations/common/c2g.c:28 operations/common/edge-neon.c:47
-#: operations/common/median-blur.c:42 operations/common/snn-mean.c:26
-#: operations/common/stress.c:27 operations/common/unsharp-mask.c:24
-#: operations/common/vignette.c:40 operations/common/wavelet-blur-1d.c:28
-#: operations/common/wavelet-blur.c:27 operations/common-cxx/focus-blur.c:85
-#: operations/common-cxx/lens-blur.cc:24
-#: operations/common-cxx/variable-blur.c:30
-#: operations/common-gpl3+/shadows-highlights.c:40
-#: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:44
-#: operations/common-gpl3+/whirl-pinch.c:46
-#: operations/external/matting-levin.c:29 operations/workshop/boxblur-1d.c:27
-#: operations/workshop/boxblur.c:24
-#: operations/workshop/external/spyrograph.c:63
-msgid "Radius"
-msgstr "Radij"
-
 #: operations/common/bloom.c:36 operations/common-gpl3+/softglow.c:26
 msgid "Glow radius"
 msgstr "Polmer žarenja"
@@ -844,7 +861,7 @@ msgstr "Izboljšaj sence"
 msgid "When enabled details in shadows are boosted at the expense of noise"
 msgstr "Če je omogočeno, so podrobnosti v sencah okrepljene na račun šuma"
 
-#: operations/common/c2g.c:468
+#: operations/common/c2g.c:461
 msgid ""
 "Color to grayscale conversion, uses envelopes formed with the STRESS "
 "approach to perform local color-difference preserving grayscale generation."
@@ -952,12 +969,12 @@ msgstr "Upodobi vzorec šahovnice"
 #: operations/common/color.c:24 operations/common/color.c:87
 #: operations/common/color-overlay.c:26 operations/common/dropshadow.c:67
 #: operations/common/grid.c:64 operations/common/long-shadow.c:83
-#: operations/common/rectangle.c:48 operations/common/vector-fill.c:26
-#: operations/common/vignette.c:36 operations/common-gpl3+/color-to-alpha.c:29
+#: operations/common/rectangle.c:48 operations/common/vignette.c:36
+#: operations/common-gpl3+/color-to-alpha.c:29
 #: operations/common-gpl3+/supernova.c:60
 #: operations/common-gpl3+/tile-paper.c:31
 #: operations/common-gpl3+/value-propagate.c:54 operations/external/text.c:37
-#: operations/external/vector-stroke.c:27
+#: operations/external/vector-fill.c:26 operations/external/vector-stroke.c:27
 msgid "Color"
 msgstr "Barva"
 
@@ -1696,7 +1713,7 @@ msgstr "Metoda drgeta, ki jo želite uporabiti"
 #: operations/common/noise-pick.c:38 operations/common/noise-rgb.c:55
 #: operations/common/noise-simplex.c:39 operations/common/noise-spread.c:41
 #: operations/common-gpl3+/cubism.c:42 operations/common-gpl3+/maze.c:65
-#: operations/common-gpl3+/mosaic.c:89 operations/common-gpl3+/noise-slur.c:40
+#: operations/common-gpl3+/mosaic.c:90 operations/common-gpl3+/noise-slur.c:40
 #: operations/common-gpl3+/noise-solid.c:61 operations/common-gpl3+/plasma.c:70
 #: operations/common-gpl3+/shift.c:35 operations/common-gpl3+/sinus.c:49
 #: operations/common-gpl3+/supernova.c:63
@@ -1835,7 +1852,7 @@ msgstr "Barva sence (privzeto črna, 'black')"
 #.
 #: operations/common/dropshadow.c:74 operations/common/layer.c:33
 #: operations/common/opacity.c:25 operations/common/opacity.c:289
-#: operations/common/vector-fill.c:29 operations/external/vector-stroke.c:34
+#: operations/external/vector-fill.c:29 operations/external/vector-stroke.c:34
 msgid "Opacity"
 msgstr "Prekrivnost"
 
@@ -2672,11 +2689,11 @@ msgstr "Kompozicija"
 msgid "Output composition"
 msgstr "Izhodna kompozicija"
 
-#: operations/common/long-shadow.c:1691
+#: operations/common/long-shadow.c:1646
 msgid "Long Shadow"
 msgstr "Dolga senca"
 
-#: operations/common/long-shadow.c:1696
+#: operations/common/long-shadow.c:1651
 msgid "Creates a long-shadow effect"
 msgstr "Ustvari učinek, podoben dolgi senci"
 
@@ -3897,10 +3914,9 @@ msgstr "Pravokotnik"
 msgid "A rectangular source of a fixed size with a solid color"
 msgstr "Pravokotni izvor nespremenljive velikosti prekrivne barve"
 
-#: operations/common/recursive-transform.c:28
-#: operations/common/vector-fill.c:37 operations/external/path.c:47
-#: operations/external/vector-stroke.c:38 operations/transform/transform.c:24
-#: operations/transform/transform.c:62
+#: operations/common/recursive-transform.c:28 operations/external/path.c:47
+#: operations/external/vector-fill.c:37 operations/external/vector-stroke.c:38
+#: operations/transform/transform.c:24 operations/transform/transform.c:62
 msgid "Transform"
 msgstr "Preoblikuj"
 
@@ -4433,45 +4449,6 @@ msgid ""
 msgstr ""
 "Preobrne komponento vrednosti, rezultat ima preobrnjeno svetlost, ohrani pa "
 "barvo."
-
-#: operations/common/vector-fill.c:27
-msgid "Color of paint to use for filling."
-msgstr "Barva, uporabljena za polnilo."
-
-#: operations/common/vector-fill.c:30
-msgid "The fill opacity to use."
-msgstr "Prekrivnost, uporabljena za polnilo."
-
-#. XXX: replace with enum?
-#: operations/common/vector-fill.c:34
-msgid "Fill rule."
-msgstr "Pravilo polnila."
-
-#: operations/common/vector-fill.c:35
-msgid "how to determine what to fill (nonzero|evenodd)"
-msgstr "Kako določiti, kaj je potrebno zapolniti (nonzeto|evenodd)"
-
-#: operations/common/vector-fill.c:38 operations/external/vector-stroke.c:39
-msgid "svg style description of transform."
-msgstr "Opis transformacije v slogu svg."
-
-#: operations/common/vector-fill.c:40 operations/external/path.c:54
-#: operations/external/vector-stroke.c:41
-msgid "Vector"
-msgstr "Vektor"
-
-#: operations/common/vector-fill.c:41 operations/external/path.c:55
-#: operations/external/vector-stroke.c:42
-msgid "A GeglVector representing the path of the stroke"
-msgstr "Vektor GeglVector, ki predstavlja pot poteze"
-
-#: operations/common/vector-fill.c:320
-msgid "Fill Path"
-msgstr "Zapolni pot"
-
-#: operations/common/vector-fill.c:323
-msgid "Renders a filled region"
-msgstr "Upodobi zapolnjeno območje"
 
 #: operations/common/vignette.c:32
 msgid "Vignette shape"
@@ -5331,11 +5308,11 @@ msgstr "Barvo v alfo"
 msgid "Convert a specified color to transparency, works best with white."
 msgstr "Pretvori navedeno barvo v prosojnost, najbolje deluje z belo."
 
-#: operations/common-gpl3+/cubism.c:30 operations/common-gpl3+/mosaic.c:42
+#: operations/common-gpl3+/cubism.c:30 operations/common-gpl3+/mosaic.c:43
 msgid "Tile size"
 msgstr "Velikost tlakovcev"
 
-#: operations/common-gpl3+/cubism.c:31 operations/common-gpl3+/mosaic.c:43
+#: operations/common-gpl3+/cubism.c:31 operations/common-gpl3+/mosaic.c:44
 msgid "Average diameter of each tile (in pixels)"
 msgstr "Povprečen premer vsakega tlakovca (v slik. točkah)"
 
@@ -6132,115 +6109,115 @@ msgstr "Blodnjak"
 msgid "Draw a labyrinth"
 msgstr "Nariši labirint"
 
-#: operations/common-gpl3+/mosaic.c:32
+#: operations/common-gpl3+/mosaic.c:33
 msgid "Squares"
 msgstr "Kvadrati"
 
-#: operations/common-gpl3+/mosaic.c:33
+#: operations/common-gpl3+/mosaic.c:34
 msgid "Hexagons"
 msgstr "Šestkotniki"
 
-#: operations/common-gpl3+/mosaic.c:34
+#: operations/common-gpl3+/mosaic.c:35
 msgid "Octagons"
 msgstr "Osemkotniki"
 
-#: operations/common-gpl3+/mosaic.c:35
+#: operations/common-gpl3+/mosaic.c:36
 msgid "Triangles"
 msgstr "Trikotniki"
 
-#: operations/common-gpl3+/mosaic.c:38
+#: operations/common-gpl3+/mosaic.c:39
 msgid "Tile geometry"
 msgstr "Geometrija tlakovcev"
 
-#: operations/common-gpl3+/mosaic.c:40
+#: operations/common-gpl3+/mosaic.c:41
 msgid "What shape to use for tiles"
 msgstr "Kakšne oblike naj bodo tlakovci"
 
-#: operations/common-gpl3+/mosaic.c:48
+#: operations/common-gpl3+/mosaic.c:49
 msgid "Tile height"
 msgstr "Višina tlakovca"
 
-#: operations/common-gpl3+/mosaic.c:49
+#: operations/common-gpl3+/mosaic.c:50
 msgid "Apparent height of each tile (in pixels)"
 msgstr "Očitna višina vsakega tlakovca (v slik. točkah)"
 
-#: operations/common-gpl3+/mosaic.c:53
+#: operations/common-gpl3+/mosaic.c:54
 msgid "Tile neatness"
 msgstr "Ličnost tlakovcev"
 
-#: operations/common-gpl3+/mosaic.c:54
+#: operations/common-gpl3+/mosaic.c:55
 msgid "Deviation from perfectly formed tiles"
 msgstr "Deviacija od popolno oblikovanih tlakovcev"
 
-#: operations/common-gpl3+/mosaic.c:57
+#: operations/common-gpl3+/mosaic.c:58
 msgid "Tile color variation"
 msgstr "Variacija barve tlakovcev"
 
-#: operations/common-gpl3+/mosaic.c:58
+#: operations/common-gpl3+/mosaic.c:59
 msgid "Magnitude of random color variations"
 msgstr "Velikost naključnih barvnih variacij"
 
-#: operations/common-gpl3+/mosaic.c:61
+#: operations/common-gpl3+/mosaic.c:62
 msgid "Color averaging"
 msgstr "Povprečenje barv"
 
-#: operations/common-gpl3+/mosaic.c:62
+#: operations/common-gpl3+/mosaic.c:63
 msgid "Tile color based on average of subsumed pixels"
 msgstr "Barva tlakovca, ki temelji na povprečju podležnih slikovnih točk"
 
-#: operations/common-gpl3+/mosaic.c:64
+#: operations/common-gpl3+/mosaic.c:65
 msgid "Rough tile surface"
 msgstr "Groba površina tlakovcev"
 
-#: operations/common-gpl3+/mosaic.c:65
+#: operations/common-gpl3+/mosaic.c:66
 msgid "Surface characteristics"
 msgstr "Lastnosti površine"
 
-#: operations/common-gpl3+/mosaic.c:67
+#: operations/common-gpl3+/mosaic.c:68
 msgid "Allow splitting tiles"
 msgstr "Dovoli cepitev tlakovcev"
 
-#: operations/common-gpl3+/mosaic.c:68
+#: operations/common-gpl3+/mosaic.c:69
 msgid "Allows splitting tiles at hard edges"
 msgstr "Dovoljuje cepitev tlakovcev na ostrih robovih"
 
-#: operations/common-gpl3+/mosaic.c:70
+#: operations/common-gpl3+/mosaic.c:71
 msgid "Tile spacing"
 msgstr "Razmik med tlakovci"
 
-#: operations/common-gpl3+/mosaic.c:71
+#: operations/common-gpl3+/mosaic.c:72
 msgid "Inter-tile spacing (in pixels)"
 msgstr "Razmik med tlakovci (v slik. točkah)"
 
-#: operations/common-gpl3+/mosaic.c:76
+#: operations/common-gpl3+/mosaic.c:77
 msgid "Joints color"
 msgstr "Barva stikov"
 
-#: operations/common-gpl3+/mosaic.c:78
+#: operations/common-gpl3+/mosaic.c:79
 msgid "Light color"
 msgstr "Barva svetlobe"
 
-#: operations/common-gpl3+/mosaic.c:80
+#: operations/common-gpl3+/mosaic.c:81
 msgid "Light direction"
 msgstr "Smer svetlobe"
 
-#: operations/common-gpl3+/mosaic.c:81
+#: operations/common-gpl3+/mosaic.c:82
 msgid "Direction of light-source (in degrees)"
 msgstr "Smer svetlobnega vira (v stopinjah)"
 
-#: operations/common-gpl3+/mosaic.c:86
+#: operations/common-gpl3+/mosaic.c:87
 msgid "Antialiasing"
 msgstr "Glajenje robov"
 
-#: operations/common-gpl3+/mosaic.c:87
+#: operations/common-gpl3+/mosaic.c:88
 msgid "Enables smoother tile output"
 msgstr "Omogoča bolj gladek izhod tlakovcev"
 
-#: operations/common-gpl3+/mosaic.c:2466
+#: operations/common-gpl3+/mosaic.c:2472
 msgid "Mosaic"
 msgstr "Mozaik"
 
-#: operations/common-gpl3+/mosaic.c:2471
+#: operations/common-gpl3+/mosaic.c:2477
 msgid ""
 "Mosaic is a filter which transforms an image into what appears to be a "
 "mosaic, composed of small primitives, each of constant color and of an "
@@ -7625,11 +7602,11 @@ msgstr "zakasnitev-sličic"
 msgid "Delay in ms for last decoded frame"
 msgstr "Zakasnitev v ms za zadnjo dekodirano sličico"
 
-#: operations/external/gif-load.c:240
+#: operations/external/gif-load.c:244
 msgid "GIF File Loader"
 msgstr "Nalagalnik slik GIF"
 
-#: operations/external/gif-load.c:242
+#: operations/external/gif-load.c:246
 msgid "GIF image loader."
 msgstr "Nalagalnik slik GIF."
 
@@ -7990,6 +7967,16 @@ msgstr "Prekrivnost polnila"
 msgid "The fill opacity to use"
 msgstr "Prekrivnost polnila, ki jo želite uporabiti"
 
+#: operations/external/path.c:54 operations/external/vector-fill.c:40
+#: operations/external/vector-stroke.c:41
+msgid "Vector"
+msgstr "Vektor"
+
+#: operations/external/path.c:55 operations/external/vector-fill.c:41
+#: operations/external/vector-stroke.c:42
+msgid "A GeglVector representing the path of the stroke"
+msgstr "Vektor GeglVector, ki predstavlja pot poteze"
+
 #: operations/external/path.c:584
 msgid "Render Path"
 msgstr "Pot upodabljanja"
@@ -8152,7 +8139,7 @@ msgstr "Barvni prostor"
 msgid "Color space to use for loaded data"
 msgstr "Barvni prostor, uporabljen za naložene podatke"
 
-#: operations/external/raw-load.c:281
+#: operations/external/raw-load.c:285
 msgid "libraw File Loader"
 msgstr "Nalagalnik datotek libraw"
 
@@ -8388,6 +8375,35 @@ msgstr "Vir sličic Video4Linux"
 #: operations/external/v4l.c:333
 msgid "Video4Linux input, webcams framegrabbers and similar devices."
 msgstr "Vhod Video4Linux, zajemalnik sličic spletne kamere in podobne naprave."
+
+#: operations/external/vector-fill.c:27
+msgid "Color of paint to use for filling."
+msgstr "Barva, uporabljena za polnilo."
+
+#: operations/external/vector-fill.c:30
+msgid "The fill opacity to use."
+msgstr "Prekrivnost, uporabljena za polnilo."
+
+#. XXX: replace with enum?
+#: operations/external/vector-fill.c:34
+msgid "Fill rule."
+msgstr "Pravilo polnila."
+
+#: operations/external/vector-fill.c:35
+msgid "how to determine what to fill (nonzero|evenodd)"
+msgstr "Kako določiti, kaj je potrebno zapolniti (nonzeto|evenodd)"
+
+#: operations/external/vector-fill.c:38 operations/external/vector-stroke.c:39
+msgid "svg style description of transform."
+msgstr "Opis transformacije v slogu svg."
+
+#: operations/external/vector-fill.c:320
+msgid "Fill Path"
+msgstr "Zapolni pot"
+
+#: operations/external/vector-fill.c:323
+msgid "Renders a filled region"
+msgstr "Upodobi zapolnjeno območje"
 
 #: operations/external/vector-stroke.c:28
 msgid "Color of paint to use for stroking."
