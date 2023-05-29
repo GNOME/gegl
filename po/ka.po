@@ -1,14 +1,14 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Georgian translation for gegl.
+# Copyright (C) 2023 gegl's authors.
+# This file is distributed under the same license as the gegl package.
+# Ekaterine Papava <papava.e@gtu.ge>, 2023.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2022-06-20 20:42+0000\n"
-"PO-Revision-Date: 2022-06-25 11:47+0200\n"
+"POT-Creation-Date: 2023-05-27 16:04+0000\n"
+"PO-Revision-Date: 2023-05-29 07:10+0200\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <(nothing)>\n"
 "Language: ka\n"
@@ -16,21 +16,21 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.1\n"
+"X-Generator: Poedit 3.3.1\n"
 
 #: bin/gegl.c:179
 #, c-format
 msgid "Unable to read file: %s"
-msgstr ""
+msgstr "ფაილის წაკითხვის პრობლემა: %s"
 
 #: bin/gegl.c:227
 msgid "Invalid graph, abort.\n"
-msgstr ""
+msgstr "არასწორი გრაფიკი. დასასრული.\n"
 
 #: bin/gegl.c:390 bin/gegl-options.c:133
 #, c-format
 msgid "Unknown GeglOption mode: %d"
-msgstr ""
+msgstr "GeglOption -ის უცნობი რეჟიმი: %d"
 
 #: bin/gegl-options.c:47
 #, c-format
@@ -76,7 +76,7 @@ msgstr ""
 
 #: bin/gegl-options.c:125
 msgid "Display on screen"
-msgstr ""
+msgstr "ეკრანზე ჩვენება"
 
 #: bin/gegl-options.c:127
 msgid "Print XML"
@@ -84,7 +84,7 @@ msgstr "XML-ის დაბეჭდვა"
 
 #: bin/gegl-options.c:129
 msgid "Output in a file"
-msgstr ""
+msgstr "ფაილში გამოტანა"
 
 #: bin/gegl-options.c:131
 msgid "Display help information"
@@ -303,40 +303,40 @@ msgstr "არასდროს"
 msgid "Always"
 msgstr "ყოველთვის"
 
-#: gegl/gegl-init.c:213
+#: gegl/gegl-init.c:225
 msgid "Where GEGL stores its swap"
 msgstr ""
 
-#: gegl/gegl-init.c:218
+#: gegl/gegl-init.c:230
 msgid "Compression algorithm used for data stored in the swap"
 msgstr ""
 
-#: gegl/gegl-init.c:223
+#: gegl/gegl-init.c:235
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr ""
 
-#: gegl/gegl-init.c:228
+#: gegl/gegl-init.c:240
 msgid "Default size of tiles in GeglBuffers"
 msgstr ""
 
-#: gegl/gegl-init.c:233
+#: gegl/gegl-init.c:245
 msgid "The count of pixels to compute simultaneously"
 msgstr ""
 
-#: gegl/gegl-init.c:238
+#: gegl/gegl-init.c:250
 msgid ""
 "The quality of rendering, a value between 0.0 (fast) and 1.0 (reference)"
 msgstr ""
 
-#: gegl/gegl-init.c:243
+#: gegl/gegl-init.c:255
 msgid "The number of concurrent processing threads to use"
 msgstr ""
 
-#: gegl/gegl-init.c:248
+#: gegl/gegl-init.c:260
 msgid "Disable OpenCL"
 msgstr "OpenCL-ის გამორთვა"
 
-#: gegl/gegl-init.c:260
+#: gegl/gegl-init.c:272
 msgid "Show GEGL Options"
 msgstr "GEGL-ის პარამეტრების ჩვენება"
 
@@ -413,6 +413,39 @@ msgid ""
 "Makes each linear RGB component be the absolute of its value, "
 "fabs(input_value)"
 msgstr ""
+
+#: operations/common/adaptive-threshold.c:24 operations/common/bloom.c:35
+#: operations/common/box-blur.c:25 operations/common/c2g.c:28
+#: operations/common/edge-neon.c:47 operations/common/median-blur.c:42
+#: operations/common/snn-mean.c:26 operations/common/stress.c:27
+#: operations/common/unsharp-mask.c:24 operations/common/vignette.c:40
+#: operations/common/wavelet-blur-1d.c:28 operations/common/wavelet-blur.c:27
+#: operations/common-cxx/focus-blur.c:85 operations/common-cxx/lens-blur.cc:24
+#: operations/common-cxx/variable-blur.c:30
+#: operations/common-gpl3+/shadows-highlights.c:40
+#: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:44
+#: operations/common-gpl3+/whirl-pinch.c:46
+#: operations/external/matting-levin.c:29 operations/workshop/boxblur-1d.c:27
+#: operations/workshop/boxblur.c:24
+#: operations/workshop/external/spyrograph.c:63
+msgid "Radius"
+msgstr "რადიუსი"
+
+#: operations/common/adaptive-threshold.c:31
+msgid "Anti alias"
+msgstr "მომრგვალება"
+
+#: operations/common/adaptive-threshold.c:119
+msgid "Adaptive Threshold"
+msgstr "ადაპტიური ზღვარი"
+
+#: operations/common/adaptive-threshold.c:121
+msgid "Applies a threshold against the average of a spatial neighbourhood."
+msgstr ""
+
+#: operations/common/adaptive-threshold.c:123
+msgid "Adaptive Threshold..."
+msgstr "ადაპტიური ზღვარი..."
 
 #: operations/common/alien-map.c:28 operations/common/newsprint.c:35
 msgid "RGB"
@@ -580,9 +613,8 @@ msgstr ""
 
 #: operations/common/bilateral-filter.c:299
 msgid ""
-"Like a gaussian blur; but where the contribution for each neighbourhood "
-"pixel is also weighted by the color difference with the original center "
-"pixel."
+"Like a gaussian blur; but where the contribution for each neighborhood pixel "
+"is also weighted by the color difference with the original center pixel."
 msgstr ""
 
 #: operations/common/bloom.c:26 operations/common/threshold.c:25
@@ -598,28 +630,11 @@ msgstr ""
 
 #: operations/common/bloom.c:30 operations/common/vignette.c:46
 msgid "Softness"
-msgstr ""
+msgstr "სირბილე"
 
 #: operations/common/bloom.c:31
 msgid "Glow-area edge softness"
 msgstr ""
-
-#: operations/common/bloom.c:35 operations/common/box-blur.c:25
-#: operations/common/c2g.c:28 operations/common/edge-neon.c:47
-#: operations/common/median-blur.c:42 operations/common/snn-mean.c:26
-#: operations/common/stress.c:27 operations/common/unsharp-mask.c:24
-#: operations/common/vignette.c:40 operations/common/wavelet-blur-1d.c:28
-#: operations/common/wavelet-blur.c:27 operations/common-cxx/focus-blur.c:85
-#: operations/common-cxx/lens-blur.cc:24
-#: operations/common-cxx/variable-blur.c:30
-#: operations/common-gpl3+/shadows-highlights.c:40
-#: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:44
-#: operations/common-gpl3+/whirl-pinch.c:46
-#: operations/external/matting-levin.c:29 operations/workshop/boxblur-1d.c:27
-#: operations/workshop/boxblur.c:24
-#: operations/workshop/external/spyrograph.c:63
-msgid "Radius"
-msgstr "რადიუსი"
 
 #: operations/common/bloom.c:36 operations/common-gpl3+/softglow.c:26
 msgid "Glow radius"
@@ -645,7 +660,7 @@ msgstr ""
 
 #: operations/common/bloom.c:207
 msgid "Bloom"
-msgstr ""
+msgstr "გაფურჩქვნა"
 
 #: operations/common/bloom.c:210
 msgid "Add glow around bright areas"
@@ -661,7 +676,7 @@ msgid "Box Blur"
 msgstr ""
 
 #: operations/common/box-blur.c:407 operations/workshop/boxblur.c:76
-msgid "Blur resulting from averaging the colors of a square neighbourhood."
+msgid "Blur resulting from averaging the colors of a square neighborhood."
 msgstr ""
 
 #. Here in the top of the file the properties of the operation is declared,
@@ -778,7 +793,7 @@ msgstr ""
 msgid "When enabled details in shadows are boosted at the expense of noise"
 msgstr ""
 
-#: operations/common/c2g.c:468
+#: operations/common/c2g.c:461
 msgid ""
 "Color to grayscale conversion, uses envelopes formed with the STRESS "
 "approach to perform local color-difference preserving grayscale generation."
@@ -875,7 +890,7 @@ msgstr ""
 
 #: operations/common/checkerboard.c:348
 msgid "Checkerboard"
-msgstr ""
+msgstr "ჭადრაკის დაფა"
 
 #: operations/common/checkerboard.c:351
 msgid "Render a checkerboard pattern"
@@ -884,12 +899,12 @@ msgstr ""
 #: operations/common/color.c:24 operations/common/color.c:87
 #: operations/common/color-overlay.c:26 operations/common/dropshadow.c:67
 #: operations/common/grid.c:64 operations/common/long-shadow.c:83
-#: operations/common/rectangle.c:48 operations/common/vector-fill.c:26
-#: operations/common/vignette.c:36 operations/common-gpl3+/color-to-alpha.c:29
+#: operations/common/rectangle.c:48 operations/common/vignette.c:36
+#: operations/common-gpl3+/color-to-alpha.c:29
 #: operations/common-gpl3+/supernova.c:60
 #: operations/common-gpl3+/tile-paper.c:31
 #: operations/common-gpl3+/value-propagate.c:54 operations/external/text.c:37
-#: operations/external/vector-stroke.c:27
+#: operations/external/vector-fill.c:26 operations/external/vector-stroke.c:27
 msgid "Color"
 msgstr "ფერი"
 
@@ -906,7 +921,7 @@ msgstr ""
 
 #: operations/common/color-assimilation-grid.c:25
 msgid "Grid size"
-msgstr ""
+msgstr "ბადის ზომა"
 
 #: operations/common/color-assimilation-grid.c:31
 #: operations/common/color-rotate.c:84 operations/common/fattal02.c:39
@@ -929,7 +944,7 @@ msgstr "კუთხე"
 
 #: operations/common/color-assimilation-grid.c:40
 msgid "Line thickness"
-msgstr ""
+msgstr "ხაზის სისქე"
 
 #: operations/common/color-assimilation-grid.c:145
 msgid "Color Assimilation Grid"
@@ -991,7 +1006,7 @@ msgstr ""
 
 #: operations/common/color-overlay.c:175
 msgid "Color Overlay"
-msgstr ""
+msgstr "ფერის გალაგება"
 
 #: operations/common/color-overlay.c:178
 msgid "Paint a color overlay over the input, preserving its transparency."
@@ -1099,7 +1114,7 @@ msgstr ""
 
 #: operations/common/color-temperature.c:271
 msgid "Color Temperature"
-msgstr ""
+msgstr "ფერის ტერმპერატურა"
 
 #: operations/common/color-temperature.c:274
 msgid ""
@@ -1177,7 +1192,7 @@ msgstr "5-მდე"
 
 #: operations/common/color-warp.c:58
 msgid "weight 5"
-msgstr ""
+msgstr "6-დან"
 
 #: operations/common/color-warp.c:60
 msgid "From 6"
@@ -1201,7 +1216,7 @@ msgstr "7-მდე"
 
 #: operations/common/color-warp.c:66
 msgid "weight 7"
-msgstr ""
+msgstr "8-დან"
 
 #: operations/common/color-warp.c:68
 msgid "global weight scale"
@@ -1350,11 +1365,11 @@ msgstr "მრუდი"
 
 #: operations/common/contrast-curve.c:30
 msgid "The contrast curve."
-msgstr ""
+msgstr "კონტრასტის მრუდი."
 
 #: operations/common/contrast-curve.c:258
 msgid "Contrast Curve"
-msgstr ""
+msgstr "კონტრასტის მრუდი"
 
 #: operations/common/contrast-curve.c:262
 msgid ""
@@ -1486,7 +1501,7 @@ msgstr "ლურჯი არხი"
 
 #: operations/common/convolution-matrix.c:62
 msgid "Alpha channel"
-msgstr ""
+msgstr "Alpha-არხის"
 
 #: operations/common/convolution-matrix.c:64
 #: operations/common-cxx/distance-transform.cc:55
@@ -1504,7 +1519,7 @@ msgstr "საზღვარი"
 
 #: operations/common/convolution-matrix.c:634
 msgid "Convolution Matrix"
-msgstr ""
+msgstr "კონვოლუციის მატრიცა"
 
 #: operations/common/convolution-matrix.c:635
 msgid "Apply a generic 5x5 convolution matrix"
@@ -1512,7 +1527,7 @@ msgstr ""
 
 #: operations/common/copy-buffer.c:25
 msgid "Buffer"
-msgstr ""
+msgstr "ბaფერი"
 
 #: operations/common/copy-buffer.c:26
 msgid ""
@@ -1597,11 +1612,11 @@ msgstr ""
 
 #: operations/common/dither.c:45
 msgid "Dithering method"
-msgstr ""
+msgstr "დიზერინგის მეთოდი"
 
 #: operations/common/dither.c:47
 msgid "The dithering method to use"
-msgstr ""
+msgstr "დიზერინგის მეთოდი"
 
 #: operations/common/dither.c:49 operations/common/matting-global.c:28
 #: operations/common/noise-cell.c:55 operations/common/noise-cie-lch.c:38
@@ -1609,7 +1624,7 @@ msgstr ""
 #: operations/common/noise-pick.c:38 operations/common/noise-rgb.c:55
 #: operations/common/noise-simplex.c:39 operations/common/noise-spread.c:41
 #: operations/common-gpl3+/cubism.c:42 operations/common-gpl3+/maze.c:65
-#: operations/common-gpl3+/mosaic.c:89 operations/common-gpl3+/noise-slur.c:40
+#: operations/common-gpl3+/mosaic.c:90 operations/common-gpl3+/noise-slur.c:40
 #: operations/common-gpl3+/noise-solid.c:61 operations/common-gpl3+/plasma.c:70
 #: operations/common-gpl3+/shift.c:35 operations/common-gpl3+/sinus.c:49
 #: operations/common-gpl3+/supernova.c:63
@@ -1711,7 +1726,7 @@ msgstr ""
 
 #: operations/common/dropshadow.c:53
 msgid "Grow shape"
-msgstr ""
+msgstr "ფორმის გაზრდა"
 
 #: operations/common/dropshadow.c:56
 msgid "The shape to expand or contract the shadow in"
@@ -1719,7 +1734,7 @@ msgstr ""
 
 #: operations/common/dropshadow.c:58
 msgid "Grow radius"
-msgstr ""
+msgstr "რადუსის გაზრდა"
 
 #: operations/common/dropshadow.c:65
 msgid ""
@@ -1737,7 +1752,7 @@ msgstr ""
 #.
 #: operations/common/dropshadow.c:74 operations/common/layer.c:33
 #: operations/common/opacity.c:25 operations/common/opacity.c:289
-#: operations/common/vector-fill.c:29 operations/external/vector-stroke.c:34
+#: operations/external/vector-fill.c:29 operations/external/vector-stroke.c:34
 msgid "Opacity"
 msgstr "_გაუმჭვირვალობა"
 
@@ -1821,11 +1836,11 @@ msgstr ""
 
 #: operations/common/exposure.c:26
 msgid "Black level"
-msgstr ""
+msgstr "შავის დონე"
 
 #: operations/common/exposure.c:27
 msgid "Adjust the black level"
-msgstr ""
+msgstr "შავის დონის მორგება"
 
 #: operations/common/exposure.c:30 operations/common/exposure.c:480
 #: operations/common/negative-darkroom.c:29
@@ -2029,7 +2044,7 @@ msgid ""
 msgstr ""
 
 #: operations/common/grey.c:138
-msgid "Make Grey"
+msgid "Make Gray"
 msgstr ""
 
 #: operations/common/grey.c:142
@@ -2046,7 +2061,7 @@ msgstr ""
 
 #: operations/common/grid.c:57
 msgid "Line height"
-msgstr ""
+msgstr "ხაზის სიმაღლე"
 
 #: operations/common/grid.c:58
 msgid "Height of grid lines in pixels"
@@ -2179,7 +2194,7 @@ msgstr ""
 
 #: operations/common/image-gradient.c:27
 msgid "Magnitude"
-msgstr ""
+msgstr "ვარსკვლავური სიდიდე"
 
 #: operations/common/image-gradient.c:28 operations/common-gpl3+/spiral.c:75
 #: operations/common-gpl3+/texturize-canvas.c:38
@@ -2471,11 +2486,11 @@ msgstr ""
 
 #: operations/common/long-shadow.c:28
 msgid "Infinite"
-msgstr ""
+msgstr "უსასრულო"
 
 #: operations/common/long-shadow.c:29
 msgid "Fading"
-msgstr ""
+msgstr "მინავლება"
 
 #: operations/common/long-shadow.c:30
 msgid "Fading (fixed length)"
@@ -2520,7 +2535,7 @@ msgstr ""
 #: operations/common/long-shadow.c:66 operations/common/long-shadow.c:81
 #: operations/common-cxx/focus-blur.c:95
 msgid "Midpoint"
-msgstr ""
+msgstr "შუა წერტილი"
 
 #: operations/common/long-shadow.c:67
 msgid "Shadow fade midpoint"
@@ -2546,11 +2561,11 @@ msgstr "შემადგენლობა"
 msgid "Output composition"
 msgstr ""
 
-#: operations/common/long-shadow.c:1691
+#: operations/common/long-shadow.c:1646
 msgid "Long Shadow"
 msgstr "გრძელი ჩრდილი"
 
-#: operations/common/long-shadow.c:1696
+#: operations/common/long-shadow.c:1651
 msgid "Creates a long-shadow effect"
 msgstr ""
 
@@ -2620,7 +2635,7 @@ msgstr ""
 
 #: operations/common/matting-global.c:599
 msgid "Matting Global"
-msgstr ""
+msgstr "ფონის გლობალური დაჩრდილვა"
 
 #: operations/common/matting-global.c:601
 msgid ""
@@ -2662,7 +2677,7 @@ msgstr ""
 
 #: operations/common/median-blur.c:37
 msgid "Neighborhood"
-msgstr ""
+msgstr "სამეზობლო"
 
 #: operations/common/median-blur.c:40
 msgid "Neighborhood type"
@@ -2676,7 +2691,7 @@ msgstr ""
 
 #: operations/common/median-blur.c:48
 msgid "Percentile"
-msgstr ""
+msgstr "პროცენტული"
 
 #: operations/common/median-blur.c:50
 msgid "Neighborhood color percentile"
@@ -2726,7 +2741,7 @@ msgstr ""
 
 #: operations/common/mirrors.c:42
 msgid "Mirrors"
-msgstr ""
+msgstr "სარკეები"
 
 #: operations/common/mirrors.c:43
 msgid "Number of mirrors to use"
@@ -3054,11 +3069,11 @@ msgstr ""
 
 #: operations/common/newsprint.c:33
 msgid "White on Black"
-msgstr ""
+msgstr "თეთრი შავ ფონზე"
 
 #: operations/common/newsprint.c:34
 msgid "Black on White"
-msgstr ""
+msgstr "ლურჯი თეთრ ფონზე"
 
 #: operations/common/newsprint.c:36
 msgid "CMYK"
@@ -3236,7 +3251,7 @@ msgstr ""
 
 #: operations/common/newsprint.c:170 operations/common-gpl3+/plasma.c:36
 msgid "Turbulence"
-msgstr ""
+msgstr "ტურბულენტობა"
 
 #. rename to wave-pinch or period-pinch?
 #: operations/common/newsprint.c:172
@@ -3287,7 +3302,7 @@ msgstr ""
 
 #: operations/common/noise-cell.c:44
 msgid "Rank"
-msgstr ""
+msgstr "რანგი"
 
 #: operations/common/noise-cell.c:45
 msgid "Select the n-th closest point"
@@ -3685,7 +3700,7 @@ msgstr ""
 
 #: operations/common/radial-gradient.c:124
 msgid "Radial Gradient"
-msgstr ""
+msgstr "რადიალური გრადიენტი"
 
 #: operations/common/radial-gradient.c:128
 msgid "Radial gradient renderer"
@@ -3719,10 +3734,9 @@ msgstr "მართკუთხედი"
 msgid "A rectangular source of a fixed size with a solid color"
 msgstr ""
 
-#: operations/common/recursive-transform.c:28
-#: operations/common/vector-fill.c:37 operations/external/path.c:47
-#: operations/external/vector-stroke.c:38 operations/transform/transform.c:24
-#: operations/transform/transform.c:62
+#: operations/common/recursive-transform.c:28 operations/external/path.c:47
+#: operations/external/vector-fill.c:37 operations/external/vector-stroke.c:38
+#: operations/transform/transform.c:24 operations/transform/transform.c:62
 msgid "Transform"
 msgstr "ტრასფორმირება"
 
@@ -3923,7 +3937,7 @@ msgstr ""
 
 #: operations/common/sepia.c:112
 msgid "Sepia"
-msgstr ""
+msgstr "სეპია"
 
 #: operations/common/sepia.c:115
 msgid "Apply a sepia tone to the input image"
@@ -3955,20 +3969,20 @@ msgstr ""
 
 #: operations/common/snn-mean.c:33
 msgid "Pairs"
-msgstr ""
+msgstr "წყვილები"
 
 #: operations/common/snn-mean.c:34
 msgid "Number of pairs; higher number preserves more acute features"
 msgstr ""
 
 #: operations/common/snn-mean.c:383
-msgid "Symmetric Nearest Neighbour"
+msgid "Symmetric Nearest Neighbor"
 msgstr ""
 
 #: operations/common/snn-mean.c:387
 msgid ""
 "Noise reducing edge preserving blur filter based on Symmetric Nearest "
-"Neighbours"
+"Neighbors"
 msgstr ""
 
 #: operations/common/spherize.c:25
@@ -4081,7 +4095,7 @@ msgstr ""
 
 #: operations/common/stretch-contrast-hsv.c:253
 msgid "Stretch Contrast HSV"
-msgstr ""
+msgstr "კონტრასტის გაწელვა HSV-ში"
 
 #: operations/common/stretch-contrast-hsv.c:257
 msgid ""
@@ -4155,7 +4169,7 @@ msgstr ""
 
 #: operations/common/tile.c:159
 msgid "Tile"
-msgstr ""
+msgstr "ფილა"
 
 #: operations/common/tile.c:165
 msgid "Infinitely repeats the input image."
@@ -4191,7 +4205,7 @@ msgstr ""
 
 #: operations/common/unsharp-mask.c:147
 msgid "Sharpen (Unsharp Mask)"
-msgstr ""
+msgstr "გამკვეთრება"
 
 #: operations/common/unsharp-mask.c:151
 msgid ""
@@ -4207,45 +4221,6 @@ msgstr "მნიშვნელობების ინვერსია"
 msgid ""
 "Invert the value component, the result has the brightness inverted, keeping "
 "the color."
-msgstr ""
-
-#: operations/common/vector-fill.c:27
-msgid "Color of paint to use for filling."
-msgstr ""
-
-#: operations/common/vector-fill.c:30
-msgid "The fill opacity to use."
-msgstr ""
-
-#. XXX: replace with enum?
-#: operations/common/vector-fill.c:34
-msgid "Fill rule."
-msgstr ""
-
-#: operations/common/vector-fill.c:35
-msgid "how to determine what to fill (nonzero|evenodd)"
-msgstr ""
-
-#: operations/common/vector-fill.c:38 operations/external/vector-stroke.c:39
-msgid "svg style description of transform."
-msgstr ""
-
-#: operations/common/vector-fill.c:40 operations/external/path.c:54
-#: operations/external/vector-stroke.c:41
-msgid "Vector"
-msgstr ""
-
-#: operations/common/vector-fill.c:41 operations/external/path.c:55
-#: operations/external/vector-stroke.c:42
-msgid "A GeglVector representing the path of the stroke"
-msgstr ""
-
-#: operations/common/vector-fill.c:320
-msgid "Fill Path"
-msgstr "კონტურის შევსება"
-
-#: operations/common/vector-fill.c:323
-msgid "Renders a filled region"
 msgstr ""
 
 #: operations/common/vignette.c:32
@@ -4463,11 +4438,11 @@ msgstr ""
 
 #: operations/common-cxx/focus-blur.c:30 operations/common-cxx/lens-blur.cc:504
 msgid "Lens Blur"
-msgstr ""
+msgstr "ლინზის ბუნდოვნება"
 
 #: operations/common-cxx/focus-blur.c:41
 msgid "Blur type"
-msgstr ""
+msgstr "ბუნდოვნების ტიპი"
 
 #: operations/common-cxx/focus-blur.c:46
 msgid "Out-of-focus blur radius"
@@ -4500,7 +4475,7 @@ msgstr ""
 #: operations/common-cxx/focus-blur.c:91 operations/common-gpl3+/photocopy.c:29
 #: operations/common-gpl3+/softglow.c:33
 msgid "Sharpness"
-msgstr ""
+msgstr "სიმკვეთრე"
 
 #: operations/common-cxx/focus-blur.c:92
 msgid "Focus-region inner limit"
@@ -4537,7 +4512,7 @@ msgstr ""
 #: operations/common-cxx/focus-blur.c:122
 #: operations/common-cxx/variable-blur.c:53
 msgid "High quality"
-msgstr ""
+msgstr "მაღალი ხარისხი"
 
 #: operations/common-cxx/focus-blur.c:123
 #: operations/common-cxx/variable-blur.c:54
@@ -4663,7 +4638,7 @@ msgstr "დაშორება"
 
 #: operations/common-cxx/warp.cc:46
 msgid "Stroke"
-msgstr ""
+msgstr "გამოძრავება"
 
 #: operations/common-cxx/warp.cc:48
 msgid "Behavior"
@@ -4675,7 +4650,7 @@ msgstr ""
 
 #: operations/common-cxx/warp.cc:986
 msgid "Warp"
-msgstr ""
+msgstr "მოკეცვა"
 
 #: operations/common-cxx/warp.cc:988
 msgid "Compute a relative displacement mapping from a stroke"
@@ -4758,7 +4733,7 @@ msgstr ""
 
 #: operations/common-gpl3+/bayer-matrix.c:55 operations/transform/reflect.c:105
 msgid "Reflect"
-msgstr ""
+msgstr "არეკვლა"
 
 #: operations/common-gpl3+/bayer-matrix.c:56
 msgid "Reflect the pattern horizontally"
@@ -4767,7 +4742,7 @@ msgstr ""
 #: operations/common-gpl3+/bayer-matrix.c:58
 #: operations/common-gpl3+/ripple.c:34 operations/common-gpl3+/waves.c:35
 msgid "Amplitude"
-msgstr ""
+msgstr "ამპლიტუდა"
 
 #: operations/common-gpl3+/bayer-matrix.c:59
 msgid "Pattern amplitude (logarithmic scale)"
@@ -4782,7 +4757,7 @@ msgstr ""
 #: operations/common-gpl3+/linear-sinusoid.c:76
 #: operations/common-gpl3+/oilify.c:35 operations/common-gpl3+/sinus.c:71
 msgid "Exponent"
-msgstr ""
+msgstr "ექსპონენტი"
 
 #: operations/common-gpl3+/bayer-matrix.c:69
 #: operations/common-gpl3+/linear-sinusoid.c:77
@@ -4792,7 +4767,7 @@ msgstr ""
 #: operations/common-gpl3+/bayer-matrix.c:73
 #: operations/common-gpl3+/linear-sinusoid.c:81
 msgid "X Offset"
-msgstr ""
+msgstr "X წანაცვლება"
 
 #: operations/common-gpl3+/bayer-matrix.c:74
 #: operations/common-gpl3+/linear-sinusoid.c:82
@@ -4802,7 +4777,7 @@ msgstr ""
 #: operations/common-gpl3+/bayer-matrix.c:80
 #: operations/common-gpl3+/linear-sinusoid.c:88
 msgid "Y Offset"
-msgstr ""
+msgstr "Y წანაცვლება"
 
 #: operations/common-gpl3+/bayer-matrix.c:81
 #: operations/common-gpl3+/linear-sinusoid.c:89
@@ -4819,7 +4794,7 @@ msgstr ""
 
 #: operations/common-gpl3+/bump-map.c:34
 msgid "Spherical"
-msgstr ""
+msgstr "სფერული"
 
 #: operations/common-gpl3+/bump-map.c:35 operations/common-gpl3+/sinus.c:64
 msgid "Sinusoidal"
@@ -5077,11 +5052,11 @@ msgstr "ფერიდან ალფასკენ"
 msgid "Convert a specified color to transparency, works best with white."
 msgstr ""
 
-#: operations/common-gpl3+/cubism.c:30 operations/common-gpl3+/mosaic.c:42
+#: operations/common-gpl3+/cubism.c:30 operations/common-gpl3+/mosaic.c:43
 msgid "Tile size"
 msgstr ""
 
-#: operations/common-gpl3+/cubism.c:31 operations/common-gpl3+/mosaic.c:43
+#: operations/common-gpl3+/cubism.c:31 operations/common-gpl3+/mosaic.c:44
 msgid "Average diameter of each tile (in pixels)"
 msgstr ""
 
@@ -5129,7 +5104,7 @@ msgstr ""
 
 #: operations/common-gpl3+/deinterlace.c:45
 msgid "Block size"
-msgstr ""
+msgstr "ბლოკის ზომა"
 
 #: operations/common-gpl3+/deinterlace.c:47
 msgid "Block size of deinterlacing rows/columns"
@@ -5137,7 +5112,7 @@ msgstr ""
 
 #: operations/common-gpl3+/deinterlace.c:311
 msgid "Deinterlace"
-msgstr ""
+msgstr "დეინტერლეისი"
 
 #: operations/common-gpl3+/deinterlace.c:317
 msgid "Fix images where every other row or column is missing"
@@ -5242,11 +5217,11 @@ msgstr ""
 
 #: operations/common-gpl3+/displace.c:29
 msgid "Cartesian"
-msgstr ""
+msgstr "დეკარტის"
 
 #: operations/common-gpl3+/displace.c:30
 msgid "Polar"
-msgstr ""
+msgstr "პოლარული"
 
 #: operations/common-gpl3+/displace.c:36
 msgid "Mode of displacement"
@@ -5276,7 +5251,7 @@ msgstr ""
 #: operations/common-gpl3+/displace.c:57
 #: operations/common-gpl3+/whirl-pinch.c:42
 msgid "Pinch"
-msgstr ""
+msgstr "გასმა"
 
 #: operations/common-gpl3+/displace.c:60
 msgid "Displacement multiplier for the horizontal direction"
@@ -5353,7 +5328,7 @@ msgstr ""
 
 #: operations/common-gpl3+/edge.c:33
 msgid "Differential"
-msgstr ""
+msgstr "განსხვავება"
 
 #: operations/common-gpl3+/edge.c:34
 msgid "Laplace"
@@ -5451,7 +5426,7 @@ msgstr ""
 #: operations/common-gpl3+/fractal-explorer.c:33
 #: operations/common-gpl3+/fractal-trace.c:27
 msgid "Julia"
-msgstr ""
+msgstr "Julia"
 
 #: operations/common-gpl3+/fractal-explorer.c:35
 msgid "Barnsley 1"
@@ -5467,7 +5442,7 @@ msgstr ""
 
 #: operations/common-gpl3+/fractal-explorer.c:41
 msgid "Spider"
-msgstr ""
+msgstr "ობობა"
 
 #: operations/common-gpl3+/fractal-explorer.c:43
 msgid "Man O War"
@@ -5476,7 +5451,7 @@ msgstr ""
 #: operations/common-gpl3+/fractal-explorer.c:45
 #: operations/external/matting-levin.c:37
 msgid "Lambda"
-msgstr ""
+msgstr "ლამბდა"
 
 #: operations/common-gpl3+/fractal-explorer.c:47
 msgid "Sierpinski"
@@ -5671,7 +5646,7 @@ msgstr "ტიპი 1"
 
 #: operations/common-gpl3+/illusion.c:29
 msgid "Type 2"
-msgstr ""
+msgstr "Type 2"
 
 #: operations/common-gpl3+/illusion.c:32
 msgid "Division"
@@ -5718,11 +5693,11 @@ msgid "Rescale overall image size"
 msgstr ""
 
 #: operations/common-gpl3+/lens-distortion.c:46
-msgid "Effect centre offset in X"
+msgid "Effect center offset in X"
 msgstr ""
 
 #: operations/common-gpl3+/lens-distortion.c:50
-msgid "Effect centre offset in Y"
+msgid "Effect center offset in Y"
 msgstr ""
 
 #: operations/common-gpl3+/lens-distortion.c:53
@@ -5743,7 +5718,7 @@ msgstr ""
 
 #: operations/common-gpl3+/lens-flare.c:27
 msgid "X position"
-msgstr ""
+msgstr "X მდებარეობა"
 
 #: operations/common-gpl3+/lens-flare.c:28
 msgid "X coordinates of the flare center"
@@ -5751,7 +5726,7 @@ msgstr ""
 
 #: operations/common-gpl3+/lens-flare.c:33
 msgid "Y position"
-msgstr ""
+msgstr "Y მდებარეობა"
 
 #: operations/common-gpl3+/lens-flare.c:34
 msgid "Y coordinates of the flare center"
@@ -5855,7 +5830,7 @@ msgstr "წინა პლანის ფერი"
 
 #: operations/common-gpl3+/maze.c:68
 msgid "The foreground color"
-msgstr ""
+msgstr "წინა პლანის ფერი"
 
 #: operations/common-gpl3+/maze.c:71
 msgid "Background Color"
@@ -5863,7 +5838,7 @@ msgstr "ფონის ფერი"
 
 #: operations/common-gpl3+/maze.c:72
 msgid "The background color"
-msgstr ""
+msgstr "ფონის ფერი"
 
 #: operations/common-gpl3+/maze.c:822
 msgid "Maze"
@@ -5873,115 +5848,115 @@ msgstr "ლაბირინთი"
 msgid "Draw a labyrinth"
 msgstr ""
 
-#: operations/common-gpl3+/mosaic.c:32
-msgid "Squares"
-msgstr ""
-
 #: operations/common-gpl3+/mosaic.c:33
+msgid "Squares"
+msgstr "კვარატები"
+
+#: operations/common-gpl3+/mosaic.c:34
 msgid "Hexagons"
 msgstr ""
 
-#: operations/common-gpl3+/mosaic.c:34
+#: operations/common-gpl3+/mosaic.c:35
 msgid "Octagons"
 msgstr ""
 
-#: operations/common-gpl3+/mosaic.c:35
+#: operations/common-gpl3+/mosaic.c:36
 msgid "Triangles"
 msgstr ""
 
-#: operations/common-gpl3+/mosaic.c:38
+#: operations/common-gpl3+/mosaic.c:39
 msgid "Tile geometry"
 msgstr ""
 
-#: operations/common-gpl3+/mosaic.c:40
+#: operations/common-gpl3+/mosaic.c:41
 msgid "What shape to use for tiles"
 msgstr ""
 
-#: operations/common-gpl3+/mosaic.c:48
+#: operations/common-gpl3+/mosaic.c:49
 msgid "Tile height"
 msgstr ""
 
-#: operations/common-gpl3+/mosaic.c:49
+#: operations/common-gpl3+/mosaic.c:50
 msgid "Apparent height of each tile (in pixels)"
 msgstr ""
 
-#: operations/common-gpl3+/mosaic.c:53
+#: operations/common-gpl3+/mosaic.c:54
 msgid "Tile neatness"
 msgstr ""
 
-#: operations/common-gpl3+/mosaic.c:54
+#: operations/common-gpl3+/mosaic.c:55
 msgid "Deviation from perfectly formed tiles"
 msgstr ""
 
-#: operations/common-gpl3+/mosaic.c:57
+#: operations/common-gpl3+/mosaic.c:58
 msgid "Tile color variation"
 msgstr ""
 
-#: operations/common-gpl3+/mosaic.c:58
+#: operations/common-gpl3+/mosaic.c:59
 msgid "Magnitude of random color variations"
 msgstr ""
 
-#: operations/common-gpl3+/mosaic.c:61
+#: operations/common-gpl3+/mosaic.c:62
 msgid "Color averaging"
 msgstr ""
 
-#: operations/common-gpl3+/mosaic.c:62
+#: operations/common-gpl3+/mosaic.c:63
 msgid "Tile color based on average of subsumed pixels"
 msgstr ""
 
-#: operations/common-gpl3+/mosaic.c:64
+#: operations/common-gpl3+/mosaic.c:65
 msgid "Rough tile surface"
 msgstr ""
 
-#: operations/common-gpl3+/mosaic.c:65
+#: operations/common-gpl3+/mosaic.c:66
 msgid "Surface characteristics"
 msgstr ""
 
-#: operations/common-gpl3+/mosaic.c:67
+#: operations/common-gpl3+/mosaic.c:68
 msgid "Allow splitting tiles"
 msgstr ""
 
-#: operations/common-gpl3+/mosaic.c:68
+#: operations/common-gpl3+/mosaic.c:69
 msgid "Allows splitting tiles at hard edges"
 msgstr ""
 
-#: operations/common-gpl3+/mosaic.c:70
+#: operations/common-gpl3+/mosaic.c:71
 msgid "Tile spacing"
 msgstr ""
 
-#: operations/common-gpl3+/mosaic.c:71
+#: operations/common-gpl3+/mosaic.c:72
 msgid "Inter-tile spacing (in pixels)"
 msgstr ""
 
-#: operations/common-gpl3+/mosaic.c:76
+#: operations/common-gpl3+/mosaic.c:77
 msgid "Joints color"
 msgstr ""
 
-#: operations/common-gpl3+/mosaic.c:78
+#: operations/common-gpl3+/mosaic.c:79
 msgid "Light color"
 msgstr ""
 
-#: operations/common-gpl3+/mosaic.c:80
+#: operations/common-gpl3+/mosaic.c:81
 msgid "Light direction"
 msgstr ""
 
-#: operations/common-gpl3+/mosaic.c:81
+#: operations/common-gpl3+/mosaic.c:82
 msgid "Direction of light-source (in degrees)"
 msgstr ""
 
-#: operations/common-gpl3+/mosaic.c:86
+#: operations/common-gpl3+/mosaic.c:87
 msgid "Antialiasing"
 msgstr "მომრგვალება"
 
-#: operations/common-gpl3+/mosaic.c:87
+#: operations/common-gpl3+/mosaic.c:88
 msgid "Enables smoother tile output"
 msgstr ""
 
-#: operations/common-gpl3+/mosaic.c:2466
+#: operations/common-gpl3+/mosaic.c:2472
 msgid "Mosaic"
 msgstr "მოზაიკა"
 
-#: operations/common-gpl3+/mosaic.c:2471
+#: operations/common-gpl3+/mosaic.c:2477
 msgid ""
 "Mosaic is a filter which transforms an image into what appears to be a "
 "mosaic, composed of small primitives, each of constant color and of an "
@@ -6231,7 +6206,7 @@ msgstr "კბილოვანი ტალღა"
 
 #: operations/common-gpl3+/ripple.c:42 operations/common-gpl3+/waves.c:43
 msgid "Phase shift"
-msgstr ""
+msgstr "ფაზის წანაცვლება"
 
 #: operations/common-gpl3+/ripple.c:53
 msgid "Wave type"
@@ -6243,7 +6218,7 @@ msgstr ""
 
 #: operations/common-gpl3+/ripple.c:258
 msgid "Ripple"
-msgstr ""
+msgstr "ჭავლი"
 
 #: operations/common-gpl3+/ripple.c:264
 msgid "Displace pixels in a ripple pattern"
@@ -6315,7 +6290,7 @@ msgstr ""
 
 #: operations/common-gpl3+/shadows-highlights.c:242
 msgid "Shadows-Highlights"
-msgstr ""
+msgstr "ჩრდილები-სინათლე"
 
 #: operations/common-gpl3+/shadows-highlights.c:245
 msgid "Perform shadows and highlights correction"
@@ -6351,7 +6326,7 @@ msgstr ""
 
 #: operations/common-gpl3+/sinus.c:45
 msgid "Complexity"
-msgstr ""
+msgstr "სირთულე"
 
 #: operations/common-gpl3+/sinus.c:46
 msgid "Complexity factor"
@@ -6375,7 +6350,7 @@ msgstr ""
 
 #: operations/common-gpl3+/sinus.c:63
 msgid "Bilinear"
-msgstr ""
+msgstr "ორხაზოვანი"
 
 #: operations/common-gpl3+/sinus.c:67
 msgid "Blend Mode"
@@ -6395,7 +6370,7 @@ msgstr ""
 
 #: operations/common-gpl3+/softglow.c:234
 msgid "Softglow"
-msgstr ""
+msgstr "რბილი ნათება"
 
 #: operations/common-gpl3+/softglow.c:238
 msgid "Simulate glow by making highlights intense and fuzzy"
@@ -6501,19 +6476,19 @@ msgstr ""
 
 #: operations/common-gpl3+/texturize-canvas.c:29
 msgid "Top-right"
-msgstr ""
+msgstr "ზედა მარჯვენა"
 
 #: operations/common-gpl3+/texturize-canvas.c:31
 msgid "Top-left"
-msgstr ""
+msgstr "ზედა მარცხენა"
 
 #: operations/common-gpl3+/texturize-canvas.c:33
 msgid "Bottom-left"
-msgstr ""
+msgstr "ქვედა მარცხენა"
 
 #: operations/common-gpl3+/texturize-canvas.c:35
 msgid "Bottom-right"
-msgstr ""
+msgstr "ქვედა მარჯვენა"
 
 #: operations/common-gpl3+/texturize-canvas.c:41
 msgid ""
@@ -6563,7 +6538,7 @@ msgstr ""
 
 #: operations/common-gpl3+/tile-paper.c:30
 msgid "Image"
-msgstr ""
+msgstr "ფოტო"
 
 #: operations/common-gpl3+/tile-paper.c:35
 msgid "Background"
@@ -6737,7 +6712,7 @@ msgstr ""
 
 #: operations/common-gpl3+/value-propagate.c:645
 msgid "Value Propagate"
-msgstr ""
+msgstr "მნიშვნელობების გავრცელება"
 
 #: operations/common-gpl3+/value-propagate.c:650
 msgid ""
@@ -6755,7 +6730,7 @@ msgstr ""
 
 #: operations/common-gpl3+/video-degradation.c:38
 msgid "Striped"
-msgstr ""
+msgstr "ზოლიანი"
 
 #: operations/common-gpl3+/video-degradation.c:40
 msgid "Wide striped"
@@ -6779,7 +6754,7 @@ msgstr "თექვსმეტობითი"
 
 #: operations/common-gpl3+/video-degradation.c:50
 msgid "Dots"
-msgstr ""
+msgstr "წერტილები"
 
 #: operations/common-gpl3+/video-degradation.c:56
 msgid "Type of RGB pattern to use"
@@ -6787,7 +6762,7 @@ msgstr ""
 
 #: operations/common-gpl3+/video-degradation.c:58
 msgid "Additive"
-msgstr ""
+msgstr "დანამატი"
 
 #: operations/common-gpl3+/video-degradation.c:59
 msgid "Whether the function adds the result to the original image."
@@ -7075,7 +7050,7 @@ msgstr ""
 
 #: operations/core/nop.c:81
 msgid "No Operation"
-msgstr ""
+msgstr "ოპერაციის გარეშე"
 
 #: operations/core/nop.c:83
 msgid "No operation (can be used as a routing point)"
@@ -7095,11 +7070,11 @@ msgstr ""
 
 #: operations/external/ff-load.c:32
 msgid "Frame number"
-msgstr ""
+msgstr "სერიული ნომერი"
 
 #: operations/external/ff-load.c:36 operations/external/gif-load.c:38
 msgid "frames"
-msgstr ""
+msgstr "კადრი"
 
 #: operations/external/ff-load.c:37
 msgid ""
@@ -7306,11 +7281,11 @@ msgstr ""
 msgid "Delay in ms for last decoded frame"
 msgstr ""
 
-#: operations/external/gif-load.c:240
+#: operations/external/gif-load.c:244
 msgid "GIF File Loader"
 msgstr ""
 
-#: operations/external/gif-load.c:242
+#: operations/external/gif-load.c:246
 msgid "GIF image loader."
 msgstr ""
 
@@ -7406,7 +7381,7 @@ msgstr ""
 
 #: operations/external/jpg-save.c:32
 msgid "Smoothing"
-msgstr ""
+msgstr "მოგლუვება"
 
 #: operations/external/jpg-save.c:33
 msgid "Smoothing factor from 1 to 100; 0 disables smoothing"
@@ -7422,7 +7397,7 @@ msgstr ""
 
 #: operations/external/jpg-save.c:38
 msgid "Progressive"
-msgstr ""
+msgstr "პროგრესული"
 
 #: operations/external/jpg-save.c:39
 msgid "Create progressive JPEG images"
@@ -7454,7 +7429,7 @@ msgstr ""
 
 #: operations/external/lcms-from-profile.c:33
 msgid "Relative Colorimetric"
-msgstr ""
+msgstr "შეფარდებით კოლორიმეტრული"
 
 #: operations/external/lcms-from-profile.c:37
 msgid "Absolute Colorimetric"
@@ -7521,7 +7496,7 @@ msgstr "პრობლემების გადაწყვეტის დ�
 
 #: operations/external/matting-levin.c:1477
 msgid "Matting Levin"
-msgstr ""
+msgstr "Matting Levin"
 
 #: operations/external/matting-levin.c:1480
 msgid ""
@@ -7612,7 +7587,7 @@ msgstr ""
 
 #: operations/external/path.c:29 operations/workshop/external/spyrograph.c:74
 msgid "Stroke Color"
-msgstr ""
+msgstr "გამოძრავების ფერი"
 
 #: operations/external/path.c:30 operations/workshop/external/spyrograph.c:75
 msgid "Color of paint to use for stroking"
@@ -7658,6 +7633,16 @@ msgstr ""
 
 #: operations/external/path.c:51
 msgid "The fill opacity to use"
+msgstr ""
+
+#: operations/external/path.c:54 operations/external/vector-fill.c:40
+#: operations/external/vector-stroke.c:41
+msgid "Vector"
+msgstr "ვექტორი"
+
+#: operations/external/path.c:55 operations/external/vector-fill.c:41
+#: operations/external/vector-stroke.c:42
+msgid "A GeglVector representing the path of the stroke"
 msgstr ""
 
 #: operations/external/path.c:584
@@ -7811,7 +7796,7 @@ msgstr ""
 
 #: operations/external/raw-load.c:32
 msgid "ProPhoto RGB"
-msgstr ""
+msgstr "ProPhoto RGB"
 
 #: operations/external/raw-load.c:39
 msgid "Color space"
@@ -7821,7 +7806,7 @@ msgstr "ფერთა სივრცე"
 msgid "Color space to use for loaded data"
 msgstr ""
 
-#: operations/external/raw-load.c:281
+#: operations/external/raw-load.c:285
 msgid "libraw File Loader"
 msgstr ""
 
@@ -7947,7 +7932,7 @@ msgstr ""
 
 #: operations/external/text.c:53
 msgid "Justification"
-msgstr ""
+msgstr "შევსება"
 
 #: operations/external/text.c:55
 msgid "Alignment for multi-line text (0=Left, 1=Center, 2=Right)"
@@ -8043,6 +8028,35 @@ msgstr ""
 
 #: operations/external/v4l.c:333
 msgid "Video4Linux input, webcams framegrabbers and similar devices."
+msgstr ""
+
+#: operations/external/vector-fill.c:27
+msgid "Color of paint to use for filling."
+msgstr ""
+
+#: operations/external/vector-fill.c:30
+msgid "The fill opacity to use."
+msgstr ""
+
+#. XXX: replace with enum?
+#: operations/external/vector-fill.c:34
+msgid "Fill rule."
+msgstr ""
+
+#: operations/external/vector-fill.c:35
+msgid "how to determine what to fill (nonzero|evenodd)"
+msgstr ""
+
+#: operations/external/vector-fill.c:38 operations/external/vector-stroke.c:39
+msgid "svg style description of transform."
+msgstr ""
+
+#: operations/external/vector-fill.c:320
+msgid "Fill Path"
+msgstr "კონტურის შევსება"
+
+#: operations/external/vector-fill.c:323
+msgid "Renders a filled region"
 msgstr ""
 
 #: operations/external/vector-stroke.c:28
@@ -8249,7 +8263,7 @@ msgstr ""
 
 #: operations/seamless-clone/seamless-clone.c:22
 msgid "Refinement scale"
-msgstr ""
+msgstr "დეტალიზაციის მასშტაბი"
 
 #: operations/seamless-clone/seamless-clone.c:23
 msgid ""
@@ -8427,7 +8441,7 @@ msgstr ""
 
 #: operations/transform/shear.c:91
 msgid "Shear"
-msgstr ""
+msgstr "დახრა"
 
 #: operations/transform/shear.c:95
 msgid "Shears the buffer. "
@@ -8475,7 +8489,7 @@ msgstr ""
 
 #: operations/transform/translate.c:94
 msgid "Translate"
-msgstr ""
+msgstr "თარგმნა"
 
 #: operations/transform/translate.c:98
 msgid ""
@@ -8584,7 +8598,7 @@ msgid "1D Box Blur"
 msgstr ""
 
 #: operations/workshop/boxblur-1d.c:467
-msgid "Blur resulting from averaging the colors of a row neighbourhood."
+msgid "Blur resulting from averaging the colors of a row neighborhood."
 msgstr ""
 
 #: operations/workshop/boxblur.c:75
@@ -8940,7 +8954,7 @@ msgstr ""
 
 #: operations/workshop/external/spyrograph.c:31
 msgid "Curve Type"
-msgstr ""
+msgstr "მრუდის ტიპი"
 
 #: operations/workshop/external/spyrograph.c:34
 msgid "Curve type"
@@ -9104,7 +9118,7 @@ msgstr ""
 
 #: operations/workshop/gradient-map.c:240
 msgid "Gradient Map"
-msgstr ""
+msgstr "გრადიენტის რუკა"
 
 #: operations/workshop/gradient-map.c:245
 msgid "Applies a color gradient."
