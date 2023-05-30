@@ -15,7 +15,7 @@ msgstr ""
 "Project-Id-Version: GEGL_0_2_0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-03-29 16:47+0200\n"
-"PO-Revision-Date: 2023-05-16 18:04+0200\n"
+"PO-Revision-Date: 2023-05-30 19:29+0200\n"
 "Last-Translator: Marco Ciampa <ciampix@posteo.net>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -4151,7 +4151,7 @@ msgstr "Mantiene i valori RGB dei pixel entro un campo specifico"
 
 #: ../operations/common/saturation.c:26
 msgid "Native"
-msgstr "Nativa"
+msgstr "Nativo"
 
 #: ../operations/common/saturation.c:27
 msgid "CIE Lab/Lch"
