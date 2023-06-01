@@ -454,11 +454,10 @@ avlibs = avlibs_found ? [libavcodec, libavformat, libavutil, libswscale] : []
 # libumfpack
 libumfpack = cc.find_library('umfpack', required: get_option('umfpack'))
 if libumfpack.found()
-  have_umfpack = cc.has_header('umfpack.h')
+  have_umfpack = cc.has_header_symbol(
+    'umfpack.h','umfpack_dl_solve')
   have_ss_umfpack = cc.has_header_symbol(
-    'suitesparse/umfpack.h',
-    'umfpack_dl_solve'
-  )
+    'suitesparse/umfpack.h', 'umfpack_dl_solve')
 
   if not (have_umfpack or have_ss_umfpack)
     if get_option('umfpack').auto()
