@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl.master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2022-07-02 11:49+0000\n"
-"PO-Revision-Date: 2022-07-03 14:54+0200\n"
+"POT-Creation-Date: 2023-05-27 16:04+0000\n"
+"PO-Revision-Date: 2023-06-02 14:10+0200\n"
 "Last-Translator: Rodrigo Lledó Milanca <rodhos92@gmail.com>\n"
 "Language-Team: Spanish - Spain <gnome-es-list@gnome.org>\n"
 "Language: es_ES\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.1\n"
+"X-Generator: Poedit 3.3.1\n"
 
 #: bin/gegl.c:179
 #, c-format
@@ -357,41 +357,41 @@ msgstr "Nunca"
 msgid "Always"
 msgstr "Siempre"
 
-#: gegl/gegl-init.c:213
+#: gegl/gegl-init.c:225
 msgid "Where GEGL stores its swap"
 msgstr "Dónde almacena GEGL su espacio de intercambio"
 
-#: gegl/gegl-init.c:218
+#: gegl/gegl-init.c:230
 msgid "Compression algorithm used for data stored in the swap"
 msgstr "Algoritmo de compresión usado para datos almacenados en el intercambio"
 
-#: gegl/gegl-init.c:223
+#: gegl/gegl-init.c:235
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr "Cuánta memoria (aproximadamente) usar para el cacheo de las imágenes"
 
-#: gegl/gegl-init.c:228
+#: gegl/gegl-init.c:240
 msgid "Default size of tiles in GeglBuffers"
 msgstr "Tamaño predeterminado de las baldosas en GeglBuffers"
 
-#: gegl/gegl-init.c:233
+#: gegl/gegl-init.c:245
 msgid "The count of pixels to compute simultaneously"
 msgstr "Cuántos píxeles calcular simultáneamente"
 
-#: gegl/gegl-init.c:238
+#: gegl/gegl-init.c:250
 msgid ""
 "The quality of rendering, a value between 0.0 (fast) and 1.0 (reference)"
 msgstr ""
 "La calidad del renderizado, un valor entre 0.0 (rápido) y 1.0 (referencia)"
 
-#: gegl/gegl-init.c:243
+#: gegl/gegl-init.c:255
 msgid "The number of concurrent processing threads to use"
 msgstr "Número de hilos de procesado concurrente que usar"
 
-#: gegl/gegl-init.c:248
+#: gegl/gegl-init.c:260
 msgid "Disable OpenCL"
 msgstr "Desactivar OpenCL"
 
-#: gegl/gegl-init.c:260
+#: gegl/gegl-init.c:272
 msgid "Show GEGL Options"
 msgstr "Mostrar las opciones de GEGL"
 
@@ -470,6 +470,39 @@ msgid ""
 msgstr ""
 "Hace que cada componente RGB lineal sea el absoluto de su valor, "
 "fabs(valor_de_entrada)"
+
+#: operations/common/adaptive-threshold.c:24 operations/common/bloom.c:35
+#: operations/common/box-blur.c:25 operations/common/c2g.c:28
+#: operations/common/edge-neon.c:47 operations/common/median-blur.c:42
+#: operations/common/snn-mean.c:26 operations/common/stress.c:27
+#: operations/common/unsharp-mask.c:24 operations/common/vignette.c:40
+#: operations/common/wavelet-blur-1d.c:28 operations/common/wavelet-blur.c:27
+#: operations/common-cxx/focus-blur.c:85 operations/common-cxx/lens-blur.cc:24
+#: operations/common-cxx/variable-blur.c:30
+#: operations/common-gpl3+/shadows-highlights.c:40
+#: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:44
+#: operations/common-gpl3+/whirl-pinch.c:46
+#: operations/external/matting-levin.c:29 operations/workshop/boxblur-1d.c:27
+#: operations/workshop/boxblur.c:24
+#: operations/workshop/external/spyrograph.c:63
+msgid "Radius"
+msgstr "Radio"
+
+#: operations/common/adaptive-threshold.c:31
+msgid "Anti alias"
+msgstr "Alisado"
+
+#: operations/common/adaptive-threshold.c:119
+msgid "Adaptive Threshold"
+msgstr "Umbral adaptativo"
+
+#: operations/common/adaptive-threshold.c:121
+msgid "Applies a threshold against the average of a spatial neighbourhood."
+msgstr "Aplica un umbral contra la media de un entorno espacial."
+
+#: operations/common/adaptive-threshold.c:123
+msgid "Adaptive Threshold..."
+msgstr "Umbral adaptativo…"
 
 #: operations/common/alien-map.c:28 operations/common/newsprint.c:35
 msgid "RGB"
@@ -661,28 +694,11 @@ msgstr "Umbral de brillo del área del resplandor"
 
 #: operations/common/bloom.c:30 operations/common/vignette.c:46
 msgid "Softness"
-msgstr "Suavidad"
+msgstr "Blandura"
 
 #: operations/common/bloom.c:31
 msgid "Glow-area edge softness"
 msgstr "Suavidad del borde del área del resplandor"
-
-#: operations/common/bloom.c:35 operations/common/box-blur.c:25
-#: operations/common/c2g.c:28 operations/common/edge-neon.c:47
-#: operations/common/median-blur.c:42 operations/common/snn-mean.c:26
-#: operations/common/stress.c:27 operations/common/unsharp-mask.c:24
-#: operations/common/vignette.c:40 operations/common/wavelet-blur-1d.c:28
-#: operations/common/wavelet-blur.c:27 operations/common-cxx/focus-blur.c:85
-#: operations/common-cxx/lens-blur.cc:24
-#: operations/common-cxx/variable-blur.c:30
-#: operations/common-gpl3+/shadows-highlights.c:40
-#: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:44
-#: operations/common-gpl3+/whirl-pinch.c:46
-#: operations/external/matting-levin.c:29 operations/workshop/boxblur-1d.c:27
-#: operations/workshop/boxblur.c:24
-#: operations/workshop/external/spyrograph.c:63
-msgid "Radius"
-msgstr "Radio"
 
 #: operations/common/bloom.c:36 operations/common-gpl3+/softglow.c:26
 msgid "Glow radius"
@@ -855,7 +871,7 @@ msgid "When enabled details in shadows are boosted at the expense of noise"
 msgstr ""
 "Cuando se activa se realzan los detalles en las sombras a expensas del ruido"
 
-#: operations/common/c2g.c:468
+#: operations/common/c2g.c:461
 msgid ""
 "Color to grayscale conversion, uses envelopes formed with the STRESS "
 "approach to perform local color-difference preserving grayscale generation."
@@ -964,12 +980,12 @@ msgstr "Renderizar un patrón de tablero de ajedrez"
 #: operations/common/color.c:24 operations/common/color.c:87
 #: operations/common/color-overlay.c:26 operations/common/dropshadow.c:67
 #: operations/common/grid.c:64 operations/common/long-shadow.c:83
-#: operations/common/rectangle.c:48 operations/common/vector-fill.c:26
-#: operations/common/vignette.c:36 operations/common-gpl3+/color-to-alpha.c:29
+#: operations/common/rectangle.c:48 operations/common/vignette.c:36
+#: operations/common-gpl3+/color-to-alpha.c:29
 #: operations/common-gpl3+/supernova.c:60
 #: operations/common-gpl3+/tile-paper.c:31
 #: operations/common-gpl3+/value-propagate.c:54 operations/external/text.c:37
-#: operations/external/vector-stroke.c:27
+#: operations/external/vector-fill.c:26 operations/external/vector-stroke.c:27
 msgid "Color"
 msgstr "Color"
 
@@ -1713,7 +1729,7 @@ msgstr "El método de tramado a usar"
 #: operations/common/noise-pick.c:38 operations/common/noise-rgb.c:55
 #: operations/common/noise-simplex.c:39 operations/common/noise-spread.c:41
 #: operations/common-gpl3+/cubism.c:42 operations/common-gpl3+/maze.c:65
-#: operations/common-gpl3+/mosaic.c:89 operations/common-gpl3+/noise-slur.c:40
+#: operations/common-gpl3+/mosaic.c:90 operations/common-gpl3+/noise-slur.c:40
 #: operations/common-gpl3+/noise-solid.c:61 operations/common-gpl3+/plasma.c:70
 #: operations/common-gpl3+/shift.c:35 operations/common-gpl3+/sinus.c:49
 #: operations/common-gpl3+/supernova.c:63
@@ -1856,14 +1872,15 @@ msgstr "El color de la sombra (el predeterminado es «negro»)"
 #.
 #: operations/common/dropshadow.c:74 operations/common/layer.c:33
 #: operations/common/opacity.c:25 operations/common/opacity.c:289
-#: operations/common/vector-fill.c:29 operations/external/vector-stroke.c:34
+#: operations/external/vector-fill.c:29 operations/external/vector-stroke.c:34
 msgid "Opacity"
 msgstr "Opacidad"
 
 # arrojada o proyectada
+# paralela
 #: operations/common/dropshadow.c:184
 msgid "Dropshadow"
-msgstr "Sombra arrojada"
+msgstr "Sombra proyectada"
 
 #: operations/common/dropshadow.c:188
 msgid "Creates a dropshadow effect on the input buffer"
@@ -2711,11 +2728,11 @@ msgstr "Composición"
 msgid "Output composition"
 msgstr "Composición de salida"
 
-#: operations/common/long-shadow.c:1691
+#: operations/common/long-shadow.c:1646
 msgid "Long Shadow"
 msgstr "Sombra alargada"
 
-#: operations/common/long-shadow.c:1696
+#: operations/common/long-shadow.c:1651
 msgid "Creates a long-shadow effect"
 msgstr "Crea un efecto de sombra alargada"
 
@@ -3955,10 +3972,9 @@ msgstr "Rectángulo"
 msgid "A rectangular source of a fixed size with a solid color"
 msgstr "Una fuente rectangular de tamaño fijo y color liso"
 
-#: operations/common/recursive-transform.c:28
-#: operations/common/vector-fill.c:37 operations/external/path.c:47
-#: operations/external/vector-stroke.c:38 operations/transform/transform.c:24
-#: operations/transform/transform.c:62
+#: operations/common/recursive-transform.c:28 operations/external/path.c:47
+#: operations/external/vector-fill.c:37 operations/external/vector-stroke.c:38
+#: operations/transform/transform.c:24 operations/transform/transform.c:62
 msgid "Transform"
 msgstr "Transformar"
 
@@ -4512,45 +4528,6 @@ msgid ""
 msgstr ""
 "Invierte la componente de valor, el resultado tiene el brillo invertido, "
 "manteniendo el color."
-
-#: operations/common/vector-fill.c:27
-msgid "Color of paint to use for filling."
-msgstr "Color de la pintura que usar para el relleno."
-
-#: operations/common/vector-fill.c:30
-msgid "The fill opacity to use."
-msgstr "Opacidad de relleno que usar."
-
-#. XXX: replace with enum?
-#: operations/common/vector-fill.c:34
-msgid "Fill rule."
-msgstr "Regla de rellenado."
-
-#: operations/common/vector-fill.c:35
-msgid "how to determine what to fill (nonzero|evenodd)"
-msgstr "cómo determinar lo que se rellena (no nulo / par impar)"
-
-#: operations/common/vector-fill.c:38 operations/external/vector-stroke.c:39
-msgid "svg style description of transform."
-msgstr "descripción estilo SVG de la transformación."
-
-#: operations/common/vector-fill.c:40 operations/external/path.c:54
-#: operations/external/vector-stroke.c:41
-msgid "Vector"
-msgstr "Vector"
-
-#: operations/common/vector-fill.c:41 operations/external/path.c:55
-#: operations/external/vector-stroke.c:42
-msgid "A GeglVector representing the path of the stroke"
-msgstr "Un vector GeglVector que representa la ruta del trazo"
-
-#: operations/common/vector-fill.c:320
-msgid "Fill Path"
-msgstr "Rellenar ruta"
-
-#: operations/common/vector-fill.c:323
-msgid "Renders a filled region"
-msgstr "Renderiza una región rellena"
 
 #: operations/common/vignette.c:32
 msgid "Vignette shape"
@@ -5431,11 +5408,11 @@ msgstr ""
 "Convertir un color especificado a una transparencia, funciona mejor con "
 "blanco."
 
-#: operations/common-gpl3+/cubism.c:30 operations/common-gpl3+/mosaic.c:42
+#: operations/common-gpl3+/cubism.c:30 operations/common-gpl3+/mosaic.c:43
 msgid "Tile size"
 msgstr "Tamaño del mosaico"
 
-#: operations/common-gpl3+/cubism.c:31 operations/common-gpl3+/mosaic.c:43
+#: operations/common-gpl3+/cubism.c:31 operations/common-gpl3+/mosaic.c:44
 msgid "Average diameter of each tile (in pixels)"
 msgstr "Diámetro medio de cada baldosa (en píxeles)"
 
@@ -6231,116 +6208,116 @@ msgstr "Laberinto"
 msgid "Draw a labyrinth"
 msgstr "Dibujar un laberinto"
 
-#: operations/common-gpl3+/mosaic.c:32
+#: operations/common-gpl3+/mosaic.c:33
 msgid "Squares"
 msgstr "Cuadrados"
 
-#: operations/common-gpl3+/mosaic.c:33
+#: operations/common-gpl3+/mosaic.c:34
 msgid "Hexagons"
 msgstr "Hexágonos"
 
-#: operations/common-gpl3+/mosaic.c:34
+#: operations/common-gpl3+/mosaic.c:35
 msgid "Octagons"
 msgstr "Octógonos"
 
-#: operations/common-gpl3+/mosaic.c:35
+#: operations/common-gpl3+/mosaic.c:36
 msgid "Triangles"
 msgstr "Triángulos"
 
-#: operations/common-gpl3+/mosaic.c:38
+#: operations/common-gpl3+/mosaic.c:39
 msgid "Tile geometry"
 msgstr "Geometría del mosaico"
 
-#: operations/common-gpl3+/mosaic.c:40
+#: operations/common-gpl3+/mosaic.c:41
 msgid "What shape to use for tiles"
 msgstr "Qué forma utilizar para los mosaicos"
 
-#: operations/common-gpl3+/mosaic.c:48
+#: operations/common-gpl3+/mosaic.c:49
 msgid "Tile height"
 msgstr "Altura del mosaico"
 
-#: operations/common-gpl3+/mosaic.c:49
+#: operations/common-gpl3+/mosaic.c:50
 msgid "Apparent height of each tile (in pixels)"
 msgstr "Altura aparente de cada mosaico (en píxeles)"
 
-#: operations/common-gpl3+/mosaic.c:53
+#: operations/common-gpl3+/mosaic.c:54
 msgid "Tile neatness"
 msgstr "Limpieza del mosaico"
 
-#: operations/common-gpl3+/mosaic.c:54
+#: operations/common-gpl3+/mosaic.c:55
 msgid "Deviation from perfectly formed tiles"
 msgstr "Desviación de los mosaicos perfectamente formados"
 
-#: operations/common-gpl3+/mosaic.c:57
+#: operations/common-gpl3+/mosaic.c:58
 msgid "Tile color variation"
 msgstr "Variación del color del mosaico"
 
-#: operations/common-gpl3+/mosaic.c:58
+#: operations/common-gpl3+/mosaic.c:59
 msgid "Magnitude of random color variations"
 msgstr "Magnitud de variaciones de color aleatorias"
 
-#: operations/common-gpl3+/mosaic.c:61
+#: operations/common-gpl3+/mosaic.c:62
 msgid "Color averaging"
 msgstr "Promediado del color"
 
-#: operations/common-gpl3+/mosaic.c:62
+#: operations/common-gpl3+/mosaic.c:63
 msgid "Tile color based on average of subsumed pixels"
 msgstr "Color del mosaico basado en el promedio de píxeles subsumidos"
 
-#: operations/common-gpl3+/mosaic.c:64
+#: operations/common-gpl3+/mosaic.c:65
 msgid "Rough tile surface"
 msgstr "Superficie áspera del mosaico"
 
-#: operations/common-gpl3+/mosaic.c:65
+#: operations/common-gpl3+/mosaic.c:66
 msgid "Surface characteristics"
 msgstr "Características de la superficie"
 
-#: operations/common-gpl3+/mosaic.c:67
+#: operations/common-gpl3+/mosaic.c:68
 msgid "Allow splitting tiles"
 msgstr "Permitir dividir los mosaicos"
 
-#: operations/common-gpl3+/mosaic.c:68
+#: operations/common-gpl3+/mosaic.c:69
 msgid "Allows splitting tiles at hard edges"
 msgstr "Permite dividir los mosaicos en los bordes duros"
 
-#: operations/common-gpl3+/mosaic.c:70
+#: operations/common-gpl3+/mosaic.c:71
 msgid "Tile spacing"
 msgstr "Espaciado del mosaico"
 
-#: operations/common-gpl3+/mosaic.c:71
+#: operations/common-gpl3+/mosaic.c:72
 msgid "Inter-tile spacing (in pixels)"
 msgstr "Espaciado entre mosaico (en píxeles)"
 
 # Junta o bisagra
-#: operations/common-gpl3+/mosaic.c:76
+#: operations/common-gpl3+/mosaic.c:77
 msgid "Joints color"
 msgstr "Color de juntas"
 
-#: operations/common-gpl3+/mosaic.c:78
+#: operations/common-gpl3+/mosaic.c:79
 msgid "Light color"
 msgstr "Color claro"
 
-#: operations/common-gpl3+/mosaic.c:80
+#: operations/common-gpl3+/mosaic.c:81
 msgid "Light direction"
 msgstr "Dirección de la luz"
 
-#: operations/common-gpl3+/mosaic.c:81
+#: operations/common-gpl3+/mosaic.c:82
 msgid "Direction of light-source (in degrees)"
 msgstr "Dirección de la fuente de luz (en grados)"
 
-#: operations/common-gpl3+/mosaic.c:86
-msgid "Antialiasing"
-msgstr "Suavizado"
-
 #: operations/common-gpl3+/mosaic.c:87
+msgid "Antialiasing"
+msgstr "Alisado"
+
+#: operations/common-gpl3+/mosaic.c:88
 msgid "Enables smoother tile output"
 msgstr "Permite la salida más suave del mosaico"
 
-#: operations/common-gpl3+/mosaic.c:2466
+#: operations/common-gpl3+/mosaic.c:2472
 msgid "Mosaic"
 msgstr "Mosaico"
 
-#: operations/common-gpl3+/mosaic.c:2471
+#: operations/common-gpl3+/mosaic.c:2477
 msgid ""
 "Mosaic is a filter which transforms an image into what appears to be a "
 "mosaic, composed of small primitives, each of constant color and of an "
@@ -7734,11 +7711,11 @@ msgstr "retardo-de-fotogramas"
 msgid "Delay in ms for last decoded frame"
 msgstr "Retardo en ms del último fotograma decodificado"
 
-#: operations/external/gif-load.c:240
+#: operations/external/gif-load.c:244
 msgid "GIF File Loader"
 msgstr "Cargador de archivos GIF"
 
-#: operations/external/gif-load.c:242
+#: operations/external/gif-load.c:246
 msgid "GIF image loader."
 msgstr "Cargador de imágenes GIF."
 
@@ -8101,6 +8078,16 @@ msgstr "Opacidad del relleno"
 msgid "The fill opacity to use"
 msgstr "Opacidad del relleno que usar"
 
+#: operations/external/path.c:54 operations/external/vector-fill.c:40
+#: operations/external/vector-stroke.c:41
+msgid "Vector"
+msgstr "Vector"
+
+#: operations/external/path.c:55 operations/external/vector-fill.c:41
+#: operations/external/vector-stroke.c:42
+msgid "A GeglVector representing the path of the stroke"
+msgstr "Un vector GeglVector que representa la ruta del trazo"
+
 #: operations/external/path.c:584
 msgid "Render Path"
 msgstr "Renderizar ruta"
@@ -8269,7 +8256,7 @@ msgstr "Espacio de color"
 msgid "Color space to use for loaded data"
 msgstr "Espacio de color para usar con datos cargados"
 
-#: operations/external/raw-load.c:281
+#: operations/external/raw-load.c:285
 msgid "libraw File Loader"
 msgstr "Cargador de archivos libraw"
 
@@ -8508,6 +8495,35 @@ msgstr "Origen de fotograma de Video4Linux"
 #: operations/external/v4l.c:333
 msgid "Video4Linux input, webcams framegrabbers and similar devices."
 msgstr "Entrada Video4Linux, capturadoras, webcams y dispositivos similares."
+
+#: operations/external/vector-fill.c:27
+msgid "Color of paint to use for filling."
+msgstr "Color de la pintura que usar para el relleno."
+
+#: operations/external/vector-fill.c:30
+msgid "The fill opacity to use."
+msgstr "Opacidad de relleno que usar."
+
+#. XXX: replace with enum?
+#: operations/external/vector-fill.c:34
+msgid "Fill rule."
+msgstr "Regla de rellenado."
+
+#: operations/external/vector-fill.c:35
+msgid "how to determine what to fill (nonzero|evenodd)"
+msgstr "cómo determinar lo que se rellena (no nulo / par impar)"
+
+#: operations/external/vector-fill.c:38 operations/external/vector-stroke.c:39
+msgid "svg style description of transform."
+msgstr "descripción estilo SVG de la transformación."
+
+#: operations/external/vector-fill.c:320
+msgid "Fill Path"
+msgstr "Rellenar ruta"
+
+#: operations/external/vector-fill.c:323
+msgid "Renders a filled region"
+msgstr "Renderiza una región rellena"
 
 #: operations/external/vector-stroke.c:28
 msgid "Color of paint to use for stroking."
