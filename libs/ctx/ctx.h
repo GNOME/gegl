@@ -1,4 +1,4 @@
-/* ctx git commit: 29fdb790 */
+/* ctx git commit: 5861d7bf */
 /* 
  * ctx.h is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -34727,7 +34727,7 @@ void ctx_ctx_pcm (Ctx *ctx)
     int encoded_len = ctx_a85enc (data, encoded, i);
     fprintf (stdout, "\033_Af=%i;", i);
     fwrite (encoded, 1, encoded_len, stdout);
-    fwrite ("\e\\", 1, 2, stdout);
+    fwrite ("\033\\", 1, 2, stdout);
     fflush (stdout);
     }
 }
@@ -35567,7 +35567,7 @@ static int ctx_ydec (const char *tmp_src, char *dst, int count)
         dst[out_len++] = o;
         break;
       case '\n':
-      case '\e':
+      case '\033':
       case '\r':
       case '\0':
         break;
@@ -37392,7 +37392,7 @@ int ctx_terminal_width (void)
   raw.c_cc[VMIN] = 1; raw.c_cc[VTIME] = 0; /* 1 byte, no timer */
   if (tcsetattr (STDIN_FILENO, TCSAFLUSH, &raw) < 0)
     return 0;
-  fprintf (stderr, "\e[14t");
+  fprintf (stderr, "\033[14t");
   //tcflush(STDIN_FILENO, 1);
 #if __COSMOPOLITAN__
   /// XXX ?
@@ -37442,7 +37442,7 @@ int ctx_terminal_height (void)
   raw.c_cc[VMIN] = 1; raw.c_cc[VTIME] = 0; /* 1 byte, no timer */
   if (tcsetattr (STDIN_FILENO, TCSAFLUSH, &raw) < 0)
     return 0;
-  fprintf (stderr, "\e[14t");
+  fprintf (stderr, "\033[14t");
   //tcflush(STDIN_FILENO, 1);
 #if !__COSMOPOLITAN__
   tcdrain(STDIN_FILENO);
@@ -37765,10 +37765,10 @@ nc_at_exit (void)
   printf (TERMINAL_MOUSE_OFF);
   printf (XTERM_ALTSCREEN_OFF);
   _nc_noraw();
-  fprintf (stdout, "\e[?25h");
+  fprintf (stdout, "\033[?25h");
   //if (ctx_native_events)
-  fprintf (stdout, "\e[?201l");
-  fprintf (stdout, "\e[?1049l");
+  fprintf (stdout, "\033[?201l");
+  fprintf (stdout, "\033[?1049l");
 }
 
 static const char *mouse_get_event_int (Ctx *n, int *x, int *y)
@@ -38263,7 +38263,7 @@ const char *ctx_native_get_event (Ctx *n, int timeoutms)
     if (read (STDIN_FILENO, &buf[length], 1) != -1)
       {
          buf[length+1] = 0;
-         if (!strcmp ((char*)buf, "\e[0n"))
+         if (!strcmp ((char*)buf, "\033[0n"))
          {
            ctx_frame_ack = 1;
            return NULL;
@@ -38469,7 +38469,7 @@ static int is_in_ctx (void)
   raw.c_cc[VMIN] = 1; raw.c_cc[VTIME] = 0; /* 1 byte, no timer */
   if (tcsetattr (STDIN_FILENO, TCSAFLUSH, &raw) < 0)
     return 0;
-  fprintf (stderr, "\e[?200$p");
+  fprintf (stderr, "\033[?200$p");
   //tcflush(STDIN_FILENO, 1);
 #if !__COSMOPOLITAN__
   tcdrain(STDIN_FILENO);
@@ -39248,7 +39248,7 @@ void ctx_listen (Ctx          *ctx,
 
   if (types == CTX_DRAG_MOTION)
     types = CTX_DRAG_MOTION | CTX_DRAG_PRESS;
-  return ctx_listen_full (ctx, x, y, width, height, types, cb, data1, data2, NULL, NULL);
+  ctx_listen_full (ctx, x, y, width, height, types, cb, data1, data2, NULL, NULL);
 }
 
 void  ctx_listen_with_finalize (Ctx          *ctx,
@@ -39281,7 +39281,7 @@ void  ctx_listen_with_finalize (Ctx          *ctx,
 
   if (types == CTX_DRAG_MOTION)
     types = CTX_DRAG_MOTION | CTX_DRAG_PRESS;
-  return ctx_listen_full (ctx, x, y, width, height, types, cb, data1, data2, finalize, finalize_data);
+  ctx_listen_full (ctx, x, y, width, height, types, cb, data1, data2, finalize, finalize_data);
 }
 
 
@@ -39311,9 +39311,9 @@ void ctx_add_hit_region (Ctx *ctx, const char *id)
      height = ey2 - ey1;
   }
   
-  return ctx_listen_full (ctx, x, y, width, height,
-                          CTX_POINTER, ctx_report_hit_region,
-                          id_copy, NULL, (void*)ctx_free, NULL);
+  ctx_listen_full (ctx, x, y, width, height,
+                   CTX_POINTER, ctx_report_hit_region,
+                   id_copy, NULL, (void*)ctx_free, NULL);
 }
 
 typedef struct _CtxGrab CtxGrab;
@@ -41116,93 +41116,93 @@ typedef struct MmmKeyCode {
   char  sequence[10];  /* terminal sequence */
 } MmmKeyCode;
 static const MmmKeyCode ufb_keycodes[]={
-  {"up",                  "\e[A"},
-  {"down",                "\e[B"},
-  {"right",               "\e[C"},
-  {"left",                "\e[D"},
+  {"up",                  "\033[A"},
+  {"down",                "\033[B"},
+  {"right",               "\033[C"},
+  {"left",                "\033[D"},
 
-  {"shift-up",            "\e[1;2A"},
-  {"shift-down",          "\e[1;2B"},
-  {"shift-right",         "\e[1;2C"},
-  {"shift-left",          "\e[1;2D"},
+  {"shift-up",            "\033[1;2A"},
+  {"shift-down",          "\033[1;2B"},
+  {"shift-right",         "\033[1;2C"},
+  {"shift-left",          "\033[1;2D"},
 
-  {"alt-up",              "\e[1;3A"},
-  {"alt-down",            "\e[1;3B"},
-  {"alt-right",           "\e[1;3C"},
-  {"alt-left",            "\e[1;3D"},
-  {"alt-shift-up",         "\e[1;4A"},
-  {"alt-shift-down",       "\e[1;4B"},
-  {"alt-shift-right",      "\e[1;4C"},
-  {"alt-shift-left",       "\e[1;4D"},
+  {"alt-up",              "\033[1;3A"},
+  {"alt-down",            "\033[1;3B"},
+  {"alt-right",           "\033[1;3C"},
+  {"alt-left",            "\033[1;3D"},
+  {"alt-shift-up",         "\033[1;4A"},
+  {"alt-shift-down",       "\033[1;4B"},
+  {"alt-shift-right",      "\033[1;4C"},
+  {"alt-shift-left",       "\033[1;4D"},
 
-  {"control-up",          "\e[1;5A"},
-  {"control-down",        "\e[1;5B"},
-  {"control-right",       "\e[1;5C"},
-  {"control-left",        "\e[1;5D"},
+  {"control-up",          "\033[1;5A"},
+  {"control-down",        "\033[1;5B"},
+  {"control-right",       "\033[1;5C"},
+  {"control-left",        "\033[1;5D"},
 
   /* putty */
-  {"control-up",          "\eOA"},
-  {"control-down",        "\eOB"},
-  {"control-right",       "\eOC"},
-  {"control-left",        "\eOD"},
+  {"control-up",          "\033OA"},
+  {"control-down",        "\033OB"},
+  {"control-right",       "\033OC"},
+  {"control-left",        "\033OD"},
 
-  {"control-shift-up",    "\e[1;6A"},
-  {"control-shift-down",  "\e[1;6B"},
-  {"control-shift-right", "\e[1;6C"},
-  {"control-shift-left",  "\e[1;6D"},
+  {"control-shift-up",    "\033[1;6A"},
+  {"control-shift-down",  "\033[1;6B"},
+  {"control-shift-right", "\033[1;6C"},
+  {"control-shift-left",  "\033[1;6D"},
 
-  {"control-up",          "\eOa"},
-  {"control-down",        "\eOb"},
-  {"control-right",       "\eOc"},
-  {"control-left",        "\eOd"},
+  {"control-up",          "\033Oa"},
+  {"control-down",        "\033Ob"},
+  {"control-right",       "\033Oc"},
+  {"control-left",        "\033Od"},
 
-  {"shift-up",            "\e[a"},
-  {"shift-down",          "\e[b"},
-  {"shift-right",         "\e[c"},
-  {"shift-left",          "\e[d"},
+  {"shift-up",            "\033[a"},
+  {"shift-down",          "\033[b"},
+  {"shift-right",         "\033[c"},
+  {"shift-left",          "\033[d"},
 
-  {"insert",              "\e[2~"},
-  {"delete",              "\e[3~"},
-  {"page-up",             "\e[5~"},
-  {"page-down",           "\e[6~"},
-  {"home",                "\eOH"},
-  {"end",                 "\eOF"},
-  {"home",                "\e[H"},
-  {"end",                 "\e[F"},
- {"control-delete",       "\e[3;5~"},
-  {"shift-delete",        "\e[3;2~"},
-  {"control-shift-delete","\e[3;6~"},
+  {"insert",              "\033[2~"},
+  {"delete",              "\033[3~"},
+  {"page-up",             "\033[5~"},
+  {"page-down",           "\033[6~"},
+  {"home",                "\033OH"},
+  {"end",                 "\033OF"},
+  {"home",                "\033[H"},
+  {"end",                 "\033[F"},
+ {"control-delete",       "\033[3;5~"},
+  {"shift-delete",        "\033[3;2~"},
+  {"control-shift-delete","\033[3;6~"},
 
-  {"F1",         "\e[25~"},
-  {"F2",         "\e[26~"},
-  {"F3",         "\e[27~"},
-  {"F4",         "\e[26~"},
+  {"F1",         "\033[25~"},
+  {"F2",         "\033[26~"},
+  {"F3",         "\033[27~"},
+  {"F4",         "\033[26~"},
 
 
-  {"F1",         "\e[11~"},
-  {"F2",         "\e[12~"},
-  {"F3",         "\e[13~"},
-  {"F4",         "\e[14~"},
-  {"F1",         "\eOP"},
-  {"F2",         "\eOQ"},
-  {"F3",         "\eOR"},
-  {"F4",         "\eOS"},
-  {"F5",         "\e[15~"},
-  {"F6",         "\e[16~"},
-  {"F7",         "\e[17~"},
-  {"F8",         "\e[18~"},
-  {"F9",         "\e[19~"},
-  {"F9",         "\e[20~"},
-  {"F10",        "\e[21~"},
-  {"F11",        "\e[22~"},
-  {"F12",        "\e[23~"},
+  {"F1",         "\033[11~"},
+  {"F2",         "\033[12~"},
+  {"F3",         "\033[13~"},
+  {"F4",         "\033[14~"},
+  {"F1",         "\033OP"},
+  {"F2",         "\033OQ"},
+  {"F3",         "\033OR"},
+  {"F4",         "\033OS"},
+  {"F5",         "\033[15~"},
+  {"F6",         "\033[16~"},
+  {"F7",         "\033[17~"},
+  {"F8",         "\033[18~"},
+  {"F9",         "\033[19~"},
+  {"F9",         "\033[20~"},
+  {"F10",        "\033[21~"},
+  {"F11",        "\033[22~"},
+  {"F12",        "\033[23~"},
   {"tab",         {9, '\0'}},
   {"shift-tab",   {27, 9, '\0'}}, // also generated by alt-tab in linux console
   {"alt-space",   {27, ' ', '\0'}},
-  {"shift-tab",   "\e[Z"},
+  {"shift-tab",   "\033[Z"},
   {"backspace",   {127, '\0'}},
   {"space",       " "},
-  {"\e",          "\e"},
+  {"\033",          "\033"},
   {"return",      {10,0}},
   {"return",      {13,0}},
   /* this section could be autogenerated by code */
@@ -41231,61 +41231,61 @@ static const MmmKeyCode ufb_keycodes[]={
   {"control-x",   {24,0}},
   {"control-y",   {25,0}},
   {"control-z",   {26,0}},
-  {"alt-`",       "\e`"},
-  {"alt-0",       "\e0"},
-  {"alt-1",       "\e1"},
-  {"alt-2",       "\e2"},
-  {"alt-3",       "\e3"},
-  {"alt-4",       "\e4"},
-  {"alt-5",       "\e5"},
-  {"alt-6",       "\e6"},
-  {"alt-7",       "\e7"}, /* backspace? */
-  {"alt-8",       "\e8"},
-  {"alt-9",       "\e9"},
-  {"alt-+",       "\e+"},
-  {"alt--",       "\e-"},
-  {"alt-/",       "\e/"},
-  {"alt-a",       "\ea"},
-  {"alt-b",       "\eb"},
-  {"alt-c",       "\ec"},
-  {"alt-d",       "\ed"},
-  {"alt-e",       "\ee"},
-  {"alt-f",       "\ef"},
-  {"alt-g",       "\eg"},
-  {"alt-h",       "\eh"}, /* backspace? */
-  {"alt-i",       "\ei"},
-  {"alt-j",       "\ej"},
-  {"alt-k",       "\ek"},
-  {"alt-l",       "\el"},
-  {"alt-n",       "\em"},
-  {"alt-n",       "\en"},
-  {"alt-o",       "\eo"},
-  {"alt-p",       "\ep"},
-  {"alt-q",       "\eq"},
-  {"alt-r",       "\er"},
-  {"alt-s",       "\es"},
-  {"alt-t",       "\et"},
-  {"alt-u",       "\eu"},
-  {"alt-v",       "\ev"},
-  {"alt-w",       "\ew"},
-  {"alt-x",       "\ex"},
-  {"alt-y",       "\ey"},
-  {"alt-z",       "\ez"},
+  {"alt-`",       "\033`"},
+  {"alt-0",       "\0330"},
+  {"alt-1",       "\0331"},
+  {"alt-2",       "\0332"},
+  {"alt-3",       "\0333"},
+  {"alt-4",       "\0334"},
+  {"alt-5",       "\0335"},
+  {"alt-6",       "\0336"},
+  {"alt-7",       "\0337"}, /* backspace? */
+  {"alt-8",       "\0338"},
+  {"alt-9",       "\0339"},
+  {"alt-+",       "\033+"},
+  {"alt--",       "\033-"},
+  {"alt-/",       "\033/"},
+  {"alt-a",       "\033a"},
+  {"alt-b",       "\033b"},
+  {"alt-c",       "\033c"},
+  {"alt-d",       "\033d"},
+  {"alt-e",       "\033e"},
+  {"alt-f",       "\033f"},
+  {"alt-g",       "\033g"},
+  {"alt-h",       "\033h"}, /* backspace? */
+  {"alt-i",       "\033i"},
+  {"alt-j",       "\033j"},
+  {"alt-k",       "\033k"},
+  {"alt-l",       "\033l"},
+  {"alt-n",       "\033m"},
+  {"alt-n",       "\033n"},
+  {"alt-o",       "\033o"},
+  {"alt-p",       "\033p"},
+  {"alt-q",       "\033q"},
+  {"alt-r",       "\033r"},
+  {"alt-s",       "\033s"},
+  {"alt-t",       "\033t"},
+  {"alt-u",       "\033u"},
+  {"alt-v",       "\033v"},
+  {"alt-w",       "\033w"},
+  {"alt-x",       "\033x"},
+  {"alt-y",       "\033y"},
+  {"alt-z",       "\033z"},
   /* Linux Console  */
-  {"home",       "\e[1~"},
-  {"end",        "\e[4~"},
-  {"F1",         "\e[[A"},
-  {"F2",         "\e[[B"},
-  {"F3",         "\e[[C"},
-  {"F4",         "\e[[D"},
-  {"F5",         "\e[[E"},
-  {"F6",         "\e[[F"},
-  {"F7",         "\e[[G"},
-  {"F8",         "\e[[H"},
-  {"F9",         "\e[[I"},
-  {"F10",        "\e[[J"},
-  {"F11",        "\e[[K"},
-  {"F12",        "\e[[L"},
+  {"home",       "\033[1~"},
+  {"end",        "\033[4~"},
+  {"F1",         "\033[[A"},
+  {"F2",         "\033[[B"},
+  {"F3",         "\033[[C"},
+  {"F4",         "\033[[D"},
+  {"F5",         "\033[[E"},
+  {"F6",         "\033[[F"},
+  {"F7",         "\033[[G"},
+  {"F8",         "\033[[H"},
+  {"F9",         "\033[[I"},
+  {"F10",        "\033[[J"},
+  {"F11",        "\033[[K"},
+  {"F12",        "\033[[L"},
   {NULL, }
 };
 static int fb_keyboard_match_keycode (const char *buf, int length, const MmmKeyCode **ret)
@@ -41293,7 +41293,7 @@ static int fb_keyboard_match_keycode (const char *buf, int length, const MmmKeyC
   int i;
   int matches = 0;
 
-  if (!strncmp (buf, "\e[M", MIN(length,3)))
+  if (!strncmp (buf, "\033[M", MIN(length,3)))
     {
       if (length >= 6)
         return 9001;
@@ -44563,7 +44563,12 @@ ctx_drawlist_process (Ctx *ctx, CtxEntry *entry)
 
 static CtxBackend *ctx_drawlist_backend_new (void)
 {
-  CtxBackend *backend = (CtxBackend*)ctx_calloc (sizeof (CtxBackend), 1);
+  CtxBackend *backend = (CtxBackend*)ctx_calloc (sizeof (CtxCtx), 1);
+                       // the sizeof(CtxCtx) should actually be sizeof(CtxBackend)
+                       // but static analysis complains about event code
+                       // initializing the extra members - which might most
+                       // often be a false report - we ass slack since it is
+                       // "only" ~ 40 bytes per instance.
   backend->process = (void(*)(Ctx *a, CtxCommand *c))ctx_drawlist_process;
   backend->destroy = (void(*)(void *a))ctx_drawlist_backend_destroy;
   backend->type = CTX_BACKEND_DRAWLIST;
@@ -46845,8 +46850,8 @@ static void ctx_ctx_end_frame (Ctx *ctx)
 #endif
 
   if (ctx_native_events)
-    fprintf (stdout, "\e[?201h");
-  fprintf (stdout, "\e[H\e[?25l\e[?200h");
+    fprintf (stdout, "\033[?201h");
+  fprintf (stdout, "\033[H\033[?25l\033[?200h");
 #if 1
   fprintf (stdout, CTX_START_STRING);
   ctx_render_stream (ctxctx->backend.ctx, stdout, 0);
@@ -46903,7 +46908,7 @@ static void ctx_ctx_end_frame (Ctx *ctx)
 #endif
 
 #if CTX_SYNC_FRAMES
-  fprintf (stdout, "\e[5n");
+  fprintf (stdout, "\033[5n");
   fflush (stdout);
 
   ctx_frame_ack = 0;
@@ -46980,7 +46985,7 @@ void ctx_ctx_consume_events (Ctx *ctx)
         ctx_incoming_message (ctx, event + strlen ("message"), 0);
       } else if (!strcmp (event, "size-changed"))
       {
-        fprintf (stdout, "\e[H\e[2J\e[?25l");
+        fprintf (stdout, "\033[H\033[2J\033[?25l");
         ctxctx->cols = ctx_terminal_cols ();
         ctxctx->rows = ctx_terminal_rows ();
 
@@ -47020,10 +47025,10 @@ Ctx *ctx_new_ctx (int width, int height)
   Ctx *ctx = _ctx_new_drawlist (width, height);
   CtxCtx *ctxctx = (CtxCtx*)ctx_calloc (sizeof (CtxCtx), 1);
   CtxBackend *backend = (CtxBackend*)ctxctx;
-  fprintf (stdout, "\e[?1049h");
+  fprintf (stdout, "\033[?1049h");
   fflush (stdout);
-  //fprintf (stderr, "\e[H");
-  //fprintf (stderr, "\e[2J");
+  //fprintf (stderr, "\033[H");
+  //fprintf (stderr, "\033[2J");
   ctx_native_events = 1;
   if (width <= 0 || height <= 0)
   {
@@ -49699,7 +49704,7 @@ static void ctx_term_set_fg (int red, int green, int blue)
   _ctx_curfg=lc;
   if (_ctx_term256 == 0)
   {
-    fprintf(stderr, "\e[38;2;%i;%i;%im", red,green,blue);
+    fprintf(stderr, "\033[38;2;%i;%i;%im", red,green,blue);
   }
   else
   {
@@ -49715,10 +49720,10 @@ static void ctx_term_set_fg (int red, int green, int blue)
 
     if (((int)(r/1.66)== (int)(g/1.66)) && ((int)(g/1.66) == ((int)(b/1.66))))
     {
-      fprintf(stderr,"\e[38;5;%im", 16 + 216 + gray);
+      fprintf(stderr,"\033[38;5;%im", 16 + 216 + gray);
     }
     else
-      fprintf(stderr,"\e[38;5;%im", 16 + r * 6 * 6 + g * 6  + b);
+      fprintf(stderr,"\033[38;5;%im", 16 + r * 6 * 6 + g * 6  + b);
   }
 }
 
@@ -49730,7 +49735,7 @@ static void ctx_term_set_bg(int red, int green, int blue)
   _ctx_curbg=lc;
   if (_ctx_term256 == 0)
   {
-    fprintf(stderr,"\e[48;2;%i;%i;%im", red,green,blue);
+    fprintf(stderr,"\033[48;2;%i;%i;%im", red,green,blue);
   }
   else
   {
@@ -49746,10 +49751,10 @@ static void ctx_term_set_bg(int red, int green, int blue)
 
     if (((int)(r/1.66)== (int)(g/1.66)) && ((int)(g/1.66) == ((int)(b/1.66))))
     {
-      fprintf(stderr,"\e[48;5;%im", 16 + 216 + gray);
+      fprintf(stderr,"\033[48;5;%im", 16 + 216 + gray);
     }
     else
-      fprintf(stderr,"\e[48;5;%im", 16 + r * 6 * 6 + g * 6  + b);
+      fprintf(stderr,"\033[48;5;%im", 16 + r * 6 * 6 + g * 6  + b);
   }
 }
 
@@ -49758,9 +49763,9 @@ static int _ctx_term_force_full = 0;
 void ctx_term_scanout (CtxTerm *term)
 {
   int row = 1;
-  fprintf (stderr,"\e[H");
-//  printf ("\e[?25l");
-  fprintf (stderr, "\e[0m");
+  fprintf (stderr,"\033[H");
+//  printf ("\033[?25l");
+  fprintf (stderr, "\033[0m");
 
   int cur_fg[3]={-1,-1,-1};
   int cur_bg[3]={-1,-1,-1};
@@ -49801,7 +49806,7 @@ void ctx_term_scanout (CtxTerm *term)
         // TODO: accumulate succesive such to be ignored items,
         // and compress them into one, making us compress largely
         // reused screens well
-        fprintf (stderr, "\e[C");
+        fprintf (stderr, "\033[C");
       }
       strcpy (cell->prev_utf8, cell->utf8);
       memcpy (cell->prev_fg, cell->fg, 3);
@@ -49811,8 +49816,8 @@ void ctx_term_scanout (CtxTerm *term)
       fprintf (stderr, "\n\r");
     row ++;
   }
-  fprintf (stderr, "\e[0m");
-  //printf ("\e[?25h");
+  fprintf (stderr, "\033[0m");
+  //printf ("\033[?25h");
   //
 }
 
@@ -50459,10 +50464,10 @@ inline static void ctx_term_end_frame (Ctx *ctx)
   }
 
 #endif
-  printf ("\e[H");
-  printf ("\e[0m");
+  printf ("\033[H");
+  printf ("\033[0m");
   ctx_term_scanout (term);
-  printf ("\e[0m");
+  printf ("\033[0m");
   fflush (NULL);
 #if CTX_BRAILLE_TEXT
   while (rasterizer->glyphs)
@@ -50477,7 +50482,7 @@ void ctx_term_destroy (CtxTerm *term)
     ctx_free (term->lines->data);
     ctx_list_remove (&term->lines, term->lines->data);
   }
-  printf ("\e[?25h"); // cursor on
+  printf ("\033[?25h"); // cursor on
   nc_at_exit ();
   ctx_free (term->pixels);
   ctx_destroy (term->host);
@@ -50529,8 +50534,8 @@ Ctx *ctx_new_term (int width, int height)
   if (mode && strcmp (mode, "0") && strcmp (mode, "no"))
     _ctx_term_force_full = 1;
 
-  fprintf (stderr, "\e[?1049h");
-  fprintf (stderr, "\e[?25l"); // cursor off
+  fprintf (stderr, "\033[?1049h");
+  fprintf (stderr, "\033[?25l"); // cursor off
 
   int maxwidth = ctx_terminal_cols  () * ctx_term_cw;
   int maxheight = (ctx_terminal_rows ()) * ctx_term_ch;
@@ -50621,24 +50626,24 @@ inline static void ctx_termimg_end_frame (Ctx *ctx)
 
   int i = 0;
 
-  printf ("\e[H");
-  printf ("\e_Gf=24,s=%i,v=%i,t=d,a=T,m=1;\e\\", width, height);
+  printf ("\033[H");
+  printf ("\033_Gf=24,s=%i,v=%i,t=d,a=T,m=1;\033\\", width, height);
   while (i <  encoded_len)
   {
      if (i + 4096 <  encoded_len)
      {
-       printf  ("\e_Gm=1;");
+       printf  ("\033_Gm=1;");
      }
      else
      {
-       printf  ("\e_Gm=0;");
+       printf  ("\033_Gm=0;");
      }
      for (int n = 0; n < 4000 && i < encoded_len; n++)
      {
        printf ("%c", encoded[i]);
        i++;
      }
-     printf ("\e\\");
+     printf ("\033\\");
   }
   ctx_free (encoded);
   
@@ -50652,7 +50657,7 @@ void ctx_termimg_destroy (CtxTermImg *termimg)
     ctx_free (termimg->lines->data);
     ctx_list_remove (&termimg->lines, termimg->lines->data);
   }
-  printf ("\e[?25h"); // cursor on
+  printf ("\033[?25h"); // cursor on
   nc_at_exit ();
   ctx_free (termimg->pixels);
   ctx_destroy (termimg->host);
@@ -50664,8 +50669,8 @@ Ctx *ctx_new_termimg (int width, int height)
 {
   Ctx *ctx = _ctx_new_drawlist (width, height);
 #if CTX_RASTERIZER
-  fprintf (stdout, "\e[?1049h");
-  fprintf (stdout, "\e[?25l"); // cursor off
+  fprintf (stdout, "\033[?1049h");
+  fprintf (stdout, "\033[?25l"); // cursor off
   CtxTermImg *termimg = (CtxTermImg*)ctx_calloc (sizeof (CtxTermImg), 1);
   CtxBackend *backend = (void*)termimg;
 
@@ -62635,7 +62640,7 @@ static void vtcmd_request_mode (VT *vt, const char *sequence)
 
 static void vtcmd_set_t (VT *vt, const char *sequence)
 {
-  /* \e[21y is request title - allows inserting keychars */
+  /* \033[21y is request title - allows inserting keychars */
   if      (!strcmp (sequence,  "[1t")) { ctx_client_unshade (vt->root_ctx, vt->id); }
   else if (!strcmp (sequence,  "[2t")) { ctx_client_shade (vt->root_ctx, vt->id); } 
   else if (!strncmp (sequence, "[3;", 3)) {
@@ -62920,7 +62925,7 @@ static void vtcmd_report (VT *vt, const char *sequence)
       sprintf (buf, "\033[?21n"); // locked
     }
 #if 0
-  {"[6n", 0, },  /* id:DSR  cursor position report, yields a reply <tt>\e[Pl;PcR</tt> */
+  {"[6n", 0, },  /* id:DSR  cursor position report, yields a reply <tt>\033[Pl;PcR</tt> */
 #endif
   else if (!strcmp (sequence, "[6n") ) // DSR cursor position report
     {
@@ -62929,7 +62934,7 @@ static void vtcmd_report (VT *vt, const char *sequence)
   else if (!strcmp (sequence, "[?6n") ) // DECXPR extended cursor position report
     {
 #if 0
-  {"[?6n", 0, },  /* id:DEXCPR  extended cursor position report, yields a reply <tt>\e[Pl;PcR</tt> */
+  {"[?6n", 0, },  /* id:DEXCPR  extended cursor position report, yields a reply <tt>\033[Pl;PcR</tt> */
 #endif
       sprintf (buf, "\033[?%i;%i;1R", vt->cursor_y - (vt->origin? (vt->margin_top - 1) :0), (int) vt->cursor_x - (vt->origin? (VT_MARGIN_LEFT-1) :0) );
     }
@@ -64355,7 +64360,7 @@ static void vt_state_osc (VT *vt, int byte)
           case 1:
           case 2:
 #if 0
-    {"]0;New_title\e\",  0, , }, /* id: set window title */ "
+    {"]0;New_title\033\",  0, , }, /* id: set window title */ "
 #endif
             vt_set_title (vt, vt->argument_buf + 3);
             break;
@@ -64724,9 +64729,9 @@ static void vt_state_apc_generic (VT *vt, int byte)
 }
 
 #if 0
-    {"_G..\e\", 0, vtcmd_delete_n_chars, VT102}, /* ref:none id: <a href='https://sw.kovidgoyal.net/kitty/graphics-protocol.html'>kitty graphics</a> */ "
-    {"_A..\e\", 0, vtcmd_delete_n_chars, VT102}, /* id:  <a href='https://github.com/hodefoting/atty/'>atty</a> audio input/output */ "
-    {"_C..\e\", 0, vtcmd_delete_n_chars, VT102}, /* id:  run command */ "
+    {"_G..\033\", 0, vtcmd_delete_n_chars, VT102}, /* ref:none id: <a href='https://sw.kovidgoyal.net/kitty/graphics-protocol.html'>kitty graphics</a> */ "
+    {"_A..\033\", 0, vtcmd_delete_n_chars, VT102}, /* id:  <a href='https://github.com/hodefoting/atty/'>atty</a> audio input/output */ "
+    {"_C..\033\", 0, vtcmd_delete_n_chars, VT102}, /* id:  run command */ "
 #endif
 static void vt_state_apc (VT *vt, int byte)
 {
@@ -64801,7 +64806,7 @@ static void vt_state_esc (VT *vt, int byte)
           break;
 
 #if 0
-    {"Psixel_data\e\",  0, , }, /* id: sixels */ "
+    {"Psixel_data\033\",  0, , }, /* id: sixels */ "
 #endif
 
         case 'P':
@@ -67816,7 +67821,10 @@ void ctx_client_mouse_event (CtxEvent *event, void *data, void *data2)
       (event->type == CTX_DRAG_MOTION ||
       event->type == CTX_DRAG_PRESS ||
       event->type == CTX_DRAG_RELEASE))
-    return scrollbar_drag (event, vt, data2);
+  {
+    scrollbar_drag (event, vt, data2);
+    return;
+  }
   switch (event->type)
   {
     case CTX_MOTION:
@@ -67898,7 +67906,9 @@ void vt_mouse_event (CtxEvent *event, void *data, void *data2)
       (event->type == CTX_DRAG_MOTION ||
       event->type == CTX_DRAG_PRESS ||
       event->type == CTX_DRAG_RELEASE))
-    return scrollbar_drag (event, vt, data2);
+   {
+    scrollbar_drag (event, vt, data2);return;
+   }
   switch (event->type)
   {
     case CTX_MOTION:
@@ -70536,10 +70546,10 @@ static inline type ctx_tvg_##nick (CtxTinyVG *tvg)\
   return ret;\
 }
 
-CTX_TVG_DEFINE_ACCESOR(u8, uint8_t);
-CTX_TVG_DEFINE_ACCESOR(u16, uint16_t);
-CTX_TVG_DEFINE_ACCESOR(u32, uint32_t);
-CTX_TVG_DEFINE_ACCESOR(float, float);
+CTX_TVG_DEFINE_ACCESOR(u8, uint8_t)
+CTX_TVG_DEFINE_ACCESOR(u16, uint16_t)
+CTX_TVG_DEFINE_ACCESOR(u32, uint32_t)
+CTX_TVG_DEFINE_ACCESOR(float, float)
 
 #undef CTX_TVG_DEFINE_ACCESSOR
 
