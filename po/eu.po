@@ -10,8 +10,8 @@
 msgid ""
 msgstr "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2023-02-12 12:23+0000\n"
-"PO-Revision-Date: 2023-03-27 10:00+0100\n"
+"POT-Creation-Date: 2023-05-27 16:04+0000\n"
+"PO-Revision-Date: 2023-06-04 10:00+0100\n"
 "Last-Translator: Asier Sarasua Garmendia <asiersarasua@ni.eus>\n"
 "Language-Team: Basque <librezale@librezale.eus>\n"
 "Language: eu\n"
@@ -71,7 +71,7 @@ msgid ""
 "with property=value pairs as subsequent arguments.\n"
 msgstr "erabilera: %s [aukerak] <fitxategia | -- [op [op] ..]>\n"
 "\n"
-"  Options:\n"
+"  Aukerak:\n"
 "     -h, --help      laguntza-informazio hau\n"
 "\n"
 "     --list-all      zerrendatu eragiketa ezagun guztiak\n"
@@ -457,6 +457,39 @@ msgid ""
 "fabs(input_value)"
 msgstr "RGB osagai lineal bakoitza bere balioaren absolutua izan dadin bihurtzen du, fabs(input_value)"
 
+#: operations/common/adaptive-threshold.c:24 operations/common/bloom.c:35
+#: operations/common/box-blur.c:25 operations/common/c2g.c:28
+#: operations/common/edge-neon.c:47 operations/common/median-blur.c:42
+#: operations/common/snn-mean.c:26 operations/common/stress.c:27
+#: operations/common/unsharp-mask.c:24 operations/common/vignette.c:40
+#: operations/common/wavelet-blur-1d.c:28 operations/common/wavelet-blur.c:27
+#: operations/common-cxx/focus-blur.c:85 operations/common-cxx/lens-blur.cc:24
+#: operations/common-cxx/variable-blur.c:30
+#: operations/common-gpl3+/shadows-highlights.c:40
+#: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:44
+#: operations/common-gpl3+/whirl-pinch.c:46
+#: operations/external/matting-levin.c:29 operations/workshop/boxblur-1d.c:27
+#: operations/workshop/boxblur.c:24
+#: operations/workshop/external/spyrograph.c:63
+msgid "Radius"
+msgstr "Erradioa"
+
+#: operations/common/adaptive-threshold.c:31
+msgid "Anti alias"
+msgstr "Antialiasa"
+
+#: operations/common/adaptive-threshold.c:119
+msgid "Adaptive Threshold"
+msgstr "Atalase moldakorra"
+
+#: operations/common/adaptive-threshold.c:121
+msgid "Applies a threshold against the average of a spatial neighbourhood."
+msgstr "Atalase bat aplikatzen du alboko espazialen batez bestekoaren aurka."
+
+#: operations/common/adaptive-threshold.c:123
+msgid "Adaptive Threshold..."
+msgstr "Atalase moldakorra..."
+
 #: operations/common/alien-map.c:28 operations/common/newsprint.c:35
 msgid "RGB"
 msgstr "RGB"
@@ -625,7 +658,7 @@ msgstr "Aldebiko iragazkia"
 msgid ""
 "Like a gaussian blur; but where the contribution for each neighborhood pixel "
 "is also weighted by the color difference with the original center pixel."
-msgstr "Gaussen lausotzea bezalakoa; baina gertuko pixel bakoitzaren ekarpena jatorrizko erdiko pixelarekiko kolore-diferentziarekin ere haztatuta dagoela."
+msgstr "Gaussen lausotzea bezalakoa; baina alboko pixel bakoitzaren ekarpena jatorrizko erdiko pixelarekiko kolore-diferentziarekin ere haztatuta dagoela."
 
 #: operations/common/bloom.c:26 operations/common/threshold.c:25
 #: operations/common/threshold.c:131 operations/common/unsharp-mask.c:37
@@ -645,23 +678,6 @@ msgstr "Leuntasuna"
 #: operations/common/bloom.c:31
 msgid "Glow-area edge softness"
 msgstr "Dirdira-arearen ertzaren leuntasuna"
-
-#: operations/common/bloom.c:35 operations/common/box-blur.c:25
-#: operations/common/c2g.c:28 operations/common/edge-neon.c:47
-#: operations/common/median-blur.c:42 operations/common/snn-mean.c:26
-#: operations/common/stress.c:27 operations/common/unsharp-mask.c:24
-#: operations/common/vignette.c:40 operations/common/wavelet-blur-1d.c:28
-#: operations/common/wavelet-blur.c:27 operations/common-cxx/focus-blur.c:85
-#: operations/common-cxx/lens-blur.cc:24
-#: operations/common-cxx/variable-blur.c:30
-#: operations/common-gpl3+/shadows-highlights.c:40
-#: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:44
-#: operations/common-gpl3+/whirl-pinch.c:46
-#: operations/external/matting-levin.c:29 operations/workshop/boxblur-1d.c:27
-#: operations/workshop/boxblur.c:24
-#: operations/workshop/external/spyrograph.c:63
-msgid "Radius"
-msgstr "Erradioa"
 
 #: operations/common/bloom.c:36 operations/common-gpl3+/softglow.c:26
 msgid "Glow radius"
@@ -704,7 +720,7 @@ msgstr "Kutxa-lausotzea"
 
 #: operations/common/box-blur.c:407 operations/workshop/boxblur.c:76
 msgid "Blur resulting from averaging the colors of a square neighborhood."
-msgstr "Gertuko karratu bateko pixelen koloreen batez bestekoa aterata sortzen den lausotzea."
+msgstr "Alboko karratu bateko pixelen koloreen batez bestekoa aterata sortzen den lausotzea."
 
 #. Here in the top of the file the properties of the operation is declared,
 #. *  this causes the declaration of a structure for containing the data.
@@ -788,7 +804,7 @@ msgstr "Erabili lehendik dagoen memoria barruko GeglBuffer bat irudi-iturburu gi
 msgid ""
 "Neighborhood taken into account, this is the radius in pixels taken into "
 "account when deciding which colors map to which gray values"
-msgstr "Ingurukoak kontuan hartuta, kolore bakoitzari zein gris balio dagokion erabakitzean kontuan hartuko den erradioa (pixeletan)."
+msgstr "Albokoak kontuan hartuta, kolore bakoitzari zein gris balio dagokion erabakitzean kontuan hartuko den erradioa (pixeletan)."
 
 #: operations/common/c2g.c:37 operations/common/stress.c:34
 msgid "Samples"
@@ -926,12 +942,12 @@ msgstr "Errendatu xake-taulako eredu bat"
 #: operations/common/color.c:24 operations/common/color.c:87
 #: operations/common/color-overlay.c:26 operations/common/dropshadow.c:67
 #: operations/common/grid.c:64 operations/common/long-shadow.c:83
-#: operations/common/rectangle.c:48 operations/common/vector-fill.c:26
-#: operations/common/vignette.c:36 operations/common-gpl3+/color-to-alpha.c:29
+#: operations/common/rectangle.c:48 operations/common/vignette.c:36
+#: operations/common-gpl3+/color-to-alpha.c:29
 #: operations/common-gpl3+/supernova.c:60
 #: operations/common-gpl3+/tile-paper.c:31
 #: operations/common-gpl3+/value-propagate.c:54 operations/external/text.c:37
-#: operations/external/vector-stroke.c:27
+#: operations/external/vector-fill.c:26 operations/external/vector-stroke.c:27
 msgid "Color"
 msgstr "Kolorea"
 
@@ -1385,7 +1401,7 @@ msgstr "Lagina-puntuak"
 
 #: operations/common/contrast-curve.c:26
 msgid "Number of curve sampling points.  0 for exact calculation."
-msgstr "Kurbaren lagin-puntuen kopurua. 0 kalkulu zehatzerako."
+msgstr "Kurbaren lagin-puntuen kopurua.  0 kalkulu zehatzerako."
 
 #: operations/common/contrast-curve.c:29
 msgid "Curve"
@@ -1652,7 +1668,7 @@ msgstr "Erabiliko den bilbatze-metodoa"
 #: operations/common/noise-pick.c:38 operations/common/noise-rgb.c:55
 #: operations/common/noise-simplex.c:39 operations/common/noise-spread.c:41
 #: operations/common-gpl3+/cubism.c:42 operations/common-gpl3+/maze.c:65
-#: operations/common-gpl3+/mosaic.c:89 operations/common-gpl3+/noise-slur.c:40
+#: operations/common-gpl3+/mosaic.c:90 operations/common-gpl3+/noise-slur.c:40
 #: operations/common-gpl3+/noise-solid.c:61 operations/common-gpl3+/plasma.c:70
 #: operations/common-gpl3+/shift.c:35 operations/common-gpl3+/sinus.c:49
 #: operations/common-gpl3+/supernova.c:63
@@ -1780,7 +1796,7 @@ msgstr "Itzalaren kolorea (lehenetsia: 'beltza')"
 #.
 #: operations/common/dropshadow.c:74 operations/common/layer.c:33
 #: operations/common/opacity.c:25 operations/common/opacity.c:289
-#: operations/common/vector-fill.c:29 operations/external/vector-stroke.c:34
+#: operations/external/vector-fill.c:29 operations/external/vector-stroke.c:34
 msgid "Opacity"
 msgstr "Opakutasuna"
 
@@ -1918,7 +1934,7 @@ msgid ""
 "gradients, producing luminance within the range 0.0-1.0. This tonemapping "
 "approach was originally presented by Raanan Fattal, in the 2002 SIGGRAPH "
 "paper: Gradient Domain High Dynamic Range Compression."
-msgstr "Moldatu irudi bat, barruti dinamiko zabala eduki dezakeena, barruti dinamiko estuagoan aurkezteko. Eragile honek irudiaren gradiente lokalen magnitudeak moteltzen ditu, luminantzia 0,0-1,0 barrutian sortuta. Tonuen mapatzeren bidezko hurbilketa hori Raanan Fattal-ek aurkeztu zuen jatorriz, 2002 SIGGRAPH komunikazio batean: \"Gradient Domain High Dynamic Range Compression\""
+msgstr "Moldatu irudi bat, barruti dinamiko handia eduki dezakeena, barruti dinamiko baxuko aurkezpen batean erabiltzeko. Eragile honek irudiaren gradiente lokalen magnitudeak moteltzen ditu, luminantzia 0,0-1,0 barrutian sortuta. Tonuen mapatzeren bidezko hurbilketa hori Raanan Fattal-ek aurkeztu zuen jatorriz, 2002 SIGGRAPH komunikazio batean: \"Gradient Domain High Dynamic Range Compression\""
 
 #: operations/common/gaussian-blur.c:25 operations/common/gblur-1d.c:40
 msgid "FIR"
@@ -1985,7 +2001,7 @@ msgstr "Gaussen lausotzea"
 msgid ""
 "Performs an averaging of neighboring pixels with the normal distribution as "
 "weighting"
-msgstr "Inguruko pixelen batez bestekoa lantzen du, distribuzio normalari jarraituz"
+msgstr "Alboko pixelen batez bestekoa lantzen du, distribuzio normalari jarraituz"
 
 #: operations/common/gblur-1d.c:44 operations/common-cxx/warp.cc:37
 #: operations/external/text.c:32
@@ -2705,17 +2721,17 @@ msgstr "Erregularizatu geometria batezbesteko kurbaduraren balio lokalarekiko pr
 
 #: operations/common/median-blur.c:37
 msgid "Neighborhood"
-msgstr "Gertukoena"
+msgstr "Albokoak"
 
 #: operations/common/median-blur.c:40
 msgid "Neighborhood type"
-msgstr "Gertukoenaren mota"
+msgstr "Albokoen mota"
 
 #: operations/common/median-blur.c:46
 msgid ""
 "Neighborhood radius, a negative value will calculate with inverted "
 "percentiles"
-msgstr "Auzokidearen erradioa, balio negatiboa erabiltzen bada alderantzizko pertzentilekin kalkulatuko da"
+msgstr "Albokoen erradioa, balio negatiboa erabiltzen bada alderantzizko pertzentilekin kalkulatuko da"
 
 #: operations/common/median-blur.c:48
 msgid "Percentile"
@@ -2723,7 +2739,7 @@ msgstr "Pertzentila"
 
 #: operations/common/median-blur.c:50
 msgid "Neighborhood color percentile"
-msgstr "Gertukoenaren kolore-pertzentila"
+msgstr "Albokoaren kolore-pertzentila"
 
 #: operations/common/median-blur.c:52
 msgid "Alpha percentile"
@@ -2731,7 +2747,7 @@ msgstr "Alfa pertzentila"
 
 #: operations/common/median-blur.c:54
 msgid "Neighborhood alpha percentile"
-msgstr "Gertukoenaren alfa-pertzentila"
+msgstr "Albokoaren alfa-pertzentila"
 
 #: operations/common/median-blur.c:60
 msgid "High precision"
@@ -2749,7 +2765,7 @@ msgstr "Mediana-lausotzea"
 msgid ""
 "Blur resulting from computing the median color in the neighborhood of each "
 "pixel."
-msgstr "Pixel bakoitzaren inguruetan erdiko kolorea kalkulatzean sortutako lausotzea."
+msgstr "Pixel bakoitzaren albokoetan erdiko kolorea kalkulatzean sortutako lausotzea."
 
 #: operations/common/mirrors.c:30
 msgid "Mirror rotation"
@@ -3762,10 +3778,9 @@ msgstr "Laukizuzena"
 msgid "A rectangular source of a fixed size with a solid color"
 msgstr "Tamaina finkoko eta kolore-soileko iturburuko laukizuzena"
 
-#: operations/common/recursive-transform.c:28
-#: operations/common/vector-fill.c:37 operations/external/path.c:47
-#: operations/external/vector-stroke.c:38 operations/transform/transform.c:24
-#: operations/transform/transform.c:62
+#: operations/common/recursive-transform.c:28 operations/external/path.c:47
+#: operations/external/vector-fill.c:37 operations/external/vector-stroke.c:38
+#: operations/transform/transform.c:24 operations/transform/transform.c:62
 msgid "Transform"
 msgstr "Eraldatu"
 
@@ -4006,7 +4021,7 @@ msgstr "Pare kopurua; zenbaki altuago batek eginbide zehatzagoak mantentzen ditu
 
 #: operations/common/snn-mean.c:383
 msgid "Symmetric Nearest Neighbor"
-msgstr "Gertueneko balio simetrikoa"
+msgstr "Gertuenekoen balio simetrikoa"
 
 #: operations/common/snn-mean.c:387
 msgid ""
@@ -4075,7 +4090,7 @@ msgstr "Egokitu irudia txano esferiko baten inguruan"
 msgid ""
 "Neighborhood taken into account, for enhancement ideal values are close to "
 "the longest side of the image, increasing this increases the runtime"
-msgstr "Ingurukoa kontuan hartuta, irudiaren albo luzeenetik gertu dauden balio idealak hobetzeko, hau handitzeak exekuzio-denbora handitzen du."
+msgstr "Albokoak kontuan hartuta, irudiaren albo luzeenetik gertu dauden balio idealak hobetzeko, hau handitzeak exekuzio-denbora handitzen du."
 
 #: operations/common/stress.c:40
 msgid ""
@@ -4132,7 +4147,7 @@ msgid ""
 "improves images that make poor use of the available contrast (little "
 "contrast, very dark, or very bright images). This version differs from "
 "Contrast Autostretch in that it works in HSV space, and preserves hue."
-msgstr "Bufferraren osagaiak eskalatzen ditu 0,0-1,0 barrutian egon daitezen. Horrek erabilgarri dagoen kontrastea gaizki erabiltzen duten irudiak (kontraste gutxikoak, oso ilunak edo oso argiak) hobetzen ditu. Bertsio hau ez da kontrastearen tiratze automatikoaren berdina, honek HSV espazioan egiten baitu an eta ñabardura gordetzen baitu."
+msgstr "Bufferreko osagaiak eskalatzen ditu 0.0-1.0 barrutian egon daitezen. Eskuragarri dagoen kontrastearen erabilera pobrea egiten duten irudiak hobetzen ditu (kontraste gutxiko irudiak, irudi oso ilunak, edo irudi oso argiak). Bertsio hau ez da kontrastearen tiratze automatikoaren berdina, honek HSV espazioan egiten baitu an eta ñabardura gordetzen baitu."
 
 #: operations/common/svg-huerotate.c:27 operations/common/svg-matrix.c:27
 #: operations/common/svg-saturate.c:25
@@ -4251,45 +4266,6 @@ msgid ""
 "Invert the value component, the result has the brightness inverted, keeping "
 "the color."
 msgstr "Alderantzikatu balioaren osagaia, emaitzak argitasuna alderantzikatutako izango du eta kolorea mantenduko du."
-
-#: operations/common/vector-fill.c:27
-msgid "Color of paint to use for filling."
-msgstr "Betetzeko erabiliko den margoaren kolorea."
-
-#: operations/common/vector-fill.c:30
-msgid "The fill opacity to use."
-msgstr "Betegarriaren opakutasuna."
-
-#. XXX: replace with enum?
-#: operations/common/vector-fill.c:34
-msgid "Fill rule."
-msgstr "Betetze-araua."
-
-#: operations/common/vector-fill.c:35
-msgid "how to determine what to fill (nonzero|evenodd)"
-msgstr "Nola erabaki zer beteko den (ez-zero|bikoiti-bakoitia)"
-
-#: operations/common/vector-fill.c:38 operations/external/vector-stroke.c:39
-msgid "svg style description of transform."
-msgstr "Eraldaketaren SVG itxurako azalpena."
-
-#: operations/common/vector-fill.c:40 operations/external/path.c:54
-#: operations/external/vector-stroke.c:41
-msgid "Vector"
-msgstr "Bektorea"
-
-#: operations/common/vector-fill.c:41 operations/external/path.c:55
-#: operations/external/vector-stroke.c:42
-msgid "A GeglVector representing the path of the stroke"
-msgstr "Trazuaren bidea adierazten duen Gegl bektorea"
-
-#: operations/common/vector-fill.c:320
-msgid "Fill Path"
-msgstr "Bete bidea"
-
-#: operations/common/vector-fill.c:323
-msgid "Renders a filled region"
-msgstr "Betetako eskualde bat errendatzen du"
 
 #: operations/common/vignette.c:32
 msgid "Vignette shape"
@@ -4956,7 +4932,7 @@ msgid ""
 "Simulates a cartoon, its result is similar to a black felt pen drawing "
 "subsequently shaded with color. This is achieved by enhancing edges and "
 "darkening areas that are already distinctly darker than their neighborhood"
-msgstr "Komiki bat simulatzen du, eta emaitza feltrozko arkatz beltz batekin marraztea eta ondoren koloreekin itzalak egitea bezalakoa da. Horretarako, ertzak nabarmentzen dira eta ingurutik ilunagoak diren areak iluntzen dira."
+msgstr "Komiki bat simulatzen du, eta emaitza feltrozko arkatz beltz batekin marraztea eta ondoren koloreekin itzalak egitea bezalakoa da. Horretarako, ertzak nabarmentzen dira eta albokoetatik ilunagoak diren areak iluntzen dira."
 
 #. Red channel
 #: operations/common-gpl3+/channel-mixer.c:33
@@ -5120,11 +5096,11 @@ msgstr "Kolorea alfara"
 msgid "Convert a specified color to transparency, works best with white."
 msgstr "Bihurtu kolore bat gardentasunera, hobeto funtzionatzen du zuriarekin."
 
-#: operations/common-gpl3+/cubism.c:30 operations/common-gpl3+/mosaic.c:42
+#: operations/common-gpl3+/cubism.c:30 operations/common-gpl3+/mosaic.c:43
 msgid "Tile size"
 msgstr "Lauzen tamaina"
 
-#: operations/common-gpl3+/cubism.c:31 operations/common-gpl3+/mosaic.c:43
+#: operations/common-gpl3+/cubism.c:31 operations/common-gpl3+/mosaic.c:44
 msgid "Average diameter of each tile (in pixels)"
 msgstr "Lauza bakoitzaren batez besteko diametroa (pixeletan)"
 
@@ -5706,7 +5682,7 @@ msgstr "Gaussen lausotze selektiboa"
 
 #: operations/common-gpl3+/gaussian-blur-selective.c:380
 msgid "Blur neighboring pixels, but only in low-contrast areas"
-msgstr "Lausotu gertuko pixelak, baina kontraste gutxiko areatan soilik"
+msgstr "Lausotu alboko pixelak, baina kontraste gutxiko areatan soilik"
 
 #: operations/common-gpl3+/illusion.c:28
 msgid "Type 1"
@@ -5916,115 +5892,115 @@ msgstr "Labirintoa"
 msgid "Draw a labyrinth"
 msgstr "Marraztu labirinto bat"
 
-#: operations/common-gpl3+/mosaic.c:32
+#: operations/common-gpl3+/mosaic.c:33
 msgid "Squares"
 msgstr "Karratuak"
 
-#: operations/common-gpl3+/mosaic.c:33
+#: operations/common-gpl3+/mosaic.c:34
 msgid "Hexagons"
 msgstr "Hexagonoak"
 
-#: operations/common-gpl3+/mosaic.c:34
+#: operations/common-gpl3+/mosaic.c:35
 msgid "Octagons"
 msgstr "Oktagonoak"
 
-#: operations/common-gpl3+/mosaic.c:35
+#: operations/common-gpl3+/mosaic.c:36
 msgid "Triangles"
 msgstr "Triangeluak"
 
-#: operations/common-gpl3+/mosaic.c:38
+#: operations/common-gpl3+/mosaic.c:39
 msgid "Tile geometry"
 msgstr "Lauzen geometria"
 
-#: operations/common-gpl3+/mosaic.c:40
+#: operations/common-gpl3+/mosaic.c:41
 msgid "What shape to use for tiles"
 msgstr "Zein forma erabiliko den lauzetarako"
 
-#: operations/common-gpl3+/mosaic.c:48
+#: operations/common-gpl3+/mosaic.c:49
 msgid "Tile height"
 msgstr "Lauzen altuera"
 
-#: operations/common-gpl3+/mosaic.c:49
+#: operations/common-gpl3+/mosaic.c:50
 msgid "Apparent height of each tile (in pixels)"
 msgstr "Lauza bakoitzaren itxurazko altuera (pixeletan)"
 
-#: operations/common-gpl3+/mosaic.c:53
+#: operations/common-gpl3+/mosaic.c:54
 msgid "Tile neatness"
 msgstr "Lauzen garbitasuna"
 
-#: operations/common-gpl3+/mosaic.c:54
+#: operations/common-gpl3+/mosaic.c:55
 msgid "Deviation from perfectly formed tiles"
 msgstr "Lauza perfektuekiko egongo den desbideraketa"
 
-#: operations/common-gpl3+/mosaic.c:57
+#: operations/common-gpl3+/mosaic.c:58
 msgid "Tile color variation"
 msgstr "Lauza-kolorearen aldakortasuna"
 
-#: operations/common-gpl3+/mosaic.c:58
+#: operations/common-gpl3+/mosaic.c:59
 msgid "Magnitude of random color variations"
 msgstr "Ausazko kolore-aldaketen magnitudea"
 
-#: operations/common-gpl3+/mosaic.c:61
+#: operations/common-gpl3+/mosaic.c:62
 msgid "Color averaging"
 msgstr "Kolorearen batez bestekoa"
 
-#: operations/common-gpl3+/mosaic.c:62
+#: operations/common-gpl3+/mosaic.c:63
 msgid "Tile color based on average of subsumed pixels"
 msgstr "Subsumitutako pixelen batez bestekoan oinarritutako lauza-kolorea"
 
-#: operations/common-gpl3+/mosaic.c:64
+#: operations/common-gpl3+/mosaic.c:65
 msgid "Rough tile surface"
 msgstr "Lauza-gainazal latza"
 
-#: operations/common-gpl3+/mosaic.c:65
+#: operations/common-gpl3+/mosaic.c:66
 msgid "Surface characteristics"
 msgstr "Gainazal-ezaugarriak"
 
-#: operations/common-gpl3+/mosaic.c:67
+#: operations/common-gpl3+/mosaic.c:68
 msgid "Allow splitting tiles"
 msgstr "Onartu lauzak zatitzea"
 
-#: operations/common-gpl3+/mosaic.c:68
+#: operations/common-gpl3+/mosaic.c:69
 msgid "Allows splitting tiles at hard edges"
 msgstr "Lauzak ertz gogorretan zatitzea onartzen du"
 
-#: operations/common-gpl3+/mosaic.c:70
+#: operations/common-gpl3+/mosaic.c:71
 msgid "Tile spacing"
 msgstr "Lauzen tarteak"
 
-#: operations/common-gpl3+/mosaic.c:71
+#: operations/common-gpl3+/mosaic.c:72
 msgid "Inter-tile spacing (in pixels)"
 msgstr "Lauzen arteko tarteak (pixeletan)"
 
-#: operations/common-gpl3+/mosaic.c:76
+#: operations/common-gpl3+/mosaic.c:77
 msgid "Joints color"
 msgstr "Elkartzeen kolorea"
 
-#: operations/common-gpl3+/mosaic.c:78
+#: operations/common-gpl3+/mosaic.c:79
 msgid "Light color"
 msgstr "Argiaren kolorea"
 
-#: operations/common-gpl3+/mosaic.c:80
+#: operations/common-gpl3+/mosaic.c:81
 msgid "Light direction"
 msgstr "Argiaren noranzkoa"
 
-#: operations/common-gpl3+/mosaic.c:81
+#: operations/common-gpl3+/mosaic.c:82
 msgid "Direction of light-source (in degrees)"
 msgstr "Argi-iturriaren norabidea (graduetan)"
 
-#: operations/common-gpl3+/mosaic.c:86
+#: operations/common-gpl3+/mosaic.c:87
 msgid "Antialiasing"
 msgstr "Antialiasinga"
 
-#: operations/common-gpl3+/mosaic.c:87
+#: operations/common-gpl3+/mosaic.c:88
 msgid "Enables smoother tile output"
 msgstr "Lauza-irteera leunagoa gaitzen du"
 
-#: operations/common-gpl3+/mosaic.c:2471
+#: operations/common-gpl3+/mosaic.c:2472
 msgid "Mosaic"
 msgstr "Mosaikoa"
 
-#: operations/common-gpl3+/mosaic.c:2476
+#: operations/common-gpl3+/mosaic.c:2477
 msgid ""
 "Mosaic is a filter which transforms an image into what appears to be a "
 "mosaic, composed of small primitives, each of constant color and of an "
@@ -6786,7 +6762,7 @@ msgstr "Balioen hedatzea"
 msgid ""
 "Propagate certain values to neighboring pixels. Erode and dilate any color "
 "or opacity."
-msgstr "Hedatu balio batzuk gertuko pixeletara. Higatu eta luzatu edozein kolore edo opakutasun."
+msgstr "Hedatu balio batzuk alboko pixeletara. Higatu eta luzatu edozein kolore edo opakutasun."
 
 #: operations/common-gpl3+/video-degradation.c:34
 msgid "Staggered"
@@ -7703,6 +7679,16 @@ msgstr "Betegarriaren opakutasuna"
 msgid "The fill opacity to use"
 msgstr "Erabiliko den betegarriaren opakutasuna"
 
+#: operations/external/path.c:54 operations/external/vector-fill.c:40
+#: operations/external/vector-stroke.c:41
+msgid "Vector"
+msgstr "Bektorea"
+
+#: operations/external/path.c:55 operations/external/vector-fill.c:41
+#: operations/external/vector-stroke.c:42
+msgid "A GeglVector representing the path of the stroke"
+msgstr "Trazuaren bidea adierazten duen Gegl bektorea"
+
 #: operations/external/path.c:584
 msgid "Render Path"
 msgstr "Errendatu bidea"
@@ -7976,7 +7962,7 @@ msgstr "Egokitze-zabalera"
 msgid ""
 "Sets the width in pixels at which long lines will wrap. Use -1 for no "
 "wrapping."
-msgstr "Ezarri lerroak egokitzeko zabalera pixeletan, Erabili -1 ez egokitzeko."
+msgstr "Ezarri lerroak egokitzeko zabalera pixeletan. Erabili -1 ez egokitzeko."
 
 #: operations/external/text.c:46
 msgid "Wrap height"
@@ -8088,6 +8074,35 @@ msgstr "Video4Linux fotograma-iturburua"
 msgid "Video4Linux input, webcams framegrabbers and similar devices."
 msgstr "Video4Linux sarrera, web kamerak, fotograma hartzaileak eta antzeko gailuak."
 
+#: operations/external/vector-fill.c:27
+msgid "Color of paint to use for filling."
+msgstr "Betetzeko erabiliko den margoaren kolorea."
+
+#: operations/external/vector-fill.c:30
+msgid "The fill opacity to use."
+msgstr "Betegarriaren opakutasuna."
+
+#. XXX: replace with enum?
+#: operations/external/vector-fill.c:34
+msgid "Fill rule."
+msgstr "Betetze-araua."
+
+#: operations/external/vector-fill.c:35
+msgid "how to determine what to fill (nonzero|evenodd)"
+msgstr "Nola erabaki zer beteko den (ez-zero|bikoiti-bakoitia)"
+
+#: operations/external/vector-fill.c:38 operations/external/vector-stroke.c:39
+msgid "svg style description of transform."
+msgstr "Eraldaketaren SVG itxurako azalpena."
+
+#: operations/external/vector-fill.c:320
+msgid "Fill Path"
+msgstr "Bete bidea"
+
+#: operations/external/vector-fill.c:323
+msgid "Renders a filled region"
+msgstr "Betetako eskualde bat errendatzen du"
+
 #: operations/external/vector-stroke.c:28
 msgid "Color of paint to use for stroking."
 msgstr "Trazurako erabiliko den margoaren kolorea."
@@ -8180,7 +8195,7 @@ msgid ""
 "constant provided in 'value' or the corresponding pixel from the buffer on "
 "aux as operands. The result is the evaluation of the expression result = "
 "value==0.0f?0.0f:input/value"
-msgstr "Eragiketa matematikoa: zatitu. Eragiketa pixelez pixel gauzatzen du, eragingai gisa 'balioa' aukeran emandako konstantea erabilita edo buffer laguntzailean dagokion pixela erabilita. Emaitza da emaitza = balioa==0.0f?0.0f:sarrera/balioa adierazpenaren ebaluazioa."
+msgstr "Eragiketa matematikoa: zatitu. Eragiketa pixelez pixel gauzatzen du, eragingai gisa 'balioa' aukeran emandako konstantea erabilita edo buffer laguntzailean dagokion pixela erabilita. Emaitza da emaitza = balioa==0.0?0.0f:sarrera/balioa adierazpenaren ebaluazioa."
 
 #: operations/generated/dst-atop.c:133
 msgid "Porter Duff operation dst-atop (d = cB * aA + cA * (1.0f - aB))"
@@ -8214,7 +8229,7 @@ msgid ""
 "constant provided in 'value' or the corresponding pixel from the buffer on "
 "aux as operands. The result is the evaluation of the expression result = "
 "(input >= 0.0f ? powf (input, value) : -powf (-input, value))"
-msgstr "Eragiketa matematikoa: gamma. Eragiketa pixelez pixel gauzatzen du, eragingai gisa 'balioa' aukeran emandako konstantea erabilita edo buffer laguntzailean dagokion pixela erabilita. Emaitza da emaitza = (sarrera >= 0.0f ? powf (sarrera, balioa) : -powf (-sarrera, balioa)) adierazpenaren ebaluazioa."
+msgstr "Eragiketa matematikoa: gamma. Eragiketa pixelez pixel gauzatzen du, eragingai gisa 'balioa' aukeran emandako konstantea erabilita edo buffer laguntzailean dagokion pixela erabilita. Emaitza da emaitza = (sarrera >= 0.0f ? adierazpenaren ebaluazioa. powf (sarrera, balioa) : -powf (-sarrera, balioa))"
 
 #: operations/generated/hard-light.c:188
 msgid ""
@@ -8628,7 +8643,7 @@ msgstr "1D kutxa-lausotzea"
 
 #: operations/workshop/boxblur-1d.c:467
 msgid "Blur resulting from averaging the colors of a row neighborhood."
-msgstr "Gertuko errenkada bateko pixelen koloreen batez bestekoa aterata sortzen den lausotzea."
+msgstr "Alboko errenkada bateko pixelen koloreen batez bestekoa aterata sortzen den lausotzea."
 
 #: operations/workshop/boxblur.c:75
 msgid "BoxBlur"
@@ -9184,7 +9199,7 @@ msgstr "Multzo kopurua"
 
 #: operations/workshop/segment-kmeans.c:32
 msgid "Max. Iterations"
-msgstr "Gehieneko iterazio kopurua"
+msgstr "Gehien. Iterazioak"
 
 #: operations/workshop/segment-kmeans.c:33
 msgid "Maximum number of iterations"
