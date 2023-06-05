@@ -253,8 +253,8 @@ gegl_meta_set_audio (const char        *path,
     GString *str = g_string_new ("");
     int sample_count = gegl_audio_fragment_get_sample_count (audio);
     int channels = gegl_audio_fragment_get_channels (audio);
-    if (gexiv2_metadata_has_tag (e2m, "Xmp.xmp.GEGL"))
-      gexiv2_metadata_clear_tag (e2m, "Xmp.xmp.GEGL");
+    if (gexiv2_metadata_try_has_tag (e2m, "Xmp.xmp.GEGL", &error))
+      gexiv2_metadata_try_clear_tag (e2m, "Xmp.xmp.GEGL", &error);
 
     g_string_append_printf (str, "%i %i %i %i", 
                               gegl_audio_fragment_get_sample_rate (audio),
@@ -266,7 +266,7 @@ gegl_meta_set_audio (const char        *path,
       for (c = 0; c < channels; c++)
         g_string_append_printf (str, " %0.5f", audio->data[c][i]);
 
-    gexiv2_metadata_set_tag_string (e2m, "Xmp.xmp.GeglAudio", str->str);
+    gexiv2_metadata_try_set_tag_string (e2m, "Xmp.xmp.GeglAudio", str->str, &error);
     gexiv2_metadata_save_file (e2m, path, &error);
     if (error)
       g_warning ("%s", error->message);
@@ -285,7 +285,7 @@ gegl_meta_get_audio (const char        *path,
   gexiv2_metadata_open_path (e2m, path, &error);
   if (!error)
   {
-    gchar *ret = gexiv2_metadata_get_tag_string (e2m, "Xmp.xmp.GeglAudio");
+    gchar *ret = gexiv2_metadata_try_get_tag_string (e2m, "Xmp.xmp.GeglAudio", &error);
     fprintf (stderr, "should parse audio\n");
     g_free (ret);
   }
