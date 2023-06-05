@@ -401,7 +401,7 @@ gegl_tile_alloc (gsize size)
 
       if (! block)
         {
-          g_atomic_pointer_set (block_ptr, block);
+          g_atomic_pointer_set ((void **)block_ptr, block);
 
           return gegl_tile_alloc_fallback (size);
         }
@@ -421,7 +421,7 @@ gegl_tile_alloc (gsize size)
       block = block->next;
     }
 
-  g_atomic_pointer_set (block_ptr, block);
+  g_atomic_pointer_set ((void**)block_ptr, block);
 
   return gegl_tile_buffer_to_data (buffer);
 }
@@ -439,7 +439,7 @@ gegl_tile_alloc0 (gsize size)
 void
 gegl_tile_free (gpointer ptr)
 {
-  GeglTileBlock * volatile  *block_ptr;
+  GeglTileBlock * volatile *block_ptr;
   GeglTileBlock             *block;
   GeglTileBlock             *head_block;
   GeglTileBuffer            *buffer;
@@ -491,7 +491,7 @@ gegl_tile_free (gpointer ptr)
   if (block->n_allocated == 0)
     gegl_tile_block_free (block, &head_block);
 
-  g_atomic_pointer_set (block_ptr, head_block);
+  g_atomic_pointer_set ((void**)block_ptr, head_block);
 }
 
 
