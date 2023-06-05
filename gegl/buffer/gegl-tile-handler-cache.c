@@ -89,7 +89,7 @@ static gboolean   gegl_tile_handler_cache_copy       (GeglTileHandlerCache     *
 static GMutex             mutex                 = { 0, };
 static GQueue             cache_queue           = G_QUEUE_INIT;
 static gint               cache_wash_percentage = 20;
-static volatile guintptr  cache_total           = 0; /* approximate amount of bytes stored */
+static          guintptr  cache_total           = 0; /* approximate amount of bytes stored */
 static guintptr           cache_total_max       = 0; /* maximal value of cache_total */
 static volatile guintptr  cache_total_uncloned  = 0; /* approximate amount of uncloned bytes stored */
 static gint               cache_hits            = 0;
