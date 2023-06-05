@@ -76,16 +76,16 @@ query_svg (GeglOperation *operation)
 {
   GeglProperties *o = GEGL_PROPERTIES (operation);
   Priv *p = (Priv*) o->user_data;
-  RsvgDimensionData dimentions;
+  gdouble out_width, out_height;
 
   g_return_val_if_fail (p->handle != NULL, FALSE);
 
-  rsvg_handle_get_dimensions (p->handle, &dimentions);
+  rsvg_handle_get_intrinsic_size_in_pixels (p->handle, &out_width, &out_height);
 
   p->format = babl_format ("R'G'B'A u8");
 
-  p->height = dimentions.height;
-  p->width = dimentions.width;
+  p->height = out_height;
+  p->width = out_width;
 
   return TRUE;
 }
@@ -98,8 +98,10 @@ load_svg (GeglOperation *operation,
 {
     GeglProperties    *o = GEGL_PROPERTIES (operation);
     Priv              *p = (Priv*) o->user_data;
+    RsvgRectangle      svg_rect = {0.0, 0.0, width, height};
     cairo_surface_t   *surface;
     cairo_t           *cr;
+    GError            *error = NULL;
 
     g_return_val_if_fail (p->handle != NULL, -1);
 
@@ -113,7 +115,7 @@ load_svg (GeglOperation *operation,
                      (double)height / (double)p->height);
       }
 
-    rsvg_handle_render_cairo (p->handle, cr);
+    rsvg_handle_render_document (p->handle, cr, &svg_rect, &error);
 
     cairo_surface_flush (surface);
 
