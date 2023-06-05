@@ -68,15 +68,15 @@ expcombine_get_file_ev (const gchar *path)
 
   {
     gint nom, den;
-    gexiv2_metadata_get_exposure_time (e2m, &nom, &den);
+    gexiv2_metadata_try_get_exposure_time (e2m, &nom, &den, &error);
     time = nom * 1.0f / den;
   }
-  aperture = gexiv2_metadata_get_fnumber (e2m);
+  aperture = gexiv2_metadata_try_get_fnumber (e2m, &error);
 
   /* iso */
-  if (gexiv2_metadata_has_tag (e2m, "Exif.Image.ISOSpeedRatings"))
+  if (gexiv2_metadata_try_has_tag (e2m, "Exif.Image.ISOSpeedRatings", &error))
     {
-      gain = gexiv2_metadata_get_iso_speed (e2m) / 100.0f;
+      gain = gexiv2_metadata_try_get_iso_speed (e2m, &error) / 100.0f;
     }
   else
     {
@@ -86,6 +86,12 @@ expcombine_get_file_ev (const gchar *path)
 
       gain = 1.0f;
     }
+
+  if (error)
+  {
+    g_warning ("%s", error->message);
+    exit (EXIT_FAILURE);
+  }
 
   return log2f (aperture * aperture) + log2f (1 / time) + log2f (gain);
 }
