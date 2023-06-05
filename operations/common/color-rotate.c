@@ -290,7 +290,7 @@ left_end (gfloat   from,
     case -1:
       if (alpha < beta)
         return alpha + TWO_PI;
-
+    /* FALLTHROUGH */
     default:
       return alpha; /* 1 */
     }
@@ -311,6 +311,7 @@ right_end (gfloat   from,
       if (beta < alpha)
         return beta + TWO_PI;
 
+    /* FALLTHROUGH */
     default:
       return beta; /* -1 */
     }
