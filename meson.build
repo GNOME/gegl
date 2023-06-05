@@ -194,7 +194,6 @@ cflags_common += [
   '-Winit-self',
   '-Wmissing-declarations',
   '-Wpointer-arith',
-  '-Wall',
   '-Wno-deprecated-declarations',
   '-Wno-unused-parameter',
   '-Wno-cast-function-type',
