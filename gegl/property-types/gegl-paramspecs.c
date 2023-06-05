@@ -50,7 +50,8 @@ gegl_param_double_get_type (void)
         NULL, NULL,
         sizeof (GeglParamSpecDouble),
         0,
-        (GInstanceInitFunc) gegl_param_double_init
+        (GInstanceInitFunc) gegl_param_double_init,
+        NULL,
       };
       type = g_type_register_static (G_TYPE_PARAM_DOUBLE,
                                      "GeglParamDouble", &info, 0);
@@ -145,7 +146,8 @@ gegl_param_int_get_type (void)
         NULL, NULL,
         sizeof (GeglParamSpecInt),
         0,
-        (GInstanceInitFunc) gegl_param_int_init
+        (GInstanceInitFunc) gegl_param_int_init,
+        NULL
       };
       type = g_type_register_static (G_TYPE_PARAM_INT,
                                      "GeglParamInt", &info, 0);
@@ -235,7 +237,8 @@ gegl_param_string_get_type (void)
         NULL,                                          NULL,
         sizeof (GeglParamSpecString),
         0,
-        (GInstanceInitFunc) gegl_param_string_init
+        (GInstanceInitFunc) gegl_param_string_init,
+        NULL
       };
 
       type = g_type_register_static (G_TYPE_PARAM_STRING,
@@ -342,7 +345,8 @@ gegl_param_file_path_get_type (void)
         NULL,                                        NULL,
         sizeof (GeglParamSpecString),
         0,
-        (GInstanceInitFunc) gegl_param_file_path_init
+        (GInstanceInitFunc) gegl_param_file_path_init,
+        NULL
       };
 
       type = g_type_register_static (G_TYPE_PARAM_STRING,
@@ -449,7 +453,8 @@ gegl_param_enum_get_type (void)
         NULL,                                        NULL,
         sizeof (GeglParamSpecEnum),
         0,
-        (GInstanceInitFunc) gegl_param_enum_init
+        (GInstanceInitFunc) gegl_param_enum_init,
+        NULL
       };
 
       type = g_type_register_static (G_TYPE_PARAM_ENUM,
@@ -575,7 +580,8 @@ gegl_param_seed_get_type (void)
         NULL, NULL,
         sizeof (GeglParamSpecSeed),
         0,
-        (GInstanceInitFunc) gegl_param_seed_init
+        (GInstanceInitFunc) gegl_param_seed_init,
+        NULL
       };
       type = g_type_register_static (G_TYPE_PARAM_UINT,
                                      "GeglParamSeed", &info, 0);
@@ -642,7 +648,8 @@ gegl_param_format_get_type (void)
         NULL, NULL,
         sizeof (GeglParamSpecFormat),
         0,
-        (GInstanceInitFunc) gegl_param_format_init
+        (GInstanceInitFunc) gegl_param_format_init,
+        NULL
       };
       type = g_type_register_static (G_TYPE_PARAM_POINTER,
                                      "GeglParamFormat", &info, 0);
@@ -699,7 +706,8 @@ gegl_param_uri_get_type (void)
         NULL,                                        NULL,
         sizeof (GeglParamSpecString),
         0,
-        (GInstanceInitFunc) gegl_param_uri_init
+        (GInstanceInitFunc) gegl_param_uri_init,
+        NULL
       };
 
       type = g_type_register_static (G_TYPE_PARAM_STRING,
