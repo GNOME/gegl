@@ -59,7 +59,7 @@ static void gegl_buffer_iterate_read_dispatch (GeglBuffer          *buffer,
                                                gint                 level,
                                                GeglAbyssPolicy      repeat_mode);
 
-static void inline
+static inline void
 gegl_buffer_get_pixel (GeglBuffer     *buffer,
                        gint            x,
                        gint            y,
@@ -894,7 +894,7 @@ gegl_buffer_set_internal (GeglBuffer          *buffer,
     }
 }
 
-static void inline
+static inline void
 _gegl_buffer_set_with_flags (GeglBuffer       *buffer,
                             const GeglRectangle *rect,
                             gint                 level,

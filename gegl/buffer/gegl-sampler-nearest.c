@@ -91,7 +91,7 @@ gegl_sampler_nearest_dispose (GObject *object)
   G_OBJECT_CLASS (gegl_sampler_nearest_parent_class)->dispose (object);
 }
 
-static void inline
+static inline void
 gegl_sampler_get_pixel (GeglSampler    *sampler,
                         gint            x,
                         gint            y,

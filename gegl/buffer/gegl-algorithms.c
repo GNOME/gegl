@@ -48,7 +48,7 @@ GEGL_SIMD_SUFFIX(gegl_downscale_2x2) (const Babl *format,
 #include <stdio.h>
 
 #define ALIGN 16
-static void inline *align_16 (unsigned char *ret)
+static inline void *align_16 (unsigned char *ret)
 {
   int offset = ALIGN - ((uintptr_t) ret) % ALIGN;
   ret = ret + offset;
@@ -1312,7 +1312,7 @@ GEGL_SIMD_SUFFIX(gegl_resample_boxfilter) (guchar              *dest_buf,
   BablModelFlag model_flags = babl_get_model_flags (model);
 
   if (func)
-  ;
+  {};
 
   if ((model_flags & BABL_MODEL_FLAG_LINEAR)||
       (model_flags & BABL_MODEL_FLAG_CMYK))

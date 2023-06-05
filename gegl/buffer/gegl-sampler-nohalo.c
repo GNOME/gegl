@@ -297,7 +297,7 @@ gegl_sampler_nohalo_init (GeglSamplerNohalo *self)
   level->context_rect.height = NOHALO_SIZE_0;
 }
 
-static void inline
+static inline void
 nohalo_subdivision (const gfloat           uno_two,
                     const gfloat           uno_thr,
                     const gfloat           uno_fou,
