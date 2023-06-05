@@ -170,7 +170,7 @@ endif
 # and have exe wrapper. If we don't need a wrapper (e.g. 32 bit build in
 # 64-bit environment) then set proprty has_exe_wrapper=true in cross
 # file
-can_run_host_binaries = meson.has_exe_wrapper()
+can_run_host_binaries = meson.can_run_host_binaries()
 
 
 ################################################################################
