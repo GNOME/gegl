@@ -1104,7 +1104,7 @@ gegl_tile_backend_swap_lookup_entry (GeglTileBackendSwap *self,
                                      gint                 y,
                                      gint                 z)
 {
-  SwapEntry key = {x, y, z};
+  SwapEntry key = {x, y, z, NULL};
 
   return g_hash_table_lookup (self->index, &key);
 }
