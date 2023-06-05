@@ -152,7 +152,7 @@ gegl_matrix3_copy_into (GeglMatrix3 *dst,
 GeglMatrix3 *
 gegl_matrix3_copy (const GeglMatrix3 *matrix)
 {
-  return (GeglMatrix3 *) g_memdup (matrix, sizeof (GeglMatrix3));
+  return (GeglMatrix3 *) g_memdup2 (matrix, sizeof (GeglMatrix3));
 }
 
 gdouble
