@@ -306,14 +306,10 @@ render_blast_row (gfloat         *buffer,
 
           switch (gegl_random_int_range (o->rand, x, y, 0, 1, 0, random_factor))
             {
-            case 3:
-              bleed_length += o->strength;
-            case 2:
-              bleed_length += o->strength;
-            case 1:
-              bleed_length += o->strength;
-            case 0:
-              bleed_length += o->strength;
+              case 3: bleed_length += o->strength; /* FALLTHROUGH */
+              case 2: bleed_length += o->strength; /* FALLTHROUGH */
+              case 1: bleed_length += o->strength; /* FALLTHROUGH */
+              case 0: bleed_length += o->strength; /* FALLTHROUGH */
             }
 
           lbi = sbi + n_components * bleed_length;
