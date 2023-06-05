@@ -609,8 +609,12 @@ static int order_exif_time (gconstpointer a, gconstpointer b)
   gexiv2_metadata_open_path (e2m_a, a, &error);
   gexiv2_metadata_open_path (e2m_b, b, &error);
 
-  val_a = gexiv2_metadata_get_tag_string (e2m_a, "Exif.Photo.DateTimeOriginal");
-  val_b = gexiv2_metadata_get_tag_string (e2m_b, "Exif.Photo.DateTimeOriginal");
+  val_a = gexiv2_metadata_try_get_tag_string (e2m_a, "Exif.Photo.DateTimeOriginal", &error);
+  val_b = gexiv2_metadata_try_get_tag_string (e2m_b, "Exif.Photo.DateTimeOriginal", &error);
+  if (error)
+    ret = 0;
+  else
+  {
   if (val_a && val_b)
     ret = strcmp (val_a, val_b);
   else if (val_a)
@@ -619,6 +623,7 @@ static int order_exif_time (gconstpointer a, gconstpointer b)
     ret = -1;
   else
     ret = 0;
+  }
 
   if (val_a)
     g_free (val_a);
@@ -6980,10 +6985,10 @@ gegl_meta_set (const char *path,
   }
   else
   {
-    if (gexiv2_metadata_has_tag (e2m, "Xmp.xmp.GEGL"))
-      gexiv2_metadata_clear_tag (e2m, "Xmp.xmp.GEGL");
+    if (gexiv2_metadata_try_has_tag (e2m, "Xmp.xmp.GEGL", &error))
+      gexiv2_metadata_try_clear_tag (e2m, "Xmp.xmp.GEGL", &error);
 
-    gexiv2_metadata_set_tag_string (e2m, "Xmp.xmp.GEGL", meta_data);
+    gexiv2_metadata_try_set_tag_string (e2m, "Xmp.xmp.GEGL", meta_data, &error);
     gexiv2_metadata_save_file (e2m, path, &error);
     if (error)
       g_warning ("%s", error->message);
@@ -6999,7 +7004,7 @@ gegl_meta_get (const char *path)
   GExiv2Metadata *e2m = gexiv2_metadata_new ();
   gexiv2_metadata_open_path (e2m, path, &error);
   if (!error)
-    ret = gexiv2_metadata_get_tag_string (e2m, "Xmp.xmp.GEGL");
+    ret = gexiv2_metadata_try_get_tag_string (e2m, "Xmp.xmp.GEGL", &error);
   /*else
     g_warning ("%s", error->message);*/
   g_object_unref (e2m);
@@ -7013,7 +7018,7 @@ GExiv2Orientation path_get_orientation (const char *path)
   GExiv2Metadata *e2m = gexiv2_metadata_new ();
   gexiv2_metadata_open_path (e2m, path, &error);
   if (!error)
-    ret = gexiv2_metadata_get_orientation (e2m);
+    ret = gexiv2_metadata_try_get_orientation (e2m, &error);
   /*else
     g_warning ("%s", error->message);*/
   g_object_unref (e2m);
@@ -7039,7 +7044,7 @@ int cmd_save (COMMAND_ARGS) /* "save", 0, "", ""*/
 
   if (o->src_path)
   {
-    char *prepended = g_strdup_printf ("gegl:load path=%s\n%s", g_basename(o->src_path), serialized);
+    char *prepended = g_strdup_printf ("gegl:load path=%s\n%s", g_path_get_basename(o->src_path), serialized);
     g_file_set_contents (o->chain_path, prepended, -1, NULL);
     g_free (prepended);
   }
