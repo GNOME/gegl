@@ -588,7 +588,7 @@ query_tiff(GeglOperation *operation)
   TIFFGetFieldDefaulted(p->tiff, TIFFTAG_PLANARCONFIG, &planar_config);
 
   {
-    uint32  profile_size;
+    guint32  profile_size;
     guchar *icc_profile;
 
     /* set the ICC profile - if found in the TIFF */
