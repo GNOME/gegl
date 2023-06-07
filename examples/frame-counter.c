@@ -7,8 +7,10 @@ const char *output_path = "frame-counter.ogv";
 const char *video_codec = NULL;
 
 int video_bit_rate = 0;
+#if 0
 int video_bit_rate_min = 0;
 int video_bit_rate_max = 0;
+#endif
 int video_bufsize = 0;
 float frame_rate = 0.0;
 
@@ -17,14 +19,30 @@ main (gint    argc,
       gchar **argv)
 {
   int c;
+
+  if (argv[1] == NULL)
+  {
+    printf ("usage: %s --video-bufsize <size> [--video-bit-rate <bitrate>] [--video-codec <list>] [--fps <fps>] <outputfile>\n", argv[0]);
+    printf ("\n");
+    printf (" This is a tool for testing ffmpeg based video file encoding.");
+    printf (" For dubious settings libavformat/libavcodec will complain");
+    printf (" 200 frames with a text string containing integer frame numbers \n");
+    printf (" starting with 1 are encoded.\n");
+    printf ("\n");
+    printf (" codec is automatically determined from extension of output file.\n");
+    return 0;
+  } 
+
   for (c = 1; argv[c]; c++)
   {
     if (!strcmp (argv[c], "--video-bufsize"))
       video_bufsize = atoi(argv[++c]);
+#if 0
     else if (!strcmp (argv[c], "--video-bit-rate-max"))
       video_bit_rate_max = atoi(argv[++c]);
     else if (!strcmp (argv[c], "--video-bit-rate-min"))
       video_bit_rate_min = atoi(argv[++c]);
+#endif
     else if (!strcmp (argv[c], "--video-bit-rate"))
       video_bit_rate = atoi(argv[++c]);
     else if (!strcmp (argv[c], "--fps"))
