@@ -604,8 +604,9 @@ prepare (GeglOperation *operation)
              fprintf (stdout, "duration: %02i:%02i:%02i\n", h, m, s);
            }
 #endif
+          p->codec_delay = 0;
+#if 0
           p->codec_delay = p->video_ctx->delay;
-
           if (!strcmp (o->video_codec, "mpeg1video"))
             p->codec_delay = 1;
           else if (!strcmp (o->video_codec, "h264"))
@@ -619,6 +620,7 @@ prepare (GeglOperation *operation)
               else
                 p->codec_delay = 0;
             }
+#endif
         }
       else
         {
