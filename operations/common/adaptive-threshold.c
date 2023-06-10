@@ -119,7 +119,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",       _("Adaptive Threshold"),
     "description",
     _("Applies a threshold against the average of a spatial neighbourhood."),
-    "gimp:menu-path", "<Image>/Colors/Threshold",
+    "gimp:menu-path", "<Image>/Colors",
     "gimp:menu-label", _("Adaptive Threshold..."),
     NULL);
 }
