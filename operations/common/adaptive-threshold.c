@@ -28,7 +28,12 @@ property_double (radius, _("Radius"), 200.0)
   ui_gamma      (1.5)
   ui_meta       ("unit", "pixel-distance")
 
-property_boolean (aa, _("Anti alias"), TRUE)
+property_double (level, _("Level"), 0.5)
+value_range   (0.0, 1.0) 
+
+property_int (aa_factor, _("Antialias"), 1)
+value_range   (1, 256) // this allows full 8bit resolution as a api-max
+ui_range      (1, 16)
 
 #else
 
@@ -41,9 +46,11 @@ property_boolean (aa, _("Anti alias"), TRUE)
 typedef struct
 {
   GeglNode *input;
+  GeglNode *aa_grow;
+  GeglNode *aa_grow2;
   GeglNode *blur;
   GeglNode *threshold;
-  GeglNode *aa;
+  GeglNode *aa_shrink;
   GeglNode *output;
 } State;
 
@@ -54,13 +61,21 @@ update_graph (GeglOperation *operation)
   State *state = o->user_data;
   if (!state) return;
 
-  if (o->aa)
+  if (o->aa_factor > 1.0001)
   {
-    gegl_node_link_many (state->input, state->threshold, state->aa, state->output, NULL);
+    float factor = sqrt (o->aa_factor);
+    float inv_factor = 1.0/factor;
+    gegl_node_set (state->aa_grow, "x", factor, "y", factor, NULL);
+    gegl_node_set (state->aa_grow2, "x", factor, "y", factor, NULL);
+    gegl_node_set (state->aa_shrink, "x", inv_factor, "y", inv_factor, NULL);
+
+    gegl_node_link_many (state->input, state->aa_grow, state->threshold, state->aa_shrink, state->output, NULL);
+    gegl_node_connect_from (state->threshold, "aux", state->aa_grow2, "output");
   }
   else
   {
     gegl_node_link_many (state->input, state->threshold, state->output, NULL);
+    gegl_node_connect_from (state->threshold, "aux", state->blur, "output");
   }
 }
 
@@ -75,22 +90,26 @@ attach (GeglOperation *operation)
   State *state = g_malloc0 (sizeof (State));
   o->user_data = state;
 
+  state->aa_grow   = gegl_node_new_child (gegl, "operation", "gegl:scale-ratio", NULL);
+  state->aa_grow2  = gegl_node_new_child (gegl, "operation", "gegl:scale-ratio", NULL);
+  state->aa_shrink = gegl_node_new_child (gegl, "operation", "gegl:scale-ratio", NULL);
   state->input  = gegl_node_get_input_proxy (gegl, "input");
   state->output = gegl_node_get_output_proxy (gegl, "output");
   state->blur   = gegl_node_new_child (gegl, "operation", "gegl:gaussian-blur",
-                                       "clip-extent", TRUE,
+                                       "clip-extent", FALSE,
                                        "abyss-policy", 0,
                                        NULL);
   state->threshold = gegl_node_new_child (gegl, "operation", "gegl:threshold", NULL);
-  state->aa = gegl_node_new_child (gegl, "operation", "gegl:antialias",
-                                   NULL);
-  gegl_node_link_many (state->input, state->threshold, state->aa, state->output,
+
+  gegl_node_link_many (state->input, state->aa_grow, state->threshold, state->aa_shrink, state->output,
                        NULL);
-  gegl_node_connect_from (state->threshold, "aux", state->blur, "output");
   gegl_node_connect_from (state->blur, "input", state->input, "output");
+  gegl_node_connect_from (state->aa_grow2, "input", state->blur, "output");
 
   gegl_operation_meta_redirect (operation, "radius", state->blur, "std-dev-x");
   gegl_operation_meta_redirect (operation, "radius", state->blur, "std-dev-y");
+
+  update_graph (operation);
 }
 
 static void
