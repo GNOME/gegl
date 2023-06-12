@@ -318,7 +318,7 @@ start_element (GMarkupParseContext *context,
       if (pd->iter)
 	{
 	  gegl_node_get_output_proxy (pd->iter, "output");
-	  gegl_node_connect_from (pd->iter, "input", new, "output");
+	  gegl_node_connect_to (new, "output", pd->iter, "input");
 	}
 
       pd->iter = gegl_node_get_output_proxy (new, "output");
@@ -431,13 +431,13 @@ start_element (GMarkupParseContext *context,
 
       if (pd->state == STATE_TREE_FIRST_CHILD)
         {
-          gegl_node_connect_from (pd->iter, "aux", new, "output");
+          gegl_node_connect_to (new, "output", pd->iter, "aux");
         }
       else
         {
           if (pd->iter && gegl_node_has_pad(new, "output"))
 	    {
-	      gegl_node_connect_from (pd->iter, "input", new, "output");
+	      gegl_node_connect_to (new, "output", pd->iter, "input");
 	    }
         }
       pd->parent = g_list_prepend (pd->parent, new);
@@ -480,9 +480,10 @@ end_element (GMarkupParseContext *context,
     {
       if (gegl_node_get_producer (pd->iter, "input", NULL))
         {
-          gegl_node_connect_from (pd->iter, "input",
-                                  gegl_node_get_input_proxy (GEGL_NODE (pd->parent->data), "input"),
-                                  "output");
+          gegl_node_connect_to (gegl_node_get_input_proxy (GEGL_NODE (pd->parent->data), "input"), "output",
+                                pd->iter, "input");
+
+
           pd->iter = gegl_node_get_input_proxy (GEGL_NODE (pd->parent->data),
                                                 "input");
         }
@@ -564,7 +565,7 @@ each_ref (gpointer value,
   gegl_node_get (dest_node, "ref", &ref, NULL);
   source_node = g_hash_table_lookup (pd->ids, ref);
   g_free (ref);
-  gegl_node_connect_from (dest_node, "input", source_node, "output");
+  gegl_node_connect_to (source_node, "output", dest_node, "input");
 }
 
 GeglNode *
