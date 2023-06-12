@@ -115,7 +115,8 @@ GeglNode    * gegl_node_new_child        (GeglNode      *parent,
 gboolean      gegl_node_connect_from     (GeglNode      *sink,
                                           const gchar   *input_pad_name,
                                           GeglNode      *source,
-                                          const gchar   *output_pad_name);
+                                          const gchar   *output_pad_name)
+G_DEPRECATED_FOR (gegl_node_connect);
 
 /**
  * gegl_node_connect_to:
@@ -132,6 +133,21 @@ gboolean      gegl_node_connect_to       (GeglNode      *source,
                                           const gchar   *output_pad_name,
                                           GeglNode      *sink,
                                           const gchar   *input_pad_name);
+
+/**
+ * gegl_node_connect:
+ * @a: the node producing data we want to connect.
+ * @a_pad_name: the output pad we want to use on the source.
+ * @b: the node we're connecting an input to
+ * @b_pad_name: the name of the input pad we are connecting to
+ *
+ * Makes a connection between the pads of two nodes.
+ *
+ * Returns TRUE if the connection was successfully made.
+ */
+gboolean
+gegl_node_connect (GeglNode *a, const gchar*a_pad_name,
+                   GeglNode *b, const gchar*b_pad_name);
 
 
 /**

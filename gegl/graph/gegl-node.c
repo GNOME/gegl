@@ -599,12 +599,37 @@ gegl_node_find_connection (GeglNode *sink,
 }
 
 gboolean
-gegl_node_connect_to (GeglNode    *source,
-                      const gchar *source_pad_name,
-                      GeglNode    *sink,
-                      const gchar *sink_pad_name)
+gegl_node_connect_from (GeglNode    *sink,
+                        const gchar *sink_pad_name,
+                        GeglNode    *source,
+                        const gchar *source_pad_name)
 {
-  return gegl_node_connect_from (sink, sink_pad_name, source, source_pad_name);
+  return gegl_node_connect_to (source, source_pad_name, sink, sink_pad_name);
+}
+
+gboolean
+gegl_node_connect (GeglNode *a, const gchar*a_pad_name,
+                   GeglNode *b, const gchar*b_pad_name)
+{
+  GeglPad *pad_a = gegl_node_get_pad (a, a_pad_name);
+  GeglPad *pad_b = gegl_node_get_pad (b, b_pad_name);
+  if (!pad_a || !pad_b) {
+    g_warning ("NULL pad");
+    return FALSE;
+  }
+  if (gegl_pad_is_input (pad_a))
+  {
+    return gegl_node_connect_to (b, b_pad_name, a, a_pad_name);
+  }
+  else if (gegl_pad_is_input (pad_b))
+  {
+    return gegl_node_connect_to (a, a_pad_name, b, b_pad_name);
+  }
+  else {
+    g_warning ("neither pad is an input pad");
+    return FALSE;
+  }
+  return FALSE;
 }
 
 /* the implementation of gegl_node_invalidated() can use either GeglRegions
@@ -859,10 +884,10 @@ gegl_node_is_graph (GeglNode *node)
 }
 
 gboolean
-gegl_node_connect_from (GeglNode    *sink,
-                        const gchar *sink_pad_name,
-                        GeglNode    *source,
-                        const gchar *source_pad_name)
+gegl_node_connect_to (GeglNode    *source,
+                      const gchar *source_pad_name,
+                      GeglNode    *sink,
+                      const gchar *sink_pad_name)
 {
   GeglNode    *real_sink            = sink;
   GeglNode    *real_source          = source;
@@ -1426,11 +1451,11 @@ gegl_node_set_operation_object (GeglNode      *self,
 
   /* FIXME: This should handle all input pads instead of just these 3 */
   if (input)
-    gegl_node_connect_from (self, "input", input, "output");
+    gegl_node_connect_to (input, "output", self, "input");
   if (aux)
-    gegl_node_connect_from (self, "aux", aux, "output");
+    gegl_node_connect_to (aux, "output", self, "aux");
   if (aux2)
-    gegl_node_connect_from (self, "aux2", aux2, "output");
+    gegl_node_connect_to (aux2, "output", self, "aux2");
 
   if (consumer_nodes)
     {
