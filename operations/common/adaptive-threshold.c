@@ -22,17 +22,22 @@
 #ifdef GEGL_PROPERTIES
 
 property_double (radius, _("Radius"), 200.0)
-  description   (_("Standard deviation of gaussian neighborhood average for computing local contrast."))
+  description   (_("Standard deviation of gaussian neighborhood average for computing local contrast. If 0 is used a global threshold is used instead of one based on local contrast."))
   value_range   (0.0, G_MAXDOUBLE)
   ui_range      (0.0, 1000.0)
   ui_steps      (1, 5)
   ui_gamma      (1.5)
   ui_meta       ("unit", "pixel-distance")
 
-property_double (level, _("Level"), 0.5)
+property_double (low, _("Low"), 0.5)
   description   (_("Thresholding level, 0.5 towards 0 to minimize shadows and towards 1.0 to minimze highlights."))
   value_range   (0.0, 10.0) 
   ui_range   (0.0, 1.0) 
+
+property_double (high, _("High"), 1.0)
+  description   (_("Maximum values to include, above this gets set to 0."))
+  value_range   (0.0, 10.0) 
+  ui_range      (0.0, 1.0) 
 
 property_int (aa_factor, _("Antialiasing"), 1)
   description   (_("Rough target of levels of accuracy for antialiasing, 1 to disable antialiasing."))
@@ -53,8 +58,6 @@ typedef struct
   GeglNode *gray;
   GeglNode *aa_grow;
   GeglNode *aa_grow2;
-  GeglNode *hard_light;
-  GeglNode *level;
   GeglNode *blur;
   GeglNode *threshold;
   GeglNode *aa_shrink;
@@ -70,29 +73,20 @@ update_graph (GeglOperation *operation)
   State *state = o->user_data;
   if (!state) return;
 
+
   if (o->aa_factor > 1.0001)
   {
     float factor = sqrt (o->aa_factor);
     float inv_factor = 1.0/factor;
-    gegl_node_set (state->aa_grow,   "x", factor, "y", factor, NULL);
-    gegl_node_set (state->aa_grow2,  "x", factor, "y", factor, NULL);
+    gegl_node_set (state->aa_grow,   "x", factor,     "y", factor, NULL);
+    gegl_node_set (state->aa_grow2,  "x", factor,     "y", factor, NULL);
     gegl_node_set (state->aa_shrink, "x", inv_factor, "y", inv_factor, NULL);
 
     gegl_node_link_many (state->input, state->gray, state->aa_grow,
                       state->threshold, state->aa_shrink, state->output, NULL);
 
-    if (o->level == 0.5)
-    {
-      gegl_node_connect_from (state->aa_grow2, "input",
-                              state->blur, "output");
-    }
-    else
-    {
-      gegl_node_connect_from (state->hard_light, "input",
-                              state->blur, "output");
-      gegl_node_connect_from (state->aa_grow2, "input",
-                              state->hard_light, "output");
-    }
+    gegl_node_connect_from (state->aa_grow2, "input",
+                            state->blur, "output");
 
     gegl_node_connect_from (state->threshold, "aux",
                             state->aa_grow2, "output");
@@ -102,25 +96,16 @@ update_graph (GeglOperation *operation)
     gegl_node_link_many (state->input, state->gray, state->threshold,
                          state->output, NULL);
 
-    if (o->level == 0.5)
-    {
-      gegl_node_connect_from (state->threshold, "aux",
-                              state->blur, "output");
-    }
-    else
-    {
-      gegl_node_connect_from (state->hard_light, "input",
-                              state->blur, "output");
-      gegl_node_connect_from (state->threshold, "aux",
-                              state->hard_light, "output");
-    }
+    gegl_node_connect_from (state->threshold, "aux",
+                            state->blur, "output");
   }
-  if (o->level != 0.5)
+
+  gegl_node_set (state->threshold, "value", o->low, NULL);
+  gegl_node_set (state->threshold, "high",  o->high, NULL);
+
+  if (o->radius == 0.0)
   {
-     GeglColor *color = gegl_color_new (NULL);
-     gegl_color_set_rgba (color, o->level, o->level, o->level, 1.0f);
-     gegl_node_set (state->level, "value", color, NULL);
-     g_object_unref (color);
+    gegl_node_disconnect (state->threshold, "aux");
   }
 }
 
@@ -141,10 +126,6 @@ attach (GeglOperation *operation)
                            "operation", "gegl:scale-ratio", NULL);
   state->aa_shrink = gegl_node_new_child (gegl,
                            "operation", "gegl:scale-ratio", NULL);
-  state->level = gegl_node_new_child (gegl,
-                           "operation", "gegl:color", NULL);
-  state->hard_light = gegl_node_new_child (gegl,
-                           "operation", "svg:hard-light", NULL);
   state->input  = gegl_node_get_input_proxy (gegl, "input");
   state->output = gegl_node_get_output_proxy (gegl, "output");
   state->blur   = gegl_node_new_child (gegl,
@@ -157,7 +138,6 @@ attach (GeglOperation *operation)
 
   gegl_node_link_many (state->gray, state->aa_grow, state->threshold,
                        state->aa_shrink, state->output, NULL);
-  gegl_node_connect_from (state->hard_light, "aux",   state->level, "output");
   gegl_node_connect_from (state->blur,       "input", state->gray, "output");
   gegl_node_connect_from (state->aa_grow2,   "input", state->blur, "output");
 

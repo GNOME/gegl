@@ -1,3 +1,26 @@
+GEGL-0.4.46 2023-06-12
+----------------------
+
+build: depend on meson 0.55.0
+
+Operations:
+~~~~~~~~~~~
+
+Clean up various bits of ill or undefiend code based on stricter compiler
+warnings.
+
+ff-load,ff-save: clean up of deprecated API - hope fully covering
+more ffmpeg versions.
+
+New operation: adaptive-threshold, this is equivalent to doing an unsharp mask
+with a large radius, followed by scaling the image up applying threshold and
+scaling down by the inverse. The scalings are only done if antialias is higher
+than 1. To speed up processing the first thing done in the graph is conversion
+to grayscale.
+
+
+tests: print usage in the frame-count dumper tool when ran without arguments.
+
 GEGL-0.4.44 2023-03-26
 ----------------------
 
