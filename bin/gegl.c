@@ -263,7 +263,7 @@ main (gint    argc,
                                                   "operation", "gegl:display",
                                                   o->file ? "window-title" : NULL, o->file,
                                                   NULL);
-          gegl_node_connect_from (output, "input", gegl_node_get_output_proxy (gegl, "output"), "output");
+          gegl_node_connect (gegl_node_get_output_proxy (gegl, "output"), "output", output, "input");
           gegl_node_process (output);
           g_main_loop_run (g_main_loop_new (NULL, TRUE));
           g_object_unref (output);
@@ -301,7 +301,7 @@ main (gint    argc,
             n0 = gegl_node_new_child (gegl, "operation", "gegl:buffer-source",
                                             "buffer", tempb,
                                             NULL);
-            gegl_node_connect_from (output, "input", n0, "output");
+            gegl_node_connect (n0, "output", output, "input");
 
             iter = gegl_node_get_output_proxy (gegl, "output");
 
@@ -368,14 +368,14 @@ main (gint    argc,
             n0 = gegl_node_new_child (gegl, "operation", "gegl:buffer-source",
                                             "buffer", tempb,
                                             NULL);
-            gegl_node_connect_from (output, "input", n0, "output");
+            gegl_node_link (n0, output);
             gegl_node_process (output);
             gegl_free (temp);
             g_object_unref (tempb);
           }
           else
           {
-            gegl_node_connect_from (output, "input", gegl, "output");
+            gegl_node_link (gegl, output);
             gegl_node_process (output);
           }
 
