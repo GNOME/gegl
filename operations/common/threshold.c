@@ -22,10 +22,15 @@
 
 #ifdef GEGL_PROPERTIES
 
-property_double (value, _("Threshold"), 0.5)
+property_double (value, _("Threshold"), 0.5) // TODO : rename low - to match GIMP op
     value_range (-200, 200)
     ui_range    (-1, 2)
-    description(_("Scalar threshold level (overridden if an auxiliary input buffer is provided.)."))
+    description(_("Lowest value to be included."))
+
+property_double (high, _("High"), 1.0)
+    value_range (-200, 200)
+    ui_range    (0, 1)
+    description(_("highest value to be include as white."))
 
 #else
 
@@ -56,16 +61,19 @@ process (GeglOperation       *op,
   gfloat *out = out_buf;
   gfloat *aux = aux_buf;
   glong   i;
+  gfloat level_low_p  = GEGL_PROPERTIES (op)->value;
+  gfloat level_high_p = GEGL_PROPERTIES (op)->high;
 
   if (aux == NULL)
     {
-      gfloat value = GEGL_PROPERTIES (op)->value;
       for (i=0; i<n_pixels; i++)
         {
           gfloat c;
 
           c = in[0];
-          c = c>=value?1.0:0.0;
+          c = (c>=level_low_p && c <= level_high_p)
+              
+              ?1.0:0.0;
           out[0] = c;
 
           out[1] = in[1];
@@ -77,11 +85,35 @@ process (GeglOperation       *op,
     {
       for (i=0; i<n_pixels; i++)
         {
-          gfloat value = *aux;
+          gfloat level_gray = *aux;
           gfloat c;
 
+          gfloat level_low = level_gray;
+          gfloat level_high = level_gray;
+
+          if (level_low_p <= 0.5)
+          {
+            gfloat t = 1.0-((level_low_p)/0.5);
+            level_low = 0.0 * t + level_low * (1.0-t);
+          }
+          else
+          {
+            gfloat t = 1.0-((1.0-level_low_p)/0.5);
+            level_low = 1.0* t + level_low * (1.0-t);
+          }
+          if (level_high_p <= 0.5)
+          {
+            gfloat t = 1.0-((level_high_p)/0.5);
+            level_high = 0.0 * t + level_high * (1.0-t);
+          }
+          else
+          {
+            gfloat t = 1.0-((1.0-level_high_p)/0.5);
+            level_high = 1.0* t + level_high * (1.0-t);
+          }
+
           c = in[0];
-          c = c>=value?1.0:0.0;
+          c = (c>=level_low && c <= level_high)?1.0:0.0;
           out[0] = c;
 
           out[1] = in[1];
