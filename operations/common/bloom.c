@@ -152,17 +152,13 @@ attach (GeglOperation *operation)
                        nodes->rgb_clip,
                        NULL);
 
-  gegl_node_connect_to (input,           "output",
-                        nodes->multiply, "input");
-  gegl_node_connect_to (nodes->rgb_clip, "output",
-                        nodes->multiply, "aux");
+  gegl_node_connect (input, "output", nodes->multiply, "input");
+  gegl_node_connect (nodes->rgb_clip, "output", nodes->multiply, "aux");
 
   gegl_node_link (nodes->multiply, nodes->gaussian_blur);
 
-  gegl_node_connect_to (input,                "output",
-                        nodes->combine,       "input");
-  gegl_node_connect_to (nodes->gaussian_blur, "output",
-                        nodes->combine,       "aux");
+  gegl_node_connect (input, "output", nodes->combine,       "input");
+  gegl_node_connect (nodes->gaussian_blur, "output", nodes->combine, "aux");
 
   gegl_node_link (nodes->combine, output);
 

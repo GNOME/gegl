@@ -275,11 +275,8 @@ attach (GeglOperation *operation)
                        nodes->vignette,
                        NULL);
 
-  gegl_node_connect_to (nodes->input, "output",
-                        nodes->crop,  "aux");
-
-  gegl_node_connect_to (nodes->vignette, "output",
-                        nodes->blur,     "aux");
+  gegl_node_connect (nodes->input, "output",    nodes->crop, "aux");
+  gegl_node_connect (nodes->vignette, "output", nodes->blur, "aux");
 
   g_object_unref (white);
   g_object_unref (black);

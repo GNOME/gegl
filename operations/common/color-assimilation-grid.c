@@ -110,8 +110,8 @@ attach (GeglOperation *operation)
   gegl_node_link_many (input, s->saturate, s->opacity, NULL);
   gegl_node_link_many (s->color, s->mask, NULL);
 
-  gegl_node_connect_from (s->opacity, "aux", s->mask,  "output");
-  gegl_node_connect_from (s->over,    "aux", s->opacity,  "output");
+  gegl_node_connect (s->opacity, "aux", s->mask,  "output");
+  gegl_node_connect (s->over,    "aux", s->opacity,  "output");
 
   gegl_operation_meta_redirect (operation, "grid-size", s->mask, "period");
   gegl_operation_meta_redirect (operation, "angle", s->mask, "angle");

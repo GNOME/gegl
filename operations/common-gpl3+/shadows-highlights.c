@@ -143,7 +143,7 @@ do_setup (GeglOperation *operation)
       gegl_node_link_many (self->input, self->blur_convert, blur, NULL);
       gegl_node_link_many (self->input, shprocess, self->output, NULL);
 
-      gegl_node_connect_to (blur, "output", shprocess, "aux");
+      gegl_node_connect (blur, "output", shprocess, "aux");
 
       gegl_operation_meta_redirect (operation, "radius", blur, "std-dev-x");
       gegl_operation_meta_redirect (operation, "radius", blur, "std-dev-y");

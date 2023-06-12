@@ -148,8 +148,8 @@ attach (GeglOperation *operation)
   gegl_operation_meta_redirect (operation,              "linear-mask",
                                 nodes->piecewise_blend, "linear-mask");
 
-  gegl_node_connect_to (nodes->input,           "output",
-                        nodes->piecewise_blend, "aux1");
+  gegl_node_connect (nodes->input,           "output",
+                     nodes->piecewise_blend, "aux1");
 
   for (i = 1; i < MAX_LEVELS; i++)
     {
@@ -162,7 +162,7 @@ attach (GeglOperation *operation)
 
       sprintf (aux_name, "aux%d", i + 1);
 
-      gegl_node_connect_to (nodes->gaussian_blur[i], "output",
+      gegl_node_connect (nodes->gaussian_blur[i], "output",
                             nodes->piecewise_blend,  aux_name);
     }
 

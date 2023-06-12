@@ -64,15 +64,12 @@ update_graph (GeglOperation *operation)
 
   if (o->threshold > 0.0001)
   {
-    gegl_node_connect_from (state->absolute, "input",
-                            state->subtract, "output");
-    gegl_node_connect_from (state->multiply, "input",
-                            state->multiply_mask, "output");
+    gegl_node_connect(state->absolute, "input", state->subtract, "output");
+    gegl_node_connect(state->multiply, "input", state->multiply_mask, "output");
   }
   else
   {
-    gegl_node_connect_from (state->multiply, "input",
-                            state->subtract,  "output");
+    gegl_node_connect (state->multiply, "input", state->subtract,  "output");
   }
 }
 
@@ -108,10 +105,10 @@ attach (GeglOperation *operation)
   gegl_node_link_many (multiply, add, output, NULL);
 
   gegl_node_link_many (subtract, absolute, multiply2, threshold, aa, NULL);
-  gegl_node_connect_from (multiply_mask, "aux",  aa,  "output");
+  gegl_node_connect (multiply_mask, "aux",  aa,  "output");
 
-  gegl_node_connect_from (subtract, "aux",   blur,  "output");
-  gegl_node_connect_from (add,      "aux",   input, "output");
+  gegl_node_connect (subtract, "aux",   blur,  "output");
+  gegl_node_connect (add,      "aux",   input, "output");
 
   gegl_operation_meta_redirect (operation, "threshold", threshold, "value");
   gegl_operation_meta_redirect (operation, "scale", multiply, "value");

@@ -301,7 +301,7 @@ propagate_labels (GeglBuffer *labels,
                               NULL);
 
   gegl_node_link_many (source_labels, watershed, write, NULL);
-  gegl_node_connect_from (watershed, "aux", source_gradient, "output");
+  gegl_node_connect (watershed, "aux", source_gradient, "output");
   gegl_node_process (write);
   g_object_unref (gegl);
   return result;

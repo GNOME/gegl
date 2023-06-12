@@ -189,9 +189,9 @@ update_graph (GeglOperation *operation)
               source_node = iters[i].opacity_node;
             }
 
-          gegl_node_connect_to (source_node,            "output",
-                                iters[i].over_nodes[0], ! o->paste_below ? "input" :
-                                                                           "aux");
+          gegl_node_connect (source_node, "output",
+                             iters[i].over_nodes[0],
+                                ! o->paste_below ? "input" : "aux");
 
           if (i == 0)
             {
@@ -199,8 +199,9 @@ update_graph (GeglOperation *operation)
             }
           else
             {
-              gegl_node_connect_to (iters[i].over_nodes[0],     "output",
-                                    iters[i - 1].over_nodes[0], ! o->paste_below ? "aux" :
+              gegl_node_connect (iters[i].over_nodes[0], "output",
+                                 iters[i - 1].over_nodes[0],
+                                    ! o->paste_below ? "aux" :
                                                                                    "input");
             }
         }
@@ -238,17 +239,19 @@ update_graph (GeglOperation *operation)
                     {
                       if (! o->paste_below)
                         {
-                          gegl_node_connect_to (source_node,                 "output",
-                                                iters[i].over_nodes[j - 1],  "input");
-                          gegl_node_connect_to (iters[i].transform_nodes[j], "output",
-                                                iters[i].over_nodes[j - 1],  "aux");
+                          gegl_node_connect (
+                                      source_node,                 "output",
+                                      iters[i].over_nodes[j - 1],  "input");
+                          gegl_node_connect (
+                                      iters[i].transform_nodes[j], "output",
+                                      iters[i].over_nodes[j - 1],  "aux");
                         }
                       else
                         {
-                          gegl_node_connect_to (source_node,                 "output",
-                                                iters[i].over_nodes[j - 1],  "aux");
-                          gegl_node_connect_to (iters[i].transform_nodes[j], "output",
-                                                iters[i].over_nodes[j - 1],  "input");
+                          gegl_node_connect (source_node,                 "output",
+                                             iters[i].over_nodes[j - 1],  "aux");
+                          gegl_node_connect (iters[i].transform_nodes[j], "output",
+                                             iters[i].over_nodes[j - 1],  "input");
                         }
 
                       source_node = iters[i].over_nodes[j - 1];
@@ -276,8 +279,8 @@ update_graph (GeglOperation *operation)
                   source_node = iters[i].opacity_node;
                 }
 
-              gegl_node_connect_to (source_node,                           "output",
-                                    iters[i].over_nodes[n_transforms - 1], ! o->paste_below ? "aux" :
+              gegl_node_connect (source_node, "output",
+                                 iters[i].over_nodes[n_transforms - 1], ! o->paste_below ? "aux" :
                                                                                               "input");
 
               if (i > 0)
@@ -290,8 +293,9 @@ update_graph (GeglOperation *operation)
 
           if (i >= o->first_iteration)
             {
-              gegl_node_connect_to (input,                                 "output",
-                                    iters[i].over_nodes[n_transforms - 1], ! o->paste_below ? "input" :
+              gegl_node_connect (input, "output",
+                                 iters[i].over_nodes[n_transforms - 1],
+                                   ! o->paste_below ? "input" :
                                                                                               "aux");
             }
         }

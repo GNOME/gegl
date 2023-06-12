@@ -60,7 +60,7 @@ attach (GeglOperation *operation)
   gam1 = gegl_node_new_child (gegl, "operation", "gegl:gamma", "value", 2.2, NULL);
 
   gegl_node_link_many (input, blur, invert, opacity, NULL);
-  gegl_node_connect_to (opacity, "output", over, "aux");
+  gegl_node_connect (opacity, "output", over, "aux");
   gegl_node_link_many (input, over, gam0, sub, mul, add, gam1, output, NULL);
 
   gegl_operation_meta_redirect (operation, "std-dev", blur, "std-dev-x");

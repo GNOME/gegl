@@ -127,41 +127,41 @@ update_graph (GeglOperation *operation)
                                          "std-dev-y", radius2,
                                           NULL);
       gegl_node_set (state->mul[band], "value", scale, NULL);
-      gegl_node_connect_from (state->add[band], "input",
-                              iter, "output");
-      gegl_node_connect_from (state->blur1[band], "input",
-                              iter, "output");
-      gegl_node_connect_from (state->blur2[band], "input",
-                              iter, "output");
-      gegl_node_connect_from (state->sub[band], "input",
-                              state->blur1[band], "output");
-      gegl_node_connect_from (state->sub[band], "aux",
-                              state->blur2[band], "output");
-      gegl_node_connect_from (state->mul[band], "input",
-                              state->sub[band], "output");
-      gegl_node_connect_from (state->add[band], "aux",
-                              state->mul[band], "output");
+      gegl_node_connect (state->add[band],   "input",
+                         iter,               "output");
+      gegl_node_connect (state->blur1[band], "input",
+                         iter,               "output");
+      gegl_node_connect (state->blur2[band], "input",
+                         iter,               "output");
+      gegl_node_connect (state->sub[band],   "input",
+                         state->blur1[band], "output");
+      gegl_node_connect (state->sub[band],   "aux",
+                         state->blur2[band], "output");
+      gegl_node_connect (state->mul[band],   "input",
+                         state->sub[band],   "output");
+      gegl_node_connect (state->add[band],   "aux",
+                         state->mul[band],   "output");
       iter = state->add[band];
     }
   }
 
   if (o->show_mask)
   {
-    gegl_node_connect_from (state->mask_sub, "input",
-                            state->input, "output");
-    gegl_node_connect_from (state->mask_sub, "aux",
-                            iter, "output");
+    gegl_node_connect (state->mask_sub, "input",
+                       state->input,    "output");
+    gegl_node_connect (state->mask_sub, "aux",
+                       iter,            "output");
 
-    gegl_node_connect_from (state->mask_mul, "input",
-                            state->mask_sub, "output");
+    gegl_node_connect (state->mask_mul, "input",
+                       state->mask_sub, "output");
 
-    gegl_node_connect_from (state->mask_add, "input",
-                            state->mask_mul, "output");
+    gegl_node_connect (state->mask_add, "input",
+                       state->mask_mul, "output");
     iter = state->mask_add;
   }
 
-  gegl_node_connect_from (state->output, "input",
-                          iter,  "output");
+  gegl_node_connect (state->output, "input",
+                     iter,          "output");
 }
 
 static void

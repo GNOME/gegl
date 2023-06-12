@@ -385,7 +385,7 @@ attach (GeglOperation *operation)
 
           g_assert(src_node);
 
-          gegl_node_connect_to (src_node, src_port, tgt_node, tgt_port);
+          gegl_node_connect (src_node, src_port, tgt_node, tgt_port);
       } else {
           // IIP
           JsonNode *datanode = json_object_get_member(conn, "data");
@@ -417,7 +417,7 @@ attach (GeglOperation *operation)
 
           if (g_strcmp0(name, "input") == 0) {
               GeglNode *input = gegl_node_get_input_proxy (gegl, "input");
-              gegl_node_connect_to (input, "output", node, "input");
+              gegl_node_connect (input, "output", node, "input");
           } else {
             gegl_operation_meta_redirect (operation, name, node, port);
           }
@@ -439,7 +439,7 @@ attach (GeglOperation *operation)
 
           if (g_strcmp0(name, "output") == 0) {
             GeglNode *proxy = gegl_node_get_output_proxy (gegl, "output");
-            gegl_node_connect_to (node, port, proxy, "input");
+            gegl_node_connect (node, port, proxy, "input");
           } else {
             g_warning("Unsupported output '%s' exported in .json file", name);
           }

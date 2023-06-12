@@ -76,11 +76,11 @@ attach (GeglOperation *operation)
   overlay = gegl_node_new_child (gegl, "operation", "svg:src-atop", NULL);
   output = gegl_node_get_output_proxy (gegl, "output");
 
-  gegl_node_connect_to (input, "output", seamless, "input");
-  gegl_node_connect_to (aux, "output", seamless, "aux");
-  gegl_node_connect_to (input, "output", overlay, "input");
-  gegl_node_connect_to (seamless, "output", overlay, "aux");
-  gegl_node_connect_to (overlay, "output", output, "input");
+  gegl_node_connect (input, "output", seamless, "input");
+  gegl_node_connect (aux, "output", seamless, "aux");
+  gegl_node_connect (input, "output", overlay, "input");
+  gegl_node_connect (seamless, "output", overlay, "aux");
+  gegl_node_connect (overlay, "output", output, "input");
 
   gegl_operation_meta_redirect (operation, "max-refine-scale", seamless, "max-refine-scale");
   gegl_operation_meta_redirect (operation, "xoff", seamless, "xoff");

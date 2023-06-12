@@ -135,8 +135,7 @@ update_graph (GeglOperation *operation)
   gegl_node_link_many (input, state->reset_origin_input, state->over, output, NULL);
   gegl_node_link_many (aux, state->reset_origin_aux, state->translate, NULL);
 
-  gegl_node_connect_from (state->over, "aux",
-                          state->translate,  "output");
+  gegl_node_connect (state->over, "aux", state->translate,  "output");
 }
 
 static void

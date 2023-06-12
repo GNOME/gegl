@@ -62,7 +62,7 @@ static void attach (GeglOperation *operation)
   gegl_node_link_many (input, blur1, subtract, output, NULL);
   gegl_node_link (input, blur2);
 
-  gegl_node_connect_from (subtract, "aux", blur2, "output");
+  gegl_node_connect (subtract, "aux", blur2, "output");
 
   gegl_operation_meta_redirect (operation, "radius1", blur1, "std-dev-x");
   gegl_operation_meta_redirect (operation, "radius1", blur1, "std-dev-y");

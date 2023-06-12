@@ -73,7 +73,6 @@ update_graph (GeglOperation *operation)
   State *state = o->user_data;
   if (!state) return;
 
-
   if (o->aa_factor > 1.0001)
   {
     float factor = sqrt (o->aa_factor);
@@ -85,19 +84,15 @@ update_graph (GeglOperation *operation)
     gegl_node_link_many (state->input, state->gray, state->aa_grow,
                       state->threshold, state->aa_shrink, state->output, NULL);
 
-    gegl_node_connect_from (state->aa_grow2, "input",
-                            state->blur, "output");
-
-    gegl_node_connect_from (state->threshold, "aux",
-                            state->aa_grow2, "output");
+    gegl_node_connect (state->aa_grow2, "input", state->blur, "output");
+    gegl_node_connect (state->threshold, "aux", state->aa_grow2, "output");
   }
   else
   {
     gegl_node_link_many (state->input, state->gray, state->threshold,
                          state->output, NULL);
 
-    gegl_node_connect_from (state->threshold, "aux",
-                            state->blur, "output");
+    gegl_node_connect (state->threshold, "aux", state->blur, "output");
   }
 
   gegl_node_set (state->threshold, "value", o->low, NULL);
@@ -138,8 +133,8 @@ attach (GeglOperation *operation)
 
   gegl_node_link_many (state->gray, state->aa_grow, state->threshold,
                        state->aa_shrink, state->output, NULL);
-  gegl_node_connect_from (state->blur,       "input", state->gray, "output");
-  gegl_node_connect_from (state->aa_grow2,   "input", state->blur, "output");
+  gegl_node_connect (state->blur,       "input", state->gray, "output");
+  gegl_node_connect (state->aa_grow2,   "input", state->blur, "output");
 
   gegl_operation_meta_redirect (operation, "radius", state->blur, "std-dev-x");
   gegl_operation_meta_redirect (operation, "radius", state->blur, "std-dev-y");
