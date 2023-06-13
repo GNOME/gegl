@@ -345,11 +345,11 @@ l_in_height(lua_State * lua)
 static int
 l_flush (lua_State * lua)
 {
-  Priv *p;
+  //Priv *p;
 
   lua_pushstring(lua, "priv");
   lua_gettable(lua, LUA_REGISTRYINDEX);
-  p = lua_touserdata(lua, -1);
+  //p = lua_touserdata(lua, -1);
 
   return 0;
 }
@@ -357,13 +357,13 @@ l_flush (lua_State * lua)
 static int
 l_progress(lua_State * lua)
 {
-  lua_Number percent;
 
   if (!lua_gettop(lua))
     return 0;
+#if 0
+  lua_Number percent;
   percent = lua_tonumber(lua, -1);
 
-#if 0
   g_warning ("progress,.. %f", percent);
   gimp_progress_update((double) percent);
 #endif
