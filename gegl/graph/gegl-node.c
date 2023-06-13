@@ -604,32 +604,16 @@ gegl_node_connect_from (GeglNode    *sink,
                         GeglNode    *source,
                         const gchar *source_pad_name)
 {
-  return gegl_node_connect_to (source, source_pad_name, sink, sink_pad_name);
+  return gegl_node_connect (source, source_pad_name, sink, sink_pad_name);
 }
 
 gboolean
-gegl_node_connect (GeglNode *a, const gchar*a_pad_name,
-                   GeglNode *b, const gchar*b_pad_name)
+gegl_node_connect_to (GeglNode    *sink,
+                      const gchar *sink_pad_name,
+                      GeglNode    *source,
+                      const gchar *source_pad_name)
 {
-  GeglPad *pad_a = gegl_node_get_pad (a, a_pad_name);
-  GeglPad *pad_b = gegl_node_get_pad (b, b_pad_name);
-  if (!pad_a || !pad_b) {
-    g_warning ("NULL pad");
-    return FALSE;
-  }
-  if (gegl_pad_is_input (pad_a))
-  {
-    return gegl_node_connect_to (b, b_pad_name, a, a_pad_name);
-  }
-  else if (gegl_pad_is_input (pad_b))
-  {
-    return gegl_node_connect_to (a, a_pad_name, b, b_pad_name);
-  }
-  else {
-    g_warning ("neither pad is an input pad");
-    return FALSE;
-  }
-  return FALSE;
+  return gegl_node_connect (sink, sink_pad_name, source, source_pad_name);
 }
 
 /* the implementation of gegl_node_invalidated() can use either GeglRegions
@@ -884,20 +868,32 @@ gegl_node_is_graph (GeglNode *node)
 }
 
 gboolean
-gegl_node_connect_to (GeglNode    *source,
-                      const gchar *source_pad_name,
-                      GeglNode    *sink,
-                      const gchar *sink_pad_name)
+gegl_node_connect (GeglNode    *source,
+                   const gchar *source_pad_name,
+                   GeglNode    *sink,
+                   const gchar *sink_pad_name)
 {
-  GeglNode    *real_sink            = sink;
-  GeglNode    *real_source          = source;
-  const gchar *real_sink_pad_name   = sink_pad_name;
-  const gchar *real_source_pad_name = source_pad_name;
-
   g_return_val_if_fail (GEGL_IS_NODE (sink), FALSE);
   g_return_val_if_fail (sink_pad_name != NULL, FALSE);
   g_return_val_if_fail (GEGL_IS_NODE (source), FALSE);
   g_return_val_if_fail (source_pad_name != NULL, FALSE);
+
+  GeglPad *pad_sink = gegl_node_get_pad (sink, sink_pad_name);
+  if (!gegl_pad_is_input (pad_sink))
+  {
+    { GeglNode *tmp = source;
+      source = sink;
+      sink = tmp; }
+    { const gchar *tmp = source_pad_name;
+      source_pad_name = sink_pad_name;
+      sink_pad_name = tmp;
+    }
+  }
+
+  GeglNode    *real_sink            = sink;
+  GeglNode    *real_source          = source;
+  const gchar *real_sink_pad_name   = sink_pad_name;
+  const gchar *real_source_pad_name = source_pad_name;
 
   if (gegl_node_has_source (source, sink))
     {
@@ -1090,7 +1086,7 @@ gegl_node_link (GeglNode *source,
   /* using connect_to is more natural here, but leads to an extra
    * function call, perhaps connect_to and connect_from should be swapped?
    */
-  gegl_node_connect_to (source, "output", sink, "input");
+  gegl_node_connect (source, "output", sink, "input");
 }
 
 void
@@ -1451,11 +1447,11 @@ gegl_node_set_operation_object (GeglNode      *self,
 
   /* FIXME: This should handle all input pads instead of just these 3 */
   if (input)
-    gegl_node_connect_to (input, "output", self, "input");
+    gegl_node_connect (input, "output", self, "input");
   if (aux)
-    gegl_node_connect_to (aux, "output", self, "aux");
+    gegl_node_connect (aux, "output", self, "aux");
   if (aux2)
-    gegl_node_connect_to (aux2, "output", self, "aux2");
+    gegl_node_connect (aux2, "output", self, "aux2");
 
   if (consumer_nodes)
     {
@@ -1465,7 +1461,7 @@ gegl_node_set_operation_object (GeglNode      *self,
           const gchar *output_dest_pad = consumer_names[i];
 
           if (output)
-            gegl_node_connect_to (self, "output", output, output_dest_pad);
+            gegl_node_connect (self, "output", output, output_dest_pad);
         }
 
       g_free (consumer_nodes);
