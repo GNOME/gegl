@@ -67,7 +67,7 @@ main (gint    argc,
                                     NULL);
 
   gegl_node_link_many (blank, crop, layer, shift, display, NULL);
-  gegl_node_connect_to (text, "output", layer, "aux");
+  gegl_node_connect (text, "output", layer, "aux");
   
   /* request that the save node is processed, all dependencies will
    * be processed as well

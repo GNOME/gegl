@@ -118,8 +118,8 @@ init_main_context (MainContext *context)
                                          NULL);
 
   /* The "aux" node of "gegl:over" is the image on top */
-  gegl_node_connect_to (background_node, "output", over, "input");
-  gegl_node_connect_to (buffer_src, "output", over, "aux");
+  gegl_node_connect (background_node, "output", over, "input");
+  gegl_node_connect (buffer_src, "output", over, "aux");
 
   g_object_unref (color1);
   g_object_unref (color2);

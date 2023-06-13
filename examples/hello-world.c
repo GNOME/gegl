@@ -65,7 +65,7 @@ This is the graph we're going to construct:
                                 NULL);
 
     gegl_node_link_many (mandelbrot, over, crop, display, NULL);
-    gegl_node_connect_to (text, "output",  over, "aux");
+    gegl_node_connect (text, "output",  over, "aux");
 
     /* request that the save node is processed, all dependencies will
      * be processed as well
