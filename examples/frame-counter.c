@@ -92,7 +92,7 @@ main (gint    argc,
 #endif
 
     gegl_node_link_many (bg, over, crop, store, NULL);
-    gegl_node_connect_to (text, "output",  over, "aux");
+    gegl_node_connect (text, "output",  over, "aux");
 
     {
       gint frame;

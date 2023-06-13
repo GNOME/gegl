@@ -2193,7 +2193,7 @@ static GeglNode *add_aux (GeState *o, GeglNode *active, const char *optype)
   {
     gegl_node_link_many (producer, ret, NULL);
   }
-  gegl_node_connect_to (ret, "output", ref, "aux");
+  gegl_node_connect (ret, "output", ref, "aux");
   return ret;
 }
 
@@ -2210,7 +2210,7 @@ static GeglNode *add_input (GeState *o, GeglNode *active, const char *optype)
   {
     gegl_node_link_many (producer, ret, NULL);
   }
-  gegl_node_connect_to (ret, "output", ref, "input");
+  gegl_node_link (ret, ref);
   return ret;
 }
 
@@ -2227,7 +2227,7 @@ static GeglNode *add_output (GeState *o, GeglNode *active, const char *optype)
   {
     ret = gegl_node_new_child (o->gegl, "operation", optype, NULL);
     gegl_node_link_many (ref, ret, NULL);
-    gegl_node_connect_to (ret, "output", consumer, consumer_name);
+    gegl_node_connect (ret, "output", consumer, consumer_name);
   }
   return ret;
 }
@@ -3567,7 +3567,7 @@ static void on_active_node_drag (MrgEvent *e, void *data1, void *data2, int is_a
 
            if (node_pad_drag_candidate)
            {
-              gegl_node_connect_to (node_pad_drag_candidate, "output", node_pad_drag_node, "input");
+              gegl_node_link (node_pad_drag_candidate, node_pad_drag_node);
               rev_inc (o);
            }
            o->pad_active = PAD_OUTPUT;
@@ -3594,7 +3594,7 @@ static void on_active_node_drag (MrgEvent *e, void *data1, void *data2, int is_a
 
            if (node_pad_drag_candidate)
            {
-              gegl_node_connect_to (node_pad_drag_candidate, "output", node_pad_drag_node, "aux");
+              gegl_node_connect (node_pad_drag_candidate, "output", node_pad_drag_node, "aux");
               rev_inc (o);
            }
            o->pad_active = PAD_OUTPUT;
@@ -4502,7 +4502,7 @@ ui_run_command (MrgEvent *event, void *data1, void *data_2)
                 gegl_node_link_many (ref_node, o->active, NULL);
                 break;
               case PAD_AUX:
-                gegl_node_connect_to (ref_node, "output", o->active, "aux");
+                gegl_node_connect (ref_node, "output", o->active, "aux");
                 break;
             }
           }
@@ -8076,7 +8076,7 @@ int cmd_remove (COMMAND_ARGS) /* "remove", 0, "", "removes active node"*/
       if (next && prev)
       {
         gegl_node_disconnect (node, "input");
-        gegl_node_connect_to (prev, "output", next, consumer_name);
+        gegl_node_connect (prev, "output", next, consumer_name);
         gegl_node_remove_child (o->gegl, node);
         o->active = prev;
       }
@@ -8123,7 +8123,7 @@ cmd_swap (COMMAND_ARGS)
             gegl_node_link_many (prev, next, node, NULL);
           else
             gegl_node_link_many (next, node, NULL);
-          gegl_node_connect_to (node, "output", next_next, next_next_consumer);
+          gegl_node_connect (node, "output", next_next, next_next_consumer);
         }
       }
       else if (prev && !strcmp (argv[1], "input") && prev != o->source)
@@ -8133,7 +8133,7 @@ cmd_swap (COMMAND_ARGS)
         if (prev_prev)
         {
           gegl_node_link_many (prev_prev, node, prev, NULL);
-          gegl_node_connect_to (prev, "output", next, consumer_name);
+          gegl_node_connect (prev, "output", next, consumer_name);
         }
         else
         {
@@ -8141,8 +8141,8 @@ cmd_swap (COMMAND_ARGS)
           {
             gegl_node_disconnect (next, consumer_name);
             gegl_node_disconnect (node, "input");
-            gegl_node_link_many (node, prev, NULL);
-            gegl_node_connect_to (prev, "output", next, consumer_name);
+            gegl_node_link (node, prev);
+            gegl_node_connect (prev, "output", next, consumer_name);
           }
         }
       }
@@ -8380,10 +8380,10 @@ cmd_dereference (COMMAND_ARGS)
   {
     case PAD_INPUT:
     case PAD_OUTPUT:
-      gegl_node_link_many (o->reference_node, o->active, NULL);
+      gegl_node_link (o->reference_node, o->active);
       break;
     case PAD_AUX:
-      gegl_node_connect_to (o->reference_node, "output", o->active, "aux");
+      gegl_node_connect (o->reference_node, "output", o->active, "aux");
       break;
   }
 
@@ -8441,9 +8441,9 @@ cmd_node_add (COMMAND_ARGS)
 
     if (producer)
     {
-      gegl_node_connect_to (producer, "output", o->active, "input");
+      gegl_node_link (producer, o->active);
     }
-    gegl_node_connect_to (o->active, "output", ref, "input");
+    gegl_node_link (o->active, ref);
 
     o->editing_op_name = 1;
     mrg_set_cursor_pos (o->mrg, 0);
@@ -8461,9 +8461,9 @@ cmd_node_add (COMMAND_ARGS)
 
     if (producer)
     {
-      gegl_node_connect_to (producer, "output", o->active, "input");
+      gegl_node_link (producer, o->active);
     }
-    gegl_node_connect_to (o->active, "output", ref, "aux");
+    gegl_node_connect (o->active, "output", ref, "aux");
 
     o->editing_op_name = 1;
     mrg_set_cursor_pos (o->mrg, 0);
@@ -8481,7 +8481,7 @@ cmd_node_add (COMMAND_ARGS)
     {
       o->active = gegl_node_new_child (o->gegl, "operation", "gegl:nop", NULL);
       gegl_node_link_many (ref, o->active, NULL);
-      gegl_node_connect_to (o->active, "output", consumer, consumer_name);
+      gegl_node_connect (o->active, "output", consumer, consumer_name);
       o->editing_op_name = 1;
       if (o->mrg) mrg_set_cursor_pos (o->mrg, 0);
       o->editing_buf[0]=0;

@@ -124,7 +124,7 @@ main (gint    argc,
 
   comparison = gegl_node_create_child (gegl, "gegl:image-compare");
   gegl_node_link (imgA, comparison);
-  gegl_node_connect_to (imgB, "output", comparison, "aux");
+  gegl_node_connect (imgB, "output", comparison, "aux");
   gegl_node_process (comparison);
   gegl_node_get (comparison,
                  "max-diff", &max_diff,

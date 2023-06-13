@@ -156,7 +156,7 @@ main (int    argc,
           return (EXIT_FAILURE);
         }
 
-      gegl_node_connect_to (img, "output", combiner, combiner_pad);
+      gegl_node_connect (img, "output", combiner, combiner_pad);
     }
 
   g_return_val_if_fail (all_evs[0] == ' ', EXIT_FAILURE);

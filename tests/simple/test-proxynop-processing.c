@@ -77,8 +77,7 @@ int main(int argc, char *argv[])
                                              "width",     1.0,
                                              "height",    1.0,
                                              NULL);
-  gegl_node_connect_to (graph,              "output",
-                        crop_outside_graph, "input");
+  gegl_node_link (graph, crop_outside_graph);
 
   /* Process the graph and make sure we get the expected result */
   memset (result_buffer, 0, sizeof (result_buffer));

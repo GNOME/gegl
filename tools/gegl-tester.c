@@ -128,14 +128,14 @@ standard_output (const gchar *op_name)
 
       if (gegl_node_has_pad (operation, "aux"))
       {
-        gegl_node_connect_to (aux, "output", translate, "input");
-        gegl_node_connect_to (translate, "output", operation, "aux");
+        gegl_node_connect (aux, "output", translate, "input");
+        gegl_node_connect (translate, "output", operation, "aux");
       }
 
-      gegl_node_connect_to (background, "output", over, "input");
-      gegl_node_connect_to (operation,  "output", over, "aux");
-      gegl_node_connect_to (over,       "output", crop, "input");
-      gegl_node_connect_to (crop,       "output", output, "input");
+      gegl_node_connect (background, "output", over, "input");
+      gegl_node_connect (operation,  "output", over, "aux");
+      gegl_node_connect (over,       "output", crop, "input");
+      gegl_node_connect (crop,       "output", output, "input");
 
 
       gegl_node_process (output);
