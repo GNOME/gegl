@@ -6,7 +6,7 @@ Core:
 
 New simpler API for connecting pads, gegl_node_connect which can be
 used instead of either gegl_node_connect_from or gegl_node_connect_to by
-autosensing the types of pads.
+autosensing the neccesary direction of the connection.
 
 Operations:
 ~~~~~~~~~~~
@@ -258,22 +258,24 @@ Upload meson logs as artifcats, use release and debugoptimized build types.
 Pin glibc package in arch CI build to a version before it hard depends on linux
 4.4.
 
-New Operations:
-~~~~~~~~~~~~~~~
-  negative-darkroom: This operation is for artists who use hybrid workflow
-   technique of analog photography. After scanning a developed negative, this
-   operation is used to invert the scan to create a positive image by simulating
-   the light behaviour of darkroom enlarger and common photographic papers.
+negative-darkroom
+~~~~~~~~~~~~~~~~~
 
-Operations:
-~~~~~~~~~~~
-  jpg-load,png-load,tiff-load: show ICC relatd problems as warnings.
-  rgbe-load : fix handling of exponent=0 in RLE encoded files.
-  color-reduction : Added blue-noise modes, the patents are expired for some 
-  years already, also added fix to levels parameters; enabling bi-level.
-  fattal02 : ensure gaussian pyramid has at least one level.
+New operation for artists who use hybrid workflow
+technique of analog photography. After scanning a developed negative, this
+operation is used to invert the scan to create a positive image by simulating
+the light behaviour of darkroom enlarger and common photographic papers.
 
-  paint-select (in workshop): multi-level banded graphcut, sub-region rather
+Operations
+~~~~~~~~~~
+
+ - jpg-load,png-load,tiff-load: show ICC relatd problems as warnings.
+ - rgbe-load : fix handling of exponent=0 in RLE encoded files.
+ - color-reduction : Added blue-noise modes, the patents are expired for some 
+ - years already, also added fix to levels parameters; enabling bi-level.
+ - fattal02 : ensure gaussian pyramid has at least one level.
+
+ - paint-select (in workshop): multi-level banded graphcut, sub-region rather
     than full buffer rcomputations and other improvements.
 
 Contributors to this release:
@@ -1313,11 +1315,11 @@ Better clone accounting in tile cache.
 Operations
 ~~~~~~~~~~
 
-  exp-combine: code cleanup/simplification
-  libraw: make bounding box handling consistent with rest of code.
-  transform ops: re-enabled multi-threading, reduced some format
-                 conversions and added wiggle-room in required/invalidated
-                 calculations.
+  - exp-combine: code cleanup/simplification
+  - libraw: make bounding box handling consistent with rest of code.
+  - transform ops: re-enabled multi-threading, reduced some format
+      conversions and added wiggle-room in required/invalidated
+      calculations.
 
 GEGL-0.3.24 2017-11-24
 ----------------------
