@@ -180,7 +180,7 @@ test_comparison (const gfloat        *reference,
                                     NULL);
 
   gegl_node_link_many (source_ref, comparison, NULL);
-  gegl_node_connect_to (source_aux, "output",  comparison, "aux");
+  gegl_node_connect (source_aux, "output",  comparison, "aux");
 
   gegl_node_process (comparison);
 

@@ -64,10 +64,8 @@ test (gpointer data)
                                   "operation", "gegl:over",
                                   NULL);
 
-      gegl_node_connect_to (last, "output",
-                            over, "input");
-      gegl_node_connect_to (last, "output",
-                            over, "aux");
+      gegl_node_connect (last, "output", over, "input");
+      gegl_node_connect (last, "output", over, "aux");
 
       last = over;
     }

@@ -35,7 +35,7 @@ dump_to_png (const char *filename, GeglBuffer *buffer)
                             "compression", 6,
                             NULL);
 
-  gegl_node_connect_to (src, "output",  dst, "input");
+  gegl_node_link (src, dst);
 
   gegl_node_process(dst);
 
@@ -87,8 +87,8 @@ test_operation (const char *operation_name)
                                    "height", 10.0,
                                    NULL);
 
-    gegl_node_connect_to (lower_rect, "output", test_op, "input");
-    gegl_node_connect_to (upper_rect, "output", test_op, "aux");
+    gegl_node_connect (lower_rect, "output", test_op, "input");
+    gegl_node_connect (upper_rect, "output", test_op, "aux");
 
     {
       int i;
@@ -156,14 +156,14 @@ test_operation (const char *operation_name)
                                    "operation", "gegl:over",
                                    NULL);
 
-    gegl_node_connect_to (lower_rect, "output", lower_over, "aux");
-    gegl_node_connect_to (upper_rect, "output", upper_over, "aux");
+    gegl_node_connect (lower_rect, "output", lower_over, "aux");
+    gegl_node_connect (upper_rect, "output", upper_over, "aux");
 
-    gegl_node_connect_to (background, "output", lower_over, "input");
-    gegl_node_connect_to (background, "output", upper_over, "input");
+    gegl_node_connect (background, "output", lower_over, "input");
+    gegl_node_connect (background, "output", upper_over, "input");
 
-    gegl_node_connect_to (lower_over, "output", test_op, "input");
-    gegl_node_connect_to (upper_over, "output", test_op, "aux");
+    gegl_node_connect (lower_over, "output", test_op, "input");
+    gegl_node_connect (upper_over, "output", test_op, "aux");
 
     {
       int i;

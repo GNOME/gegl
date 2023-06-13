@@ -127,7 +127,7 @@ int main(int argc, char *argv[])
    */
   gegl_node_link_many (black, over, sink, NULL);
   gegl_node_link_many (white, crop, translate, NULL);
-  gegl_node_connect_to (translate, "output",  over, "aux");
+  gegl_node_connect (translate, "output",  over, "aux");
 
   /* Create a processor */
   processor = gegl_node_new_processor (sink, NULL);
