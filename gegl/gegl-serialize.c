@@ -371,8 +371,8 @@ gegl_create_chain_argv (char      **argv,
         {
           level--;
           if (level < 0) level = 0;
-          gegl_node_connect_to (iter[level+1], "output", iter[level],
-                                level_pad[level]);
+          gegl_node_connect (iter[level+1], "output", iter[level],
+                             level_pad[level]);
         }
       else
         {
@@ -743,8 +743,8 @@ gegl_create_chain_argv (char      **argv,
                 if (end_block && level >0)
                   {
                     level--;
-                    gegl_node_connect_to (iter[level+1], "output", iter[level],
-                                          level_pad[level]);
+                    gegl_node_connect (iter[level+1], "output",
+                                       iter[level], level_pad[level]);
                   }
               }
             }
@@ -838,8 +838,8 @@ gegl_create_chain_argv (char      **argv,
   while (level > 0)
     {
       level--;
-      gegl_node_connect_to (iter[level+1], "output", iter[level],
-                            level_pad[level]);
+      gegl_node_connect (iter[level+1], "output",
+                         iter[level], level_pad[level]);
     }
 
   g_free (prop);
@@ -847,7 +847,7 @@ gegl_create_chain_argv (char      **argv,
 
 
   if (gegl_node_has_pad (iter[level], "output"))
-    gegl_node_link_many (iter[level], proxy, NULL);
+    gegl_node_link (iter[level], proxy);
   else
   {
     if (ret_sinkp)
