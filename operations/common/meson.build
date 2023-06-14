@@ -1,6 +1,5 @@
 gegl_common_sources = files(
   'absolute.c',
-  'adaptive-threshold.c',
   'alpha-clip.c',
   'alien-map.c',
   'bilateral-filter.c',
@@ -52,6 +51,7 @@ gegl_common_sources = files(
   'levels.c',
   'linear-gradient.c',
   'little-planet.c',
+  'local-threshold.c',
   'long-shadow.c',
   'magick-load.c',
   'mantiuk06.c',

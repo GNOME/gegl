@@ -47,8 +47,8 @@ property_int (aa_factor, _("Antialiasing"), 1)
 #else
 
 #define GEGL_OP_META
-#define GEGL_OP_NAME     adaptive_threshold
-#define GEGL_OP_C_SOURCE adaptive-threshold.c
+#define GEGL_OP_NAME     local_threshold
+#define GEGL_OP_C_SOURCE local-threshold.c
 
 #include "gegl-op.h"
 
@@ -164,12 +164,12 @@ gegl_op_class_init (GeglOpClass *klass)
   object_class->dispose      = dispose; 
 
   gegl_operation_class_set_keys (operation_class,
-    "name",        "gegl:adaptive-threshold",
-    "title",       _("Adaptive Threshold"),
+    "name",        "gegl:local-threshold",
+    "title",       _("Local Threshold"),
     "description",
-    _("Applies a threshold using local contrast in a gaussian neighborhood."),
+    _("Applies a threshold using the local neighborhood."),
     "gimp:menu-path", "<Image>/Colors",
-    "gimp:menu-label", _("Adaptive Threshold..."),
+    "gimp:menu-label", _("Local Threshold..."),
     NULL);
 }
 
