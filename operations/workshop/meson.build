@@ -4,7 +4,7 @@ subdir('generated')
 gegl_workshop_sources = files(
   'aces-rrt.c',
   'alpha-inpaint.c',
-  'bevel-designer.c',
+  'bevel.c',
   'bilateral-filter-fast.c',
   'boxblur-1d.c',
   'boxblur.c',

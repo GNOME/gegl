@@ -13,9 +13,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with GEGL; if not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright 2006 Øyvind Kolås <pippin@gimp.org>
- * 2022 Beaver (GEGL custom bevel), 2023 branch which is a candidate for Gimp 2.99; re-titled "Bevel Designer" and modified to be compatible with Gimp's standards.
- * Beaver's custom bevel plugin is a more advancedd version of this.
+ * Copyright 2022, 2023 LinuxBeaver
  */
 
 #include "config.h"
@@ -135,8 +133,8 @@ ui_meta ("visible", "guichange {advancedbevel}")
 #else
 
 #define GEGL_OP_META
-#define GEGL_OP_NAME     bevel_designer
-#define GEGL_OP_C_SOURCE bevel-designer.c
+#define GEGL_OP_NAME     bevel
+#define GEGL_OP_C_SOURCE bevel.c
 
 #include "gegl-op.h"
 
@@ -167,8 +165,9 @@ update_graph (GeglOperation *operation)
 {
   GeglProperties *o = GEGL_PROPERTIES (operation);
   State *state = o->user_data;
-  if (!state) return;
 
+  if (!state)
+    return;
 
   GeglNode *usethis = state->hardlight; /* the default */
   switch (o->blendmode) {
@@ -180,15 +179,15 @@ update_graph (GeglOperation *operation)
     case GEGL_BLEND_MODE_TYPE_OVERLAY: usethis = state->overlay; break;
     case GEGL_BLEND_MODE_TYPE_SOFTLIGHT: usethis = state->softlight; break;
     case GEGL_BLEND_MODE_TYPE_ADDITION: usethis = state->addition; break;
-default: usethis = state->hardlight;
-
-}
-
-  {
-  gegl_node_link_many (state->input, state->median, state->box, state->gaussian, usethis, state->opacity, state->mcb,  state->repairgeglgraph,  state->output,  NULL);
-  gegl_node_connect_from (usethis, "aux", state->emboss, "output");
-  gegl_node_link_many (state->gaussian, state->emboss, NULL);
+    default: usethis = state->hardlight;
   }
+
+  gegl_node_link_many (state->input, state->median, state->box,
+                       state->gaussian, usethis, state->opacity,
+                       state->mcb,  state->repairgeglgraph, 
+                       state->output,  NULL);
+  gegl_node_link_many (state->gaussian, state->emboss, NULL);
+  gegl_node_connect (state->emboss, "output", usethis, "aux");
 }
 
 static void attach (GeglOperation *operation)
@@ -330,8 +329,8 @@ GeglOperationMetaClass *operation_meta_class = GEGL_OPERATION_META_CLASS (klass)
   operation_meta_class->update = update_graph;
 
   gegl_operation_class_set_keys (operation_class,
-    "name",        "gegl:bevel-designer",
-    "title",       _("Bevel Designer"),
+    "name",        "gegl:bevel",
+    "title",       _("Bevel"),
     "categories",  "Artistic",
     "reference-hash", "11lighth3do6akv00vyeefjf25sb2ac",
     "description", _("Design a custom bevel or bump effect. This filter is meant for shapes and text."
