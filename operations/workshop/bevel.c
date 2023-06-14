@@ -254,8 +254,9 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",       _("Bevel"),
     "categories",  "Artistic",
     "reference-hash", "11lighth3do6akv00vyeefjf25sb2ac",
-    "description", _("Design a custom bevel or bump effect. This filter is meant for shapes and text."
-                     ""),
+    "description", _("Design a custom bevel or bump effect. This filter is meant for shapes and text."),
+    "gimp:menu-path", "<Image>/Filters/Light and Shadow",
+    "gimp:menu-label", _("Bevel..."),
     NULL);
 }
 
