@@ -29,21 +29,21 @@ property_enum(guichange, _("Part of filter to be displayed"),
 enum_start (gegl_blend_mode_typedesignerlite)
   enum_value (GEGL_BLEND_MODE_TYPE_HARDLIGHT, "hardlight",
               N_("HardLight"))
-  enum_value (GEGL_BLEND_MODE_TYPE_MULTIPLY,      "multiply",
+  enum_value (GEGL_BLEND_MODE_TYPE_MULTIPLY,  "multiply",
               N_("Multiply"))
-  enum_value (GEGL_BLEND_MODE_TYPE_COLORDODGE,      "colordodge",
+  enum_value (GEGL_BLEND_MODE_TYPE_COLORDODGE, "colordodge",
               N_("ColorDodge"))
   enum_value (GEGL_BLEND_MODE_TYPE_PLUS,      "plus",
               N_("Plus"))
-  enum_value (GEGL_BLEND_MODE_TYPE_DARKEN,      "darken",
+  enum_value (GEGL_BLEND_MODE_TYPE_DARKEN,    "darken",
               N_("Darken"))
-  enum_value (GEGL_BLEND_MODE_TYPE_LIGHTEN,      "lighten",
+  enum_value (GEGL_BLEND_MODE_TYPE_LIGHTEN,   "lighten",
               N_("Lighten"))
-  enum_value (GEGL_BLEND_MODE_TYPE_OVERLAY,      "overlay",
+  enum_value (GEGL_BLEND_MODE_TYPE_OVERLAY,   "overlay",
               N_("Overlay"))
-  enum_value (GEGL_BLEND_MODE_TYPE_SOFTLIGHT,      "softlight",
+  enum_value (GEGL_BLEND_MODE_TYPE_SOFTLIGHT, "softlight",
               N_("Soft Light"))
-  enum_value (GEGL_BLEND_MODE_TYPE_ADDITION,      "addition",
+  enum_value (GEGL_BLEND_MODE_TYPE_ADDITION,  "addition",
               N_("Addition"))
 enum_end (GeglBlendModeTypedesignerlite)
 
@@ -144,18 +144,10 @@ typedef struct
   GeglNode *median;
   GeglNode *box;
   GeglNode *gaussian;
-  GeglNode *hardlight;
-  GeglNode *multiply;
-  GeglNode *colordodge;
+  GeglNode *blend;
   GeglNode *emboss;
-  GeglNode *plus;
-  GeglNode *darken;
-  GeglNode *lighten;
   GeglNode *opacity;
   GeglNode *mcb;
-  GeglNode *overlay;
-  GeglNode *softlight;
-  GeglNode *addition;
   GeglNode *alpha_clip;
   GeglNode *output;
 }State;
@@ -169,25 +161,20 @@ update_graph (GeglOperation *operation)
   if (!state)
     return;
 
-  GeglNode *usethis = state->hardlight; /* the default */
+  const char *blend_op = "gegl:nop";
   switch (o->blendmode) {
-    case GEGL_BLEND_MODE_TYPE_MULTIPLY: usethis = state->multiply; break;
-    case GEGL_BLEND_MODE_TYPE_COLORDODGE: usethis = state->colordodge; break;
-    case GEGL_BLEND_MODE_TYPE_PLUS: usethis = state->plus; break;
-    case GEGL_BLEND_MODE_TYPE_DARKEN: usethis = state->darken; break;
-    case GEGL_BLEND_MODE_TYPE_LIGHTEN: usethis = state->lighten; break;
-    case GEGL_BLEND_MODE_TYPE_OVERLAY: usethis = state->overlay; break;
-    case GEGL_BLEND_MODE_TYPE_SOFTLIGHT: usethis = state->softlight; break;
-    case GEGL_BLEND_MODE_TYPE_ADDITION: usethis = state->addition; break;
-    default: usethis = state->hardlight;
+    case GEGL_BLEND_MODE_TYPE_HARDLIGHT: blend_op = "gegl:hard-light"; break;
+    case GEGL_BLEND_MODE_TYPE_MULTIPLY: blend_op = "gegl:multiply"; break;
+    case GEGL_BLEND_MODE_TYPE_COLORDODGE: blend_op = "gegl:color-dodge"; break;
+    case GEGL_BLEND_MODE_TYPE_PLUS: blend_op = "gegl:plus"; break;
+    case GEGL_BLEND_MODE_TYPE_DARKEN: blend_op = "gegl:darken"; break;
+    case GEGL_BLEND_MODE_TYPE_LIGHTEN: blend_op = "gegl:lighten"; break;
+    case GEGL_BLEND_MODE_TYPE_OVERLAY: blend_op = "gegl:overlay"; break;
+    case GEGL_BLEND_MODE_TYPE_SOFTLIGHT: blend_op = "gegl:soft-light"; break;
+    case GEGL_BLEND_MODE_TYPE_ADDITION: blend_op = "gegl:add"; break;
   }
+  gegl_node_set (state->blend, "operation", blend_op, NULL);
 
-  gegl_node_link_many (state->input, state->median, state->box,
-                       state->gaussian, usethis, state->opacity,
-                       state->mcb,  state->alpha_clip, 
-                       state->output,  NULL);
-  gegl_node_link_many (state->gaussian, state->emboss, NULL);
-  gegl_node_connect (state->emboss, "output", usethis, "aux");
 }
 
 static void attach (GeglOperation *operation)
@@ -197,22 +184,12 @@ static void attach (GeglOperation *operation)
 
   State *state = o->user_data = g_malloc0 (sizeof (State));
 
-  state->input      = gegl_node_get_input_proxy  (gegl, "input");
-  state->output     = gegl_node_get_output_proxy (gegl, "output");
-  state->median     = gegl_node_new_child (gegl, "operation", "gegl:median-blur",
-                                                 "percentile", 53.0,
-                                           NULL);
-  state->multiply   = gegl_node_new_child (gegl, "operation", "gegl:multiply",
-                                           NULL);
-  state->hardlight  = gegl_node_new_child (gegl, "operation", "gegl:hard-light",
-                                           NULL);
-  state->colordodge = gegl_node_new_child (gegl, "operation", "gegl:color-dodge",
-                                           NULL);
-  state->darken     = gegl_node_new_child (gegl, "operation", "gegl:darken",
-                                           NULL);
-  state->lighten    = gegl_node_new_child (gegl, "operation", "gegl:lighten",
-                                           NULL);
-  state->plus       = gegl_node_new_child (gegl, "operation", "gegl:plus",
+  state->input     = gegl_node_get_input_proxy  (gegl, "input");
+  state->output    = gegl_node_get_output_proxy (gegl, "output");
+  state->median    = gegl_node_new_child (gegl, "operation", "gegl:median-blur",
+                                                "percentile", 53.0,
+                                          NULL);
+  state->blend      = gegl_node_new_child (gegl, "operation", "gegl:hard-light",
                                            NULL);
   state->opacity    = gegl_node_new_child (gegl, "operation", "gegl:opacity",
                                            NULL);
@@ -227,14 +204,15 @@ static void attach (GeglOperation *operation)
                                            NULL);
   state->mcb        = gegl_node_new_child (gegl, "operation", "gegl:mean-curvature-blur",
                                            NULL);
-  state->overlay    = gegl_node_new_child (gegl, "operation", "gegl:overlay",
-                                           NULL);
-  state->softlight  = gegl_node_new_child (gegl, "operation", "gegl:soft-light",
-                                           NULL);
-  state->addition   = gegl_node_new_child (gegl, "operation", "gegl:add",
-                                           NULL);
   state->alpha_clip = gegl_node_new_child (gegl, "operation", "gegl:alpha-clip",
                                            NULL);
+
+  gegl_node_link_many (state->input, state->median, state->box,
+                       state->gaussian, state->blend, state->opacity,
+                       state->mcb,  state->alpha_clip, 
+                       state->output,  NULL);
+  gegl_node_link_many (state->gaussian, state->emboss, NULL);
+  gegl_node_connect (state->emboss, "output", state->blend, "aux");
 
   gegl_operation_meta_redirect (operation, "size",
                                 state->median, "radius");
