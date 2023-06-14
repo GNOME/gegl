@@ -66,6 +66,36 @@ enum_value   (BEVELDESIGNER_UI_ADVANCE, "advancedbevel", N_("Advanced Sliders"))
   enum_end (guiendbeveldesigner)
  /*Changing the name of a ENUM list will result in all presets breaking*/
 
+
+property_double (azimuth, _("Emboss Azimuth"), 67.0)
+    description (_("Light angle (degrees). For most blend modes this rotates lighting of the bevel."))
+    value_range (30, 90)
+    ui_meta ("unit", "degree")
+    ui_meta ("direction", "ccw")
+
+
+property_double (elevation, _("Emboss Elevation"), 25.0)
+    description (_("Elevation angle (degrees). For most blend modes this shifts the lightest colors of the bevel."))
+    value_range (7, 90)
+    ui_meta ("unit", "degree")
+
+property_int (depth, _("Emboss Depth"), 24)
+    description (_("Emboss Depth. For some blend modes it adds depth and for others adds detail to the bevel."))
+  ui_range    (1, 70)
+    value_range (1, 100)
+
+property_double (gaus, _("Normal Bevel Effect"), 1)
+   description (_("Internal Gaussian Blur makes a bumpish bevel. Making this too high will create an undesirable effect. The larger the text the higher this slider should be."))
+   value_range (0.0, 5.5)
+   ui_range    (0.0, 4.0)
+  ui_steps      (0.1, 1.0)
+
+property_int (box, _("Sharp Bevel Effect"), 3)
+   description(_("Internal Box Blur makes a sharp bevel. Making this too high will create an undesirable effect. The larger the text the higher this slider should be."))
+   value_range (0, 9)
+   ui_range    (0, 6)
+  ui_steps      (1.0, 2.0)  
+
 property_enum (type, _("Choose Internal Median Shape"),
                GeglMedianBlurNeighborhooddlite, gegl_median_blur_neighborhooddlite,
                GEGL_MEDIAN_BLUR_NEIGHBORHOOD_CIRCLEcblite)
@@ -73,28 +103,10 @@ property_enum (type, _("Choose Internal Median Shape"),
 ui_meta ("visible", "guichange {advancedbevel}")
 
 property_double (opacity, _("Widen bevel by increasing internal opacity"), 8)
-    description (_("Increasement of internal opacity which should make the bevel appear wider."))
+    description (_("Opacity boost, for widening bevel."))
     value_range (3, 10)
     ui_range    (4, 10)
 ui_meta ("visible", "guichange {advancedbevel}")
-
-property_double (azimuth, _("Azimuth"), 67.0)
-    description (_("Light angle (degrees). For most blend modes this rotates lighting of the bevel."))
-    value_range (30, 90)
-    ui_meta ("unit", "degree")
-    ui_meta ("direction", "ccw")
-
-
-property_double (elevation, _("Elevation - Rotate light colors"), 25.0)
-    description (_("Elevation angle (degrees). For most blend modes this shifts the lightest colors of the bevel."))
-    value_range (7, 90)
-    ui_meta ("unit", "degree")
-
-property_int (depth, _("Depth and or Detail"), 24)
-    description (_("Emboss Depth. For some blend modes it adds depth and for others adds detail to the bevel."))
-  ui_range    (1, 70)
-    value_range (1, 100)
-
 
 property_int  (size, _("Internal Median Blur Radius"), 1)
   value_range (0, 7)
@@ -109,19 +121,6 @@ property_double  (alphapercentile, _("Internal Median Blur Alpha percentile"), 0
   description (_("Median Blur's alpha percentile being applied internally"))
 ui_meta ("visible", "guichange {advancedbevel}")
 
-
-property_double (gaus, _("Normal Bevel Effect"), 1)
-   description (_("Internal Gaussian Blur makes a bumpish bevel. Making this too high will create an undesirable effect. The larger the text the higher this slider should be."))
-   value_range (0.0, 5.5)
-   ui_range    (0.0, 4.0)
-  ui_steps      (0.1, 1.0)
-
-
-property_int (box, _("Sharp Bevel Effect"), 3)
-   description(_("Internal Box Blur makes a sharp bevel. Making this too high will create an undesirable effect. The larger the text the higher this slider should be."))
-   value_range (0, 9)
-   ui_range    (0, 6)
-  ui_steps      (1.0, 2.0)  
 
 property_int  (mcb, _("Smooth rough pixels on the Bevel"), 0)
   description (_("Applies a mild mean curvature blur on the bevel"))
