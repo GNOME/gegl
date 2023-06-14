@@ -15,6 +15,7 @@ gegl/operation/gegl-operation-composer.c
 operations/common/absolute.c
 operations/common/adaptive-threshold.c
 operations/common/alien-map.c
+operations/common/alpha-clip.c
 operations/common/bilateral-filter.c
 operations/common/bloom.c
 operations/common/box-blur.c
