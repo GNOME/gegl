@@ -14,6 +14,7 @@
  * License along with GEGL; if not, see <https://www.gnu.org/licenses/>.
  *
  * Copyright 2015 Thomas Manni <thomas.manni@free.fr>
+ *           2023 Øyvind Kolås <pippin@gimp.org>
  *
  */
 
@@ -90,13 +91,16 @@ process (GeglOperation       *operation,
   gfloat *input  = in_buf;
   gfloat *output = out_buf;
 
+  float low_limit = o->low_limit;
+  float high_limit = o->high_limit;
+
   if (o->clip_low && o->clip_high)
     {
       while (n_pixels--)
         {
-          output[0] = CLAMP (input[0], o->low_limit, o->high_limit);
-          output[1] = CLAMP (input[1], o->low_limit, o->high_limit);
-          output[2] = CLAMP (input[2], o->low_limit, o->high_limit);
+          output[0] = CLAMP (input[0], low_limit, high_limit);
+          output[1] = CLAMP (input[1], low_limit, high_limit);
+          output[2] = CLAMP (input[2], low_limit, high_limit);
 
           if (has_alpha)
             output[3] = input[3];
@@ -110,9 +114,9 @@ process (GeglOperation       *operation,
     {
       while (n_pixels--)
           {
-            output[0] = input[0] > o->high_limit ? o->high_limit : input[0];
-            output[1] = input[1] > o->high_limit ? o->high_limit : input[1];
-            output[2] = input[2] > o->high_limit ? o->high_limit : input[2];
+            output[0] = input[0] > high_limit ? high_limit : input[0];
+            output[1] = input[1] > high_limit ? high_limit : input[1];
+            output[2] = input[2] > high_limit ? high_limit : input[2];
 
             if (has_alpha)
               output[3] = input[3];
@@ -126,9 +130,9 @@ process (GeglOperation       *operation,
     {
       while (n_pixels--)
         {
-          output[0] = input[0] < o->low_limit ? o->low_limit : input[0];
-          output[1] = input[1] < o->low_limit ? o->low_limit : input[1];
-          output[2] = input[2] < o->low_limit ? o->low_limit : input[2];
+          output[0] = input[0] < low_limit ? low_limit : input[0];
+          output[1] = input[1] < low_limit ? low_limit : input[1];
+          output[2] = input[2] < low_limit ? low_limit : input[2];
 
           if (has_alpha)
             output[3] = input[3];
