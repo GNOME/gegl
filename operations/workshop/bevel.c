@@ -156,7 +156,7 @@ typedef struct
   GeglNode *overlay;
   GeglNode *softlight;
   GeglNode *addition;
-  GeglNode *repairgeglgraph;
+  GeglNode *alpha_clip;
   GeglNode *output;
 }State;
 
@@ -184,7 +184,7 @@ update_graph (GeglOperation *operation)
 
   gegl_node_link_many (state->input, state->median, state->box,
                        state->gaussian, usethis, state->opacity,
-                       state->mcb,  state->repairgeglgraph, 
+                       state->mcb,  state->alpha_clip, 
                        state->output,  NULL);
   gegl_node_link_many (state->gaussian, state->emboss, NULL);
   gegl_node_connect (state->emboss, "output", usethis, "aux");
@@ -193,136 +193,79 @@ update_graph (GeglOperation *operation)
 static void attach (GeglOperation *operation)
 {
   GeglNode *gegl = operation->node;
-GeglProperties *o = GEGL_PROPERTIES (operation);
-  GeglNode *input, *output, *median, *multiply, *hardlight, *addition, *colordodge,  *softlight, *overlay, *darken, *repairgeglgraph,  *lighten, *plus, *opacity, *gaussian, *emboss, *box, *mcb;
+  GeglProperties *o = GEGL_PROPERTIES (operation);
 
-  input    = gegl_node_get_input_proxy (gegl, "input");
-  output   = gegl_node_get_output_proxy (gegl, "output");
+  State *state = o->user_data = g_malloc0 (sizeof (State));
 
-
-
-  median      = gegl_node_new_child (gegl, "operation", "gegl:median-blur",
-                                         "percentile",       53.0,
-                                         NULL);
-
-
-  multiply    = gegl_node_new_child (gegl,
-                                  "operation", "gegl:multiply",
-                                  NULL);
-
-
-  hardlight    = gegl_node_new_child (gegl,
-                                  "operation", "gegl:hard-light",
-                                  NULL);
-
-  colordodge    = gegl_node_new_child (gegl,
-                                  "operation", "gegl:color-dodge",
-                                  NULL);
-
-  darken    = gegl_node_new_child (gegl,
-                                  "operation", "gegl:darken",
-                                  NULL);
-
-  lighten    = gegl_node_new_child (gegl,
-                                  "operation", "gegl:lighten",
-                                  NULL);
-
-  plus    = gegl_node_new_child (gegl,
-                                  "operation", "gegl:plus",
-                                  NULL);
-
-  opacity   = gegl_node_new_child (gegl,
-                                  "operation", "gegl:opacity",
-                                  NULL);
-
-
-  gaussian    = gegl_node_new_child (gegl,
-                                  "operation", "gegl:gaussian-blur",
-   "filter", 1,
-                                  NULL);
+  state->input      = gegl_node_get_input_proxy  (gegl, "input");
+  state->output     = gegl_node_get_output_proxy (gegl, "output");
+  state->median     = gegl_node_new_child (gegl, "operation", "gegl:median-blur",
+                                                 "percentile", 53.0,
+                                           NULL);
+  state->multiply   = gegl_node_new_child (gegl, "operation", "gegl:multiply",
+                                           NULL);
+  state->hardlight  = gegl_node_new_child (gegl, "operation", "gegl:hard-light",
+                                           NULL);
+  state->colordodge = gegl_node_new_child (gegl, "operation", "gegl:color-dodge",
+                                           NULL);
+  state->darken     = gegl_node_new_child (gegl, "operation", "gegl:darken",
+                                           NULL);
+  state->lighten    = gegl_node_new_child (gegl, "operation", "gegl:lighten",
+                                           NULL);
+  state->plus       = gegl_node_new_child (gegl, "operation", "gegl:plus",
+                                           NULL);
+  state->opacity    = gegl_node_new_child (gegl, "operation", "gegl:opacity",
+                                           NULL);
+  state->gaussian   = gegl_node_new_child (gegl, "operation", "gegl:gaussian-blur",
+                                                 "filter",    1,
+                                           NULL);
  /*Filter 1 is code for gaussian-blur filter=fir. Which makes bevel less puffy. */
 
+  state->emboss     = gegl_node_new_child (gegl, "operation", "gegl:emboss",
+                                           NULL);
+  state->box        = gegl_node_new_child (gegl, "operation", "gegl:box-blur",
+                                           NULL);
+  state->mcb        = gegl_node_new_child (gegl, "operation", "gegl:mean-curvature-blur",
+                                           NULL);
+  state->overlay    = gegl_node_new_child (gegl, "operation", "gegl:overlay",
+                                           NULL);
+  state->softlight  = gegl_node_new_child (gegl, "operation", "gegl:soft-light",
+                                           NULL);
+  state->addition   = gegl_node_new_child (gegl, "operation", "gegl:add",
+                                           NULL);
+  state->alpha_clip = gegl_node_new_child (gegl, "operation", "gegl:alpha-clip",
+                                           NULL);
 
-  emboss    = gegl_node_new_child (gegl,
-                                  "operation", "gegl:emboss",
-                                  NULL);
+  gegl_operation_meta_redirect (operation, "size",
+                                state->median, "radius");
+  gegl_operation_meta_redirect (operation, "gaus",
+                                state->gaussian, "std-dev-x");
+  gegl_operation_meta_redirect (operation, "gaus",
+                                state->gaussian, "std-dev-y");
+  gegl_operation_meta_redirect (operation, "azimuth",
+                                state->emboss, "azimuth");
+  gegl_operation_meta_redirect (operation, "elevation",
+                                state->emboss, "elevation");
+  gegl_operation_meta_redirect (operation, "depth",
+                                state->emboss, "depth");
+  gegl_operation_meta_redirect (operation, "alphapercentile",
+                                state->median, "alpha-percentile");
+  gegl_operation_meta_redirect (operation, "opacity",
+                                state->opacity, "value");
+  gegl_operation_meta_redirect (operation, "mcb",
+                                state->mcb, "iterations");
+  gegl_operation_meta_redirect (operation, "box",
+                                state->box, "radius");
+  gegl_operation_meta_redirect (operation, "type",
+                                state->median, "neighborhood");
 
-  box    = gegl_node_new_child (gegl,
-                                  "operation", "gegl:box-blur",
-                                  NULL);
-
-  mcb    = gegl_node_new_child (gegl,
-                                  "operation", "gegl:mean-curvature-blur",
-                                  NULL);
-
-  overlay    = gegl_node_new_child (gegl,
-                                  "operation", "gegl:overlay",
-                                  NULL);
-
-
-  softlight    = gegl_node_new_child (gegl,
-                                  "operation", "gegl:soft-light",
-                                  NULL);
-
-  addition    = gegl_node_new_child (gegl,
-                                  "operation", "gegl:add",
-                                  NULL);
-
-  repairgeglgraph      = gegl_node_new_child (gegl, "operation", "gegl:median-blur",
-                                         "radius",       0,
-                                         NULL);
-
- /*Repair GEGL Graph is a critical operation for Gimp's non-destructive futute.
-A median blur at zero radius is confirmed to make no changes to an image. 
-This option resets gegl:opacity's value to prevent a known bug where
-plugins like clay, glossy balloon and custom bevel glitch out when
-drop shadow is applied in a gegl graph below them.*/
- 
-  gegl_operation_meta_redirect (operation, "size", median, "radius");
-  gegl_operation_meta_redirect (operation, "gaus", gaussian, "std-dev-x");
-  gegl_operation_meta_redirect (operation, "gaus", gaussian, "std-dev-y");
-  gegl_operation_meta_redirect (operation, "azimuth", emboss, "azimuth");
-  gegl_operation_meta_redirect (operation, "elevation", emboss, "elevation");
-  gegl_operation_meta_redirect (operation, "depth", emboss, "depth");
-  gegl_operation_meta_redirect (operation, "alphapercentile", median, "alpha-percentile");
-  gegl_operation_meta_redirect (operation, "opacity", opacity, "value");
-  gegl_operation_meta_redirect (operation, "mcb", mcb, "iterations");
-  gegl_operation_meta_redirect (operation, "box", box, "radius");
-  gegl_operation_meta_redirect (operation, "type", median, "neighborhood");
-
-
-
-  /* now save references to the gegl nodes so we can use them
-   * later, when update_graph() is called
-   */
-  State *state = g_malloc0 (sizeof (State));
-  state->input = input;
-  state->median = median;
-  state->box = box;
-  state->gaussian = gaussian;
-  state->hardlight = hardlight;
-  state->multiply = multiply;
-  state->colordodge = colordodge;
-  state->emboss = emboss;
-  state->addition = addition;
-  state->plus = plus;
-  state->darken = darken;
-  state->lighten = lighten;
-  state->opacity = opacity;
-  state->mcb = mcb;
-  state->overlay = overlay;
-  state->softlight = softlight;
-  state->repairgeglgraph = repairgeglgraph;
-  state->output = output;
-
-  o->user_data = state;
 }
 
 static void
 gegl_op_class_init (GeglOpClass *klass)
 {
   GeglOperationClass *operation_class;
-GeglOperationMetaClass *operation_meta_class = GEGL_OPERATION_META_CLASS (klass);
+  GeglOperationMetaClass *operation_meta_class = GEGL_OPERATION_META_CLASS (klass);
   operation_class = GEGL_OPERATION_CLASS (klass);
 
   operation_class->attach = attach;
