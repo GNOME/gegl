@@ -4,10 +4,10 @@ subdir('generated')
 gegl_workshop_sources = files(
   'aces-rrt.c',
   'alpha-inpaint.c',
-  'bevel.c',
   'bilateral-filter-fast.c',
   'boxblur-1d.c',
   'boxblur.c',
+  'chamfer.c',
   'connected-components.c',
   'demosaic-bimedian.c',
   'demosaic-simple.c',

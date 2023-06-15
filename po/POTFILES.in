@@ -299,4 +299,4 @@ operations/workshop/integral-image.c
 operations/workshop/rawbayer-load.c
 operations/workshop/segment-kmeans.c
 operations/workshop/selective-hue-saturation.c
-operations/workshop/bevel.c
+operations/workshop/chamfer.c
