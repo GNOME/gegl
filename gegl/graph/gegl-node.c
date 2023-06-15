@@ -2452,3 +2452,14 @@ const char *gegl_operation_get_op_version (const char *op_name)
   return ret;
 }
 
+void
+gegl_node_set_enum_as_string (GeglNode   *node,
+                              const char *key,
+                              const char *value)
+{
+  GValue gvalue = G_VALUE_INIT;
+  g_value_init (&gvalue, G_TYPE_STRING);
+  g_value_set_string (&gvalue, value);
+  gegl_node_set_property (node, key, &gvalue);
+}
+

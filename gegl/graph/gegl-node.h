@@ -713,6 +713,10 @@ gboolean        gegl_node_is_graph       (GeglNode *node);
 void       gegl_node_progress (GeglNode *node, gdouble progress, gchar *message);
 
 const char *gegl_operation_get_op_version (const gchar *op_name);
+void
+gegl_node_set_enum_as_string (GeglNode   *node,
+                              const char *key,
+                              const char *value);
 
 G_END_DECLS
 
