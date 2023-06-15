@@ -21,10 +21,6 @@
 
 #ifdef GEGL_PROPERTIES
 
-property_enum(guichange, _("Part of filter to be displayed"),
-    guiendbeveldesigner, guichangeenumbeveldesigner,
-    BEVELDESIGNER_DEFAULT)
-  description(_("Change the GUI option"))
 
 enum_start (gegl_blend_mode_typedesignerlite)
   enum_value (GEGL_BLEND_MODE_TYPE_HARDLIGHT, "hardlight",
@@ -60,13 +56,6 @@ enum_start (gegl_median_blur_neighborhooddlite)
 enum_end (GeglMedianBlurNeighborhooddlite)
  /*Changing the name of a ENUM list will result in all presets breaking*/
 
-enum_start (guichangeenumbeveldesigner)
-enum_value   (BEVELDESIGNER_DEFAULT, "defaultbevel", N_("Basic Sliders"))
-enum_value   (BEVELDESIGNER_UI_ADVANCE, "advancedbevel", N_("Advanced Sliders"))
-  enum_end (guiendbeveldesigner)
- /*Changing the name of a ENUM list will result in all presets breaking*/
-
-
 property_double (azimuth, _("Emboss Azimuth"), 67.0)
     description (_("Light angle (degrees). For most blend modes this rotates lighting of the bevel."))
     value_range (30, 90)
@@ -96,37 +85,41 @@ property_int (box, _("Sharp Bevel Effect"), 3)
    ui_range    (0, 6)
   ui_steps      (1.0, 2.0)  
 
+property_boolean(guichange, _("Detailed options"), FALSE)
+
+property_boolean(mask_with_alpha, _("Mask with initial alpha"), TRUE)
+ui_meta ("visible", "guichange")
+
 property_enum (type, _("Choose Internal Median Shape"),
                GeglMedianBlurNeighborhooddlite, gegl_median_blur_neighborhooddlite,
                GEGL_MEDIAN_BLUR_NEIGHBORHOOD_CIRCLEcblite)
   description (_("Base shape of the median blur for the bevel. This effect is only prominent on very thin bevels. "))
-ui_meta ("visible", "guichange {advancedbevel}")
+ui_meta ("visible", "guichange")
 
 property_double (opacity, _("Widen bevel by increasing internal opacity"), 8)
     description (_("Opacity boost, for widening bevel."))
     value_range (3, 10)
     ui_range    (4, 10)
-ui_meta ("visible", "guichange {advancedbevel}")
+ui_meta ("visible", "guichange")
 
 property_int  (size, _("Internal Median Blur Radius"), 1)
   value_range (0, 7)
   ui_range    (0, 7)
   ui_meta     ("unit", "pixel-distance")
   description (_("An internal median blur radius set to thin the bevel in default. If internal median blur alpha percentile is high it will make the bevel fat."))
-ui_meta ("visible", "guichange {advancedbevel}")
-
+ui_meta ("visible", "guichange")
 
 property_double  (alphapercentile, _("Internal Median Blur Alpha percentile"), 0)
   value_range (0, 100)
   description (_("Median Blur's alpha percentile being applied internally"))
-ui_meta ("visible", "guichange {advancedbevel}")
+ui_meta ("visible", "guichange")
 
 
 property_int  (mcb, _("Smooth rough pixels on the Bevel"), 0)
   description (_("Applies a mild mean curvature blur on the bevel"))
   value_range (0, 2)
   ui_range    (0, 2)
-ui_meta ("visible", "guichange {advancedbevel}")
+ui_meta ("visible", "guichange")
 
 
 #else
@@ -146,6 +139,8 @@ typedef struct
   GeglNode *blend;
   GeglNode *emboss;
   GeglNode *opacity;
+  GeglNode *extract_alpha;
+  GeglNode *mask;
   GeglNode *mcb;
   GeglNode *alpha_clip;
   GeglNode *output;
@@ -174,6 +169,11 @@ update_graph (GeglOperation *operation)
   }
   gegl_node_set (state->blend, "operation", blend_op, NULL);
 
+  if (o->mask_with_alpha)
+    gegl_node_link_many (state->alpha_clip, state->output,  NULL);
+  else
+    gegl_node_link_many (state->alpha_clip,  state->mask,
+                         state->output,  NULL);
 }
 
 static void attach (GeglOperation *operation)
@@ -192,6 +192,10 @@ static void attach (GeglOperation *operation)
                                            NULL);
   state->opacity    = gegl_node_new_child (gegl, "operation", "gegl:opacity",
                                            NULL);
+  state->extract_alpha = gegl_node_new_child (gegl, "operation", "gegl:component-extract", NULL);
+  state->mask = gegl_node_new_child (gegl, "operation", "gegl:opacity",
+                                           NULL);
+  gegl_node_set_enum_as_string (state->extract_alpha, "component", "alpha");
   state->gaussian   = gegl_node_new_child (gegl, "operation", "gegl:gaussian-blur",
                                                  "filter",    1,
                                            NULL);
@@ -208,10 +212,12 @@ static void attach (GeglOperation *operation)
 
   gegl_node_link_many (state->input, state->median, state->box,
                        state->gaussian, state->blend, state->opacity,
-                       state->mcb,  state->alpha_clip, 
+                       state->mcb,  state->alpha_clip,  state->mask,
                        state->output,  NULL);
   gegl_node_link_many (state->gaussian, state->emboss, NULL);
   gegl_node_connect (state->emboss, "output", state->blend, "aux");
+  gegl_node_link (state->input, state->extract_alpha);
+  gegl_node_connect (state->extract_alpha, "output", state->mask, "aux");
 
   gegl_operation_meta_redirect (operation, "size",
                                 state->median, "radius");
