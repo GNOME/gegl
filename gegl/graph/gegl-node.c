@@ -873,10 +873,11 @@ gegl_node_connect (GeglNode    *source,
                    GeglNode    *sink,
                    const gchar *sink_pad_name)
 {
-  g_return_val_if_fail (GEGL_IS_NODE (sink), FALSE);
-  g_return_val_if_fail (sink_pad_name != NULL, FALSE);
-  g_return_val_if_fail (GEGL_IS_NODE (source), FALSE);
-  g_return_val_if_fail (source_pad_name != NULL, FALSE);
+  if ((!GEGL_IS_NODE (sink))   ||
+      (sink_pad_name == NULL) ||
+      (!GEGL_IS_NODE (source))  ||
+      (source_pad_name == NULL))
+    return FALSE;
 
   GeglPad *pad_sink = gegl_node_get_pad (sink, sink_pad_name);
   if (!gegl_pad_is_input (pad_sink))
