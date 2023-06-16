@@ -27,23 +27,17 @@ enum_start (chamfer_blend_mode)
               N_("HardLight"))
   enum_value (CHAMFER_BLEND_MULTIPLY,  "multiply",
               N_("Multiply"))
-  enum_value (CHAMFER_BLEND_COLORDODGE, "colordodge",
-              N_("ColorDodge"))
+  //enum_value (CHAMFER_BLEND_COLORDODGE, "colordodge",
+  //            N_("ColorDodge"))
   enum_value (CHAMFER_BLEND_DARKEN,    "darken",
               N_("Darken"))
   enum_value (CHAMFER_BLEND_LIGHTEN,   "lighten",
               N_("Lighten"))
-  enum_value (CHAMFER_BLEND_OVERLAY,   "overlay",
-              N_("Overlay"))
+//enum_value (CHAMFER_BLEND_OVERLAY,   "overlay",
+//            N_("Overlay"))
   enum_value (CHAMFER_BLEND_SOFTLIGHT, "softlight",
               N_("Soft Light"))
 enum_end (ChamferBlendMode)
-
-property_enum (blendmode, _("Blend Mode"),
-    ChamferBlendMode, chamfer_blend_mode,
-    CHAMFER_BLEND_HARDLIGHT)
-  description (_("What blending mode a light map will be applied with."))
- /*Changing the name of a ENUM list will result in all presets breaking*/
 
 enum_start (chamfer_median_neighborhood)
   enum_value (CHAMFER_MEDIAN_NEIGHBORHOOD_SQUARE,  "square",  N_("Square"))
@@ -52,10 +46,21 @@ enum_start (chamfer_median_neighborhood)
 enum_end (ChamferMedianNeighborhood)
  /*Changing the name of a ENUM list will result in all presets breaking*/
 
-property_double (slope, _("Thickness"), 0.5)
+property_enum (blendmode, _("Blend Mode"),
+    ChamferBlendMode, chamfer_blend_mode,
+    CHAMFER_BLEND_HARDLIGHT)
+  description (_("What blending mode a light map will be applied with."))
+ /*Changing the name of a ENUM list will result in all presets breaking*/
+
+
+
+property_double (strength, _("Strength"), 0.3)
+    value_range (0, 1.0)
+
+property_double (depth, _("Depth"), 0.5)
   value_range (0.01, 1.0)
 
-property_double (gamma, _("Curvature"), 1.0)
+property_double (curvature, _("Curvature"), 1.0)
   description (_("Curvature at 0.5 we are close to a circle shape, 1.0 is straight, values above 1.0 are concave."))
   value_range (0.0,8.0)
   ui_range (0.0,4.0)
@@ -68,12 +73,6 @@ property_double (azimuth, _("Light direction"), 67.0)
     ui_meta ("direction", "ccw")
 
 
-property_double (elevation, _("Light Elevation"), 45.0)
-    description (_("Elevation angle (degrees). For most blend modes this shifts the lightest colors of the bevel."))
-    value_range (0, 90)
-    ui_meta ("unit", "degree")
-
-
 property_boolean(detailed_options, _("Detailed options"), FALSE)
 
 property_boolean(mask_with_alpha, _("Mask with initial alpha"), TRUE)
@@ -84,7 +83,13 @@ property_boolean(use_dt, ("Use distance-transform"), TRUE)
    ui_meta ("visible", "detailed_options")
     description (("Use gegl:distance-transform for computing base-shape, ideally the curvature and thickness controls also control the non-distance-transform case."))
 
-property_int (depth, ("Emboss Depth"), 1)
+property_double (elevation, _("Light Elevation"), 12.5)
+    description (_("Elevation angle (degrees). For most blend modes this shifts the lightest colors of the bevel."))
+    value_range (0, 90)
+    ui_meta ("unit", "degree")
+    ui_meta ("visible", "detailed_options")
+
+property_int (emboss_depth, ("Emboss Depth"), 1)
     description (("Emboss Depth. For some blend modes it adds depth and for others adds detail to the bevel."))
   ui_range    (1, 70)
     value_range (1, 100)
@@ -169,7 +174,11 @@ typedef struct
   GeglNode *dt_mcb;
   GeglNode *gamma;
   GeglNode *divide;
+  GeglNode *mul;
   GeglNode *rgb_clip;
+  GeglNode *src_in;
+  GeglNode *white;
+  GeglNode *crop;
 
 }State;
 
@@ -186,10 +195,10 @@ update_graph (GeglOperation *operation)
   switch (o->blendmode) {
     case CHAMFER_BLEND_HARDLIGHT:  blend_op = "gegl:hard-light"; break;
     case CHAMFER_BLEND_MULTIPLY:   blend_op = "gegl:multiply"; break;
-    case CHAMFER_BLEND_COLORDODGE: blend_op = "gegl:color-dodge"; break;
+    //case CHAMFER_BLEND_COLORDODGE: blend_op = "gegl:color-dodge"; break;
     case CHAMFER_BLEND_DARKEN:     blend_op = "gegl:darken"; break;
     case CHAMFER_BLEND_LIGHTEN:    blend_op = "gegl:lighten"; break;
-    case CHAMFER_BLEND_OVERLAY:    blend_op = "gegl:overlay"; break;
+    //case CHAMFER_BLEND_OVERLAY:    blend_op = "gegl:overlay"; break;
     case CHAMFER_BLEND_SOFTLIGHT:  blend_op = "gegl:soft-light"; break;
   }
   gegl_node_set (state->blend, "operation", blend_op, NULL);
@@ -198,7 +207,11 @@ update_graph (GeglOperation *operation)
   if (o->use_dt)
   {
     gegl_node_link_many (state->input, state->blend, state->mask, state->output,  NULL);
-    gegl_node_link_many (state->input, state->distance_transform, state->divide, state->rgb_clip, state->dt_mcb, state->gamma, state->emboss, NULL);
+    gegl_node_connect (state->crop, "input", state->white, "output");
+    gegl_node_connect (state->crop, "aux", state->input, "output");
+    gegl_node_connect (state->src_in, "aux", state->crop, "output");
+    gegl_node_connect (state->emboss, "output", state->blend, "aux");
+    gegl_node_link_many (state->input, state->src_in, state->distance_transform, state->divide, state->rgb_clip, state->mul, state->dt_mcb, state->gamma, state->emboss, NULL);
   }
   else
   {
@@ -253,19 +266,27 @@ static void attach (GeglOperation *operation)
                                            NULL);
   state->divide = gegl_node_new_child (gegl, "operation", "gegl:divide",
                                            NULL);
+  state->mul = gegl_node_new_child (gegl, "operation", "gegl:multiply",
+                                        "value", 0.25,
+                                           NULL);
   state->rgb_clip = gegl_node_new_child (gegl, "operation", "gegl:rgb-clip",
                                            NULL);
+  state->white = gegl_node_new_child (gegl, "operation", "gegl:color", NULL);
+  state->crop = gegl_node_new_child (gegl, "operation", "gegl:crop",
+                                     NULL);
+
+  {GeglColor *color = gegl_color_new("white");
+   gegl_node_set (state->white, "value", color, NULL);
+   g_object_unref (color);
+  }
+  state->src_in = gegl_node_new_child (gegl, "operation", "gegl:dst-in", NULL);
   state->distance_transform = gegl_node_new_child (gegl, "operation", "gegl:distance-transform",
                                            NULL);
-
-  gegl_node_link (state->input, state->distance_transform);
 
   gegl_node_link_many (state->input, state->median, state->box,
                        state->gaussian, state->alpha_clip, state->blend, state->opacity,
                        state->mcb,  state->mask,
                        state->output,  NULL);
-  gegl_node_link_many (state->gaussian, state->emboss, NULL);
-  gegl_node_connect (state->emboss, "output", state->blend, "aux");
   gegl_node_link (state->input, state->extract_alpha);
   gegl_node_connect (state->extract_alpha, "output", state->mask, "aux");
 
@@ -280,7 +301,7 @@ static void attach (GeglOperation *operation)
                                 state->emboss, "azimuth");
   gegl_operation_meta_redirect (operation, "elevation",
                                 state->emboss, "elevation");
-  gegl_operation_meta_redirect (operation, "depth",
+  gegl_operation_meta_redirect (operation, "emboss-depth",
                                 state->emboss, "depth");
   gegl_operation_meta_redirect (operation, "alphapercentile",
                                 state->median, "alpha-percentile");
@@ -294,10 +315,12 @@ static void attach (GeglOperation *operation)
                                 state->box, "radius");
   gegl_operation_meta_redirect (operation, "type",
                                 state->median, "neighborhood");
-  gegl_operation_meta_redirect (operation, "gamma",
+  gegl_operation_meta_redirect (operation, "curvature",
                                 state->gamma, "value");
-  gegl_operation_meta_redirect (operation, "slope",
+  gegl_operation_meta_redirect (operation, "depth",
                                 state->divide, "value");
+  gegl_operation_meta_redirect (operation, "strength",
+                                state->mul, "value");
 
 }
 
