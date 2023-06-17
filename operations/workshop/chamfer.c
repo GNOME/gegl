@@ -349,7 +349,6 @@ gegl_op_class_init (GeglOpClass *klass)
     "reference-hash", "11lighth3do6akv00vyeefjf25sb2ac",
     "description", _("Simulate lighting of a chamfered 3D-edges for an alpha-defined shape."),
     "gimp:menu-path", "<Image>/Filters/Light and Shadow",
-    "gimp:menu-label", _("Chamfer..."),
     NULL);
 }
 
