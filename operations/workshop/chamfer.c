@@ -325,13 +325,22 @@ static void attach (GeglOperation *operation)
 }
 
 static void
+dispose (GObject *object)
+{
+   GeglProperties  *o = GEGL_PROPERTIES (object);
+   g_clear_pointer (&o->user_data, g_free);
+   G_OBJECT_CLASS (gegl_op_parent_class)->dispose (object);
+}
+
+static void
 gegl_op_class_init (GeglOpClass *klass)
 {
-  GeglOperationClass *operation_class;
+  GObjectClass           *object_class = G_OBJECT_CLASS (klass);
+  GeglOperationClass     *operation_class = GEGL_OPERATION_CLASS (klass);
   GeglOperationMetaClass *operation_meta_class = GEGL_OPERATION_META_CLASS (klass);
-  operation_class = GEGL_OPERATION_CLASS (klass);
 
-  operation_class->attach = attach;
+  object_class->dispose        = dispose;
+  operation_class->attach      = attach;
   operation_meta_class->update = update_graph;
 
   gegl_operation_class_set_keys (operation_class,
