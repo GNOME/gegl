@@ -29,20 +29,27 @@ property_double (radius, _("Radius"), 200.0)
   ui_gamma      (1.5)
   ui_meta       ("unit", "pixel-distance")
 
+property_int (aa_factor, _("Antialiasing"), 1)
+  description   (_("Rough target of levels of accuracy for antialiasing, 1 to disable antialiasing."))
+  value_range   (1, 256)
+  ui_range      (1, 16)
+
 property_double (low, _("Low"), 0.5)
   description   (_("Thresholding level, 0.5 towards 0 to minimize shadows and towards 1.0 to minimze highlights."))
-  value_range   (0.0, 10.0) 
+  value_range   (0.0, 1.0) 
   ui_range   (0.0, 1.0) 
+  ui_meta     ("role", "range-start")
+  ui_meta     ("unit", "luminance")
+  ui_meta     ("range-label", _("Threshold level"))
+
 
 property_double (high, _("High"), 1.0)
   description   (_("Maximum values to include, above this gets set to 0."))
   value_range   (0.0, 10.0) 
   ui_range      (0.0, 1.0) 
+  ui_meta       ("role", "range-end")
+  ui_meta       ("unit", "luminance")
 
-property_int (aa_factor, _("Antialiasing"), 1)
-  description   (_("Rough target of levels of accuracy for antialiasing, 1 to disable antialiasing."))
-  value_range   (1, 256)
-  ui_range      (1, 16)
 
 #else
 
