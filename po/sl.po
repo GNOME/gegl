@@ -9,18 +9,18 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2023-05-28 15:10+0000\n"
-"PO-Revision-Date: 2023-06-06 16:06+0200\n"
+"POT-Creation-Date: 2023-06-20 04:32+0000\n"
+"PO-Revision-Date: 2023-06-25 00:23+0200\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language: sl_SI\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || "
-"n%100==4 ? 3 : 0);\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n"
+"%100==4 ? 3 : 0);\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Generator: Poedit 3.3.1\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: bin/gegl.c:179
 #, c-format
@@ -168,7 +168,7 @@ msgstr ""
 "\n"
 "\n"
 
-#: bin/ui-core.c:4382 gegl/gegl-serialize.c:658
+#: bin/ui-core.c:4387 gegl/gegl-serialize.c:672
 #, c-format
 msgid "BablFormat \"%s\" does not exist."
 msgstr "BablFormat »%s« ne obstaja."
@@ -390,27 +390,27 @@ msgstr "Onemogoči OpenCL"
 msgid "Show GEGL Options"
 msgstr "Pokaži možnosti GEGL"
 
-#: gegl/gegl-serialize.c:296
+#: gegl/gegl-serialize.c:305
 #, c-format
 msgid "unhandled path data %s:%s\n"
 msgstr "Neobravnavana pot podatkov %s:%s\n"
 
-#: gegl/gegl-serialize.c:528
+#: gegl/gegl-serialize.c:541
 #, c-format
 msgid "op '%s' not found, partial matches: "
 msgstr "op »%s« ni mogoče najti, delni zadetki: "
 
-#: gegl/gegl-serialize.c:557
+#: gegl/gegl-serialize.c:570
 #, c-format
 msgid "%s has no %s property."
 msgstr "%s nima lastnosti %s."
 
-#: gegl/gegl-serialize.c:563
+#: gegl/gegl-serialize.c:576
 #, c-format
 msgid "%s has no %s property, properties: "
 msgstr "%s nima %s lastnosti, lastnosti: "
 
-#: gegl/gegl-serialize.c:794
+#: gegl/gegl-serialize.c:807
 #, c-format
 msgid "No such op '%s'"
 msgstr "Taka operacija »%s« ne obstaja"
@@ -465,39 +465,6 @@ msgid ""
 msgstr ""
 "Vsaka linearna komponenta RGB postane svoja absolutna vrednost, "
 "fabs(vhodna_vrednost)"
-
-#: operations/common/adaptive-threshold.c:24 operations/common/bloom.c:35
-#: operations/common/box-blur.c:25 operations/common/c2g.c:28
-#: operations/common/edge-neon.c:47 operations/common/median-blur.c:42
-#: operations/common/snn-mean.c:26 operations/common/stress.c:27
-#: operations/common/unsharp-mask.c:24 operations/common/vignette.c:40
-#: operations/common/wavelet-blur-1d.c:28 operations/common/wavelet-blur.c:27
-#: operations/common-cxx/focus-blur.c:85 operations/common-cxx/lens-blur.cc:24
-#: operations/common-cxx/variable-blur.c:30
-#: operations/common-gpl3+/shadows-highlights.c:40
-#: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:44
-#: operations/common-gpl3+/whirl-pinch.c:46
-#: operations/external/matting-levin.c:29 operations/workshop/boxblur-1d.c:27
-#: operations/workshop/boxblur.c:24
-#: operations/workshop/external/spyrograph.c:63
-msgid "Radius"
-msgstr "Radij"
-
-#: operations/common/adaptive-threshold.c:31
-msgid "Anti alias"
-msgstr "Zgladi robove"
-
-#: operations/common/adaptive-threshold.c:119
-msgid "Adaptive Threshold"
-msgstr "Prag prilagajanja"
-
-#: operations/common/adaptive-threshold.c:121
-msgid "Applies a threshold against the average of a spatial neighbourhood."
-msgstr "Uveljavi prag za povprečje prostorske soseščine."
-
-#: operations/common/adaptive-threshold.c:123
-msgid "Adaptive Threshold..."
-msgstr "Prag prilagajanja …"
 
 #: operations/common/alien-map.c:28 operations/common/newsprint.c:35
 msgid "RGB"
@@ -638,6 +605,42 @@ msgstr ""
 "Močno popači barve slike z uporabo trigonometričnih funkcij za preslikavo "
 "barvnih vrednosti."
 
+#: operations/common/alpha-clip.c:26 operations/common/alpha-clip.c:27
+#: operations/common/rgb-clip.c:26 operations/common/rgb-clip.c:27
+msgid "Clip low pixel values"
+msgstr "Poreži nizke vrednosti slik. točk"
+
+#: operations/common/alpha-clip.c:29 operations/common/rgb-clip.c:29
+msgid "Low limit"
+msgstr "Spodnja meja"
+
+#: operations/common/alpha-clip.c:32 operations/common/rgb-clip.c:32
+msgid "Pixels values lower than this limit will be set to it"
+msgstr "Vrednosti slikovnih točk, nižje od te meje, bodo ponastavljene"
+
+#: operations/common/alpha-clip.c:35 operations/common/alpha-clip.c:36
+#: operations/common/rgb-clip.c:35 operations/common/rgb-clip.c:36
+msgid "Clip high pixel values"
+msgstr "Poreži visoke vrednosti slik. točk"
+
+#: operations/common/alpha-clip.c:38 operations/common/rgb-clip.c:38
+msgid "High limit"
+msgstr "Zgornja meja"
+
+#: operations/common/alpha-clip.c:41 operations/common/rgb-clip.c:41
+msgid "Pixels values higher than this limit will be set to it"
+msgstr "Vrednosti slikovnih točk, višje od te meje, bodo ponastavljene"
+
+#: operations/common/alpha-clip.c:196
+#, fuzzy
+msgid "Clip Alpha"
+msgstr "Poreži alfo"
+
+#: operations/common/alpha-clip.c:199
+#, fuzzy
+msgid "Keep alpha values inside a specific range"
+msgstr "Ohrani vrednosti alfe v okviru določenega obsega"
+
 #: operations/common/bilateral-filter.c:26
 #: operations/common/domain-transform.c:29 operations/common/dropshadow.c:46
 #: operations/common-cxx/focus-blur.c:45 operations/common-cxx/lens-blur.cc:25
@@ -675,7 +678,7 @@ msgstr ""
 "utežen tudi z barvno razliko od izvorne središčne slikovne točke."
 
 #: operations/common/bloom.c:26 operations/common/threshold.c:25
-#: operations/common/threshold.c:131 operations/common/unsharp-mask.c:37
+#: operations/common/threshold.c:163 operations/common/unsharp-mask.c:37
 #: operations/common-gpl3+/red-eye-removal.c:31
 #: operations/common-gpl3+/wind.c:60 operations/external/matting-levin.c:33
 msgid "Threshold"
@@ -693,13 +696,31 @@ msgstr "Mehkoba"
 msgid "Glow-area edge softness"
 msgstr "Neostrina področja žarenja robov"
 
+#: operations/common/bloom.c:35 operations/common/box-blur.c:25
+#: operations/common/c2g.c:28 operations/common/edge-neon.c:47
+#: operations/common/local-threshold.c:24 operations/common/median-blur.c:42
+#: operations/common/snn-mean.c:26 operations/common/stress.c:27
+#: operations/common/unsharp-mask.c:24 operations/common/vignette.c:40
+#: operations/common/wavelet-blur-1d.c:28 operations/common/wavelet-blur.c:27
+#: operations/common-cxx/focus-blur.c:85 operations/common-cxx/lens-blur.cc:24
+#: operations/common-cxx/variable-blur.c:30
+#: operations/common-gpl3+/shadows-highlights.c:40
+#: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:44
+#: operations/common-gpl3+/whirl-pinch.c:46
+#: operations/external/matting-levin.c:29 operations/workshop/boxblur-1d.c:27
+#: operations/workshop/boxblur.c:24
+#: operations/workshop/external/spyrograph.c:63
+msgid "Radius"
+msgstr "Radij"
+
 #: operations/common/bloom.c:36 operations/common-gpl3+/softglow.c:26
 msgid "Glow radius"
 msgstr "Polmer žarenja"
 
+#. Changing the name of a ENUM list will result in all presets breaking
 #: operations/common/bloom.c:42 operations/common/noise-reduction.c:26
 #: operations/common-cxx/denoise-dct.cc:38 operations/common-cxx/warp.cc:34
-#: operations/common-gpl3+/wind.c:64
+#: operations/common-gpl3+/wind.c:64 operations/workshop/chamfer.c:57
 msgid "Strength"
 msgstr "Jakost"
 
@@ -715,11 +736,11 @@ msgstr "Omeji ekspozicijo"
 msgid "Don't over-expose highlights"
 msgstr "Ne preeksponiraj svetlih področij"
 
-#: operations/common/bloom.c:207
+#: operations/common/bloom.c:203
 msgid "Bloom"
 msgstr "Cvet"
 
-#: operations/common/bloom.c:210
+#: operations/common/bloom.c:206
 msgid "Add glow around bright areas"
 msgstr "Dodaj žarenje okoli svetlih področij"
 
@@ -1166,11 +1187,11 @@ msgstr "Vrednost obarvanosti za zgornje sivinske vrednosti"
 msgid "Saturation value for above gray settings"
 msgstr "Vrednost nasičenosti za zgornje sivinske vrednosti"
 
-#: operations/common/color-rotate.c:434
+#: operations/common/color-rotate.c:435
 msgid "Color Rotate"
 msgstr "Barvno zasukaj"
 
-#: operations/common/color-rotate.c:437
+#: operations/common/color-rotate.c:438
 msgid "Replace a range of colors with another"
 msgstr "Zamenjajte obseg barv z drugim"
 
@@ -1773,19 +1794,20 @@ msgstr ""
 
 #: operations/common/dropshadow.c:27 operations/common/median-blur.c:27
 #: operations/common/pixelize.c:28 operations/common/vignette.c:26
-#: operations/common-cxx/focus-blur.c:35
+#: operations/common-cxx/focus-blur.c:35 operations/workshop/chamfer.c:43
 msgid "Square"
 msgstr "Kvadrat"
 
 #: operations/common/dropshadow.c:28 operations/common/median-blur.c:28
 #: operations/common/newsprint.c:26 operations/common/vignette.c:25
-#: operations/common-cxx/focus-blur.c:34
+#: operations/common-cxx/focus-blur.c:34 operations/workshop/chamfer.c:44
 msgid "Circle"
 msgstr "Krog"
 
 #: operations/common/dropshadow.c:29 operations/common/median-blur.c:29
 #: operations/common/newsprint.c:27 operations/common/pixelize.c:26
 #: operations/common/vignette.c:27 operations/common-cxx/focus-blur.c:36
+#: operations/workshop/chamfer.c:45
 msgid "Diamond"
 msgstr "Karo"
 
@@ -2606,6 +2628,64 @@ msgstr "Majhen planet"
 msgid "Do a stereographic/little planet transform of an equirectangular image."
 msgstr ""
 "Opravi stereografsko/majhno planetarno preoblikovanje enakopravokotne slike."
+
+#: operations/common/local-threshold.c:25
+msgid ""
+"Standard deviation of gaussian neighborhood average for computing local "
+"contrast. If 0 is used a global threshold is used instead of one based on "
+"local contrast."
+msgstr ""
+"Standardni odklon Gaussovega povprečja okolice za izračun krajevnega "
+"kontrasta. Če je uporabljena vrednost 0, se namesto praga, ki temelji na "
+"krajevnem kontrastu, uporabi globalni prag."
+
+#: operations/common/local-threshold.c:32 operations/common-gpl3+/mosaic.c:87
+msgid "Antialiasing"
+msgstr "Glajenje robov"
+
+#: operations/common/local-threshold.c:33
+msgid ""
+"Rough target of levels of accuracy for antialiasing, 1 to disable "
+"antialiasing."
+msgstr ""
+"Groba ciljna raven natančnosti za glajenje robov, 1 za onemogočanje glajenja "
+"robov."
+
+#: operations/common/local-threshold.c:37
+#, fuzzy
+msgid "Low"
+msgstr "Nizko"
+
+#: operations/common/local-threshold.c:38
+#, fuzzy
+msgid ""
+"Thresholding level, 0.5 towards 0 to minimize shadows and towards 1.0 to "
+"minimze highlights."
+msgstr ""
+"Stopnja praga, 0,5 proti 0 za zmanjšanje senc in proti 1,0 za zmanjšanje "
+"svetlih delov."
+
+#: operations/common/local-threshold.c:43
+msgid "Threshold level"
+msgstr "Raven praga"
+
+#: operations/common/local-threshold.c:46 operations/common/threshold.c:30
+#, fuzzy
+msgid "High"
+msgstr "Visoko"
+
+#: operations/common/local-threshold.c:47
+#, fuzzy
+msgid "Maximum values to include, above this gets set to 0."
+msgstr "Največja vrednost, ki bo vključena, nad to vrednostjo se nastavi na 0."
+
+#: operations/common/local-threshold.c:175
+msgid "Local Threshold"
+msgstr "Krajevni prag"
+
+#: operations/common/local-threshold.c:177
+msgid "Applies a threshold using the local neighborhood."
+msgstr "Uveljavi prag z uporabo krajevne soseščine."
 
 #: operations/common/long-shadow.c:27
 msgid "Finite"
@@ -3773,11 +3853,11 @@ msgstr "Poravnaj"
 msgid "How to align items, 0.0 is start 0.5 middle and 1.0 end."
 msgstr "Kako poravnati elemente, 0.0 je začetek, 0,5 sredina in 1,0 konec."
 
-#: operations/common/pack.c:182
+#: operations/common/pack.c:181
 msgid "Pack"
 msgstr "Pakiraj"
 
-#: operations/common/pack.c:184
+#: operations/common/pack.c:183
 msgid ""
 "Packs an image horizontally or vertically next to each other with optional "
 "gap, aux right of input."
@@ -3969,11 +4049,11 @@ msgstr "Prilepi preoblikovane slike eno pod drugo"
 msgid "Mathematical method for reconstructing pixel values"
 msgstr "Matematična metoda za rekonstrukcijo vrednosti slikovnih točk"
 
-#: operations/common/recursive-transform.c:375
+#: operations/common/recursive-transform.c:379
 msgid "Recursive Transform"
 msgstr "Rekurzivno preoblikovanje"
 
-#: operations/common/recursive-transform.c:377
+#: operations/common/recursive-transform.c:381
 msgid "Apply a transformation recursively."
 msgstr "Uporabi preoblikovanje rekurzivno."
 
@@ -4029,35 +4109,11 @@ msgid "stretch components of pixels individually based on luminance envelopes"
 msgstr ""
 "Posamično raztegne komponente slikovnih točk glede na ovojnice svetilnosti"
 
-#: operations/common/rgb-clip.c:25 operations/common/rgb-clip.c:26
-msgid "Clip low pixel values"
-msgstr "Poreži nizke vrednosti slik. točk"
-
-#: operations/common/rgb-clip.c:28
-msgid "Low limit"
-msgstr "Spodnja meja"
-
-#: operations/common/rgb-clip.c:31
-msgid "Pixels values lower than this limit will be set to it"
-msgstr "Vrednosti slikovnih točk, nižje od te meje, bodo ponastavljene"
-
-#: operations/common/rgb-clip.c:34 operations/common/rgb-clip.c:35
-msgid "Clip high pixel values"
-msgstr "Poreži visoke vrednosti slik. točk"
-
-#: operations/common/rgb-clip.c:37
-msgid "High limit"
-msgstr "Zgornja meja"
-
-#: operations/common/rgb-clip.c:40
-msgid "Pixels values higher than this limit will be set to it"
-msgstr "Vrednosti slikovnih točk, višje od te meje, bodo ponastavljene"
-
-#: operations/common/rgb-clip.c:208
+#: operations/common/rgb-clip.c:212
 msgid "Clip RGB"
 msgstr "Poreži RGB"
 
-#: operations/common/rgb-clip.c:212
+#: operations/common/rgb-clip.c:216
 msgid "Keep RGB pixels values inside a specific range"
 msgstr "Ohrani slikovne točke RGB v okviru določenega obsega"
 
@@ -4201,7 +4257,7 @@ msgstr "Zorni kot"
 msgid "Camera angle of view"
 msgstr "Zorni kot kamere"
 
-#: operations/common/spherize.c:40
+#: operations/common/spherize.c:40 operations/workshop/chamfer.c:63
 msgid "Curvature"
 msgstr "Ukrivljenost"
 
@@ -4362,14 +4418,16 @@ msgid "SVG color matrix operation svg_saturate"
 msgstr "Operacija barvne matrike SVG svg_saturate"
 
 #: operations/common/threshold.c:28
-msgid ""
-"Scalar threshold level (overridden if an auxiliary input buffer is "
-"provided.)."
-msgstr ""
-"Skalarna raven praga (preglašena, ko je na voljo pomožni vhodni "
-"medpomnilnik)."
+#, fuzzy
+msgid "Lowest value to be included."
+msgstr "Najnižja vrednost, ki bo vključena."
 
-#: operations/common/threshold.c:136
+#: operations/common/threshold.c:33
+#, fuzzy
+msgid "highest value to be include as white."
+msgstr "Najvišja vrednost, vključena kot bela."
+
+#: operations/common/threshold.c:168
 msgid ""
 "Thresholds the image to white/black based on either the global value set in "
 "the value property, or per pixel from the aux input."
@@ -4425,11 +4483,11 @@ msgstr "Izraženo kot standardni odklon, v slik. točkah"
 msgid "Scaling factor for unsharp-mask, the strength of effect"
 msgstr "Faktor za masko neostrine, moč učinka"
 
-#: operations/common/unsharp-mask.c:147
+#: operations/common/unsharp-mask.c:144
 msgid "Sharpen (Unsharp Mask)"
 msgstr "Izostri (maska neostrine)"
 
-#: operations/common/unsharp-mask.c:151
+#: operations/common/unsharp-mask.c:148
 msgid ""
 "Sharpen image, by adding difference to blurred image, a technique for "
 "sharpening originally used in darkrooms."
@@ -4763,11 +4821,11 @@ msgstr "Visoka kakovost"
 msgid "Generate more accurate and consistent output (slower)"
 msgstr "Tvori natančnejši in doslednejši izhod (počasneje)"
 
-#: operations/common-cxx/focus-blur.c:320
+#: operations/common-cxx/focus-blur.c:317
 msgid "Focus Blur"
 msgstr "Zabrisanost ostrine"
 
-#: operations/common-cxx/focus-blur.c:323
+#: operations/common-cxx/focus-blur.c:320
 msgid "Blur the image around a focal point"
 msgstr "Razostri sliko okoli točke pozornosti"
 
@@ -5085,6 +5143,7 @@ msgstr "Dvignjenost"
 #: operations/common-gpl3+/bump-map.c:59 operations/common-gpl3+/emboss.c:45
 #: operations/common-gpl3+/fractal-trace.c:60
 #: operations/common-gpl3+/texturize-canvas.c:44
+#: operations/workshop/chamfer.c:60
 msgid "Depth"
 msgstr "Globina"
 
@@ -6196,17 +6255,13 @@ msgstr "Barva stikov"
 msgid "Light color"
 msgstr "Barva svetlobe"
 
-#: operations/common-gpl3+/mosaic.c:81
+#: operations/common-gpl3+/mosaic.c:81 operations/workshop/chamfer.c:69
 msgid "Light direction"
 msgstr "Smer svetlobe"
 
 #: operations/common-gpl3+/mosaic.c:82
 msgid "Direction of light-source (in degrees)"
 msgstr "Smer svetlobnega vira (v stopinjah)"
-
-#: operations/common-gpl3+/mosaic.c:87
-msgid "Antialiasing"
-msgstr "Glajenje robov"
 
 #: operations/common-gpl3+/mosaic.c:88
 msgid "Enables smoother tile output"
@@ -6624,7 +6679,8 @@ msgstr "Če je nastavljeno, bo vzorec malo manj zmaličen."
 msgid "Bilinear"
 msgstr "Bilinearno"
 
-#: operations/common-gpl3+/sinus.c:67
+#. Changing the name of a ENUM list will result in all presets breaking
+#: operations/common-gpl3+/sinus.c:67 operations/workshop/chamfer.c:49
 msgid "Blend Mode"
 msgstr "Način zlivanja"
 
@@ -7120,7 +7176,7 @@ msgstr "Vrtinči in odščipni"
 msgid "Distort an image by whirling and pinching"
 msgstr "Popači sliko z vrtinčenjem in priščipnjenjem"
 
-#: operations/common-gpl3+/wind.c:28 operations/common-gpl3+/wind.c:590
+#: operations/common-gpl3+/wind.c:28 operations/common-gpl3+/wind.c:586
 msgid "Wind"
 msgstr "Veter"
 
@@ -7176,7 +7232,7 @@ msgstr "Višje vrednosti omejujejo učinek na manj območij slike"
 msgid "Higher values increase the magnitude of the effect"
 msgstr "Višje vrednosti povečajo jakost učinka"
 
-#: operations/common-gpl3+/wind.c:594
+#: operations/common-gpl3+/wind.c:590
 msgid "Wind-like bleed effect"
 msgstr "Učinek prelivanja, podoben vetru"
 
@@ -7424,11 +7480,11 @@ msgstr "Zvočni kodek"
 msgid "audio"
 msgstr "avdio"
 
-#: operations/external/ff-load.c:866
+#: operations/external/ff-load.c:868
 msgid "FFmpeg Frame Loader"
 msgstr "Nalagalnik video-sličic FFmpeg"
 
-#: operations/external/ff-load.c:868
+#: operations/external/ff-load.c:870
 msgid "FFmpeg video frame importer."
 msgstr "Uvoznik video-sličic FFmpeg."
 
@@ -7501,83 +7557,83 @@ msgstr ""
 msgid "global quality"
 msgstr "Splošna kakovost"
 
-#: operations/external/ff-save.c:55
+#: operations/external/ff-save.c:57
 msgid "noise reduction"
 msgstr "Zmanjšanje šuma"
 
-#: operations/external/ff-save.c:56
+#: operations/external/ff-save.c:58
 msgid "scenechange threshold"
 msgstr "Prag spremembe prizora"
 
-#: operations/external/ff-save.c:57
+#: operations/external/ff-save.c:59
 msgid "video bitrate min"
 msgstr "Najm. bitna hitrost videa"
 
-#: operations/external/ff-save.c:58
+#: operations/external/ff-save.c:60
 msgid "video bitrate max"
 msgstr "Najv. bitna hitrost videa"
 
-#: operations/external/ff-save.c:59
+#: operations/external/ff-save.c:61
 msgid "video bitrate tolerance"
 msgstr "Toleranca bitne hitrosti videa"
 
-#: operations/external/ff-save.c:61
+#: operations/external/ff-save.c:64
 msgid "keyint-min"
 msgstr "keyint-min"
 
-#: operations/external/ff-save.c:62
+#: operations/external/ff-save.c:65
 msgid "trellis"
 msgstr "trellis"
 
-#: operations/external/ff-save.c:63
+#: operations/external/ff-save.c:66
 msgid "qmin"
 msgstr "qmin"
 
-#: operations/external/ff-save.c:64
+#: operations/external/ff-save.c:67
 msgid "qmax"
 msgstr "qmax"
 
-#: operations/external/ff-save.c:65
+#: operations/external/ff-save.c:68
 msgid "max_qdiff"
 msgstr "max_qdiff"
 
-#: operations/external/ff-save.c:66
+#: operations/external/ff-save.c:69
 msgid "me_range"
 msgstr "me_range"
 
-#: operations/external/ff-save.c:67
+#: operations/external/ff-save.c:70
 msgid "max_b_frames"
 msgstr "max_b_frames"
 
-#: operations/external/ff-save.c:68
+#: operations/external/ff-save.c:71
 msgid "gop-size"
 msgstr "gop-size"
 
-#: operations/external/ff-save.c:69
+#: operations/external/ff-save.c:72
 msgid "qcompress"
 msgstr "qcompress"
 
-#: operations/external/ff-save.c:70
+#: operations/external/ff-save.c:73
 msgid "qblur"
 msgstr "qblur"
 
-#: operations/external/ff-save.c:71
+#: operations/external/ff-save.c:74
 msgid "i-quant-factor"
 msgstr "i-kvant-faktor"
 
-#: operations/external/ff-save.c:72
+#: operations/external/ff-save.c:75
 msgid "i-quant-offset"
 msgstr "i-kvant-odmik"
 
-#: operations/external/ff-save.c:73
+#: operations/external/ff-save.c:76
 msgid "me-subpel-quality"
 msgstr "me-subpel-quality"
 
-#: operations/external/ff-save.c:1212
+#: operations/external/ff-save.c:1218
 msgid "FFmpeg Frame Saver"
 msgstr "Shranjevalnik video-sličic FFmpeg"
 
-#: operations/external/ff-save.c:1214
+#: operations/external/ff-save.c:1220
 msgid "FFmpeg video output sink"
 msgstr "Ponor izhodneg videa FFmpeg"
 
@@ -8212,12 +8268,12 @@ msgstr "Širina upodobljene slike"
 msgid "Height for rendered image"
 msgstr "Višina upodobljene slike"
 
-#: operations/external/svg-load.c:291
+#: operations/external/svg-load.c:293
 msgid "SVG File Loader"
 msgstr "Nalagalnik slik JPG"
 
 #. not hidden because it has extra API
-#: operations/external/svg-load.c:293
+#: operations/external/svg-load.c:295
 msgid "Load an SVG file using librsvg"
 msgstr "Datoteko SVG naloži z librsvg"
 
@@ -9328,7 +9384,7 @@ msgstr "Model alfe c"
 msgid "Model alpha d"
 msgstr "Model alfe d"
 
-#: operations/workshop/external/lens-correct.c:486
+#: operations/workshop/external/lens-correct.c:487
 msgid "Copies image performing lens distortion correction."
 msgstr "Kopira sliko s korekcijo popačenja objektiva."
 
@@ -9657,3 +9713,90 @@ msgstr "Selektivna obarvanost-nasičenost"
 #: operations/workshop/selective-hue-saturation.c:173
 msgid "Selective adjust Hue, Saturation and Lightness"
 msgstr "Selektivno prilagodite obarvanost, nasičenost in svetlost"
+
+#: operations/workshop/chamfer.c:27
+#, fuzzy
+msgid "HardLight"
+msgstr "Trda osvetlitev"
+
+#: operations/workshop/chamfer.c:29
+msgid "Multiply"
+msgstr "Pomnoži"
+
+#: operations/workshop/chamfer.c:33
+msgid "Darken"
+msgstr "Potemni"
+
+#: operations/workshop/chamfer.c:35
+msgid "Lighten"
+msgstr "Posvetli"
+
+#: operations/workshop/chamfer.c:39
+msgid "Soft Light"
+msgstr "Mehka osvetlitev"
+
+#: operations/workshop/chamfer.c:52
+#, fuzzy
+msgid "What blending mode a light map will be applied with."
+msgstr "S katerim načinom mešanja bo uporabljen svetlobni zemljevid."
+
+#: operations/workshop/chamfer.c:64
+#, fuzzy
+msgid ""
+"Curvature at 0.5 we are close to a circle shape, 1.0 is straight, values "
+"above 1.0 are concave."
+msgstr ""
+"Ukrivljenost pri 0,5 je blizu obliki kroga, 1,0 je ravna, vrednosti nad 1,0 "
+"so konkavne."
+
+#: operations/workshop/chamfer.c:70
+#, fuzzy
+msgid ""
+"Light angle (degrees). For most blend modes this rotates lighting of the "
+"bevel."
+msgstr ""
+"Svetlobni kot (stopinje). Pri večini načinov mešanja se s tem vrti "
+"osvetlitev poševnine."
+
+#: operations/workshop/chamfer.c:76
+msgid "Detailed options"
+msgstr "Podrobne možnosti"
+
+#: operations/workshop/chamfer.c:78
+#, fuzzy
+msgid "Mask with initial alpha"
+msgstr "Maska z začetno alfo"
+
+#: operations/workshop/chamfer.c:80
+msgid ""
+"Keep alpha coverage, avoids growing of the shape beyond initial position."
+msgstr ""
+"Ohranja pokritost alfe, kar preprečuje rast lika izven začetnega položaja."
+
+#: operations/workshop/chamfer.c:86
+#, fuzzy
+msgid "Light Elevation"
+msgstr "Dvignjenost svetil"
+
+#: operations/workshop/chamfer.c:87
+#, fuzzy
+msgid ""
+"Elevation angle (degrees). For most blend modes this shifts the lightest "
+"colors of the bevel."
+msgstr ""
+"Višinski kot (stopinje). Pri večini načinov mešanja to premakne najsvetlejše "
+"barve poševnine."
+
+#: operations/workshop/chamfer.c:118
+#, fuzzy
+msgid "Choose Internal Median Shape"
+msgstr "Izberite obliko interne mediane"
+
+#: operations/workshop/chamfer.c:348
+msgid "Chamfer"
+msgstr "Posneti rob"
+
+#: operations/workshop/chamfer.c:350
+#, fuzzy
+msgid "Simulate lighting of a chamfered 3D-edges for an alpha-defined shape."
+msgstr "Simulirajte osvetlitev posnetih 3D-robov za alfa-določen lik."
