@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
 "POT-Creation-Date: 2023-06-20 04:32+0000\n"
-"PO-Revision-Date: 2023-06-25 00:23+0200\n"
+"PO-Revision-Date: 2023-06-25 08:13+0200\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language: sl_SI\n"
@@ -632,12 +632,10 @@ msgid "Pixels values higher than this limit will be set to it"
 msgstr "Vrednosti slikovnih točk, višje od te meje, bodo ponastavljene"
 
 #: operations/common/alpha-clip.c:196
-#, fuzzy
 msgid "Clip Alpha"
 msgstr "Poreži alfo"
 
 #: operations/common/alpha-clip.c:199
-#, fuzzy
 msgid "Keep alpha values inside a specific range"
 msgstr "Ohrani vrednosti alfe v okviru določenega obsega"
 
@@ -2652,17 +2650,15 @@ msgstr ""
 "robov."
 
 #: operations/common/local-threshold.c:37
-#, fuzzy
 msgid "Low"
-msgstr "Nizko"
+msgstr "Nizka"
 
 #: operations/common/local-threshold.c:38
-#, fuzzy
 msgid ""
 "Thresholding level, 0.5 towards 0 to minimize shadows and towards 1.0 to "
 "minimze highlights."
 msgstr ""
-"Stopnja praga, 0,5 proti 0 za zmanjšanje senc in proti 1,0 za zmanjšanje "
+"Raven praga, 0,5 proti 0 za zmanjšanje senc in proti 1,0 za zmanjšanje "
 "svetlih delov."
 
 #: operations/common/local-threshold.c:43
@@ -2670,14 +2666,12 @@ msgid "Threshold level"
 msgstr "Raven praga"
 
 #: operations/common/local-threshold.c:46 operations/common/threshold.c:30
-#, fuzzy
 msgid "High"
-msgstr "Visoko"
+msgstr "Visoka"
 
 #: operations/common/local-threshold.c:47
-#, fuzzy
 msgid "Maximum values to include, above this gets set to 0."
-msgstr "Največja vrednost, ki bo vključena, nad to vrednostjo se nastavi na 0."
+msgstr "Največja vrednost, ki bo vključena, vrednost nad to se nastavi na 0."
 
 #: operations/common/local-threshold.c:175
 msgid "Local Threshold"
@@ -4418,12 +4412,10 @@ msgid "SVG color matrix operation svg_saturate"
 msgstr "Operacija barvne matrike SVG svg_saturate"
 
 #: operations/common/threshold.c:28
-#, fuzzy
 msgid "Lowest value to be included."
 msgstr "Najnižja vrednost, ki bo vključena."
 
 #: operations/common/threshold.c:33
-#, fuzzy
 msgid "highest value to be include as white."
 msgstr "Najvišja vrednost, vključena kot bela."
 
@@ -9715,7 +9707,6 @@ msgid "Selective adjust Hue, Saturation and Lightness"
 msgstr "Selektivno prilagodite obarvanost, nasičenost in svetlost"
 
 #: operations/workshop/chamfer.c:27
-#, fuzzy
 msgid "HardLight"
 msgstr "Trda osvetlitev"
 
@@ -9736,12 +9727,10 @@ msgid "Soft Light"
 msgstr "Mehka osvetlitev"
 
 #: operations/workshop/chamfer.c:52
-#, fuzzy
 msgid "What blending mode a light map will be applied with."
 msgstr "S katerim načinom mešanja bo uporabljen svetlobni zemljevid."
 
 #: operations/workshop/chamfer.c:64
-#, fuzzy
 msgid ""
 "Curvature at 0.5 we are close to a circle shape, 1.0 is straight, values "
 "above 1.0 are concave."
@@ -9776,7 +9765,7 @@ msgstr ""
 #: operations/workshop/chamfer.c:86
 #, fuzzy
 msgid "Light Elevation"
-msgstr "Dvignjenost svetil"
+msgstr "Dvignjenost osvetlitve"
 
 #: operations/workshop/chamfer.c:87
 #, fuzzy
