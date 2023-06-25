@@ -1,4 +1,4 @@
-GEGL-0.4.46 2023-06-1x
+GEGL-0.4.46 2023-06-26
 ----------------------
 
 Core:
@@ -11,19 +11,22 @@ autosensing the neccesary direction of the connection.
 Operations:
 ~~~~~~~~~~~
 
-Clean up various bits of ill or undefiend code based on stricter compiler
-warnings.
+GIMP has now started looking at the "gimp:menu-path" key among the GEGL
+operation class key/value pairs, and putting operations in the corresponding
+menu.
 
-Use gegl_node_connect in all ops.
+- local-threshold: new operation that does neighborhood aware and optionally
+antialiased thresholding of an image. The operation is equivalent to doing an
+unsharp mask with a large radius, followed by scaling the image up applying
+threshold and scaling down by the inverse of the scale up factor.
 
-ff-load,ff-save: clean up of deprecated API - hope fully covering
-more ffmpeg versions.
+- chamfer: new operation in workshop that useis distance-transform and emboss or
+LinuxBeaver's research into modeling different bevels with combinations of
+blurs.
 
-New operation: adaptive-threshold, this is equivalent to doing an unsharp mask
-with a large radius, followed by scaling the image up applying threshold and
-scaling down by the inverse. The scalings are only done if antialias is higher
-than 1. To speed up processing the first thing done in the graph is conversion
-to grayscale.
+- ff-load,ff-save: clean up of deprecated API, builds with ffmpeg-6.0
+but ff-save hasn't been made to work with this release of ffmpeg yet.
+
 
 Updated vendored libraries
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -40,8 +43,9 @@ Build:
 Contributors to this release
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Alexandre Prokoudine, Asier Sarasua Garmendia, Ekaterine Papava, Marco Ciampa,
-Martin, Øyvind Kolås, Piotr Drąg, Rodrigo Lledó, Sabri Ünal, Yuri Chornoivan
+Alexandre Prokoudine, Asier Sarasua Garmendia, Ekaterine Papava, LinuxBeaver,
+Marco Ciampa, Martin, Øyvind Kolås, Piotr Drąg, Rodrigo Lledó, Sabri Ünal,
+Yuri Chornoivan.
 
 
 GEGL-0.4.44 2023-03-26
