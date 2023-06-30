@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2023-06-20 04:32+0000\n"
-"PO-Revision-Date: 2023-06-25 08:13+0200\n"
+"POT-Creation-Date: 2023-06-25 06:15+0000\n"
+"PO-Revision-Date: 2023-06-30 17:30+0200\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language: sl_SI\n"
@@ -9739,7 +9739,6 @@ msgstr ""
 "so konkavne."
 
 #: operations/workshop/chamfer.c:70
-#, fuzzy
 msgid ""
 "Light angle (degrees). For most blend modes this rotates lighting of the "
 "bevel."
@@ -9752,7 +9751,6 @@ msgid "Detailed options"
 msgstr "Podrobne možnosti"
 
 #: operations/workshop/chamfer.c:78
-#, fuzzy
 msgid "Mask with initial alpha"
 msgstr "Maska z začetno alfo"
 
@@ -9763,12 +9761,10 @@ msgstr ""
 "Ohranja pokritost alfe, kar preprečuje rast lika izven začetnega položaja."
 
 #: operations/workshop/chamfer.c:86
-#, fuzzy
 msgid "Light Elevation"
-msgstr "Dvignjenost osvetlitve"
+msgstr "Višina osvetlitve"
 
 #: operations/workshop/chamfer.c:87
-#, fuzzy
 msgid ""
 "Elevation angle (degrees). For most blend modes this shifts the lightest "
 "colors of the bevel."
@@ -9777,7 +9773,6 @@ msgstr ""
 "barve poševnine."
 
 #: operations/workshop/chamfer.c:118
-#, fuzzy
 msgid "Choose Internal Median Shape"
 msgstr "Izberite obliko interne mediane"
 
@@ -9786,6 +9781,5 @@ msgid "Chamfer"
 msgstr "Posneti rob"
 
 #: operations/workshop/chamfer.c:350
-#, fuzzy
 msgid "Simulate lighting of a chamfered 3D-edges for an alpha-defined shape."
 msgstr "Simulirajte osvetlitev posnetih 3D-robov za alfa-določen lik."
