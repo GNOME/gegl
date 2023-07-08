@@ -68,6 +68,7 @@ typedef struct
   GeglNode *blur;
   GeglNode *threshold;
   GeglNode *aa_shrink;
+  GeglNode *crop;
   GeglNode *output;
 } State;
 
@@ -89,7 +90,7 @@ update_graph (GeglOperation *operation)
     gegl_node_set (state->aa_shrink, "x", inv_factor, "y", inv_factor, NULL);
 
     gegl_node_link_many (state->input, state->gray, state->aa_grow,
-                      state->threshold, state->aa_shrink, state->output, NULL);
+                      state->threshold, state->aa_shrink, state->crop, state->output, NULL);
 
     gegl_node_connect (state->aa_grow2, "input", state->blur, "output");
     gegl_node_connect (state->threshold, "aux", state->aa_grow2, "output");
@@ -97,7 +98,7 @@ update_graph (GeglOperation *operation)
   else
   {
     gegl_node_link_many (state->input, state->gray, state->threshold,
-                         state->output, NULL);
+                         state->output, state->crop, NULL);
 
     gegl_node_connect (state->threshold, "aux", state->blur, "output");
   }
@@ -137,6 +138,9 @@ attach (GeglOperation *operation)
                            NULL);
   state->threshold = gegl_node_new_child (gegl,
                            "operation", "gegl:threshold", NULL);
+  state->crop = gegl_node_new_child (gegl,
+                           "operation", "gegl:crop", NULL);
+  gegl_node_connect (state->input, "output", state->crop, "aux");
 
   gegl_node_link_many (state->gray, state->aa_grow, state->threshold,
                        state->aa_shrink, state->output, NULL);
