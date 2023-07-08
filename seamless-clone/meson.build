@@ -19,6 +19,7 @@ seamlessclone_lib = library('gegl-sc-' + api_version,
   include_directories: [ rootInclude, geglInclude, ],
   dependencies: [
     gegl_dep,
+    math,
     poly2tri_c,
   ],
   install: true,
