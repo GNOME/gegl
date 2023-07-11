@@ -24,6 +24,7 @@
  */
 
 #include <glib.h>
+#include <math.h>
 #include <poly2tri-c/refine/refine.h>
 
 #include "sc-outline.h"

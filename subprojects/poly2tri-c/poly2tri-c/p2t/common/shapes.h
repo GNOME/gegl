@@ -38,7 +38,6 @@
 
 #include <stddef.h>
 #include <assert.h>
-#include <math.h>
 #include "poly2tri-private.h"
 #include "cutils.h"
 
