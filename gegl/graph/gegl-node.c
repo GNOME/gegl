@@ -880,6 +880,13 @@ gegl_node_connect (GeglNode    *source,
     return FALSE;
 
   GeglPad *pad_sink = gegl_node_get_pad (sink, sink_pad_name);
+  if (pad_sink == NULL)
+    {
+      g_warning ("%s: the sink node '%s' doesn't have a pad named '%s', bailing.\n",
+                 G_STRFUNC, gegl_node_get_debug_name (sink), sink_pad_name);
+      return FALSE;
+    }
+
   if (!gegl_pad_is_input (pad_sink))
   {
     { GeglNode *tmp = source;
