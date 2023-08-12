@@ -239,7 +239,7 @@ asciidoc          = find_program('asciidoc',
 dot               = find_program('dot',
                      required: false, native: true)
 gtkdoc_scan       = find_program('gtkdoc-scan',
-                     required: false, native: true)
+                     required: get_option('gtk-doc'), native: true)
 source_highlight  = find_program('source-highlight',
                      required: false, native: true)
 w3m               = find_program('w3m',
@@ -499,7 +499,20 @@ elif not asciidoc.found()
   build_docs = false
   warning('asciidoc is required to build website')
 endif
-build_reference = get_option('gtk-doc')
+
+gi_docgen = find_program('gi-docgen', required: get_option('gi-docgen'))
+if get_option('gi-docgen').auto()
+ build_gi_docgen = g_ir.found() and gi_docgen.found() and not meson.is_cross_build()
+else
+ build_gi_docgen = get_option('gi-docgen').enabled()
+
+ if build_gi_docgen and not g_ir.found()
+   warning('-Ddocs=true and -Dintrospection=true are required to build gi-docgen documentation')
+   build_gi_docgen = false
+ endif
+endif
+
+build_reference = get_option('gtk-doc') or build_gi_docgen
 
 
 #########################################################################
@@ -610,8 +623,9 @@ summary(
 )
 summary(
   {
-    'Reference'       : build_reference,
-    'Docs'            : build_docs,
+    'GTK-docs reference'  : get_option('gtk-doc'),
+    'GI-docgen reference' : build_gi_docgen,
+    'Docs (GEGL website)' : build_docs,
   }, section: 'GEGL docs'
 )
 summary(

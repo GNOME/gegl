@@ -10,6 +10,11 @@ option('gtk-doc',
   value: 'false',
   description: 'build gtk-doc reference',
 )
+option('gi-docgen',
+  type: 'feature',
+  value: 'auto',
+  description: 'Build developer documentation (uses gi-docgen)'
+)
 option('workshop',
   type: 'boolean',
   value: 'false',

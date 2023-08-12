@@ -3,7 +3,7 @@ glib_prefix = dependency('glib-2.0').get_pkgconfig_variable('prefix')
 glib_gtk_docdir = glib_prefix / 'share' / 'gtk-doc' / 'html'
 
 # GTK doc
-if gtkdoc_scan.found()
+if get_option('gtk-doc')
   gnome.gtkdoc(
     'gegl',
     dependencies: gegl_lib,
@@ -17,5 +17,44 @@ if gtkdoc_scan.found()
       '--extra-dir=@0@'.format(glib_gtk_docdir),
     ],
     install : true,
+  )
+endif
+
+# GI-docgen
+if build_gi_docgen
+  # Extra markdown files
+  gegl_doc_content_files = [
+  ]
+
+  gegl_doc_toml = configure_file(
+    input: 'gegl.toml.in',
+    output: '@BASENAME@',
+    configuration: {
+      'GEGL_VERSION':   version,
+      'GEGL_LOGO_PATH': 'https://gegl.org/images/GEGL.png',
+    },
+  )
+
+  gegl_docs = custom_target('gegl-docs',
+    input: gegl_gir[0],
+    output: api_name,
+    command: [
+      gi_docgen,
+      'generate',
+      '--quiet',
+      '--fatal-warnings',
+      '--config', gegl_doc_toml,
+      '--output-dir=@OUTPUT@',
+      '--no-namespace-dir',
+      '--content-dir=@0@'.format(meson.current_source_dir()),
+      '@INPUT@',
+    ],
+    depend_files: [
+      gegl_doc_toml,
+      gegl_doc_content_files,
+    ],
+    build_by_default: true,
+    install: true,
+    install_dir: get_option('datadir') / 'doc',
   )
 endif
