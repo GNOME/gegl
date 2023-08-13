@@ -58,7 +58,7 @@ dep_ver += {
 
 # GEGL binary - optional
 dep_ver += {
-  'gexiv2'          : '>=0.0.0',
+  'gexiv2'          : '>=0.14.0',
   'libpng'          : '>=1.6.0',
   'luajit'          : '>=2.0.4',
   'mrg'             : '>=0.0.0',
