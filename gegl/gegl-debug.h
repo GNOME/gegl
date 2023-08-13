@@ -141,7 +141,7 @@ GEGL_NOTE (guint type, const char *format, ...)
   {
     gchar *formatted;
     va_start (args, format);
-    formatted = g_strdup_printf (format, args);
+    formatted = g_strdup_vprintf (format, args);
     g_message ("[ %s ] " G_STRLOC ": %s",
                gegl_lookup_debug_string (type), formatted);
     g_free (formatted);
@@ -158,7 +158,7 @@ GEGL_TIMESTAMP (guint type, const char *format, ...)
   {
     gchar *formatted;
     va_start (args, format);
-    formatted = g_strdup_printf (format, args);
+    formatted = g_strdup_vprintf (format, args);
     g_message ("[ %s ] %"G_GINT64_FORMAT": " G_STRLOC ": %s",
                gegl_lookup_debug_string (type), gegl_get_timestamp(),
                formatted);
