@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2023-02-14 21:20+0000\n"
-"PO-Revision-Date: 2023-03-08 00:52+0300\n"
+"POT-Creation-Date: 2023-07-05 11:20+0000\n"
+"PO-Revision-Date: 2023-08-26 14:41+0300\n"
 "Last-Translator: Sabri Ünal <libreajans@gmail.com>\n"
 "Language-Team: Türkçe <gnome-turk@gnome.org>\n"
 "Language: tr\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 3.1.1\n"
+"X-Generator: Poedit 3.2.2\n"
 "X-POOTLE-MTIME: 1437504675.000000\n"
 
 #: bin/gegl.c:179
@@ -210,7 +210,7 @@ msgstr ""
 "\n"
 "\n"
 
-#: bin/ui-core.c:4382 gegl/gegl-serialize.c:658
+#: bin/ui-core.c:4387 gegl/gegl-serialize.c:672
 #, c-format
 msgid "BablFormat \"%s\" does not exist."
 msgstr "BablFormat \"%s\" yok."
@@ -437,27 +437,27 @@ msgstr "OpenCL Kapat"
 msgid "Show GEGL Options"
 msgstr "GEGL Seçeneklerini Göster"
 
-#: gegl/gegl-serialize.c:296
+#: gegl/gegl-serialize.c:305
 #, c-format
 msgid "unhandled path data %s:%s\n"
 msgstr "işlenemeyen yol verisi %s:%s\n"
 
-#: gegl/gegl-serialize.c:528
+#: gegl/gegl-serialize.c:541
 #, c-format
 msgid "op '%s' not found, partial matches: "
 msgstr "op '%s' bulunamadı, kısmi eşleşme: "
 
-#: gegl/gegl-serialize.c:557
+#: gegl/gegl-serialize.c:570
 #, c-format
 msgid "%s has no %s property."
 msgstr "%s %s özelliğine sahip değil."
 
-#: gegl/gegl-serialize.c:563
+#: gegl/gegl-serialize.c:576
 #, c-format
 msgid "%s has no %s property, properties: "
 msgstr "%s %s özelliğine veya özelliklerine sahip değil: "
 
-#: gegl/gegl-serialize.c:794
+#: gegl/gegl-serialize.c:807
 #, c-format
 msgid "No such op '%s'"
 msgstr "Bilinmeyen op: '%s'"
@@ -654,6 +654,44 @@ msgstr ""
 "Harita renk değerlerine trigonometrik işlevler uygulayarak görüntü "
 "renklerini ağır biçimde boz."
 
+#: operations/common/alpha-clip.c:26 operations/common/alpha-clip.c:27
+#: operations/common/rgb-clip.c:26 operations/common/rgb-clip.c:27
+msgid "Clip low pixel values"
+msgstr "Düşük piksel değerlerini kırp"
+
+#: operations/common/alpha-clip.c:29 operations/common/rgb-clip.c:29
+msgid "Low limit"
+msgstr "Düşük sınır"
+
+#: operations/common/alpha-clip.c:32 operations/common/rgb-clip.c:32
+msgid "Pixels values lower than this limit will be set to it"
+msgstr "Bu sınırın altındaki piksel değerleri bu değere ayarlanacaktır"
+
+#: operations/common/alpha-clip.c:35 operations/common/alpha-clip.c:36
+#: operations/common/rgb-clip.c:35 operations/common/rgb-clip.c:36
+msgid "Clip high pixel values"
+msgstr "Yüksek piksel değerlerini kırp"
+
+#: operations/common/alpha-clip.c:38 operations/common/rgb-clip.c:38
+msgid "High limit"
+msgstr "Yüksek sınır"
+
+#: operations/common/alpha-clip.c:41 operations/common/rgb-clip.c:41
+msgid "Pixels values higher than this limit will be set to it"
+msgstr "Bu sınırın üstündeki piksel değerleri bu değere ayarlanacaktır"
+
+#: operations/common/alpha-clip.c:196
+#, fuzzy
+#| msgid "Color to Alpha"
+msgid "Clip Alpha"
+msgstr "Renkten Alfaya"
+
+#: operations/common/alpha-clip.c:199
+#, fuzzy
+#| msgid "Keep RGB pixels values inside a specific range"
+msgid "Keep alpha values inside a specific range"
+msgstr "RGB piksel değerlerini belirli bir erimde tut"
+
 #: operations/common/bilateral-filter.c:26
 #: operations/common/domain-transform.c:29 operations/common/dropshadow.c:46
 #: operations/common-cxx/focus-blur.c:45 operations/common-cxx/lens-blur.cc:25
@@ -697,7 +735,7 @@ msgstr ""
 "özgün merkez piksel ile olan renk farkına göre de ağırlıklandırılır. "
 
 #: operations/common/bloom.c:26 operations/common/threshold.c:25
-#: operations/common/threshold.c:131 operations/common/unsharp-mask.c:37
+#: operations/common/threshold.c:163 operations/common/unsharp-mask.c:37
 #: operations/common-gpl3+/red-eye-removal.c:31
 #: operations/common-gpl3+/wind.c:60 operations/external/matting-levin.c:33
 msgid "Threshold"
@@ -717,11 +755,11 @@ msgstr "Parlama alanı kenar yumuşaklığı"
 
 #: operations/common/bloom.c:35 operations/common/box-blur.c:25
 #: operations/common/c2g.c:28 operations/common/edge-neon.c:47
-#: operations/common/median-blur.c:42 operations/common/snn-mean.c:26
-#: operations/common/stress.c:27 operations/common/unsharp-mask.c:24
-#: operations/common/vignette.c:40 operations/common/wavelet-blur-1d.c:28
-#: operations/common/wavelet-blur.c:27 operations/common-cxx/focus-blur.c:85
-#: operations/common-cxx/lens-blur.cc:24
+#: operations/common/local-threshold.c:24 operations/common/median-blur.c:42
+#: operations/common/snn-mean.c:26 operations/common/stress.c:27
+#: operations/common/unsharp-mask.c:24 operations/common/vignette.c:40
+#: operations/common/wavelet-blur-1d.c:28 operations/common/wavelet-blur.c:27
+#: operations/common-cxx/focus-blur.c:85 operations/common-cxx/lens-blur.cc:24
 #: operations/common-cxx/variable-blur.c:30
 #: operations/common-gpl3+/shadows-highlights.c:40
 #: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:44
@@ -736,9 +774,10 @@ msgstr "Yarıçap"
 msgid "Glow radius"
 msgstr "Parıltı yarıçapı"
 
+#. Changing the name of a ENUM list will result in all presets breaking
 #: operations/common/bloom.c:42 operations/common/noise-reduction.c:26
 #: operations/common-cxx/denoise-dct.cc:38 operations/common-cxx/warp.cc:34
-#: operations/common-gpl3+/wind.c:64
+#: operations/common-gpl3+/wind.c:64 operations/workshop/chamfer.c:57
 msgid "Strength"
 msgstr "Kuvvet"
 
@@ -754,11 +793,11 @@ msgstr "Pozlamayı sınırla"
 msgid "Don't over-expose highlights"
 msgstr "Vurguları aşırı pozlama"
 
-#: operations/common/bloom.c:207
+#: operations/common/bloom.c:203
 msgid "Bloom"
 msgstr "Bahar"
 
-#: operations/common/bloom.c:210
+#: operations/common/bloom.c:206
 msgid "Add glow around bright areas"
 msgstr "Parlak alanların etrafına parlama ekle"
 
@@ -1010,12 +1049,12 @@ msgstr "Bir dama tahtası deseni görselleştir"
 #: operations/common/color.c:24 operations/common/color.c:87
 #: operations/common/color-overlay.c:26 operations/common/dropshadow.c:67
 #: operations/common/grid.c:64 operations/common/long-shadow.c:83
-#: operations/common/rectangle.c:48 operations/common/vector-fill.c:26
-#: operations/common/vignette.c:36 operations/common-gpl3+/color-to-alpha.c:29
+#: operations/common/rectangle.c:48 operations/common/vignette.c:36
+#: operations/common-gpl3+/color-to-alpha.c:29
 #: operations/common-gpl3+/supernova.c:60
 #: operations/common-gpl3+/tile-paper.c:31
 #: operations/common-gpl3+/value-propagate.c:54 operations/external/text.c:37
-#: operations/external/vector-stroke.c:27
+#: operations/external/vector-fill.c:26 operations/external/vector-stroke.c:27
 msgid "Color"
 msgstr "Renk"
 
@@ -1210,11 +1249,11 @@ msgstr "Yukarıdaki gri ayarlar için renk tonu değeri"
 msgid "Saturation value for above gray settings"
 msgstr "Yukarıdaki gri ayarlar için doygunluk değeri"
 
-#: operations/common/color-rotate.c:434
+#: operations/common/color-rotate.c:435
 msgid "Color Rotate"
 msgstr "Renk Döndür"
 
-#: operations/common/color-rotate.c:437
+#: operations/common/color-rotate.c:438
 msgid "Replace a range of colors with another"
 msgstr "Bir renk aralığını başkasıyla değiştir"
 
@@ -1757,7 +1796,7 @@ msgstr "Kullanılacak renk taklidi yöntemi"
 #: operations/common/noise-pick.c:38 operations/common/noise-rgb.c:55
 #: operations/common/noise-simplex.c:39 operations/common/noise-spread.c:41
 #: operations/common-gpl3+/cubism.c:42 operations/common-gpl3+/maze.c:65
-#: operations/common-gpl3+/mosaic.c:89 operations/common-gpl3+/noise-slur.c:40
+#: operations/common-gpl3+/mosaic.c:90 operations/common-gpl3+/noise-slur.c:40
 #: operations/common-gpl3+/noise-solid.c:61 operations/common-gpl3+/plasma.c:70
 #: operations/common-gpl3+/shift.c:35 operations/common-gpl3+/sinus.c:49
 #: operations/common-gpl3+/supernova.c:63
@@ -1819,19 +1858,20 @@ msgstr ""
 
 #: operations/common/dropshadow.c:27 operations/common/median-blur.c:27
 #: operations/common/pixelize.c:28 operations/common/vignette.c:26
-#: operations/common-cxx/focus-blur.c:35
+#: operations/common-cxx/focus-blur.c:35 operations/workshop/chamfer.c:43
 msgid "Square"
 msgstr "Kare"
 
 #: operations/common/dropshadow.c:28 operations/common/median-blur.c:28
 #: operations/common/newsprint.c:26 operations/common/vignette.c:25
-#: operations/common-cxx/focus-blur.c:34
+#: operations/common-cxx/focus-blur.c:34 operations/workshop/chamfer.c:44
 msgid "Circle"
 msgstr "Daire"
 
 #: operations/common/dropshadow.c:29 operations/common/median-blur.c:29
 #: operations/common/newsprint.c:27 operations/common/pixelize.c:26
 #: operations/common/vignette.c:27 operations/common-cxx/focus-blur.c:36
+#: operations/workshop/chamfer.c:45
 msgid "Diamond"
 msgstr "Karo"
 
@@ -1896,7 +1936,7 @@ msgstr "Gölge rengi (öntanımlı olarak 'black')"
 #.
 #: operations/common/dropshadow.c:74 operations/common/layer.c:33
 #: operations/common/opacity.c:25 operations/common/opacity.c:289
-#: operations/common/vector-fill.c:29 operations/external/vector-stroke.c:34
+#: operations/external/vector-fill.c:29 operations/external/vector-stroke.c:34
 msgid "Opacity"
 msgstr "Matlık"
 
@@ -2658,6 +2698,53 @@ msgstr "Küçük Gezegen"
 #: operations/common/little-planet.c:532
 msgid "Do a stereographic/little planet transform of an equirectangular image."
 msgstr "Eşitgen bir görüntüye stereografik/küçük gezegen dönüşümü uygula."
+
+#: operations/common/local-threshold.c:25
+msgid ""
+"Standard deviation of gaussian neighborhood average for computing local "
+"contrast. If 0 is used a global threshold is used instead of one based on "
+"local contrast."
+msgstr ""
+
+#: operations/common/local-threshold.c:32 operations/common-gpl3+/mosaic.c:87
+msgid "Antialiasing"
+msgstr "Kenar Yumuşatma"
+
+#: operations/common/local-threshold.c:33
+msgid ""
+"Rough target of levels of accuracy for antialiasing, 1 to disable "
+"antialiasing."
+msgstr ""
+
+#: operations/common/local-threshold.c:37
+msgid "Low"
+msgstr "Düşük"
+
+#: operations/common/local-threshold.c:38
+msgid ""
+"Thresholding level, 0.5 towards 0 to minimize shadows and towards 1.0 to "
+"minimze highlights."
+msgstr ""
+
+#: operations/common/local-threshold.c:43
+msgid "Threshold level"
+msgstr "Eşik düzeyi"
+
+#: operations/common/local-threshold.c:46 operations/common/threshold.c:30
+msgid "High"
+msgstr "Yüksek"
+
+#: operations/common/local-threshold.c:47
+msgid "Maximum values to include, above this gets set to 0."
+msgstr ""
+
+#: operations/common/local-threshold.c:175
+msgid "Local Threshold"
+msgstr "Yerel Eşik"
+
+#: operations/common/local-threshold.c:177
+msgid "Applies a threshold using the local neighborhood."
+msgstr ""
 
 #: operations/common/long-shadow.c:27
 msgid "Finite"
@@ -3816,11 +3903,11 @@ msgstr "Hizala"
 msgid "How to align items, 0.0 is start 0.5 middle and 1.0 end."
 msgstr "Ögelerin nasıl hizalanacağı, 0.0 başlangıç 0.5 orta ve 1.0 bitiş."
 
-#: operations/common/pack.c:182
+#: operations/common/pack.c:181
 msgid "Pack"
 msgstr "Paketle"
 
-#: operations/common/pack.c:184
+#: operations/common/pack.c:183
 msgid ""
 "Packs an image horizontally or vertically next to each other with optional "
 "gap, aux right of input."
@@ -3953,10 +4040,9 @@ msgstr "Dikdörtgen"
 msgid "A rectangular source of a fixed size with a solid color"
 msgstr "Tek renkli sabit boyutta bir dikdörtgen kaynağı"
 
-#: operations/common/recursive-transform.c:28
-#: operations/common/vector-fill.c:37 operations/external/path.c:47
-#: operations/external/vector-stroke.c:38 operations/transform/transform.c:24
-#: operations/transform/transform.c:62
+#: operations/common/recursive-transform.c:28 operations/external/path.c:47
+#: operations/external/vector-fill.c:37 operations/external/vector-stroke.c:38
+#: operations/transform/transform.c:24 operations/transform/transform.c:62
 msgid "Transform"
 msgstr "Dönüşüm"
 
@@ -4008,11 +4094,11 @@ msgstr "Dönüştürülen görüntüleri birbirinin altına yapıştır"
 msgid "Mathematical method for reconstructing pixel values"
 msgstr "Piksel değerlerinin yeniden yapılandırılması için matematiksel yöntem"
 
-#: operations/common/recursive-transform.c:375
+#: operations/common/recursive-transform.c:379
 msgid "Recursive Transform"
 msgstr "Özyinelemeli Dönüştürme"
 
-#: operations/common/recursive-transform.c:377
+#: operations/common/recursive-transform.c:381
 msgid "Apply a transformation recursively."
 msgstr "Dönüşümü özyinelemeli olarak ekle."
 
@@ -4052,12 +4138,10 @@ msgstr ""
 "işlevbilimsel gözlemlerden türetilmiş verimli genel bir işleticidir"
 
 #: operations/common/remap.c:100
-#, fuzzy
 msgid "Minimum Envelope"
 msgstr "Asgari Zarf"
 
 #: operations/common/remap.c:101
-#, fuzzy
 msgid "Maximum Envelope"
 msgstr "Azami Zarf"
 
@@ -4069,35 +4153,11 @@ msgstr "Yeniden eşlem"
 msgid "stretch components of pixels individually based on luminance envelopes"
 msgstr "parlaklık zarflarına göre piksellerin bileşenlerini ayrı ayrı esnet"
 
-#: operations/common/rgb-clip.c:25 operations/common/rgb-clip.c:26
-msgid "Clip low pixel values"
-msgstr "Düşük piksel değerlerini kırp"
-
-#: operations/common/rgb-clip.c:28
-msgid "Low limit"
-msgstr "Düşük sınır"
-
-#: operations/common/rgb-clip.c:31
-msgid "Pixels values lower than this limit will be set to it"
-msgstr "Bu sınırın altındaki piksel değerleri bu değere ayarlanacaktır"
-
-#: operations/common/rgb-clip.c:34 operations/common/rgb-clip.c:35
-msgid "Clip high pixel values"
-msgstr "Yüksek piksel değerlerini kırp"
-
-#: operations/common/rgb-clip.c:37
-msgid "High limit"
-msgstr "Yüksek sınır"
-
-#: operations/common/rgb-clip.c:40
-msgid "Pixels values higher than this limit will be set to it"
-msgstr "Bu sınırın üstündeki piksel değerleri bu değere ayarlanacaktır"
-
-#: operations/common/rgb-clip.c:208
+#: operations/common/rgb-clip.c:212
 msgid "Clip RGB"
 msgstr "RGB Kırp"
 
-#: operations/common/rgb-clip.c:212
+#: operations/common/rgb-clip.c:216
 msgid "Keep RGB pixels values inside a specific range"
 msgstr "RGB piksel değerlerini belirli bir erimde tut"
 
@@ -4252,7 +4312,7 @@ msgstr "Bakış açısı"
 msgid "Camera angle of view"
 msgstr "Kamera bakış açısı"
 
-#: operations/common/spherize.c:40
+#: operations/common/spherize.c:40 operations/workshop/chamfer.c:63
 msgid "Curvature"
 msgstr "Eğrilik"
 
@@ -4412,14 +4472,14 @@ msgid "SVG color matrix operation svg_saturate"
 msgstr "svg_saturate işlemi SVG renk matrisi"
 
 #: operations/common/threshold.c:28
-msgid ""
-"Scalar threshold level (overridden if an auxiliary input buffer is "
-"provided.)."
-msgstr ""
-"Skalar eşik düzeyi (eğer yardımcı girdi arabelleği sağlanırsa geçersiz "
-"kılınır)."
+msgid "Lowest value to be included."
+msgstr "Eklenebilecek en düşük değer."
 
-#: operations/common/threshold.c:136
+#: operations/common/threshold.c:33
+msgid "highest value to be include as white."
+msgstr "Beyaz olarak eklenebilecek en yüksek değer."
+
+#: operations/common/threshold.c:168
 msgid ""
 "Thresholds the image to white/black based on either the global value set in "
 "the value property, or per pixel from the aux input."
@@ -4471,11 +4531,11 @@ msgstr "Standart sapma olarak ifade edilir, piksel olarak"
 msgid "Scaling factor for unsharp-mask, the strength of effect"
 msgstr "Keskinliği azalt maskesi için ölçekleme katsayısı, etkinin kuvveti"
 
-#: operations/common/unsharp-mask.c:147
+#: operations/common/unsharp-mask.c:144
 msgid "Sharpen (Unsharp Mask)"
 msgstr "Keskinleştir (Keskinliği Azalt Maskesi)"
 
-#: operations/common/unsharp-mask.c:151
+#: operations/common/unsharp-mask.c:148
 msgid ""
 "Sharpen image, by adding difference to blurred image, a technique for "
 "sharpening originally used in darkrooms."
@@ -4494,45 +4554,6 @@ msgid ""
 msgstr ""
 "Değer bileşenini tersine çevir, sonuç rengi koruyarak parlaklığı tersine "
 "çevirir."
-
-#: operations/common/vector-fill.c:27
-msgid "Color of paint to use for filling."
-msgstr "Doldurma için kullanılacak boya rengi."
-
-#: operations/common/vector-fill.c:30
-msgid "The fill opacity to use."
-msgstr "Doldurma için kullanılacak ışık geçirmezlik."
-
-#. XXX: replace with enum?
-#: operations/common/vector-fill.c:34
-msgid "Fill rule."
-msgstr "Doldurma kuralı."
-
-#: operations/common/vector-fill.c:35
-msgid "how to determine what to fill (nonzero|evenodd)"
-msgstr "neyin doldurulacağı nasıl belirlenecek (nonzero|evenodd)"
-
-#: operations/common/vector-fill.c:38 operations/external/vector-stroke.c:39
-msgid "svg style description of transform."
-msgstr "SVG biçimi dönüşüm açıklaması."
-
-#: operations/common/vector-fill.c:40 operations/external/path.c:54
-#: operations/external/vector-stroke.c:41
-msgid "Vector"
-msgstr "Vektör"
-
-#: operations/common/vector-fill.c:41 operations/external/path.c:55
-#: operations/external/vector-stroke.c:42
-msgid "A GeglVector representing the path of the stroke"
-msgstr "Darbe yolunu temsil eden bir GeglVector"
-
-#: operations/common/vector-fill.c:320
-msgid "Fill Path"
-msgstr "Yolu Doldur"
-
-#: operations/common/vector-fill.c:323
-msgid "Renders a filled region"
-msgstr "Doldurulmuş bölgeyi görselleştir"
 
 #: operations/common/vignette.c:32
 msgid "Vignette shape"
@@ -4842,11 +4863,11 @@ msgstr "Yüksek kalite"
 msgid "Generate more accurate and consistent output (slower)"
 msgstr "Daha doğru ve tutarlı çıktı oluştur (daha yavaş)"
 
-#: operations/common-cxx/focus-blur.c:320
+#: operations/common-cxx/focus-blur.c:317
 msgid "Focus Blur"
 msgstr "Odak Bulanıklığı"
 
-#: operations/common-cxx/focus-blur.c:323
+#: operations/common-cxx/focus-blur.c:320
 msgid "Blur the image around a focal point"
 msgstr "Görüntüyü odak noktası çevresinde bulanıklaştır"
 
@@ -5167,6 +5188,7 @@ msgstr "Yükselme"
 #: operations/common-gpl3+/bump-map.c:59 operations/common-gpl3+/emboss.c:45
 #: operations/common-gpl3+/fractal-trace.c:60
 #: operations/common-gpl3+/texturize-canvas.c:44
+#: operations/workshop/chamfer.c:60
 msgid "Depth"
 msgstr "Derinlik"
 
@@ -5388,11 +5410,11 @@ msgstr "Renkten Alfaya"
 msgid "Convert a specified color to transparency, works best with white."
 msgstr "Belirtilen rengi saydama dönüştür, en iyi beyaz ile çalışır."
 
-#: operations/common-gpl3+/cubism.c:30 operations/common-gpl3+/mosaic.c:42
+#: operations/common-gpl3+/cubism.c:30 operations/common-gpl3+/mosaic.c:43
 msgid "Tile size"
 msgstr "Döşeme boyutu"
 
-#: operations/common-gpl3+/cubism.c:31 operations/common-gpl3+/mosaic.c:43
+#: operations/common-gpl3+/cubism.c:31 operations/common-gpl3+/mosaic.c:44
 msgid "Average diameter of each tile (in pixels)"
 msgstr "Her döşemenin ortalama çapı (piksel olarak)"
 
@@ -6194,116 +6216,112 @@ msgstr "Labirent"
 msgid "Draw a labyrinth"
 msgstr "Bir labirent çiz"
 
-#: operations/common-gpl3+/mosaic.c:32
+#: operations/common-gpl3+/mosaic.c:33
 msgid "Squares"
 msgstr "Kare"
 
-#: operations/common-gpl3+/mosaic.c:33
+#: operations/common-gpl3+/mosaic.c:34
 msgid "Hexagons"
 msgstr "Altıgen"
 
-#: operations/common-gpl3+/mosaic.c:34
+#: operations/common-gpl3+/mosaic.c:35
 msgid "Octagons"
 msgstr "Sekizgen"
 
-#: operations/common-gpl3+/mosaic.c:35
+#: operations/common-gpl3+/mosaic.c:36
 msgid "Triangles"
 msgstr "Üçgen"
 
-#: operations/common-gpl3+/mosaic.c:38
+#: operations/common-gpl3+/mosaic.c:39
 msgid "Tile geometry"
 msgstr "Döşeme şekli"
 
-#: operations/common-gpl3+/mosaic.c:40
+#: operations/common-gpl3+/mosaic.c:41
 msgid "What shape to use for tiles"
 msgstr "Döşemeler için kullanılacak şekil"
 
-#: operations/common-gpl3+/mosaic.c:48
+#: operations/common-gpl3+/mosaic.c:49
 msgid "Tile height"
 msgstr "Döşeme yüksekliği"
 
-#: operations/common-gpl3+/mosaic.c:49
+#: operations/common-gpl3+/mosaic.c:50
 msgid "Apparent height of each tile (in pixels)"
 msgstr "Her döşemenin görünür yüksekliği (piksel olarak)"
 
-#: operations/common-gpl3+/mosaic.c:53
+#: operations/common-gpl3+/mosaic.c:54
 msgid "Tile neatness"
 msgstr "Döşeme keskinliği"
 
-#: operations/common-gpl3+/mosaic.c:54
+#: operations/common-gpl3+/mosaic.c:55
 msgid "Deviation from perfectly formed tiles"
 msgstr "Mükemmel şekillendirilmiş döşemelerden sapma"
 
-#: operations/common-gpl3+/mosaic.c:57
+#: operations/common-gpl3+/mosaic.c:58
 msgid "Tile color variation"
 msgstr "Döşeme renk çeşitliliği"
 
-#: operations/common-gpl3+/mosaic.c:58
+#: operations/common-gpl3+/mosaic.c:59
 msgid "Magnitude of random color variations"
 msgstr "Rastgele renk çeşitliliğinin büyüklüğü"
 
-#: operations/common-gpl3+/mosaic.c:61
+#: operations/common-gpl3+/mosaic.c:62
 msgid "Color averaging"
 msgstr "Renk ortalaması"
 
-#: operations/common-gpl3+/mosaic.c:62
+#: operations/common-gpl3+/mosaic.c:63
 msgid "Tile color based on average of subsumed pixels"
 msgstr "Kalan piksellerin ortalamasına bağlı olarak döşeme rengi"
 
-#: operations/common-gpl3+/mosaic.c:64
+#: operations/common-gpl3+/mosaic.c:65
 msgid "Rough tile surface"
 msgstr "Pürüzlü döşeme yüzeyi"
 
-#: operations/common-gpl3+/mosaic.c:65
+#: operations/common-gpl3+/mosaic.c:66
 msgid "Surface characteristics"
 msgstr "Yüzey özellikleri"
 
-#: operations/common-gpl3+/mosaic.c:67
+#: operations/common-gpl3+/mosaic.c:68
 msgid "Allow splitting tiles"
 msgstr "Döşemeleri ayırmaya izin ver"
 
-#: operations/common-gpl3+/mosaic.c:68
+#: operations/common-gpl3+/mosaic.c:69
 msgid "Allows splitting tiles at hard edges"
 msgstr "Döşemeleri sert köşelerinden ayırmaya izin ver"
 
-#: operations/common-gpl3+/mosaic.c:70
+#: operations/common-gpl3+/mosaic.c:71
 msgid "Tile spacing"
 msgstr "Döşeme boşluğu"
 
-#: operations/common-gpl3+/mosaic.c:71
+#: operations/common-gpl3+/mosaic.c:72
 msgid "Inter-tile spacing (in pixels)"
 msgstr "Döşemeler arası boşluk (piksel olarak)"
 
-#: operations/common-gpl3+/mosaic.c:76
+#: operations/common-gpl3+/mosaic.c:77
 msgid "Joints color"
 msgstr "Eklem rengi"
 
-#: operations/common-gpl3+/mosaic.c:78
+#: operations/common-gpl3+/mosaic.c:79
 msgid "Light color"
 msgstr "Işık rengi"
 
-#: operations/common-gpl3+/mosaic.c:80
+#: operations/common-gpl3+/mosaic.c:81 operations/workshop/chamfer.c:69
 msgid "Light direction"
 msgstr "Işık yönü"
 
-#: operations/common-gpl3+/mosaic.c:81
+#: operations/common-gpl3+/mosaic.c:82
 msgid "Direction of light-source (in degrees)"
 msgstr "Işık kaynağının yönü (derece olarak)"
 
-#: operations/common-gpl3+/mosaic.c:86
-msgid "Antialiasing"
-msgstr "Kenar Yumuşatma"
-
-#: operations/common-gpl3+/mosaic.c:87
+#: operations/common-gpl3+/mosaic.c:88
 msgid "Enables smoother tile output"
 msgstr "Daha pürüzsüz döşeme çıktılarını etkinleştir"
 
-#: operations/common-gpl3+/mosaic.c:2471
+#: operations/common-gpl3+/mosaic.c:2472
 msgid "Mosaic"
 msgstr "Mozaik"
 
 # menü komutu ipucu olduğu için cümle sonunda nokta yer almaması gerekiyor
-#: operations/common-gpl3+/mosaic.c:2476
+#: operations/common-gpl3+/mosaic.c:2477
 msgid ""
 "Mosaic is a filter which transforms an image into what appears to be a "
 "mosaic, composed of small primitives, each of constant color and of an "
@@ -6704,7 +6722,8 @@ msgstr "Ayarlanırsa, desen biraz daha bozulur"
 msgid "Bilinear"
 msgstr "Çift doğrusal"
 
-#: operations/common-gpl3+/sinus.c:67
+#. Changing the name of a ENUM list will result in all presets breaking
+#: operations/common-gpl3+/sinus.c:67 operations/workshop/chamfer.c:49
 msgid "Blend Mode"
 msgstr "Karıştırma Kipi"
 
@@ -7195,7 +7214,7 @@ msgstr "Sarmal Kıstırma"
 msgid "Distort an image by whirling and pinching"
 msgstr "Sarmal ve kıstırma ile bir görüntüyü boz"
 
-#: operations/common-gpl3+/wind.c:28 operations/common-gpl3+/wind.c:590
+#: operations/common-gpl3+/wind.c:28 operations/common-gpl3+/wind.c:586
 msgid "Wind"
 msgstr "Rüzgar"
 
@@ -7251,7 +7270,7 @@ msgstr "Yüksek değerler görüntünün daha az alanında etki kısıtlar"
 msgid "Higher values increase the magnitude of the effect"
 msgstr "Yüksek değerler etkinin büyüklüğünü artırır"
 
-#: operations/common-gpl3+/wind.c:594
+#: operations/common-gpl3+/wind.c:590
 msgid "Wind-like bleed effect"
 msgstr "Rüzgar benzeri akma etkisi"
 
@@ -7487,11 +7506,11 @@ msgstr "audio-codec"
 msgid "audio"
 msgstr "audio"
 
-#: operations/external/ff-load.c:866
+#: operations/external/ff-load.c:868
 msgid "FFmpeg Frame Loader"
 msgstr "FFmpeg Çerçeve Yükleyici"
 
-#: operations/external/ff-load.c:868
+#: operations/external/ff-load.c:870
 msgid "FFmpeg video frame importer."
 msgstr "FFmpeg video çerçeve içe aktarıcı."
 
@@ -7564,83 +7583,83 @@ msgstr ""
 msgid "global quality"
 msgstr "evrensel kalite"
 
-#: operations/external/ff-save.c:55
+#: operations/external/ff-save.c:57
 msgid "noise reduction"
 msgstr "gürültü azaltma"
 
-#: operations/external/ff-save.c:56
+#: operations/external/ff-save.c:58
 msgid "scenechange threshold"
 msgstr "scenechange eşiği"
 
-#: operations/external/ff-save.c:57
+#: operations/external/ff-save.c:59
 msgid "video bitrate min"
 msgstr "video bit hızı en az"
 
-#: operations/external/ff-save.c:58
+#: operations/external/ff-save.c:60
 msgid "video bitrate max"
 msgstr "video bit hızı en çok"
 
-#: operations/external/ff-save.c:59
+#: operations/external/ff-save.c:61
 msgid "video bitrate tolerance"
 msgstr "video bit hızı toleransı"
 
-#: operations/external/ff-save.c:61
+#: operations/external/ff-save.c:64
 msgid "keyint-min"
 msgstr "keyint-min"
 
-#: operations/external/ff-save.c:62
+#: operations/external/ff-save.c:65
 msgid "trellis"
 msgstr "trellis"
 
-#: operations/external/ff-save.c:63
+#: operations/external/ff-save.c:66
 msgid "qmin"
 msgstr "qmin"
 
-#: operations/external/ff-save.c:64
+#: operations/external/ff-save.c:67
 msgid "qmax"
 msgstr "qmax"
 
-#: operations/external/ff-save.c:65
+#: operations/external/ff-save.c:68
 msgid "max_qdiff"
 msgstr "max_qdiff"
 
-#: operations/external/ff-save.c:66
+#: operations/external/ff-save.c:69
 msgid "me_range"
 msgstr "me_range"
 
-#: operations/external/ff-save.c:67
+#: operations/external/ff-save.c:70
 msgid "max_b_frames"
 msgstr "max_b_frames"
 
-#: operations/external/ff-save.c:68
+#: operations/external/ff-save.c:71
 msgid "gop-size"
 msgstr "gop-size"
 
-#: operations/external/ff-save.c:69
+#: operations/external/ff-save.c:72
 msgid "qcompress"
 msgstr "sıkıştırma"
 
-#: operations/external/ff-save.c:70
+#: operations/external/ff-save.c:73
 msgid "qblur"
 msgstr "qblur"
 
-#: operations/external/ff-save.c:71
+#: operations/external/ff-save.c:74
 msgid "i-quant-factor"
 msgstr "i-quant-factor"
 
-#: operations/external/ff-save.c:72
+#: operations/external/ff-save.c:75
 msgid "i-quant-offset"
 msgstr "i-quant-offset"
 
-#: operations/external/ff-save.c:73
+#: operations/external/ff-save.c:76
 msgid "me-subpel-quality"
 msgstr "me-subpel-quality"
 
-#: operations/external/ff-save.c:1212
+#: operations/external/ff-save.c:1218
 msgid "FFmpeg Frame Saver"
 msgstr "FFmpeg Çerçeve Kaydedici"
 
-#: operations/external/ff-save.c:1214
+#: operations/external/ff-save.c:1220
 msgid "FFmpeg video output sink"
 msgstr "FFmpeg video çıktı havuzu"
 
@@ -8027,6 +8046,16 @@ msgstr "Doldurma ışık geçirmezliği"
 msgid "The fill opacity to use"
 msgstr "Kullanılacak doldurma ışık geçirmezliği"
 
+#: operations/external/path.c:54 operations/external/vector-fill.c:40
+#: operations/external/vector-stroke.c:41
+msgid "Vector"
+msgstr "Vektör"
+
+#: operations/external/path.c:55 operations/external/vector-fill.c:41
+#: operations/external/vector-stroke.c:42
+msgid "A GeglVector representing the path of the stroke"
+msgstr "Darbe yolunu temsil eden bir GeglVector"
+
 #: operations/external/path.c:584
 msgid "Render Path"
 msgstr "Yolu Görselleştir"
@@ -8263,12 +8292,12 @@ msgstr "Gerçeklenen görüntü için genişlik"
 msgid "Height for rendered image"
 msgstr "Gerçeklenen görüntü için yükseklik"
 
-#: operations/external/svg-load.c:291
+#: operations/external/svg-load.c:293
 msgid "SVG File Loader"
 msgstr "SVG Dosya Yükleyici"
 
 #. not hidden because it has extra API
-#: operations/external/svg-load.c:293
+#: operations/external/svg-load.c:295
 msgid "Load an SVG file using librsvg"
 msgstr "SVG dosyasını librsvg kullanarak yükle"
 
@@ -8363,7 +8392,7 @@ msgstr "Görüntü dosya dizini (altdosya)"
 
 #: operations/external/tiff-load.c:40 operations/external/tiff-save.c:35
 msgid "Object to receive image metadata"
-msgstr ""
+msgstr "Görüntü üst verilerini alacak nesne"
 
 #: operations/external/tiff-load.c:1036
 msgid "TIFF File Loader"
@@ -8424,6 +8453,35 @@ msgstr "Video4Linux Çerçeve Kaynağı"
 msgid "Video4Linux input, webcams framegrabbers and similar devices."
 msgstr ""
 "Video4Linux girdi, web kamerası çerçeve yakalayıcıları ve benzer aygıtlar."
+
+#: operations/external/vector-fill.c:27
+msgid "Color of paint to use for filling."
+msgstr "Doldurma için kullanılacak boya rengi."
+
+#: operations/external/vector-fill.c:30
+msgid "The fill opacity to use."
+msgstr "Doldurma için kullanılacak ışık geçirmezlik."
+
+#. XXX: replace with enum?
+#: operations/external/vector-fill.c:34
+msgid "Fill rule."
+msgstr "Doldurma kuralı."
+
+#: operations/external/vector-fill.c:35
+msgid "how to determine what to fill (nonzero|evenodd)"
+msgstr "neyin doldurulacağı nasıl belirlenecek (nonzero|evenodd)"
+
+#: operations/external/vector-fill.c:38 operations/external/vector-stroke.c:39
+msgid "svg style description of transform."
+msgstr "SVG biçimi dönüşüm açıklaması."
+
+#: operations/external/vector-fill.c:320
+msgid "Fill Path"
+msgstr "Yolu Doldur"
+
+#: operations/external/vector-fill.c:323
+msgid "Renders a filled region"
+msgstr "Doldurulmuş bölgeyi görselleştir"
 
 #: operations/external/vector-stroke.c:28
 msgid "Color of paint to use for stroking."
@@ -8967,7 +9025,7 @@ msgstr "Ayarlama Maskesini Görselleştir"
 
 #: operations/workshop/band-tune.c:217
 msgid "Band tune"
-msgstr ""
+msgstr "Bant ince ayar"
 
 #: operations/workshop/band-tune.c:219
 msgid ""
@@ -9307,7 +9365,7 @@ msgstr "Model alfa c"
 msgid "Model alpha d"
 msgstr "Model alfa d"
 
-#: operations/workshop/external/lens-correct.c:486
+#: operations/workshop/external/lens-correct.c:487
 msgid "Copies image performing lens distortion correction."
 msgstr "Mercek bozulması düzeltmesi gerçekleştiren görüntüyü kopyalar."
 
@@ -9633,3 +9691,85 @@ msgstr "Seçilebilir Renk Tonu Doygunluğu"
 #: operations/workshop/selective-hue-saturation.c:173
 msgid "Selective adjust Hue, Saturation and Lightness"
 msgstr "Seçilebilir ayarlanabilir renk tonu, doygunluk ve aydınlık"
+
+#: operations/workshop/chamfer.c:27
+msgid "HardLight"
+msgstr "Sert ışık"
+
+#: operations/workshop/chamfer.c:29
+#, fuzzy
+#| msgid "X multiplier"
+msgid "Multiply"
+msgstr "X çoklayıcı"
+
+#: operations/workshop/chamfer.c:33
+msgid "Darken"
+msgstr "Koyulaştır"
+
+#: operations/workshop/chamfer.c:35
+#, fuzzy
+#| msgid "Brighten"
+msgid "Lighten"
+msgstr "Parlat"
+
+#: operations/workshop/chamfer.c:39
+msgid "Soft Light"
+msgstr "Yumuşak Işık"
+
+#: operations/workshop/chamfer.c:52
+msgid "What blending mode a light map will be applied with."
+msgstr ""
+
+#: operations/workshop/chamfer.c:64
+msgid ""
+"Curvature at 0.5 we are close to a circle shape, 1.0 is straight, values "
+"above 1.0 are concave."
+msgstr ""
+
+#: operations/workshop/chamfer.c:70
+msgid ""
+"Light angle (degrees). For most blend modes this rotates lighting of the "
+"bevel."
+msgstr ""
+
+#: operations/workshop/chamfer.c:76
+msgid "Detailed options"
+msgstr "Ayrıntılı seçenekler"
+
+#: operations/workshop/chamfer.c:78
+msgid "Mask with initial alpha"
+msgstr ""
+
+#: operations/workshop/chamfer.c:80
+msgid ""
+"Keep alpha coverage, avoids growing of the shape beyond initial position."
+msgstr ""
+
+#: operations/workshop/chamfer.c:86
+msgid "Light Elevation"
+msgstr "Işık Yükselme"
+
+#: operations/workshop/chamfer.c:87
+msgid ""
+"Elevation angle (degrees). For most blend modes this shifts the lightest "
+"colors of the bevel."
+msgstr ""
+
+#: operations/workshop/chamfer.c:118
+msgid "Choose Internal Median Shape"
+msgstr ""
+
+#: operations/workshop/chamfer.c:348
+msgid "Chamfer"
+msgstr ""
+
+#: operations/workshop/chamfer.c:350
+msgid "Simulate lighting of a chamfered 3D-edges for an alpha-defined shape."
+msgstr ""
+
+#~ msgid ""
+#~ "Scalar threshold level (overridden if an auxiliary input buffer is "
+#~ "provided.)."
+#~ msgstr ""
+#~ "Skalar eşik düzeyi (eğer yardımcı girdi arabelleği sağlanırsa geçersiz "
+#~ "kılınır)."
