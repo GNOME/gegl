@@ -12,6 +12,8 @@
 #include "buffer/gegl-tile-storage.h"
 #include "process/gegl-eval-manager.h"
 
+IMPORT_ZOMBIE(default_config)
+
 // last lock in 2 phase locking
 std::mutex zombie_mutex;
 using lock_guard = std::lock_guard<std::mutex>;
@@ -26,7 +28,6 @@ bool use_zombie() {
 }
 
 void gegl_zombie_link_test() {
-  zombie_link_test();
 }
 
 using Key = std::tuple<gint, gint, gint>;
