@@ -792,7 +792,11 @@ gegl_node_invalidated (GeglNode            *node,
 
   rects = g_hash_table_new_full (NULL, NULL, NULL, g_free);
 
+#if GLIB_CHECK_VERSION(2,68,0)
   g_hash_table_insert (rects, node, g_memdup2 (rect, sizeof (GeglRectangle)));
+#else
+  g_hash_table_insert (rects, node, g_memdup (rect, sizeof (GeglRectangle)));
+#endif
 
   visitor = gegl_callback_visitor_new (gegl_node_invalidated_invalidate_node,
                                        rects);

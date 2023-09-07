@@ -152,7 +152,11 @@ gegl_matrix3_copy_into (GeglMatrix3 *dst,
 GeglMatrix3 *
 gegl_matrix3_copy (const GeglMatrix3 *matrix)
 {
+#if GLIB_CHECK_VERSION(2,68,0)
   return (GeglMatrix3 *) g_memdup2 (matrix, sizeof (GeglMatrix3));
+#else
+  return (GeglMatrix3 *) g_memdup (matrix, sizeof (GeglMatrix3));
+#endif
 }
 
 gdouble
