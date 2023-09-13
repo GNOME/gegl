@@ -1,6 +1,14 @@
 # Meson build system
 /_build
 /compile_commands.json
+/subprojects
+!/subprojects/libpng.wrap
+!/subprojects/libjpeg-turbo.wrap
+!/subprojects/json-glib.wrap
+!/subprojects/glib.wrap
+!/subprojects/babl.wrap
+!/subprojects/poly2tri-c/*
+!/subprojects/libnsgif/*
 
 # Atom
 /.vscode

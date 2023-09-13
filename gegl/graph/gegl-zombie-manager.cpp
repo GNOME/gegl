@@ -179,6 +179,9 @@ struct _GeglZombieManager {
   ZombieTile MakeZombieTile(Key k) {
     lock_guard lg(zombie_mutex);
     // todo: calculate parent dependency
+
+    Trailokya::get_trailokya().reaper.mass_extinction(10000);
+
     auto tile_size = GetTileSize();
     if (node->cache != nullptr) {
       ZombieTile zt(bindZombie([tile_size](){ return ZombieTile(Proxy{tile_size}); }));
