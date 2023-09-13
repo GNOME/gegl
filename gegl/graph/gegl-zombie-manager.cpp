@@ -180,7 +180,7 @@ struct _GeglZombieManager {
     lock_guard lg(zombie_mutex);
     // todo: calculate parent dependency
 
-    Trailokya::get_trailokya().reaper.mass_extinction(10000);
+    Trailokya::get_trailokya().reaper.mass_extinction(18008684064490847878ull);
 
     auto tile_size = GetTileSize();
     if (node->cache != nullptr) {
