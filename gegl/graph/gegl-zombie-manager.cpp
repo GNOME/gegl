@@ -136,9 +136,14 @@ struct _GeglZombieManager {
   std::optional<GeglRectangle> tile;
   std::unordered_map<Key, ZombieTile> map;
   std::mutex mutex;
+  unsigned long long max_score;
 
   _GeglZombieManager(GeglNode* node) : node(node) {
     g_weak_ref_init(&cache, nullptr);
+
+    std::string max_score_str = getEnvVar("ZOMBIE_MAX_SCORE");
+
+    max_score = std::stoull(&max_score_str, nullptr, 10);
   }
 
   ~_GeglZombieManager() {
@@ -180,7 +185,7 @@ struct _GeglZombieManager {
     lock_guard lg(zombie_mutex);
     // todo: calculate parent dependency
 
-    Trailokya::get_trailokya().reaper.mass_extinction(180086840644908478780ull / 2);
+    Trailokya::get_trailokya().reaper.mass_extinction(max_score);
 
     auto tile_size = GetTileSize();
     if (node->cache != nullptr) {
