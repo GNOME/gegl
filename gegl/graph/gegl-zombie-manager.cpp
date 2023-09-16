@@ -144,6 +144,8 @@ struct _GeglZombieManager {
     std::string max_score_str = getEnvVar("ZOMBIE_MAX_SCORE");
 
     max_score = std::stoull(max_score_str, nullptr, 10);
+
+    std::cout << "Max Score: " << max_score << std::endl;
   }
 
   ~_GeglZombieManager() {
