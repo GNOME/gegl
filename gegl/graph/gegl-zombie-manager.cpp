@@ -145,7 +145,7 @@ struct _GeglZombieManager {
 
     max_score = std::stoull(max_score_str, nullptr, 10);
 
-    std::cout << "Max Score: " << max_score << std::endl;
+    // std::cout << "Max Score: " << max_score << std::endl;
   }
 
   ~_GeglZombieManager() {
