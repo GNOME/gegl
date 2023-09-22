@@ -35,7 +35,7 @@ property_int (aa_factor, _("Antialiasing"), 1)
   ui_range      (1, 16)
 
 property_double (low, _("Low"), 0.5)
-  description   (_("Thresholding level, 0.5 towards 0 to minimize shadows and towards 1.0 to minimze highlights."))
+  description   (_("Thresholding level, 0.5 towards 0 to minimize shadows and towards 1.0 to minimize highlights."))
   value_range   (0.0, 1.0) 
   ui_range   (0.0, 1.0) 
   ui_meta     ("role", "range-start")
