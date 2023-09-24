@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2023-06-25 06:15+0000\n"
-"PO-Revision-Date: 2023-06-30 17:30+0200\n"
+"POT-Creation-Date: 2023-09-23 21:17+0000\n"
+"PO-Revision-Date: 2023-09-24 08:11+0200\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language: sl_SI\n"
@@ -2656,7 +2656,7 @@ msgstr "Nizka"
 #: operations/common/local-threshold.c:38
 msgid ""
 "Thresholding level, 0.5 towards 0 to minimize shadows and towards 1.0 to "
-"minimze highlights."
+"minimize highlights."
 msgstr ""
 "Raven praga, 0,5 proti 0 za zmanjšanje senc in proti 1,0 za zmanjšanje "
 "svetlih delov."
@@ -2673,11 +2673,11 @@ msgstr "Visoka"
 msgid "Maximum values to include, above this gets set to 0."
 msgstr "Največja vrednost, ki bo vključena, vrednost nad to se nastavi na 0."
 
-#: operations/common/local-threshold.c:175
+#: operations/common/local-threshold.c:179
 msgid "Local Threshold"
 msgstr "Krajevni prag"
 
-#: operations/common/local-threshold.c:177
+#: operations/common/local-threshold.c:181
 msgid "Applies a threshold using the local neighborhood."
 msgstr "Uveljavi prag z uporabo krajevne soseščine."
 
@@ -8260,12 +8260,12 @@ msgstr "Širina upodobljene slike"
 msgid "Height for rendered image"
 msgstr "Višina upodobljene slike"
 
-#: operations/external/svg-load.c:293
+#: operations/external/svg-load.c:308
 msgid "SVG File Loader"
 msgstr "Nalagalnik slik JPG"
 
 #. not hidden because it has extra API
-#: operations/external/svg-load.c:295
+#: operations/external/svg-load.c:310
 msgid "Load an SVG file using librsvg"
 msgstr "Datoteko SVG naloži z librsvg"
 
