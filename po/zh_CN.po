@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl-master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2023-06-20 04:32+0000\n"
-"PO-Revision-Date: 2023-06-26 10:01+0800\n"
+"POT-Creation-Date: 2023-09-23 21:17+0000\n"
+"PO-Revision-Date: 2023-09-24 19:34+0800\n"
 "Last-Translator: lumingzh <lumingzh@qq.com>\n"
 "Language-Team: Chinese - China <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
@@ -23,7 +23,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0\n"
-"X-Generator: Gtranslator 42.0\n"
+"X-Generator: Gtranslator 45.1\n"
 
 #: bin/gegl.c:179
 #, c-format
@@ -2599,7 +2599,7 @@ msgstr "低"
 #: operations/common/local-threshold.c:38
 msgid ""
 "Thresholding level, 0.5 towards 0 to minimize shadows and towards 1.0 to "
-"minimze highlights."
+"minimize highlights."
 msgstr "阈值级别，0.5 到 0 最小化阴影而 0.5 到 1.0 最小化高光。"
 
 #: operations/common/local-threshold.c:43
@@ -2614,11 +2614,11 @@ msgstr "高"
 msgid "Maximum values to include, above this gets set to 0."
 msgstr "要包含的最大值，高于该值则将设为 0。"
 
-#: operations/common/local-threshold.c:175
+#: operations/common/local-threshold.c:179
 msgid "Local Threshold"
 msgstr "局部阈值"
 
-#: operations/common/local-threshold.c:177
+#: operations/common/local-threshold.c:181
 msgid "Applies a threshold using the local neighborhood."
 msgstr "使用局部邻近应用阈值。"
 
@@ -8057,12 +8057,12 @@ msgstr "渲染图像的宽度"
 msgid "Height for rendered image"
 msgstr "渲染图像的高度"
 
-#: operations/external/svg-load.c:293
+#: operations/external/svg-load.c:308
 msgid "SVG File Loader"
 msgstr "SVG 文件加载器"
 
 #. not hidden because it has extra API
-#: operations/external/svg-load.c:295
+#: operations/external/svg-load.c:310
 msgid "Load an SVG file using librsvg"
 msgstr "使用 librsvg 加载 SVG 文件"
 
