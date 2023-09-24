@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2023-06-20 04:32+0000\n"
-"PO-Revision-Date: 2023-06-25 16:55+0300\n"
+"POT-Creation-Date: 2023-09-23 21:17+0000\n"
+"PO-Revision-Date: 2023-09-24 18:49+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
 "Language: uk\n"
@@ -631,12 +631,10 @@ msgid "Pixels values higher than this limit will be set to it"
 msgstr "Значення точок, які будуть вищими за цю межу буде вирівняно за межею"
 
 #: operations/common/alpha-clip.c:196
-#| msgid "Color to Alpha"
 msgid "Clip Alpha"
 msgstr "Обрізати альфу"
 
 #: operations/common/alpha-clip.c:199
-#| msgid "Keep RGB pixels values inside a specific range"
 msgid "Keep alpha values inside a specific range"
 msgstr "Зберегти значення альфи у вказаному діапазоні"
 
@@ -2660,10 +2658,10 @@ msgid ""
 "contrast. If 0 is used a global threshold is used instead of one based on "
 "local contrast."
 msgstr ""
-"Стандартне відхилення гаусового усереднення сусідніх для обчислення"
-" локальної контрастності. Якщо використано 0, буде використано загальне"
-" порогове значення, замість значення, яке засновано на локальній"
-" контрастності."
+"Стандартне відхилення гаусового усереднення сусідніх для обчислення "
+"локальної контрастності. Якщо використано 0, буде використано загальне "
+"порогове значення, замість значення, яке засновано на локальній "
+"контрастності."
 
 #: operations/common/local-threshold.c:32 operations/common-gpl3+/mosaic.c:87
 msgid "Antialiasing"
@@ -2674,23 +2672,25 @@ msgid ""
 "Rough target of levels of accuracy for antialiasing, 1 to disable "
 "antialiasing."
 msgstr ""
-"Груба цільова кількість рівнів точності для згладжування, 1 — вимкнути"
-" згладжування."
+"Груба цільова кількість рівнів точності для згладжування, 1 — вимкнути "
+"згладжування."
 
 #: operations/common/local-threshold.c:37
 msgid "Low"
 msgstr "Низький"
 
 #: operations/common/local-threshold.c:38
+#| msgid ""
+#| "Thresholding level, 0.5 towards 0 to minimize shadows and towards 1.0 to "
+#| "minimze highlights."
 msgid ""
 "Thresholding level, 0.5 towards 0 to minimize shadows and towards 1.0 to "
-"minimze highlights."
+"minimize highlights."
 msgstr ""
-"Пороговий рівень, від 0.5 до 0 — мінімізує тіні, а від 0.5 до 1.0 —"
-" мінімізує виблиски."
+"Пороговий рівень, від 0.5 до 0 — мінімізує тіні, а від 0.5 до 1.0 — "
+"мінімізує виблиски."
 
 #: operations/common/local-threshold.c:43
-#| msgid "Threshold low"
 msgid "Threshold level"
 msgstr "Пороговий рівень"
 
@@ -2701,16 +2701,14 @@ msgstr "Високий"
 #: operations/common/local-threshold.c:47
 msgid "Maximum values to include, above this gets set to 0."
 msgstr ""
-"Максимальні значення для включення, усі вищі за це значення стануть рівними"
-" 0."
+"Максимальні значення для включення, усі вищі за це значення стануть рівними "
+"0."
 
-#: operations/common/local-threshold.c:175
-#| msgid "Blue Threshold"
+#: operations/common/local-threshold.c:179
 msgid "Local Threshold"
 msgstr "Локальне порогове значення"
 
-#: operations/common/local-threshold.c:177
-#| msgid "Applies a threshold against the average of a spatial neighbourhood."
+#: operations/common/local-threshold.c:181
 msgid "Applies a threshold using the local neighborhood."
 msgstr "Застосовує порогове значення на основі локального сусідства."
 
@@ -8344,12 +8342,12 @@ msgstr "Ширина обробленого зображення"
 msgid "Height for rendered image"
 msgstr "Висота обробленого зображення"
 
-#: operations/external/svg-load.c:293
+#: operations/external/svg-load.c:308
 msgid "SVG File Loader"
 msgstr "Завантажувач файлів SVG"
 
 #. not hidden because it has extra API
-#: operations/external/svg-load.c:295
+#: operations/external/svg-load.c:310
 msgid "Load an SVG file using librsvg"
 msgstr "Завантажити файл SVG за допомогою librsvg"
 
@@ -9811,12 +9809,10 @@ msgid "Selective adjust Hue, Saturation and Lightness"
 msgstr "Вибіркове коригування відтінку, освітленості та насиченості"
 
 #: operations/workshop/chamfer.c:27
-#| msgid "Height"
 msgid "HardLight"
 msgstr "Жорстке світло"
 
 #: operations/workshop/chamfer.c:29
-#| msgid "X multiplier"
 msgid "Multiply"
 msgstr "Множення"
 
@@ -9825,12 +9821,10 @@ msgid "Darken"
 msgstr "Затемнення"
 
 #: operations/workshop/chamfer.c:35
-#| msgid "Brighten"
 msgid "Lighten"
 msgstr "Освітлення"
 
 #: operations/workshop/chamfer.c:39
-#| msgid "To right"
 msgid "Soft Light"
 msgstr "Розсіяне світло"
 
@@ -9843,19 +9837,18 @@ msgid ""
 "Curvature at 0.5 we are close to a circle shape, 1.0 is straight, values "
 "above 1.0 are concave."
 msgstr ""
-"Кривина у 0.5 дає форми, які близькі до кола, 1.0 — до прямої, значення, які"
-" перевищують 1.0, дають увігнуті форми."
+"Кривина у 0.5 дає форми, які близькі до кола, 1.0 — до прямої, значення, які "
+"перевищують 1.0, дають увігнуті форми."
 
 #: operations/workshop/chamfer.c:70
 msgid ""
 "Light angle (degrees). For most blend modes this rotates lighting of the "
 "bevel."
 msgstr ""
-"Кут освітлення (у градусах). Для більшості режимів злиття це обертає"
-" освітлення фаски."
+"Кут освітлення (у градусах). Для більшості режимів злиття це обертає "
+"освітлення фаски."
 
 #: operations/workshop/chamfer.c:76
-#| msgid "Vertical position"
 msgid "Detailed options"
 msgstr "Докладні параметри"
 
@@ -9870,7 +9863,6 @@ msgstr ""
 "Зберігає покриття альфи, уникає збільшення форми за початкову позицію."
 
 #: operations/workshop/chamfer.c:86
-#| msgid "Elevation"
 msgid "Light Elevation"
 msgstr "Підвищення освітленості"
 
@@ -9879,8 +9871,8 @@ msgid ""
 "Elevation angle (degrees). For most blend modes this shifts the lightest "
 "colors of the bevel."
 msgstr ""
-"Кут підвищення (у градусах). Для більшості режимів злиття це зсуває"
-" найсвітліші кольори фаски."
+"Кут підвищення (у градусах). Для більшості режимів злиття це зсуває "
+"найсвітліші кольори фаски."
 
 #: operations/workshop/chamfer.c:118
 msgid "Choose Internal Median Shape"
