@@ -1,6 +1,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <iostream>
+#include <fstream>
 #include <mutex>
 
 #include "zombie/zombie.hpp"
@@ -138,7 +139,7 @@ struct _GeglZombieManager {
   std::mutex mutex;
   unsigned long long max_score;
   size_t max_memory;
-  std::ofstream memoryLog("memory.log");
+  std::ofstream memoryLog;
 
   _GeglZombieManager(GeglNode* node) : node(node) {
     g_weak_ref_init(&cache, nullptr);
@@ -149,7 +150,9 @@ struct _GeglZombieManager {
 
     std::string max_memory_str = getEnvVar("ZOMBIE_MAX_MEMORY");
 
-    max_memory = std::stoull(max_memory_str, nullptr, 10);    
+    max_memory = std::stoull(max_memory_str, nullptr, 10);   
+
+    memoryLog.open("memory.log"); 
   }
 
   ~_GeglZombieManager() {
