@@ -144,10 +144,6 @@ struct _GeglZombieManager {
   _GeglZombieManager(GeglNode* node) : node(node) {
     g_weak_ref_init(&cache, nullptr);
 
-    std::string max_score_str = getEnvVar("ZOMBIE_MAX_SCORE");
-
-    max_score = std::stoull(max_score_str, nullptr, 10);
-
     std::string max_memory_str = getEnvVar("ZOMBIE_MAX_MEMORY");
 
     max_memory = std::stoull(max_memory_str, nullptr, 10);   
@@ -202,12 +198,12 @@ struct _GeglZombieManager {
     auto tile_size = GetTileSize();
     if (node->cache != nullptr) {
       ZombieTile zt(bindZombie([tile_size](){ return ZombieTile(Proxy{tile_size}); }));
-      zt.evict(); // doing a single eviction to make sure we can recompute
+      // zt.evict(); // doing a single eviction to make sure we can recompute
       return zt;
     } else {
       return bindZombie([tile_size](){
         ZombieTile zt(Proxy{tile_size});
-        zt.evict();
+        // zt.evict();
         return zt;
       });
     }
