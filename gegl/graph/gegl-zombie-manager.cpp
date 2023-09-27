@@ -188,6 +188,7 @@ struct _GeglZombieManager {
     // todo: calculate parent dependency
 
     Trailokya::get_trailokya().reaper.mass_extinction(max_score);
+    std::cout << Trailokya::get_trailokya().space_used.bytes << std::endl;
 
     auto tile_size = GetTileSize();
     if (node->cache != nullptr) {
