@@ -138,7 +138,7 @@ struct _GeglZombieManager {
   std::mutex mutex;
   unsigned long long max_score;
   size_t max_memory;
-  ofstream memoryLog;
+  std::ofstream memoryLog;
 
   _GeglZombieManager(GeglNode* node) : node(node) {
     g_weak_ref_init(&cache, nullptr);
