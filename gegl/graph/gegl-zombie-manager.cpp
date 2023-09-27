@@ -152,7 +152,7 @@ struct _GeglZombieManager {
 
     max_memory = std::stoull(max_memory_str, nullptr, 10);   
 
-    memoryLog.open("memory.log"); 
+    memoryLog.open("memory.log", std::ios_base::app); 
   }
 
   ~_GeglZombieManager() {
