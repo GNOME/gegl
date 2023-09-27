@@ -137,6 +137,8 @@ struct _GeglZombieManager {
   std::unordered_map<Key, ZombieTile> map;
   std::mutex mutex;
   unsigned long long max_score;
+  size_t max_memory;
+  ofstream memoryLog;
 
   _GeglZombieManager(GeglNode* node) : node(node) {
     g_weak_ref_init(&cache, nullptr);
@@ -145,7 +147,11 @@ struct _GeglZombieManager {
 
     max_score = std::stoull(max_score_str, nullptr, 10);
 
-    // std::cout << "Max Score: " << max_score << std::endl;
+    std::string max_memory_str = getEnvVar("ZOMBIE_MAX_MEMORY");
+
+    max_memory = std::stoull(max_memory_str, nullptr, 10);    
+
+    memoryLog.open("memory.log");
   }
 
   ~_GeglZombieManager() {
@@ -156,6 +162,8 @@ struct _GeglZombieManager {
       g_object_unref(cache_strong);
     }
     g_weak_ref_clear(&cache);
+
+    memoryLog.close();
   }
 
   ZombieTile GetTile(const Key& k, const lock_guard& lg) {
@@ -187,8 +195,8 @@ struct _GeglZombieManager {
     lock_guard lg(zombie_mutex);
     // todo: calculate parent dependency
 
-    Trailokya::get_trailokya().reaper.mass_extinction_by_memory(200000);
-    std::cout << Trailokya::get_trailokya().space_used.bytes << std::endl;
+    Trailokya::get_trailokya().reaper.mass_extinction_by_memory(max_memory);
+    Trailokya::get_trailokya().memoryLog << Trailokya::get_trailokya().space_used.bytes << std::endl;
 
     auto tile_size = GetTileSize();
     if (node->cache != nullptr) {
