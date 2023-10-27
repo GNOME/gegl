@@ -127,6 +127,7 @@ void         gegl_color_set_rgba               (GeglColor   *color,
 void         gegl_color_set_pixel              (GeglColor   *color,
                                                 const Babl  *format,
                                                 const void  *pixel);
+
 /**
  * gegl_color_get_pixel: (skip)
  * @color: a #GeglColor
@@ -138,6 +139,27 @@ void         gegl_color_set_pixel              (GeglColor   *color,
 void         gegl_color_get_pixel              (GeglColor   *color,
                                                 const Babl  *format,
                                                 void        *pixel);
+/**
+ * gegl_color_set_bytes:
+ * @color:  a #GeglColor
+ * @format: a babl pixel format
+ * @bytes:  color stored as @format
+ *
+ * Set a GeglColor from a pixel stored in a %GBytes and it's babl format.
+ */
+void         gegl_color_set_bytes              (GeglColor   *color,
+                                                const Babl  *format,
+                                                GBytes      *bytes);
+
+/**
+ * gegl_color_get_bytes:
+ * @color: a #GeglColor
+ * @format: a babl pixel format
+ *
+ * Returns: the color in the given @format.
+ */
+GBytes     * gegl_color_get_bytes              (GeglColor   *color,
+                                                const Babl  *format);
 
 /***
  */

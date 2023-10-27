@@ -311,6 +311,48 @@ gegl_color_get_pixel (GeglColor   *color,
 }
 
 void
+gegl_color_set_bytes (GeglColor  *color,
+                      const Babl *format,
+                      GBytes     *bytes)
+{
+  gint bpp;
+
+  g_return_if_fail (GEGL_IS_COLOR (color));
+  g_return_if_fail (format);
+  g_return_if_fail (bytes);
+
+  bpp = babl_format_get_bytes_per_pixel (format);
+  g_return_if_fail (g_bytes_get_size (bytes) == bpp);
+
+  if (bpp <= sizeof (color->priv->pixel))
+    color->priv->format = format;
+  else
+    color->priv->format = gegl_babl_rgba_linear_float ();
+
+  babl_process (babl_fish (format, color->priv->format),
+                g_bytes_get_data (bytes, NULL), color->priv->pixel, 1);
+}
+
+GBytes *
+gegl_color_get_bytes (GeglColor  *color,
+                      const Babl *format)
+{
+  guint8 *data;
+  gint    bpp;
+
+  g_return_val_if_fail (GEGL_IS_COLOR (color), NULL);
+  g_return_val_if_fail (format, NULL);
+
+  bpp  = babl_format_get_bytes_per_pixel (format);
+  data = g_malloc0 (bpp);
+
+  babl_process (babl_fish (color->priv->format, format),
+                color->priv->pixel, data, 1);
+
+  return g_bytes_new_take (data, bpp);
+}
+
+void
 gegl_color_set_rgba (GeglColor *self,
                      gdouble    r,
                      gdouble    g,
