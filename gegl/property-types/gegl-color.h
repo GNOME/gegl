@@ -154,6 +154,50 @@ void         gegl_color_set_rgba_with_space    (GeglColor   *color,
                                                 gdouble      blue,
                                                 gdouble      alpha,
                                                 const Babl  *space);
+
+/**
+ * gegl_color_get_cmyk:
+ * @color: a #GeglColor
+ * @cyan: (out): cyan return location.
+ * @magenta: (out): magenta return location.
+ * @yellow: (out): yellow return location.
+ * @key: (out): key return location.
+ * @alpha: (out): alpha return location.
+ * @space: (nullable): CMYK space.
+ *
+ * Retrieves the current set color stored as @space.
+ * If @space is %NULL, this is equivalent to requesting color in the default
+ * naive CMYK space.
+ */
+void         gegl_color_get_cmyk               (GeglColor   *color,
+                                                gdouble     *cyan,
+                                                gdouble     *magenta,
+                                                gdouble     *yellow,
+                                                gdouble     *key,
+                                                gdouble     *alpha,
+                                                const Babl  *space);
+
+/**
+ * gegl_color_set_cmyk:
+ * @color: a #GeglColor
+ * @cyan: cyan value
+ * @magenta: magenta value
+ * @yellow: yellow value
+ * @key: key value
+ * @alpha: alpha value
+ * @space: (nullable): CMYK space.
+ *
+ * Set color as CMYK data stored as @space. If @space is %NULL, this is
+ * equivalent to storing with the default naive CMYK space.
+ */
+void         gegl_color_set_cmyk               (GeglColor   *color,
+                                                gdouble      cyan,
+                                                gdouble      magenta,
+                                                gdouble      yellow,
+                                                gdouble      key,
+                                                gdouble      alpha,
+                                                const Babl  *space);
+
 /**
  * gegl_color_set_pixel: (skip)
  * @color: a #GeglColor

@@ -436,6 +436,48 @@ gegl_color_get_rgba_with_space (GeglColor  *self,
   if (a) *a = rgba[3];
 }
 
+void
+gegl_color_set_cmyk (GeglColor  *self,
+                     gdouble     c,
+                     gdouble     m,
+                     gdouble     y,
+                     gdouble     k,
+                     gdouble     a,
+                     const Babl *space)
+{
+  const Babl   *format  = babl_format_with_space ("CMYK float", space);
+  const gfloat  cmyk[5] = {c, m, y, k, a};
+
+  g_return_if_fail (GEGL_IS_COLOR (self));
+  g_return_if_fail (space == NULL || babl_format_get_space (format));
+
+  gegl_color_set_pixel (self, format, cmyk);
+}
+
+void
+gegl_color_get_cmyk (GeglColor  *self,
+                     gdouble    *c,
+                     gdouble    *m,
+                     gdouble    *y,
+                     gdouble    *k,
+                     gdouble    *a,
+                     const Babl *space)
+{
+  const Babl *format  = babl_format_with_space ("CMYK float", space);
+  gfloat      cmyk[5];
+
+  g_return_if_fail (GEGL_IS_COLOR (self));
+  g_return_if_fail (space == NULL || babl_space_is_cmyk (babl_format_get_space (format)));
+
+  gegl_color_get_pixel (self, format, cmyk);
+
+  if (c) *c = cmyk[0];
+  if (m) *m = cmyk[1];
+  if (y) *y = cmyk[2];
+  if (k) *k = cmyk[2];
+  if (a) *a = cmyk[3];
+}
+
 static void
 gegl_color_set_from_string (GeglColor   *self,
                             const gchar *color_string)
