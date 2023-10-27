@@ -385,6 +385,57 @@ gegl_color_get_rgba (GeglColor *self,
   if (a) *a = rgba[3];
 }
 
+void
+gegl_color_set_rgba_with_space (GeglColor  *self,
+                                gdouble     r,
+                                gdouble     g,
+                                gdouble     b,
+                                gdouble     a,
+                                const Babl *space)
+{
+  const Babl   *format  = babl_format_with_space ("R'G'B'A float", space);
+  const gfloat  rgba[4] = {r, g, b, a};
+
+  space = babl_format_get_space (format);
+
+  g_return_if_fail (GEGL_IS_COLOR (self));
+#if BABL_MINOR_VERSION > 1 || (BABL_MINOR_VERSION == 1 && BABL_MICRO_VERSION >= 107)
+  g_return_if_fail (space == NULL || babl_space_is_rgb (space));
+#else
+  g_return_if_fail (space == NULL || (! babl_space_is_cmyk (space) && ! babl_space_is_gray (space));
+#endif
+
+  gegl_color_set_pixel (self, format, rgba);
+}
+
+void
+gegl_color_get_rgba_with_space (GeglColor  *self,
+                                gdouble    *r,
+                                gdouble    *g,
+                                gdouble    *b,
+                                gdouble    *a,
+                                const Babl *space)
+{
+  const Babl *format  = babl_format_with_space ("R'G'B'A float", space);
+  gfloat      rgba[4];
+
+  space = babl_format_get_space (format);
+
+  g_return_if_fail (GEGL_IS_COLOR (self));
+#if BABL_MINOR_VERSION > 1 || (BABL_MINOR_VERSION == 1 && BABL_MICRO_VERSION >= 107)
+  g_return_if_fail (space == NULL || babl_space_is_rgb (space));
+#else
+  g_return_if_fail (space == NULL || (! babl_space_is_cmyk (space) && ! babl_space_is_gray (space));
+#endif
+
+  gegl_color_get_pixel (self, format, rgba);
+
+  if (r) *r = rgba[0];
+  if (g) *g = rgba[1];
+  if (b) *b = rgba[2];
+  if (a) *a = rgba[3];
+}
+
 static void
 gegl_color_set_from_string (GeglColor   *self,
                             const gchar *color_string)
