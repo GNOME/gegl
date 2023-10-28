@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2023-09-23 21:17+0000\n"
-"PO-Revision-Date: 2023-09-27 21:21+0200\n"
+"POT-Creation-Date: 2023-09-27 19:25+0000\n"
+"PO-Revision-Date: 2023-10-10 21:15+0200\n"
 "Last-Translator: Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -5762,7 +5762,7 @@ msgstr "Spindel"
 
 #: operations/common-gpl3+/fractal-explorer.c:43
 msgid "Man O War"
-msgstr "Man O War"
+msgstr "Örlogsman"
 
 #: operations/common-gpl3+/fractal-explorer.c:45
 #: operations/external/matting-levin.c:37
@@ -5843,15 +5843,15 @@ msgstr "Cosinus"
 
 #: operations/common-gpl3+/fractal-explorer.c:99
 msgid "Red application mode"
-msgstr "Rött programläge"
+msgstr "Rött tillämpningsläge"
 
 #: operations/common-gpl3+/fractal-explorer.c:103
 msgid "Green application mode"
-msgstr "Grönt programläge"
+msgstr "Grönt tillämpningsläge"
 
 #: operations/common-gpl3+/fractal-explorer.c:107
 msgid "Blue application mode"
-msgstr "Blått programläge"
+msgstr "Blått tillämpningsläge"
 
 #: operations/common-gpl3+/fractal-explorer.c:111
 msgid "Red inversion"
