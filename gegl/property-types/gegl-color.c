@@ -41,7 +41,11 @@ struct _GeglColorPrivate
 
   union
   {
-    guint8  pixel[40];
+    /* Some babl code (SSE2 codepath in particular) requires source address to
+     * be 16-byte aligned and would crash otherwise.
+     * See: https://gitlab.gnome.org/GNOME/gegl/-/merge_requests/142
+     */
+    guint8  pixel[48] __attribute__((aligned(16)));
     gdouble alignment;
   };
 };
