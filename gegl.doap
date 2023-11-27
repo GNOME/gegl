@@ -12,13 +12,13 @@
   <description xml:lang="en">GEGL (Generic Graphics Library) is a graph based image processing framework.</description>
   <description xml:lang="de">GEGL (Generic Graphics Library) ist ein graph-basiertes Framework für die Bildverarbeitung.</description>
 
-  <homepage rdf:resource="http://www.gegl.org" />
+  <homepage rdf:resource="https://www.gegl.org" />
 
-  <mailing-list
-    rdf:resource="https://mail.gnome.org/mailman/listinfo/gegl-developer-list"
+  <developer-forum
+    rdf:resource="https://discourse.gnome.org/tag/gegl"
   />
 
-  <download-page rdf:resource="http://www.gegl.org/#_download" />
+  <download-page rdf:resource="https://www.gegl.org/#_download" />
 
   <bug-database
     rdf:resource="https://gitlab.gnome.org/GNOME/gegl/issues/"
