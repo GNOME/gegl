@@ -140,6 +140,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "    <node operation='gegl:threshold'>"
     "      <params>"
     "        <param name='value'>0.5</param>"
+    "        <param name='high'>1.0</param>"
     "      </params>"
     "    </node>"
     "    <node operation='gegl:load' path='standard-input.png'/>"
