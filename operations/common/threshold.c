@@ -30,7 +30,7 @@ property_double (value, _("Threshold"), 0.5) // TODO : rename low - to match GIM
 property_double (high, _("High"), 1.0)
     value_range (-200, 200)
     ui_range    (0, 1)
-    description(_("highest value to be include as white."))
+    description(_("Highest value to be include as white."))
 
 #else
 
@@ -166,8 +166,8 @@ gegl_op_class_init (GeglOpClass *klass)
     "reference-hash", "17f9861344e1105c15f3633f7312a9bd",
     "reference-composition", composition,
     "description",
-          _("Thresholds the image to white/black based on either the global value "
-            "set in the value property, or per pixel from the aux input."),
+          _("Thresholds the image to white/black based on either the global values "
+            "set in the value (low) and high properties, or per pixel from the aux input."),
     "cl-source",   threshold_cl_source,
     NULL);
 }
