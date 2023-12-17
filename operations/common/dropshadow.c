@@ -97,7 +97,7 @@ update_graph (GeglOperation *operation)
   State *state = o->user_data;
   if (!state) return;
 
-  if (o->grow_radius > 0.0001)
+  if (fabs (o->grow_radius) > 0.0001)
   {
     gegl_node_link_many (state->input, state->grow, state->darken, NULL);
   }
