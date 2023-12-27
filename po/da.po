@@ -18,7 +18,7 @@ msgstr ""
 "Project-Id-Version: gegl gegl-0-2\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
 "POT-Creation-Date: 2023-09-23 21:17+0000\n"
-"PO-Revision-Date: 2023-12-06 08:27+0100\n"
+"PO-Revision-Date: 2023-12-26 10:30+0100\n"
 "Last-Translator: Alan Mortensen <alanmortensen.am@gmail.com>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "Language: da\n"
@@ -2670,14 +2670,15 @@ msgstr ""
 
 #: operations/common/local-threshold.c:32 operations/common-gpl3+/mosaic.c:87
 msgid "Antialiasing"
-msgstr "Udjævning"
+msgstr "Kantudjævning"
 
 #: operations/common/local-threshold.c:33
 msgid ""
 "Rough target of levels of accuracy for antialiasing, 1 to disable "
 "antialiasing."
 msgstr ""
-"Groft mål for niveauer af nøjagtighed for udjævning; 1 deaktiverer udjævning."
+"Groft mål for niveauer af nøjagtighed for kantudjævning; 1 deaktiverer "
+"kantudjævning."
 
 #: operations/common/local-threshold.c:37
 msgid "Low"
@@ -3506,7 +3507,7 @@ msgstr "Oversamplingsfaktor for udjævning"
 
 #: operations/common/newsprint.c:168
 msgid "Number of samples that are averaged for antialiasing the result."
-msgstr "Antallet af prøver, der midles over, til udjævning af resultatet."
+msgstr "Antallet af prøver, der midles over, til kantudjævning af resultatet."
 
 #: operations/common/newsprint.c:170 operations/common-gpl3+/plasma.c:36
 msgid "Turbulence"
@@ -5007,11 +5008,11 @@ msgstr "Beregner en relativ forskydningsafbildning ud fra et strøg"
 
 #: operations/common-gpl3+/antialias.c:293
 msgid "Scale3X Antialiasing"
-msgstr "Scale3X-udjævning"
+msgstr "Scale3X-kantudjævning"
 
 #: operations/common-gpl3+/antialias.c:298
 msgid "Antialias using the Scale3X edge-extrapolation algorithm"
-msgstr "Udjævning med Scale3X-algoritmen til kantekstrapolation"
+msgstr "Kantdjævning med Scale3X-algoritmen til kantekstrapolation"
 
 #: operations/common-gpl3+/apply-lens.c:36
 msgid "Lens refraction index"
