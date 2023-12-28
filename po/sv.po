@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2023-09-27 19:25+0000\n"
-"PO-Revision-Date: 2023-10-10 21:15+0200\n"
+"POT-Creation-Date: 2023-10-28 04:41+0000\n"
+"PO-Revision-Date: 2023-12-27 22:05+0100\n"
 "Last-Translator: Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.3.2\n"
+"X-Generator: Poedit 3.4.1\n"
 
 #: bin/gegl.c:179
 #, c-format
@@ -174,12 +174,13 @@ msgstr ""
 msgid "BablFormat \"%s\" does not exist."
 msgstr "BablFormat ”%s” existerar ej."
 
+# Bland annat värde för "Abyss policy" och "Dither method"
 #: gegl/buffer/gegl-buffer-enums.c:32 gegl/gegl-enums.c:33
 #: operations/common/gaussian-blur.c:30 operations/common/gblur-1d.c:32
 #: operations/common/median-blur.c:33
 #: operations/common-gpl3+/fractal-explorer.c:96
 msgid "None"
-msgstr "Inget"
+msgstr "Ingen"
 
 #: gegl/buffer/gegl-buffer-enums.c:33 operations/common/gaussian-blur.c:31
 #: operations/common/gblur-1d.c:33 operations/common/median-blur.c:34
@@ -7054,7 +7055,7 @@ msgid ""
 "Propagate certain values to neighboring pixels. Erode and dilate any color "
 "or opacity."
 msgstr ""
-"Propagera vissa färger till närliggande bildpunkter. Erodera och utvidga "
+"Propagera vissa värden till närliggande bildpunkter. Erodera och utvidga "
 "vilken färg eller opacitet som helst."
 
 #: operations/common-gpl3+/video-degradation.c:34
@@ -7800,7 +7801,7 @@ msgstr "Källprofil"
 
 #: operations/external/lcms-from-profile.c:25
 msgid "The cmsHPROFILE corresponding to the ICC profile for the input data."
-msgstr "Den cmsHPROFILE som motsvarar ICC-profilen för indatan."
+msgstr "Den cmsHPROFILE som motsvarar ICC-profilen för indata."
 
 #: operations/external/lcms-from-profile.c:33
 msgid "Relative Colorimetric"
