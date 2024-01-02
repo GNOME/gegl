@@ -1,17 +1,17 @@
 # Swedish translation for gegl.
-# Copyright © 2012, 2016-2023 Free Software Foundation, Inc.
+# Copyright © 2012, 2016-2024 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gegl package.
 # Daniel Nylander <po@danielnylander.se>, 2012.
 # Sebastian Rasmussen <sebras@gmail.com>, 2016, 2017, 2018.
-# Anders Jonsson <anders.jonsson@norsjovallen.se>, 2017, 2018, 2019, 2020, 2021, 2022, 2023.
+# Anders Jonsson <anders.jonsson@norsjovallen.se>, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024.
 # Luna Jernberg <droidbittin@gmail.com>, 2021.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2023-10-28 04:41+0000\n"
-"PO-Revision-Date: 2023-12-27 22:05+0100\n"
+"POT-Creation-Date: 2023-12-28 16:31+0000\n"
+"PO-Revision-Date: 2024-01-02 02:11+0100\n"
 "Last-Translator: Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.4.1\n"
+"X-Generator: Poedit 3.4.2\n"
 
 #: bin/gegl.c:179
 #, c-format
@@ -653,7 +653,7 @@ msgstr "Oskärperadie"
 #: operations/workshop/bilateral-filter-fast.c:44
 msgid "Radius of square pixel region, (width and height will be radius*2+1)."
 msgstr ""
-"Radie för fyrkantigt bildpunktsområde (bredd och höjd kommer att vara "
+"Radie för kvadratiskt bildpunktsområde (bredd och höjd kommer att vara "
 "radie*2+1)"
 
 #: operations/common/bilateral-filter.c:32
@@ -749,7 +749,7 @@ msgstr "Lägg till glöd runt ljusstarka områden"
 #: operations/workshop/boxblur.c:25
 msgid "Radius of square pixel region, (width and height will be radius*2+1)"
 msgstr ""
-"Radie för kvadratisk bildpunktsområde (bredd och höjd kommer att vara "
+"Radie för kvadratiskt bildpunktsområde (bredd och höjd kommer att vara "
 "radie*2 + 1)"
 
 #: operations/common/box-blur.c:404
@@ -3022,7 +3022,7 @@ msgstr "Y-axelförhållande för beskärning av spegelvidd"
 
 #: operations/common/mirrors.c:77 operations/common/mirrors.c:81
 msgid "Scale factor to make rendering size bigger"
-msgstr "Skalfaktor för att få större renderingsstorlek"
+msgstr "Skalningsfaktor för att få större renderingsstorlek"
 
 #: operations/common/mirrors.c:80
 msgid "Expand"
@@ -3835,8 +3835,8 @@ msgid ""
 "Porter Duff operation over (also known as normal mode, and src-over) (d = cA "
 "+ cB * (1 - aA))"
 msgstr ""
-"Port Duff-åtgärd över (också känd som normalläge och källa-över) (d = cA + "
-"cB * (1 - aA))"
+"Porter Duff-operationen över (också känd som normalläge och källa-över) (d = "
+"cA + cB * (1 - aA))"
 
 #: operations/common/pack.c:24
 msgid "Gap"
@@ -4478,7 +4478,7 @@ msgstr "Uttryckt som standardavvikelse, i bildpunkter"
 
 #: operations/common/unsharp-mask.c:32
 msgid "Scaling factor for unsharp-mask, the strength of effect"
-msgstr "Skalfaktor för oskarp mask, effektstyrka"
+msgstr "Skalningsfaktor för oskarp mask, effektstyrka"
 
 #: operations/common/unsharp-mask.c:144
 msgid "Sharpen (Unsharp Mask)"
@@ -8621,7 +8621,7 @@ msgid ""
 "(1 - aB) + cB * (1 - aA) otherwise: d = aA * aB - 2 * (aB - cB) * (aA - cA) "
 "+ cA * (1 - aB) + cB * (1 - aA)</code>)"
 msgstr ""
-"SVG-sammansättningsoperation skarpt ljus (<code>om 2 * cA < aA: d = 2 * cA * "
+"SVG-sammansättningsoperation hårt ljus (<code>om 2 * cA < aA: d = 2 * cA * "
 "cB + cA * (1 - aB) + cB * (1 - aA) annars: d = aA * aB - 2 * (aB - cB) * (aA "
 "- cA) + cA * (1 - aB) + cB * (1 - aA)</code>)"
 
@@ -8690,7 +8690,7 @@ msgstr "Porter Duff-operationen källa (d = cA)"
 
 #: operations/generated/src-in.c:145
 msgid "Porter Duff compositing operation src-in (formula:   cA * aB)"
-msgstr "Porter Duff-sammansättningsoperation källa-in (formel:   cA * aB)"
+msgstr "Porter Duff-sammansättningsoperationen källa-in (formel:   cA * aB)"
 
 #: operations/generated/src-out.c:133
 msgid "Porter Duff operation src-out (d = cA * (1.0f - aB))"
@@ -8979,8 +8979,8 @@ msgstr ""
 "RRT (Reference Rendering Transform). Då scenrefererade bilder matas in i "
 "denna åtgärd är resultatet lämpligt för visningsrefererad transformation "
 "till sRGB eller utdatadisplay med vanliga ICC-matrisprofiler som ODT. "
-"Observera att för tillfället är detta endast en luminsapproximation av ACES "
-"RRT; utan avmättning av varken högdagrar och skuggor eller "
+"Observera att för tillfället är detta endast en luminansapproximation av "
+"ACES RRT; utan avmättning av varken högdagrar och skuggor eller "
 "rödnyansmodifieringar."
 
 #: operations/workshop/band-tune.c:24
@@ -9646,7 +9646,7 @@ msgstr "kvadrerad integral"
 
 #: operations/workshop/integral-image.c:26
 msgid "Add squared values sum to the output"
-msgstr "Lägg till summa av kvadrerade värden till utdatan"
+msgstr "Lägg till summa av kvadrerade värden till utdata"
 
 #: operations/workshop/integral-image.c:252
 msgid "Integral Image"
