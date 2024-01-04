@@ -1,7 +1,7 @@
 # Italian translation for the gegl package.
 # Copyright (C) 2012 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gegl package.
-# Marco Ciampa <ciampix@posteo.net>, 2012-2023.
+# Marco Ciampa <ciampix@posteo.net>, 2012-2024.
 #
 # Elenco termini adottati per uniformità:
 #
@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GEGL_0_2_0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-29 16:47+0200\n"
-"PO-Revision-Date: 2023-05-31 13:15+0200\n"
+"POT-Creation-Date: 2024-01-05 00:24+0100\n"
+"PO-Revision-Date: 2024-01-05 00:38+0100\n"
 "Last-Translator: Marco Ciampa <ciampix@posteo.net>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -176,7 +176,7 @@ msgstr ""
 "\n"
 "\n"
 
-#: ../bin/ui-core.c:4382 ../gegl/gegl-serialize.c:658
+#: ../bin/ui-core.c:4387 ../gegl/gegl-serialize.c:672
 #, c-format
 msgid "BablFormat \"%s\" does not exist."
 msgstr "Il formato Babl \"%s\" non esiste."
@@ -398,27 +398,27 @@ msgstr "Disabilita OpenCL"
 msgid "Show GEGL Options"
 msgstr "Mostra opzioni GEGL"
 
-#: ../gegl/gegl-serialize.c:296
+#: ../gegl/gegl-serialize.c:305
 #, c-format
 msgid "unhandled path data %s:%s\n"
 msgstr "percorso dati non gestito %s:%s\n"
 
-#: ../gegl/gegl-serialize.c:528
+#: ../gegl/gegl-serialize.c:541
 #, c-format
 msgid "op '%s' not found, partial matches: "
 msgstr "op '%s' non trovato, riscontri parziali: "
 
-#: ../gegl/gegl-serialize.c:557
+#: ../gegl/gegl-serialize.c:570
 #, c-format
 msgid "%s has no %s property."
 msgstr "%s non ha la proprietà %s."
 
-#: ../gegl/gegl-serialize.c:563
+#: ../gegl/gegl-serialize.c:576
 #, c-format
 msgid "%s has no %s property, properties: "
 msgstr "%s non ha la proprietà %s, proprietà: "
 
-#: ../gegl/gegl-serialize.c:794
+#: ../gegl/gegl-serialize.c:807
 #, c-format
 msgid "No such op '%s'"
 msgstr "Non c'è nessun op '%s'"
@@ -613,6 +613,40 @@ msgstr ""
 "Distorce pesantemente i colori delle immagini applicando funzioni "
 "trigonometriche per mappare i valori dei colori."
 
+#: ../operations/common/alpha-clip.c:26 ../operations/common/alpha-clip.c:27
+#: ../operations/common/rgb-clip.c:26 ../operations/common/rgb-clip.c:27
+msgid "Clip low pixel values"
+msgstr "Taglia pixel bassi"
+
+#: ../operations/common/alpha-clip.c:29 ../operations/common/rgb-clip.c:29
+msgid "Low limit"
+msgstr "Limite basso"
+
+#: ../operations/common/alpha-clip.c:32 ../operations/common/rgb-clip.c:32
+msgid "Pixels values lower than this limit will be set to it"
+msgstr "Valori pixel sotto questo limite verranno impostati ad esso"
+
+#: ../operations/common/alpha-clip.c:35 ../operations/common/alpha-clip.c:36
+#: ../operations/common/rgb-clip.c:35 ../operations/common/rgb-clip.c:36
+msgid "Clip high pixel values"
+msgstr "Taglia pixel alti"
+
+#: ../operations/common/alpha-clip.c:38 ../operations/common/rgb-clip.c:38
+msgid "High limit"
+msgstr "Limite alto"
+
+#: ../operations/common/alpha-clip.c:41 ../operations/common/rgb-clip.c:41
+msgid "Pixels values higher than this limit will be set to it"
+msgstr "Valori pixel più alti di questo limite verranno impostati ad esso"
+
+#: ../operations/common/alpha-clip.c:196
+msgid "Clip Alpha"
+msgstr "Limita alfa"
+
+#: ../operations/common/alpha-clip.c:199
+msgid "Keep alpha values inside a specific range"
+msgstr "Mantiene i valori alfa entro un campo specifico"
+
 #: ../operations/common/bilateral-filter.c:26
 #: ../operations/common/domain-transform.c:29
 #: ../operations/common/dropshadow.c:46
@@ -654,7 +688,7 @@ msgstr ""
 "originale."
 
 #: ../operations/common/bloom.c:26 ../operations/common/threshold.c:25
-#: ../operations/common/threshold.c:131 ../operations/common/unsharp-mask.c:37
+#: ../operations/common/threshold.c:163 ../operations/common/unsharp-mask.c:37
 #: ../operations/common-gpl3+/red-eye-removal.c:31
 #: ../operations/common-gpl3+/wind.c:60
 #: ../operations/external/matting-levin.c:33
@@ -675,6 +709,7 @@ msgstr "Gradualità bordo area chiarore"
 
 #: ../operations/common/bloom.c:35 ../operations/common/box-blur.c:25
 #: ../operations/common/c2g.c:28 ../operations/common/edge-neon.c:47
+#: ../operations/common/local-threshold.c:24
 #: ../operations/common/median-blur.c:42 ../operations/common/snn-mean.c:26
 #: ../operations/common/stress.c:27 ../operations/common/unsharp-mask.c:24
 #: ../operations/common/vignette.c:40 ../operations/common/wavelet-blur-1d.c:28
@@ -696,9 +731,11 @@ msgstr "Raggio"
 msgid "Glow radius"
 msgstr "Raggio chiarore"
 
+#. Changing the name of a ENUM list will result in all presets breaking
 #: ../operations/common/bloom.c:42 ../operations/common/noise-reduction.c:26
 #: ../operations/common-cxx/denoise-dct.cc:38
 #: ../operations/common-cxx/warp.cc:34 ../operations/common-gpl3+/wind.c:64
+#: ../operations/workshop/chamfer.c:57
 msgid "Strength"
 msgstr "Forza"
 
@@ -714,11 +751,11 @@ msgstr "Limita l'esposizione"
 msgid "Don't over-expose highlights"
 msgstr "Non sovraesporre le alteluci"
 
-#: ../operations/common/bloom.c:207
+#: ../operations/common/bloom.c:203
 msgid "Bloom"
 msgstr "Fiore"
 
-#: ../operations/common/bloom.c:210
+#: ../operations/common/bloom.c:206
 msgid "Add glow around bright areas"
 msgstr "Aggiunge un chiarore attorno alle aree luminose"
 
@@ -986,13 +1023,13 @@ msgstr "Disegna un motivo a scacchiera"
 #: ../operations/common/color.c:24 ../operations/common/color.c:87
 #: ../operations/common/color-overlay.c:26 ../operations/common/dropshadow.c:67
 #: ../operations/common/grid.c:64 ../operations/common/long-shadow.c:83
-#: ../operations/common/rectangle.c:48 ../operations/common/vector-fill.c:26
-#: ../operations/common/vignette.c:36
+#: ../operations/common/rectangle.c:48 ../operations/common/vignette.c:36
 #: ../operations/common-gpl3+/color-to-alpha.c:29
 #: ../operations/common-gpl3+/supernova.c:60
 #: ../operations/common-gpl3+/tile-paper.c:31
 #: ../operations/common-gpl3+/value-propagate.c:54
-#: ../operations/external/text.c:37 ../operations/external/vector-stroke.c:27
+#: ../operations/external/text.c:37 ../operations/external/vector-fill.c:26
+#: ../operations/external/vector-stroke.c:27
 msgid "Color"
 msgstr "Colore"
 
@@ -1198,11 +1235,11 @@ msgstr "Valore di tonalità sopra le impostazioni del grigio"
 msgid "Saturation value for above gray settings"
 msgstr "Valore di saturazione sopra le impostazioni del grigio"
 
-#: ../operations/common/color-rotate.c:434
+#: ../operations/common/color-rotate.c:435
 msgid "Color Rotate"
 msgstr "Ruota il colore"
 
-#: ../operations/common/color-rotate.c:437
+#: ../operations/common/color-rotate.c:438
 msgid "Replace a range of colors with another"
 msgstr "Rimpiazza un campo di colori con un altro"
 
@@ -1750,7 +1787,7 @@ msgstr "Il metodo dithering da usare"
 #: ../operations/common/noise-simplex.c:39
 #: ../operations/common/noise-spread.c:41
 #: ../operations/common-gpl3+/cubism.c:42 ../operations/common-gpl3+/maze.c:65
-#: ../operations/common-gpl3+/mosaic.c:89
+#: ../operations/common-gpl3+/mosaic.c:90
 #: ../operations/common-gpl3+/noise-slur.c:40
 #: ../operations/common-gpl3+/noise-solid.c:61
 #: ../operations/common-gpl3+/plasma.c:70 ../operations/common-gpl3+/shift.c:35
@@ -1816,19 +1853,20 @@ msgstr ""
 
 #: ../operations/common/dropshadow.c:27 ../operations/common/median-blur.c:27
 #: ../operations/common/pixelize.c:28 ../operations/common/vignette.c:26
-#: ../operations/common-cxx/focus-blur.c:35
+#: ../operations/common-cxx/focus-blur.c:35 ../operations/workshop/chamfer.c:43
 msgid "Square"
 msgstr "Quadrato"
 
 #: ../operations/common/dropshadow.c:28 ../operations/common/median-blur.c:28
 #: ../operations/common/newsprint.c:26 ../operations/common/vignette.c:25
-#: ../operations/common-cxx/focus-blur.c:34
+#: ../operations/common-cxx/focus-blur.c:34 ../operations/workshop/chamfer.c:44
 msgid "Circle"
 msgstr "Cerchio"
 
 #: ../operations/common/dropshadow.c:29 ../operations/common/median-blur.c:29
 #: ../operations/common/newsprint.c:27 ../operations/common/pixelize.c:26
 #: ../operations/common/vignette.c:27 ../operations/common-cxx/focus-blur.c:36
+#: ../operations/workshop/chamfer.c:45
 msgid "Diamond"
 msgstr "Rombo"
 
@@ -1898,7 +1936,7 @@ msgstr "Il colore dell'ombra (predefinito è \"black\")"
 #.
 #: ../operations/common/dropshadow.c:74 ../operations/common/layer.c:33
 #: ../operations/common/opacity.c:25 ../operations/common/opacity.c:289
-#: ../operations/common/vector-fill.c:29
+#: ../operations/external/vector-fill.c:29
 #: ../operations/external/vector-stroke.c:34
 msgid "Opacity"
 msgstr "Opacità"
@@ -2678,6 +2716,55 @@ msgid "Do a stereographic/little planet transform of an equirectangular image."
 msgstr ""
 "Fa una trasformazione stereografica/piccolo pianeta di un'immagine "
 "equirettangolare."
+
+#: ../operations/common/local-threshold.c:25
+msgid ""
+"Standard deviation of gaussian neighborhood average for computing local "
+"contrast. If 0 is used a global threshold is used instead of one based on "
+"local contrast."
+msgstr "Deviazione standard della media dei vicini gaussiana per il calcolo del contrasto locale. Se si usa 0 viene utilizzata una soglia globale anziché una basata sul contrasto locale."
+
+#: ../operations/common/local-threshold.c:32
+#: ../operations/common-gpl3+/mosaic.c:87
+msgid "Antialiasing"
+msgstr "Antialiasing"
+
+#: ../operations/common/local-threshold.c:33
+msgid ""
+"Rough target of levels of accuracy for antialiasing, 1 to disable "
+"antialiasing."
+msgstr "Obiettivo approssimativo dei livelli di precisione dell'antialias, 1 per disabilitare l'antialiasing."
+
+#: ../operations/common/local-threshold.c:37
+msgid "Low"
+msgstr "Basso"
+
+#: ../operations/common/local-threshold.c:38
+msgid ""
+"Thresholding level, 0.5 towards 0 to minimize shadows and towards 1.0 to "
+"minimize highlights."
+msgstr "Livello di soglia, da 0,5 a 0 per ridurre al minimo le ombre e verso 1,0 per ridurre al minimo le luci."
+
+#: ../operations/common/local-threshold.c:43
+msgid "Threshold level"
+msgstr "Livello soglia"
+
+#: ../operations/common/local-threshold.c:46
+#: ../operations/common/threshold.c:30
+msgid "High"
+msgstr "Alto"
+
+#: ../operations/common/local-threshold.c:47
+msgid "Maximum values to include, above this gets set to 0."
+msgstr "I valori massimi da includere, al di sopra di questa soglia vengono impostati a 0."
+
+#: ../operations/common/local-threshold.c:179
+msgid "Local Threshold"
+msgstr "Soglia locale"
+
+#: ../operations/common/local-threshold.c:181
+msgid "Applies a threshold using the local neighborhood."
+msgstr "Applica una soglia usando i vicini locali."
 
 #: ../operations/common/long-shadow.c:27
 msgid "Finite"
@@ -3856,11 +3943,11 @@ msgid "How to align items, 0.0 is start 0.5 middle and 1.0 end."
 msgstr ""
 "Come allineare gli elementi, 0.0 è all'inizio, 0.5 a metà e 1.0 alla fine."
 
-#: ../operations/common/pack.c:182
+#: ../operations/common/pack.c:181
 msgid "Pack"
 msgstr "Compatta"
 
-#: ../operations/common/pack.c:184
+#: ../operations/common/pack.c:183
 msgid ""
 "Packs an image horizontally or vertically next to each other with optional "
 "gap, aux right of input."
@@ -3999,7 +4086,7 @@ msgid "A rectangular source of a fixed size with a solid color"
 msgstr "Una sorgente rettangolare di dimensione fissa di colore pieno"
 
 #: ../operations/common/recursive-transform.c:28
-#: ../operations/common/vector-fill.c:37 ../operations/external/path.c:47
+#: ../operations/external/path.c:47 ../operations/external/vector-fill.c:37
 #: ../operations/external/vector-stroke.c:38
 #: ../operations/transform/transform.c:24
 #: ../operations/transform/transform.c:62
@@ -4055,11 +4142,11 @@ msgstr "Incolla le immagini trasformate sotto ogni altra"
 msgid "Mathematical method for reconstructing pixel values"
 msgstr "Metodo matematico per la ricostruzione dei valori dei pixel"
 
-#: ../operations/common/recursive-transform.c:375
+#: ../operations/common/recursive-transform.c:379
 msgid "Recursive Transform"
 msgstr "Trasformazione ricorsiva"
 
-#: ../operations/common/recursive-transform.c:377
+#: ../operations/common/recursive-transform.c:381
 msgid "Apply a transformation recursively."
 msgstr "Applica una trasformazione ricorsivamente."
 
@@ -4117,35 +4204,11 @@ msgstr ""
 "stira i componenti di pixel individualmente basandosi su contenitori di "
 "luminanza"
 
-#: ../operations/common/rgb-clip.c:25 ../operations/common/rgb-clip.c:26
-msgid "Clip low pixel values"
-msgstr "Taglia pixel bassi"
-
-#: ../operations/common/rgb-clip.c:28
-msgid "Low limit"
-msgstr "Limite basso"
-
-#: ../operations/common/rgb-clip.c:31
-msgid "Pixels values lower than this limit will be set to it"
-msgstr "Valori pixel sotto questo limite verranno impostati ad esso"
-
-#: ../operations/common/rgb-clip.c:34 ../operations/common/rgb-clip.c:35
-msgid "Clip high pixel values"
-msgstr "Taglia pixel alti"
-
-#: ../operations/common/rgb-clip.c:37
-msgid "High limit"
-msgstr "Limite alto"
-
-#: ../operations/common/rgb-clip.c:40
-msgid "Pixels values higher than this limit will be set to it"
-msgstr "Valori pixel più alti di questo limite verranno impostati ad esso"
-
-#: ../operations/common/rgb-clip.c:208
+#: ../operations/common/rgb-clip.c:212
 msgid "Clip RGB"
 msgstr "Clip RGB"
 
-#: ../operations/common/rgb-clip.c:212
+#: ../operations/common/rgb-clip.c:216
 msgid "Keep RGB pixels values inside a specific range"
 msgstr "Mantiene i valori RGB dei pixel entro un campo specifico"
 
@@ -4291,7 +4354,7 @@ msgstr "Angolo di vista"
 msgid "Camera angle of view"
 msgstr "Angolo di vista della telecamera"
 
-#: ../operations/common/spherize.c:40
+#: ../operations/common/spherize.c:40 ../operations/workshop/chamfer.c:63
 msgid "Curvature"
 msgstr "Curvatura"
 
@@ -4451,14 +4514,14 @@ msgid "SVG color matrix operation svg_saturate"
 msgstr "Operazione matrice di colori SVG svg_saturate"
 
 #: ../operations/common/threshold.c:28
-msgid ""
-"Scalar threshold level (overridden if an auxiliary input buffer is "
-"provided.)."
-msgstr ""
-"Livello di soglia scalare (ignorato se viene fornito un buffer di ingresso "
-"ausiliario)."
+msgid "Lowest value to be included."
+msgstr "Valore più basso da includere."
 
-#: ../operations/common/threshold.c:136
+#: ../operations/common/threshold.c:33
+msgid "highest value to be include as white."
+msgstr "Il valore più alto da includere come bianco."
+
+#: ../operations/common/threshold.c:168
 msgid ""
 "Thresholds the image to white/black based on either the global value set in "
 "the value property, or per pixel from the aux input."
@@ -4516,11 +4579,11 @@ msgstr "Espresso come deviazione standard, in pixel"
 msgid "Scaling factor for unsharp-mask, the strength of effect"
 msgstr "Fattore di scala di maschera di contrasto, forza dell'effetto"
 
-#: ../operations/common/unsharp-mask.c:147
+#: ../operations/common/unsharp-mask.c:144
 msgid "Sharpen (Unsharp Mask)"
 msgstr "Affila (maschera di contrasto)"
 
-#: ../operations/common/unsharp-mask.c:151
+#: ../operations/common/unsharp-mask.c:148
 msgid ""
 "Sharpen image, by adding difference to blurred image, a technique for "
 "sharpening originally used in darkrooms."
@@ -4539,46 +4602,6 @@ msgid ""
 msgstr ""
 "Inverte il componente valore, il risultato ha la luminosità invertita, "
 "mantenendo il colore."
-
-#: ../operations/common/vector-fill.c:27
-msgid "Color of paint to use for filling."
-msgstr "Colore tinta da usare per il riempimento."
-
-#: ../operations/common/vector-fill.c:30
-msgid "The fill opacity to use."
-msgstr "Il riempimento opacità da usare."
-
-#. XXX: replace with enum?
-#: ../operations/common/vector-fill.c:34
-msgid "Fill rule."
-msgstr "Regola di riempimento."
-
-#: ../operations/common/vector-fill.c:35
-msgid "how to determine what to fill (nonzero|evenodd)"
-msgstr "home determinare cosa riempire (nonzero|paridispari)"
-
-#: ../operations/common/vector-fill.c:38
-#: ../operations/external/vector-stroke.c:39
-msgid "svg style description of transform."
-msgstr "stile svg descrizione della trasformazione."
-
-#: ../operations/common/vector-fill.c:40 ../operations/external/path.c:54
-#: ../operations/external/vector-stroke.c:41
-msgid "Vector"
-msgstr "Vettore"
-
-#: ../operations/common/vector-fill.c:41 ../operations/external/path.c:55
-#: ../operations/external/vector-stroke.c:42
-msgid "A GeglVector representing the path of the stroke"
-msgstr "Un GeglVector che rappresenta il percorso del tratto"
-
-#: ../operations/common/vector-fill.c:320
-msgid "Fill Path"
-msgstr "Percorso riempimento"
-
-#: ../operations/common/vector-fill.c:323
-msgid "Renders a filled region"
-msgstr "Produce una regione riempita"
 
 #: ../operations/common/vignette.c:32
 msgid "Vignette shape"
@@ -4912,11 +4935,11 @@ msgstr "Alta qualità"
 msgid "Generate more accurate and consistent output (slower)"
 msgstr "Genera un risultato più accurato e coerente (più lento)"
 
-#: ../operations/common-cxx/focus-blur.c:320
+#: ../operations/common-cxx/focus-blur.c:317
 msgid "Focus Blur"
 msgstr "Sfocatura fuoco"
 
-#: ../operations/common-cxx/focus-blur.c:323
+#: ../operations/common-cxx/focus-blur.c:320
 msgid "Blur the image around a focal point"
 msgstr "Sfoca l'immagine attorno ad un punto focale"
 
@@ -5241,6 +5264,7 @@ msgstr "Elevazione"
 #: ../operations/common-gpl3+/emboss.c:45
 #: ../operations/common-gpl3+/fractal-trace.c:60
 #: ../operations/common-gpl3+/texturize-canvas.c:44
+#: ../operations/workshop/chamfer.c:60
 msgid "Depth"
 msgstr "Profondità"
 
@@ -5467,12 +5491,12 @@ msgstr ""
 "Converte uno specifico colore in trasparenza, lavora meglio con il bianco."
 
 #: ../operations/common-gpl3+/cubism.c:30
-#: ../operations/common-gpl3+/mosaic.c:42
+#: ../operations/common-gpl3+/mosaic.c:43
 msgid "Tile size"
 msgstr "Dimensione mattonella"
 
 #: ../operations/common-gpl3+/cubism.c:31
-#: ../operations/common-gpl3+/mosaic.c:43
+#: ../operations/common-gpl3+/mosaic.c:44
 msgid "Average diameter of each tile (in pixels)"
 msgstr "Diametro medio di ogni piastrella (in pixel)"
 
@@ -6274,115 +6298,111 @@ msgstr "Labirinto"
 msgid "Draw a labyrinth"
 msgstr "Disegna un labirinto"
 
-#: ../operations/common-gpl3+/mosaic.c:32
+#: ../operations/common-gpl3+/mosaic.c:33
 msgid "Squares"
 msgstr "Quadrati"
 
-#: ../operations/common-gpl3+/mosaic.c:33
+#: ../operations/common-gpl3+/mosaic.c:34
 msgid "Hexagons"
 msgstr "Esagoni"
 
-#: ../operations/common-gpl3+/mosaic.c:34
+#: ../operations/common-gpl3+/mosaic.c:35
 msgid "Octagons"
 msgstr "Ottagoni"
 
-#: ../operations/common-gpl3+/mosaic.c:35
+#: ../operations/common-gpl3+/mosaic.c:36
 msgid "Triangles"
 msgstr "Triangoli"
 
-#: ../operations/common-gpl3+/mosaic.c:38
+#: ../operations/common-gpl3+/mosaic.c:39
 msgid "Tile geometry"
 msgstr "Geometria piastrella"
 
-#: ../operations/common-gpl3+/mosaic.c:40
+#: ../operations/common-gpl3+/mosaic.c:41
 msgid "What shape to use for tiles"
 msgstr "Forma da usare per le piastrelle"
 
-#: ../operations/common-gpl3+/mosaic.c:48
+#: ../operations/common-gpl3+/mosaic.c:49
 msgid "Tile height"
 msgstr "Altezza piastrella"
 
-#: ../operations/common-gpl3+/mosaic.c:49
+#: ../operations/common-gpl3+/mosaic.c:50
 msgid "Apparent height of each tile (in pixels)"
 msgstr "Dimensione apparente di ogni piastrella (in pixel)"
 
-#: ../operations/common-gpl3+/mosaic.c:53
+#: ../operations/common-gpl3+/mosaic.c:54
 msgid "Tile neatness"
 msgstr "Regolarità piastrella"
 
-#: ../operations/common-gpl3+/mosaic.c:54
+#: ../operations/common-gpl3+/mosaic.c:55
 msgid "Deviation from perfectly formed tiles"
 msgstr "Deviazione da piastrelle perfettamente formate"
 
-#: ../operations/common-gpl3+/mosaic.c:57
+#: ../operations/common-gpl3+/mosaic.c:58
 msgid "Tile color variation"
 msgstr "Variazione colore piastrella"
 
-#: ../operations/common-gpl3+/mosaic.c:58
+#: ../operations/common-gpl3+/mosaic.c:59
 msgid "Magnitude of random color variations"
 msgstr "Ampiezza variazioni casuali di colore"
 
-#: ../operations/common-gpl3+/mosaic.c:61
+#: ../operations/common-gpl3+/mosaic.c:62
 msgid "Color averaging"
 msgstr "Media colore"
 
-#: ../operations/common-gpl3+/mosaic.c:62
+#: ../operations/common-gpl3+/mosaic.c:63
 msgid "Tile color based on average of subsumed pixels"
 msgstr "Colore piastrella basato sulla media di sottosomme di pixel"
 
-#: ../operations/common-gpl3+/mosaic.c:64
+#: ../operations/common-gpl3+/mosaic.c:65
 msgid "Rough tile surface"
 msgstr "Superficie piastrella grezza"
 
-#: ../operations/common-gpl3+/mosaic.c:65
+#: ../operations/common-gpl3+/mosaic.c:66
 msgid "Surface characteristics"
 msgstr "Caratteristiche superficie"
 
-#: ../operations/common-gpl3+/mosaic.c:67
+#: ../operations/common-gpl3+/mosaic.c:68
 msgid "Allow splitting tiles"
 msgstr "Permetti piastrelle rotte"
 
-#: ../operations/common-gpl3+/mosaic.c:68
+#: ../operations/common-gpl3+/mosaic.c:69
 msgid "Allows splitting tiles at hard edges"
 msgstr "Permette la divisione delle piastrelle negli spigoli"
 
-#: ../operations/common-gpl3+/mosaic.c:70
+#: ../operations/common-gpl3+/mosaic.c:71
 msgid "Tile spacing"
 msgstr "Spaziatura piastrella"
 
-#: ../operations/common-gpl3+/mosaic.c:71
+#: ../operations/common-gpl3+/mosaic.c:72
 msgid "Inter-tile spacing (in pixels)"
 msgstr "Spaziatura inter-piastrella (in pixel)"
 
-#: ../operations/common-gpl3+/mosaic.c:76
+#: ../operations/common-gpl3+/mosaic.c:77
 msgid "Joints color"
 msgstr "Colore giunte"
 
-#: ../operations/common-gpl3+/mosaic.c:78
+#: ../operations/common-gpl3+/mosaic.c:79
 msgid "Light color"
 msgstr "Colore luce"
 
-#: ../operations/common-gpl3+/mosaic.c:80
+#: ../operations/common-gpl3+/mosaic.c:81 ../operations/workshop/chamfer.c:69
 msgid "Light direction"
 msgstr "Direzione luce"
 
-#: ../operations/common-gpl3+/mosaic.c:81
+#: ../operations/common-gpl3+/mosaic.c:82
 msgid "Direction of light-source (in degrees)"
 msgstr "Direzione sorgente di luce (in gradi)"
 
-#: ../operations/common-gpl3+/mosaic.c:86
-msgid "Antialiasing"
-msgstr "Antialiasing"
-
-#: ../operations/common-gpl3+/mosaic.c:87
+#: ../operations/common-gpl3+/mosaic.c:88
 msgid "Enables smoother tile output"
 msgstr "Risultati piastrelle più levigate"
 
-#: ../operations/common-gpl3+/mosaic.c:2471
+#: ../operations/common-gpl3+/mosaic.c:2472
 msgid "Mosaic"
 msgstr "Mosaico"
 
-#: ../operations/common-gpl3+/mosaic.c:2476
+#: ../operations/common-gpl3+/mosaic.c:2477
 msgid ""
 "Mosaic is a filter which transforms an image into what appears to be a "
 "mosaic, composed of small primitives, each of constant color and of an "
@@ -6790,7 +6810,8 @@ msgstr "Se impostata, il motivo verrà leggermente più distorto"
 msgid "Bilinear"
 msgstr "Bilineare"
 
-#: ../operations/common-gpl3+/sinus.c:67
+#. Changing the name of a ENUM list will result in all presets breaking
+#: ../operations/common-gpl3+/sinus.c:67 ../operations/workshop/chamfer.c:49
 msgid "Blend Mode"
 msgstr "Modalità fusione"
 
@@ -7283,7 +7304,7 @@ msgstr "Vortice e pizzico"
 msgid "Distort an image by whirling and pinching"
 msgstr "Distorce un'immagine con un effetto vortice o pizzico"
 
-#: ../operations/common-gpl3+/wind.c:28 ../operations/common-gpl3+/wind.c:590
+#: ../operations/common-gpl3+/wind.c:28 ../operations/common-gpl3+/wind.c:586
 msgid "Wind"
 msgstr "Vento"
 
@@ -7339,7 +7360,7 @@ msgstr "Alti valori restringono l'effetto a poche aree dell'immagine"
 msgid "Higher values increase the magnitude of the effect"
 msgstr "Alti valori aumentano la magnitudo dell'effetto"
 
-#: ../operations/common-gpl3+/wind.c:594
+#: ../operations/common-gpl3+/wind.c:590
 msgid "Wind-like bleed effect"
 msgstr "Un effetto vento"
 
@@ -7588,11 +7609,11 @@ msgstr "audio-codec"
 msgid "audio"
 msgstr "audio"
 
-#: ../operations/external/ff-load.c:866
+#: ../operations/external/ff-load.c:868
 msgid "FFmpeg Frame Loader"
 msgstr "Caricatore quadro FFmpeg"
 
-#: ../operations/external/ff-load.c:868
+#: ../operations/external/ff-load.c:870
 msgid "FFmpeg video frame importer."
 msgstr "Importatore quadri video FFmpeg."
 
@@ -7665,83 +7686,83 @@ msgstr ""
 msgid "global quality"
 msgstr "qualità globale"
 
-#: ../operations/external/ff-save.c:55
+#: ../operations/external/ff-save.c:57
 msgid "noise reduction"
 msgstr "riduzione del rumore"
 
-#: ../operations/external/ff-save.c:56
+#: ../operations/external/ff-save.c:58
 msgid "scenechange threshold"
 msgstr "soglia cambioscena"
 
-#: ../operations/external/ff-save.c:57
+#: ../operations/external/ff-save.c:59
 msgid "video bitrate min"
 msgstr "bitrate video min"
 
-#: ../operations/external/ff-save.c:58
+#: ../operations/external/ff-save.c:60
 msgid "video bitrate max"
 msgstr "bitrate video max"
 
-#: ../operations/external/ff-save.c:59
+#: ../operations/external/ff-save.c:61
 msgid "video bitrate tolerance"
 msgstr "tolleranza bitrate video"
 
-#: ../operations/external/ff-save.c:61
+#: ../operations/external/ff-save.c:64
 msgid "keyint-min"
 msgstr "keyint-min"
 
-#: ../operations/external/ff-save.c:62
+#: ../operations/external/ff-save.c:65
 msgid "trellis"
 msgstr "trellis"
 
-#: ../operations/external/ff-save.c:63
+#: ../operations/external/ff-save.c:66
 msgid "qmin"
 msgstr "qmin"
 
-#: ../operations/external/ff-save.c:64
+#: ../operations/external/ff-save.c:67
 msgid "qmax"
 msgstr "qmax"
 
-#: ../operations/external/ff-save.c:65
+#: ../operations/external/ff-save.c:68
 msgid "max_qdiff"
 msgstr "max_qdiff"
 
-#: ../operations/external/ff-save.c:66
+#: ../operations/external/ff-save.c:69
 msgid "me_range"
 msgstr "me_range"
 
-#: ../operations/external/ff-save.c:67
+#: ../operations/external/ff-save.c:70
 msgid "max_b_frames"
 msgstr "max_b_frames"
 
-#: ../operations/external/ff-save.c:68
+#: ../operations/external/ff-save.c:71
 msgid "gop-size"
 msgstr "gop-size"
 
-#: ../operations/external/ff-save.c:69
+#: ../operations/external/ff-save.c:72
 msgid "qcompress"
 msgstr "qcompress"
 
-#: ../operations/external/ff-save.c:70
+#: ../operations/external/ff-save.c:73
 msgid "qblur"
 msgstr "qblur"
 
-#: ../operations/external/ff-save.c:71
+#: ../operations/external/ff-save.c:74
 msgid "i-quant-factor"
 msgstr "i-quant-factor"
 
-#: ../operations/external/ff-save.c:72
+#: ../operations/external/ff-save.c:75
 msgid "i-quant-offset"
 msgstr "i-quant-offset"
 
-#: ../operations/external/ff-save.c:73
+#: ../operations/external/ff-save.c:76
 msgid "me-subpel-quality"
 msgstr "me-subpel-quality"
 
-#: ../operations/external/ff-save.c:1212
+#: ../operations/external/ff-save.c:1218
 msgid "FFmpeg Frame Saver"
 msgstr "Salvatore quadro FFmpeg"
 
-#: ../operations/external/ff-save.c:1214
+#: ../operations/external/ff-save.c:1220
 msgid "FFmpeg video output sink"
 msgstr "Ricezione uscita video FFmpeg"
 
@@ -8138,6 +8159,16 @@ msgstr "Riempimento opacità"
 msgid "The fill opacity to use"
 msgstr "Il riempimento opacità da usare"
 
+#: ../operations/external/path.c:54 ../operations/external/vector-fill.c:40
+#: ../operations/external/vector-stroke.c:41
+msgid "Vector"
+msgstr "Vettore"
+
+#: ../operations/external/path.c:55 ../operations/external/vector-fill.c:41
+#: ../operations/external/vector-stroke.c:42
+msgid "A GeglVector representing the path of the stroke"
+msgstr "Un GeglVector che rappresenta il percorso del tratto"
+
 #: ../operations/external/path.c:584
 msgid "Render Path"
 msgstr "Percorso render"
@@ -8376,12 +8407,12 @@ msgstr "Larghezza dell'immagine renderizzata"
 msgid "Height for rendered image"
 msgstr "Altezza dell'immagine renderizzata"
 
-#: ../operations/external/svg-load.c:291
+#: ../operations/external/svg-load.c:308
 msgid "SVG File Loader"
 msgstr "Caricatore immagini SVG"
 
 #. not hidden because it has extra API
-#: ../operations/external/svg-load.c:293
+#: ../operations/external/svg-load.c:310
 msgid "Load an SVG file using librsvg"
 msgstr "Carica un file SVG usando librsvg"
 
@@ -8538,6 +8569,36 @@ msgstr "Sorgente quadri Video4Linux"
 #: ../operations/external/v4l.c:333
 msgid "Video4Linux input, webcams framegrabbers and similar devices."
 msgstr "Ingresso video4Linux, webcam, framegrabber e dispositivi similari."
+
+#: ../operations/external/vector-fill.c:27
+msgid "Color of paint to use for filling."
+msgstr "Colore tinta da usare per il riempimento."
+
+#: ../operations/external/vector-fill.c:30
+msgid "The fill opacity to use."
+msgstr "Il riempimento opacità da usare."
+
+#. XXX: replace with enum?
+#: ../operations/external/vector-fill.c:34
+msgid "Fill rule."
+msgstr "Regola di riempimento."
+
+#: ../operations/external/vector-fill.c:35
+msgid "how to determine what to fill (nonzero|evenodd)"
+msgstr "home determinare cosa riempire (nonzero|paridispari)"
+
+#: ../operations/external/vector-fill.c:38
+#: ../operations/external/vector-stroke.c:39
+msgid "svg style description of transform."
+msgstr "stile svg descrizione della trasformazione."
+
+#: ../operations/external/vector-fill.c:320
+msgid "Fill Path"
+msgstr "Percorso riempimento"
+
+#: ../operations/external/vector-fill.c:323
+msgid "Renders a filled region"
+msgstr "Produce una regione riempita"
 
 #: ../operations/external/vector-stroke.c:28
 msgid "Color of paint to use for stroking."
@@ -9473,7 +9534,7 @@ msgstr "Modello alfa c"
 msgid "Model alpha d"
 msgstr "Modello alfa d"
 
-#: ../operations/workshop/external/lens-correct.c:486
+#: ../operations/workshop/external/lens-correct.c:487
 msgid "Copies image performing lens distortion correction."
 msgstr ""
 "Copia le immagini eseguendo una correzione ad una distorsione da lenti."
@@ -9805,3 +9866,74 @@ msgstr "Tonalità-saturazione selettive"
 #: ../operations/workshop/selective-hue-saturation.c:173
 msgid "Selective adjust Hue, Saturation and Lightness"
 msgstr "Regolazione della tonalità, saturazione e luminosità selettive"
+
+#: ../operations/workshop/chamfer.c:27
+msgid "HardLight"
+msgstr "Altelici"
+
+#: ../operations/workshop/chamfer.c:29
+msgid "Multiply"
+msgstr "Moltiplicatore"
+
+#: ../operations/workshop/chamfer.c:33
+msgid "Darken"
+msgstr "Inscurisci"
+
+#: ../operations/workshop/chamfer.c:35
+msgid "Lighten"
+msgstr "Schiara"
+
+#: ../operations/workshop/chamfer.c:39
+msgid "Soft Light"
+msgstr "Luce morbida"
+
+#: ../operations/workshop/chamfer.c:52
+msgid "What blending mode a light map will be applied with."
+msgstr "Con quale modalità di fusione verrà applicata una mappa della luce."
+
+#: ../operations/workshop/chamfer.c:64
+msgid ""
+"Curvature at 0.5 we are close to a circle shape, 1.0 is straight, values "
+"above 1.0 are concave."
+msgstr "Curvatura a 0.5 siamo vicini alla forma di un cerchio, 1.0 significa dritto, valori superiori a 1.0 sono concavi."
+
+#: ../operations/workshop/chamfer.c:70
+msgid ""
+"Light angle (degrees). For most blend modes this rotates lighting of the "
+"bevel."
+msgstr "Angolo di luce (gradi). Per la maggior parte delle modalità di fusione, l'illuminazione dello smusso viene ruotata."
+
+#: ../operations/workshop/chamfer.c:76
+msgid "Detailed options"
+msgstr "Opzioni dettagliate"
+
+#: ../operations/workshop/chamfer.c:78
+msgid "Mask with initial alpha"
+msgstr "Maschera con alfa iniziale"
+
+#: ../operations/workshop/chamfer.c:80
+msgid ""
+"Keep alpha coverage, avoids growing of the shape beyond initial position."
+msgstr "Mantieni la copertura alfa, evita la crescita della forma oltre la posizione iniziale."
+
+#: ../operations/workshop/chamfer.c:86
+msgid "Light Elevation"
+msgstr "Innalzamento luce"
+
+#: ../operations/workshop/chamfer.c:87
+msgid ""
+"Elevation angle (degrees). For most blend modes this shifts the lightest "
+"colors of the bevel."
+msgstr "Angolo di elevazione (gradi). Per la maggior parte delle modalità di fusione, sposta i colori più chiari dello smusso."
+
+#: ../operations/workshop/chamfer.c:118
+msgid "Choose Internal Median Shape"
+msgstr "Scegli la forma mediana interna"
+
+#: ../operations/workshop/chamfer.c:348
+msgid "Chamfer"
+msgstr "Smusso"
+
+#: ../operations/workshop/chamfer.c:350
+msgid "Simulate lighting of a chamfered 3D-edges for an alpha-defined shape."
+msgstr "Simula l'illuminazione di bordi 3D smussati per una forma alfa-definita."
