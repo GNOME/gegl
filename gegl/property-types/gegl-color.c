@@ -429,7 +429,7 @@ gegl_color_get_rgba_with_space (GeglColor  *self,
 #if BABL_MINOR_VERSION > 1 || (BABL_MINOR_VERSION == 1 && BABL_MICRO_VERSION >= 107)
   g_return_if_fail (space == NULL || babl_space_is_rgb (space));
 #else
-  g_return_if_fail (space == NULL || (! babl_space_is_cmyk (space) && ! babl_space_is_gray (space));
+  g_return_if_fail (space == NULL || (! babl_space_is_cmyk (space) && ! babl_space_is_gray (space)));
 #endif
 
   gegl_color_get_pixel (self, format, rgba);
