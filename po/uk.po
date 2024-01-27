@@ -2,13 +2,13 @@
 # Copyright (C) 2018 gegl's COPYRIGHT HOLDER
 # This file is distributed under the same license as the gegl package.
 #
-# yurchor <yurchor@ukr.net>, 2018, 2020, 2021, 2022, 2023.
+# yurchor <yurchor@ukr.net>, 2018, 2020, 2021, 2022, 2023, 2024.
 msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2023-09-23 21:17+0000\n"
-"PO-Revision-Date: 2023-09-24 18:49+0300\n"
+"POT-Creation-Date: 2024-01-26 18:49+0000\n"
+"PO-Revision-Date: 2024-01-27 09:19+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
 "Language: uk\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : n"
 "%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Lokalize 20.12.0\n"
+"X-Generator: Lokalize 23.04.1\n"
 
 #: bin/gegl.c:179
 #, c-format
@@ -676,7 +676,7 @@ msgstr ""
 "зважуватиметься за різницею кольорів із початковим центральним пікселем."
 
 #: operations/common/bloom.c:26 operations/common/threshold.c:25
-#: operations/common/threshold.c:163 operations/common/unsharp-mask.c:37
+#: operations/common/threshold.c:164 operations/common/unsharp-mask.c:37
 #: operations/common-gpl3+/red-eye-removal.c:31
 #: operations/common-gpl3+/wind.c:60 operations/external/matting-levin.c:33
 msgid "Threshold"
@@ -2680,9 +2680,6 @@ msgid "Low"
 msgstr "Низький"
 
 #: operations/common/local-threshold.c:38
-#| msgid ""
-#| "Thresholding level, 0.5 towards 0 to minimize shadows and towards 1.0 to "
-#| "minimze highlights."
 msgid ""
 "Thresholding level, 0.5 towards 0 to minimize shadows and towards 1.0 to "
 "minimize highlights."
@@ -4469,16 +4466,21 @@ msgid "Lowest value to be included."
 msgstr "Найнижче включене значення."
 
 #: operations/common/threshold.c:33
-msgid "highest value to be include as white."
+#| msgid "highest value to be include as white."
+msgid "Highest value to be include as white."
 msgstr "Найвище значення, яке буде включено як білий колір."
 
-#: operations/common/threshold.c:168
+#: operations/common/threshold.c:169
+#| msgid ""
+#| "Thresholds the image to white/black based on either the global value set "
+#| "in the value property, or per pixel from the aux input."
 msgid ""
-"Thresholds the image to white/black based on either the global value set in "
-"the value property, or per pixel from the aux input."
+"Thresholds the image to white/black based on either the global values set in "
+"the value (low) and high properties, or per pixel from the aux input."
 msgstr ""
 "Обрізає за порогами зображення до чорно-білого на основі або загального "
-"набору значень у властивості значення або за пікселями з додаткового потоку "
+"набору значень у властивості значення (нижнє) та найвищого значення або за"
+" пікселями з додаткового потоку "
 "вхідних даних."
 
 #: operations/common/tile.c:24
