@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2023-12-28 16:31+0000\n"
-"PO-Revision-Date: 2024-01-02 02:11+0100\n"
+"POT-Creation-Date: 2024-01-26 18:49+0000\n"
+"PO-Revision-Date: 2024-01-26 21:15+0100\n"
 "Last-Translator: Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -679,7 +679,7 @@ msgstr ""
 "centrumbildpunkt."
 
 #: operations/common/bloom.c:26 operations/common/threshold.c:25
-#: operations/common/threshold.c:163 operations/common/unsharp-mask.c:37
+#: operations/common/threshold.c:164 operations/common/unsharp-mask.c:37
 #: operations/common-gpl3+/red-eye-removal.c:31
 #: operations/common-gpl3+/wind.c:60 operations/external/matting-levin.c:33
 msgid "Threshold"
@@ -4420,17 +4420,19 @@ msgstr "SVG färgmatrisåtgärd svg_saturate"
 msgid "Lowest value to be included."
 msgstr "Lägsta värde att inkludera."
 
+# TODO: included
 #: operations/common/threshold.c:33
-msgid "highest value to be include as white."
-msgstr "högsta värde att inkludera som vitt."
+msgid "Highest value to be include as white."
+msgstr "Högsta värde att inkludera som vitt."
 
-#: operations/common/threshold.c:168
+#: operations/common/threshold.c:169
 msgid ""
-"Thresholds the image to white/black based on either the global value set in "
-"the value property, or per pixel from the aux input."
+"Thresholds the image to white/black based on either the global values set in "
+"the value (low) and high properties, or per pixel from the aux input."
 msgstr ""
-"Trösklar bilden till vitt/svart baserat på antigen det globala värdet som "
-"ställts in i värdeegenskapen eller per bildpunkt från aux-indata."
+"Trösklar bilden till vitt/svart baserat på antingen de globala värden som "
+"ställts in i värdeegenskaperna låg och hög, eller per bildpunkt från aux-"
+"indata."
 
 #: operations/common/tile.c:24
 msgid "Horizontal offset"
