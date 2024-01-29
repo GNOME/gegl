@@ -348,7 +348,6 @@ gegl_path_to_string (GeglPath  *vector)
 {
   GeglPathPrivate *priv;
   GString *str;
-  gchar *ret;
   GeglPathList *iter;
   if (!vector)
     return g_strdup ("");
@@ -389,9 +388,7 @@ gegl_path_to_string (GeglPath  *vector)
         }
     }
 
-  ret = str->str;
-  g_string_free (str, FALSE);
-  return ret;
+  return g_string_free (str, FALSE);
 }
 
 void

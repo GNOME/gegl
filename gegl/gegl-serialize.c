@@ -894,7 +894,6 @@ gegl_serialize2 (GeglNode         *start,
                  GHashTable       *ht,
                  GeglSerializeFlag flags)
 {
-  char *ret = NULL;
   gboolean trim_defaults = flags & GEGL_SERIALIZE_TRIM_DEFAULTS;
   gboolean bake_anim = flags & GEGL_SERIALIZE_BAKE_ANIM;
   GeglNode *iter;
@@ -1238,11 +1237,7 @@ gegl_serialize2 (GeglNode         *start,
           iter = gegl_node_get_producer (iter, "input", NULL);
         }
     }
-  ret = str->str;
-  g_string_free (str, FALSE);
-
-
-  return ret;
+  return g_string_free (str, FALSE);
 }
 
 gchar *
