@@ -21,7 +21,7 @@
 
 // todo : use gegl_random for reproducible results
 //        chunking/progress reporting, right now it blocks the GIMP ui while processing
-//        handle indexed/RGBA8 color images as aux input
+//        for the non 1bpp case, keep rgb buffer and do double swaps
 
 
 #if 0
@@ -111,8 +111,67 @@ static uint8_t compute_val(const uint8_t *bits, int stride, int x, int y)
   return 0;
 }
 
+static void compute_rgb(const Babl*fmt, const uint8_t *bits, int stride, int x, int y, uint8_t *rgb_out)
+{
+  int count = 0;
+  int red_sum = 0;
+  int green_sum = 0;
+  int blue_sum = 0;
+
+  int bpp = babl_format_get_bytes_per_pixel(fmt);
+  const Babl *fish = babl_fish(fmt, babl_format("R'G'B' u8"));
+
+  for (int v = y-1; v <= y+1; v++)
+  for (int u = x-1; u <= x+1; u++)
+  {
+    {
+      uint8_t rgba[4] = {0,};
+      babl_process(fish, &bits[bpp*(v*stride+u)], rgba, 1);
+      if (u == 0 && v == 0)
+      {
+#define CENTER_BIAS  8
+        count += CENTER_BIAS;
+        red_sum += rgba[0] * CENTER_BIAS;
+        green_sum += rgba[1] * CENTER_BIAS;
+        blue_sum += rgba[2] * CENTER_BIAS;
+      }
+      else
+      {
+        count++;
+        red_sum += rgba[0];
+        green_sum += rgba[1];
+        blue_sum += rgba[2];
+      }
+    }
+  }
+
+  if (count)
+  {
+    rgb_out[0] = red_sum / count;
+    rgb_out[1] = green_sum / count;
+    rgb_out[2] = blue_sum / count;
+  }
+  else
+  {
+    rgb_out[0] =
+    rgb_out[1] =
+    rgb_out[2] = 0;
+  }
+}
+
+
+static int rgb_diff(const uint8_t *a, const uint8_t* b)
+{
+  int sum_sq_diff = 0;
+  for (int c = 0; c < 3; c++)
+    sum_sq_diff += (a[c]-b[c])*(a[c]-b[c]);
+  return sqrtf(sum_sq_diff);
+}
+
+
+
 static void
-improve_rect (GeglBuffer          *input,
+improve_rect_1bpp (GeglBuffer          *input,
               GeglBuffer          *output,
               const GeglRectangle *roi,
               int                  iterations,
@@ -237,6 +296,170 @@ improve_rect (GeglBuffer          *input,
 #undef DO_DSWAP
 }
 
+static void
+improve_rect (GeglBuffer          *input,
+              GeglBuffer          *output,
+              const GeglRectangle *roi,
+              int                  iterations,
+              int                  chance)
+{
+  int bpp = babl_format_get_bytes_per_pixel (gegl_buffer_get_format(output));
+  const Babl *fmt_raw = gegl_buffer_get_format(output);
+
+  if (bpp == 1 && babl_get_name(fmt_raw)[0]=='Y')
+  {
+    improve_rect_1bpp (input, output, roi, iterations, chance);
+    return;
+  }
+
+  const Babl *fmt_rgb_u8 = babl_format("R'G'B' u8");
+
+  GeglRectangle ref_rect  = {roi->x-1, roi->y-1, roi->width+3, roi->height+3};
+  GeglRectangle bit_rect = {roi->x-2, roi->y-2, roi->width+5, roi->height+5};
+
+  uint8_t *bits = malloc (bit_rect.width*bit_rect.height*bpp);
+  uint8_t *ref  = malloc (ref_rect.width*ref_rect.height*3);
+
+  gegl_buffer_get(output,  &bit_rect, 1.0f, fmt_raw, bits, bit_rect.width*bpp, GEGL_ABYSS_CLAMP);
+  gegl_buffer_get(input, &ref_rect, 1.0f, fmt_rgb_u8, ref, ref_rect.width*3, GEGL_ABYSS_CLAMP);
+
+
+  int prev_swaps = 1;
+
+  for (int i = 0; i < iterations; i++)
+  {
+    int hswaps = 0;
+    int vswaps = 0;
+    int dswaps = 0;
+
+  for (int y = 0; y < roi->height; y++)
+  for (int x = 0; x < roi->width; x++)
+  if ((random()%100) < chance){
+    
+    int sq_diff = 0;
+    int sq_diff_hswap = 0;
+    int sq_diff_vswap = 0;
+    int sq_diff_dswap = 0;
+
+    for (int v = -1; v <= 2; v++)
+    for (int u = -1; u <= 2; u++)
+    {
+      uint8_t computed_rgb[4];
+      compute_rgb(fmt_raw, bits + bpp*(2+(bit_rect.width)*2), bit_rect.width, x+u, y+v, &computed_rgb[0]);
+      for (int c = 0; c<3; c++)
+      {
+        int val = ref[3*(ref_rect.width * ((y+v)+1) + (x + u) + 1)+c] - computed_rgb[c];
+        sq_diff += val*val;
+      }
+    }
+
+#define DO_HSWAP \
+    {char tmp[16]; memcpy(tmp, &bits[bpp*(bit_rect.width* (y+2) + x + 2+1)], bpp);\
+    memcpy(&bits[bpp*(bit_rect.width* (y+2) + x + 2+1)], \
+           &bits[bpp*(bit_rect.width* (y+2) + x + 2)], bpp);\
+    memcpy(&bits[bpp*(bit_rect.width* (y+2) + x + 2)], \
+           tmp, bpp);}
+    
+
+#define DO_VSWAP \
+    {char tmp[16]; memcpy(tmp, &bits[bpp*(bit_rect.width* (y+2) + x + 2+bit_rect.width)], bpp);\
+    memcpy(&bits[bpp*(bit_rect.width* (y+2) + x + 2+bit_rect.width)], \
+           &bits[bpp*(bit_rect.width* (y+2) + x + 2)], bpp);\
+    memcpy(&bits[bpp*(bit_rect.width* (y+2) + x + 2)], \
+           tmp, bpp);}
+
+#define DO_DSWAP \
+    {char tmp[16]; memcpy(tmp, &bits[bpp*(bit_rect.width* (y+2) + x + 2+bit_rect.width+1)], bpp);\
+    memcpy(&bits[bpp*(bit_rect.width* (y+2) + x + 2+bit_rect.width+1)], \
+           &bits[bpp*(bit_rect.width* (y+2) + x + 2)], bpp);\
+    memcpy(&bits[bpp*(bit_rect.width* (y+2) + x + 2)], \
+           tmp, bpp);}
+
+    DO_HSWAP;
+    for (int v = -1; v <= 2; v++)
+    for (int u = -1; u <= 2; u++)
+    {
+      int sq_diff = 0;
+      uint8_t computed_rgb[4];
+      compute_rgb(fmt_raw, bits + bpp*(2+(bit_rect.width)*2), bit_rect.width, x+u, y+v, &computed_rgb[0]);
+      for (int c = 0; c<3; c++)
+      {
+        int val = ref[3*(ref_rect.width * ((y+v)+1) + (x + u) + 1)+c] - computed_rgb[c];
+        sq_diff += val*val;
+      }
+      sq_diff_hswap += sq_diff;
+    }
+    DO_HSWAP;
+
+    DO_VSWAP;
+    for (int v = -1; v <= 2; v++)
+    for (int u = -1; u <= 2; u++)
+    {
+      int sq_diff = 0;
+      uint8_t computed_rgb[4];
+      compute_rgb(fmt_raw, bits + bpp*(2+(bit_rect.width)*2), bit_rect.width, x+u, y+v, &computed_rgb[0]);
+      for (int c = 0; c<3; c++)
+      {
+        int val = ref[3*(ref_rect.width * ((y+v)+1) + (x + u) + 1)+c] - computed_rgb[c];
+        sq_diff += val*val;
+      }
+      sq_diff_vswap += sq_diff;
+    }
+    DO_VSWAP;
+
+    DO_DSWAP;
+    for (int v = -1; v <= 2; v++)
+    for (int u = -1; u <= 2; u++)
+    {
+      int sq_diff = 0;
+      uint8_t computed_rgb[4];
+      compute_rgb(fmt_raw, bits + bpp*(2+(bit_rect.width)*2), bit_rect.width, x+u, y+v, &computed_rgb[0]);
+      for (int c = 0; c<3; c++)
+      {
+        int val = ref[3*(ref_rect.width * ((y+v)+1) + (x + u) + 1)+c] - computed_rgb[c];
+        sq_diff += val*val;
+      }
+      sq_diff_dswap += sq_diff;
+    }
+    DO_DSWAP;
+
+    if (sq_diff_hswap < sq_diff && sq_diff_hswap <= sq_diff_vswap && sq_diff_hswap <= sq_diff_dswap)
+    {
+      hswaps++;
+      DO_HSWAP;
+    }
+    else if (sq_diff_vswap < sq_diff && sq_diff_vswap <= sq_diff_dswap)
+    {
+      vswaps++;
+      DO_VSWAP;
+    }
+    else if (sq_diff_dswap < sq_diff)
+    {
+      dswaps++;
+      DO_DSWAP;
+    }
+
+  }
+#if DEV_MODE
+    printf("%i hswaps:%i vswaps:%i dswaps:%i\n", i, hswaps, vswaps, dswaps);
+#endif
+
+    if ((prev_swaps==0))
+     break;
+
+    prev_swaps = hswaps + vswaps + dswaps;
+  }
+
+  gegl_buffer_set(output, &bit_rect, 0, fmt_raw, bits, bit_rect.width*bpp);
+  free (bits);
+  free (ref);
+
+#undef DO_HSWAP
+#undef DO_VSWAP
+#undef DO_DSWAP
+}
+
+
 static gboolean
 process (GeglOperation       *operation,
          GeglBuffer          *input,
@@ -252,13 +475,14 @@ process (GeglOperation       *operation,
 
   if(!aux)
   {
+    /* do our own first-stage dithering to requested number of gray-scale levels */
     aux = gegl_buffer_new (result, fmt_y_u8);
  
-  gi = gegl_buffer_iterator_new (aux, result, 0, fmt_y_u8,
-                                 GEGL_ACCESS_READ|GEGL_ACCESS_WRITE,
-                                 GEGL_ABYSS_NONE, 2);
-  gegl_buffer_iterator_add (gi, input, result, 0, fmt_y_u8,
-                            GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
+    gi = gegl_buffer_iterator_new (aux, result, 0, fmt_y_u8,
+                                   GEGL_ACCESS_READ|GEGL_ACCESS_WRITE,
+                                   GEGL_ABYSS_NONE, 2);
+    gegl_buffer_iterator_add (gi, input, result, 0, fmt_y_u8,
+                              GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
 
 
 
@@ -292,24 +516,7 @@ process (GeglOperation       *operation,
    }
   }
 
-  {
-    gi = gegl_buffer_iterator_new (output, result, 0, fmt_y_u8,
-                                   GEGL_ACCESS_READ|GEGL_ACCESS_WRITE,
-                                   GEGL_ABYSS_NONE, 2);
-    gegl_buffer_iterator_add (gi, aux, result, 0, fmt_y_u8,
-                              GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
-
-    while (gegl_buffer_iterator_next (gi))
-    {
-      guint8 *data = (guint8*) gi->items[0].data;
-      guint8 *in   = (guint8*) gi->items[1].data;
-      GeglRectangle *roi = &gi->items[0].roi;
-      int i = 0;
-      for (int y = 0; y < roi->height; y++)
-      for (int x = 0; x < roi->width; x++, i++)
-        data[i] = in[i];
-    }
-  }
+  gegl_buffer_copy(aux, NULL, GEGL_ABYSS_NONE, output, NULL);
 
   //for (int i = 0; i < 2;i++)
   {
@@ -333,6 +540,10 @@ process (GeglOperation       *operation,
 
   // post-process - 
   if(aux){
+    int bpp = babl_format_get_bytes_per_pixel (gegl_buffer_get_format(output));
+
+    if (bpp == 1)
+    {
     gi = gegl_buffer_iterator_new (output, result, 0, fmt_y_u8,
                                    GEGL_ACCESS_READ|GEGL_ACCESS_WRITE,
                                    GEGL_ABYSS_NONE, 3);
@@ -340,29 +551,29 @@ process (GeglOperation       *operation,
                               GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
     gegl_buffer_iterator_add (gi, input, result, 0, fmt_y_u8,
                               GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
-
     while (gegl_buffer_iterator_next (gi))
     {
-      guint8 *data = (guint8*) gi->items[0].data;
-      guint8 *aux  = (guint8*) gi->items[1].data;
-      guint8 *in   = (guint8*) gi->items[2].data;
+      guint8 *data  = (guint8*) gi->items[0].data;
+      guint8 *aux   = (guint8*) gi->items[1].data;
+      guint8 *in    = (guint8*) gi->items[2].data;
+
       GeglRectangle *roi = &gi->items[0].roi;
       int i = 0;
       for (int y = 0; y < roi->height; y++)
       for (int x = 0; x < roi->width; x++, i++)
       {
+        int new_delta  = abs(data[i]-in[i]);
         int orig_delta = abs(aux[i]-in[i]);
-        int new_delta = abs(data[i]-in[i]);
 
         int min_neigh_delta = 255;
-        int self = data[i];
+        int self = aux[i];
         for (int u = -1; u<=1;u++)
         for (int v = -1; v<=1;v++)
         {
           if (u + x >=0 && u + x <= roi->width &&
               v + y >=0 && v + y <= roi->height)
           {
-            int neigh_delta = abs(data[(y+v) * roi->width + (x+u)] - self);
+            int neigh_delta = abs(aux[(y+v) * roi->width + (x+u)] - self);
             if (neigh_delta && neigh_delta < min_neigh_delta)
               min_neigh_delta = neigh_delta;
           }
@@ -372,7 +583,59 @@ process (GeglOperation       *operation,
           data[i] = aux[i];
       }
     }
+    }
+    else
+    {
+      const Babl *fmt_rgb8 = babl_format("R'G'B' u8");
+      gi = gegl_buffer_iterator_new (input, result, 0, fmt_rgb8,
+                                     GEGL_ACCESS_READ,
+                                     GEGL_ABYSS_NONE, 5);
 
+      gegl_buffer_iterator_add (gi, aux, result, 0, NULL,
+                                GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
+      gegl_buffer_iterator_add (gi, output, result, 0, NULL,
+                                GEGL_ACCESS_READ|GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
+
+      gegl_buffer_iterator_add (gi, aux, result, 0, fmt_rgb8,
+                                GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
+
+      gegl_buffer_iterator_add (gi, output, result, 0, fmt_rgb8,
+                                GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
+
+    while (gegl_buffer_iterator_next (gi))
+    {
+      guint8 *in_rgb   = (guint8*) gi->items[0].data;
+      guint8 *aux_raw  = (guint8*) gi->items[1].data;
+      guint8 *data_raw = (guint8*) gi->items[2].data;
+      guint8 *aux_rgb  = (guint8*) gi->items[3].data;
+      guint8 *data_rgb = (guint8*) gi->items[4].data;
+
+      GeglRectangle *roi = &gi->items[0].roi;
+      int i = 0;
+      for (int y = 0; y < roi->height; y++)
+      for (int x = 0; x < roi->width; x++, i++)
+      {
+        int new_delta  = rgb_diff(&data_rgb[i*3], &in_rgb[i*3]);
+        int orig_delta  = rgb_diff(&aux_rgb[i*3], &in_rgb[i*3]);
+
+        int min_neigh_delta = 255;
+        for (int v = -1; v<=1;v++)
+        for (int u = -1; u<=1;u++)
+        {
+          if (u + x >=0 && u + x <= roi->width &&
+              v + y >=0 && v + y <= roi->height)
+          {
+            int neigh_delta = rgb_diff(&aux_rgb[((y+v) * roi->width + (x+u))*3], &aux_rgb[i*3]);
+            if (neigh_delta && neigh_delta < min_neigh_delta)
+              min_neigh_delta = neigh_delta;
+          }
+        }
+
+        if (orig_delta < new_delta - min_neigh_delta) // + a bit?
+          memcpy(&data_raw[i*bpp], &aux_raw[i*bpp], bpp);
+      }
+    }
+    }
   }
 
   if (aux != arg_aux)
