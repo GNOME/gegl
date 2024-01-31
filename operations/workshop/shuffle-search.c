@@ -658,7 +658,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",       _("Optimize Dither"),
     "categories",  "dither",
     "reference-hash", "e9de784b7a9c200bb7652b6b58a4c94a",
-    "description", _("Shuffles pixels with neighbours to optimize dither, by shuffling neighboring pixels; if an image is provided as aux input, it is used as dithering starting point."),
+    "description", _("Shuffles pixels with neighbors to optimize dither, by shuffling neighboring pixels; if an image is provided as aux input, it is used as dithering starting point."),
     "gimp:menu-path", "<Image>/Colors",
     NULL);
 }
