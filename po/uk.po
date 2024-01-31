@@ -6,9 +6,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2024-01-26 18:49+0000\n"
-"PO-Revision-Date: 2024-01-27 09:19+0200\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
+"POT-Creation-Date: 2024-01-31 14:58+0000\n"
+"PO-Revision-Date: 2024-01-31 21:23+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
 "Language: uk\n"
@@ -4466,22 +4466,17 @@ msgid "Lowest value to be included."
 msgstr "Найнижче включене значення."
 
 #: operations/common/threshold.c:33
-#| msgid "highest value to be include as white."
 msgid "Highest value to be include as white."
 msgstr "Найвище значення, яке буде включено як білий колір."
 
 #: operations/common/threshold.c:169
-#| msgid ""
-#| "Thresholds the image to white/black based on either the global value set "
-#| "in the value property, or per pixel from the aux input."
 msgid ""
 "Thresholds the image to white/black based on either the global values set in "
 "the value (low) and high properties, or per pixel from the aux input."
 msgstr ""
 "Обрізає за порогами зображення до чорно-білого на основі або загального "
-"набору значень у властивості значення (нижнє) та найвищого значення або за"
-" пікселями з додаткового потоку "
-"вхідних даних."
+"набору значень у властивості значення (нижнє) та найвищого значення або за "
+"пікселями з додаткового потоку вхідних даних."
 
 #: operations/common/tile.c:24
 msgid "Horizontal offset"
@@ -9809,6 +9804,48 @@ msgstr "Вибірковий відтінок-насиченість"
 #: operations/workshop/selective-hue-saturation.c:173
 msgid "Selective adjust Hue, Saturation and Lightness"
 msgstr "Вибіркове коригування відтінку, освітленості та насиченості"
+
+#: operations/workshop/shuffle-search.c:36
+#| msgid "Iterations"
+msgid "iterations"
+msgstr "ітерацій"
+
+#: operations/workshop/shuffle-search.c:37
+msgid "How many times to run optimization"
+msgstr "Кількість проходів оптимізації"
+
+#: operations/workshop/shuffle-search.c:43
+#| msgid "Balance"
+msgid "chance"
+msgstr "можливість"
+
+#: operations/workshop/shuffle-search.c:44
+msgid "Chance of doing optimization"
+msgstr "Можливість виконання оптимізації"
+
+#: operations/workshop/shuffle-search.c:50
+#| msgid "Levels"
+msgid "levels"
+msgstr "рівнів"
+
+#: operations/workshop/shuffle-search.c:51
+msgid "Only used if no aux image is provided"
+msgstr "Буде використано, лише якщо не надано допоміжного зображення"
+
+#: operations/workshop/shuffle-search.c:421
+#| msgid "Optimize"
+msgid "Optimize Dither"
+msgstr "Оптимізувати розмивання"
+
+#: operations/workshop/shuffle-search.c:424
+msgid ""
+"Shuffles pixels with neighbours to optimize dither, by shuffling neighboring "
+"pixels; if an image is provided as aux input, it is used as dithering "
+"starting point."
+msgstr ""
+"Перемішує пікселі із сусідніми для оптимізації розмивання шляхом"
+" перемішування сусідніх пікселів; якщок допоміжні вхідні дані надано"
+" зображення, його буде використано як початкову точку розмивання."
 
 #: operations/workshop/chamfer.c:27
 msgid "HardLight"
