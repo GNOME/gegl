@@ -19,6 +19,9 @@
 #include "config.h"
 #include <glib/gi18n-lib.h>
 
+
+/* random is not portable to all platforms */
+#define random() g_random_int ()
 // todo : use gegl_random for reproducible results
 //        chunking/progress reporting, right now it blocks the GIMP ui while processing
 
