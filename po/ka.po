@@ -1,14 +1,14 @@
 # Georgian translation for gegl.
 # Copyright (C) 2023 gegl's authors.
 # This file is distributed under the same license as the gegl package.
-# Ekaterine Papava <papava.e@gtu.ge>, 2023.
+# Ekaterine Papava <papava.e@gtu.ge>, 2023-2024.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2023-06-20 04:32+0000\n"
-"PO-Revision-Date: 2023-06-20 16:53+0200\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
+"POT-Creation-Date: 2024-01-31 14:58+0000\n"
+"PO-Revision-Date: 2024-02-01 03:20+0100\n"
 "Last-Translator: Ekaterine Papava <papava.e@gtu.ge>\n"
 "Language-Team: Georgian <(nothing)>\n"
 "Language: ka\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.3.1\n"
+"X-Generator: Poedit 3.3.2\n"
 
 #: bin/gegl.c:179
 #, c-format
@@ -384,7 +384,7 @@ msgstr "არ ჩატვირთულა"
 #: gegl/module/geglmodule.c:388
 #, c-format
 msgid "Module '%s' load error: %s"
-msgstr ""
+msgstr "მოდულის '%s' ჩატვირთვის შეცდომა: '%s'"
 
 #: gegl/operation/gegl-operation-composer3.c:77
 msgid "Output pad for generated image buffer."
@@ -619,7 +619,7 @@ msgid ""
 msgstr ""
 
 #: operations/common/bloom.c:26 operations/common/threshold.c:25
-#: operations/common/threshold.c:163 operations/common/unsharp-mask.c:37
+#: operations/common/threshold.c:164 operations/common/unsharp-mask.c:37
 #: operations/common-gpl3+/red-eye-removal.c:31
 #: operations/common-gpl3+/wind.c:60 operations/external/matting-levin.c:33
 msgid "Threshold"
@@ -692,7 +692,7 @@ msgstr ""
 
 #: operations/common/box-blur.c:404
 msgid "Box Blur"
-msgstr ""
+msgstr "ჩარჩოს გაბუნდოვნება"
 
 #: operations/common/box-blur.c:407 operations/workshop/boxblur.c:76
 msgid "Blur resulting from averaging the colors of a square neighborhood."
@@ -2524,7 +2524,7 @@ msgstr "დაბალი"
 #: operations/common/local-threshold.c:38
 msgid ""
 "Thresholding level, 0.5 towards 0 to minimize shadows and towards 1.0 to "
-"minimze highlights."
+"minimize highlights."
 msgstr ""
 
 #: operations/common/local-threshold.c:43
@@ -2539,11 +2539,11 @@ msgstr "მაღალი"
 msgid "Maximum values to include, above this gets set to 0."
 msgstr ""
 
-#: operations/common/local-threshold.c:175
+#: operations/common/local-threshold.c:179
 msgid "Local Threshold"
 msgstr "ლოკალური ზღვარი"
 
-#: operations/common/local-threshold.c:177
+#: operations/common/local-threshold.c:181
 msgid "Applies a threshold using the local neighborhood."
 msgstr ""
 
@@ -4195,13 +4195,13 @@ msgid "Lowest value to be included."
 msgstr ""
 
 #: operations/common/threshold.c:33
-msgid "highest value to be include as white."
+msgid "Highest value to be include as white."
 msgstr ""
 
-#: operations/common/threshold.c:168
+#: operations/common/threshold.c:169
 msgid ""
-"Thresholds the image to white/black based on either the global value set in "
-"the value property, or per pixel from the aux input."
+"Thresholds the image to white/black based on either the global values set in "
+"the value (low) and high properties, or per pixel from the aux input."
 msgstr ""
 
 #: operations/common/tile.c:24
@@ -4566,7 +4566,7 @@ msgstr ""
 
 #: operations/common-cxx/focus-blur.c:317
 msgid "Focus Blur"
-msgstr ""
+msgstr "ფოკუსის ბუნდოვნება"
 
 #: operations/common-cxx/focus-blur.c:320
 msgid "Blur the image around a focal point"
@@ -4733,7 +4733,7 @@ msgstr ""
 
 #: operations/common-gpl3+/bayer-matrix.c:25
 msgid "Subdivisions"
-msgstr ""
+msgstr "ქვედანაყოფები"
 
 #: operations/common-gpl3+/bayer-matrix.c:26
 msgid "Number of subdivisions"
@@ -5552,15 +5552,15 @@ msgstr ""
 
 #: operations/common-gpl3+/fractal-explorer.c:84
 msgid "Red stretching factor"
-msgstr ""
+msgstr "წითლის გაწელვის ფაქტორი"
 
 #: operations/common-gpl3+/fractal-explorer.c:87
 msgid "Green stretching factor"
-msgstr ""
+msgstr "მწვანის გაწელვის ფაქტორი"
 
 #: operations/common-gpl3+/fractal-explorer.c:90
 msgid "Blue stretching factor"
-msgstr ""
+msgstr "ლურჯის გაწელვის ფაქტორი"
 
 #: operations/common-gpl3+/fractal-explorer.c:94
 #: operations/common-gpl3+/ripple.c:29
@@ -6901,11 +6901,11 @@ msgstr "ბოლოში"
 
 #: operations/common-gpl3+/wind.c:41
 msgid "Leading"
-msgstr ""
+msgstr "თავში მიწერილი"
 
 #: operations/common-gpl3+/wind.c:42
 msgid "Trailing"
-msgstr ""
+msgstr "ბოლოში"
 
 #: operations/common-gpl3+/wind.c:48
 msgid "Style of effect"
@@ -7030,7 +7030,7 @@ msgstr ""
 
 #: operations/core/convert-format.c:99
 msgid "Convert Format"
-msgstr ""
+msgstr "ფორმატის გადაყვანა"
 
 #: operations/core/convert-format.c:101
 msgid "Convert the data to the specified format"
@@ -7919,12 +7919,12 @@ msgstr ""
 msgid "Height for rendered image"
 msgstr ""
 
-#: operations/external/svg-load.c:293
+#: operations/external/svg-load.c:308
 msgid "SVG File Loader"
 msgstr ""
 
 #. not hidden because it has extra API
-#: operations/external/svg-load.c:295
+#: operations/external/svg-load.c:310
 msgid "Load an SVG file using librsvg"
 msgstr ""
 
@@ -7955,7 +7955,7 @@ msgstr ""
 
 #: operations/external/text.c:41
 msgid "Wrap width"
-msgstr ""
+msgstr "გადატანის სიგანე"
 
 #: operations/external/text.c:42
 msgid ""
@@ -8460,7 +8460,7 @@ msgstr ""
 
 #: operations/transform/scale-size.c:82
 msgid "Scale size"
-msgstr ""
+msgstr "მასშტაბის ზომა"
 
 #: operations/transform/scale-size.c:85
 msgid "Scales the buffer according to a size."
@@ -8646,7 +8646,7 @@ msgstr ""
 
 #: operations/workshop/boxblur.c:75
 msgid "BoxBlur"
-msgstr ""
+msgstr "ჩარჩოს გაბუნდოვნება"
 
 #: operations/workshop/connected-components.c:25
 msgid "Separator"
@@ -9240,8 +9240,42 @@ msgstr ""
 msgid "Selective adjust Hue, Saturation and Lightness"
 msgstr ""
 
+#: operations/workshop/shuffle-search.c:36
+msgid "iterations"
+msgstr "იტერაციები"
+
+#: operations/workshop/shuffle-search.c:37
+msgid "How many times to run optimization"
+msgstr ""
+
+#: operations/workshop/shuffle-search.c:43
+msgid "chance"
+msgstr "შანსი"
+
+#: operations/workshop/shuffle-search.c:44
+msgid "Chance of doing optimization"
+msgstr ""
+
+#: operations/workshop/shuffle-search.c:50
+msgid "levels"
+msgstr "დონეები"
+
+#: operations/workshop/shuffle-search.c:51
+msgid "Only used if no aux image is provided"
+msgstr ""
+
+#: operations/workshop/shuffle-search.c:421
+msgid "Optimize Dither"
+msgstr "დიზერის ოპტიმიზაცია"
+
+#: operations/workshop/shuffle-search.c:424
+msgid ""
+"Shuffles pixels with neighbours to optimize dither, by shuffling neighboring "
+"pixels; if an image is provided as aux input, it is used as dithering "
+"starting point."
+msgstr ""
+
 #: operations/workshop/chamfer.c:27
-#| msgid "Height"
 msgid "HardLight"
 msgstr "HardLight"
 
@@ -9306,7 +9340,7 @@ msgstr ""
 
 #: operations/workshop/chamfer.c:348
 msgid "Chamfer"
-msgstr ""
+msgstr "კუთხის ნაზოლი"
 
 #: operations/workshop/chamfer.c:350
 msgid "Simulate lighting of a chamfered 3D-edges for an alpha-defined shape."
