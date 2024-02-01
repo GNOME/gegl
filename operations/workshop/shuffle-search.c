@@ -21,7 +21,6 @@
 
 // todo : use gegl_random for reproducible results
 //        chunking/progress reporting, right now it blocks the GIMP ui while processing
-//        for the non 1bpp case, keep rgb buffer and do double swaps
 
 
 #if 0
@@ -111,36 +110,32 @@ static uint8_t compute_val(const uint8_t *bits, int stride, int x, int y)
   return 0;
 }
 
-static void compute_rgb(const Babl*fmt, const uint8_t *bits, int stride, int x, int y, uint8_t *rgb_out)
+static void compute_rgb(const Babl*fmt, const uint8_t *rgb, int stride, int x, int y, uint8_t *rgb_out)
 {
   int count = 0;
   int red_sum = 0;
   int green_sum = 0;
   int blue_sum = 0;
 
-  int bpp = babl_format_get_bytes_per_pixel(fmt);
-  const Babl *fish = babl_fish(fmt, babl_format("R'G'B' u8"));
-
   for (int v = y-1; v <= y+1; v++)
   for (int u = x-1; u <= x+1; u++)
   {
     {
-      uint8_t rgba[4] = {0,};
-      babl_process(fish, &bits[bpp*(v*stride+u)], rgba, 1);
+      int o = 3*(v*stride+u);
       if (u == 0 && v == 0)
       {
 #define CENTER_BIAS  8
         count += CENTER_BIAS;
-        red_sum += rgba[0] * CENTER_BIAS;
-        green_sum += rgba[1] * CENTER_BIAS;
-        blue_sum += rgba[2] * CENTER_BIAS;
+        red_sum += rgb[o+0] * CENTER_BIAS;
+        green_sum += rgb[o+1] * CENTER_BIAS;
+        blue_sum += rgb[o+2] * CENTER_BIAS;
       }
       else
       {
         count++;
-        red_sum += rgba[0];
-        green_sum += rgba[1];
-        blue_sum += rgba[2];
+        red_sum += rgb[o+0];
+        green_sum += rgb[o+1];
+        blue_sum += rgb[o+2];
       }
     }
   }
@@ -318,9 +313,11 @@ improve_rect (GeglBuffer          *input,
   GeglRectangle bit_rect = {roi->x-2, roi->y-2, roi->width+5, roi->height+5};
 
   uint8_t *bits = malloc (bit_rect.width*bit_rect.height*bpp);
+  uint8_t *bits_rgb = malloc (bit_rect.width*bit_rect.height*3);
   uint8_t *ref  = malloc (ref_rect.width*ref_rect.height*3);
 
   gegl_buffer_get(output,  &bit_rect, 1.0f, fmt_raw, bits, bit_rect.width*bpp, GEGL_ABYSS_CLAMP);
+  gegl_buffer_get(output,  &bit_rect, 1.0f, fmt_rgb_u8, bits_rgb, bit_rect.width*3, GEGL_ABYSS_CLAMP);
   gegl_buffer_get(input, &ref_rect, 1.0f, fmt_rgb_u8, ref, ref_rect.width*3, GEGL_ABYSS_CLAMP);
 
 
@@ -345,7 +342,7 @@ improve_rect (GeglBuffer          *input,
     for (int u = -1; u <= 2; u++)
     {
       uint8_t computed_rgb[4];
-      compute_rgb(fmt_raw, bits + bpp*(2+(bit_rect.width)*2), bit_rect.width, x+u, y+v, &computed_rgb[0]);
+      compute_rgb(fmt_raw, bits_rgb + 3*(2+(bit_rect.width)*2), bit_rect.width, x+u, y+v, &computed_rgb[0]);
       for (int c = 0; c<3; c++)
       {
         int val = ref[3*(ref_rect.width * ((y+v)+1) + (x + u) + 1)+c] - computed_rgb[c];
@@ -354,11 +351,16 @@ improve_rect (GeglBuffer          *input,
     }
 
 #define DO_HSWAP \
-    {char tmp[16]; memcpy(tmp, &bits[bpp*(bit_rect.width* (y+2) + x + 2+1)], bpp);\
-    memcpy(&bits[bpp*(bit_rect.width* (y+2) + x + 2+1)], \
-           &bits[bpp*(bit_rect.width* (y+2) + x + 2)], bpp);\
-    memcpy(&bits[bpp*(bit_rect.width* (y+2) + x + 2)], \
-           tmp, bpp);}
+    {char tmp[16];\
+     memcpy(tmp, &bits[bpp*(bit_rect.width* (y+2) + x + 2+1)], bpp);\
+     memcpy(&bits[bpp*(bit_rect.width* (y+2) + x + 2+1)], \
+            &bits[bpp*(bit_rect.width* (y+2) + x + 2)], bpp);\
+     memcpy(&bits[bpp*(bit_rect.width* (y+2) + x + 2)], tmp, bpp);\
+     memcpy(tmp, &bits_rgb[3*(bit_rect.width* (y+2) + x + 2+1)], 3);\
+     memcpy(&bits_rgb[3*(bit_rect.width* (y+2) + x + 2+1)], \
+            &bits_rgb[3*(bit_rect.width* (y+2) + x + 2)], 3);\
+     memcpy(&bits_rgb[3*(bit_rect.width* (y+2) + x + 2)], tmp, 3);\
+     }
     
 
 #define DO_VSWAP \
@@ -366,14 +368,23 @@ improve_rect (GeglBuffer          *input,
     memcpy(&bits[bpp*(bit_rect.width* (y+2) + x + 2+bit_rect.width)], \
            &bits[bpp*(bit_rect.width* (y+2) + x + 2)], bpp);\
     memcpy(&bits[bpp*(bit_rect.width* (y+2) + x + 2)], \
-           tmp, bpp);}
+           tmp, bpp);\
+    memcpy(tmp, &bits_rgb[3*(bit_rect.width* (y+2) + x + 2+bit_rect.width)], 3);\
+    memcpy(&bits_rgb[3*(bit_rect.width* (y+2) + x + 2+bit_rect.width)], \
+           &bits_rgb[3*(bit_rect.width* (y+2) + x + 2)], 3);\
+    memcpy(&bits_rgb[3*(bit_rect.width* (y+2) + x + 2)], tmp, 3);\
+ }
 
 #define DO_DSWAP \
     {char tmp[16]; memcpy(tmp, &bits[bpp*(bit_rect.width* (y+2) + x + 2+bit_rect.width+1)], bpp);\
     memcpy(&bits[bpp*(bit_rect.width* (y+2) + x + 2+bit_rect.width+1)], \
            &bits[bpp*(bit_rect.width* (y+2) + x + 2)], bpp);\
     memcpy(&bits[bpp*(bit_rect.width* (y+2) + x + 2)], \
-           tmp, bpp);}
+           tmp, bpp);\
+    memcpy(tmp, &bits_rgb[3*(bit_rect.width* (y+2) + x + 2+bit_rect.width+1)], 3);\
+    memcpy(&bits_rgb[3*(bit_rect.width* (y+2) + x + 2+bit_rect.width+1)], \
+           &bits_rgb[3*(bit_rect.width* (y+2) + x + 2)], 3);\
+    memcpy(&bits_rgb[3*(bit_rect.width* (y+2) + x + 2)],  tmp, 3);}
 
     DO_HSWAP;
     for (int v = -1; v <= 2; v++)
@@ -381,7 +392,7 @@ improve_rect (GeglBuffer          *input,
     {
       int sq_diff = 0;
       uint8_t computed_rgb[4];
-      compute_rgb(fmt_raw, bits + bpp*(2+(bit_rect.width)*2), bit_rect.width, x+u, y+v, &computed_rgb[0]);
+      compute_rgb(fmt_raw, bits_rgb + 3*(2+(bit_rect.width)*2), bit_rect.width, x+u, y+v, &computed_rgb[0]);
       for (int c = 0; c<3; c++)
       {
         int val = ref[3*(ref_rect.width * ((y+v)+1) + (x + u) + 1)+c] - computed_rgb[c];
@@ -397,7 +408,7 @@ improve_rect (GeglBuffer          *input,
     {
       int sq_diff = 0;
       uint8_t computed_rgb[4];
-      compute_rgb(fmt_raw, bits + bpp*(2+(bit_rect.width)*2), bit_rect.width, x+u, y+v, &computed_rgb[0]);
+      compute_rgb(fmt_raw, bits_rgb + 3*(2+(bit_rect.width)*2), bit_rect.width, x+u, y+v, &computed_rgb[0]);
       for (int c = 0; c<3; c++)
       {
         int val = ref[3*(ref_rect.width * ((y+v)+1) + (x + u) + 1)+c] - computed_rgb[c];
@@ -413,7 +424,7 @@ improve_rect (GeglBuffer          *input,
     {
       int sq_diff = 0;
       uint8_t computed_rgb[4];
-      compute_rgb(fmt_raw, bits + bpp*(2+(bit_rect.width)*2), bit_rect.width, x+u, y+v, &computed_rgb[0]);
+      compute_rgb(fmt_raw, bits_rgb + 3*(2+(bit_rect.width)*2), bit_rect.width, x+u, y+v, &computed_rgb[0]);
       for (int c = 0; c<3; c++)
       {
         int val = ref[3*(ref_rect.width * ((y+v)+1) + (x + u) + 1)+c] - computed_rgb[c];
@@ -452,6 +463,7 @@ improve_rect (GeglBuffer          *input,
 
   gegl_buffer_set(output, &bit_rect, 0, fmt_raw, bits, bit_rect.width*bpp);
   free (bits);
+  free (bits_rgb);
   free (ref);
 
 #undef DO_HSWAP
