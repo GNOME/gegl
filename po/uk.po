@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-02-01 07:37+0000\n"
-"PO-Revision-Date: 2024-02-01 09:53+0200\n"
+"POT-Creation-Date: 2024-02-01 13:36+0000\n"
+"PO-Revision-Date: 2024-02-01 18:58+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
 "Language: uk\n"
@@ -9830,7 +9830,6 @@ msgid "Only used if no aux image is provided"
 msgstr "Буде використано, лише якщо не надано допоміжного зображення"
 
 #: operations/workshop/shuffle-search.c:53
-#| msgid "Center X"
 msgid "center bias"
 msgstr "центральний ухил"
 
@@ -9839,13 +9838,17 @@ msgid "Optimize Dither"
 msgstr "Оптимізувати розмивання"
 
 #: operations/workshop/shuffle-search.c:661
+#| msgid ""
+#| "Shuffles pixels with neighbours to optimize dither, by shuffling "
+#| "neighboring pixels; if an image is provided as aux input, it is used as "
+#| "dithering starting point."
 msgid ""
-"Shuffles pixels with neighbours to optimize dither, by shuffling neighboring "
+"Shuffles pixels with neighbors to optimize dither, by shuffling neighboring "
 "pixels; if an image is provided as aux input, it is used as dithering "
 "starting point."
 msgstr ""
 "Перемішує пікселі із сусідніми для оптимізації розмивання шляхом "
-"перемішування сусідніх пікселів; якщок допоміжні вхідні дані надано "
+"перемішування сусідніх пікселів; якщо як допоміжні вхідні дані надано "
 "зображення, його буде використано як початкову точку розмивання."
 
 #: operations/workshop/chamfer.c:27
