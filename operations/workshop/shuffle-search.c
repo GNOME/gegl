@@ -29,6 +29,7 @@
 #else
 #define DEV_MODE 0
 #endif
+#define CENTER_BIAS  10
 
 #ifdef GEGL_PROPERTIES
 
@@ -39,7 +40,7 @@ property_int  (iterations, _("iterations"), 3)
                ui_meta("visible", "0")
 #endif
 
-property_int  (chance, _("chance"), 66)
+property_int  (chance, _("chance"), 50)
                description(_("Chance of doing optimization"))
                value_range (1, 100)
 #if DEV_MODE==0
@@ -49,7 +50,11 @@ property_int  (chance, _("chance"), 66)
 property_int  (levels, _("levels"), 3)
                description(_("Only used if no aux image is provided"))
                value_range (2, 255)
-
+property_int  (center_bias, _("center bias"), 2)
+               value_range (0, 16)
+#if DEV_MODE==0
+               ui_meta("visible", "0")
+#endif
 
 #else
 
@@ -83,34 +88,24 @@ prepare (GeglOperation *operation)
 }
 
 
-static uint8_t compute_val(const uint8_t *bits, int stride, int x, int y)
+static uint8_t compute_val(int center_bias, const uint8_t *bits, int stride, int x, int y)
 {
   int count = 0;
   int sum = 0;
   for (int v = y-1; v <= y+1; v++)
   for (int u = x-1; u <= x+1; u++)
   {
-    {
-      int val = bits[v*stride+u];
-      if (u == 0 && v == 0)
-      {
-#define CENTER_BIAS  8
-        count += CENTER_BIAS;
-        sum   += val * CENTER_BIAS;
-      }
-      else
-      {
-        count++;
-        sum   += val;
-      }
-    }
+    int val = bits[v*stride+u];
+    int contrib = 1 + (u == x && v == y) * center_bias;
+    count += contrib;
+    sum += val * contrib;
   }
   if (count)
   return (sum)/count;
   return 0;
 }
 
-static void compute_rgb(const Babl*fmt, const uint8_t *rgb, int stride, int x, int y, uint8_t *rgb_out)
+static void compute_rgb(int center_bias, const uint8_t *rgb, int stride, int x, int y, uint8_t *rgb_out)
 {
   int count = 0;
   int red_sum = 0;
@@ -120,24 +115,12 @@ static void compute_rgb(const Babl*fmt, const uint8_t *rgb, int stride, int x, i
   for (int v = y-1; v <= y+1; v++)
   for (int u = x-1; u <= x+1; u++)
   {
-    {
       int o = 3*(v*stride+u);
-      if (u == 0 && v == 0)
-      {
-#define CENTER_BIAS  8
-        count += CENTER_BIAS;
-        red_sum += rgb[o+0] * CENTER_BIAS;
-        green_sum += rgb[o+1] * CENTER_BIAS;
-        blue_sum += rgb[o+2] * CENTER_BIAS;
-      }
-      else
-      {
-        count++;
-        red_sum += rgb[o+0];
-        green_sum += rgb[o+1];
-        blue_sum += rgb[o+2];
-      }
-    }
+      int contrib = 1 + (u == x && v == y) * center_bias;
+      count += contrib;
+      red_sum += rgb[o+0] * contrib;
+      green_sum += rgb[o+1] * contrib;
+      blue_sum += rgb[o+2] * contrib;
   }
 
   if (count)
@@ -166,12 +149,13 @@ static int rgb_diff(const uint8_t *a, const uint8_t* b)
 
 
 static void
-improve_rect_1bpp (GeglBuffer          *input,
+improve_rect_1bpp (GeglOperation *operation, GeglBuffer          *input,
               GeglBuffer          *output,
               const GeglRectangle *roi,
               int                  iterations,
               int                  chance)
 {
+  GeglProperties *o = GEGL_PROPERTIES (operation);
   const Babl *fmt_y_u8 = babl_format("Y' u8");
   GeglRectangle ref_rect  = {roi->x-1, roi->y-1, roi->width+3, roi->height+3};
   GeglRectangle bit_rect = {roi->x-2, roi->y-2, roi->width+5, roi->height+5};
@@ -202,32 +186,26 @@ improve_rect_1bpp (GeglBuffer          *input,
     for (int u = -1; u <= 2; u++)
     {
       int ref_val = ref[ref_rect.width * ((y+v)+1) + (x + u) + 1];
-      int val = compute_val(bits+2+(bit_rect.width*2), bit_rect.width, x+u, y+v);
+      int val = compute_val(o->center_bias, bits+2+(bit_rect.width*2), bit_rect.width, x+u, y+v);
 
       sq_diff += (val-ref_val)*(val-ref_val);
     }
 
-#define DO_HSWAP \
-    {int tmp = bits[bit_rect.width* (y+2) + x + 2+1];\
-    bits[bit_rect.width* (y+2) + x + 2+1] = bits[bit_rect.width* (y+2) + x + 2];\
+#define DO_SWAP(rx,ry)\
+    {int tmp = bits[bit_rect.width* (y+2) + x + 2+ bit_rect.width * ry+ rx];\
+    bits[bit_rect.width* (y+2) + x + 2+bit_rect.width * ry + rx] = bits[bit_rect.width* (y+2) + x + 2];\
     bits[bit_rect.width* (y+2) + x + 2] = tmp;}
 
-#define DO_VSWAP \
-    {int tmp = bits[bit_rect.width* (y+2) + x + 2+ bit_rect.width];\
-    bits[bit_rect.width* (y+2) + x + 2+bit_rect.width] = bits[bit_rect.width* (y+2) + x + 2];\
-    bits[bit_rect.width* (y+2) + x + 2] = tmp;}
-
-#define DO_DSWAP \
-    {int tmp = bits[bit_rect.width* (y+2) + x + 2+ bit_rect.width + 1];\
-    bits[bit_rect.width* (y+2) + x + 2+bit_rect.width + 1] = bits[bit_rect.width* (y+2) + x + 2];\
-    bits[bit_rect.width* (y+2) + x + 2] = tmp;}
+#define DO_HSWAP DO_SWAP(1,0)
+#define DO_VSWAP DO_SWAP(0,1)
+#define DO_DSWAP DO_SWAP(1,1)
 
     DO_HSWAP;
     for (int v = -1; v <= 2; v++)
     for (int u = -1; u <= 2; u++)
     {
       int ref_val = ref[ref_rect.width * ((y+v)+1) + (x + u) + 1];
-      int val = compute_val(bits+2+(bit_rect.width*2), bit_rect.width, x+u, y+v);
+      int val = compute_val(o->center_bias, bits+2+(bit_rect.width*2), bit_rect.width, x+u, y+v);
 
       sq_diff_hswap += (val-ref_val)*(val-ref_val);
     }
@@ -238,7 +216,7 @@ improve_rect_1bpp (GeglBuffer          *input,
     for (int u = -1; u <= 2; u++)
     {
       int ref_val = ref[ref_rect.width * ((y+v)+1) + (x + u) + 1];
-      int val = compute_val(bits+2+(bit_rect.width*2), bit_rect.width, x+u, y+v);
+      int val = compute_val(o->center_bias, bits+2+(bit_rect.width*2), bit_rect.width, x+u, y+v);
 
       sq_diff_vswap += (val-ref_val)*(val-ref_val);
     }
@@ -249,7 +227,7 @@ improve_rect_1bpp (GeglBuffer          *input,
     for (int u = -1; u <= 2; u++)
     {
       int ref_val = ref[ref_rect.width * ((y+v)+1) + (x + u) + 1];
-      int val = compute_val(bits+2+(bit_rect.width*2), bit_rect.width, x+u, y+v);
+      int val = compute_val(o->center_bias, bits+2+(bit_rect.width*2), bit_rect.width, x+u, y+v);
 
       sq_diff_dswap += (val-ref_val)*(val-ref_val);
     }
@@ -289,21 +267,23 @@ improve_rect_1bpp (GeglBuffer          *input,
 #undef DO_HSWAP
 #undef DO_VSWAP
 #undef DO_DSWAP
+#undef DO_SWAP
 }
 
 static void
-improve_rect (GeglBuffer          *input,
+improve_rect (GeglOperation *operation, GeglBuffer          *input,
               GeglBuffer          *output,
               const GeglRectangle *roi,
               int                  iterations,
               int                  chance)
 {
+  GeglProperties *o = GEGL_PROPERTIES (operation);
   int bpp = babl_format_get_bytes_per_pixel (gegl_buffer_get_format(output));
   const Babl *fmt_raw = gegl_buffer_get_format(output);
 
   if (bpp == 1 && babl_get_name(fmt_raw)[0]=='Y')
   {
-    improve_rect_1bpp (input, output, roi, iterations, chance);
+    improve_rect_1bpp (operation, input, output, roi, iterations, chance);
     return;
   }
 
@@ -342,7 +322,7 @@ improve_rect (GeglBuffer          *input,
     for (int u = -1; u <= 2; u++)
     {
       uint8_t computed_rgb[4];
-      compute_rgb(fmt_raw, bits_rgb + 3*(2+(bit_rect.width)*2), bit_rect.width, x+u, y+v, &computed_rgb[0]);
+      compute_rgb(o->center_bias, bits_rgb + 3*(2+(bit_rect.width)*2), bit_rect.width, x+u, y+v, &computed_rgb[0]);
       for (int c = 0; c<3; c++)
       {
         int val = ref[3*(ref_rect.width * ((y+v)+1) + (x + u) + 1)+c] - computed_rgb[c];
@@ -350,41 +330,20 @@ improve_rect (GeglBuffer          *input,
       }
     }
 
-#define DO_HSWAP \
-    {char tmp[16];\
-     memcpy(tmp, &bits[bpp*(bit_rect.width* (y+2) + x + 2+1)], bpp);\
-     memcpy(&bits[bpp*(bit_rect.width* (y+2) + x + 2+1)], \
-            &bits[bpp*(bit_rect.width* (y+2) + x + 2)], bpp);\
-     memcpy(&bits[bpp*(bit_rect.width* (y+2) + x + 2)], tmp, bpp);\
-     memcpy(tmp, &bits_rgb[3*(bit_rect.width* (y+2) + x + 2+1)], 3);\
-     memcpy(&bits_rgb[3*(bit_rect.width* (y+2) + x + 2+1)], \
-            &bits_rgb[3*(bit_rect.width* (y+2) + x + 2)], 3);\
-     memcpy(&bits_rgb[3*(bit_rect.width* (y+2) + x + 2)], tmp, 3);\
-     }
-    
-
-#define DO_VSWAP \
-    {char tmp[16]; memcpy(tmp, &bits[bpp*(bit_rect.width* (y+2) + x + 2+bit_rect.width)], bpp);\
-    memcpy(&bits[bpp*(bit_rect.width* (y+2) + x + 2+bit_rect.width)], \
+#define DO_SWAP(rx,ry) \
+    {char tmp[16]; memcpy(tmp, &bits[bpp*(bit_rect.width* (y+2) + x + 2+bit_rect.width*ry+1*rx)], bpp);\
+    memcpy(&bits[bpp*(bit_rect.width* (y+2) + x + 2+bit_rect.width*ry+rx)], \
            &bits[bpp*(bit_rect.width* (y+2) + x + 2)], bpp);\
     memcpy(&bits[bpp*(bit_rect.width* (y+2) + x + 2)], \
            tmp, bpp);\
-    memcpy(tmp, &bits_rgb[3*(bit_rect.width* (y+2) + x + 2+bit_rect.width)], 3);\
-    memcpy(&bits_rgb[3*(bit_rect.width* (y+2) + x + 2+bit_rect.width)], \
-           &bits_rgb[3*(bit_rect.width* (y+2) + x + 2)], 3);\
-    memcpy(&bits_rgb[3*(bit_rect.width* (y+2) + x + 2)], tmp, 3);\
- }
-
-#define DO_DSWAP \
-    {char tmp[16]; memcpy(tmp, &bits[bpp*(bit_rect.width* (y+2) + x + 2+bit_rect.width+1)], bpp);\
-    memcpy(&bits[bpp*(bit_rect.width* (y+2) + x + 2+bit_rect.width+1)], \
-           &bits[bpp*(bit_rect.width* (y+2) + x + 2)], bpp);\
-    memcpy(&bits[bpp*(bit_rect.width* (y+2) + x + 2)], \
-           tmp, bpp);\
-    memcpy(tmp, &bits_rgb[3*(bit_rect.width* (y+2) + x + 2+bit_rect.width+1)], 3);\
-    memcpy(&bits_rgb[3*(bit_rect.width* (y+2) + x + 2+bit_rect.width+1)], \
+    memcpy(tmp, &bits_rgb[3*(bit_rect.width* (y+2) + x + 2+bit_rect.width*ry+rx)], 3);\
+    memcpy(&bits_rgb[3*(bit_rect.width* (y+2) + x + 2+bit_rect.width*ry+rx)], \
            &bits_rgb[3*(bit_rect.width* (y+2) + x + 2)], 3);\
     memcpy(&bits_rgb[3*(bit_rect.width* (y+2) + x + 2)],  tmp, 3);}
+
+#define DO_HSWAP DO_SWAP(1,0)
+#define DO_VSWAP DO_SWAP(0,1)
+#define DO_DSWAP DO_SWAP(1,1)
 
     DO_HSWAP;
     for (int v = -1; v <= 2; v++)
@@ -392,7 +351,7 @@ improve_rect (GeglBuffer          *input,
     {
       int sq_diff = 0;
       uint8_t computed_rgb[4];
-      compute_rgb(fmt_raw, bits_rgb + 3*(2+(bit_rect.width)*2), bit_rect.width, x+u, y+v, &computed_rgb[0]);
+      compute_rgb(o->center_bias, bits_rgb + 3*(2+(bit_rect.width)*2), bit_rect.width, x+u, y+v, &computed_rgb[0]);
       for (int c = 0; c<3; c++)
       {
         int val = ref[3*(ref_rect.width * ((y+v)+1) + (x + u) + 1)+c] - computed_rgb[c];
@@ -408,7 +367,7 @@ improve_rect (GeglBuffer          *input,
     {
       int sq_diff = 0;
       uint8_t computed_rgb[4];
-      compute_rgb(fmt_raw, bits_rgb + 3*(2+(bit_rect.width)*2), bit_rect.width, x+u, y+v, &computed_rgb[0]);
+      compute_rgb(o->center_bias, bits_rgb + 3*(2+(bit_rect.width)*2), bit_rect.width, x+u, y+v, &computed_rgb[0]);
       for (int c = 0; c<3; c++)
       {
         int val = ref[3*(ref_rect.width * ((y+v)+1) + (x + u) + 1)+c] - computed_rgb[c];
@@ -424,7 +383,7 @@ improve_rect (GeglBuffer          *input,
     {
       int sq_diff = 0;
       uint8_t computed_rgb[4];
-      compute_rgb(fmt_raw, bits_rgb + 3*(2+(bit_rect.width)*2), bit_rect.width, x+u, y+v, &computed_rgb[0]);
+      compute_rgb(o->center_bias, bits_rgb + 3*(2+(bit_rect.width)*2), bit_rect.width, x+u, y+v, &computed_rgb[0]);
       for (int c = 0; c<3; c++)
       {
         int val = ref[3*(ref_rect.width * ((y+v)+1) + (x + u) + 1)+c] - computed_rgb[c];
@@ -469,6 +428,7 @@ improve_rect (GeglBuffer          *input,
 #undef DO_HSWAP
 #undef DO_VSWAP
 #undef DO_DSWAP
+#undef DO_SWAP
 }
 
 
@@ -545,7 +505,7 @@ process (GeglOperation       *operation,
 
       if (result->y + result->height - y < chunk_height)
         rect.height = result->y + result->height - y;
-      improve_rect(input, output, &rect, o->iterations, o->chance);
+      improve_rect(operation, input, output, &rect, o->iterations, o->chance);
       y+= chunk_height - 4;
     }
   }
@@ -664,7 +624,9 @@ get_cached_region (GeglOperation       *self,
           gegl_operation_source_get_bounding_box (self, "input");
 
   if (in_rect && ! gegl_rectangle_is_infinite_plane (in_rect))
+  {
       return *in_rect;
+  }
   return *roi;
 }
 
