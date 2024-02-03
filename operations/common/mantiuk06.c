@@ -48,7 +48,8 @@ property_double (detail, _("Detail"), 1.0)
 #include <stdio.h>
 #include <stdlib.h>
 
-#ifdef HAVE_OPENMP
+/* Using OMP with clang causes crashes */
+#if defined(HAVE_OPENMP) && ! defined(__clang__)
 #define _OMP(x) _Pragma(#x)
 #else
 #define _OMP(x) /* OMP disabled: "#x" */
