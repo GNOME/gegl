@@ -9,9 +9,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2024-01-26 18:49+0000\n"
-"PO-Revision-Date: 2024-01-26 21:15+0100\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
+"POT-Creation-Date: 2024-02-01 13:36+0000\n"
+"PO-Revision-Date: 2024-02-05 13:30+0100\n"
 "Last-Translator: Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -9720,6 +9720,48 @@ msgstr "Selektiv nyans-mättnad"
 msgid "Selective adjust Hue, Saturation and Lightness"
 msgstr "Justera selektivt nyans, mättnad och ljushet"
 
+#: operations/workshop/shuffle-search.c:36
+msgid "iterations"
+msgstr "iterationer"
+
+#: operations/workshop/shuffle-search.c:37
+msgid "How many times to run optimization"
+msgstr "Hur många gånger optimering ska köras"
+
+#: operations/workshop/shuffle-search.c:43
+msgid "chance"
+msgstr "sannolikhet"
+
+#: operations/workshop/shuffle-search.c:44
+msgid "Chance of doing optimization"
+msgstr "Sannolikhet att göra optimering"
+
+#: operations/workshop/shuffle-search.c:50
+msgid "levels"
+msgstr "nivåer"
+
+#: operations/workshop/shuffle-search.c:51
+msgid "Only used if no aux image is provided"
+msgstr "Används endast om ingen tillsatsbild tillhandahålls"
+
+#: operations/workshop/shuffle-search.c:53
+msgid "center bias"
+msgstr "centrumbias"
+
+#: operations/workshop/shuffle-search.c:658
+msgid "Optimize Dither"
+msgstr "Optimera färgutjämning"
+
+#: operations/workshop/shuffle-search.c:661
+msgid ""
+"Shuffles pixels with neighbors to optimize dither, by shuffling neighboring "
+"pixels; if an image is provided as aux input, it is used as dithering "
+"starting point."
+msgstr ""
+"Växlar bildpunkter med grannar för att optimera färgutjämning, genom att "
+"växla intilliggande bildpunkter. Om en bild tillhandahålls som "
+"tillsatsindata används den som startpunkt för färgutjämning."
+
 #: operations/workshop/chamfer.c:27
 msgid "HardLight"
 msgstr "Hårt ljus"
@@ -9805,7 +9847,7 @@ msgstr "Simulera ljus för fasade 3D-kanter för en alfadefinierad form."
 #~ "provided.)."
 #~ msgstr ""
 #~ "Skalär tröskelnivå (åsidosätts om en tillsatsindatabuffert "
-#~ "tillhandahålls.)."
+#~ "tillhandahålls)."
 
 #~ msgid "Filter cyan"
 #~ msgstr "Cyanfilter"
@@ -9904,13 +9946,6 @@ msgstr "Simulera ljus för fasade 3D-kanter för en alfadefinierad form."
 #~ "Optional parameter to override the automatic selection of blur filter"
 #~ msgstr ""
 #~ "Valfri parameter för att åsidosätta det automatiska valet av oskärpefilter"
-
-#~ msgid ""
-#~ "Each result pixel is the average of the neighbouring pixels weighted by a "
-#~ "normal distribution with specified standard deviation."
-#~ msgstr ""
-#~ "Varje resultatbildpunkt är medelvärdet av omgivande bildpunkter viktade "
-#~ "efter en normalfördelning med angiven standardavvikelse."
 
 #~ msgid "Converts the input image to sepia"
 #~ msgstr "Konverterar indatabilden till sepia"
@@ -10041,9 +10076,6 @@ msgstr "Simulera ljus för fasade 3D-kanter för en alfadefinierad form."
 #~ msgstr ""
 #~ "Simulator för spektralbläck och färg, avsedd för korrekturgranskning/"
 #~ "simulering av fysisk färgblandning och färginteraktioner."
-
-#~ msgid "Dithering strategy"
-#~ msgstr "Dithering-strategi"
 
 #~ msgid "Colors"
 #~ msgstr "Färger"
