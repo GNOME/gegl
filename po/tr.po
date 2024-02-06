@@ -10,9 +10,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2023-07-05 11:20+0000\n"
-"PO-Revision-Date: 2023-08-26 14:41+0300\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
+"POT-Creation-Date: 2024-02-01 13:36+0000\n"
+"PO-Revision-Date: 2024-02-06 01:12+0300\n"
 "Last-Translator: Sabri Ünal <libreajans@gmail.com>\n"
 "Language-Team: Türkçe <gnome-turk@gnome.org>\n"
 "Language: tr\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 3.2.2\n"
+"X-Generator: Poedit 3.4.2\n"
 "X-POOTLE-MTIME: 1437504675.000000\n"
 
 #: bin/gegl.c:179
@@ -687,10 +687,8 @@ msgid "Clip Alpha"
 msgstr "Renkten Alfaya"
 
 #: operations/common/alpha-clip.c:199
-#, fuzzy
-#| msgid "Keep RGB pixels values inside a specific range"
 msgid "Keep alpha values inside a specific range"
-msgstr "RGB piksel değerlerini belirli bir erimde tut"
+msgstr "Alfa değerlerini belirli bir erimde tut"
 
 #: operations/common/bilateral-filter.c:26
 #: operations/common/domain-transform.c:29 operations/common/dropshadow.c:46
@@ -735,7 +733,7 @@ msgstr ""
 "özgün merkez piksel ile olan renk farkına göre de ağırlıklandırılır. "
 
 #: operations/common/bloom.c:26 operations/common/threshold.c:25
-#: operations/common/threshold.c:163 operations/common/unsharp-mask.c:37
+#: operations/common/threshold.c:164 operations/common/unsharp-mask.c:37
 #: operations/common-gpl3+/red-eye-removal.c:31
 #: operations/common-gpl3+/wind.c:60 operations/external/matting-levin.c:33
 msgid "Threshold"
@@ -2211,7 +2209,6 @@ msgid "GeglBuffer file writer."
 msgstr "GeglBuffer dosya yazıcısı."
 
 #: operations/common/gegl.c:68
-#, fuzzy
 msgid "pipeline"
 msgstr "komut zinciri"
 
@@ -2723,7 +2720,7 @@ msgstr "Düşük"
 #: operations/common/local-threshold.c:38
 msgid ""
 "Thresholding level, 0.5 towards 0 to minimize shadows and towards 1.0 to "
-"minimze highlights."
+"minimize highlights."
 msgstr ""
 
 #: operations/common/local-threshold.c:43
@@ -2738,11 +2735,11 @@ msgstr "Yüksek"
 msgid "Maximum values to include, above this gets set to 0."
 msgstr ""
 
-#: operations/common/local-threshold.c:175
+#: operations/common/local-threshold.c:179
 msgid "Local Threshold"
 msgstr "Yerel Eşik"
 
-#: operations/common/local-threshold.c:177
+#: operations/common/local-threshold.c:181
 msgid "Applies a threshold using the local neighborhood."
 msgstr ""
 
@@ -3614,7 +3611,6 @@ msgid "Fill each cell with a random color"
 msgstr "Her hücreyi rastgele bir renk ile doldur"
 
 #: operations/common/noise-cell.c:56 operations/common/noise-simplex.c:40
-#, fuzzy
 msgid "The random seed for the noise function"
 msgstr "Gürültü işlevi için rastgele parçacık"
 
@@ -4248,7 +4244,6 @@ msgid "Size of a region side"
 msgstr "Bölge tarafı boyutu"
 
 #: operations/common/slic.c:33
-#, fuzzy
 msgid "Compactness"
 msgstr "Yoğunluk"
 
@@ -4274,16 +4269,10 @@ msgid "Number of pairs; higher number preserves more acute features"
 msgstr "Çiftlerin sayısı; daha büyük numara daha ilerlemiş özellikleri korur"
 
 #: operations/common/snn-mean.c:383
-#, fuzzy
-#| msgid "Symmetric Nearest Neighbour"
 msgid "Symmetric Nearest Neighbor"
 msgstr "Simetrik En Yakın Komşu"
 
 #: operations/common/snn-mean.c:387
-#, fuzzy
-#| msgid ""
-#| "Noise reducing edge preserving blur filter based on Symmetric Nearest "
-#| "Neighbours"
 msgid ""
 "Noise reducing edge preserving blur filter based on Symmetric Nearest "
 "Neighbors"
@@ -4476,13 +4465,13 @@ msgid "Lowest value to be included."
 msgstr "Eklenebilecek en düşük değer."
 
 #: operations/common/threshold.c:33
-msgid "highest value to be include as white."
+msgid "Highest value to be include as white."
 msgstr "Beyaz olarak eklenebilecek en yüksek değer."
 
-#: operations/common/threshold.c:168
+#: operations/common/threshold.c:169
 msgid ""
-"Thresholds the image to white/black based on either the global value set in "
-"the value property, or per pixel from the aux input."
+"Thresholds the image to white/black based on either the global values set in "
+"the value (low) and high properties, or per pixel from the aux input."
 msgstr ""
 
 #: operations/common/tile.c:24
@@ -4656,7 +4645,6 @@ msgid "Waterpixels"
 msgstr "Su Pikselleri"
 
 #: operations/common/waterpixels.c:545
-#, fuzzy
 msgid "Superpixels based on the watershed transformation"
 msgstr "Watershed dönüşümü temelli süperpikseller"
 
@@ -5955,7 +5943,6 @@ msgid "JX"
 msgstr "JX"
 
 #: operations/common-gpl3+/fractal-trace.c:51
-#, fuzzy
 msgid "Julia seed X value, position"
 msgstr "Julia parçacık X değeri, konum"
 
@@ -5964,7 +5951,6 @@ msgid "JY"
 msgstr "JY"
 
 #: operations/common-gpl3+/fractal-trace.c:56
-#, fuzzy
 msgid "Julia seed Y value, position"
 msgstr "Julia parçacık Y değeri, konum"
 
@@ -8292,12 +8278,12 @@ msgstr "Gerçeklenen görüntü için genişlik"
 msgid "Height for rendered image"
 msgstr "Gerçeklenen görüntü için yükseklik"
 
-#: operations/external/svg-load.c:293
+#: operations/external/svg-load.c:308
 msgid "SVG File Loader"
 msgstr "SVG Dosya Yükleyici"
 
 #. not hidden because it has extra API
-#: operations/external/svg-load.c:295
+#: operations/external/svg-load.c:310
 msgid "Load an SVG file using librsvg"
 msgstr "SVG dosyasını librsvg kullanarak yükle"
 
@@ -9691,6 +9677,55 @@ msgstr "Seçilebilir Renk Tonu Doygunluğu"
 #: operations/workshop/selective-hue-saturation.c:173
 msgid "Selective adjust Hue, Saturation and Lightness"
 msgstr "Seçilebilir ayarlanabilir renk tonu, doygunluk ve aydınlık"
+
+#: operations/workshop/shuffle-search.c:36
+#, fuzzy
+#| msgid "Iterations"
+msgid "iterations"
+msgstr "Yinelemeler"
+
+#: operations/workshop/shuffle-search.c:37
+msgid "How many times to run optimization"
+msgstr ""
+
+#: operations/workshop/shuffle-search.c:43
+#, fuzzy
+#| msgid "Balance"
+msgid "chance"
+msgstr "Denge"
+
+#: operations/workshop/shuffle-search.c:44
+msgid "Chance of doing optimization"
+msgstr ""
+
+#: operations/workshop/shuffle-search.c:50
+#, fuzzy
+#| msgid "Levels"
+msgid "levels"
+msgstr "Düzeyler"
+
+#: operations/workshop/shuffle-search.c:51
+msgid "Only used if no aux image is provided"
+msgstr ""
+
+#: operations/workshop/shuffle-search.c:53
+#, fuzzy
+#| msgid "Center X"
+msgid "center bias"
+msgstr "X Merkezi"
+
+#: operations/workshop/shuffle-search.c:658
+#, fuzzy
+#| msgid "Optimize"
+msgid "Optimize Dither"
+msgstr "Eniyile"
+
+#: operations/workshop/shuffle-search.c:661
+msgid ""
+"Shuffles pixels with neighbors to optimize dither, by shuffling neighboring "
+"pixels; if an image is provided as aux input, it is used as dithering "
+"starting point."
+msgstr ""
 
 #: operations/workshop/chamfer.c:27
 msgid "HardLight"
