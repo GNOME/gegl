@@ -4,13 +4,13 @@
 #
 # Softcatala <gimp a llistes.softcatala.org>, 2000-2013.
 # Albert F. <lakonfrariadelavila@gmail.com>, 2012, 2014.
-# Jordi Mas i Hernàndez <jmas@softcatala.org>, 2015-2023
+# Jordi Mas i Hernàndez <jmas@softcatala.org>, 2015-2024
 msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2023-07-05 11:20+0000\n"
-"PO-Revision-Date: 2022-11-20 19:34+0000\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
+"POT-Creation-Date: 2024-02-09 16:03+0000\n"
+"PO-Revision-Date: 2024-02-09 19:34+0000\n"
 "Last-Translator: Jordi Mas i Hernàndez <jmas@softcatala.org>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "Language: ca\n"
@@ -681,7 +681,7 @@ msgstr ""
 "centre."
 
 #: operations/common/bloom.c:26 operations/common/threshold.c:25
-#: operations/common/threshold.c:163 operations/common/unsharp-mask.c:37
+#: operations/common/threshold.c:164 operations/common/unsharp-mask.c:37
 #: operations/common-gpl3+/red-eye-removal.c:31
 #: operations/common-gpl3+/wind.c:60 operations/external/matting-levin.c:33
 msgid "Threshold"
@@ -1761,6 +1761,7 @@ msgstr "L'estratègia de disseminat que s'utilitzarà"
 #: operations/common-gpl3+/sinus.c:49 operations/common-gpl3+/supernova.c:63
 #: operations/common-gpl3+/tile-paper.c:81 operations/common-gpl3+/wind.c:68
 #: operations/workshop/segment-kmeans.c:37
+#: operations/workshop/shuffle-search.c:66
 msgid "Random seed"
 msgstr "Llavor aleatòria"
 
@@ -2687,8 +2688,8 @@ msgid ""
 "Rough target of levels of accuracy for antialiasing, 1 to disable "
 "antialiasing."
 msgstr ""
-"Valors de destí aproximats dels nivells de precisió per a l'antialiàsing, 1 per a desactivar"
-" l'antialiàsing."
+"Valors de destí aproximats dels nivells de precisió per a l'antialiàsing, 1 "
+"per a desactivar l'antialiàsing."
 
 #: operations/common/local-threshold.c:37
 msgid "Low"
@@ -2697,7 +2698,7 @@ msgstr "Baix"
 #: operations/common/local-threshold.c:38
 msgid ""
 "Thresholding level, 0.5 towards 0 to minimize shadows and towards 1.0 to "
-"minimze highlights."
+"minimize highlights."
 msgstr ""
 "Nivell de llindar, 0.5 cap a 0 per a minimitzar les ombres i 1.0 per a "
 "minimitzar els ressaltats."
@@ -2714,11 +2715,11 @@ msgstr "Alt"
 msgid "Maximum values to include, above this gets set to 0."
 msgstr "Valors màxims a incloure, per sobre d'això s'estableix a 0."
 
-#: operations/common/local-threshold.c:175
+#: operations/common/local-threshold.c:179
 msgid "Local Threshold"
 msgstr "Llindar local"
 
-#: operations/common/local-threshold.c:177
+#: operations/common/local-threshold.c:181
 msgid "Applies a threshold using the local neighborhood."
 msgstr "Aplica un llindar utilitzant el veïnatge local."
 
@@ -2984,7 +2985,8 @@ msgstr "Mitjana de difuminat"
 msgid ""
 "Blur resulting from computing the median color in the neighborhood of each "
 "pixel."
-msgstr "Difuminat generat amb la mitjana dels colors propers al veïnatge píxel."
+msgstr ""
+"Difuminat generat amb la mitjana dels colors propers al veïnatge píxel."
 
 #: operations/common/mirrors.c:30
 msgid "Mirror rotation"
@@ -4472,17 +4474,17 @@ msgid "Lowest value to be included."
 msgstr "Valor més baix a incloure."
 
 #: operations/common/threshold.c:33
-msgid "highest value to be include as white."
-msgstr "el valor més alt a incloure com a blanc."
+msgid "Highest value to be include as white."
+msgstr "El valor més alt a incloure com a blanc."
 
-#: operations/common/threshold.c:168
+#: operations/common/threshold.c:169
 msgid ""
-"Thresholds the image to white/black based on either the global value set in "
-"the value property, or per pixel from the aux input."
+"Thresholds the image to white/black based on either the global values set in"
+" the value (low) and high properties, or per pixel from the aux input."
 msgstr ""
-"Genera una imatge en blanc/negre que es basa en el valor global establert en"
-" el valor de la propietat, o bé a partir de l'entrada auxiliar per a cada "
-"píxel."
+"Llinda la imatge a blanc/negre basant-se en els valors globals establerts "
+"en el valor (baix) i les propietats altes, o per píxel des de l'entrada "
+"auxiliar."
 
 #: operations/common/tile.c:24
 msgid "Horizontal offset"
@@ -8356,12 +8358,12 @@ msgstr "Amplada per la imatge renderitzada"
 msgid "Height for rendered image"
 msgstr "Alçada per la imatge renderitzada"
 
-#: operations/external/svg-load.c:293
+#: operations/external/svg-load.c:308
 msgid "SVG File Loader"
 msgstr "Carregador d'imatges SVG"
 
 #. not hidden because it has extra API
-#: operations/external/svg-load.c:295
+#: operations/external/svg-load.c:310
 msgid "Load an SVG file using librsvg"
 msgstr "Carrega un fitxer SVG amb la librsvg"
 
@@ -9824,6 +9826,44 @@ msgstr "Saturació-to selectiva"
 msgid "Selective adjust Hue, Saturation and Lightness"
 msgstr "Ajust selectiu del to, saturació i lluminositat"
 
+#: operations/workshop/shuffle-search.c:32
+msgid "iterations"
+msgstr "iteracions"
+
+#: operations/workshop/shuffle-search.c:39
+msgid "chance"
+msgstr "oportunitat"
+
+#: operations/workshop/shuffle-search.c:46
+msgid "phase"
+msgstr "fase"
+
+#: operations/workshop/shuffle-search.c:56
+msgid "levels"
+msgstr "nivells"
+
+#: operations/workshop/shuffle-search.c:57
+msgid "Only used if no aux image is provided"
+msgstr "Només s'utilitza si no es proporciona cap imatge auxiliar"
+
+#: operations/workshop/shuffle-search.c:60
+msgid "center bias"
+msgstr "biaix central"
+
+#: operations/workshop/shuffle-search.c:823
+msgid "Optimize Dither"
+msgstr "Optimitza el tramat"
+
+#: operations/workshop/shuffle-search.c:826
+msgid ""
+"Shuffles pixels with neighbors to optimize dither, by shuffling neighboring "
+"pixels; if an image is provided as aux input, it is used as dithering "
+"starting point."
+msgstr ""
+"Barreja els píxels amb els veïns per a optimitzar el tramat, barrejant els "
+"píxels veïns; si es proporciona una imatge com a entrada auxiliar, "
+"s'utilitza com a punt de partida del tramat."
+
 #: operations/workshop/chamfer.c:27
 msgid "HardLight"
 msgstr "Llum forta"
@@ -9861,8 +9901,8 @@ msgid ""
 "Light angle (degrees). For most blend modes this rotates lighting of the "
 "bevel."
 msgstr ""
-"Angle de la llum (graus). Per a la majoria dels modes de degradat, això gira "
-"la il·luminació del bisell."
+"Angle de la llum (graus). Per a la majoria dels modes de degradat, això gira"
+" la il·luminació del bisell."
 
 #: operations/workshop/chamfer.c:76
 msgid "Detailed options"
@@ -9903,4 +9943,3 @@ msgstr "Xamfrà"
 msgid "Simulate lighting of a chamfered 3D-edges for an alpha-defined shape."
 msgstr ""
 "Simula la il·luminació d'una vora 3D xamfrada per a una forma definida alfa."
-
