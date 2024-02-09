@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-02-01 13:36+0000\n"
-"PO-Revision-Date: 2024-02-01 18:58+0200\n"
+"POT-Creation-Date: 2024-02-09 16:03+0000\n"
+"PO-Revision-Date: 2024-02-09 22:40+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
 "Language: uk\n"
@@ -1748,6 +1748,7 @@ msgstr "Метод розмиття, яким слід скористатися"
 #: operations/common-gpl3+/supernova.c:63
 #: operations/common-gpl3+/tile-paper.c:81 operations/common-gpl3+/wind.c:68
 #: operations/workshop/segment-kmeans.c:37
+#: operations/workshop/shuffle-search.c:66
 msgid "Random seed"
 msgstr "База випадковості"
 
@@ -9805,43 +9806,36 @@ msgstr "Вибірковий відтінок-насиченість"
 msgid "Selective adjust Hue, Saturation and Lightness"
 msgstr "Вибіркове коригування відтінку, освітленості та насиченості"
 
-#: operations/workshop/shuffle-search.c:36
+#: operations/workshop/shuffle-search.c:32
 msgid "iterations"
 msgstr "ітерацій"
 
-#: operations/workshop/shuffle-search.c:37
-msgid "How many times to run optimization"
-msgstr "Кількість проходів оптимізації"
-
-#: operations/workshop/shuffle-search.c:43
+#: operations/workshop/shuffle-search.c:39
 msgid "chance"
 msgstr "можливість"
 
-#: operations/workshop/shuffle-search.c:44
-msgid "Chance of doing optimization"
-msgstr "Можливість виконання оптимізації"
+#: operations/workshop/shuffle-search.c:46
+#| msgid "X Phase"
+msgid "phase"
+msgstr "фаза"
 
-#: operations/workshop/shuffle-search.c:50
+#: operations/workshop/shuffle-search.c:56
 msgid "levels"
 msgstr "рівнів"
 
-#: operations/workshop/shuffle-search.c:51
+#: operations/workshop/shuffle-search.c:57
 msgid "Only used if no aux image is provided"
 msgstr "Буде використано, лише якщо не надано допоміжного зображення"
 
-#: operations/workshop/shuffle-search.c:53
+#: operations/workshop/shuffle-search.c:60
 msgid "center bias"
 msgstr "центральний ухил"
 
-#: operations/workshop/shuffle-search.c:658
+#: operations/workshop/shuffle-search.c:823
 msgid "Optimize Dither"
 msgstr "Оптимізувати розмивання"
 
-#: operations/workshop/shuffle-search.c:661
-#| msgid ""
-#| "Shuffles pixels with neighbours to optimize dither, by shuffling "
-#| "neighboring pixels; if an image is provided as aux input, it is used as "
-#| "dithering starting point."
+#: operations/workshop/shuffle-search.c:826
 msgid ""
 "Shuffles pixels with neighbors to optimize dither, by shuffling neighboring "
 "pixels; if an image is provided as aux input, it is used as dithering "
@@ -9929,6 +9923,12 @@ msgstr "Фаска"
 msgid "Simulate lighting of a chamfered 3D-edges for an alpha-defined shape."
 msgstr ""
 "Імітує освітлення скошених просторових країв для визначеної альфою форми."
+
+#~ msgid "How many times to run optimization"
+#~ msgstr "Кількість проходів оптимізації"
+
+#~ msgid "Chance of doing optimization"
+#~ msgstr "Можливість виконання оптимізації"
 
 #~| msgid "Antialiasing"
 #~ msgid "Anti alias"
