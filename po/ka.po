@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-01-31 14:58+0000\n"
-"PO-Revision-Date: 2024-02-01 03:20+0100\n"
+"POT-Creation-Date: 2024-02-09 16:03+0000\n"
+"PO-Revision-Date: 2024-02-09 18:49+0100\n"
 "Last-Translator: Ekaterine Papava <papava.e@gtu.ge>\n"
 "Language-Team: Georgian <(nothing)>\n"
 "Language: ka\n"
@@ -1649,6 +1649,7 @@ msgstr "დიზერინგის მეთოდი"
 #: operations/common-gpl3+/supernova.c:63
 #: operations/common-gpl3+/tile-paper.c:81 operations/common-gpl3+/wind.c:68
 #: operations/workshop/segment-kmeans.c:37
+#: operations/workshop/shuffle-search.c:66
 msgid "Random seed"
 msgstr ""
 
@@ -4051,7 +4052,7 @@ msgstr "კამერის ხედის კუთხე"
 
 #: operations/common/spherize.c:40 operations/workshop/chamfer.c:63
 msgid "Curvature"
-msgstr ""
+msgstr "სიმრუდე"
 
 #: operations/common/spherize.c:41
 msgid "Spherical cap apex angle, as a fraction of the co-angle of view"
@@ -4749,7 +4750,7 @@ msgstr ""
 
 #: operations/common-gpl3+/bayer-matrix.c:36 operations/common-gpl3+/sinus.c:38
 msgid "Y Scale"
-msgstr ""
+msgstr "Y მასშტაბი"
 
 #: operations/common-gpl3+/bayer-matrix.c:37
 msgid "Vertical pattern scale"
@@ -9240,37 +9241,38 @@ msgstr ""
 msgid "Selective adjust Hue, Saturation and Lightness"
 msgstr ""
 
-#: operations/workshop/shuffle-search.c:36
+#: operations/workshop/shuffle-search.c:32
 msgid "iterations"
 msgstr "იტერაციები"
 
-#: operations/workshop/shuffle-search.c:37
-msgid "How many times to run optimization"
-msgstr ""
-
-#: operations/workshop/shuffle-search.c:43
+#: operations/workshop/shuffle-search.c:39
 msgid "chance"
 msgstr "შანსი"
 
-#: operations/workshop/shuffle-search.c:44
-msgid "Chance of doing optimization"
-msgstr ""
+#: operations/workshop/shuffle-search.c:46
+msgid "phase"
+msgstr "ფაზა"
 
-#: operations/workshop/shuffle-search.c:50
+#: operations/workshop/shuffle-search.c:56
 msgid "levels"
 msgstr "დონეები"
 
-#: operations/workshop/shuffle-search.c:51
+#: operations/workshop/shuffle-search.c:57
 msgid "Only used if no aux image is provided"
 msgstr ""
 
-#: operations/workshop/shuffle-search.c:421
+#: operations/workshop/shuffle-search.c:60
+#| msgid "Center X"
+msgid "center bias"
+msgstr ""
+
+#: operations/workshop/shuffle-search.c:823
 msgid "Optimize Dither"
 msgstr "დიზერის ოპტიმიზაცია"
 
-#: operations/workshop/shuffle-search.c:424
+#: operations/workshop/shuffle-search.c:826
 msgid ""
-"Shuffles pixels with neighbours to optimize dither, by shuffling neighboring "
+"Shuffles pixels with neighbors to optimize dither, by shuffling neighboring "
 "pixels; if an image is provided as aux input, it is used as dithering "
 "starting point."
 msgstr ""
