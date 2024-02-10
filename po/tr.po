@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-02-01 13:36+0000\n"
-"PO-Revision-Date: 2024-02-06 01:12+0300\n"
+"POT-Creation-Date: 2024-02-06 19:23+0000\n"
+"PO-Revision-Date: 2024-02-08 01:41+0300\n"
 "Last-Translator: Sabri Ünal <libreajans@gmail.com>\n"
 "Language-Team: Türkçe <gnome-turk@gnome.org>\n"
 "Language: tr\n"
@@ -2225,7 +2225,7 @@ msgid ""
 "There is a problem in the syntax or in the application of parsed property "
 "values. Things might mostly work nevertheless."
 msgstr ""
-"Sözdiziminde veya ayrıştırılmış özellik değerlerinin uygulanmasında bir "
+"Söz diziminde veya ayrıştırılmış özellik değerlerinin uygulanmasında bir "
 "sorun oluştu. Bazı şeyler yine de işe yarayabilir."
 
 #: operations/common/gegl.c:168
@@ -4047,7 +4047,7 @@ msgid ""
 "Transformation matrix, using SVG syntax (or multiple matrices, separated by "
 "semicolons)"
 msgstr ""
-"SVG sözdizimini kullanarak dönüşüm matrisi (veya noktalı virgüllerle "
+"SVG söz dizimini kullanarak dönüşüm matrisi (veya noktalı virgüllerle "
 "ayrılmış çoklu matris)"
 
 #: operations/common/recursive-transform.c:32
@@ -6910,7 +6910,7 @@ msgstr "Artalan"
 
 #: operations/common-gpl3+/tile-paper.c:36
 msgid "Ignore"
-msgstr "Yoksay"
+msgstr "Yok say"
 
 #: operations/common-gpl3+/tile-paper.c:37
 msgid "Force"
@@ -8815,7 +8815,7 @@ msgstr "origin-x"
 #: operations/transform/rotate-on-center.c:32
 #: operations/transform/rotate-on-center.c:34
 msgid "Ignored. Always uses center of input buffer"
-msgstr "Yoksayıldı. Her zaman girdi arabelleğinin merkezini kullan"
+msgstr "Yok sayıldı. Her zaman girdi arabelleğinin merkezini kullan"
 
 #: operations/transform/rotate-on-center.c:33
 msgid "origin-y"
@@ -8891,11 +8891,11 @@ msgstr "Arabelleği keser. "
 
 #: operations/transform/transform.c:25
 msgid "Transformation SVG syntax transformation string"
-msgstr "Dönüşümün SVG sözdizimi dönüşüm dizesi"
+msgstr "Dönüşümün SVG söz dizimi dönüşüm dizesi"
 
 #: operations/transform/transform.c:64
 msgid "Do a transformation using SVG syntax transformation."
-msgstr "SVG sözdizimi dönüşümünü kullanarak dönüştür."
+msgstr "SVG söz dizimi dönüşümünü kullanarak dönüştür."
 
 #: operations/transform/transform-core.c:210
 msgid "Origin-x"
@@ -9678,49 +9678,49 @@ msgstr "Seçilebilir Renk Tonu Doygunluğu"
 msgid "Selective adjust Hue, Saturation and Lightness"
 msgstr "Seçilebilir ayarlanabilir renk tonu, doygunluk ve aydınlık"
 
-#: operations/workshop/shuffle-search.c:36
+#: operations/workshop/shuffle-search.c:39
 #, fuzzy
 #| msgid "Iterations"
 msgid "iterations"
 msgstr "Yinelemeler"
 
-#: operations/workshop/shuffle-search.c:37
+#: operations/workshop/shuffle-search.c:40
 msgid "How many times to run optimization"
 msgstr ""
 
-#: operations/workshop/shuffle-search.c:43
+#: operations/workshop/shuffle-search.c:46
 #, fuzzy
 #| msgid "Balance"
 msgid "chance"
 msgstr "Denge"
 
-#: operations/workshop/shuffle-search.c:44
+#: operations/workshop/shuffle-search.c:47
 msgid "Chance of doing optimization"
 msgstr ""
 
-#: operations/workshop/shuffle-search.c:50
+#: operations/workshop/shuffle-search.c:53
 #, fuzzy
 #| msgid "Levels"
 msgid "levels"
 msgstr "Düzeyler"
 
-#: operations/workshop/shuffle-search.c:51
+#: operations/workshop/shuffle-search.c:54
 msgid "Only used if no aux image is provided"
 msgstr ""
 
-#: operations/workshop/shuffle-search.c:53
+#: operations/workshop/shuffle-search.c:56
 #, fuzzy
 #| msgid "Center X"
 msgid "center bias"
 msgstr "X Merkezi"
 
-#: operations/workshop/shuffle-search.c:658
+#: operations/workshop/shuffle-search.c:661
 #, fuzzy
 #| msgid "Optimize"
 msgid "Optimize Dither"
 msgstr "Eniyile"
 
-#: operations/workshop/shuffle-search.c:661
+#: operations/workshop/shuffle-search.c:664
 msgid ""
 "Shuffles pixels with neighbors to optimize dither, by shuffling neighboring "
 "pixels; if an image is provided as aux input, it is used as dithering "
