@@ -727,6 +727,21 @@ gegl_param_color_set_default (GParamSpec *param_spec,
     g_value_take_object (value, gegl_color_duplicate (gegl_color->default_color));
 }
 
+static gint
+gegl_param_color_cmp (GParamSpec   *param_spec,
+                      const GValue *value1,
+                      const GValue *value2)
+{
+  GeglColor *color1 = g_value_get_object (value1);
+  GeglColor *color2 = g_value_get_object (value2);
+
+  if (color1->priv->format != color2->priv->format)
+    return 1;
+  else
+    return memcmp (color1->priv->pixel, color2->priv->pixel,
+                   babl_format_get_bytes_per_pixel (color1->priv->format));
+}
+
 GType
 gegl_param_color_get_type (void)
 {
@@ -742,7 +757,7 @@ gegl_param_color_get_type (void)
         gegl_param_color_finalize,
         gegl_param_color_set_default,
         NULL,
-        NULL
+        gegl_param_color_cmp
       };
       param_color_type_info.value_type = GEGL_TYPE_COLOR;
 
