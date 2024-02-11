@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-02-09 16:03+0000\n"
-"PO-Revision-Date: 2024-02-09 22:40+0200\n"
+"POT-Creation-Date: 2024-02-11 16:28+0000\n"
+"PO-Revision-Date: 2024-02-11 19:42+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
 "Language: uk\n"
@@ -865,6 +865,7 @@ msgstr ""
 #: operations/common/noise-perlin.c:33 operations/common/noise-simplex.c:35
 #: operations/common/recursive-transform.c:36 operations/common/slic.c:38
 #: operations/common/stress.c:39 operations/common-gpl3+/fractal-explorer.c:55
+#: operations/workshop/shuffle-search.c:32
 msgid "Iterations"
 msgstr "Ітерації"
 
@@ -2495,6 +2496,7 @@ msgstr "Найвищий рівень освітленості на виході
 #: operations/common/levels.c:206 operations/common/posterize.c:24
 #: operations/common-cxx/piecewise-blend.cc:29
 #: operations/external/matting-levin.c:41
+#: operations/workshop/shuffle-search.c:56
 msgid "Levels"
 msgstr "Рівні"
 
@@ -2822,11 +2824,11 @@ msgstr "Подробиці"
 msgid "Level of emphasis on image gradient details"
 msgstr "Рівень акцентованості на подробицях градієнтів зображення"
 
-#: operations/common/mantiuk06.c:1654
+#: operations/common/mantiuk06.c:1655
 msgid "Mantiuk 2006 Tone Mapping"
 msgstr "Проектування тонів за Мантюком, 2006"
 
-#: operations/common/mantiuk06.c:1659
+#: operations/common/mantiuk06.c:1660
 msgid ""
 "Adapt an image, which may have a high dynamic range, for presentation using "
 "a low dynamic range. This operator constrains contrasts across multiple "
@@ -9806,36 +9808,25 @@ msgstr "Вибірковий відтінок-насиченість"
 msgid "Selective adjust Hue, Saturation and Lightness"
 msgstr "Вибіркове коригування відтінку, освітленості та насиченості"
 
-#: operations/workshop/shuffle-search.c:32
-msgid "iterations"
-msgstr "ітерацій"
-
 #: operations/workshop/shuffle-search.c:39
-msgid "chance"
-msgstr "можливість"
+#| msgid "chance"
+msgid "Chance"
+msgstr "Можливість"
 
 #: operations/workshop/shuffle-search.c:46
 #| msgid "X Phase"
-msgid "phase"
-msgstr "фаза"
-
-#: operations/workshop/shuffle-search.c:56
-msgid "levels"
-msgstr "рівнів"
+msgid "Phase"
+msgstr "Фаза"
 
 #: operations/workshop/shuffle-search.c:57
 msgid "Only used if no aux image is provided"
 msgstr "Буде використано, лише якщо не надано допоміжного зображення"
 
-#: operations/workshop/shuffle-search.c:60
-msgid "center bias"
-msgstr "центральний ухил"
-
-#: operations/workshop/shuffle-search.c:823
+#: operations/workshop/shuffle-search.c:1049
 msgid "Optimize Dither"
 msgstr "Оптимізувати розмивання"
 
-#: operations/workshop/shuffle-search.c:826
+#: operations/workshop/shuffle-search.c:1052
 msgid ""
 "Shuffles pixels with neighbors to optimize dither, by shuffling neighboring "
 "pixels; if an image is provided as aux input, it is used as dithering "
@@ -9923,6 +9914,19 @@ msgstr "Фаска"
 msgid "Simulate lighting of a chamfered 3D-edges for an alpha-defined shape."
 msgstr ""
 "Імітує освітлення скошених просторових країв для визначеної альфою форми."
+
+#~ msgid "iterations"
+#~ msgstr "ітерацій"
+
+#~| msgid "X Phase"
+#~ msgid "phase"
+#~ msgstr "фаза"
+
+#~ msgid "levels"
+#~ msgstr "рівнів"
+
+#~ msgid "center bias"
+#~ msgstr "центральний ухил"
 
 #~ msgid "How many times to run optimization"
 #~ msgstr "Кількість проходів оптимізації"
