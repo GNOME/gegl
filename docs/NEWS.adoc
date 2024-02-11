@@ -1,3 +1,41 @@
+GEGL=0.4.48 2024-02-11
+----------------------
+
+Core:
+~~~~~
+
+GeglColor extended with GBytes API, and space aware accesors for RGB and CMYK.
+Better runtime handling of mismatched GEGL ops in graphs.
+
+Build:
+~~~~~
+
+Use gi-docgen
+
+Updated vendored libraries
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ctx has been updated from upstream.
+
+Operations:
+~~~~~~~~~~~
+
+ - dropshadow: Fix shrinking with negative-grow radius.
+ - mantiuk: opt out of OpenMP when building with clang.
+ - voroni: fix crash.
+ - shuffle-search: in progress (in workshop, not built by default) brute-force
+  dither optimizer.
+
+
+Contributors to this release
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Alan Mortensen, Anders Jonsson, Andre Klapper, Andre Klapper, Asier Sarasua
+Garmendia, dimspingos, Ekaterine Papava, Jacob Boerema, Jan Tojnar, Jehan,
+Jordi Mas, Luming Zh, Marco Ciampa, Martin, Øyvind Kolås, Piotr Drąg, Rodrigo
+Lledó, Sabri Ünal, Víttor Paulo Vieira da Costa, woob and Yuri Chornoivan,
+
+
 GEGL-0.4.46 2023-06-26
 ----------------------
 
