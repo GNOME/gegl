@@ -307,7 +307,6 @@ gegl_matrix3_parse_string (GeglMatrix3 *matrix,
 gchar *
 gegl_matrix3_to_string (const GeglMatrix3 *matrix)
 {
-  gchar   *res;
   gchar    dstring[G_ASCII_DTOSTR_BUF_SIZE];
   GString *str = g_string_new ("matrix(");
   gint     i, j;
@@ -326,9 +325,5 @@ gegl_matrix3_to_string (const GeglMatrix3 *matrix)
                         matrix->coeff[j][i]);
         g_string_append (str, dstring);
       }
-  g_string_append (str, ")");
-  res = str->str;
-  g_string_free (str, FALSE);
-
-  return res;
+  return g_string_free (str, FALSE);
 }
