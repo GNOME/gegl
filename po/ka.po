@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-02-09 16:03+0000\n"
-"PO-Revision-Date: 2024-02-09 18:49+0100\n"
+"POT-Creation-Date: 2024-02-11 16:28+0000\n"
+"PO-Revision-Date: 2024-02-12 18:42+0100\n"
 "Last-Translator: Ekaterine Papava <papava.e@gtu.ge>\n"
 "Language-Team: Georgian <(nothing)>\n"
 "Language: ka\n"
@@ -795,6 +795,7 @@ msgstr ""
 #: operations/common/noise-perlin.c:33 operations/common/noise-simplex.c:35
 #: operations/common/recursive-transform.c:36 operations/common/slic.c:38
 #: operations/common/stress.c:39 operations/common-gpl3+/fractal-explorer.c:55
+#: operations/workshop/shuffle-search.c:32
 msgid "Iterations"
 msgstr "იტერაციები"
 
@@ -2351,6 +2352,7 @@ msgstr ""
 #: operations/common/levels.c:206 operations/common/posterize.c:24
 #: operations/common-cxx/piecewise-blend.cc:29
 #: operations/external/matting-levin.c:41
+#: operations/workshop/shuffle-search.c:56
 msgid "Levels"
 msgstr "დონეები"
 
@@ -2660,11 +2662,11 @@ msgstr "დეტალები"
 msgid "Level of emphasis on image gradient details"
 msgstr ""
 
-#: operations/common/mantiuk06.c:1654
+#: operations/common/mantiuk06.c:1655
 msgid "Mantiuk 2006 Tone Mapping"
 msgstr ""
 
-#: operations/common/mantiuk06.c:1659
+#: operations/common/mantiuk06.c:1660
 msgid ""
 "Adapt an image, which may have a high dynamic range, for presentation using "
 "a low dynamic range. This operator constrains contrasts across multiple "
@@ -9241,36 +9243,23 @@ msgstr ""
 msgid "Selective adjust Hue, Saturation and Lightness"
 msgstr ""
 
-#: operations/workshop/shuffle-search.c:32
-msgid "iterations"
-msgstr "იტერაციები"
-
 #: operations/workshop/shuffle-search.c:39
-msgid "chance"
+msgid "Chance"
 msgstr "შანსი"
 
 #: operations/workshop/shuffle-search.c:46
-msgid "phase"
+msgid "Phase"
 msgstr "ფაზა"
-
-#: operations/workshop/shuffle-search.c:56
-msgid "levels"
-msgstr "დონეები"
 
 #: operations/workshop/shuffle-search.c:57
 msgid "Only used if no aux image is provided"
 msgstr ""
 
-#: operations/workshop/shuffle-search.c:60
-#| msgid "Center X"
-msgid "center bias"
-msgstr ""
-
-#: operations/workshop/shuffle-search.c:823
+#: operations/workshop/shuffle-search.c:1049
 msgid "Optimize Dither"
 msgstr "დიზერის ოპტიმიზაცია"
 
-#: operations/workshop/shuffle-search.c:826
+#: operations/workshop/shuffle-search.c:1052
 msgid ""
 "Shuffles pixels with neighbors to optimize dither, by shuffling neighboring "
 "pixels; if an image is provided as aux input, it is used as dithering "
@@ -9347,6 +9336,15 @@ msgstr "კუთხის ნაზოლი"
 #: operations/workshop/chamfer.c:350
 msgid "Simulate lighting of a chamfered 3D-edges for an alpha-defined shape."
 msgstr ""
+
+#~ msgid "iterations"
+#~ msgstr "იტერაციები"
+
+#~ msgid "phase"
+#~ msgstr "ფაზა"
+
+#~ msgid "levels"
+#~ msgstr "დონეები"
 
 #~ msgid "Anti alias"
 #~ msgstr "მომრგვალება"
