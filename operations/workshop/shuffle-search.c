@@ -19,8 +19,7 @@
 #include "config.h"
 #include <glib/gi18n-lib.h>
 
-
-#if 0
+#if 1
 #include <stdio.h>
 #define DEV_MODE 1
 #else
@@ -29,14 +28,14 @@
 
 #ifdef GEGL_PROPERTIES
 
-property_int  (iterations, _("Iterations"), 6)
+property_int  (iterations, _("Iterations"), 3)
                description("How many times to run optimization")
                value_range (0, 64)
 #if DEV_MODE==0
                ui_meta("visible", "0")
 #endif
 
-property_int  (chance, _("Chance"), 40)
+property_int  (chance, _("Chance"), 100)
                description("Chance of doing optimization")
                value_range (1, 100)
 #if DEV_MODE==0
@@ -46,12 +45,16 @@ property_int  (chance, _("Chance"), 40)
 property_int  (phase, _("Phase"), 0)
                value_range (0, 16)
 
-property_double (noise_gamma, "Noise gamma", 1.4)
-               value_range (0.0, 4.0)
+property_double (noise_gamma, "Noise gamma", 1.7)
+               value_range (0.0, 4.2)
+#if DEV_MODE==0
+               ui_meta("visible", "0")
+#endif
 
 property_int  (levels, _("Levels"), 3)
                description(_("Only used if no aux image is provided"))
                value_range (2, 255)
+
 
 property_int  (center_bias, "Center bias", 18)
                value_range (0, 1024)
@@ -66,7 +69,7 @@ property_seed (seed, _("Random seed"), rand)
 
 #else
 
-#define GEGL_OP_COMPOSER
+#define GEGL_OP_FILTER
 #define GEGL_OP_NAME     shuffle_search
 #define GEGL_OP_C_SOURCE shuffle-search.c
 
@@ -78,24 +81,12 @@ property_seed (seed, _("Random seed"), rand)
 static void
 prepare (GeglOperation *operation)
 {
-  GeglRectangle *aux_bounds = gegl_operation_source_get_bounding_box(operation,"aux");
-
-  if (aux_bounds && aux_bounds->width)
-  {
-    GeglNode *aux_node = gegl_operation_get_source_node (operation, "aux");
-    GeglOperation *aux_op = gegl_node_get_gegl_operation(aux_node);
-    gegl_operation_set_format (operation, "output",
-      gegl_operation_get_format (aux_op, "output"));
-  }
-  else
-  {
-    const Babl *space = gegl_operation_get_source_space (operation, "input");
-    gegl_operation_set_format (operation, "output",
-                               babl_format_with_space ("Y' u16", space));
-  }
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
+  gegl_operation_set_format (operation, "output",
+                             babl_format_with_space ("Y' u16", space));
 }
 
-static uint16_t compute_val(int center_bias, const uint16_t *bits, int stride, int x, int y)
+static uint16_t compute_val(int foo, const uint16_t *bits, int stride, int x, int y)
 {
   int count = 0;
   long int sum = 0;
@@ -103,37 +94,20 @@ static uint16_t compute_val(int center_bias, const uint16_t *bits, int stride, i
   for (int u = x-1; u <= x+1; u++)
   {
     int val = bits[v*stride+u];
-    int contrib = 2+(u == x && v == y) * (3+center_bias/3);
+    int contrib = 2+(u == x && v == y) * (foo-1);
     count += contrib;
     sum   += val * contrib;
   }
   return (sum)/count;
 }
 
-static void compute_rgb(int center_bias, const uint8_t *rgb, int stride, int x, int y, uint8_t *rgb_out)
-{
-  int count = 0;
-  int sum[3] = {0,0,0};
-
-  for (int v = y-1; v <= y+1; v++)
-  for (int u = x-1; u <= x+1; u++)
-  {
-      int o = 3*(v*stride+u);
-      int contrib = 32 + (u == x && v == y) * center_bias;
-      count += contrib;
-      for (int c = 0; c < 3; c++)
-        sum[c] += rgb[o+0] * contrib;
-  }
-
-  for (int c = 0; c < 3; c++)
-    rgb_out[c] = sum[c] / count;
-}
-
 enum {
   MUTATE_NONE  = 0,
 
-  MUTATE_HSWAP,
-  MUTATE_VSWAP,
+  MUTATE_SWAP_10,
+  MUTATE_SWAP_01,
+  MUTATE_SWAP_11,
+  MUTATE_SWAP_D,
   MUTATE_HGROW,
   MUTATE_HSHRINK,
   MUTATE_VGROW,
@@ -216,18 +190,12 @@ improve_rect (GeglOperation *operation, GeglBuffer          *input,
   {
     long int score[MUTATE_COUNT] = {0,};
     
-    uint8_t backup[16];
-    uint8_t backup01[16];
-    uint8_t backup11[16];
-    uint8_t backup10[16];
+    uint16_t backup[4];
+    uint16_t backup01[4];
+    uint16_t backup11[4];
+    uint16_t backup10[4];
 
 #define PXAT(rx,ry) bits[bit_rect.width* (y+2) + x + 2+ bit_rect.width * (ry)+ (rx)]
-
-#define DO_SWAP(rx,ry,brx,bry)\
-    {int tmp = PXAT(rx,ry);\
-    PXAT(rx,ry) = PXAT(brx,bry);\
-    PXAT(brx,bry) = tmp;}
-
 
 #define DO_BACKUP() \
     {memcpy(backup,   &PXAT(0,0),2);\
@@ -257,7 +225,23 @@ improve_rect (GeglOperation *operation, GeglBuffer          *input,
 
     DO_BACKUP();
     { uint16_t tmp = PXAT(0,0); PXAT(0,0)=PXAT(1,0); PXAT(1,0)=tmp;}
-    MEASURE(MUTATE_HSWAP);
+    MEASURE(MUTATE_SWAP_10);
+    DO_RESTORE()
+
+
+    DO_BACKUP();
+    { uint16_t tmp = PXAT(0,0); PXAT(0,0)=PXAT(0,1); PXAT(0,1)=tmp;}
+    MEASURE(MUTATE_SWAP_01);
+    DO_RESTORE()
+
+    DO_BACKUP();
+    { uint16_t tmp = PXAT(0,0); PXAT(0,0)=PXAT(1,1); PXAT(1,1)=tmp;}
+    MEASURE(MUTATE_SWAP_11);
+    DO_RESTORE()
+
+    DO_BACKUP();
+    { uint16_t tmp = PXAT(1,0); PXAT(1,0)=PXAT(1,0); PXAT(1,0)=tmp;}
+    MEASURE(MUTATE_SWAP_D);
     DO_RESTORE()
 
 #if 0
@@ -282,18 +266,15 @@ improve_rect (GeglOperation *operation, GeglBuffer          *input,
     DO_RESTORE()
 #endif
 
-    DO_BACKUP();
-    { uint16_t tmp = PXAT(0,0); PXAT(0,0)=PXAT(0,1); PXAT(0,1)=tmp;}
-    MEASURE(MUTATE_VSWAP);
-    DO_RESTORE()
     {
-    float factor = 1.0f;
+    float factor = 1.2f;
     score[MUTATE_HGROW] *= factor;
     score[MUTATE_VGROW] *= factor;
     score[MUTATE_HSHRINK] *= factor;
     score[MUTATE_VSHRINK] *= factor;
     }
 
+    {
 
 #if 1
     if (PXAT(0,0)<65535)
@@ -312,7 +293,7 @@ improve_rect (GeglOperation *operation, GeglBuffer          *input,
       DO_RESTORE()
     }
 
-    {float factor = 1.0f;
+    {float factor = 1.6f;
     score[MUTATE_INC] *= factor;
     score[MUTATE_DEC] *= factor;
     }
@@ -322,8 +303,7 @@ improve_rect (GeglOperation *operation, GeglBuffer          *input,
     if (PXAT(0,0)>0 && PXAT(1,0)<65535)
     {
       DO_BACKUP();
-      DO_INC(1,0)
-      DO_DEC(0,0)
+      DO_INC(1,0);DO_DEC(0,0)
       MEASURE(MUTATE_INC_10);
       DO_RESTORE();
     }
@@ -331,8 +311,7 @@ improve_rect (GeglOperation *operation, GeglBuffer          *input,
     if (PXAT(0,0)>0 && PXAT(0,1)<65535)
     {
       DO_BACKUP();
-      DO_INC(0,1)
-      DO_DEC(0,0)
+      DO_INC(0,1);DO_DEC(0,0)
       MEASURE(MUTATE_INC_01);
       DO_RESTORE();
     }
@@ -340,8 +319,7 @@ improve_rect (GeglOperation *operation, GeglBuffer          *input,
     if (PXAT(0,0)>0 && PXAT(1,1)<65535)
     {
       DO_BACKUP();
-      DO_INC(1,1)
-      DO_DEC(0,0)
+      DO_INC(1,1);DO_DEC(0,0)
       MEASURE(MUTATE_INC_11);
       DO_RESTORE();
     }
@@ -350,8 +328,7 @@ improve_rect (GeglOperation *operation, GeglBuffer          *input,
     if (PXAT(0,0)<65535 && PXAT(1,0)>0)
     {
       DO_BACKUP();
-      DO_DEC(1,0)
-      DO_INC(0,0)
+      DO_DEC(1,0);DO_INC(0,0)
       MEASURE(MUTATE_DEC_10);
       DO_RESTORE();
     }
@@ -359,8 +336,7 @@ improve_rect (GeglOperation *operation, GeglBuffer          *input,
     if (PXAT(0,0)<65535 && PXAT(0,1)>0)
     {
       DO_BACKUP();
-      DO_DEC(0,1)
-      DO_INC(0,0)
+      DO_DEC(0,1);DO_INC(0,0)
       MEASURE(MUTATE_DEC_01);
       DO_RESTORE();
     }
@@ -368,13 +344,12 @@ improve_rect (GeglOperation *operation, GeglBuffer          *input,
     if (PXAT(0,0)<65535 && PXAT(1,1)>0)
     {
       DO_BACKUP();
-      DO_DEC(1,1)
-      DO_INC(0,0)
+      DO_DEC(1,1);DO_INC(0,0)
       MEASURE(MUTATE_DEC_11);
       DO_RESTORE();
     }
 
-    float factor = 1.0f;
+    float factor = 1.5f;
     score[MUTATE_INC_01] *= factor;
     score[MUTATE_INC_10] *= factor;
     score[MUTATE_INC_11] *= factor;
@@ -383,7 +358,7 @@ improve_rect (GeglOperation *operation, GeglBuffer          *input,
     score[MUTATE_DEC_11] *= factor;
 #endif
 
-
+    }
 
     int best = 0;
     for (int j = 0; j < MUTATE_COUNT;j++)
@@ -392,69 +367,34 @@ improve_rect (GeglOperation *operation, GeglBuffer          *input,
     switch(best)
     {
        case MUTATE_NONE: break;
-       case MUTATE_HSWAP:
+       case MUTATE_SWAP_10:
         { uint16_t tmp = PXAT(0,0); PXAT(0,0)=PXAT(1,0); PXAT(1,0)=tmp;}
         hswaps++;
         break;
-       case MUTATE_VSWAP:
+       case MUTATE_SWAP_01:
         { uint16_t tmp = PXAT(0,0); PXAT(0,0)=PXAT(0,1); PXAT(0,1)=tmp;}
         vswaps++;
         break;
-       case MUTATE_DEC:
-         mutates++;
-         DO_DEC(0,0);
-         break;
-       case MUTATE_INC:
-         mutates++;
-         DO_INC(0,0);
-         break;
-       case MUTATE_INC_10:
-         mutates++;
-         DO_INC(1,0);
-         DO_DEC(0,0);
-         break;
-       case MUTATE_INC_01:
-         mutates++;
-         DO_INC(0,1);
-         DO_DEC(0,0);
-         break;
-       case MUTATE_INC_11:
-         mutates++;
-         DO_INC(1,1);
-         DO_DEC(0,0);
-         break;
-       case MUTATE_HGROW:
-         PXAT(1,0)=PXAT(0,0);
-         grows++;
-         break;
-       case MUTATE_VGROW:
-         PXAT(0,1)=PXAT(0,0);
-         grows++;
-         break;
-       case MUTATE_VSHRINK:
-         PXAT(0,0)=PXAT(0,1);
-         grows++;
-         break;
-       case MUTATE_HSHRINK:
-         PXAT(0,0)=PXAT(1,0);
-         grows++;
-         break;
-
-       case MUTATE_DEC_10:
-         mutates++;
-         DO_DEC(1,0);
-         DO_INC(0,0);
-         break;
-       case MUTATE_DEC_01:
-         mutates++;
-         DO_DEC(0,1);
-         DO_INC(0,0);
-         break;
-       case MUTATE_DEC_11:
-         mutates++;
-         DO_DEC(1,1);
-         DO_INC(0,0);
-         break;
+       case MUTATE_SWAP_11:
+        { uint16_t tmp = PXAT(0,0); PXAT(0,0)=PXAT(1,1); PXAT(1,1)=tmp;}
+        dswaps++;
+        break;
+       case MUTATE_SWAP_D:
+        { uint16_t tmp = PXAT(1,0); PXAT(1,0)=PXAT(0,1); PXAT(0,1)=tmp;}
+        dswaps++;
+        break;
+       case MUTATE_DEC:     mutates++; DO_DEC(0,0); break;
+       case MUTATE_INC:     mutates++; DO_INC(0,0); break;
+       case MUTATE_INC_10:  mutates++; DO_INC(1,0); DO_DEC(0,0); break;
+       case MUTATE_INC_01:  mutates++; DO_INC(0,1); DO_DEC(0,0); break;
+       case MUTATE_INC_11:  mutates++; DO_INC(1,1); DO_DEC(0,0); break;
+       case MUTATE_HGROW:   grows++;   PXAT(1,0)=PXAT(0,0); break;
+       case MUTATE_VGROW:   grows++;   PXAT(0,1)=PXAT(0,0); break;
+       case MUTATE_VSHRINK: grows++;   PXAT(0,0)=PXAT(0,1); break;
+       case MUTATE_HSHRINK: grows++;   PXAT(0,0)=PXAT(1,0); break;
+       case MUTATE_DEC_10:  mutates++; DO_DEC(1,0); DO_INC(0,0); break;
+       case MUTATE_DEC_01:  mutates++; DO_DEC(0,1); DO_INC(0,0); break;
+       case MUTATE_DEC_11:  mutates++; DO_DEC(1,1); DO_INC(0,0); break;
     }
   }
 #if DEV_MODE
@@ -476,35 +416,29 @@ improve_rect (GeglOperation *operation, GeglBuffer          *input,
 static gboolean
 process (GeglOperation       *operation,
          GeglBuffer          *input,
-         GeglBuffer          *arg_aux,
          GeglBuffer          *output,
          const GeglRectangle *result,
          gint                 level)
 {
-  GeglBuffer          *aux = arg_aux;
   GeglProperties *o = GEGL_PROPERTIES (operation);
   const Babl *fmt_y_u16 = babl_format("Y' u16");
   GeglBufferIterator *gi;
 
   GeglRectangle needed_rect = *result;
-  needed_rect.x -= 16;
-  needed_rect.y -= 16;
-  needed_rect.width  += 32;
-  needed_rect.height += 32;
+  needed_rect.x -= 8;
+  needed_rect.y -= 8;
+  needed_rect.width  += 16;
+  needed_rect.height += 16;
 
   GeglBuffer *temp = gegl_buffer_new (&needed_rect, fmt_y_u16);
 
-  if(!aux)
-  {
-    aux = gegl_buffer_new (&needed_rect, fmt_y_u16);
- 
-    gi = gegl_buffer_iterator_new (aux, &needed_rect, 0, fmt_y_u16,
-                                   GEGL_ACCESS_READ|GEGL_ACCESS_WRITE,
-                                   GEGL_ABYSS_NONE, 2);
-    gegl_buffer_iterator_add (gi, input, &needed_rect, 0, fmt_y_u16,
-                              GEGL_ACCESS_READ, GEGL_ABYSS_CLAMP);
+  gi = gegl_buffer_iterator_new (temp, &needed_rect, 0, fmt_y_u16,
+                                 GEGL_ACCESS_READ|GEGL_ACCESS_WRITE,
+                                 GEGL_ABYSS_NONE, 2);
+  gegl_buffer_iterator_add (gi, input, &needed_rect, 0, fmt_y_u16,
+                            GEGL_ACCESS_READ, GEGL_ABYSS_CLAMP);
 
-#if 0
+#if 1
 //#define dither_mask(u,v,c) (((((u)+ c* 67) ^ (v) * 149) * 1234) & 255)
 #define dither_mask(u,v,c)   (((((u)+ c* 67) + (v) * 236) * 119) & 255)
 #else
@@ -539,12 +473,6 @@ process (GeglOperation       *operation,
           data[i] = value;
        }
    }
-     gegl_buffer_copy(aux, &needed_rect, GEGL_ABYSS_NONE, temp, NULL);
-  }
-  else
-  {
-    gegl_buffer_copy(aux, &needed_rect, GEGL_ABYSS_NONE, temp, NULL);
-  }
 
   if (o->iterations)
   {
@@ -559,9 +487,6 @@ process (GeglOperation       *operation,
     improve_rect(operation, input, temp, &bottom, 2, 100);
     improve_rect(operation, input, temp, result, o->iterations+o->levels, o->chance);
   }
-
-  if (aux != arg_aux)
-    g_clear_object (&aux);
 
   gegl_buffer_copy(temp, result, GEGL_ABYSS_NONE, output, result);
   g_clear_object (&temp);
@@ -623,8 +548,8 @@ get_required_for_output (GeglOperation       *operation,
 static void
 gegl_op_class_init (GeglOpClass *klass)
 {
-  GeglOperationClass         *operation_class;
-  GeglOperationComposerClass *composer_class;
+  GeglOperationClass      *operation_class=GEGL_OPERATION_CLASS(klass);
+  GeglOperationFilterClass*filter_class   =GEGL_OPERATION_FILTER_CLASS(klass);
 
   {
     uint16_t *tmp = calloc(2,65536);
@@ -636,21 +561,19 @@ gegl_op_class_init (GeglOpClass *klass)
     free(tmp);
   }
 
-  operation_class           = GEGL_OPERATION_CLASS (klass);
-  composer_class            = GEGL_OPERATION_COMPOSER_CLASS (klass);
-  operation_class->cache_policy = GEGL_CACHE_POLICY_ALWAYS;
-  operation_class->threaded = FALSE;
-  operation_class->prepare  = prepare;
+  operation_class->cache_policy            = GEGL_CACHE_POLICY_ALWAYS;
+  operation_class->threaded                = FALSE;
+  operation_class->prepare                 = prepare;
   operation_class->get_required_for_output = get_required_for_output;
-  operation_class->get_cached_region = get_cached_region;
-  composer_class->process   = process;
+  operation_class->get_cached_region       = get_cached_region;
+  filter_class->process                    = process;
 
   gegl_operation_class_set_keys (operation_class,
     "name",        "gegl:shuffle-search",
     "title",       _("Optimize Dither"),
     "categories",  "dither",
     "reference-hash", "e9de784b7a9c200bb7652b6b58a4c94a",
-    "description", _("Shuffles pixels with neighbors to optimize dither, by shuffling neighboring pixels; if an image is provided as aux input, it is used as dithering starting point."),
+    "description", _("Shuffles pixels, and quantization with neighbors to optimize dither, by shuffling neighboring pixels."),
     "gimp:menu-path", "<Image>/Colors",
     NULL);
 }
