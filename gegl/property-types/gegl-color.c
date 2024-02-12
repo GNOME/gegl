@@ -735,6 +735,9 @@ gegl_param_color_cmp (GParamSpec   *param_spec,
   GeglColor *color1 = g_value_get_object (value1);
   GeglColor *color2 = g_value_get_object (value2);
 
+  if (! color1 || ! color2)
+    return color2 ? -1 : (color1 ? 1 : 0);
+
   if (color1->priv->format != color2->priv->format)
     return 1;
   else
