@@ -117,3 +117,12 @@ if maxflow.found()
     install_dir: get_option('libdir') / api_name,
   )
 endif
+
+gegl_operations+=shared_library('ctx-script',
+   'ctx-script.c', include_directories: [rootInclude, geglInclude],
+   dependencies:[babl,glib,gobject,math,libgegl_ctx],
+   link_with:[gegl_lib],
+   name_prefix:'',
+   install:true,
+   install_dir: get_option('libdir') / api_name,
+)

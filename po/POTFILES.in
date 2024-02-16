@@ -281,6 +281,7 @@ operations/workshop/connected-components.c
 operations/workshop/demosaic-bimedian.c
 operations/workshop/demosaic-simple.c
 operations/workshop/ditto.c
+operations/workshop/external/ctx-script.c
 operations/workshop/external/gluas.c
 operations/workshop/external/paint-select.cc
 operations/workshop/external/lens-correct.c
