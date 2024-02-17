@@ -8,14 +8,14 @@
 # Wylmer Wang <wantinghard@gmail.com>, 2013
 # 周 周 <annjouno@gmail.com>, 2013
 # 白铭骢 <jeffbai@aosc.xyz>, 2015
-# lumingzh <lumingzh@qq.com>, 2019-2023.
+# lumingzh <lumingzh@qq.com>, 2019-2024.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gegl-master\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2023-09-23 21:17+0000\n"
-"PO-Revision-Date: 2023-09-24 19:34+0800\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
+"POT-Creation-Date: 2024-02-16 16:09+0000\n"
+"PO-Revision-Date: 2024-02-17 10:28+0800\n"
 "Last-Translator: lumingzh <lumingzh@qq.com>\n"
 "Language-Team: Chinese - China <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
@@ -23,7 +23,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0\n"
-"X-Generator: Gtranslator 45.1\n"
+"X-Generator: Gtranslator 45.3\n"
 
 #: bin/gegl.c:179
 #, c-format
@@ -669,7 +669,7 @@ msgstr ""
 "类似高斯模糊；但为每个相邻像素的贡献同样被与原始中心像素的色差权重衡量。"
 
 #: operations/common/bloom.c:26 operations/common/threshold.c:25
-#: operations/common/threshold.c:163 operations/common/unsharp-mask.c:37
+#: operations/common/threshold.c:164 operations/common/unsharp-mask.c:37
 #: operations/common-gpl3+/red-eye-removal.c:31
 #: operations/common-gpl3+/wind.c:60 operations/external/matting-levin.c:33
 msgid "Threshold"
@@ -849,6 +849,7 @@ msgstr "每次迭代寻找色彩范围的采样数目"
 #: operations/common/noise-perlin.c:33 operations/common/noise-simplex.c:35
 #: operations/common/recursive-transform.c:36 operations/common/slic.c:38
 #: operations/common/stress.c:39 operations/common-gpl3+/fractal-explorer.c:55
+#: operations/workshop/shuffle-search.c:31
 msgid "Iterations"
 msgstr "迭代"
 
@@ -1710,6 +1711,7 @@ msgstr "要使用的递色方式"
 #: operations/common-gpl3+/supernova.c:63
 #: operations/common-gpl3+/tile-paper.c:81 operations/common-gpl3+/wind.c:68
 #: operations/workshop/segment-kmeans.c:37
+#: operations/workshop/shuffle-search.c:65
 msgid "Random seed"
 msgstr "随机种子"
 
@@ -2421,6 +2423,7 @@ msgstr "输出中的最高亮度级别"
 #: operations/common/levels.c:206 operations/common/posterize.c:24
 #: operations/common-cxx/piecewise-blend.cc:29
 #: operations/external/matting-levin.c:41
+#: operations/workshop/shuffle-search.c:54
 msgid "Levels"
 msgstr "色阶"
 
@@ -2734,11 +2737,11 @@ msgstr "细节"
 msgid "Level of emphasis on image gradient details"
 msgstr "对图像渐变细节的着重级别"
 
-#: operations/common/mantiuk06.c:1654
+#: operations/common/mantiuk06.c:1655
 msgid "Mantiuk 2006 Tone Mapping"
 msgstr "Mantiuk 2006 色调映射"
 
-#: operations/common/mantiuk06.c:1659
+#: operations/common/mantiuk06.c:1660
 msgid ""
 "Adapt an image, which may have a high dynamic range, for presentation using "
 "a low dynamic range. This operator constrains contrasts across multiple "
@@ -4292,16 +4295,16 @@ msgid "Lowest value to be included."
 msgstr "要包含的最低值。"
 
 #: operations/common/threshold.c:33
-msgid "highest value to be include as white."
+msgid "Highest value to be include as white."
 msgstr "要作为白色包含的最高值。"
 
-#: operations/common/threshold.c:168
+#: operations/common/threshold.c:169
 msgid ""
-"Thresholds the image to white/black based on either the global value set in "
-"the value property, or per pixel from the aux input."
+"Thresholds the image to white/black based on either the global values set in "
+"the value (low) and high properties, or per pixel from the aux input."
 msgstr ""
-"基于明度属性中设置的全局明度或者来自于辅助输入的每个像素将图像调整为白/黑两"
-"色。"
+"基于高低明度属性中设置的全局明度或者来自于辅助输入的每个像素将图像调整为白/黑"
+"两色。"
 
 #: operations/common/tile.c:24
 msgid "Horizontal offset"
@@ -7816,11 +7819,13 @@ msgstr "使用的填充不透明度"
 
 #: operations/external/path.c:54 operations/external/vector-fill.c:40
 #: operations/external/vector-stroke.c:41
+#: operations/workshop/external/ctx-script.c:26
 msgid "Vector"
 msgstr "矢量"
 
 #: operations/external/path.c:55 operations/external/vector-fill.c:41
 #: operations/external/vector-stroke.c:42
+#: operations/workshop/external/ctx-script.c:27
 msgid "A GeglVector representing the path of the stroke"
 msgstr "一个表示笔廓路径的 GeglVector"
 
@@ -8911,6 +8916,14 @@ msgstr "同样"
 msgid "Test op to do a 1:1 map of input to output, while sampling"
 msgstr "采样时做一个输入到输出的 1:1 映射来测试操作"
 
+#: operations/workshop/external/ctx-script.c:126
+msgid "Ctx script"
+msgstr "Ctx 脚本"
+
+#: operations/workshop/external/ctx-script.c:128
+msgid "Renders a ctx vector graphics"
+msgstr "渲染 ctx 矢量图形"
+
 #: operations/workshop/external/gluas.c:29
 msgid "Script"
 msgstr "脚本"
@@ -9439,6 +9452,28 @@ msgstr "选择性色相-饱和度"
 #: operations/workshop/selective-hue-saturation.c:173
 msgid "Selective adjust Hue, Saturation and Lightness"
 msgstr "选择性调整色相、饱和度和亮度"
+
+#: operations/workshop/shuffle-search.c:38
+msgid "Chance"
+msgstr "机会"
+
+#: operations/workshop/shuffle-search.c:45
+msgid "Phase"
+msgstr "阶段"
+
+#: operations/workshop/shuffle-search.c:55
+msgid "Only used if no aux image is provided"
+msgstr "仅在未提供辅助图像时使用"
+
+#: operations/workshop/shuffle-search.c:573
+msgid "Optimize Dither"
+msgstr "优化递色"
+
+#: operations/workshop/shuffle-search.c:576
+msgid ""
+"Shuffles pixels, and quantization with neighbors to optimize dither, by "
+"shuffling neighboring pixels."
+msgstr "混合像素，通过混合邻近像素，并用邻近像素量化来优化递色。"
 
 #: operations/workshop/chamfer.c:27
 msgid "HardLight"
