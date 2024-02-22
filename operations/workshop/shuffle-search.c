@@ -45,12 +45,6 @@ property_int  (chance, _("Chance"), 100)
 property_int  (phase, _("Phase"), 0)
                value_range (0, 16)
 
-property_double (noise_gamma, "Noise gamma", 1.7)
-               value_range (0.0, 4.2)
-#if DEV_MODE==0
-               ui_meta("visible", "0")
-#endif
-
 property_int  (levels, _("Levels"), 3)
                description(_("Only used if no aux image is provided"))
                value_range (2, 255)
@@ -86,15 +80,20 @@ prepare (GeglOperation *operation)
                              babl_format_with_space ("Y' u16", space));
 }
 
-static uint16_t compute_val(int foo, const uint16_t *bits, int stride, int x, int y)
+static uint16_t compute_val(int levels, const uint16_t *bits, int stride, int x, int y)
 {
   int count = 0;
   long int sum = 0;
+  if (levels > 32) levels -= 1;
+  if (levels > 16) levels -= 1;
+  if (levels > 8) levels -= 1;
+  if (levels > 4) levels -= 1;
+
   for (int v = y-1; v <= y+1; v++)
   for (int u = x-1; u <= x+1; u++)
   {
     int val = bits[v*stride+u];
-    int contrib = 2+(u == x && v == y) * (foo-1);
+    int contrib = 2+(u == x && v == y) * (levels);
     count += contrib;
     sum   += val * contrib;
   }
@@ -456,6 +455,25 @@ process (GeglOperation       *operation,
       int i = 0;
       int levels = o->levels - 1;
       int rlevels = 65536/levels;
+      if (levels == 1)
+      for (int y = 0; y < roi->height; y++)
+      for (int x = 0; x < roi->width; x++, i++)
+       {
+          int input = to_linear(in[i]);
+#if 0
+          mask = ((mask * mask) -32767)/levels;
+#else
+          int mask = ((dither_mask(roi->x+x, roi->y+y, o->phase)/255.0)*65535-32767)/(levels);
+#endif
+          int value = input + mask;
+          value = ((value + rlevels/2) /rlevels)*(rlevels);
+
+
+          if (value < 0) data[i] = 0;
+          else if (value > 65535) data[i] = 65535;
+          else data[i] = to_nonlinear(value);
+       }
+      else
       for (int y = 0; y < roi->height; y++)
       for (int x = 0; x < roi->width; x++, i++)
        {
@@ -463,14 +481,15 @@ process (GeglOperation       *operation,
 #if 0
           mask = ((mask * mask) -32767)/levels;
 #else
-          int mask = ((powf(dither_mask(roi->x+x, roi->y+y, o->phase)/255.0, o->noise_gamma))*65535-32767)/(levels);
+          int mask = ((dither_mask(roi->x+x, roi->y+y, o->phase)/255.0)*65535-32767)/(levels);
 #endif
           int value = input + mask;
           value = ((value + rlevels/2) /rlevels)*(rlevels);
+
+
           if (value < 0) data[i] = 0;
           else if (value > 65535) data[i] = 65535;
-          else
-          data[i] = value;
+          else data[i] = value;
        }
    }
 
