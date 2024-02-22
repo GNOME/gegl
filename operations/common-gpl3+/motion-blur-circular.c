@@ -449,8 +449,7 @@ gegl_op_class_init (GeglOpClass *klass)
       "categories",         "blur",
       "position-dependent", "true",
       "license",            "GPL3+",
-      "reference-hash",     "c6735b5cf3c94b24a11f0ed3d4dac954",
-      "reference-hashB",    "dd9f0562a438fc71e710e46955ab5254",
+      "reference-hash",     "a8d96fff50fd8c4ea9d9f6fbedb3cfd3",
       "description", _("Circular motion blur"),
       NULL);
 }

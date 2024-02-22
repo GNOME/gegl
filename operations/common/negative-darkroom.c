@@ -385,7 +385,7 @@ gegl_op_class_init (GeglOpClass *klass)
 		"name",           "gegl:negative-darkroom",
 		"title",          _("Negative Darkroom"),
 		"categories",     "color",
-		"reference-hash", "2c048959d4827d580d1ab1b6635bc40b",
+		"reference-hash", "81752f5612f3f639f68522fae6c506a3",
 		"description",    _("Simulate a negative film enlargement in "
 				  "an analog darkroom."),
 		NULL);

@@ -319,7 +319,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",        "gegl:fill-path",
     "title",       _("Fill Path"),
     "categories",  "render:vector",
-    "reference-hash", "941dcd6c90739ee2d8a19593c07828b1",
+    "reference-hash", "f76db1e12141c49e0f117a9dcde5d4e5",
     "description", _("Renders a filled region"),
     "reference-composition", composition,
     NULL);

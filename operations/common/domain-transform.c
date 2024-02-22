@@ -527,7 +527,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",        "gegl:domain-transform",
     "title",       _("Smooth by Domain Transform"),
     "categories" , "enhance:noise-reduction",
-    "reference-hash", "e84e0ca62248f931d0e86d03a74c8638",
+    "reference-hash", "8755fd14807dbd5ac1d7a31c02865a63",
     "description", _("An edge-preserving smoothing filter implemented with the "
                      "Domain Transform recursive technique. Similar to a "
                      "bilateral filter, but faster to compute."),

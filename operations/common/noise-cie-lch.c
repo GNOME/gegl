@@ -194,8 +194,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",              _("Add CIE Lch Noise"),
     "categories",         "noise",
     "position-dependent", "true",
-    "reference-hash",     "7b01f2a1f2d866e1349748b70403b2a4",
-    "reference-hashB",    "e383b22fe2821d2255eb5ba44f7f4608",
+    "reference-hash",     "cf75f341258e4eaedd9586f8eedb67c1",
     "description", _("Randomize lightness, chroma and hue independently"),
     NULL);
 }

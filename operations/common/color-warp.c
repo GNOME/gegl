@@ -337,7 +337,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",                 _("Color warp"),
     "categories",            "color",
     "reference-composition", composition,
-    "reference-hash",        "637569c3382fc061ee45513eaebf22d6",
+    "reference-hash",        "316dc1177b157ea2418456b0fb39608e",
     "description", _("Warps the colors of an image between colors with weighted distortion factors, color pairs which are black to black get ignored when constructing the mapping."),
     NULL);
 }

@@ -293,8 +293,7 @@ gegl_op_class_init (GeglOpClass *klass)
            "name", "gegl:bilateral-filter",
            "title", _("Bilateral Filter"),
            "categories", "enhance:noise-reduction",
-           "reference-hash", "ae2daa632761f829c4a59225f17bf211",
-           "reference-hashB", "5cfcdea9b2f5917f48c54a8972374d8a",
+           "reference-hash", "e19155c5d467143d11f259cc25fdec80",
            "description",
            _("Like a gaussian blur; but where the contribution for each neighborhood "
           "pixel is also weighted by the color difference with the original center pixel."),

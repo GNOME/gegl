@@ -645,8 +645,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",       _("Value Propagate"),
     "categories",  "distort",
     "license",     "GPL3+",
-    "reference-hash", "e83d141dad2bc9274b562273867eda71",
-    "reference-hashB", "831de8793d5501d8fb9c2462466f1721",
+    "reference-hash", "b2c6c0845c5217c75ef67e4906e9ea2b",
     "description", _("Propagate certain values to neighboring pixels. Erode and dilate any color or opacity."),
     NULL);
 }
