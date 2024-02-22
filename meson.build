@@ -2,7 +2,6 @@ project('gegl',
   'c', 'cpp',
   license: 'GPL3+',
   version: '0.4.49',
-  # when meson version passes 0.53.0 remove alternate build summary
   meson_version: '>=0.55.0',
   default_options: [
     'c_std=gnu11',
