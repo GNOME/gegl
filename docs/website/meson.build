@@ -35,7 +35,7 @@ endif
 # website content
 foreach _file: website_content
   custom_target(
-    '@0@.html'.format(_file).underscorify(),
+    fs.replace_suffix(_file, '.html').underscorify(),
     output: '@BASENAME@.html',
     input: _file,
     command: [
@@ -59,7 +59,7 @@ endforeach
 # website source listings
 foreach _file : website_listing_files
   custom_target(
-    '@0@.html'.format(_file).underscorify(),
+    fs.replace_suffix(_file, '.html').underscorify(),
     input: _file,
     output: '@PLAINNAME@.html',
     command: [

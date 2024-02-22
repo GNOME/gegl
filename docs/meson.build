@@ -119,7 +119,7 @@ inheritance_txt = custom_target(
 _tgt = []
 foreach _file: standalone_content
   _tgt += custom_target(
-    '@0@.html'.format(_file).underscorify(),
+    fs.replace_suffix(_file, '.html').underscorify(),
     output: '@BASENAME@.html',
     input: _file,
     command: [

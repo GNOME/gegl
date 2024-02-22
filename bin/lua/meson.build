@@ -31,7 +31,6 @@ lua_symlink_files = {
 # Windows doesn't like *nix symlinks so we check if the symlinked lua
 # files are valid and if not copy the original to the build dir in place
 # of the symlink 
-fs=import('fs')
 foreach _link, _file : lua_symlink_files
   if fs.is_symlink(_link)
     lua_files += _link

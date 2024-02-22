@@ -21,6 +21,7 @@ project('gegl',
 
 config    = configuration_data()
 
+fs        = import('fs')
 pkgconfig = import('pkgconfig')
 i18n      = import('i18n')
 gnome     = import('gnome')

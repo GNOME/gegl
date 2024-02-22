@@ -28,14 +28,14 @@ foreach testname : perf_tests
       '-DG_DISABLE_SINGLE_INCLUDES',
       '-DGLIB_DISABLE_DEPRECATION_WARNINGS',
       '-DCLUTTER_DISABLE_DEPRECATION_WARNINGS',
-      '-DTESTS_DATA_DIR="@0@"'.format( meson.source_root() / 'tests' / 'data'),
+      '-DTESTS_DATA_DIR="@0@"'.format( project_source_root / 'tests' / 'data'),
     ],
     install: false,
   )
 
   benchmark('Perf Test ' + testname, perf_test_exe,
     env: [
-      'GEGL_PATH=' + meson.build_root() / 'operations',
+      'GEGL_PATH=' + project_build_root / 'operations',
       'GEGL_USE_OPENCL=no',
     ],
   )
