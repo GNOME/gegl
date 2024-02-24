@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl-master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-02-16 16:09+0000\n"
-"PO-Revision-Date: 2024-02-17 10:28+0800\n"
+"POT-Creation-Date: 2024-02-24 09:41+0000\n"
+"PO-Revision-Date: 2024-02-24 17:58+0800\n"
 "Last-Translator: lumingzh <lumingzh@qq.com>\n"
 "Language-Team: Chinese - China <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
@@ -169,7 +169,7 @@ msgstr ""
 "\n"
 "\n"
 
-#: bin/ui-core.c:4387 gegl/gegl-serialize.c:672
+#: bin/ui-core.c:4387 gegl/gegl-serialize.c:690
 #, c-format
 msgid "BablFormat \"%s\" does not exist."
 msgstr "BablFormat“%s”不存在。"
@@ -389,27 +389,32 @@ msgstr "禁用 OpenCL"
 msgid "Show GEGL Options"
 msgstr "显示 GEGL 选项"
 
-#: gegl/gegl-serialize.c:305
+#: gegl/gegl-serialize.c:227 gegl/gegl-serialize.c:231
+#, c-format
+msgid "%s does not have a pad called %s"
+msgstr "%s 没有名叫 %s 的绘图板"
+
+#: gegl/gegl-serialize.c:323
 #, c-format
 msgid "unhandled path data %s:%s\n"
 msgstr "未处理的路径数据 %s:%s\n"
 
-#: gegl/gegl-serialize.c:541
+#: gegl/gegl-serialize.c:559
 #, c-format
 msgid "op '%s' not found, partial matches: "
 msgstr "操作“%s”未找到，相似匹配："
 
-#: gegl/gegl-serialize.c:570
+#: gegl/gegl-serialize.c:588
 #, c-format
 msgid "%s has no %s property."
 msgstr "%s 没有 %s 属性。"
 
-#: gegl/gegl-serialize.c:576
+#: gegl/gegl-serialize.c:594
 #, c-format
 msgid "%s has no %s property, properties: "
 msgstr "%s 没有 %s 属性，属性："
 
-#: gegl/gegl-serialize.c:807
+#: gegl/gegl-serialize.c:826
 #, c-format
 msgid "No such op '%s'"
 msgstr "没有这些操作“%s”"
@@ -661,7 +666,7 @@ msgstr "边缘保留量"
 msgid "Bilateral Filter"
 msgstr "双向滤镜"
 
-#: operations/common/bilateral-filter.c:299
+#: operations/common/bilateral-filter.c:298
 msgid ""
 "Like a gaussian blur; but where the contribution for each neighborhood pixel "
 "is also weighted by the color difference with the original center pixel."
@@ -1659,47 +1664,47 @@ msgstr "显示"
 msgid "Display the input buffer in a window."
 msgstr "在一个窗口中显示输入缓冲区。"
 
-#: operations/common/dither.c:25
+#: operations/common/dither.c:31
 msgid "Red levels"
 msgstr "红色色阶"
 
-#: operations/common/dither.c:26
+#: operations/common/dither.c:32
 msgid "Number of levels for red channel"
 msgstr "红色通道的级别数"
 
-#: operations/common/dither.c:30
+#: operations/common/dither.c:36
 msgid "Green levels"
 msgstr "绿色色阶"
 
-#: operations/common/dither.c:31
+#: operations/common/dither.c:37
 msgid "Number of levels for green channel"
 msgstr "绿色通道的级别数"
 
-#: operations/common/dither.c:35
+#: operations/common/dither.c:41
 msgid "Blue levels"
 msgstr "蓝色色阶"
 
-#: operations/common/dither.c:36
+#: operations/common/dither.c:42
 msgid "Number of levels for blue channel"
 msgstr "蓝色通道的级别数"
 
-#: operations/common/dither.c:40
+#: operations/common/dither.c:46
 msgid "Alpha levels"
 msgstr "透明色阶"
 
-#: operations/common/dither.c:41
+#: operations/common/dither.c:47
 msgid "Number of levels for alpha channel"
 msgstr "透明通道的级别数"
 
-#: operations/common/dither.c:45
+#: operations/common/dither.c:51
 msgid "Dithering method"
 msgstr "递色方式"
 
-#: operations/common/dither.c:47
+#: operations/common/dither.c:53
 msgid "The dithering method to use"
 msgstr "要使用的递色方式"
 
-#: operations/common/dither.c:49 operations/common/matting-global.c:28
+#: operations/common/dither.c:55 operations/common/matting-global.c:28
 #: operations/common/noise-cell.c:55 operations/common/noise-cie-lch.c:38
 #: operations/common/noise-hsv.c:40 operations/common/noise-hurl.c:37
 #: operations/common/noise-pick.c:38 operations/common/noise-rgb.c:55
@@ -1711,15 +1716,15 @@ msgstr "要使用的递色方式"
 #: operations/common-gpl3+/supernova.c:63
 #: operations/common-gpl3+/tile-paper.c:81 operations/common-gpl3+/wind.c:68
 #: operations/workshop/segment-kmeans.c:37
-#: operations/workshop/shuffle-search.c:65
+#: operations/workshop/shuffle-search.c:59
 msgid "Random seed"
 msgstr "随机种子"
 
-#: operations/common/dither.c:619
+#: operations/common/dither.c:640
 msgid "Dither"
 msgstr "递色"
 
-#: operations/common/dither.c:622
+#: operations/common/dither.c:643
 msgid ""
 "Reduce the number of colors in the image, by reducing the levels per channel "
 "(colors and alpha). Different dithering methods can be specified to "
@@ -1969,7 +1974,7 @@ msgstr "降低细节增强的渐变阈值"
 msgid "Fattal et al. 2002 Tone Mapping"
 msgstr "Fattal et al. 2002 色调映射"
 
-#: operations/common/fattal02.c:1366
+#: operations/common/fattal02.c:1365
 msgid ""
 "Adapt an image, which may have a high dynamic range, for presentation using "
 "a low dynamic range. This operator attenuates the magnitudes of local image "
@@ -2423,7 +2428,7 @@ msgstr "输出中的最高亮度级别"
 #: operations/common/levels.c:206 operations/common/posterize.c:24
 #: operations/common-cxx/piecewise-blend.cc:29
 #: operations/external/matting-levin.c:41
-#: operations/workshop/shuffle-search.c:54
+#: operations/workshop/shuffle-search.c:48
 msgid "Levels"
 msgstr "色阶"
 
@@ -2741,7 +2746,7 @@ msgstr "对图像渐变细节的着重级别"
 msgid "Mantiuk 2006 Tone Mapping"
 msgstr "Mantiuk 2006 色调映射"
 
-#: operations/common/mantiuk06.c:1660
+#: operations/common/mantiuk06.c:1659
 msgid ""
 "Adapt an image, which may have a high dynamic range, for presentation using "
 "a low dynamic range. This operator constrains contrasts across multiple "
@@ -3495,7 +3500,7 @@ msgstr "高数值会降低噪点的随机性"
 msgid "Add CIE Lch Noise"
 msgstr "添加 CIE Lch 噪点"
 
-#: operations/common/noise-cie-lch.c:199
+#: operations/common/noise-cie-lch.c:198
 msgid "Randomize lightness, chroma and hue independently"
 msgstr "独立的随机化亮度，色度和色相"
 
@@ -3561,7 +3566,7 @@ msgstr "控制迭代次数；降低数值获得更少可塑性结果"
 msgid "Noise Reduction"
 msgstr "降噪"
 
-#: operations/common/noise-reduction.c:460
+#: operations/common/noise-reduction.c:459
 msgid "Anisotropic smoothing operation"
 msgstr "各向异性平滑操作"
 
@@ -4113,7 +4118,7 @@ msgstr "对数；较多对数会保留更多的锐利特征"
 msgid "Symmetric Nearest Neighbor"
 msgstr "对称的最近相邻"
 
-#: operations/common/snn-mean.c:387
+#: operations/common/snn-mean.c:386
 msgid ""
 "Noise reducing edge preserving blur filter based on Symmetric Nearest "
 "Neighbors"
@@ -5277,7 +5282,7 @@ msgstr "反交错行/列的分块大小"
 msgid "Deinterlace"
 msgstr "反交错"
 
-#: operations/common-gpl3+/deinterlace.c:317
+#: operations/common-gpl3+/deinterlace.c:316
 msgid "Fix images where every other row or column is missing"
 msgstr "修复隔行或隔列缺失的图像"
 
@@ -5561,7 +5566,7 @@ msgstr "倾斜角（度）"
 msgid "Filter width"
 msgstr "滤镜宽度"
 
-#: operations/common-gpl3+/emboss.c:284
+#: operations/common-gpl3+/emboss.c:283
 msgid "Simulates an image created by embossing"
 msgstr "模拟以浮雕方式生成的图像"
 
@@ -6132,7 +6137,7 @@ msgstr "旋转模糊角度。大角度可能需要时间进行渲染"
 msgid "Circular Motion Blur"
 msgstr "圆周动态模糊"
 
-#: operations/common-gpl3+/motion-blur-circular.c:454
+#: operations/common-gpl3+/motion-blur-circular.c:453
 msgid "Circular motion blur"
 msgstr "圆周运动的模糊"
 
@@ -6878,7 +6883,7 @@ msgstr "是否增殖像素的不透明度"
 msgid "Value Propagate"
 msgstr "明度增殖"
 
-#: operations/common-gpl3+/value-propagate.c:650
+#: operations/common-gpl3+/value-propagate.c:649
 msgid ""
 "Propagate certain values to neighboring pixels. Erode and dilate any color "
 "or opacity."
@@ -8263,7 +8268,7 @@ msgstr "笔廓的不透明度，注意由于目前笔廓是使用喷枪工具产
 msgid "Vector Stroke"
 msgstr "矢量笔廓"
 
-#: operations/external/vector-stroke.c:360
+#: operations/external/vector-stroke.c:359
 msgid "Renders a vector stroke"
 msgstr "渲染一个矢量笔廓"
 
@@ -9461,15 +9466,15 @@ msgstr "机会"
 msgid "Phase"
 msgstr "阶段"
 
-#: operations/workshop/shuffle-search.c:55
+#: operations/workshop/shuffle-search.c:49
 msgid "Only used if no aux image is provided"
 msgstr "仅在未提供辅助图像时使用"
 
-#: operations/workshop/shuffle-search.c:573
+#: operations/workshop/shuffle-search.c:592
 msgid "Optimize Dither"
 msgstr "优化递色"
 
-#: operations/workshop/shuffle-search.c:576
+#: operations/workshop/shuffle-search.c:595
 msgid ""
 "Shuffles pixels, and quantization with neighbors to optimize dither, by "
 "shuffling neighboring pixels."
