@@ -58,25 +58,46 @@ extern "C" {
 static Imf::Header
 create_header (int w,
                int h,
-               int d)
+               int d,
+               int bits)
 {
   Imf::Header header (w, h);
   Imf::FrameBuffer fbuf;
 
-  if (d <= 2)
-    {
-      header.channels ().insert ("Y", Imf::Channel (Imf::FLOAT));
-    }
+  if (bits == 16)
+  {
+    if (d <= 2)
+      {
+        header.channels ().insert ("Y", Imf::Channel (Imf::HALF));
+      }
+    else
+      {
+        header.channels ().insert ("R", Imf::Channel (Imf::HALF));
+        header.channels ().insert ("G", Imf::Channel (Imf::HALF));
+        header.channels ().insert ("B", Imf::Channel (Imf::HALF));
+      }
+    if (d == 2 || d == 4)
+      {
+        header.channels ().insert ("A", Imf::Channel (Imf::HALF));
+      }
+  }
   else
-    {
-      header.channels ().insert ("R", Imf::Channel (Imf::FLOAT));
-      header.channels ().insert ("G", Imf::Channel (Imf::FLOAT));
-      header.channels ().insert ("B", Imf::Channel (Imf::FLOAT));
-    }
-  if (d == 2 || d == 4)
-    {
-      header.channels ().insert ("A", Imf::Channel (Imf::FLOAT));
-    }
+  {
+    if (d <= 2)
+      {
+        header.channels ().insert ("Y", Imf::Channel (Imf::FLOAT));
+      }
+    else
+      {
+        header.channels ().insert ("R", Imf::Channel (Imf::FLOAT));
+        header.channels ().insert ("G", Imf::Channel (Imf::FLOAT));
+        header.channels ().insert ("B", Imf::Channel (Imf::FLOAT));
+      }
+    if (d == 2 || d == 4)
+      {
+        header.channels ().insert ("A", Imf::Channel (Imf::FLOAT));
+      }
+  }
   return header;
 }
 
@@ -84,10 +105,10 @@ create_header (int w,
  * create an Imf::FrameBuffer object for w*h*d floats and return it.
  */
 static Imf::FrameBuffer
-create_frame_buffer (int          w,
-                     int          h,
-                     int          d,
-                     const float *data)
+create_frame_buffer_f32 (int          w,
+                         int          h,
+                         int          d,
+                         const float *data)
 {
   Imf::FrameBuffer fbuf;
 
@@ -113,6 +134,51 @@ create_frame_buffer (int          w,
   return fbuf;
 }
 
+static Imf::FrameBuffer
+create_frame_buffer_f16 (int          w,
+                         int          h,
+                         int          d,
+                         const short *data)
+{
+  Imf::FrameBuffer fbuf;
+
+  if (d <= 2)
+    {
+      fbuf.insert ("Y", Imf::Slice (Imf::HALF, (char *) (&data[0] + 0),
+          d * sizeof *data, d * sizeof *data * w));
+    }
+  else
+    {
+      fbuf.insert ("R", Imf::Slice (Imf::HALF, (char *) (&data[0] + 0),
+          d * sizeof *data, d * sizeof *data * w));
+      fbuf.insert ("G", Imf::Slice (Imf::HALF, (char *) (&data[0] + 1),
+          d * sizeof *data, d * sizeof *data * w));
+      fbuf.insert ("B", Imf::Slice (Imf::HALF, (char *) (&data[0] + 2),
+          d * sizeof *data, d * sizeof *data * w));
+    }
+  if (d == 2 || d == 4)
+    {
+      fbuf.insert ("A", Imf::Slice (Imf::HALF, (char *) (&data[0] + (d - 1)),
+          d * sizeof *data, d * sizeof *data * w));
+    }
+  return fbuf;
+}
+
+
+static Imf::FrameBuffer
+create_frame_buffer (int          w,
+                     int          h,
+                     int          d,
+                     int          bits,
+                     const void  *data)
+{
+  if (bits == 16)
+    return create_frame_buffer_f16 (w, h, d, (short*)data);
+  else // if (bits == 32)
+    return create_frame_buffer_f32 (w, h, d, (float*)data);
+}
+
+
 /**
  * write the float buffer to an exr file with tile-size tw x th.
  * The buffer must contain w*h*d floats.
@@ -123,16 +189,17 @@ create_frame_buffer (int          w,
  * d=4: write RGB and A.
  */
 static void
-write_tiled_exr (const float       *pixels,
+write_tiled_exr (const void        *pixels,
                  const Babl        *space,
                  int                w,
                  int                h,
                  int                d,
                  int                tw,
                  int                th,
+                 int                bits,
                  const std::string &filename)
 {
-  Imf::Header header (create_header (w, h, d));
+  Imf::Header header (create_header (w, h, d, bits));
   header.setTileDescription (Imf::TileDescription (tw, th, Imf::ONE_LEVEL));
 
   {
@@ -155,7 +222,7 @@ write_tiled_exr (const float       *pixels,
   }
 
   Imf::TiledOutputFile out (filename.c_str (), header);
-  Imf::FrameBuffer fbuf (create_frame_buffer (w, h, d, pixels));
+  Imf::FrameBuffer fbuf (create_frame_buffer (w, h, d, bits, pixels));
   out.setFrameBuffer (fbuf);
   out.writeTiles (0, out.numXTiles () - 1, 0, out.numYTiles () - 1);
 }
@@ -166,14 +233,15 @@ write_tiled_exr (const float       *pixels,
  * The data is written to the file named filename.
  */
 static void
-write_scanline_exr (const float       *pixels,
+write_scanline_exr (const void        *pixels,
                     const Babl        *space,
                     int                w,
                     int                h,
                     int                d,
+                    int                bits,
                     const std::string &filename)
 {
-  Imf::Header header (create_header (w, h, d));
+  Imf::Header header (create_header (w, h, d, bits));
 
   {
     double wp[2];
@@ -193,7 +261,7 @@ write_scanline_exr (const float       *pixels,
   }
 
   Imf::OutputFile out (filename.c_str (), header);
-  Imf::FrameBuffer fbuf (create_frame_buffer (w, h, d, pixels));
+  Imf::FrameBuffer fbuf (create_frame_buffer (w, h, d, bits, pixels));
   out.setFrameBuffer (fbuf);
   out.writePixels (h);
 }
@@ -204,23 +272,24 @@ write_scanline_exr (const float       *pixels,
  * the openexr lib and therefore should be exception save.
  */
 static void
-exr_save_process (const float       *pixels,
+exr_save_process (const void        *pixels,
                   const Babl        *space,
                   int                w,
                   int                h,
                   int                d,
                   int                tile_size,
+                  int                bits,
                   const std::string &filename)
 {
   if (tile_size == 0)
     {
       /* write a scanline exr image. */
-      write_scanline_exr (pixels, space, w, h, d, filename);
+      write_scanline_exr (pixels, space, w, h, d, bits, filename);
     }
   else
     {
       /* write a tiled exr image. */
-      write_tiled_exr (pixels, space, w, h, d, tile_size, tile_size, filename);
+      write_tiled_exr (pixels, space, w, h, d, tile_size, tile_size, bits, filename);
     }
 }
 
@@ -246,24 +315,44 @@ gegl_exr_save_process (GeglOperation       *operation,
   const Babl *original_space = babl_format_get_space (original_format);
   unsigned n_components = babl_format_get_n_components (original_format);
 
-  switch (n_components)
-    {
-      case 1: output_format = "Y float";       break;
-      case 2: output_format = "YaA float";     break;
-      case 3: output_format = "RGB float";     break;
-      case 4: output_format = "RaGaBaA float"; break;
-      default:
-        g_warning ("exr-save: cannot write exr with n_components %d.", n_components);
-        return FALSE;
-        break;
-    }
+  int bits_per_component = 8*babl_format_get_bytes_per_pixel (original_format)/n_components;
+
+  if (bits_per_component == 16)
+  {
+    switch (n_components)
+      {
+        case 1: output_format = "Y half";       break;
+        case 2: output_format = "YaA half";     break;
+        case 3: output_format = "RGB half";     break;
+        case 4: output_format = "RaGaBaA half"; break;
+        default:
+          g_warning ("exr-save: cannot write exr with n_components %d.", n_components);
+          return FALSE;
+          break;
+      }
+  }
+  else
+  {
+    bits_per_component=32;
+    switch (n_components)
+      {
+        case 1: output_format = "Y float";       break;
+        case 2: output_format = "YaA float";     break;
+        case 3: output_format = "RGB float";     break;
+        case 4: output_format = "RaGaBaA float"; break;
+        default:
+          g_warning ("exr-save: cannot write exr with n_components %d.", n_components);
+          return FALSE;
+          break;
+      }
+  }
   /*
    * get the pixel data. The position of the rectangle is effectively
    * ignored. Always write a file width x height; @todo: check if exr
    * can set the origin.
    */
-  float *pixels
-    = (float *) g_malloc (rect->width * rect->height * n_components * sizeof *pixels);
+  void *pixels
+    = g_malloc (rect->width * rect->height * n_components * bits_per_component/8);
   if (pixels == 0)
     {
       g_warning ("exr-save: could allocate %d*%d*%d pixels.",
@@ -278,7 +367,7 @@ gegl_exr_save_process (GeglOperation       *operation,
   try
     {
       exr_save_process (pixels, original_space, rect->width, rect->height,
-                        n_components, tile_size, filename);
+                        n_components, tile_size, bits_per_component, filename);
       status = TRUE;
     }
   catch (std::exception &e)
