@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-02-16 16:09+0000\n"
-"PO-Revision-Date: 2024-02-16 20:38+0200\n"
+"POT-Creation-Date: 2024-02-24 09:41+0000\n"
+"PO-Revision-Date: 2024-02-24 22:24+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
 "Language: uk\n"
@@ -167,7 +167,7 @@ msgstr ""
 "\n"
 "\n"
 
-#: bin/ui-core.c:4387 gegl/gegl-serialize.c:672
+#: bin/ui-core.c:4387 gegl/gegl-serialize.c:690
 #, c-format
 msgid "BablFormat \"%s\" does not exist."
 msgstr "Не існує BablFormat «%s»."
@@ -389,27 +389,32 @@ msgstr "Вимкнути OpenCL"
 msgid "Show GEGL Options"
 msgstr "Показати параметри GEGL"
 
-#: gegl/gegl-serialize.c:305
+#: gegl/gegl-serialize.c:227 gegl/gegl-serialize.c:231
+#, c-format
+msgid "%s does not have a pad called %s"
+msgstr "У %s немає буфера із назвою %s"
+
+#: gegl/gegl-serialize.c:323
 #, c-format
 msgid "unhandled path data %s:%s\n"
 msgstr "непридатні до обробки дані шляху, %s:%s\n"
 
-#: gegl/gegl-serialize.c:541
+#: gegl/gegl-serialize.c:559
 #, c-format
 msgid "op '%s' not found, partial matches: "
 msgstr "Не знайдено дії «%s». Часткові збіги: "
 
-#: gegl/gegl-serialize.c:570
+#: gegl/gegl-serialize.c:588
 #, c-format
 msgid "%s has no %s property."
 msgstr "У %s немає властивості %s."
 
-#: gegl/gegl-serialize.c:576
+#: gegl/gegl-serialize.c:594
 #, c-format
 msgid "%s has no %s property, properties: "
 msgstr "У %s немає властивості %s. Властивості: "
 
-#: gegl/gegl-serialize.c:807
+#: gegl/gegl-serialize.c:826
 #, c-format
 msgid "No such op '%s'"
 msgstr "Немає дії «%s»"
@@ -667,7 +672,7 @@ msgstr "Старанність у збереженні країв"
 msgid "Bilateral Filter"
 msgstr "Двобічний фільтр"
 
-#: operations/common/bilateral-filter.c:299
+#: operations/common/bilateral-filter.c:298
 msgid ""
 "Like a gaussian blur; but where the contribution for each neighborhood pixel "
 "is also weighted by the color difference with the original center pixel."
@@ -1697,47 +1702,47 @@ msgstr "Показ"
 msgid "Display the input buffer in a window."
 msgstr "Показати вхідний буфер у вікні."
 
-#: operations/common/dither.c:25
+#: operations/common/dither.c:31
 msgid "Red levels"
 msgstr "Рівні червоного"
 
-#: operations/common/dither.c:26
+#: operations/common/dither.c:32
 msgid "Number of levels for red channel"
 msgstr "Кількість рівнів каналу червоного кольору"
 
-#: operations/common/dither.c:30
+#: operations/common/dither.c:36
 msgid "Green levels"
 msgstr "Рівні зеленого"
 
-#: operations/common/dither.c:31
+#: operations/common/dither.c:37
 msgid "Number of levels for green channel"
 msgstr "Кількість рівнів каналу зеленого кольору"
 
-#: operations/common/dither.c:35
+#: operations/common/dither.c:41
 msgid "Blue levels"
 msgstr "Рівні синього"
 
-#: operations/common/dither.c:36
+#: operations/common/dither.c:42
 msgid "Number of levels for blue channel"
 msgstr "Кількість рівнів каналу синього кольору"
 
-#: operations/common/dither.c:40
+#: operations/common/dither.c:46
 msgid "Alpha levels"
 msgstr "Рівні альфа-каналу"
 
-#: operations/common/dither.c:41
+#: operations/common/dither.c:47
 msgid "Number of levels for alpha channel"
 msgstr "Кількість рівнів альфа-каналу"
 
-#: operations/common/dither.c:45
+#: operations/common/dither.c:51
 msgid "Dithering method"
 msgstr "Метод розмиття"
 
-#: operations/common/dither.c:47
+#: operations/common/dither.c:53
 msgid "The dithering method to use"
 msgstr "Метод розмиття, яким слід скористатися"
 
-#: operations/common/dither.c:49 operations/common/matting-global.c:28
+#: operations/common/dither.c:55 operations/common/matting-global.c:28
 #: operations/common/noise-cell.c:55 operations/common/noise-cie-lch.c:38
 #: operations/common/noise-hsv.c:40 operations/common/noise-hurl.c:37
 #: operations/common/noise-pick.c:38 operations/common/noise-rgb.c:55
@@ -1749,15 +1754,15 @@ msgstr "Метод розмиття, яким слід скористатися"
 #: operations/common-gpl3+/supernova.c:63
 #: operations/common-gpl3+/tile-paper.c:81 operations/common-gpl3+/wind.c:68
 #: operations/workshop/segment-kmeans.c:37
-#: operations/workshop/shuffle-search.c:65
+#: operations/workshop/shuffle-search.c:59
 msgid "Random seed"
 msgstr "База випадковості"
 
-#: operations/common/dither.c:619
+#: operations/common/dither.c:640
 msgid "Dither"
 msgstr "Змішування"
 
-#: operations/common/dither.c:622
+#: operations/common/dither.c:643
 msgid ""
 "Reduce the number of colors in the image, by reducing the levels per channel "
 "(colors and alpha). Different dithering methods can be specified to "
@@ -2021,7 +2026,7 @@ msgstr "Поріг градієнта для зниження удосконал
 msgid "Fattal et al. 2002 Tone Mapping"
 msgstr "Проектування тонів за Fattal et al. 2002"
 
-#: operations/common/fattal02.c:1366
+#: operations/common/fattal02.c:1365
 msgid ""
 "Adapt an image, which may have a high dynamic range, for presentation using "
 "a low dynamic range. This operator attenuates the magnitudes of local image "
@@ -2496,7 +2501,7 @@ msgstr "Найвищий рівень освітленості на виході
 #: operations/common/levels.c:206 operations/common/posterize.c:24
 #: operations/common-cxx/piecewise-blend.cc:29
 #: operations/external/matting-levin.c:41
-#: operations/workshop/shuffle-search.c:54
+#: operations/workshop/shuffle-search.c:48
 msgid "Levels"
 msgstr "Рівні"
 
@@ -2828,7 +2833,7 @@ msgstr "Рівень акцентованості на подробицях гр
 msgid "Mantiuk 2006 Tone Mapping"
 msgstr "Проектування тонів за Мантюком, 2006"
 
-#: operations/common/mantiuk06.c:1660
+#: operations/common/mantiuk06.c:1659
 msgid ""
 "Adapt an image, which may have a high dynamic range, for presentation using "
 "a low dynamic range. This operator constrains contrasts across multiple "
@@ -3626,7 +3631,7 @@ msgstr "Більші значення зменшують випадковіст�
 msgid "Add CIE Lch Noise"
 msgstr "Додати шум CIE Lch"
 
-#: operations/common/noise-cie-lch.c:199
+#: operations/common/noise-cie-lch.c:198
 msgid "Randomize lightness, chroma and hue independently"
 msgstr ""
 "Зробити випадковими незалежно одне від одного освітленість, колірність і "
@@ -3696,7 +3701,7 @@ msgstr "Керує кількістю ітерацій. Менші значен�
 msgid "Noise Reduction"
 msgstr "Зменшення шумності"
 
-#: operations/common/noise-reduction.c:460
+#: operations/common/noise-reduction.c:459
 msgid "Anisotropic smoothing operation"
 msgstr "Операція анізотропного згладжування"
 
@@ -4273,7 +4278,7 @@ msgstr ""
 msgid "Symmetric Nearest Neighbor"
 msgstr "Найближча сусідня симетрія"
 
-#: operations/common/snn-mean.c:387
+#: operations/common/snn-mean.c:386
 msgid ""
 "Noise reducing edge preserving blur filter based on Symmetric Nearest "
 "Neighbors"
@@ -5485,7 +5490,7 @@ msgstr "Розмір блоку усування черезрядковості 
 msgid "Deinterlace"
 msgstr "Усунення черезрядковості"
 
-#: operations/common-gpl3+/deinterlace.c:317
+#: operations/common-gpl3+/deinterlace.c:316
 msgid "Fix images where every other row or column is missing"
 msgstr ""
 "Виправляє зображення де пропущено дані кожного другого рядка або стовпчика"
@@ -5771,7 +5776,7 @@ msgstr "Кут підняття (у градусах):"
 msgid "Filter width"
 msgstr "Ширина фільтра"
 
-#: operations/common-gpl3+/emboss.c:284
+#: operations/common-gpl3+/emboss.c:283
 msgid "Simulates an image created by embossing"
 msgstr "Надає зображенню вигляд барельєфа"
 
@@ -6349,7 +6354,7 @@ msgstr ""
 msgid "Circular Motion Blur"
 msgstr "Розмиття обертальним рухом"
 
-#: operations/common-gpl3+/motion-blur-circular.c:454
+#: operations/common-gpl3+/motion-blur-circular.c:453
 msgid "Circular motion blur"
 msgstr "Розмиття обертальним рухом"
 
@@ -7117,7 +7122,7 @@ msgstr "Чи слід поширювати непрозорість піксел
 msgid "Value Propagate"
 msgstr "Поширення значення"
 
-#: operations/common-gpl3+/value-propagate.c:650
+#: operations/common-gpl3+/value-propagate.c:649
 msgid ""
 "Propagate certain values to neighboring pixels. Erode and dilate any color "
 "or opacity."
@@ -8559,7 +8564,7 @@ msgstr ""
 msgid "Vector Stroke"
 msgstr "Векторybq inhb["
 
-#: operations/external/vector-stroke.c:360
+#: operations/external/vector-stroke.c:359
 msgid "Renders a vector stroke"
 msgstr "Створює векторний мазок"
 
@@ -9269,12 +9274,10 @@ msgstr ""
 "під час дискретизації"
 
 #: operations/workshop/external/ctx-script.c:126
-#| msgid "Script"
 msgid "Ctx script"
 msgstr "Скрипт ctx"
 
 #: operations/workshop/external/ctx-script.c:128
-#| msgid "Renders a vector stroke"
 msgid "Renders a ctx vector graphics"
 msgstr "Обробляє векторну графіку ctx"
 
@@ -9828,26 +9831,21 @@ msgstr "Можливість"
 msgid "Phase"
 msgstr "Фаза"
 
-#: operations/workshop/shuffle-search.c:55
+#: operations/workshop/shuffle-search.c:49
 msgid "Only used if no aux image is provided"
 msgstr "Буде використано, лише якщо не надано допоміжного зображення"
 
-#: operations/workshop/shuffle-search.c:573
+#: operations/workshop/shuffle-search.c:592
 msgid "Optimize Dither"
 msgstr "Оптимізувати розмивання"
 
-#: operations/workshop/shuffle-search.c:576
-#| msgid ""
-#| "Shuffles pixels with neighbors to optimize dither, by shuffling "
-#| "neighboring pixels; if an image is provided as aux input, it is used as "
-#| "dithering starting point."
+#: operations/workshop/shuffle-search.c:595
 msgid ""
 "Shuffles pixels, and quantization with neighbors to optimize dither, by "
 "shuffling neighboring pixels."
 msgstr ""
-"Перемішує пікселі і виконує квантизацію із сусідніми пікселями для"
-" оптимізації розмивання шляхом "
-"перемішування сусідніх пікселів."
+"Перемішує пікселі і виконує квантизацію із сусідніми пікселями для "
+"оптимізації розмивання шляхом перемішування сусідніх пікселів."
 
 #: operations/workshop/chamfer.c:27
 msgid "HardLight"
