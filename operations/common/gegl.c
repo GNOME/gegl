@@ -108,9 +108,9 @@ prepare (GeglOperation *operation)
   {
      gchar cwd[81920]; // XXX: should do better
      getcwd (cwd, sizeof(cwd));
-  gegl_create_chain (o->string, input, output, 0.0,
-                     gegl_node_get_bounding_box (input).height, cwd,
-                     &error);
+     gegl_create_chain (o->string, input, output, 0.0,
+                        gegl_node_get_bounding_box (input).height, cwd,
+                        &error);
   }
 
   if (error)

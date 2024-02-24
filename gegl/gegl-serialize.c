@@ -216,6 +216,24 @@ gegl_migrate_api (GeglNode    *node,
 
 #define GEGL_CHAIN_MAX_LEVEL 10
 
+static void
+gegl_node_connect_safe (GeglNode *node_a, const char *pad_a,
+                        GeglNode *node_b, const char *pad_b,
+                        GError **error)
+{
+  if (*error) return;
+  if (!gegl_node_has_pad (node_a, pad_a))
+    *error = g_error_new (g_quark_from_static_string("gegl"),0,
+                           _("%s does not have a pad called %s"),
+                           gegl_node_get_operation (node_a), pad_a);
+  else if (!gegl_node_has_pad (node_b, pad_b))
+        *error = g_error_new (g_quark_from_static_string("gegl"),0,
+                           _("%s does not have a pad called %s"),
+                           gegl_node_get_operation (node_b), pad_b);
+      else
+  gegl_node_connect(node_a, pad_a, node_b, pad_b);
+}
+
 void
 gegl_create_chain_argv (char      **argv,
                         GeglNode   *start,
@@ -263,7 +281,7 @@ gegl_create_chain_argv (char      **argv,
 
   ht = g_hash_table_new (g_str_hash, g_str_equal);
 
-  while (*arg)
+  while (*arg && !*error)
     {
       if (in_keyframes)
         {
@@ -380,8 +398,8 @@ gegl_create_chain_argv (char      **argv,
         {
           level--;
           if (level < 0) level = 0;
-          gegl_node_connect (iter[level+1], "output", iter[level],
-                             level_pad[level]);
+          gegl_node_connect_safe (iter[level+1], "output", iter[level],
+                             level_pad[level], error);
         }
       else
         {
@@ -756,8 +774,9 @@ gegl_create_chain_argv (char      **argv,
                 if (end_block && level >0)
                   {
                     level--;
-                    gegl_node_connect (iter[level+1], "output",
-                                       iter[level], level_pad[level]);
+                    gegl_node_connect_safe (iter[level+1], "output",
+                                            iter[level], level_pad[level],
+                                            error);
                   }
               }
             }
@@ -848,11 +867,12 @@ gegl_create_chain_argv (char      **argv,
     }
 
 
-  while (level > 0)
+  while (level > 0 && !*error)
     {
       level--;
-      gegl_node_connect (iter[level+1], "output",
-                         iter[level], level_pad[level]);
+
+      gegl_node_connect_safe (iter[level+1], "output",
+                              iter[level], level_pad[level], error);
     }
 
   g_free (prop);
