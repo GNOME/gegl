@@ -11,6 +11,7 @@ gegl_workshop_sources = files(
   'connected-components.c',
   'demosaic-bimedian.c',
   'demosaic-simple.c',
+  'innershadow.c',
   'ditto.c',
   'band-tune.c',
   'gcr.c',
