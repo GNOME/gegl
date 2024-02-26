@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-02-09 16:03+0000\n"
-"PO-Revision-Date: 2024-02-09 19:34+0000\n"
+"POT-Creation-Date: 2024-02-26 13:31+0000\n"
+"PO-Revision-Date: 2024-02-26 19:34+0000\n"
 "Last-Translator: Jordi Mas i Hernàndez <jmas@softcatala.org>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "Language: ca\n"
@@ -166,7 +166,7 @@ msgstr ""
 "\n"
 "\n"
 
-#: bin/ui-core.c:4387 gegl/gegl-serialize.c:672
+#: bin/ui-core.c:4387 gegl/gegl-serialize.c:690
 #, c-format
 msgid "BablFormat \"%s\" does not exist."
 msgstr "El BablFormat «%s» no existeix."
@@ -392,27 +392,32 @@ msgstr "Inhabilita l'OpenCL"
 msgid "Show GEGL Options"
 msgstr "Mostra les opcions de GEGL"
 
-#: gegl/gegl-serialize.c:305
+#: gegl/gegl-serialize.c:227 gegl/gegl-serialize.c:231
+#, c-format
+msgid "%s does not have a pad called %s"
+msgstr "%s no té un panell anomenat %s"
+
+#: gegl/gegl-serialize.c:323
 #, c-format
 msgid "unhandled path data %s:%s\n"
 msgstr "camí de dades no gestionat %s:%s\n"
 
-#: gegl/gegl-serialize.c:541
+#: gegl/gegl-serialize.c:559
 #, c-format
 msgid "op '%s' not found, partial matches: "
 msgstr "no s'ha trobat l'op «%s», coincidències parcials:"
 
-#: gegl/gegl-serialize.c:570
+#: gegl/gegl-serialize.c:588
 #, c-format
 msgid "%s has no %s property."
 msgstr "%s no té la propietat %s."
 
-#: gegl/gegl-serialize.c:576
+#: gegl/gegl-serialize.c:594
 #, c-format
 msgid "%s has no %s property, properties: "
 msgstr "%s no té la propietat %s, propietats:"
 
-#: gegl/gegl-serialize.c:807
+#: gegl/gegl-serialize.c:826
 #, c-format
 msgid "No such op '%s'"
 msgstr "No existeix cap op «%s»"
@@ -647,6 +652,7 @@ msgstr "Mantén els valors alfa dins d'un interval específic"
 #: operations/common-cxx/focus-blur.c:45 operations/common-cxx/lens-blur.cc:25
 #: operations/common-gpl3+/gaussian-blur-selective.c:29
 #: operations/workshop/bilateral-filter-fast.c:43
+#: operations/workshop/inner-glow.c:69
 msgid "Blur radius"
 msgstr "Radi del difuminat"
 
@@ -671,7 +677,7 @@ msgstr "Quantitat de conservació de la vora"
 msgid "Bilateral Filter"
 msgstr "Filtre bilateral"
 
-#: operations/common/bilateral-filter.c:299
+#: operations/common/bilateral-filter.c:298
 msgid ""
 "Like a gaussian blur; but where the contribution for each neighborhood pixel"
 " is also weighted by the color difference with the original center pixel."
@@ -872,6 +878,7 @@ msgstr ""
 #: operations/common/noise-simplex.c:35
 #: operations/common/recursive-transform.c:36 operations/common/slic.c:38
 #: operations/common/stress.c:39 operations/common-gpl3+/fractal-explorer.c:55
+#: operations/workshop/shuffle-search.c:31
 msgid "Iterations"
 msgstr "Iteracions"
 
@@ -1007,6 +1014,7 @@ msgstr "Renderitza un patró del tipus tauler d'escacs"
 #: operations/common-gpl3+/tile-paper.c:31
 #: operations/common-gpl3+/value-propagate.c:54 operations/external/text.c:37
 #: operations/external/vector-fill.c:26 operations/external/vector-stroke.c:27
+#: operations/workshop/inner-glow.c:91
 msgid "Color"
 msgstr "Color"
 
@@ -1078,7 +1086,7 @@ msgstr ""
 "Estirament del croma del color per a cobrir-ne la franja el màxim possible, "
 "mantenint el to i la lluminositat sense tocar."
 
-#: operations/common/color-overlay.c:27
+#: operations/common/color-overlay.c:27 operations/workshop/inner-glow.c:92
 msgid "The color to paint over the input"
 msgstr "El color del dibuix sobre l'entrada"
 
@@ -1709,47 +1717,47 @@ msgstr "Mostra"
 msgid "Display the input buffer in a window."
 msgstr "Mostra la memòria intermèdia d'entrada en una finestra."
 
-#: operations/common/dither.c:25
+#: operations/common/dither.c:31
 msgid "Red levels"
 msgstr "Nivells de vermell"
 
-#: operations/common/dither.c:26
+#: operations/common/dither.c:32
 msgid "Number of levels for red channel"
 msgstr "Nombre de nivells del canal vermell"
 
-#: operations/common/dither.c:30
+#: operations/common/dither.c:36
 msgid "Green levels"
 msgstr "Nivells de verd"
 
-#: operations/common/dither.c:31
+#: operations/common/dither.c:37
 msgid "Number of levels for green channel"
 msgstr "Nombre de nivells del canal verd"
 
-#: operations/common/dither.c:35
+#: operations/common/dither.c:41
 msgid "Blue levels"
 msgstr "Nivells de blau"
 
-#: operations/common/dither.c:36
+#: operations/common/dither.c:42
 msgid "Number of levels for blue channel"
 msgstr "Nombre de nivells del canal blau"
 
-#: operations/common/dither.c:40
+#: operations/common/dither.c:46
 msgid "Alpha levels"
 msgstr "Nivells d'alfa"
 
-#: operations/common/dither.c:41
+#: operations/common/dither.c:47
 msgid "Number of levels for alpha channel"
 msgstr "Nombre de nivells del canal alfa"
 
-#: operations/common/dither.c:45
+#: operations/common/dither.c:51
 msgid "Dithering method"
 msgstr "Mètode de tramat"
 
-#: operations/common/dither.c:47
+#: operations/common/dither.c:53
 msgid "The dithering method to use"
 msgstr "L'estratègia de disseminat que s'utilitzarà"
 
-#: operations/common/dither.c:49 operations/common/matting-global.c:28
+#: operations/common/dither.c:55 operations/common/matting-global.c:28
 #: operations/common/noise-cell.c:55 operations/common/noise-cie-lch.c:38
 #: operations/common/noise-hsv.c:40 operations/common/noise-hurl.c:37
 #: operations/common/noise-pick.c:38 operations/common/noise-rgb.c:55
@@ -1761,15 +1769,15 @@ msgstr "L'estratègia de disseminat que s'utilitzarà"
 #: operations/common-gpl3+/sinus.c:49 operations/common-gpl3+/supernova.c:63
 #: operations/common-gpl3+/tile-paper.c:81 operations/common-gpl3+/wind.c:68
 #: operations/workshop/segment-kmeans.c:37
-#: operations/workshop/shuffle-search.c:66
+#: operations/workshop/shuffle-search.c:59
 msgid "Random seed"
 msgstr "Llavor aleatòria"
 
-#: operations/common/dither.c:619
+#: operations/common/dither.c:640
 msgid "Dither"
 msgstr "Trama"
 
-#: operations/common/dither.c:622
+#: operations/common/dither.c:643
 msgid ""
 "Reduce the number of colors in the image, by reducing the levels per channel"
 " (colors and alpha). Different dithering methods can be specified to "
@@ -1816,20 +1824,22 @@ msgstr ""
 
 #: operations/common/dropshadow.c:27 operations/common/median-blur.c:27
 #: operations/common/pixelize.c:28 operations/common/vignette.c:26
-#: operations/common-cxx/focus-blur.c:35 operations/workshop/chamfer.c:43
+#: operations/common-cxx/focus-blur.c:35 operations/workshop/inner-glow.c:39
+#: operations/workshop/chamfer.c:43
 msgid "Square"
 msgstr "Quadrat"
 
 #: operations/common/dropshadow.c:28 operations/common/median-blur.c:28
 #: operations/common/newsprint.c:26 operations/common/vignette.c:25
-#: operations/common-cxx/focus-blur.c:34 operations/workshop/chamfer.c:44
+#: operations/common-cxx/focus-blur.c:34 operations/workshop/inner-glow.c:40
+#: operations/workshop/chamfer.c:44
 msgid "Circle"
 msgstr "Cercle"
 
 #: operations/common/dropshadow.c:29 operations/common/median-blur.c:29
 #: operations/common/newsprint.c:27 operations/common/pixelize.c:26
 #: operations/common/vignette.c:27 operations/common-cxx/focus-blur.c:36
-#: operations/workshop/chamfer.c:45
+#: operations/workshop/inner-glow.c:41 operations/workshop/chamfer.c:45
 msgid "Diamond"
 msgstr "Diamant"
 
@@ -1842,10 +1852,11 @@ msgstr "Diamant"
 #: operations/transform/scale-size-keepaspect.c:25
 #: operations/transform/shear.c:25 operations/transform/translate.c:25
 #: operations/workshop/external/spyrograph.c:51
+#: operations/workshop/inner-glow.c:51
 msgid "X"
 msgstr "X"
 
-#: operations/common/dropshadow.c:33
+#: operations/common/dropshadow.c:33 operations/workshop/inner-glow.c:52
 msgid "Horizontal shadow offset"
 msgstr "Desplaçament horitzontal de l'ombra"
 
@@ -1858,26 +1869,27 @@ msgstr "Desplaçament horitzontal de l'ombra"
 #: operations/transform/scale-size-keepaspect.c:30
 #: operations/transform/shear.c:29 operations/transform/translate.c:31
 #: operations/workshop/external/spyrograph.c:57
+#: operations/workshop/inner-glow.c:59
 msgid "Y"
 msgstr "Y"
 
-#: operations/common/dropshadow.c:40
+#: operations/common/dropshadow.c:40 operations/workshop/inner-glow.c:60
 msgid "Vertical shadow offset"
 msgstr "Desplaçament vertical de l'ombra"
 
-#: operations/common/dropshadow.c:53
+#: operations/common/dropshadow.c:53 operations/workshop/inner-glow.c:45
 msgid "Grow shape"
 msgstr "Engrandeix la forma"
 
-#: operations/common/dropshadow.c:56
+#: operations/common/dropshadow.c:56 operations/workshop/inner-glow.c:48
 msgid "The shape to expand or contract the shadow in"
 msgstr "La forma per a expandir o contraure l'ombra de dins"
 
-#: operations/common/dropshadow.c:58
+#: operations/common/dropshadow.c:58 operations/workshop/inner-glow.c:77
 msgid "Grow radius"
 msgstr "Engrandeix el radi"
 
-#: operations/common/dropshadow.c:65
+#: operations/common/dropshadow.c:65 operations/workshop/inner-glow.c:84
 msgid ""
 "The distance to expand the shadow before blurring; a negative value will "
 "contract the shadow instead"
@@ -1895,6 +1907,7 @@ msgstr "El color de l'ombra (per defecte és «negre»)"
 #: operations/common/dropshadow.c:74 operations/common/layer.c:33
 #: operations/common/opacity.c:25 operations/common/opacity.c:289
 #: operations/external/vector-fill.c:29 operations/external/vector-stroke.c:34
+#: operations/workshop/inner-glow.c:86
 msgid "Opacity"
 msgstr "Opacitat"
 
@@ -2032,7 +2045,7 @@ msgstr "Llindar del degradat per la reducció de la millora del detall"
 msgid "Fattal et al. 2002 Tone Mapping"
 msgstr "Fattal i altres. Mapador tonal 2002"
 
-#: operations/common/fattal02.c:1366
+#: operations/common/fattal02.c:1365
 msgid ""
 "Adapt an image, which may have a high dynamic range, for presentation using "
 "a low dynamic range. This operator attenuates the magnitudes of local image "
@@ -2506,6 +2519,7 @@ msgstr "Nivell de luminància més alt a la sortida"
 #: operations/common/levels.c:206 operations/common/posterize.c:24
 #: operations/common-cxx/piecewise-blend.cc:29
 #: operations/external/matting-levin.c:41
+#: operations/workshop/shuffle-search.c:48
 msgid "Levels"
 msgstr "Nivells"
 
@@ -2837,7 +2851,7 @@ msgstr "Detall"
 msgid "Level of emphasis on image gradient details"
 msgstr "Nivell d'èmfasi en els detalls del degradat de la imatge"
 
-#: operations/common/mantiuk06.c:1654
+#: operations/common/mantiuk06.c:1655
 msgid "Mantiuk 2006 Tone Mapping"
 msgstr "Mapador tonal Mantiuk 2006"
 
@@ -3634,7 +3648,7 @@ msgstr "Un valor més alt redueix l'aleatorietat del soroll"
 msgid "Add CIE Lch Noise"
 msgstr "Afegeix soroll CIE Lch"
 
-#: operations/common/noise-cie-lch.c:199
+#: operations/common/noise-cie-lch.c:198
 msgid "Randomize lightness, chroma and hue independently"
 msgstr ""
 "Aleatoritza la lluminositat, la crominància i el to, de manera independent"
@@ -3703,7 +3717,7 @@ msgstr ""
 msgid "Noise Reduction"
 msgstr "Reducció del soroll"
 
-#: operations/common/noise-reduction.c:460
+#: operations/common/noise-reduction.c:459
 msgid "Anisotropic smoothing operation"
 msgstr "Operació de suavitzat anisotròpic"
 
@@ -4279,7 +4293,7 @@ msgstr "Nombre de parelles. Els nombres alts conserven més bé la precisió"
 msgid "Symmetric Nearest Neighbor"
 msgstr "Veí més proper simètric"
 
-#: operations/common/snn-mean.c:387
+#: operations/common/snn-mean.c:386
 msgid ""
 "Noise reducing edge preserving blur filter based on Symmetric Nearest "
 "Neighbors"
@@ -4482,8 +4496,8 @@ msgid ""
 "Thresholds the image to white/black based on either the global values set in"
 " the value (low) and high properties, or per pixel from the aux input."
 msgstr ""
-"Llinda la imatge a blanc/negre basant-se en els valors globals establerts "
-"en el valor (baix) i les propietats altes, o per píxel des de l'entrada "
+"Llinda la imatge a blanc/negre basant-se en els valors globals establerts en"
+" el valor (baix) i les propietats altes, o per píxel des de l'entrada "
 "auxiliar."
 
 #: operations/common/tile.c:24
@@ -5502,7 +5516,7 @@ msgstr "Mida dels blocs de les files i les columnes desentrellaçades"
 msgid "Deinterlace"
 msgstr "Desentrellaça"
 
-#: operations/common-gpl3+/deinterlace.c:317
+#: operations/common-gpl3+/deinterlace.c:316
 msgid "Fix images where every other row or column is missing"
 msgstr "Fixa les imatges on cada altra fila o columna s'ha perdut"
 
@@ -5788,7 +5802,7 @@ msgstr "L'angle d'elevació (graus)"
 msgid "Filter width"
 msgstr "Amplada del filtre"
 
-#: operations/common-gpl3+/emboss.c:284
+#: operations/common-gpl3+/emboss.c:283
 msgid "Simulates an image created by embossing"
 msgstr "Simula una imatge creada amb relleu"
 
@@ -6365,7 +6379,7 @@ msgstr ""
 msgid "Circular Motion Blur"
 msgstr "Moviment circular del difuminat"
 
-#: operations/common-gpl3+/motion-blur-circular.c:454
+#: operations/common-gpl3+/motion-blur-circular.c:453
 msgid "Circular motion blur"
 msgstr "Desplaçament circular del difuminat"
 
@@ -7129,7 +7143,7 @@ msgstr "Si s'ha de propagar l'opacitat dels píxels"
 msgid "Value Propagate"
 msgstr "Valor de propagació"
 
-#: operations/common-gpl3+/value-propagate.c:650
+#: operations/common-gpl3+/value-propagate.c:649
 msgid ""
 "Propagate certain values to neighboring pixels. Erode and dilate any color "
 "or opacity."
@@ -8110,11 +8124,13 @@ msgstr "L'opacitat de l'emplenament que s'utilitzarà"
 
 #: operations/external/path.c:54 operations/external/vector-fill.c:40
 #: operations/external/vector-stroke.c:41
+#: operations/workshop/external/ctx-script.c:26
 msgid "Vector"
 msgstr "Vector"
 
 #: operations/external/path.c:55 operations/external/vector-fill.c:41
 #: operations/external/vector-stroke.c:42
+#: operations/workshop/external/ctx-script.c:27
 msgid "A GeglVector representing the path of the stroke"
 msgstr "Un vector Gegl que representa el camí del traç"
 
@@ -8574,7 +8590,7 @@ msgstr ""
 msgid "Vector Stroke"
 msgstr "Traç vectorial"
 
-#: operations/external/vector-stroke.c:360
+#: operations/external/vector-stroke.c:359
 msgid "Renders a vector stroke"
 msgstr "Renderitza un traç vectorial"
 
@@ -9282,6 +9298,14 @@ msgstr ""
 "Operació de prova per a fer un mapa 1:1, des de l'entrada a la sortida, "
 "mentre es mostreja"
 
+#: operations/workshop/external/ctx-script.c:126
+msgid "Ctx script"
+msgstr "Script Ctx"
+
+#: operations/workshop/external/ctx-script.c:128
+msgid "Renders a ctx vector graphics"
+msgstr "Renderitza un gràfic vectorial ctx"
+
 #: operations/workshop/external/gluas.c:29
 msgid "Script"
 msgstr "Script"
@@ -9748,6 +9772,36 @@ msgstr "Mapa de degradat"
 msgid "Applies a color gradient."
 msgstr "Aplica un degradat de color."
 
+#: operations/workshop/inner-glow.c:96
+msgid "Median fix for non-effected pixels on edges"
+msgstr "Correcció de la mediana per als píxels no afectats a les vores"
+
+#: operations/workshop/inner-glow.c:98
+msgid ""
+"Median Blur covers uneffected pixels. Making this slider too high will make "
+"it outline-like. So only slide it has high as you need to cover thin shape "
+"corners.'"
+msgstr ""
+"La mitjana de difuminat cobreix els píxels no afectats. Si el control "
+"lliscant és massa alt, es convertirà en un esbós. Per tant, només lliscar-la"
+" té altura, ja que cal cobrir cantonades de forma fina."
+
+#: operations/workshop/inner-glow.c:182
+msgid "Inner Glow"
+msgstr "Lluentor interior"
+
+#: operations/workshop/inner-glow.c:184
+msgid ""
+"GEGL does an inner shadow glow effect; for more interesting use different "
+"blend mode than the default, Replace."
+msgstr ""
+"El GEGL fa un efecte de brillantor d'ombra interior; per a un ús més interessant, "
+"utilitzeu un mode de barreja diferent del predeterminat. Reemplaça."
+
+#: operations/workshop/inner-glow.c:186
+msgid "Inner Glow..."
+msgstr "Lluentor interior..."
+
 #: operations/workshop/integral-image.c:25
 msgid "squared integral"
 msgstr "Integral quadrada"
@@ -9826,43 +9880,29 @@ msgstr "Saturació-to selectiva"
 msgid "Selective adjust Hue, Saturation and Lightness"
 msgstr "Ajust selectiu del to, saturació i lluminositat"
 
-#: operations/workshop/shuffle-search.c:32
-msgid "iterations"
-msgstr "iteracions"
+#: operations/workshop/shuffle-search.c:38
+msgid "Chance"
+msgstr "Oportunitat"
 
-#: operations/workshop/shuffle-search.c:39
-msgid "chance"
-msgstr "oportunitat"
+#: operations/workshop/shuffle-search.c:45
+msgid "Phase"
+msgstr "Fase"
 
-#: operations/workshop/shuffle-search.c:46
-msgid "phase"
-msgstr "fase"
-
-#: operations/workshop/shuffle-search.c:56
-msgid "levels"
-msgstr "nivells"
-
-#: operations/workshop/shuffle-search.c:57
+#: operations/workshop/shuffle-search.c:49
 msgid "Only used if no aux image is provided"
 msgstr "Només s'utilitza si no es proporciona cap imatge auxiliar"
 
-#: operations/workshop/shuffle-search.c:60
-msgid "center bias"
-msgstr "biaix central"
-
-#: operations/workshop/shuffle-search.c:823
+#: operations/workshop/shuffle-search.c:592
 msgid "Optimize Dither"
 msgstr "Optimitza el tramat"
 
-#: operations/workshop/shuffle-search.c:826
+#: operations/workshop/shuffle-search.c:595
 msgid ""
-"Shuffles pixels with neighbors to optimize dither, by shuffling neighboring "
-"pixels; if an image is provided as aux input, it is used as dithering "
-"starting point."
+"Shuffles pixels, and quantization with neighbors to optimize dither, by "
+"shuffling neighboring pixels."
 msgstr ""
-"Barreja els píxels amb els veïns per a optimitzar el tramat, barrejant els "
-"píxels veïns; si es proporciona una imatge com a entrada auxiliar, "
-"s'utilitza com a punt de partida del tramat."
+"Barreja els píxels i quantifica amb els veïns per optimitzar el tramat, "
+"barrejant els píxels veïns."
 
 #: operations/workshop/chamfer.c:27
 msgid "HardLight"
@@ -9943,3 +9983,4 @@ msgstr "Xamfrà"
 msgid "Simulate lighting of a chamfered 3D-edges for an alpha-defined shape."
 msgstr ""
 "Simula la il·luminació d'una vora 3D xamfrada per a una forma definida alfa."
+
