@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl-master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-02-24 09:41+0000\n"
-"PO-Revision-Date: 2024-02-24 17:58+0800\n"
+"POT-Creation-Date: 2024-02-26 13:31+0000\n"
+"PO-Revision-Date: 2024-02-27 18:23+0800\n"
 "Last-Translator: lumingzh <lumingzh@qq.com>\n"
 "Language-Team: Chinese - China <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
@@ -644,6 +644,7 @@ msgstr "保持透明值在一个特定范围内"
 #: operations/common-cxx/focus-blur.c:45 operations/common-cxx/lens-blur.cc:25
 #: operations/common-gpl3+/gaussian-blur-selective.c:29
 #: operations/workshop/bilateral-filter-fast.c:43
+#: operations/workshop/inner-glow.c:69
 msgid "Blur radius"
 msgstr "模糊半径"
 
@@ -985,6 +986,7 @@ msgstr "渲染棋盘图案"
 #: operations/common-gpl3+/tile-paper.c:31
 #: operations/common-gpl3+/value-propagate.c:54 operations/external/text.c:37
 #: operations/external/vector-fill.c:26 operations/external/vector-stroke.c:27
+#: operations/workshop/inner-glow.c:91
 msgid "Color"
 msgstr "颜色"
 
@@ -1050,7 +1052,7 @@ msgid ""
 "lightness untouched."
 msgstr "拉伸色彩浓度以覆盖最大的可能范围，保持色相和亮度不变。"
 
-#: operations/common/color-overlay.c:27
+#: operations/common/color-overlay.c:27 operations/workshop/inner-glow.c:92
 msgid "The color to paint over the input"
 msgstr "覆盖输入要绘制的颜色"
 
@@ -1766,20 +1768,22 @@ msgstr ""
 
 #: operations/common/dropshadow.c:27 operations/common/median-blur.c:27
 #: operations/common/pixelize.c:28 operations/common/vignette.c:26
-#: operations/common-cxx/focus-blur.c:35 operations/workshop/chamfer.c:43
+#: operations/common-cxx/focus-blur.c:35 operations/workshop/inner-glow.c:39
+#: operations/workshop/chamfer.c:43
 msgid "Square"
 msgstr "方形"
 
 #: operations/common/dropshadow.c:28 operations/common/median-blur.c:28
 #: operations/common/newsprint.c:26 operations/common/vignette.c:25
-#: operations/common-cxx/focus-blur.c:34 operations/workshop/chamfer.c:44
+#: operations/common-cxx/focus-blur.c:34 operations/workshop/inner-glow.c:40
+#: operations/workshop/chamfer.c:44
 msgid "Circle"
 msgstr "圆形"
 
 #: operations/common/dropshadow.c:29 operations/common/median-blur.c:29
 #: operations/common/newsprint.c:27 operations/common/pixelize.c:26
 #: operations/common/vignette.c:27 operations/common-cxx/focus-blur.c:36
-#: operations/workshop/chamfer.c:45
+#: operations/workshop/inner-glow.c:41 operations/workshop/chamfer.c:45
 msgid "Diamond"
 msgstr "菱形"
 
@@ -1792,10 +1796,11 @@ msgstr "菱形"
 #: operations/transform/scale-size-keepaspect.c:25
 #: operations/transform/shear.c:25 operations/transform/translate.c:25
 #: operations/workshop/external/spyrograph.c:51
+#: operations/workshop/inner-glow.c:51
 msgid "X"
 msgstr "X"
 
-#: operations/common/dropshadow.c:33
+#: operations/common/dropshadow.c:33 operations/workshop/inner-glow.c:52
 msgid "Horizontal shadow offset"
 msgstr "水平阴影偏移"
 
@@ -1808,26 +1813,27 @@ msgstr "水平阴影偏移"
 #: operations/transform/scale-size-keepaspect.c:30
 #: operations/transform/shear.c:29 operations/transform/translate.c:31
 #: operations/workshop/external/spyrograph.c:57
+#: operations/workshop/inner-glow.c:59
 msgid "Y"
 msgstr "Y"
 
-#: operations/common/dropshadow.c:40
+#: operations/common/dropshadow.c:40 operations/workshop/inner-glow.c:60
 msgid "Vertical shadow offset"
 msgstr "竖直阴影偏移"
 
-#: operations/common/dropshadow.c:53
+#: operations/common/dropshadow.c:53 operations/workshop/inner-glow.c:45
 msgid "Grow shape"
 msgstr "增长形状"
 
-#: operations/common/dropshadow.c:56
+#: operations/common/dropshadow.c:56 operations/workshop/inner-glow.c:48
 msgid "The shape to expand or contract the shadow in"
 msgstr "扩张或收缩包含阴影的形状"
 
-#: operations/common/dropshadow.c:58
+#: operations/common/dropshadow.c:58 operations/workshop/inner-glow.c:77
 msgid "Grow radius"
 msgstr "增长半径"
 
-#: operations/common/dropshadow.c:65
+#: operations/common/dropshadow.c:65 operations/workshop/inner-glow.c:84
 msgid ""
 "The distance to expand the shadow before blurring; a negative value will "
 "contract the shadow instead"
@@ -1844,6 +1850,7 @@ msgstr "阴影的颜色（默认为“黑色”）"
 #: operations/common/dropshadow.c:74 operations/common/layer.c:33
 #: operations/common/opacity.c:25 operations/common/opacity.c:289
 #: operations/external/vector-fill.c:29 operations/external/vector-stroke.c:34
+#: operations/workshop/inner-glow.c:86
 msgid "Opacity"
 msgstr "不透明度"
 
@@ -9381,6 +9388,35 @@ msgstr "渐变映射"
 #: operations/workshop/gradient-map.c:245
 msgid "Applies a color gradient."
 msgstr "应用色彩渐变。"
+
+#: operations/workshop/inner-glow.c:96
+msgid "Median fix for non-effected pixels on edges"
+msgstr "用于边缘上未受影响像素的中值修复"
+
+#: operations/workshop/inner-glow.c:98
+msgid ""
+"Median Blur covers uneffected pixels. Making this slider too high will make "
+"it outline-like. So only slide it has high as you need to cover thin shape "
+"corners.'"
+msgstr ""
+"中值模糊会覆盖未受影响的像素。将该滑块拉的太高会使其形成类似轮廓的效果。所以"
+"仅将其拉到您需要的程度来覆盖细小形状角落。"
+
+#: operations/workshop/inner-glow.c:182
+msgid "Inner Glow"
+msgstr "内发光"
+
+#: operations/workshop/inner-glow.c:184
+msgid ""
+"GEGL does an inner shadow glow effect; for more interesting use different "
+"blend mode than the default, Replace."
+msgstr ""
+"GEGL 生成内部阴影发光效果；要获得更多有趣效果可以试用不同的混合模式代替默认模"
+"式。"
+
+#: operations/workshop/inner-glow.c:186
+msgid "Inner Glow..."
+msgstr "内发光…"
 
 #: operations/workshop/integral-image.c:25
 msgid "squared integral"
