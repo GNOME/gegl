@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-02-26 13:31+0000\n"
-"PO-Revision-Date: 2024-02-26 19:34+0000\n"
+"POT-Creation-Date: 2024-02-28 01:14+0000\n"
+"PO-Revision-Date: 2024-02-28 19:34+0000\n"
 "Last-Translator: Jordi Mas i Hernàndez <jmas@softcatala.org>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "Language: ca\n"
@@ -717,7 +717,7 @@ msgstr "Suavitat de la vora lluent"
 #: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:44
 #: operations/common-gpl3+/whirl-pinch.c:46
 #: operations/external/matting-levin.c:29 operations/workshop/boxblur-1d.c:27
-#: operations/workshop/boxblur.c:24
+#: operations/workshop/boxblur.c:24 operations/workshop/bevel.c:83
 #: operations/workshop/external/spyrograph.c:63
 msgid "Radius"
 msgstr "Radi"
@@ -726,10 +726,9 @@ msgstr "Radi"
 msgid "Glow radius"
 msgstr "Radi de la lluentor"
 
-#. Changing the name of a ENUM list will result in all presets breaking
 #: operations/common/bloom.c:42 operations/common/noise-reduction.c:26
 #: operations/common-cxx/denoise-dct.cc:38 operations/common-cxx/warp.cc:34
-#: operations/common-gpl3+/wind.c:64 operations/workshop/chamfer.c:57
+#: operations/common-gpl3+/wind.c:64
 msgid "Strength"
 msgstr "Força"
 
@@ -1825,21 +1824,19 @@ msgstr ""
 #: operations/common/dropshadow.c:27 operations/common/median-blur.c:27
 #: operations/common/pixelize.c:28 operations/common/vignette.c:26
 #: operations/common-cxx/focus-blur.c:35 operations/workshop/inner-glow.c:39
-#: operations/workshop/chamfer.c:43
 msgid "Square"
 msgstr "Quadrat"
 
 #: operations/common/dropshadow.c:28 operations/common/median-blur.c:28
 #: operations/common/newsprint.c:26 operations/common/vignette.c:25
 #: operations/common-cxx/focus-blur.c:34 operations/workshop/inner-glow.c:40
-#: operations/workshop/chamfer.c:44
 msgid "Circle"
 msgstr "Cercle"
 
 #: operations/common/dropshadow.c:29 operations/common/median-blur.c:29
 #: operations/common/newsprint.c:27 operations/common/pixelize.c:26
 #: operations/common/vignette.c:27 operations/common-cxx/focus-blur.c:36
-#: operations/workshop/inner-glow.c:41 operations/workshop/chamfer.c:45
+#: operations/workshop/inner-glow.c:41
 msgid "Diamond"
 msgstr "Diamant"
 
@@ -4323,7 +4320,7 @@ msgstr "Angle de visió"
 msgid "Camera angle of view"
 msgstr "Angle de visió de la càmera"
 
-#: operations/common/spherize.c:40 operations/workshop/chamfer.c:63
+#: operations/common/spherize.c:40
 msgid "Curvature"
 msgstr "Curvatura"
 
@@ -5218,13 +5215,20 @@ msgid "Azimuth"
 msgstr "Azimut"
 
 #: operations/common-gpl3+/bump-map.c:56 operations/common-gpl3+/emboss.c:40
+#: operations/workshop/bevel.c:91
 msgid "Elevation"
 msgstr "Elevació"
 
+#. The only issue  with this filter is that emboss depth= above 15 does
+#. nothing on chamfer bevel , but works great on bump bevel.
+#. so I made an extra node just for it that only updates emboss depth=, as a
+#. result depth and sharpness' are co-existing properties
+#. I am fully aware 'depth' and 'detail' are just words used to describe the
+#. same thing.
 #: operations/common-gpl3+/bump-map.c:59 operations/common-gpl3+/emboss.c:45
 #: operations/common-gpl3+/fractal-trace.c:60
 #: operations/common-gpl3+/texturize-canvas.c:44
-#: operations/workshop/chamfer.c:60
+#: operations/workshop/bevel.c:103
 msgid "Depth"
 msgstr "Profunditat"
 
@@ -6343,7 +6347,7 @@ msgstr "Ajunta el color"
 msgid "Light color"
 msgstr "Color de la llum"
 
-#: operations/common-gpl3+/mosaic.c:81 operations/workshop/chamfer.c:69
+#: operations/common-gpl3+/mosaic.c:81
 msgid "Light direction"
 msgstr "Direcció de la llum"
 
@@ -6771,8 +6775,7 @@ msgstr "Si es defineix, el patró serà una mica més distorsionat"
 msgid "Bilinear"
 msgstr "Bilineal"
 
-#. Changing the name of a ENUM list will result in all presets breaking
-#: operations/common-gpl3+/sinus.c:67 operations/workshop/chamfer.c:49
+#: operations/common-gpl3+/sinus.c:67 operations/workshop/bevel.c:72
 msgid "Blend Mode"
 msgstr "Mode degradat"
 
@@ -9211,6 +9214,110 @@ msgstr "Difuminat generat amb la mitjana dels colors d'una filera veïna."
 msgid "BoxBlur"
 msgstr "Difuminat enquadrat"
 
+#: operations/workshop/bevel.c:47
+msgid "Chamfer"
+msgstr "Xamfrà"
+
+#: operations/workshop/bevel.c:49
+msgid "Bump"
+msgstr "Relleu"
+
+#: operations/workshop/bevel.c:52
+msgid "Bevel Type"
+msgstr "Tipus de bisell"
+
+#: operations/workshop/bevel.c:55
+msgid "The family of bevel to use"
+msgstr "La família del bisell a utilitzar"
+
+#: operations/workshop/bevel.c:59
+msgid "None (for use with GIMPs blending options)"
+msgstr "Cap (per utilitzar amb les opcions de barreja del GIMP)"
+
+#: operations/workshop/bevel.c:61
+msgid "Hard Light"
+msgstr "Llum forta"
+
+#: operations/workshop/bevel.c:63
+msgid "Multiply"
+msgstr "Multiplica"
+
+#: operations/workshop/bevel.c:65
+msgid "Color Dodge"
+msgstr "Esvaïment del color"
+
+#: operations/workshop/bevel.c:67
+msgid "Darken"
+msgstr "Enfosqueix"
+
+#: operations/workshop/bevel.c:69
+msgid "Lighten"
+msgstr "Aclareix"
+
+#: operations/workshop/bevel.c:75
+msgid ""
+"What blending mode the bevel's emboss will be. Light Map is a special blend "
+"mode that allows users to extract the filters output as a light map which "
+"should be put on a layer above or be used with Gimp's blending options."
+msgstr ""
+"Quin mode de barreja serà el relleu del bisell. El mapa de llum és un mode de "
+"barreja especial que permet als usuaris extreure la sortida dels filtres com"
+" un mapa de llum que s'ha de posar en una capa de sobre o utilitzar amb les "
+"opcions de barreja de Gimp."
+
+#: operations/workshop/bevel.c:78
+msgid "Distance Map Setting"
+msgstr "Configuració del mapa de distància"
+
+#: operations/workshop/bevel.c:80
+msgid ""
+"Distance Map is unique to chamfer bevel and has three settings that alter "
+"the structure of the chamfer."
+msgstr ""
+"El Mapa de distància és únic per al bisell i té tres configuracions que "
+"alteren l'estructura del xamfrà."
+
+#: operations/workshop/bevel.c:88
+msgid "Radius of softening for making bump of the shape."
+msgstr "Radi de suavitzat per fer relleu de la forma."
+
+#: operations/workshop/bevel.c:92
+msgid "Elevation angle of the Bevel."
+msgstr "Angle d'elevació del bisell."
+
+#: operations/workshop/bevel.c:104
+msgid "Emboss depth - Brings out depth and detail of the bump bevel."
+msgstr ""
+"Profunditat de relleu - Aporta profunditat i detall del bisell de relleu."
+
+#: operations/workshop/bevel.c:108
+msgid "Light Angle"
+msgstr "Angle clar"
+
+#: operations/workshop/bevel.c:109
+msgid "Direction of a light source illuminating and shading the bevel."
+msgstr "Direcció d'una font de llum que il·lumina i ombreja el bisell."
+
+#: operations/workshop/bevel.c:299
+msgid "Bevel"
+msgstr "Bisell"
+
+#: operations/workshop/bevel.c:301
+msgid ""
+"Two bevel effects in one place, Chamfer - which simulates lighting of "
+"chamfered 3D-edges, and Bump - the second make a 3D inflation effect by an "
+"emboss covering a blur. Both bevels benefit from color filled alpha defined "
+"shapes."
+msgstr ""
+"Dos efectes bisellats en un sol lloc, Xamfrà -que simula la il·luminació de"
+" vores 3D xamfragades, i Relleu - el segon fa un efecte d'inflació 3D "
+"mitjançant una relleu que cobreix un difuminat. Ambdós bisells es beneficien"
+" de formes definides alfa plenes de color."
+
+#: operations/workshop/bevel.c:303
+msgid "Bevel..."
+msgstr "Bevel..."
+
 #: operations/workshop/connected-components.c:25
 msgid "Separator"
 msgstr "Separador"
@@ -9795,8 +9902,9 @@ msgid ""
 "GEGL does an inner shadow glow effect; for more interesting use different "
 "blend mode than the default, Replace."
 msgstr ""
-"El GEGL fa un efecte de brillantor d'ombra interior; per a un ús més interessant, "
-"utilitzeu un mode de barreja diferent del predeterminat. Reemplaça."
+"El GEGL fa un efecte de brillantor d'ombra interior; per a un ús més "
+"interessant, utilitzeu un mode de barreja diferent del predeterminat. "
+"Reemplaça."
 
 #: operations/workshop/inner-glow.c:186
 msgid "Inner Glow..."
@@ -9903,84 +10011,3 @@ msgid ""
 msgstr ""
 "Barreja els píxels i quantifica amb els veïns per optimitzar el tramat, "
 "barrejant els píxels veïns."
-
-#: operations/workshop/chamfer.c:27
-msgid "HardLight"
-msgstr "Llum forta"
-
-#: operations/workshop/chamfer.c:29
-msgid "Multiply"
-msgstr "Multiplica"
-
-#: operations/workshop/chamfer.c:33
-msgid "Darken"
-msgstr "Enfosqueix"
-
-#: operations/workshop/chamfer.c:35
-msgid "Lighten"
-msgstr "Aclareix"
-
-#: operations/workshop/chamfer.c:39
-msgid "Soft Light"
-msgstr "Llum suau"
-
-#: operations/workshop/chamfer.c:52
-msgid "What blending mode a light map will be applied with."
-msgstr "Amb quin mode de combinació s'aplicarà un mapa de llum."
-
-#: operations/workshop/chamfer.c:64
-msgid ""
-"Curvature at 0.5 we are close to a circle shape, 1.0 is straight, values "
-"above 1.0 are concave."
-msgstr ""
-"La curvatura a 0.5 és propera a una forma de cercle, 1.0 és recta, els "
-"valors per sobre d'1.0 són còncaus."
-
-#: operations/workshop/chamfer.c:70
-msgid ""
-"Light angle (degrees). For most blend modes this rotates lighting of the "
-"bevel."
-msgstr ""
-"Angle de la llum (graus). Per a la majoria dels modes de degradat, això gira"
-" la il·luminació del bisell."
-
-#: operations/workshop/chamfer.c:76
-msgid "Detailed options"
-msgstr "Opcions detallades"
-
-#: operations/workshop/chamfer.c:78
-msgid "Mask with initial alpha"
-msgstr "Màscara amb alfa inicial"
-
-#: operations/workshop/chamfer.c:80
-msgid ""
-"Keep alpha coverage, avoids growing of the shape beyond initial position."
-msgstr ""
-"Mantén la cobertura alfa, evita el creixement de la forma més enllà de la "
-"posició inicial."
-
-#: operations/workshop/chamfer.c:86
-msgid "Light Elevation"
-msgstr "Elevació de la llum"
-
-#: operations/workshop/chamfer.c:87
-msgid ""
-"Elevation angle (degrees). For most blend modes this shifts the lightest "
-"colors of the bevel."
-msgstr ""
-"Angle d'elevació (graus). Per a la majoria dels modes de degradat, això "
-"desplaça els colors més clars del bisell."
-
-#: operations/workshop/chamfer.c:118
-msgid "Choose Internal Median Shape"
-msgstr "Tria una forma de mediana interna"
-
-#: operations/workshop/chamfer.c:348
-msgid "Chamfer"
-msgstr "Xamfrà"
-
-#: operations/workshop/chamfer.c:350
-msgid "Simulate lighting of a chamfered 3D-edges for an alpha-defined shape."
-msgstr ""
-"Simula la il·luminació d'una vora 3D xamfrada per a una forma definida alfa."
-
