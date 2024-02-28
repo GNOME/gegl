@@ -282,7 +282,15 @@ switch (o->type) {
             case GEGL_BEVEL_BUMP:  /*Bump on Gimp blend (gegl:src). Its suppose to puff out*/
             gegl_node_link_many (state->input, state->median, state->blur, state->emb, state->fixbump,  state->output, NULL);     
 }
-    }
+}
+
+static void
+dispose (GObject *object)
+{
+   GeglProperties  *o     = GEGL_PROPERTIES (object);
+   g_clear_pointer (&o->user_data, g_free);
+   G_OBJECT_CLASS (gegl_op_parent_class)->dispose (object);
+}
 
 static void
 gegl_op_class_init (GeglOpClass *klass)
@@ -290,7 +298,7 @@ gegl_op_class_init (GeglOpClass *klass)
   GeglOperationClass *operation_class;
 GeglOperationMetaClass *operation_meta_class = GEGL_OPERATION_META_CLASS (klass);
   operation_class = GEGL_OPERATION_CLASS (klass);
-
+  G_OBJECT_CLASS(klass)->dispose = dispose;
   operation_class->attach = attach;
   operation_meta_class->update = update_graph;
 
