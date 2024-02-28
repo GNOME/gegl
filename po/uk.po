@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-02-26 13:31+0000\n"
-"PO-Revision-Date: 2024-02-26 22:23+0200\n"
+"POT-Creation-Date: 2024-02-28 01:14+0000\n"
+"PO-Revision-Date: 2024-02-28 13:11+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
 "Language: uk\n"
@@ -712,7 +712,7 @@ msgstr "М'якість краю області німба"
 #: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:44
 #: operations/common-gpl3+/whirl-pinch.c:46
 #: operations/external/matting-levin.c:29 operations/workshop/boxblur-1d.c:27
-#: operations/workshop/boxblur.c:24
+#: operations/workshop/boxblur.c:24 operations/workshop/bevel.c:83
 #: operations/workshop/external/spyrograph.c:63
 msgid "Radius"
 msgstr "Радіус"
@@ -721,10 +721,9 @@ msgstr "Радіус"
 msgid "Glow radius"
 msgstr "Радіус сяйва"
 
-#. Changing the name of a ENUM list will result in all presets breaking
 #: operations/common/bloom.c:42 operations/common/noise-reduction.c:26
 #: operations/common-cxx/denoise-dct.cc:38 operations/common-cxx/warp.cc:34
-#: operations/common-gpl3+/wind.c:64 operations/workshop/chamfer.c:57
+#: operations/common-gpl3+/wind.c:64
 msgid "Strength"
 msgstr "Сила"
 
@@ -1813,21 +1812,19 @@ msgstr ""
 #: operations/common/dropshadow.c:27 operations/common/median-blur.c:27
 #: operations/common/pixelize.c:28 operations/common/vignette.c:26
 #: operations/common-cxx/focus-blur.c:35 operations/workshop/inner-glow.c:39
-#: operations/workshop/chamfer.c:43
 msgid "Square"
 msgstr "Квадрат"
 
 #: operations/common/dropshadow.c:28 operations/common/median-blur.c:28
 #: operations/common/newsprint.c:26 operations/common/vignette.c:25
 #: operations/common-cxx/focus-blur.c:34 operations/workshop/inner-glow.c:40
-#: operations/workshop/chamfer.c:44
 msgid "Circle"
 msgstr "Коло"
 
 #: operations/common/dropshadow.c:29 operations/common/median-blur.c:29
 #: operations/common/newsprint.c:27 operations/common/pixelize.c:26
 #: operations/common/vignette.c:27 operations/common-cxx/focus-blur.c:36
-#: operations/workshop/inner-glow.c:41 operations/workshop/chamfer.c:45
+#: operations/workshop/inner-glow.c:41
 msgid "Diamond"
 msgstr "Ромб"
 
@@ -4314,7 +4311,7 @@ msgstr "Кут зору"
 msgid "Camera angle of view"
 msgstr "Кут огляду камери"
 
-#: operations/common/spherize.c:40 operations/workshop/chamfer.c:63
+#: operations/common/spherize.c:40
 msgid "Curvature"
 msgstr "Кривина"
 
@@ -5202,13 +5199,18 @@ msgid "Azimuth"
 msgstr "Азимут"
 
 #: operations/common-gpl3+/bump-map.c:56 operations/common-gpl3+/emboss.c:40
+#: operations/workshop/bevel.c:91
 msgid "Elevation"
 msgstr "Висота"
 
+#. The only issue  with this filter is that emboss depth= above 15 does nothing on chamfer bevel , but works great on bump bevel.
+#. so I made an extra node just for it that only updates emboss depth=, as a result depth and sharpness' are co-existing properties
+#.
+#. I am fully aware 'depth' and 'detail' are just words used to describe the same thing.
 #: operations/common-gpl3+/bump-map.c:59 operations/common-gpl3+/emboss.c:45
 #: operations/common-gpl3+/fractal-trace.c:60
 #: operations/common-gpl3+/texturize-canvas.c:44
-#: operations/workshop/chamfer.c:60
+#: operations/workshop/bevel.c:103
 msgid "Depth"
 msgstr "Глибина"
 
@@ -6325,7 +6327,7 @@ msgstr "Колір з'єднань"
 msgid "Light color"
 msgstr "Колір освітлення"
 
-#: operations/common-gpl3+/mosaic.c:81 operations/workshop/chamfer.c:69
+#: operations/common-gpl3+/mosaic.c:81
 msgid "Light direction"
 msgstr "Напрямок освітлення"
 
@@ -6754,8 +6756,7 @@ msgstr "Якщо встановлено, візерунок буде дещо б
 msgid "Bilinear"
 msgstr "Білінійний"
 
-#. Changing the name of a ENUM list will result in all presets breaking
-#: operations/common-gpl3+/sinus.c:67 operations/workshop/chamfer.c:49
+#: operations/common-gpl3+/sinus.c:67 operations/workshop/bevel.c:72
 msgid "Blend Mode"
 msgstr "Режим змішування"
 
@@ -9193,6 +9194,118 @@ msgstr ""
 msgid "BoxBlur"
 msgstr "Прямокутне розмивання"
 
+#: operations/workshop/bevel.c:47
+msgid "Chamfer"
+msgstr "Фаска"
+
+#: operations/workshop/bevel.c:49
+#| msgid "Bump Map"
+msgid "Bump"
+msgstr "Витискання"
+
+#: operations/workshop/bevel.c:52
+#| msgid "Curve Type"
+msgid "Bevel Type"
+msgstr "Тип рельєфу"
+
+#: operations/workshop/bevel.c:55
+#| msgid "The fill opacity to use"
+msgid "The family of bevel to use"
+msgstr "Використане сімейство рельєфів"
+
+#: operations/workshop/bevel.c:59
+msgid "None (for use with GIMPs blending options)"
+msgstr "Немає (для використання з варіантами змішування у GIMP)"
+
+#: operations/workshop/bevel.c:61
+#| msgid "HardLight"
+msgid "Hard Light"
+msgstr "Яскраве світло"
+
+#: operations/workshop/bevel.c:63
+msgid "Multiply"
+msgstr "Множення"
+
+#: operations/workshop/bevel.c:65
+#| msgid "Color model"
+msgid "Color Dodge"
+msgstr "Висвітлювання кольорів"
+
+#: operations/workshop/bevel.c:67
+msgid "Darken"
+msgstr "Затемнення"
+
+#: operations/workshop/bevel.c:69
+msgid "Lighten"
+msgstr "Освітлення"
+
+#: operations/workshop/bevel.c:75
+msgid ""
+"What blending mode the bevel's emboss will be. Light Map is a special blend "
+"mode that allows users to extract the filters output as a light map which "
+"should be put on a layer above or be used with Gimp's blending options."
+msgstr ""
+"Режим змішування для рельєфу фаски. «Карта освітлення» є особливим режимом"
+" змішування, який надає користувачам змогу видобути результати фільтрування"
+" як карту освітлення, яку має бути накладено на шар вище або використано з"
+" варіантами змішування GIMP."
+
+#: operations/workshop/bevel.c:78
+msgid "Distance Map Setting"
+msgstr "Параметр карти відстаней"
+
+#: operations/workshop/bevel.c:80
+msgid ""
+"Distance Map is unique to chamfer bevel and has three settings that alter "
+"the structure of the chamfer."
+msgstr ""
+"«Картка відстаней» є унікальною для фаски і має три параметри, які змінюють"
+" структуру фаски."
+
+#: operations/workshop/bevel.c:88
+msgid "Radius of softening for making bump of the shape."
+msgstr "Радіус пом'якшення для створення рельєфу форми."
+
+#: operations/workshop/bevel.c:92
+#| msgid "Elevation angle (degrees)"
+msgid "Elevation angle of the Bevel."
+msgstr "Кут підняття фаски."
+
+#: operations/workshop/bevel.c:104
+msgid "Emboss depth - Brings out depth and detail of the bump bevel."
+msgstr "Глибина рельєфу — надає глибини і деталізації рельєфу фаски."
+
+#: operations/workshop/bevel.c:108
+#| msgid "Lightness"
+msgid "Light Angle"
+msgstr "Кут освітлення"
+
+#: operations/workshop/bevel.c:109
+#| msgid "Direction of light-source (in degrees)"
+msgid "Direction of a light source illuminating and shading the bevel."
+msgstr "Напрям на джерело світла, що освітлює та відтіняє рельєф."
+
+#: operations/workshop/bevel.c:299
+#| msgid "Levels"
+msgid "Bevel"
+msgstr "Фаска"
+
+#: operations/workshop/bevel.c:301
+msgid ""
+"Two bevel effects in one place, Chamfer - which simulates lighting of "
+"chamfered 3D-edges, and Bump - the second make a 3D inflation effect by an "
+"emboss covering a blur. Both bevels benefit from color filled alpha defined "
+"shapes."
+msgstr ""
+"Два ефекти барельєфа в одному місці. «Фаска» — імітує освітлення рельєфу"
+" просторових країв, і «Витискання» — застосовує ефект просторового надування"
+" накладанням рельєфу з розмиванням. Обидва рельєфи покращуються від"
+" заповнених кольором прозорих визначених форм."
+
+#: operations/workshop/bevel.c:303
+msgid "Bevel..."
+msgstr "Фаска…"
+
 #: operations/workshop/connected-components.c:25
 msgid "Separator"
 msgstr "Роздільник"
@@ -9760,9 +9873,9 @@ msgid ""
 "it outline-like. So only slide it has high as you need to cover thin shape "
 "corners.'"
 msgstr ""
-"Усереднене розмивання стосується незмінених пікселів. Надто велике значення"
-" на цьому повзунку перетворить його на контурне. Тому посувайте його до"
-" позиції, яка потрібна вам для покриття тонких кутів форми."
+"Усереднене розмивання стосується незмінених пікселів. Надто велике значення "
+"на цьому повзунку перетворить його на контурне. Тому посувайте його до "
+"позиції, яка потрібна вам для покриття тонких кутів форми."
 
 #: operations/workshop/inner-glow.c:182
 msgid "Inner Glow"
@@ -9773,8 +9886,8 @@ msgid ""
 "GEGL does an inner shadow glow effect; for more interesting use different "
 "blend mode than the default, Replace."
 msgstr ""
-"GEGL додає ефекти внутрішнього сяйва; щоб отримати цікавіший результат,"
-" скористайтеся іншим режимом злиття, ніж типовий, «Заміна»."
+"GEGL додає ефекти внутрішнього сяйва; щоб отримати цікавіший результат, "
+"скористайтеся іншим режимом злиття, ніж типовий, «Заміна»."
 
 #: operations/workshop/inner-glow.c:186
 msgid "Inner Glow..."
@@ -9884,84 +9997,54 @@ msgstr ""
 "Перемішує пікселі і виконує квантизацію із сусідніми пікселями для "
 "оптимізації розмивання шляхом перемішування сусідніх пікселів."
 
-#: operations/workshop/chamfer.c:27
-msgid "HardLight"
-msgstr "Жорстке світло"
+#~ msgid "Soft Light"
+#~ msgstr "Розсіяне світло"
 
-#: operations/workshop/chamfer.c:29
-msgid "Multiply"
-msgstr "Множення"
+#~ msgid "What blending mode a light map will be applied with."
+#~ msgstr "Режим змішування, з яким буде застосовано світлову мапу."
 
-#: operations/workshop/chamfer.c:33
-msgid "Darken"
-msgstr "Затемнення"
+#~ msgid ""
+#~ "Curvature at 0.5 we are close to a circle shape, 1.0 is straight, values "
+#~ "above 1.0 are concave."
+#~ msgstr ""
+#~ "Кривина у 0.5 дає форми, які близькі до кола, 1.0 — до прямої, значення, "
+#~ "які перевищують 1.0, дають увігнуті форми."
 
-#: operations/workshop/chamfer.c:35
-msgid "Lighten"
-msgstr "Освітлення"
+#~ msgid ""
+#~ "Light angle (degrees). For most blend modes this rotates lighting of the "
+#~ "bevel."
+#~ msgstr ""
+#~ "Кут освітлення (у градусах). Для більшості режимів злиття це обертає "
+#~ "освітлення фаски."
 
-#: operations/workshop/chamfer.c:39
-msgid "Soft Light"
-msgstr "Розсіяне світло"
+#~ msgid "Detailed options"
+#~ msgstr "Докладні параметри"
 
-#: operations/workshop/chamfer.c:52
-msgid "What blending mode a light map will be applied with."
-msgstr "Режим змішування, з яким буде застосовано світлову мапу."
+#~ msgid "Mask with initial alpha"
+#~ msgstr "Маска із початковою альфою"
 
-#: operations/workshop/chamfer.c:64
-msgid ""
-"Curvature at 0.5 we are close to a circle shape, 1.0 is straight, values "
-"above 1.0 are concave."
-msgstr ""
-"Кривина у 0.5 дає форми, які близькі до кола, 1.0 — до прямої, значення, які "
-"перевищують 1.0, дають увігнуті форми."
+#~ msgid ""
+#~ "Keep alpha coverage, avoids growing of the shape beyond initial position."
+#~ msgstr ""
+#~ "Зберігає покриття альфи, уникає збільшення форми за початкову позицію."
 
-#: operations/workshop/chamfer.c:70
-msgid ""
-"Light angle (degrees). For most blend modes this rotates lighting of the "
-"bevel."
-msgstr ""
-"Кут освітлення (у градусах). Для більшості режимів злиття це обертає "
-"освітлення фаски."
+#~ msgid "Light Elevation"
+#~ msgstr "Підвищення освітленості"
 
-#: operations/workshop/chamfer.c:76
-msgid "Detailed options"
-msgstr "Докладні параметри"
+#~ msgid ""
+#~ "Elevation angle (degrees). For most blend modes this shifts the lightest "
+#~ "colors of the bevel."
+#~ msgstr ""
+#~ "Кут підвищення (у градусах). Для більшості режимів злиття це зсуває "
+#~ "найсвітліші кольори фаски."
 
-#: operations/workshop/chamfer.c:78
-msgid "Mask with initial alpha"
-msgstr "Маска із початковою альфою"
+#~ msgid "Choose Internal Median Shape"
+#~ msgstr "Вибрати внутрішню середню форму"
 
-#: operations/workshop/chamfer.c:80
-msgid ""
-"Keep alpha coverage, avoids growing of the shape beyond initial position."
-msgstr ""
-"Зберігає покриття альфи, уникає збільшення форми за початкову позицію."
-
-#: operations/workshop/chamfer.c:86
-msgid "Light Elevation"
-msgstr "Підвищення освітленості"
-
-#: operations/workshop/chamfer.c:87
-msgid ""
-"Elevation angle (degrees). For most blend modes this shifts the lightest "
-"colors of the bevel."
-msgstr ""
-"Кут підвищення (у градусах). Для більшості режимів злиття це зсуває "
-"найсвітліші кольори фаски."
-
-#: operations/workshop/chamfer.c:118
-msgid "Choose Internal Median Shape"
-msgstr "Вибрати внутрішню середню форму"
-
-#: operations/workshop/chamfer.c:348
-msgid "Chamfer"
-msgstr "Фаска"
-
-#: operations/workshop/chamfer.c:350
-msgid "Simulate lighting of a chamfered 3D-edges for an alpha-defined shape."
-msgstr ""
-"Імітує освітлення скошених просторових країв для визначеної альфою форми."
+#~ msgid ""
+#~ "Simulate lighting of a chamfered 3D-edges for an alpha-defined shape."
+#~ msgstr ""
+#~ "Імітує освітлення скошених просторових країв для визначеної альфою форми."
 
 #~ msgid "iterations"
 #~ msgstr "ітерацій"
