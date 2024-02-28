@@ -101,7 +101,7 @@ property_double  (cover, _("Median fix for non-effected pixels on edges"), 60)
 #else
 
 #define GEGL_OP_META
-#define GEGL_OP_NAME     inner_glow
+#define GEGL_OP_NAME     gegl_inner_glow
 #define GEGL_OP_C_SOURCE inner-glow.c
 
 #include "gegl-op.h"
