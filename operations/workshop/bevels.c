@@ -1,0 +1,312 @@
+/* This file is an image processing operation for GEGL
+ *
+ * GEGL is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * GEGL is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with GEGL; if not, see <https://www.gnu.org/licenses/>.
+ *
+ * Copyright 2023 Øyvind Kolås <pippin@gimp.org>
+ * 2022-2024 Beaver (Universal Bevel - a new bevel filter candidate for Gimp 3 that combines my bevel algorithms - featuring the algorithm of my  bevel, custom bevel, 
+   and sharp bevel all in one filter) 
+
+Bump Bevel Graph inspired by Beaver's plugin Custom Bevel from 2022
+
+median-blur radius=1 alpha-percentile=80
+gaussian-blur std-dev-x=4 std-dev-y=4
+id=2 overlay aux=[ ref=2
+emboss ]
+id=0 dst-out aux=[ ref=0  component-extract component=alpha   levels in-low=0.15  color-to-alpha opacity-threshold=0.4  ] opacity value=2 median-blur radius=0
+
+
+Chamfer Bevel Graph inspired by Beaver's plugin Sharp Bevel from 2023
+
+median-blur radius=1 alpha-percentile=80
+id=1 src-in aux=[ ref=1 
+median-blur radius=0 
+id=2 overlay aux=[ ref=2
+distance-transform
+emboss depth=15 azimuth=33 ]
+
+ */
+
+#include "config.h"
+#include <glib/gi18n-lib.h>
+
+#ifdef GEGL_PROPERTIES
+
+enum_start (gbevel_type)
+  enum_value (GEGL_BEVEL_CHAMFER,      "chamferbevel",
+              N_("Chamfer Bevel"))
+  enum_value (GEGL_BEVEL_BUMP,      "bumpbevel",
+              N_("Bump Bevel"))
+enum_end (gbeveltype)
+
+property_enum (type, _("Select Bevel"),
+    gbeveltype, gbevel_type,
+    GEGL_BEVEL_CHAMFER)
+    description (_("Chamfer Bevel is default followed by Bump Bevel. Chamfer bevel does not have a gaussian slider and bump bevel does not have a distance map."))
+
+enum_start (gchamfer_blend_mode)
+  enum_value (CHAMFER_BLEND_GIMPBLEND, "gimpblend",
+              N_("Light Map to blend"))
+  enum_value (CHAMFER_BLEND_HARDLIGHT, "hardlight",
+              N_("Hard Light"))
+  enum_value (CHAMFER_BLEND_MULTIPLY,  "multiply",
+              N_("Multiply"))
+  enum_value (CHAMFER_BLEND_COLORDODGE,  "colordodge",
+              N_("Color Dodge"))
+  enum_value (CHAMFER_BLEND_DARKEN,    "darken",
+              N_("Darken"))
+  enum_value (CHAMFER_BLEND_LIGHTEN,   "lighten",
+              N_("Lighten"))
+enum_end (gChamferBlendMode)
+
+property_enum (blendmode, _("Blend Mode"),
+    gChamferBlendMode, gchamfer_blend_mode,
+    CHAMFER_BLEND_HARDLIGHT)
+  description (_("What blending mode the bevel's emboss will be. Light Map is a special blend mode that allows users to extract the filters output as a light map which should be put on a layer above or be used with Gimp's blending options."))
+
+
+property_enum (metric, _("Distance Map Setting"),
+               GeglDistanceMetric, gegl_distance_metric, GEGL_DISTANCE_METRIC_CHEBYSHEV)
+    description (_("Distance Map is unique to chamfer bevel and has three settings that alter the structure of the chamfer. Chebyshev is the default; due to it being the best."))
+ui_meta ("visible", "!type {bumpbevel}" )
+
+property_double (radius, _("Radius"), 3.0)
+  value_range (1.0, 5.0)
+  ui_range (1.0, 3.5)
+  ui_gamma (1.5)
+ui_meta ("visible", "!type {chamferbevel}" )
+    description (_("An internal gaussian blur for the bump bevel."))
+  ui_steps      (0.01, 0.50)
+
+property_double (elevation, _("Elevation"), 25.0)
+    description (_("Elevation angle of the Bevel."))
+    value_range (0.0, 180.0)
+    ui_meta ("unit", "degree")
+  ui_steps      (0.01, 0.50)
+
+
+/*The only issue  with this filter is that emboss depth= above 15 does nothing on chamfer bevel , but works great on bump bevel.
+so I made an extra node just for it that only updates emboss depth=, as a result depth and sharpness' are co-existing properties
+
+I am fully aware 'depth' and 'detail' are just words used to describe the same thing. */
+
+property_int (depth, _("Depth"), 40)
+    description (_("Emboss depth - Brings out depth and detail of the bump bevel."))
+    value_range (1, 100)
+    ui_range (1, 80)
+ui_meta ("visible", "!type {chamferbevel}" )
+
+property_int (detail, _("Detail"), 15)
+    description (_("Emboss depth - Brings out depth and detail of the chamfer bevel."))
+    value_range (1, 15)
+    ui_range (1, 15)
+ui_meta ("visible", "!type {bumpbevel}" )
+
+property_double (azimuth, _("Rotate Lighting"), 68.0)
+    description (_("Light angle (degrees) of the bevel"))
+    value_range (0, 360)
+  ui_steps      (0.01, 0.50)
+    ui_meta ("unit", "degree")
+    ui_meta ("direction", "ccw")
+
+
+#else
+
+#define GEGL_OP_META
+#define GEGL_OP_NAME     bevels
+#define GEGL_OP_C_SOURCE bevels.c
+
+#include "gegl-op.h"
+
+typedef struct
+{
+  GeglNode *input;
+  GeglNode *blur;
+  GeglNode *emb;
+  GeglNode *emb2;
+  GeglNode *dt;
+  GeglNode *blend;
+  GeglNode *opacity;
+  GeglNode *nop;
+  GeglNode *nop2;
+  GeglNode *median;
+  GeglNode *thresholdalpha;
+  GeglNode *replaceontop;
+  GeglNode *fixbump;
+  GeglNode *smoothchamfer;
+  GeglNode *output;
+} State; 
+
+
+static void attach (GeglOperation *operation)
+{
+  GeglNode *gegl = operation->node;
+  GeglProperties *o = GEGL_PROPERTIES (operation);
+
+  State *state = o->user_data = g_malloc0 (sizeof (State));
+
+  state->input    = gegl_node_get_input_proxy (gegl, "input");
+  state->output   = gegl_node_get_output_proxy (gegl, "output");
+
+
+
+state->blur = gegl_node_new_child (gegl,
+                                  "operation", "gegl:gaussian-blur",
+                                  NULL);
+
+state->emb   = gegl_node_new_child (gegl,
+                                  "operation", "gegl:emboss",
+                                  NULL);
+
+state->emb2   = gegl_node_new_child (gegl,
+                                  "operation", "gegl:emboss", "depth", 15,
+                                  NULL);
+
+
+state->opacity   = gegl_node_new_child (gegl,
+                                  "operation", "gegl:opacity", "value", 0.8,
+                                  NULL);
+
+state->replaceontop   = gegl_node_new_child (gegl, /*This blend mode is replace + alpha lock*/
+                                  "operation", "gegl:src-in",
+                                  NULL);
+                                
+state->nop   = gegl_node_new_child (gegl,
+                                  "operation", "gegl:nop",
+                                  NULL);
+
+state->nop2   = gegl_node_new_child (gegl,
+                                  "operation", "gegl:nop",
+                                  NULL);
+
+state->dt   = gegl_node_new_child (gegl,
+                                  "operation", "gegl:distance-transform", "metric", 2,
+                                  NULL);
+
+state->median   = gegl_node_new_child (gegl,
+                                  "operation", "gegl:median-blur", "radius", 1, "alpha-percentile", 80.0,
+                                  NULL);
+
+                                    #define EMBEDDEDGRAPH \
+" opacity value=1.7 median-blur radius=0 id=0 dst-out aux=[ ref=0  component-extract component=alpha   levels in-low=0.15  color-to-alpha opacity-threshold=0.4  ]  median-blur radius=0 "\
+                              
+state->thresholdalpha   = gegl_node_new_child (gegl,
+                                  "operation", "gegl:gegl", "string", EMBEDDEDGRAPH,
+                                  NULL);
+
+                                    #define EMBEDDEDGRAPH2 \
+" opacity value=2.2 median-blur radius=0 "\
+
+state->fixbump   = gegl_node_new_child (gegl,
+                                  "operation", "gegl:gegl", "string", EMBEDDEDGRAPH2, /* I prefer using median-blur radius=0 over gegl:alpha-clip*/
+                                  NULL);
+
+                                    #define EMBEDDEDGRAPH3 \
+" id=1 src-atop aux=[ ref=1 bilateral-filter blur-radius=4 edge-preservation=6 mean-curvature-blur iterations=1 ] "  /* This hidden graph smooths the bevel */
+
+state->smoothchamfer   = gegl_node_new_child (gegl,
+                                  "operation", "gegl:gegl", "string", EMBEDDEDGRAPH3, 
+                                  NULL);
+
+
+
+  state->blend      = gegl_node_new_child (gegl, "operation", "gegl:hard-light", /* This blend mode can be anything, but in default its hardlight */
+                                           NULL);
+
+  gegl_operation_meta_redirect (operation, "radius", state->blur, "std-dev-x");
+  gegl_operation_meta_redirect (operation, "radius", state->blur, "std-dev-y");
+  gegl_operation_meta_redirect (operation, "elevation", state->emb, "elevation");
+  gegl_operation_meta_redirect (operation, "depth", state->emb, "depth");
+  gegl_operation_meta_redirect (operation, "azimuth", state->emb, "azimuth");
+  gegl_operation_meta_redirect (operation, "elevation", state->emb2, "elevation");
+  gegl_operation_meta_redirect (operation, "azimuth", state->emb2, "azimuth");
+  gegl_operation_meta_redirect (operation, "detail", state->emb2, "depth");
+  gegl_operation_meta_redirect (operation, "metric", state->dt, "metric");
+
+}
+
+static void update_graph (GeglOperation *operation)
+{
+  GeglProperties *o = GEGL_PROPERTIES (operation);
+  State *state = o->user_data;
+  if (!state) return;    /*I learned a new way to switch blend modes thanks to Pippin. Color dodge works good
+                           on some colors but lousy on most. Color Dodge does an amazing effect on orange and purple. The plugin variation
+                           of this filter will have grain merge (gimp:layer-mode layer-mode=grain-merge) that sadly is excluded from GEGL.*/
+
+  const char *blend_op = "gegl:nop";
+  switch (o->blendmode) {
+    case CHAMFER_BLEND_GIMPBLEND:  blend_op = "gegl:src"; break;
+    case CHAMFER_BLEND_HARDLIGHT:  blend_op = "gegl:hard-light"; break;
+    case CHAMFER_BLEND_MULTIPLY:   blend_op = "gegl:multiply"; break;
+    case CHAMFER_BLEND_COLORDODGE: blend_op = "gegl:color-dodge"; break; 
+    case CHAMFER_BLEND_DARKEN:     blend_op = "gegl:darken"; break;
+    case CHAMFER_BLEND_LIGHTEN:    blend_op = "gegl:lighten"; break;
+  }
+  gegl_node_set (state->blend, "operation", blend_op, NULL);
+
+
+  if (o->blendmode > CHAMFER_BLEND_GIMPBLEND)
+  {
+switch (o->type) {
+        break;
+            case GEGL_BEVEL_CHAMFER: /*Same as below*/
+            gegl_node_link_many (state->input, state->median, state->nop, state->replaceontop, state->smoothchamfer, state->output, NULL);
+            gegl_node_connect_from (state->replaceontop, "aux", state->blend, "output");
+            gegl_node_link_many (state->nop, state->nop2, state->blend, NULL);
+            gegl_node_connect_from (state->blend, "aux", state->opacity, "output");
+            gegl_node_link_many (state->nop2, state->dt, state->emb2, state->opacity, NULL);
+        break;
+            case GEGL_BEVEL_BUMP:  /*Bump on any blend mode but Gimp blend (gegl:src)*/
+            gegl_node_link_many (state->input, state->median, state->blur, state->nop, state->blend, state->thresholdalpha, state->output, NULL);
+            gegl_node_link_many (state->nop, state->emb,  NULL);
+            gegl_node_connect_from (state->blend, "aux", state->emb, "output");           
+    }
+}
+
+else 
+
+switch (o->type) {
+        break;
+            case GEGL_BEVEL_CHAMFER: /*Same as above*/
+            gegl_node_link_many (state->input, state->median, state->nop, state->replaceontop, state->smoothchamfer, state->output, NULL);
+            gegl_node_connect_from (state->replaceontop, "aux", state->blend, "output");
+            gegl_node_link_many (state->nop, state->nop2, state->blend, NULL);
+            gegl_node_connect_from (state->blend, "aux", state->opacity, "output");
+            gegl_node_link_many (state->nop2, state->dt, state->emb2, state->opacity, NULL);
+        break;
+            case GEGL_BEVEL_BUMP:  /*Bump on Gimp blend (gegl:src). Its suppose to puff out*/
+            gegl_node_link_many (state->input, state->median, state->blur, state->emb, state->fixbump,  state->output, NULL);     
+}
+    }
+
+static void
+gegl_op_class_init (GeglOpClass *klass)
+{
+  GeglOperationClass *operation_class;
+GeglOperationMetaClass *operation_meta_class = GEGL_OPERATION_META_CLASS (klass);
+  operation_class = GEGL_OPERATION_CLASS (klass);
+
+  operation_class->attach = attach;
+  operation_meta_class->update = update_graph;
+
+  gegl_operation_class_set_keys (operation_class,
+    "name",        "gegl:bevels",
+    "title",       _("Chamfer and Bump Bevel"),
+    "reference-hash", "30519510290293373928c",
+    "description", _("This filter is two bevel effects in one place, Chamfer - which simulates lighting of chamfered 3D-edges, and Bump - the second make a 3D inflation effect by an emboss covering a blur. Both bevels benefit from color filled alpha defined shapes. Users can choose between Gimp blend modes or this filters built in blend modes."),
+    "gimp:menu-path", "<Image>/Filters/Light and Shadow",
+    "gimp:menu-label", _("Chamfer and Bump Bevel..."),
+    NULL);
+}
+
+#endif

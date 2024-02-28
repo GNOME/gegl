@@ -5,6 +5,7 @@ gegl_workshop_sources = files(
   'aces-rrt.c',
   'alpha-inpaint.c',
   'bilateral-filter-fast.c',
+  'bevels.c',
   'boxblur-1d.c',
   'boxblur.c',
   'chamfer.c',
