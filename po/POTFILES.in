@@ -277,6 +277,7 @@ operations/workshop/band-tune.c
 operations/workshop/bilateral-filter-fast.c
 operations/workshop/boxblur-1d.c
 operations/workshop/boxblur.c
+operations/workshop/bevel.c
 operations/workshop/connected-components.c
 operations/workshop/demosaic-bimedian.c
 operations/workshop/demosaic-simple.c
@@ -302,4 +303,3 @@ operations/workshop/rawbayer-load.c
 operations/workshop/segment-kmeans.c
 operations/workshop/selective-hue-saturation.c
 operations/workshop/shuffle-search.c
-operations/workshop/chamfer.c

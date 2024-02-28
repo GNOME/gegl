@@ -43,20 +43,20 @@ emboss depth=15 azimuth=33 ]
 #ifdef GEGL_PROPERTIES
 
 enum_start (gbevel_type)
-  enum_value (GEGL_BEVEL_CHAMFER,      "chamferbevel",
-              N_("Chamfer Bevel"))
-  enum_value (GEGL_BEVEL_BUMP,      "bumpbevel",
-              N_("Bump Bevel"))
+  enum_value (GEGL_BEVEL_CHAMFER,  "chamfer",
+              N_("Chamfer"))
+  enum_value (GEGL_BEVEL_BUMP,     "bump",
+              N_("Bump"))
 enum_end (gbeveltype)
 
-property_enum (type, _("Select Bevel"),
+property_enum (type, _("Bevel Type"),
     gbeveltype, gbevel_type,
     GEGL_BEVEL_CHAMFER)
-    description (_("Chamfer Bevel is default followed by Bump Bevel. Chamfer bevel does not have a gaussian slider and bump bevel does not have a distance map."))
+    description (_("The family of bevel to use"))
 
 enum_start (gchamfer_blend_mode)
   enum_value (CHAMFER_BLEND_GIMPBLEND, "gimpblend",
-              N_("Light Map to blend"))
+              N_("None (for use with GIMPs blending options)"))
   enum_value (CHAMFER_BLEND_HARDLIGHT, "hardlight",
               N_("Hard Light"))
   enum_value (CHAMFER_BLEND_MULTIPLY,  "multiply",
@@ -77,15 +77,15 @@ property_enum (blendmode, _("Blend Mode"),
 
 property_enum (metric, _("Distance Map Setting"),
                GeglDistanceMetric, gegl_distance_metric, GEGL_DISTANCE_METRIC_CHEBYSHEV)
-    description (_("Distance Map is unique to chamfer bevel and has three settings that alter the structure of the chamfer. Chebyshev is the default; due to it being the best."))
-ui_meta ("visible", "!type {bumpbevel}" )
+    description (_("Distance Map is unique to chamfer bevel and has three settings that alter the structure of the chamfer."))
+ui_meta ("visible", "!type {bump}" )
 
 property_double (radius, _("Radius"), 3.0)
   value_range (1.0, 5.0)
   ui_range (1.0, 3.5)
   ui_gamma (1.5)
-ui_meta ("visible", "!type {chamferbevel}" )
-    description (_("An internal gaussian blur for the bump bevel."))
+ui_meta ("visible", "!type {chamfer}" )
+    description (_("Radius of softening for making bump of the shape."))
   ui_steps      (0.01, 0.50)
 
 property_double (elevation, _("Elevation"), 25.0)
@@ -104,16 +104,16 @@ property_int (depth, _("Depth"), 40)
     description (_("Emboss depth - Brings out depth and detail of the bump bevel."))
     value_range (1, 100)
     ui_range (1, 80)
-ui_meta ("visible", "!type {chamferbevel}" )
+ui_meta ("visible", "!type {chamfer}" )
 
 property_int (detail, _("Detail"), 15)
     description (_("Emboss depth - Brings out depth and detail of the chamfer bevel."))
     value_range (1, 15)
     ui_range (1, 15)
-ui_meta ("visible", "!type {bumpbevel}" )
+ui_meta ("visible", "!type {bump}" )
 
-property_double (azimuth, _("Rotate Lighting"), 68.0)
-    description (_("Light angle (degrees) of the bevel"))
+property_double (azimuth, _("Light Angle"), 68.0)
+    description (_("Direction of a light source illuminating and shading the bevel."))
     value_range (0, 360)
   ui_steps      (0.01, 0.50)
     ui_meta ("unit", "degree")
@@ -123,8 +123,8 @@ property_double (azimuth, _("Rotate Lighting"), 68.0)
 #else
 
 #define GEGL_OP_META
-#define GEGL_OP_NAME     bevels
-#define GEGL_OP_C_SOURCE bevels.c
+#define GEGL_OP_NAME     gegl_bevel
+#define GEGL_OP_C_SOURCE bevel.c
 
 #include "gegl-op.h"
 
@@ -261,15 +261,15 @@ switch (o->type) {
         break;
             case GEGL_BEVEL_CHAMFER: /*Same as below*/
             gegl_node_link_many (state->input, state->median, state->nop, state->replaceontop, state->smoothchamfer, state->output, NULL);
-            gegl_node_connect_from (state->replaceontop, "aux", state->blend, "output");
+            gegl_node_connect (state->replaceontop, "aux", state->blend, "output");
             gegl_node_link_many (state->nop, state->nop2, state->blend, NULL);
-            gegl_node_connect_from (state->blend, "aux", state->opacity, "output");
+            gegl_node_connect (state->blend, "aux", state->opacity, "output");
             gegl_node_link_many (state->nop2, state->dt, state->emb2, state->opacity, NULL);
         break;
             case GEGL_BEVEL_BUMP:  /*Bump on any blend mode but Gimp blend (gegl:src)*/
             gegl_node_link_many (state->input, state->median, state->blur, state->nop, state->blend, state->thresholdalpha, state->output, NULL);
             gegl_node_link_many (state->nop, state->emb,  NULL);
-            gegl_node_connect_from (state->blend, "aux", state->emb, "output");           
+            gegl_node_connect (state->blend, "aux", state->emb, "output");           
     }
 }
 
@@ -279,9 +279,9 @@ switch (o->type) {
         break;
             case GEGL_BEVEL_CHAMFER: /*Same as above*/
             gegl_node_link_many (state->input, state->median, state->nop, state->replaceontop, state->smoothchamfer, state->output, NULL);
-            gegl_node_connect_from (state->replaceontop, "aux", state->blend, "output");
+            gegl_node_connect (state->replaceontop, "aux", state->blend, "output");
             gegl_node_link_many (state->nop, state->nop2, state->blend, NULL);
-            gegl_node_connect_from (state->blend, "aux", state->opacity, "output");
+            gegl_node_connect (state->blend, "aux", state->opacity, "output");
             gegl_node_link_many (state->nop2, state->dt, state->emb2, state->opacity, NULL);
         break;
             case GEGL_BEVEL_BUMP:  /*Bump on Gimp blend (gegl:src). Its suppose to puff out*/
@@ -300,12 +300,12 @@ GeglOperationMetaClass *operation_meta_class = GEGL_OPERATION_META_CLASS (klass)
   operation_meta_class->update = update_graph;
 
   gegl_operation_class_set_keys (operation_class,
-    "name",        "gegl:bevels",
-    "title",       _("Chamfer and Bump Bevel"),
+    "name",        "gegl:bevel",
+    "title",       _("Bevel"),
     "reference-hash", "30519510290293373928c",
-    "description", _("This filter is two bevel effects in one place, Chamfer - which simulates lighting of chamfered 3D-edges, and Bump - the second make a 3D inflation effect by an emboss covering a blur. Both bevels benefit from color filled alpha defined shapes. Users can choose between Gimp blend modes or this filters built in blend modes."),
+    "description", _("Two bevel effects in one place, Chamfer - which simulates lighting of chamfered 3D-edges, and Bump - the second make a 3D inflation effect by an emboss covering a blur. Both bevels benefit from color filled alpha defined shapes."),
     "gimp:menu-path", "<Image>/Filters/Light and Shadow",
-    "gimp:menu-label", _("Chamfer and Bump Bevel..."),
+    "gimp:menu-label", _("Bevel..."),
     NULL);
 }
 
