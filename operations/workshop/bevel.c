@@ -104,13 +104,6 @@ property_int (depth, _("Depth"), 40)
     description (_("Emboss depth - Brings out depth and detail of the bump bevel."))
     value_range (1, 100)
     ui_range (1, 80)
-ui_meta ("visible", "!type {chamfer}" )
-
-property_int (detail, _("Detail"), 15)
-    description (_("Emboss depth - Brings out depth and detail of the chamfer bevel."))
-    value_range (1, 15)
-    ui_range (1, 15)
-ui_meta ("visible", "!type {bump}" )
 
 property_double (azimuth, _("Light Angle"), 68.0)
     description (_("Direction of a light source illuminating and shading the bevel."))
@@ -226,11 +219,9 @@ state->smoothchamfer   = gegl_node_new_child (gegl,
   gegl_operation_meta_redirect (operation, "radius", state->blur, "std-dev-x");
   gegl_operation_meta_redirect (operation, "radius", state->blur, "std-dev-y");
   gegl_operation_meta_redirect (operation, "elevation", state->emb, "elevation");
-  gegl_operation_meta_redirect (operation, "depth", state->emb, "depth");
   gegl_operation_meta_redirect (operation, "azimuth", state->emb, "azimuth");
   gegl_operation_meta_redirect (operation, "elevation", state->emb2, "elevation");
   gegl_operation_meta_redirect (operation, "azimuth", state->emb2, "azimuth");
-  gegl_operation_meta_redirect (operation, "detail", state->emb2, "depth");
   gegl_operation_meta_redirect (operation, "metric", state->dt, "metric");
 
 }
@@ -254,6 +245,10 @@ static void update_graph (GeglOperation *operation)
   }
   gegl_node_set (state->blend, "operation", blend_op, NULL);
 
+  if (o->type == GEGL_BEVEL_CHAMFER)
+    gegl_node_set (state->emb2, "depth", (int)(o->depth / 100.0 * 15), NULL);
+  else
+    gegl_node_set (state->emb, "depth", o->depth, NULL);
 
   if (o->blendmode > CHAMFER_BLEND_GIMPBLEND)
   {
