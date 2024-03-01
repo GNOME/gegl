@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl-master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-02-26 13:31+0000\n"
-"PO-Revision-Date: 2024-02-27 18:23+0800\n"
+"POT-Creation-Date: 2024-02-28 01:14+0000\n"
+"PO-Revision-Date: 2024-03-01 18:37+0800\n"
 "Last-Translator: lumingzh <lumingzh@qq.com>\n"
 "Language-Team: Chinese - China <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
@@ -705,7 +705,7 @@ msgstr "辉光区域边缘柔和度"
 #: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:44
 #: operations/common-gpl3+/whirl-pinch.c:46
 #: operations/external/matting-levin.c:29 operations/workshop/boxblur-1d.c:27
-#: operations/workshop/boxblur.c:24
+#: operations/workshop/boxblur.c:24 operations/workshop/bevel.c:83
 #: operations/workshop/external/spyrograph.c:63
 msgid "Radius"
 msgstr "半径"
@@ -714,10 +714,9 @@ msgstr "半径"
 msgid "Glow radius"
 msgstr "辉光半径"
 
-#. Changing the name of a ENUM list will result in all presets breaking
 #: operations/common/bloom.c:42 operations/common/noise-reduction.c:26
 #: operations/common-cxx/denoise-dct.cc:38 operations/common-cxx/warp.cc:34
-#: operations/common-gpl3+/wind.c:64 operations/workshop/chamfer.c:57
+#: operations/common-gpl3+/wind.c:64
 msgid "Strength"
 msgstr "强度"
 
@@ -1769,21 +1768,19 @@ msgstr ""
 #: operations/common/dropshadow.c:27 operations/common/median-blur.c:27
 #: operations/common/pixelize.c:28 operations/common/vignette.c:26
 #: operations/common-cxx/focus-blur.c:35 operations/workshop/inner-glow.c:39
-#: operations/workshop/chamfer.c:43
 msgid "Square"
 msgstr "方形"
 
 #: operations/common/dropshadow.c:28 operations/common/median-blur.c:28
 #: operations/common/newsprint.c:26 operations/common/vignette.c:25
 #: operations/common-cxx/focus-blur.c:34 operations/workshop/inner-glow.c:40
-#: operations/workshop/chamfer.c:44
 msgid "Circle"
 msgstr "圆形"
 
 #: operations/common/dropshadow.c:29 operations/common/median-blur.c:29
 #: operations/common/newsprint.c:27 operations/common/pixelize.c:26
 #: operations/common/vignette.c:27 operations/common-cxx/focus-blur.c:36
-#: operations/workshop/inner-glow.c:41 operations/workshop/chamfer.c:45
+#: operations/workshop/inner-glow.c:41
 msgid "Diamond"
 msgstr "菱形"
 
@@ -4152,7 +4149,7 @@ msgstr "视图角度"
 msgid "Camera angle of view"
 msgstr "视图的相机角度"
 
-#: operations/common/spherize.c:40 operations/workshop/chamfer.c:63
+#: operations/common/spherize.c:40
 msgid "Curvature"
 msgstr "曲率"
 
@@ -5002,13 +4999,18 @@ msgid "Azimuth"
 msgstr "方位"
 
 #: operations/common-gpl3+/bump-map.c:56 operations/common-gpl3+/emboss.c:40
+#: operations/workshop/bevel.c:91
 msgid "Elevation"
 msgstr "海拔"
 
+#. The only issue  with this filter is that emboss depth= above 15 does nothing on chamfer bevel , but works great on bump bevel.
+#. so I made an extra node just for it that only updates emboss depth=, as a result depth and sharpness' are co-existing properties
+#.
+#. I am fully aware 'depth' and 'detail' are just words used to describe the same thing.
 #: operations/common-gpl3+/bump-map.c:59 operations/common-gpl3+/emboss.c:45
 #: operations/common-gpl3+/fractal-trace.c:60
 #: operations/common-gpl3+/texturize-canvas.c:44
-#: operations/workshop/chamfer.c:60
+#: operations/workshop/bevel.c:103
 msgid "Depth"
 msgstr "深度"
 
@@ -6111,7 +6113,7 @@ msgstr "接合处颜色"
 msgid "Light color"
 msgstr "光照颜色"
 
-#: operations/common-gpl3+/mosaic.c:81 operations/workshop/chamfer.c:69
+#: operations/common-gpl3+/mosaic.c:81
 msgid "Light direction"
 msgstr "光照方向"
 
@@ -6525,8 +6527,7 @@ msgstr "如果设置，图案将有更多扭曲"
 msgid "Bilinear"
 msgstr "双线性"
 
-#. Changing the name of a ENUM list will result in all presets breaking
-#: operations/common-gpl3+/sinus.c:67 operations/workshop/chamfer.c:49
+#: operations/common-gpl3+/sinus.c:67 operations/workshop/bevel.c:72
 msgid "Blend Mode"
 msgstr "混合模式"
 
@@ -8850,6 +8851,104 @@ msgstr "模糊结果取自对行相邻区域颜色的平均。"
 msgid "BoxBlur"
 msgstr "盒子模糊"
 
+#: operations/workshop/bevel.c:47
+msgid "Chamfer"
+msgstr "倒角"
+
+#: operations/workshop/bevel.c:49
+msgid "Bump"
+msgstr "凹凸"
+
+#: operations/workshop/bevel.c:52
+msgid "Bevel Type"
+msgstr "斜面类型"
+
+#: operations/workshop/bevel.c:55
+msgid "The family of bevel to use"
+msgstr "要使用的斜面类型"
+
+#: operations/workshop/bevel.c:59
+msgid "None (for use with GIMPs blending options)"
+msgstr "无（用于 GIMP 混合选项）"
+
+#: operations/workshop/bevel.c:61
+msgid "Hard Light"
+msgstr "硬光"
+
+#: operations/workshop/bevel.c:63
+msgid "Multiply"
+msgstr "正片叠底"
+
+#: operations/workshop/bevel.c:65
+msgid "Color Dodge"
+msgstr "颜色减淡"
+
+#: operations/workshop/bevel.c:67
+msgid "Darken"
+msgstr "变暗"
+
+#: operations/workshop/bevel.c:69
+msgid "Lighten"
+msgstr "变亮"
+
+#: operations/workshop/bevel.c:75
+msgid ""
+"What blending mode the bevel's emboss will be. Light Map is a special blend "
+"mode that allows users to extract the filters output as a light map which "
+"should be put on a layer above or be used with Gimp's blending options."
+msgstr ""
+"倒角凸起将会成为的混合模式。光照映射是一种允许用户提取滤镜输出作为光照映射放"
+"置在图层上方或与 GIMP 混合选项配合使用的特殊混合模式。"
+
+#: operations/workshop/bevel.c:78
+msgid "Distance Map Setting"
+msgstr "距离映射设置"
+
+#: operations/workshop/bevel.c:80
+msgid ""
+"Distance Map is unique to chamfer bevel and has three settings that alter "
+"the structure of the chamfer."
+msgstr "距离映射对于倒角斜面是唯一的且具有三种改变倒角结构的设置。"
+
+#: operations/workshop/bevel.c:88
+msgid "Radius of softening for making bump of the shape."
+msgstr "形成该形状凹凸的柔化半径。"
+
+#: operations/workshop/bevel.c:92
+msgid "Elevation angle of the Bevel."
+msgstr "斜面的高度角。"
+
+#: operations/workshop/bevel.c:104
+msgid "Emboss depth - Brings out depth and detail of the bump bevel."
+msgstr "凸起深度 - 显示凹凸斜面的深度和细节。"
+
+#: operations/workshop/bevel.c:108
+msgid "Light Angle"
+msgstr "光照角度"
+
+#: operations/workshop/bevel.c:109
+msgid "Direction of a light source illuminating and shading the bevel."
+msgstr "光源照明和着色斜面的方向。"
+
+#: operations/workshop/bevel.c:299
+msgid "Bevel"
+msgstr "斜面"
+
+#: operations/workshop/bevel.c:301
+msgid ""
+"Two bevel effects in one place, Chamfer - which simulates lighting of "
+"chamfered 3D-edges, and Bump - the second make a 3D inflation effect by an "
+"emboss covering a blur. Both bevels benefit from color filled alpha defined "
+"shapes."
+msgstr ""
+"同一位置的两个斜面效果：倒角 - 模拟倒角 3D 边缘的光照；凹凸 - 第二个通过覆盖"
+"一层模糊的凸起形成一种 3D 膨胀效果。两种斜面都得益于透明定义形状所填充的颜"
+"色。"
+
+#: operations/workshop/bevel.c:303
+msgid "Bevel..."
+msgstr "斜面…"
+
 #: operations/workshop/connected-components.c:25
 msgid "Separator"
 msgstr "分离器"
@@ -9516,76 +9615,46 @@ msgid ""
 "shuffling neighboring pixels."
 msgstr "混合像素，通过混合邻近像素，并用邻近像素量化来优化递色。"
 
-#: operations/workshop/chamfer.c:27
-msgid "HardLight"
-msgstr "硬光"
+#~ msgid "Soft Light"
+#~ msgstr "柔光"
 
-#: operations/workshop/chamfer.c:29
-msgid "Multiply"
-msgstr "正片叠底"
+#~ msgid "What blending mode a light map will be applied with."
+#~ msgstr "光照映射将被应用时使用的混合模式。"
 
-#: operations/workshop/chamfer.c:33
-msgid "Darken"
-msgstr "变暗"
+#~ msgid ""
+#~ "Curvature at 0.5 we are close to a circle shape, 1.0 is straight, values "
+#~ "above 1.0 are concave."
+#~ msgstr "曲率在 0.5 将接近为圆形，1.0 为直线，大于 1.0 的值为凹形。"
 
-#: operations/workshop/chamfer.c:35
-msgid "Lighten"
-msgstr "变亮"
+#~ msgid ""
+#~ "Light angle (degrees). For most blend modes this rotates lighting of the "
+#~ "bevel."
+#~ msgstr "光照角度（度数）。对于大部分混合模式该选项将旋转倒角的光照。"
 
-#: operations/workshop/chamfer.c:39
-msgid "Soft Light"
-msgstr "柔光"
+#~ msgid "Detailed options"
+#~ msgstr "详细选项"
 
-#: operations/workshop/chamfer.c:52
-msgid "What blending mode a light map will be applied with."
-msgstr "光照映射将被应用时使用的混合模式。"
+#~ msgid "Mask with initial alpha"
+#~ msgstr "使用初始透明作为蒙板"
 
-#: operations/workshop/chamfer.c:64
-msgid ""
-"Curvature at 0.5 we are close to a circle shape, 1.0 is straight, values "
-"above 1.0 are concave."
-msgstr "曲率在 0.5 将接近为圆形，1.0 为直线，大于 1.0 的值为凹形。"
+#~ msgid ""
+#~ "Keep alpha coverage, avoids growing of the shape beyond initial position."
+#~ msgstr "保持透明覆盖范围，避免形状的增长超出初始位置。"
 
-#: operations/workshop/chamfer.c:70
-msgid ""
-"Light angle (degrees). For most blend modes this rotates lighting of the "
-"bevel."
-msgstr "光照角度（度数）。对于大部分混合模式该选项将旋转倒角的光照。"
+#~ msgid "Light Elevation"
+#~ msgstr "光照仰角"
 
-#: operations/workshop/chamfer.c:76
-msgid "Detailed options"
-msgstr "详细选项"
+#~ msgid ""
+#~ "Elevation angle (degrees). For most blend modes this shifts the lightest "
+#~ "colors of the bevel."
+#~ msgstr "高度角（角度）。对于大部分混合模式该选项将偏移倒角的最亮颜色。"
 
-#: operations/workshop/chamfer.c:78
-msgid "Mask with initial alpha"
-msgstr "使用初始透明作为蒙板"
+#~ msgid "Choose Internal Median Shape"
+#~ msgstr "选择内部中值形状"
 
-#: operations/workshop/chamfer.c:80
-msgid ""
-"Keep alpha coverage, avoids growing of the shape beyond initial position."
-msgstr "保持透明覆盖范围，避免形状的增长超出初始位置。"
-
-#: operations/workshop/chamfer.c:86
-msgid "Light Elevation"
-msgstr "光照仰角"
-
-#: operations/workshop/chamfer.c:87
-msgid ""
-"Elevation angle (degrees). For most blend modes this shifts the lightest "
-"colors of the bevel."
-msgstr "高度角（角度）。对于大部分混合模式该选项将偏移倒角的最亮颜色。"
-
-#: operations/workshop/chamfer.c:118
-msgid "Choose Internal Median Shape"
-msgstr "选择内部中值形状"
-
-#: operations/workshop/chamfer.c:348
-msgid "Chamfer"
-msgstr "倒角"
-
-#: operations/workshop/chamfer.c:350
-msgid "Simulate lighting of a chamfered 3D-edges for an alpha-defined shape."
-msgstr "为透明定义的形状模拟 3D 边缘倒角的光照。"
+#~ msgid ""
+#~ "Simulate lighting of a chamfered 3D-edges for an alpha-defined shape."
+#~ msgstr "为透明定义的形状模拟 3D 边缘倒角的光照。"
 
 #~ msgid ""
 #~ "Scalar threshold level (overridden if an auxiliary input buffer is "
