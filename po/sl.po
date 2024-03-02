@@ -8,9 +8,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2023-09-23 21:17+0000\n"
-"PO-Revision-Date: 2023-09-24 08:11+0200\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
+"POT-Creation-Date: 2024-02-28 01:14+0000\n"
+"PO-Revision-Date: 2024-03-02 22:43+0100\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language: sl_SI\n"
@@ -168,7 +168,7 @@ msgstr ""
 "\n"
 "\n"
 
-#: bin/ui-core.c:4387 gegl/gegl-serialize.c:672
+#: bin/ui-core.c:4387 gegl/gegl-serialize.c:690
 #, c-format
 msgid "BablFormat \"%s\" does not exist."
 msgstr "BablFormat »%s« ne obstaja."
@@ -390,27 +390,32 @@ msgstr "Onemogoči OpenCL"
 msgid "Show GEGL Options"
 msgstr "Pokaži možnosti GEGL"
 
-#: gegl/gegl-serialize.c:305
+#: gegl/gegl-serialize.c:227 gegl/gegl-serialize.c:231
+#, fuzzy, c-format
+msgid "%s does not have a pad called %s"
+msgstr "%s nima sledilne ploščice, imenovane %s"
+
+#: gegl/gegl-serialize.c:323
 #, c-format
 msgid "unhandled path data %s:%s\n"
 msgstr "Neobravnavana pot podatkov %s:%s\n"
 
-#: gegl/gegl-serialize.c:541
+#: gegl/gegl-serialize.c:559
 #, c-format
 msgid "op '%s' not found, partial matches: "
 msgstr "op »%s« ni mogoče najti, delni zadetki: "
 
-#: gegl/gegl-serialize.c:570
+#: gegl/gegl-serialize.c:588
 #, c-format
 msgid "%s has no %s property."
 msgstr "%s nima lastnosti %s."
 
-#: gegl/gegl-serialize.c:576
+#: gegl/gegl-serialize.c:594
 #, c-format
 msgid "%s has no %s property, properties: "
 msgstr "%s nima %s lastnosti, lastnosti: "
 
-#: gegl/gegl-serialize.c:807
+#: gegl/gegl-serialize.c:826
 #, c-format
 msgid "No such op '%s'"
 msgstr "Taka operacija »%s« ne obstaja"
@@ -644,6 +649,7 @@ msgstr "Ohrani vrednosti alfe v okviru določenega obsega"
 #: operations/common-cxx/focus-blur.c:45 operations/common-cxx/lens-blur.cc:25
 #: operations/common-gpl3+/gaussian-blur-selective.c:29
 #: operations/workshop/bilateral-filter-fast.c:43
+#: operations/workshop/inner-glow.c:69
 msgid "Blur radius"
 msgstr "Polmer zabrisa"
 
@@ -667,7 +673,7 @@ msgstr "Raven ohranjanja robov"
 msgid "Bilateral Filter"
 msgstr "Dvostranski filter"
 
-#: operations/common/bilateral-filter.c:299
+#: operations/common/bilateral-filter.c:298
 msgid ""
 "Like a gaussian blur; but where the contribution for each neighborhood pixel "
 "is also weighted by the color difference with the original center pixel."
@@ -676,7 +682,7 @@ msgstr ""
 "utežen tudi z barvno razliko od izvorne središčne slikovne točke."
 
 #: operations/common/bloom.c:26 operations/common/threshold.c:25
-#: operations/common/threshold.c:163 operations/common/unsharp-mask.c:37
+#: operations/common/threshold.c:164 operations/common/unsharp-mask.c:37
 #: operations/common-gpl3+/red-eye-removal.c:31
 #: operations/common-gpl3+/wind.c:60 operations/external/matting-levin.c:33
 msgid "Threshold"
@@ -706,7 +712,7 @@ msgstr "Neostrina področja žarenja robov"
 #: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:44
 #: operations/common-gpl3+/whirl-pinch.c:46
 #: operations/external/matting-levin.c:29 operations/workshop/boxblur-1d.c:27
-#: operations/workshop/boxblur.c:24
+#: operations/workshop/boxblur.c:24 operations/workshop/bevel.c:83
 #: operations/workshop/external/spyrograph.c:63
 msgid "Radius"
 msgstr "Radij"
@@ -715,10 +721,9 @@ msgstr "Radij"
 msgid "Glow radius"
 msgstr "Polmer žarenja"
 
-#. Changing the name of a ENUM list will result in all presets breaking
 #: operations/common/bloom.c:42 operations/common/noise-reduction.c:26
 #: operations/common-cxx/denoise-dct.cc:38 operations/common-cxx/warp.cc:34
-#: operations/common-gpl3+/wind.c:64 operations/workshop/chamfer.c:57
+#: operations/common-gpl3+/wind.c:64
 msgid "Strength"
 msgstr "Jakost"
 
@@ -860,6 +865,7 @@ msgstr "Število vzorcev na ponovitev pri iskanju obsega barv"
 #: operations/common/noise-perlin.c:33 operations/common/noise-simplex.c:35
 #: operations/common/recursive-transform.c:36 operations/common/slic.c:38
 #: operations/common/stress.c:39 operations/common-gpl3+/fractal-explorer.c:55
+#: operations/workshop/shuffle-search.c:31
 msgid "Iterations"
 msgstr "Ponovitve"
 
@@ -993,6 +999,7 @@ msgstr "Upodobi vzorec šahovnice"
 #: operations/common-gpl3+/tile-paper.c:31
 #: operations/common-gpl3+/value-propagate.c:54 operations/external/text.c:37
 #: operations/external/vector-fill.c:26 operations/external/vector-stroke.c:27
+#: operations/workshop/inner-glow.c:91
 msgid "Color"
 msgstr "Barva"
 
@@ -1063,7 +1070,7 @@ msgstr ""
 "Raztegni barvno kromo na kar se da največji možen obseg, pri čemer ohranja "
 "obarvanost in svetlost nespremenjeno."
 
-#: operations/common/color-overlay.c:27
+#: operations/common/color-overlay.c:27 operations/workshop/inner-glow.c:92
 msgid "The color to paint over the input"
 msgstr "Barva za slikanje prek vhoda"
 
@@ -1685,47 +1692,47 @@ msgstr "Zaslon"
 msgid "Display the input buffer in a window."
 msgstr "Prikaži vhodni medpomnilnik v oknu."
 
-#: operations/common/dither.c:25
+#: operations/common/dither.c:31
 msgid "Red levels"
 msgstr "Ravni rdeče"
 
-#: operations/common/dither.c:26
+#: operations/common/dither.c:32
 msgid "Number of levels for red channel"
 msgstr "Število ravni za rdeči kanal"
 
-#: operations/common/dither.c:30
+#: operations/common/dither.c:36
 msgid "Green levels"
 msgstr "Ravni zelene"
 
-#: operations/common/dither.c:31
+#: operations/common/dither.c:37
 msgid "Number of levels for green channel"
 msgstr "Število ravni za zeleni kanal"
 
-#: operations/common/dither.c:35
+#: operations/common/dither.c:41
 msgid "Blue levels"
 msgstr "Ravni modre"
 
-#: operations/common/dither.c:36
+#: operations/common/dither.c:42
 msgid "Number of levels for blue channel"
 msgstr "Število ravni za modri kanal"
 
-#: operations/common/dither.c:40
+#: operations/common/dither.c:46
 msgid "Alpha levels"
 msgstr "Ravni alfe"
 
-#: operations/common/dither.c:41
+#: operations/common/dither.c:47
 msgid "Number of levels for alpha channel"
 msgstr "Število ravni za kanal alfa"
 
-#: operations/common/dither.c:45
+#: operations/common/dither.c:51
 msgid "Dithering method"
 msgstr "Metoda drgeta"
 
-#: operations/common/dither.c:47
+#: operations/common/dither.c:53
 msgid "The dithering method to use"
 msgstr "Metoda drgeta, ki jo želite uporabiti"
 
-#: operations/common/dither.c:49 operations/common/matting-global.c:28
+#: operations/common/dither.c:55 operations/common/matting-global.c:28
 #: operations/common/noise-cell.c:55 operations/common/noise-cie-lch.c:38
 #: operations/common/noise-hsv.c:40 operations/common/noise-hurl.c:37
 #: operations/common/noise-pick.c:38 operations/common/noise-rgb.c:55
@@ -1737,14 +1744,15 @@ msgstr "Metoda drgeta, ki jo želite uporabiti"
 #: operations/common-gpl3+/supernova.c:63
 #: operations/common-gpl3+/tile-paper.c:81 operations/common-gpl3+/wind.c:68
 #: operations/workshop/segment-kmeans.c:37
+#: operations/workshop/shuffle-search.c:59
 msgid "Random seed"
 msgstr "Naključno seme"
 
-#: operations/common/dither.c:619
+#: operations/common/dither.c:640
 msgid "Dither"
 msgstr "Stresanje"
 
-#: operations/common/dither.c:622
+#: operations/common/dither.c:643
 msgid ""
 "Reduce the number of colors in the image, by reducing the levels per channel "
 "(colors and alpha). Different dithering methods can be specified to "
@@ -1792,20 +1800,20 @@ msgstr ""
 
 #: operations/common/dropshadow.c:27 operations/common/median-blur.c:27
 #: operations/common/pixelize.c:28 operations/common/vignette.c:26
-#: operations/common-cxx/focus-blur.c:35 operations/workshop/chamfer.c:43
+#: operations/common-cxx/focus-blur.c:35 operations/workshop/inner-glow.c:39
 msgid "Square"
 msgstr "Kvadrat"
 
 #: operations/common/dropshadow.c:28 operations/common/median-blur.c:28
 #: operations/common/newsprint.c:26 operations/common/vignette.c:25
-#: operations/common-cxx/focus-blur.c:34 operations/workshop/chamfer.c:44
+#: operations/common-cxx/focus-blur.c:34 operations/workshop/inner-glow.c:40
 msgid "Circle"
 msgstr "Krog"
 
 #: operations/common/dropshadow.c:29 operations/common/median-blur.c:29
 #: operations/common/newsprint.c:27 operations/common/pixelize.c:26
 #: operations/common/vignette.c:27 operations/common-cxx/focus-blur.c:36
-#: operations/workshop/chamfer.c:45
+#: operations/workshop/inner-glow.c:41
 msgid "Diamond"
 msgstr "Karo"
 
@@ -1818,10 +1826,11 @@ msgstr "Karo"
 #: operations/transform/scale-size-keepaspect.c:25
 #: operations/transform/shear.c:25 operations/transform/translate.c:25
 #: operations/workshop/external/spyrograph.c:51
+#: operations/workshop/inner-glow.c:51
 msgid "X"
 msgstr "X"
 
-#: operations/common/dropshadow.c:33
+#: operations/common/dropshadow.c:33 operations/workshop/inner-glow.c:52
 msgid "Horizontal shadow offset"
 msgstr "Vodoravni odmik sence"
 
@@ -1834,26 +1843,27 @@ msgstr "Vodoravni odmik sence"
 #: operations/transform/scale-size-keepaspect.c:30
 #: operations/transform/shear.c:29 operations/transform/translate.c:31
 #: operations/workshop/external/spyrograph.c:57
+#: operations/workshop/inner-glow.c:59
 msgid "Y"
 msgstr "Y"
 
-#: operations/common/dropshadow.c:40
+#: operations/common/dropshadow.c:40 operations/workshop/inner-glow.c:60
 msgid "Vertical shadow offset"
 msgstr "Navpični odmik sence"
 
-#: operations/common/dropshadow.c:53
+#: operations/common/dropshadow.c:53 operations/workshop/inner-glow.c:45
 msgid "Grow shape"
 msgstr "Lik rasti"
 
-#: operations/common/dropshadow.c:56
+#: operations/common/dropshadow.c:56 operations/workshop/inner-glow.c:48
 msgid "The shape to expand or contract the shadow in"
 msgstr "Lik, v katerega razširi ali skrči senco"
 
-#: operations/common/dropshadow.c:58
+#: operations/common/dropshadow.c:58 operations/workshop/inner-glow.c:77
 msgid "Grow radius"
 msgstr "Polmer rasti"
 
-#: operations/common/dropshadow.c:65
+#: operations/common/dropshadow.c:65 operations/workshop/inner-glow.c:84
 msgid ""
 "The distance to expand the shadow before blurring; a negative value will "
 "contract the shadow instead"
@@ -1872,6 +1882,7 @@ msgstr "Barva sence (privzeto črna, 'black')"
 #: operations/common/dropshadow.c:74 operations/common/layer.c:33
 #: operations/common/opacity.c:25 operations/common/opacity.c:289
 #: operations/external/vector-fill.c:29 operations/external/vector-stroke.c:34
+#: operations/workshop/inner-glow.c:86
 msgid "Opacity"
 msgstr "Prekrivnost"
 
@@ -2005,7 +2016,7 @@ msgstr "Prag preliva za zniževanje izboljšave podrobnosti"
 msgid "Fattal et al. 2002 Tone Mapping"
 msgstr "Fattal et al. 2002 tone Mapping"
 
-#: operations/common/fattal02.c:1366
+#: operations/common/fattal02.c:1365
 msgid ""
 "Adapt an image, which may have a high dynamic range, for presentation using "
 "a low dynamic range. This operator attenuates the magnitudes of local image "
@@ -2471,6 +2482,7 @@ msgstr "Najvišja raven svetilnosti v izhodu"
 #: operations/common/levels.c:206 operations/common/posterize.c:24
 #: operations/common-cxx/piecewise-blend.cc:29
 #: operations/external/matting-levin.c:41
+#: operations/workshop/shuffle-search.c:48
 msgid "Levels"
 msgstr "Ravni"
 
@@ -2793,7 +2805,7 @@ msgstr "Podrobnost"
 msgid "Level of emphasis on image gradient details"
 msgstr "Raven poudarjanja podrobnosti prelivov slike"
 
-#: operations/common/mantiuk06.c:1654
+#: operations/common/mantiuk06.c:1655
 msgid "Mantiuk 2006 Tone Mapping"
 msgstr "Mantiuk 2006 Preslikovanje tonov"
 
@@ -3583,7 +3595,7 @@ msgstr "Višje vrednosti znižajo naključnost šuma"
 msgid "Add CIE Lch Noise"
 msgstr "Dodaj šum CIE LCh"
 
-#: operations/common/noise-cie-lch.c:199
+#: operations/common/noise-cie-lch.c:198
 msgid "Randomize lightness, chroma and hue independently"
 msgstr "Neodvisna naključnost svetlosti, krome in obarvanosti"
 
@@ -3650,7 +3662,7 @@ msgstr ""
 msgid "Noise Reduction"
 msgstr "Odpravljanje šuma"
 
-#: operations/common/noise-reduction.c:460
+#: operations/common/noise-reduction.c:459
 msgid "Anisotropic smoothing operation"
 msgstr "Anizotropična operacija glajenja"
 
@@ -4222,7 +4234,7 @@ msgstr "Število parov; višje število ohrani bolj kritične lastnosti"
 msgid "Symmetric Nearest Neighbor"
 msgstr "Simetrično najbližji sosed"
 
-#: operations/common/snn-mean.c:387
+#: operations/common/snn-mean.c:386
 msgid ""
 "Noise reducing edge preserving blur filter based on Symmetric Nearest "
 "Neighbors"
@@ -4251,7 +4263,7 @@ msgstr "Zorni kot"
 msgid "Camera angle of view"
 msgstr "Zorni kot kamere"
 
-#: operations/common/spherize.c:40 operations/workshop/chamfer.c:63
+#: operations/common/spherize.c:40
 msgid "Curvature"
 msgstr "Ukrivljenost"
 
@@ -4416,13 +4428,17 @@ msgid "Lowest value to be included."
 msgstr "Najnižja vrednost, ki bo vključena."
 
 #: operations/common/threshold.c:33
-msgid "highest value to be include as white."
-msgstr "Najvišja vrednost, vključena kot bela."
+msgid "Highest value to be include as white."
+msgstr "Najvišja vrednost, ki bo vključena kot bela."
 
-#: operations/common/threshold.c:168
+#: operations/common/threshold.c:169
+#, fuzzy
+#| msgid ""
+#| "Thresholds the image to white/black based on either the global value set "
+#| "in the value property, or per pixel from the aux input."
 msgid ""
-"Thresholds the image to white/black based on either the global value set in "
-"the value property, or per pixel from the aux input."
+"Thresholds the image to white/black based on either the global values set in "
+"the value (low) and high properties, or per pixel from the aux input."
 msgstr ""
 "Uporablja prag slike za belo/črno glede na nastavljeno splošno vrednost v "
 "lastnosti vrednosti ali glede na slikovno točko iz pomožnega vhoda."
@@ -5129,13 +5145,18 @@ msgid "Azimuth"
 msgstr "Azimut"
 
 #: operations/common-gpl3+/bump-map.c:56 operations/common-gpl3+/emboss.c:40
+#: operations/workshop/bevel.c:91
 msgid "Elevation"
 msgstr "Dvignjenost"
 
+#. The only issue  with this filter is that emboss depth= above 15 does nothing on chamfer bevel , but works great on bump bevel.
+#. so I made an extra node just for it that only updates emboss depth=, as a result depth and sharpness' are co-existing properties
+#.
+#. I am fully aware 'depth' and 'detail' are just words used to describe the same thing.
 #: operations/common-gpl3+/bump-map.c:59 operations/common-gpl3+/emboss.c:45
 #: operations/common-gpl3+/fractal-trace.c:60
 #: operations/common-gpl3+/texturize-canvas.c:44
-#: operations/workshop/chamfer.c:60
+#: operations/workshop/bevel.c:103
 msgid "Depth"
 msgstr "Globina"
 
@@ -5422,7 +5443,7 @@ msgstr "Velikost bloka za razpletanje vrstic/stolpcev"
 msgid "Deinterlace"
 msgstr "Razpleti"
 
-#: operations/common-gpl3+/deinterlace.c:317
+#: operations/common-gpl3+/deinterlace.c:316
 msgid "Fix images where every other row or column is missing"
 msgstr "Popravi slike, kjer manjka vsaka druga vrstica ali stolpec."
 
@@ -5706,7 +5727,7 @@ msgstr "Kot dvignjenosti (stopinje)"
 msgid "Filter width"
 msgstr "Širina filtra"
 
-#: operations/common-gpl3+/emboss.c:284
+#: operations/common-gpl3+/emboss.c:283
 msgid "Simulates an image created by embossing"
 msgstr "Simulira sliko, ustvarjeno z reliefnim krašenjem"
 
@@ -6247,7 +6268,7 @@ msgstr "Barva stikov"
 msgid "Light color"
 msgstr "Barva svetlobe"
 
-#: operations/common-gpl3+/mosaic.c:81 operations/workshop/chamfer.c:69
+#: operations/common-gpl3+/mosaic.c:81
 msgid "Light direction"
 msgstr "Smer svetlobe"
 
@@ -6281,7 +6302,7 @@ msgstr ""
 msgid "Circular Motion Blur"
 msgstr "Krožna zabrisanost gibanja"
 
-#: operations/common-gpl3+/motion-blur-circular.c:454
+#: operations/common-gpl3+/motion-blur-circular.c:453
 msgid "Circular motion blur"
 msgstr "Krožna zabrisanost gibanja"
 
@@ -6671,8 +6692,7 @@ msgstr "Če je nastavljeno, bo vzorec malo manj zmaličen."
 msgid "Bilinear"
 msgstr "Bilinearno"
 
-#. Changing the name of a ENUM list will result in all presets breaking
-#: operations/common-gpl3+/sinus.c:67 operations/workshop/chamfer.c:49
+#: operations/common-gpl3+/sinus.c:67 operations/workshop/bevel.c:72
 msgid "Blend Mode"
 msgstr "Način zlivanja"
 
@@ -7044,7 +7064,7 @@ msgstr "Ali naj se razširja prekrivnost slikovne točke"
 msgid "Value Propagate"
 msgstr "Razširi vrednost"
 
-#: operations/common-gpl3+/value-propagate.c:650
+#: operations/common-gpl3+/value-propagate.c:649
 msgid ""
 "Propagate certain values to neighboring pixels. Erode and dilate any color "
 "or opacity."
@@ -8016,11 +8036,13 @@ msgstr "Prekrivnost polnila, ki jo želite uporabiti"
 
 #: operations/external/path.c:54 operations/external/vector-fill.c:40
 #: operations/external/vector-stroke.c:41
+#: operations/workshop/external/ctx-script.c:26
 msgid "Vector"
 msgstr "Vektor"
 
 #: operations/external/path.c:55 operations/external/vector-fill.c:41
 #: operations/external/vector-stroke.c:42
+#: operations/workshop/external/ctx-script.c:27
 msgid "A GeglVector representing the path of the stroke"
 msgstr "Vektor GeglVector, ki predstavlja pot poteze"
 
@@ -8472,7 +8494,7 @@ msgstr ""
 msgid "Vector Stroke"
 msgstr "Vektorska poteza"
 
-#: operations/external/vector-stroke.c:360
+#: operations/external/vector-stroke.c:359
 msgid "Renders a vector stroke"
 msgstr "Upodobi vektorsko potezo"
 
@@ -9082,6 +9104,120 @@ msgstr "Zabrisanost iz povprečenja barv v okolici vrstice."
 msgid "BoxBlur"
 msgstr "Pravokotna zabrisanost"
 
+#: operations/workshop/bevel.c:47
+msgid "Chamfer"
+msgstr "Posneti rob"
+
+#: operations/workshop/bevel.c:49
+msgid "Bump"
+msgstr "Odtisni"
+
+#: operations/workshop/bevel.c:52
+msgid "Bevel Type"
+msgstr "Vrsta izbočenosti"
+
+#: operations/workshop/bevel.c:55
+#, fuzzy
+msgid "The family of bevel to use"
+msgstr "Družina izbočenosti za uporabo"
+
+#: operations/workshop/bevel.c:59
+#, fuzzy
+msgid "None (for use with GIMPs blending options)"
+msgstr "Brez (za uporabo z možnostmi mešanja GIMP)"
+
+#: operations/workshop/bevel.c:61
+msgid "Hard Light"
+msgstr "Ostra svetloba"
+
+#: operations/workshop/bevel.c:63
+msgid "Multiply"
+msgstr "Pomnoži"
+
+#: operations/workshop/bevel.c:65
+msgid "Color Dodge"
+msgstr "Barvni izmik"
+
+#: operations/workshop/bevel.c:67
+msgid "Darken"
+msgstr "Potemni"
+
+#: operations/workshop/bevel.c:69
+msgid "Lighten"
+msgstr "Posvetli"
+
+#: operations/workshop/bevel.c:75
+#, fuzzy
+msgid ""
+"What blending mode the bevel's emboss will be. Light Map is a special blend "
+"mode that allows users to extract the filters output as a light map which "
+"should be put on a layer above or be used with Gimp's blending options."
+msgstr ""
+"Kakšen način mešanja bo relief poševnega roba. Light Map je poseben način "
+"mešanja, ki uporabnikom omogoča, da izhod filtrov izvlečejo kot svetlobni "
+"zemljevid, ki ga je treba postaviti na plast nad ali uporabiti z možnostmi "
+"mešanja Gimp."
+
+#: operations/workshop/bevel.c:78
+#, fuzzy
+msgid "Distance Map Setting"
+msgstr "Nastavitev zemljevida oddaljenosti"
+
+#: operations/workshop/bevel.c:80
+#, fuzzy
+msgid ""
+"Distance Map is unique to chamfer bevel and has three settings that alter "
+"the structure of the chamfer."
+msgstr ""
+"Zemljevid razdalje je edinstven za posnetke in ima tri nastavitve, ki "
+"spreminjajo strukturo posnetka."
+
+#: operations/workshop/bevel.c:88
+#, fuzzy
+msgid "Radius of softening for making bump of the shape."
+msgstr "Polmer mehčanja za izdelavo izbokline oblike."
+
+#: operations/workshop/bevel.c:92
+#, fuzzy
+msgid "Elevation angle of the Bevel."
+msgstr "Kot dvignjenosti izbočenja."
+
+#: operations/workshop/bevel.c:104
+#, fuzzy
+msgid "Emboss depth - Brings out depth and detail of the bump bevel."
+msgstr "Globina reliefa - Pokaže globino in podrobnosti poševnega roba."
+
+#: operations/workshop/bevel.c:108
+msgid "Light Angle"
+msgstr "Kot svetlobe"
+
+#: operations/workshop/bevel.c:109
+#, fuzzy
+msgid "Direction of a light source illuminating and shading the bevel."
+msgstr "Smer svetlobnega vira, ki osvetljuje in senči izbočenje."
+
+#: operations/workshop/bevel.c:299
+msgid "Bevel"
+msgstr "Izbočeno"
+
+#: operations/workshop/bevel.c:301
+#, fuzzy
+msgid ""
+"Two bevel effects in one place, Chamfer - which simulates lighting of "
+"chamfered 3D-edges, and Bump - the second make a 3D inflation effect by an "
+"emboss covering a blur. Both bevels benefit from color filled alpha defined "
+"shapes."
+msgstr ""
+"Dva poševna učinka na enem mestu, Chamfer - ki simulira osvetlitev posnetih "
+"3D-robov, in Bump - drugi naredita 3D učinek inflacije z reliefom, ki "
+"pokriva zamegljenost. Oba poševnika imata koristi od alfa definiranih oblik, "
+"napolnjenih z barvo."
+
+#: operations/workshop/bevel.c:303
+#, fuzzy
+msgid "Bevel..."
+msgstr "Izbočeno …"
+
 #: operations/workshop/connected-components.c:25
 msgid "Separator"
 msgstr "Ločilo"
@@ -9166,6 +9302,14 @@ msgid "Test op to do a 1:1 map of input to output, while sampling"
 msgstr ""
 "Poskusna operacija za preslikavo 1:1 z vhoda na izhod, medtem poteka "
 "vzorčenje."
+
+#: operations/workshop/external/ctx-script.c:126
+msgid "Ctx script"
+msgstr "Skript Ctx"
+
+#: operations/workshop/external/ctx-script.c:128
+msgid "Renders a ctx vector graphics"
+msgstr "Upodobi vektorsko grafiko ctx"
 
 #: operations/workshop/external/gluas.c:29
 msgid "Script"
@@ -9628,6 +9772,38 @@ msgstr "Zemljevid preliva"
 msgid "Applies a color gradient."
 msgstr "Uveljavi barvni preliv."
 
+#: operations/workshop/inner-glow.c:96
+msgid "Median fix for non-effected pixels on edges"
+msgstr ""
+
+#: operations/workshop/inner-glow.c:98
+#, fuzzy
+msgid ""
+"Median Blur covers uneffected pixels. Making this slider too high will make "
+"it outline-like. So only slide it has high as you need to cover thin shape "
+"corners.'"
+msgstr ""
+"Mediana zamegljenosti zajema neizvedene slikovne pike. Če bo ta drsnik "
+"previsok, bo oris. Torej samo drsite visoko, saj morate pokriti tanke vogale "
+"oblike.\""
+
+#: operations/workshop/inner-glow.c:182
+msgid "Inner Glow"
+msgstr "Notranje žarenje"
+
+#: operations/workshop/inner-glow.c:184
+#, fuzzy
+msgid ""
+"GEGL does an inner shadow glow effect; for more interesting use different "
+"blend mode than the default, Replace."
+msgstr ""
+"GEGL naredi učinek notranjega senčnega sijaja; za bolj zanimivo uporabite "
+"drugačen način mešanja od privzetega, Zamenjaj."
+
+#: operations/workshop/inner-glow.c:186
+msgid "Inner Glow..."
+msgstr "Notranje žarenje …"
+
 #: operations/workshop/integral-image.c:25
 msgid "squared integral"
 msgstr "Kvadratni integral"
@@ -9706,80 +9882,28 @@ msgstr "Selektivna obarvanost-nasičenost"
 msgid "Selective adjust Hue, Saturation and Lightness"
 msgstr "Selektivno prilagodite obarvanost, nasičenost in svetlost"
 
-#: operations/workshop/chamfer.c:27
-msgid "HardLight"
-msgstr "Trda osvetlitev"
+#: operations/workshop/shuffle-search.c:38
+#, fuzzy
+msgid "Chance"
+msgstr "Verjetnost"
 
-#: operations/workshop/chamfer.c:29
-msgid "Multiply"
-msgstr "Pomnoži"
+#: operations/workshop/shuffle-search.c:45
+msgid "Phase"
+msgstr "Faza"
 
-#: operations/workshop/chamfer.c:33
-msgid "Darken"
-msgstr "Potemni"
+#: operations/workshop/shuffle-search.c:49
+msgid "Only used if no aux image is provided"
+msgstr "Uporablja se samo, če ni na voljo zunanja slika."
 
-#: operations/workshop/chamfer.c:35
-msgid "Lighten"
-msgstr "Posvetli"
+#: operations/workshop/shuffle-search.c:592
+#, fuzzy
+msgid "Optimize Dither"
+msgstr "Optimiziraj stresanje"
 
-#: operations/workshop/chamfer.c:39
-msgid "Soft Light"
-msgstr "Mehka osvetlitev"
-
-#: operations/workshop/chamfer.c:52
-msgid "What blending mode a light map will be applied with."
-msgstr "S katerim načinom mešanja bo uporabljen svetlobni zemljevid."
-
-#: operations/workshop/chamfer.c:64
+#: operations/workshop/shuffle-search.c:595
 msgid ""
-"Curvature at 0.5 we are close to a circle shape, 1.0 is straight, values "
-"above 1.0 are concave."
+"Shuffles pixels, and quantization with neighbors to optimize dither, by "
+"shuffling neighboring pixels."
 msgstr ""
-"Ukrivljenost pri 0,5 je blizu obliki kroga, 1,0 je ravna, vrednosti nad 1,0 "
-"so konkavne."
-
-#: operations/workshop/chamfer.c:70
-msgid ""
-"Light angle (degrees). For most blend modes this rotates lighting of the "
-"bevel."
-msgstr ""
-"Svetlobni kot (stopinje). Pri večini načinov mešanja se s tem vrti "
-"osvetlitev poševnine."
-
-#: operations/workshop/chamfer.c:76
-msgid "Detailed options"
-msgstr "Podrobne možnosti"
-
-#: operations/workshop/chamfer.c:78
-msgid "Mask with initial alpha"
-msgstr "Maska z začetno alfo"
-
-#: operations/workshop/chamfer.c:80
-msgid ""
-"Keep alpha coverage, avoids growing of the shape beyond initial position."
-msgstr ""
-"Ohranja pokritost alfe, kar preprečuje rast lika izven začetnega položaja."
-
-#: operations/workshop/chamfer.c:86
-msgid "Light Elevation"
-msgstr "Višina osvetlitve"
-
-#: operations/workshop/chamfer.c:87
-msgid ""
-"Elevation angle (degrees). For most blend modes this shifts the lightest "
-"colors of the bevel."
-msgstr ""
-"Višinski kot (stopinje). Pri večini načinov mešanja to premakne najsvetlejše "
-"barve poševnine."
-
-#: operations/workshop/chamfer.c:118
-msgid "Choose Internal Median Shape"
-msgstr "Izberite obliko interne mediane"
-
-#: operations/workshop/chamfer.c:348
-msgid "Chamfer"
-msgstr "Posneti rob"
-
-#: operations/workshop/chamfer.c:350
-msgid "Simulate lighting of a chamfered 3D-edges for an alpha-defined shape."
-msgstr "Simulirajte osvetlitev posnetih 3D-robov za alfa-določen lik."
+"Premeša slikovne točke in kvantifikacijo s sosedi, da optimizira stresanje, "
+"tako da premeša sosednje slikovne točke."
