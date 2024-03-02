@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
 "POT-Creation-Date: 2024-02-28 01:14+0000\n"
-"PO-Revision-Date: 2024-03-02 22:43+0100\n"
+"PO-Revision-Date: 2024-03-02 22:45+0100\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language: sl_SI\n"
@@ -9773,8 +9773,9 @@ msgid "Applies a color gradient."
 msgstr "Uveljavi barvni preliv."
 
 #: operations/workshop/inner-glow.c:96
+#, fuzzy
 msgid "Median fix for non-effected pixels on edges"
-msgstr ""
+msgstr "Mediana popravka za neprizadete slikovne točke na robovih"
 
 #: operations/workshop/inner-glow.c:98
 #, fuzzy
