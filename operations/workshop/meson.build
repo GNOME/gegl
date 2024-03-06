@@ -21,6 +21,7 @@ gegl_workshop_sources = files(
   'segment-kmeans.c',
   'shuffle-search.c',
   'selective-hue-saturation.c',
+  'styles.c'
 )
 
 gegl_workshop_sources += custom_target('module_workshop.c',
