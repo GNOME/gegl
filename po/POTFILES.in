@@ -15,6 +15,7 @@ gegl/operation/gegl-operation-composer.c
 operations/common/absolute.c
 operations/common/alien-map.c
 operations/common/alpha-clip.c
+operations/common/bevel.c
 operations/common/bilateral-filter.c
 operations/common/bloom.c
 operations/common/box-blur.c
@@ -57,6 +58,7 @@ operations/common/icc-load.c
 operations/common/icc-save.c
 operations/common/image-compare.c
 operations/common/image-gradient.c
+operations/common/inner-glow.c
 operations/common/introspect.c
 operations/common/invert-gamma.c
 operations/common/invert-linear.c
@@ -277,7 +279,6 @@ operations/workshop/band-tune.c
 operations/workshop/bilateral-filter-fast.c
 operations/workshop/boxblur-1d.c
 operations/workshop/boxblur.c
-operations/workshop/bevel.c
 operations/workshop/connected-components.c
 operations/workshop/demosaic-bimedian.c
 operations/workshop/demosaic-simple.c
@@ -297,7 +298,6 @@ operations/workshop/generated/soft-burn.c
 operations/workshop/generated/soft-dodge.c
 operations/workshop/generated/subtractive.c
 operations/workshop/gradient-map.c
-operations/workshop/inner-glow.c
 operations/workshop/integral-image.c
 operations/workshop/rawbayer-load.c
 operations/workshop/segment-kmeans.c
