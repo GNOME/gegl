@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-02-28 01:14+0000\n"
-"PO-Revision-Date: 2024-03-02 22:45+0100\n"
+"POT-Creation-Date: 2024-03-02 21:45+0000\n"
+"PO-Revision-Date: 2024-03-07 19:37+0100\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language: sl_SI\n"
@@ -391,7 +391,7 @@ msgid "Show GEGL Options"
 msgstr "Pokaži možnosti GEGL"
 
 #: gegl/gegl-serialize.c:227 gegl/gegl-serialize.c:231
-#, fuzzy, c-format
+#, c-format
 msgid "%s does not have a pad called %s"
 msgstr "%s nima sledilne ploščice, imenovane %s"
 
@@ -4432,16 +4432,13 @@ msgid "Highest value to be include as white."
 msgstr "Najvišja vrednost, ki bo vključena kot bela."
 
 #: operations/common/threshold.c:169
-#, fuzzy
-#| msgid ""
-#| "Thresholds the image to white/black based on either the global value set "
-#| "in the value property, or per pixel from the aux input."
 msgid ""
 "Thresholds the image to white/black based on either the global values set in "
 "the value (low) and high properties, or per pixel from the aux input."
 msgstr ""
 "Uporablja prag slike za belo/črno glede na nastavljeno splošno vrednost v "
-"lastnosti vrednosti ali glede na slikovno točko iz pomožnega vhoda."
+"lastnostih vrednosti (nizke) in visoke ali glede na slikovno točko iz "
+"pomožnega vhoda."
 
 #: operations/common/tile.c:24
 msgid "Horizontal offset"
@@ -9117,14 +9114,12 @@ msgid "Bevel Type"
 msgstr "Vrsta izbočenosti"
 
 #: operations/workshop/bevel.c:55
-#, fuzzy
 msgid "The family of bevel to use"
-msgstr "Družina izbočenosti za uporabo"
+msgstr "Družina izbočenosti, ki jo želite uporabiti"
 
 #: operations/workshop/bevel.c:59
-#, fuzzy
 msgid "None (for use with GIMPs blending options)"
-msgstr "Brez (za uporabo z možnostmi mešanja GIMP)"
+msgstr "Brez (za uporabo z možnostmi zlivanja GIMP)"
 
 #: operations/workshop/bevel.c:61
 msgid "Hard Light"
@@ -9147,19 +9142,17 @@ msgid "Lighten"
 msgstr "Posvetli"
 
 #: operations/workshop/bevel.c:75
-#, fuzzy
 msgid ""
 "What blending mode the bevel's emboss will be. Light Map is a special blend "
 "mode that allows users to extract the filters output as a light map which "
 "should be put on a layer above or be used with Gimp's blending options."
 msgstr ""
-"Kakšen način mešanja bo relief poševnega roba. Light Map je poseben način "
-"mešanja, ki uporabnikom omogoča, da izhod filtrov izvlečejo kot svetlobni "
-"zemljevid, ki ga je treba postaviti na plast nad ali uporabiti z možnostmi "
-"mešanja Gimp."
+"Kakšen način zlivanja bo relief poševnega roba. Svetlobni zemljevid je "
+"poseben način mešanja, ki uporabnikom omogoča, da izhod filtrov izvlečejo "
+"kot svetlobni zemljevid, ki ga je treba postaviti na plast nad ali uporabiti "
+"z možnostmi zlivanja Gimp."
 
 #: operations/workshop/bevel.c:78
-#, fuzzy
 msgid "Distance Map Setting"
 msgstr "Nastavitev zemljevida oddaljenosti"
 
@@ -9169,38 +9162,35 @@ msgid ""
 "Distance Map is unique to chamfer bevel and has three settings that alter "
 "the structure of the chamfer."
 msgstr ""
-"Zemljevid razdalje je edinstven za posnetke in ima tri nastavitve, ki "
+"Zemljevid oddaljenosti je edinstven za posnetke in ima tri nastavitve, ki "
 "spreminjajo strukturo posnetka."
 
 #: operations/workshop/bevel.c:88
-#, fuzzy
 msgid "Radius of softening for making bump of the shape."
-msgstr "Polmer mehčanja za izdelavo izbokline oblike."
+msgstr "Polmer mehčanja za izdelavo izbokline v obliki lika."
 
 #: operations/workshop/bevel.c:92
-#, fuzzy
 msgid "Elevation angle of the Bevel."
 msgstr "Kot dvignjenosti izbočenja."
 
 #: operations/workshop/bevel.c:104
 #, fuzzy
 msgid "Emboss depth - Brings out depth and detail of the bump bevel."
-msgstr "Globina reliefa - Pokaže globino in podrobnosti poševnega roba."
+msgstr "Globina reliefa - pokaže globino in podrobnosti poševnega roba."
 
 #: operations/workshop/bevel.c:108
 msgid "Light Angle"
 msgstr "Kot svetlobe"
 
 #: operations/workshop/bevel.c:109
-#, fuzzy
 msgid "Direction of a light source illuminating and shading the bevel."
-msgstr "Smer svetlobnega vira, ki osvetljuje in senči izbočenje."
+msgstr "Smer svetlobnega vira, ki osvetljuje in senči izbočenje oz. relief."
 
-#: operations/workshop/bevel.c:299
+#: operations/workshop/bevel.c:307
 msgid "Bevel"
 msgstr "Izbočeno"
 
-#: operations/workshop/bevel.c:301
+#: operations/workshop/bevel.c:309
 #, fuzzy
 msgid ""
 "Two bevel effects in one place, Chamfer - which simulates lighting of "
@@ -9213,7 +9203,7 @@ msgstr ""
 "pokriva zamegljenost. Oba poševnika imata koristi od alfa definiranih oblik, "
 "napolnjenih z barvo."
 
-#: operations/workshop/bevel.c:303
+#: operations/workshop/bevel.c:311
 #, fuzzy
 msgid "Bevel..."
 msgstr "Izbočeno …"
@@ -9799,7 +9789,7 @@ msgid ""
 "blend mode than the default, Replace."
 msgstr ""
 "GEGL naredi učinek notranjega senčnega sijaja; za bolj zanimivo uporabite "
-"drugačen način mešanja od privzetega, Zamenjaj."
+"drugačen način zlivanja od privzetega - Zamenjaj."
 
 #: operations/workshop/inner-glow.c:186
 msgid "Inner Glow..."
@@ -9884,7 +9874,6 @@ msgid "Selective adjust Hue, Saturation and Lightness"
 msgstr "Selektivno prilagodite obarvanost, nasičenost in svetlost"
 
 #: operations/workshop/shuffle-search.c:38
-#, fuzzy
 msgid "Chance"
 msgstr "Verjetnost"
 
@@ -9897,9 +9886,8 @@ msgid "Only used if no aux image is provided"
 msgstr "Uporablja se samo, če ni na voljo zunanja slika."
 
 #: operations/workshop/shuffle-search.c:592
-#, fuzzy
 msgid "Optimize Dither"
-msgstr "Optimiziraj stresanje"
+msgstr "Optimiziraj drget"
 
 #: operations/workshop/shuffle-search.c:595
 msgid ""
