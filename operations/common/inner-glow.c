@@ -95,7 +95,7 @@ property_color (value, _("Color"), "#fbff00")
 
 property_double  (cover, _("Median fix for non-effected pixels on edges"), 60)
   value_range (50, 100)
-  description (_("Median Blur covers uneffected pixels. Making this slider too high will make it outline-like. So only slide it has high as you need to cover thin shape corners.'"))
+  description (_("Median Blur covers unaffected pixels. Making this slider too high will make it outline-like. So only slide it has high as you need to cover thin shape corners.'"))
  /* This option has to be visible as certain inner shadows will look bad if it is locked at 100. And if it is disabled all the pixels on the text's edges will be unmodified.  */
 
 #else
