@@ -202,7 +202,7 @@ void         gegl_color_set_cmyk               (GeglColor   *color,
  * gegl_color_set_pixel: (skip)
  * @color: a #GeglColor
  * @format: a babl pixel format
- * @pixel: pointer to a pixel
+ * @pixel: (not nullable): pointer to a pixel
  *
  * Set a GeglColor from a pointer to a pixel and it's babl format.
  */
