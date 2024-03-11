@@ -11,9 +11,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-02-06 19:23+0000\n"
-"PO-Revision-Date: 2024-02-08 01:41+0300\n"
-"Last-Translator: Sabri Ünal <libreajans@gmail.com>\n"
+"POT-Creation-Date: 2024-02-28 01:14+0000\n"
+"PO-Revision-Date: 2024-03-11 12:22+0300\n"
+"Last-Translator: Sabri Ünal <yakushabb@gmail.com>\n"
 "Language-Team: Türkçe <gnome-turk@gnome.org>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
@@ -210,7 +210,7 @@ msgstr ""
 "\n"
 "\n"
 
-#: bin/ui-core.c:4387 gegl/gegl-serialize.c:672
+#: bin/ui-core.c:4387 gegl/gegl-serialize.c:690
 #, c-format
 msgid "BablFormat \"%s\" does not exist."
 msgstr "BablFormat \"%s\" yok."
@@ -437,27 +437,32 @@ msgstr "OpenCL Kapat"
 msgid "Show GEGL Options"
 msgstr "GEGL Seçeneklerini Göster"
 
-#: gegl/gegl-serialize.c:305
+#: gegl/gegl-serialize.c:227 gegl/gegl-serialize.c:231
+#, c-format
+msgid "%s does not have a pad called %s"
+msgstr ""
+
+#: gegl/gegl-serialize.c:323
 #, c-format
 msgid "unhandled path data %s:%s\n"
 msgstr "işlenemeyen yol verisi %s:%s\n"
 
-#: gegl/gegl-serialize.c:541
+#: gegl/gegl-serialize.c:559
 #, c-format
 msgid "op '%s' not found, partial matches: "
 msgstr "op '%s' bulunamadı, kısmi eşleşme: "
 
-#: gegl/gegl-serialize.c:570
+#: gegl/gegl-serialize.c:588
 #, c-format
 msgid "%s has no %s property."
 msgstr "%s %s özelliğine sahip değil."
 
-#: gegl/gegl-serialize.c:576
+#: gegl/gegl-serialize.c:594
 #, c-format
 msgid "%s has no %s property, properties: "
 msgstr "%s %s özelliğine veya özelliklerine sahip değil: "
 
-#: gegl/gegl-serialize.c:807
+#: gegl/gegl-serialize.c:826
 #, c-format
 msgid "No such op '%s'"
 msgstr "Bilinmeyen op: '%s'"
@@ -695,6 +700,7 @@ msgstr "Alfa değerlerini belirli bir erimde tut"
 #: operations/common-cxx/focus-blur.c:45 operations/common-cxx/lens-blur.cc:25
 #: operations/common-gpl3+/gaussian-blur-selective.c:29
 #: operations/workshop/bilateral-filter-fast.c:43
+#: operations/workshop/inner-glow.c:69
 msgid "Blur radius"
 msgstr "Bulanıklık yarıçapı"
 
@@ -719,7 +725,7 @@ msgstr "Kenar koruması miktarı"
 msgid "Bilateral Filter"
 msgstr "Çift Taraflı Süz"
 
-#: operations/common/bilateral-filter.c:299
+#: operations/common/bilateral-filter.c:298
 #, fuzzy
 #| msgid ""
 #| "Like a gaussian blur; but where the contribution for each neighbourhood "
@@ -763,7 +769,7 @@ msgstr "Parlama alanı kenar yumuşaklığı"
 #: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:44
 #: operations/common-gpl3+/whirl-pinch.c:46
 #: operations/external/matting-levin.c:29 operations/workshop/boxblur-1d.c:27
-#: operations/workshop/boxblur.c:24
+#: operations/workshop/boxblur.c:24 operations/workshop/bevel.c:83
 #: operations/workshop/external/spyrograph.c:63
 msgid "Radius"
 msgstr "Yarıçap"
@@ -772,10 +778,9 @@ msgstr "Yarıçap"
 msgid "Glow radius"
 msgstr "Parıltı yarıçapı"
 
-#. Changing the name of a ENUM list will result in all presets breaking
 #: operations/common/bloom.c:42 operations/common/noise-reduction.c:26
 #: operations/common-cxx/denoise-dct.cc:38 operations/common-cxx/warp.cc:34
-#: operations/common-gpl3+/wind.c:64 operations/workshop/chamfer.c:57
+#: operations/common-gpl3+/wind.c:64
 msgid "Strength"
 msgstr "Kuvvet"
 
@@ -858,7 +863,7 @@ msgstr ""
 
 #: operations/common/buffer-sink.c:25 operations/common/write-buffer.c:25
 msgid "Buffer location"
-msgstr "Arabellek konumu"
+msgstr "Tampon konumu"
 
 #: operations/common/buffer-sink.c:26
 msgid "The location where to store the output GeglBuffer"
@@ -893,7 +898,7 @@ msgstr "Komut zincirine yüklenecek GeglBuffer"
 
 #: operations/common/buffer-source.c:219
 msgid "Buffer Source"
-msgstr "Arabellek Kaynağı"
+msgstr "Tampon Kaynağı"
 
 #: operations/common/buffer-source.c:221
 msgid "Use an existing in-memory GeglBuffer as image source."
@@ -920,6 +925,7 @@ msgstr "Renk aralığını arayan her yineleme için yapılacak örnekleme sayı
 #: operations/common/noise-perlin.c:33 operations/common/noise-simplex.c:35
 #: operations/common/recursive-transform.c:36 operations/common/slic.c:38
 #: operations/common/stress.c:39 operations/common-gpl3+/fractal-explorer.c:55
+#: operations/workshop/shuffle-search.c:31
 msgid "Iterations"
 msgstr "Yinelemeler"
 
@@ -1053,6 +1059,7 @@ msgstr "Bir dama tahtası deseni görselleştir"
 #: operations/common-gpl3+/tile-paper.c:31
 #: operations/common-gpl3+/value-propagate.c:54 operations/external/text.c:37
 #: operations/external/vector-fill.c:26 operations/external/vector-stroke.c:27
+#: operations/workshop/inner-glow.c:91
 msgid "Color"
 msgstr "Renk"
 
@@ -1125,7 +1132,7 @@ msgstr ""
 "Renk parlaklığını olabildiğince çok erimi kaplayacak biçimde genişlet, renk "
 "tonuna ve aydınlığa dokunma."
 
-#: operations/common/color-overlay.c:27
+#: operations/common/color-overlay.c:27 operations/workshop/inner-glow.c:92
 msgid "The color to paint over the input"
 msgstr "Girdi üzerine boyanacak renk"
 
@@ -1693,7 +1700,7 @@ msgstr "Genel 5x5 evrişim matrisi uygula"
 
 #: operations/common/copy-buffer.c:25
 msgid "Buffer"
-msgstr "Arabellek"
+msgstr "Tampon"
 
 #: operations/common/copy-buffer.c:26
 msgid ""
@@ -1748,47 +1755,47 @@ msgstr "Ekran"
 msgid "Display the input buffer in a window."
 msgstr "Girdi arabelleğini bir pencerede göster."
 
-#: operations/common/dither.c:25
+#: operations/common/dither.c:31
 msgid "Red levels"
 msgstr "Kırmızı düzeyleri"
 
-#: operations/common/dither.c:26
+#: operations/common/dither.c:32
 msgid "Number of levels for red channel"
 msgstr "Kırmızı kanal için düzey sayısı"
 
-#: operations/common/dither.c:30
+#: operations/common/dither.c:36
 msgid "Green levels"
 msgstr "Yeşil düzeyleri"
 
-#: operations/common/dither.c:31
+#: operations/common/dither.c:37
 msgid "Number of levels for green channel"
 msgstr "Yeşil kanal için düzey sayısı"
 
-#: operations/common/dither.c:35
+#: operations/common/dither.c:41
 msgid "Blue levels"
 msgstr "Mavi düzeyleri"
 
-#: operations/common/dither.c:36
+#: operations/common/dither.c:42
 msgid "Number of levels for blue channel"
 msgstr "Mavi kanal için düzey sayısı"
 
-#: operations/common/dither.c:40
+#: operations/common/dither.c:46
 msgid "Alpha levels"
 msgstr "Alfa düzeyleri"
 
-#: operations/common/dither.c:41
+#: operations/common/dither.c:47
 msgid "Number of levels for alpha channel"
 msgstr "Alfa kanalı için düzey sayısı"
 
-#: operations/common/dither.c:45
+#: operations/common/dither.c:51
 msgid "Dithering method"
 msgstr "Renk taklidi yöntemi"
 
-#: operations/common/dither.c:47
+#: operations/common/dither.c:53
 msgid "The dithering method to use"
 msgstr "Kullanılacak renk taklidi yöntemi"
 
-#: operations/common/dither.c:49 operations/common/matting-global.c:28
+#: operations/common/dither.c:55 operations/common/matting-global.c:28
 #: operations/common/noise-cell.c:55 operations/common/noise-cie-lch.c:38
 #: operations/common/noise-hsv.c:40 operations/common/noise-hurl.c:37
 #: operations/common/noise-pick.c:38 operations/common/noise-rgb.c:55
@@ -1800,14 +1807,15 @@ msgstr "Kullanılacak renk taklidi yöntemi"
 #: operations/common-gpl3+/supernova.c:63
 #: operations/common-gpl3+/tile-paper.c:81 operations/common-gpl3+/wind.c:68
 #: operations/workshop/segment-kmeans.c:37
+#: operations/workshop/shuffle-search.c:59
 msgid "Random seed"
 msgstr "Rastgele parçacık"
 
-#: operations/common/dither.c:619
+#: operations/common/dither.c:640
 msgid "Dither"
 msgstr "Renk taklidi"
 
-#: operations/common/dither.c:622
+#: operations/common/dither.c:643
 msgid ""
 "Reduce the number of colors in the image, by reducing the levels per channel "
 "(colors and alpha). Different dithering methods can be specified to "
@@ -1856,20 +1864,20 @@ msgstr ""
 
 #: operations/common/dropshadow.c:27 operations/common/median-blur.c:27
 #: operations/common/pixelize.c:28 operations/common/vignette.c:26
-#: operations/common-cxx/focus-blur.c:35 operations/workshop/chamfer.c:43
+#: operations/common-cxx/focus-blur.c:35 operations/workshop/inner-glow.c:39
 msgid "Square"
 msgstr "Kare"
 
 #: operations/common/dropshadow.c:28 operations/common/median-blur.c:28
 #: operations/common/newsprint.c:26 operations/common/vignette.c:25
-#: operations/common-cxx/focus-blur.c:34 operations/workshop/chamfer.c:44
+#: operations/common-cxx/focus-blur.c:34 operations/workshop/inner-glow.c:40
 msgid "Circle"
 msgstr "Daire"
 
 #: operations/common/dropshadow.c:29 operations/common/median-blur.c:29
 #: operations/common/newsprint.c:27 operations/common/pixelize.c:26
 #: operations/common/vignette.c:27 operations/common-cxx/focus-blur.c:36
-#: operations/workshop/chamfer.c:45
+#: operations/workshop/inner-glow.c:41
 msgid "Diamond"
 msgstr "Karo"
 
@@ -1882,10 +1890,11 @@ msgstr "Karo"
 #: operations/transform/scale-size-keepaspect.c:25
 #: operations/transform/shear.c:25 operations/transform/translate.c:25
 #: operations/workshop/external/spyrograph.c:51
+#: operations/workshop/inner-glow.c:51
 msgid "X"
 msgstr "X"
 
-#: operations/common/dropshadow.c:33
+#: operations/common/dropshadow.c:33 operations/workshop/inner-glow.c:52
 msgid "Horizontal shadow offset"
 msgstr "Yatay gölge konumu"
 
@@ -1898,26 +1907,27 @@ msgstr "Yatay gölge konumu"
 #: operations/transform/scale-size-keepaspect.c:30
 #: operations/transform/shear.c:29 operations/transform/translate.c:31
 #: operations/workshop/external/spyrograph.c:57
+#: operations/workshop/inner-glow.c:59
 msgid "Y"
 msgstr "Y"
 
-#: operations/common/dropshadow.c:40
+#: operations/common/dropshadow.c:40 operations/workshop/inner-glow.c:60
 msgid "Vertical shadow offset"
 msgstr "Dikey gölge konumu"
 
-#: operations/common/dropshadow.c:53
+#: operations/common/dropshadow.c:53 operations/workshop/inner-glow.c:45
 msgid "Grow shape"
 msgstr "Büyüme şekli"
 
-#: operations/common/dropshadow.c:56
+#: operations/common/dropshadow.c:56 operations/workshop/inner-glow.c:48
 msgid "The shape to expand or contract the shadow in"
 msgstr "Gölgenin büyüme veya küçülme şekli"
 
-#: operations/common/dropshadow.c:58
+#: operations/common/dropshadow.c:58 operations/workshop/inner-glow.c:77
 msgid "Grow radius"
 msgstr "Büyüme yarıçapı"
 
-#: operations/common/dropshadow.c:65
+#: operations/common/dropshadow.c:65 operations/workshop/inner-glow.c:84
 msgid ""
 "The distance to expand the shadow before blurring; a negative value will "
 "contract the shadow instead"
@@ -1935,6 +1945,7 @@ msgstr "Gölge rengi (öntanımlı olarak 'black')"
 #: operations/common/dropshadow.c:74 operations/common/layer.c:33
 #: operations/common/opacity.c:25 operations/common/opacity.c:289
 #: operations/external/vector-fill.c:29 operations/external/vector-stroke.c:34
+#: operations/workshop/inner-glow.c:86
 msgid "Opacity"
 msgstr "Matlık"
 
@@ -2074,7 +2085,7 @@ msgstr "Fattal et al. 2002 Ton Eşlemi"
 # "Düşük dinamik aralık kullanarak yüksek dinamik aralığa sahip bir görüntüyü sunum için uyarla. Bu işletici, yerel görüntü renk geçişlerinin "
 # "büyüklüğünü 0.0-1.0 aralığında ışıklılık üreterek azaltır. Bu tonlama yaklaşımı, ilk olarak Raanan Fattal tarafından, Gradient Domain High "
 # "Dynamic Range Compression makalesi ile, SIGGRAPH dergisinde 2002 yılında sunulmuştur."
-#: operations/common/fattal02.c:1366
+#: operations/common/fattal02.c:1365
 #, fuzzy
 msgid ""
 "Adapt an image, which may have a high dynamic range, for presentation using "
@@ -2536,6 +2547,7 @@ msgstr "Çıktıdaki en yüksek parlaklık düzeyi"
 #: operations/common/levels.c:206 operations/common/posterize.c:24
 #: operations/common-cxx/piecewise-blend.cc:29
 #: operations/external/matting-levin.c:41
+#: operations/workshop/shuffle-search.c:48
 msgid "Levels"
 msgstr "Düzeyler"
 
@@ -2855,7 +2867,7 @@ msgstr "Ayrıntı"
 msgid "Level of emphasis on image gradient details"
 msgstr "Görüntü renk geçişi ayrıntılarında vurgu düzeyi"
 
-#: operations/common/mantiuk06.c:1654
+#: operations/common/mantiuk06.c:1655
 msgid "Mantiuk 2006 Tone Mapping"
 msgstr "Mantiuk 2006 Ton Eşlemi"
 
@@ -3634,7 +3646,7 @@ msgstr "Yüksek değerler gürültünün raslantısallığını artırır"
 msgid "Add CIE Lch Noise"
 msgstr "CIE Lch Gürültüsü Ekle"
 
-#: operations/common/noise-cie-lch.c:199
+#: operations/common/noise-cie-lch.c:198
 msgid "Randomize lightness, chroma and hue independently"
 msgstr ""
 "Aydınlığı, renk parlaklığını ve renk tonunu bağımsız olarak rastgele seç"
@@ -3701,7 +3713,7 @@ msgstr "Yineleme sayısını denetler; düşük değerler daha az plastik sonuç
 msgid "Noise Reduction"
 msgstr "Gürültü Azaltma"
 
-#: operations/common/noise-reduction.c:460
+#: operations/common/noise-reduction.c:459
 msgid "Anisotropic smoothing operation"
 msgstr "Yönbağımlı pürüzsüzleştirme operatörü"
 
@@ -4272,7 +4284,7 @@ msgstr "Çiftlerin sayısı; daha büyük numara daha ilerlemiş özellikleri ko
 msgid "Symmetric Nearest Neighbor"
 msgstr "Simetrik En Yakın Komşu"
 
-#: operations/common/snn-mean.c:387
+#: operations/common/snn-mean.c:386
 msgid ""
 "Noise reducing edge preserving blur filter based on Symmetric Nearest "
 "Neighbors"
@@ -4301,7 +4313,7 @@ msgstr "Bakış açısı"
 msgid "Camera angle of view"
 msgstr "Kamera bakış açısı"
 
-#: operations/common/spherize.c:40 operations/workshop/chamfer.c:63
+#: operations/common/spherize.c:40
 msgid "Curvature"
 msgstr "Eğrilik"
 
@@ -4398,8 +4410,8 @@ msgid ""
 "improves images that make poor use of the available contrast (little "
 "contrast, very dark, or very bright images)."
 msgstr ""
-"Arabellek bileşenlerini 0.0-1.0 aralığında olacak biçimde ölçekle. Bu, "
-"mevcut karşıtlığı zayıf kullanan (az karşıtlıklı, çok koyu veya çok parlak) "
+"Tampon bileşenlerini 0.0-1.0 aralığında olacak biçimde ölçekle. Bu, mevcut "
+"karşıtlığı zayıf kullanan (az karşıtlıklı, çok koyu veya çok parlak) "
 "görüntüleri geliştir."
 
 #: operations/common/stretch-contrast-hsv.c:253
@@ -4413,8 +4425,8 @@ msgid ""
 "contrast, very dark, or very bright images). This version differs from "
 "Contrast Autostretch in that it works in HSV space, and preserves hue."
 msgstr ""
-"Arabellek bileşenlerini 0.0-1.0 aralığında olacak biçimde ölçekle. Bu, "
-"mevcut karşıtlığı zayıf kullanan (az karşıtlıklı, çok koyu veya çok parlak) "
+"Tampon bileşenlerini 0.0-1.0 aralığında olacak biçimde ölçekle. Bu, mevcut "
+"karşıtlığı zayıf kullanan (az karşıtlıklı, çok koyu veya çok parlak) "
 "görüntüleri geliştirir. Bu sürüm HSV uzayında çalışan Karşıtlığı "
 "Kendiliğinden Genişlet özelliğinden farklıdır ve renk tonunu korur."
 
@@ -4708,7 +4720,7 @@ msgstr ""
 
 #: operations/common/write-buffer.c:176
 msgid "Write Buffer"
-msgstr "Arabellek Yaz"
+msgstr "Tampon Yaz"
 
 #: operations/common/write-buffer.c:178
 msgid "Write input data into an existing GEGL buffer destination surface."
@@ -5170,13 +5182,18 @@ msgid "Azimuth"
 msgstr "Azimut"
 
 #: operations/common-gpl3+/bump-map.c:56 operations/common-gpl3+/emboss.c:40
+#: operations/workshop/bevel.c:91
 msgid "Elevation"
 msgstr "Yükselme"
 
+#. The only issue  with this filter is that emboss depth= above 15 does nothing on chamfer bevel , but works great on bump bevel.
+#. so I made an extra node just for it that only updates emboss depth=, as a result depth and sharpness' are co-existing properties
+#.
+#. I am fully aware 'depth' and 'detail' are just words used to describe the same thing.
 #: operations/common-gpl3+/bump-map.c:59 operations/common-gpl3+/emboss.c:45
 #: operations/common-gpl3+/fractal-trace.c:60
 #: operations/common-gpl3+/texturize-canvas.c:44
-#: operations/workshop/chamfer.c:60
+#: operations/workshop/bevel.c:103
 msgid "Depth"
 msgstr "Derinlik"
 
@@ -5462,7 +5479,7 @@ msgstr "Çözülecek satır/sütunların blok boyutu"
 msgid "Deinterlace"
 msgstr "Ayrıştır"
 
-#: operations/common-gpl3+/deinterlace.c:317
+#: operations/common-gpl3+/deinterlace.c:316
 msgid "Fix images where every other row or column is missing"
 msgstr "Diğer sıraların kayıp olduğu resimleri düzelt"
 
@@ -5746,7 +5763,7 @@ msgstr "Yükselme açısı (derece)"
 msgid "Filter width"
 msgstr "Süzgeç genişliği"
 
-#: operations/common-gpl3+/emboss.c:284
+#: operations/common-gpl3+/emboss.c:283
 msgid "Simulates an image created by embossing"
 msgstr "Kabartma tarafından oluşturulan bir görüntüye benzet"
 
@@ -6290,7 +6307,7 @@ msgstr "Eklem rengi"
 msgid "Light color"
 msgstr "Işık rengi"
 
-#: operations/common-gpl3+/mosaic.c:81 operations/workshop/chamfer.c:69
+#: operations/common-gpl3+/mosaic.c:81
 msgid "Light direction"
 msgstr "Işık yönü"
 
@@ -6325,7 +6342,7 @@ msgstr ""
 msgid "Circular Motion Blur"
 msgstr "Dairesel Hareket Bulanıklığı"
 
-#: operations/common-gpl3+/motion-blur-circular.c:454
+#: operations/common-gpl3+/motion-blur-circular.c:453
 msgid "Circular motion blur"
 msgstr "Dairesel hareket bulanıklığı"
 
@@ -6708,8 +6725,7 @@ msgstr "Ayarlanırsa, desen biraz daha bozulur"
 msgid "Bilinear"
 msgstr "Çift doğrusal"
 
-#. Changing the name of a ENUM list will result in all presets breaking
-#: operations/common-gpl3+/sinus.c:67 operations/workshop/chamfer.c:49
+#: operations/common-gpl3+/sinus.c:67 operations/workshop/bevel.c:72
 msgid "Blend Mode"
 msgstr "Karıştırma Kipi"
 
@@ -7079,7 +7095,7 @@ msgstr "Bir beneğin ışık geçirmezliğinin yayılıp yayılmayacağı"
 msgid "Value Propagate"
 msgstr "Değer Yayılımı"
 
-#: operations/common-gpl3+/value-propagate.c:650
+#: operations/common-gpl3+/value-propagate.c:649
 msgid ""
 "Propagate certain values to neighboring pixels. Erode and dilate any color "
 "or opacity."
@@ -8034,11 +8050,13 @@ msgstr "Kullanılacak doldurma ışık geçirmezliği"
 
 #: operations/external/path.c:54 operations/external/vector-fill.c:40
 #: operations/external/vector-stroke.c:41
+#: operations/workshop/external/ctx-script.c:26
 msgid "Vector"
 msgstr "Vektör"
 
 #: operations/external/path.c:55 operations/external/vector-fill.c:41
 #: operations/external/vector-stroke.c:42
+#: operations/workshop/external/ctx-script.c:27
 msgid "A GeglVector representing the path of the stroke"
 msgstr "Darbe yolunu temsil eden bir GeglVector"
 
@@ -8489,7 +8507,7 @@ msgstr ""
 msgid "Vector Stroke"
 msgstr "Vektör Darbesi"
 
-#: operations/external/vector-stroke.c:360
+#: operations/external/vector-stroke.c:359
 msgid "Renders a vector stroke"
 msgstr "Vektör darbesi görselleştir"
 
@@ -9058,6 +9076,121 @@ msgstr "Satır komşusunun renklerinin ortalamasından kaynaklanan bulanıklık"
 msgid "BoxBlur"
 msgstr "BoxBlur"
 
+#: operations/workshop/bevel.c:47
+msgid "Chamfer"
+msgstr ""
+
+#: operations/workshop/bevel.c:49
+#, fuzzy
+#| msgid "Bump Map"
+msgid "Bump"
+msgstr "Derinlik Etkisi"
+
+#: operations/workshop/bevel.c:52
+#, fuzzy
+#| msgid "Curve Type"
+msgid "Bevel Type"
+msgstr "Eğri Türü"
+
+#: operations/workshop/bevel.c:55
+#, fuzzy
+#| msgid "The fill opacity to use"
+msgid "The family of bevel to use"
+msgstr "Kullanılacak doldurma ışık geçirmezliği"
+
+#: operations/workshop/bevel.c:59
+msgid "None (for use with GIMPs blending options)"
+msgstr ""
+
+#: operations/workshop/bevel.c:61
+#, fuzzy
+#| msgid "HardLight"
+msgid "Hard Light"
+msgstr "Sert ışık"
+
+#: operations/workshop/bevel.c:63
+#, fuzzy
+#| msgid "X multiplier"
+msgid "Multiply"
+msgstr "X çoklayıcı"
+
+#: operations/workshop/bevel.c:65
+#, fuzzy
+#| msgid "Color model"
+msgid "Color Dodge"
+msgstr "Renk modeli"
+
+#: operations/workshop/bevel.c:67
+msgid "Darken"
+msgstr "Koyulaştır"
+
+#: operations/workshop/bevel.c:69
+#, fuzzy
+#| msgid "Brighten"
+msgid "Lighten"
+msgstr "Parlat"
+
+#: operations/workshop/bevel.c:75
+msgid ""
+"What blending mode the bevel's emboss will be. Light Map is a special blend "
+"mode that allows users to extract the filters output as a light map which "
+"should be put on a layer above or be used with Gimp's blending options."
+msgstr ""
+
+#: operations/workshop/bevel.c:78
+msgid "Distance Map Setting"
+msgstr ""
+
+#: operations/workshop/bevel.c:80
+msgid ""
+"Distance Map is unique to chamfer bevel and has three settings that alter "
+"the structure of the chamfer."
+msgstr ""
+
+#: operations/workshop/bevel.c:88
+msgid "Radius of softening for making bump of the shape."
+msgstr ""
+
+#: operations/workshop/bevel.c:92
+#, fuzzy
+#| msgid "Elevation angle (degrees)"
+msgid "Elevation angle of the Bevel."
+msgstr "Yükselme açısı (derece)"
+
+#: operations/workshop/bevel.c:104
+msgid "Emboss depth - Brings out depth and detail of the bump bevel."
+msgstr ""
+
+#: operations/workshop/bevel.c:108
+#, fuzzy
+#| msgid "Lightness"
+msgid "Light Angle"
+msgstr "Aydınlık"
+
+#: operations/workshop/bevel.c:109
+#, fuzzy
+#| msgid "Direction of light-source (in degrees)"
+msgid "Direction of a light source illuminating and shading the bevel."
+msgstr "Işık kaynağının yönü (derece olarak)"
+
+#: operations/workshop/bevel.c:299
+#, fuzzy
+#| msgid "Levels"
+msgid "Bevel"
+msgstr "Düzeyler"
+
+#: operations/workshop/bevel.c:301
+msgid ""
+"Two bevel effects in one place, Chamfer - which simulates lighting of "
+"chamfered 3D-edges, and Bump - the second make a 3D inflation effect by an "
+"emboss covering a blur. Both bevels benefit from color filled alpha defined "
+"shapes."
+msgstr ""
+
+#: operations/workshop/bevel.c:303
+msgid "Bevel..."
+msgstr ""
+
 #: operations/workshop/connected-components.c:25
 msgid "Separator"
 msgstr "Ayırıcı"
@@ -9141,6 +9274,18 @@ msgid "Test op to do a 1:1 map of input to output, while sampling"
 msgstr ""
 "Örnekleme yaparken op çıktısını 1:1 olan bir girdi haritası yapmak için test "
 "et"
+
+#: operations/workshop/external/ctx-script.c:126
+#, fuzzy
+#| msgid "Script"
+msgid "Ctx script"
+msgstr "Betik"
+
+#: operations/workshop/external/ctx-script.c:128
+#, fuzzy
+#| msgid "Renders a vector stroke"
+msgid "Renders a ctx vector graphics"
+msgstr "Vektör darbesi görselleştir"
 
 #: operations/workshop/external/gluas.c:29
 msgid "Script"
@@ -9605,6 +9750,31 @@ msgstr "Renk Geçişi Eşlemi"
 msgid "Applies a color gradient."
 msgstr "Bir renk geçişini uygula."
 
+#: operations/workshop/inner-glow.c:96
+msgid "Median fix for non-effected pixels on edges"
+msgstr ""
+
+#: operations/workshop/inner-glow.c:98
+msgid ""
+"Median Blur covers uneffected pixels. Making this slider too high will make "
+"it outline-like. So only slide it has high as you need to cover thin shape "
+"corners.'"
+msgstr ""
+
+#: operations/workshop/inner-glow.c:182
+msgid "Inner Glow"
+msgstr ""
+
+#: operations/workshop/inner-glow.c:184
+msgid ""
+"GEGL does an inner shadow glow effect; for more interesting use different "
+"blend mode than the default, Replace."
+msgstr ""
+
+#: operations/workshop/inner-glow.c:186
+msgid "Inner Glow..."
+msgstr ""
+
 #: operations/workshop/integral-image.c:25
 msgid "squared integral"
 msgstr "karesi alınmış integral"
@@ -9678,129 +9848,57 @@ msgstr "Seçilebilir Renk Tonu Doygunluğu"
 msgid "Selective adjust Hue, Saturation and Lightness"
 msgstr "Seçilebilir ayarlanabilir renk tonu, doygunluk ve aydınlık"
 
-#: operations/workshop/shuffle-search.c:39
-#, fuzzy
-#| msgid "Iterations"
-msgid "iterations"
-msgstr "Yinelemeler"
-
-#: operations/workshop/shuffle-search.c:40
-msgid "How many times to run optimization"
-msgstr ""
-
-#: operations/workshop/shuffle-search.c:46
+#: operations/workshop/shuffle-search.c:38
 #, fuzzy
 #| msgid "Balance"
-msgid "chance"
+msgid "Chance"
 msgstr "Denge"
 
-#: operations/workshop/shuffle-search.c:47
-msgid "Chance of doing optimization"
-msgstr ""
-
-#: operations/workshop/shuffle-search.c:53
+#: operations/workshop/shuffle-search.c:45
 #, fuzzy
-#| msgid "Levels"
-msgid "levels"
-msgstr "Düzeyler"
+#| msgid "X Phase"
+msgid "Phase"
+msgstr "X Fazı"
 
-#: operations/workshop/shuffle-search.c:54
+#: operations/workshop/shuffle-search.c:49
 msgid "Only used if no aux image is provided"
 msgstr ""
 
-#: operations/workshop/shuffle-search.c:56
-#, fuzzy
-#| msgid "Center X"
-msgid "center bias"
-msgstr "X Merkezi"
-
-#: operations/workshop/shuffle-search.c:661
+#: operations/workshop/shuffle-search.c:592
 #, fuzzy
 #| msgid "Optimize"
 msgid "Optimize Dither"
 msgstr "Eniyile"
 
-#: operations/workshop/shuffle-search.c:664
+#: operations/workshop/shuffle-search.c:595
 msgid ""
-"Shuffles pixels with neighbors to optimize dither, by shuffling neighboring "
-"pixels; if an image is provided as aux input, it is used as dithering "
-"starting point."
+"Shuffles pixels, and quantization with neighbors to optimize dither, by "
+"shuffling neighboring pixels."
 msgstr ""
 
-#: operations/workshop/chamfer.c:27
-msgid "HardLight"
-msgstr "Sert ışık"
-
-#: operations/workshop/chamfer.c:29
 #, fuzzy
-#| msgid "X multiplier"
-msgid "Multiply"
-msgstr "X çoklayıcı"
+#~| msgid "Iterations"
+#~ msgid "iterations"
+#~ msgstr "Yinelemeler"
 
-#: operations/workshop/chamfer.c:33
-msgid "Darken"
-msgstr "Koyulaştır"
-
-#: operations/workshop/chamfer.c:35
 #, fuzzy
-#| msgid "Brighten"
-msgid "Lighten"
-msgstr "Parlat"
+#~| msgid "Levels"
+#~ msgid "levels"
+#~ msgstr "Düzeyler"
 
-#: operations/workshop/chamfer.c:39
-msgid "Soft Light"
-msgstr "Yumuşak Işık"
+#, fuzzy
+#~| msgid "Center X"
+#~ msgid "center bias"
+#~ msgstr "X Merkezi"
 
-#: operations/workshop/chamfer.c:52
-msgid "What blending mode a light map will be applied with."
-msgstr ""
+#~ msgid "Soft Light"
+#~ msgstr "Yumuşak Işık"
 
-#: operations/workshop/chamfer.c:64
-msgid ""
-"Curvature at 0.5 we are close to a circle shape, 1.0 is straight, values "
-"above 1.0 are concave."
-msgstr ""
+#~ msgid "Detailed options"
+#~ msgstr "Ayrıntılı seçenekler"
 
-#: operations/workshop/chamfer.c:70
-msgid ""
-"Light angle (degrees). For most blend modes this rotates lighting of the "
-"bevel."
-msgstr ""
-
-#: operations/workshop/chamfer.c:76
-msgid "Detailed options"
-msgstr "Ayrıntılı seçenekler"
-
-#: operations/workshop/chamfer.c:78
-msgid "Mask with initial alpha"
-msgstr ""
-
-#: operations/workshop/chamfer.c:80
-msgid ""
-"Keep alpha coverage, avoids growing of the shape beyond initial position."
-msgstr ""
-
-#: operations/workshop/chamfer.c:86
-msgid "Light Elevation"
-msgstr "Işık Yükselme"
-
-#: operations/workshop/chamfer.c:87
-msgid ""
-"Elevation angle (degrees). For most blend modes this shifts the lightest "
-"colors of the bevel."
-msgstr ""
-
-#: operations/workshop/chamfer.c:118
-msgid "Choose Internal Median Shape"
-msgstr ""
-
-#: operations/workshop/chamfer.c:348
-msgid "Chamfer"
-msgstr ""
-
-#: operations/workshop/chamfer.c:350
-msgid "Simulate lighting of a chamfered 3D-edges for an alpha-defined shape."
-msgstr ""
+#~ msgid "Light Elevation"
+#~ msgstr "Işık Yükselme"
 
 #~ msgid ""
 #~ "Scalar threshold level (overridden if an auxiliary input buffer is "
