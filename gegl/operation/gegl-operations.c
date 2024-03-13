@@ -109,10 +109,11 @@ gegl_operation_class_register_name (GeglOperationClass *klass,
   check_type = (GType) g_hash_table_lookup (known_operation_names, name);
   if (check_type && check_type != this_type)
     {
-      g_warning ("Adding %s shadows %s for operation %s",
+      g_warning ("Adding %s would shadow %s for operation %s\nIf you have third party GEGL operations installed you should update them all.",
                   g_type_name (this_type),
                   g_type_name (check_type),
                   name);
+      return;
     }
 
   g_hash_table_insert (known_operation_names, g_strdup (name), (gpointer) this_type);
