@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-02-28 01:14+0000\n"
-"PO-Revision-Date: 2024-02-28 13:11+0200\n"
+"POT-Creation-Date: 2024-03-17 00:43+0000\n"
+"PO-Revision-Date: 2024-03-17 08:54+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
 "Language: uk\n"
@@ -643,12 +643,153 @@ msgstr "Обрізати альфу"
 msgid "Keep alpha values inside a specific range"
 msgstr "Зберегти значення альфи у вказаному діапазоні"
 
+#: operations/common/bevel.c:47
+msgid "Chamfer"
+msgstr "Фаска"
+
+#: operations/common/bevel.c:49
+msgid "Bump"
+msgstr "Витискання"
+
+#: operations/common/bevel.c:52
+msgid "Bevel Type"
+msgstr "Тип рельєфу"
+
+#: operations/common/bevel.c:55
+msgid "The family of bevel to use"
+msgstr "Використане сімейство рельєфів"
+
+#: operations/common/bevel.c:59
+msgid "None (for use with GIMPs blending options)"
+msgstr "Немає (для використання з варіантами змішування у GIMP)"
+
+#: operations/common/bevel.c:61
+msgid "Hard Light"
+msgstr "Яскраве світло"
+
+#: operations/common/bevel.c:63
+msgid "Multiply"
+msgstr "Множення"
+
+#: operations/common/bevel.c:65
+msgid "Color Dodge"
+msgstr "Висвітлювання кольорів"
+
+#: operations/common/bevel.c:67
+msgid "Darken"
+msgstr "Затемнення"
+
+#: operations/common/bevel.c:69
+msgid "Lighten"
+msgstr "Освітлення"
+
+#: operations/common/bevel.c:72 operations/common-gpl3+/sinus.c:67
+msgid "Blend Mode"
+msgstr "Режим змішування"
+
+#: operations/common/bevel.c:75
+msgid ""
+"What blending mode the bevel's emboss will be. Light Map is a special blend "
+"mode that allows users to extract the filters output as a light map which "
+"should be put on a layer above or be used with Gimp's blending options."
+msgstr ""
+"Режим змішування для рельєфу фаски. «Карта освітлення» є особливим режимом "
+"змішування, який надає користувачам змогу видобути результати фільтрування "
+"як карту освітлення, яку має бути накладено на шар вище або використано з "
+"варіантами змішування GIMP."
+
+#: operations/common/bevel.c:78
+msgid "Distance Map Setting"
+msgstr "Параметр карти відстаней"
+
+#: operations/common/bevel.c:80
+msgid ""
+"Distance Map is unique to chamfer bevel and has three settings that alter "
+"the structure of the chamfer."
+msgstr ""
+"«Картка відстаней» є унікальною для фаски і має три параметри, які змінюють "
+"структуру фаски."
+
+#: operations/common/bevel.c:83 operations/common/bloom.c:35
+#: operations/common/box-blur.c:25 operations/common/c2g.c:28
+#: operations/common/edge-neon.c:47 operations/common/local-threshold.c:24
+#: operations/common/median-blur.c:42 operations/common/snn-mean.c:26
+#: operations/common/stress.c:27 operations/common/unsharp-mask.c:24
+#: operations/common/vignette.c:40 operations/common/wavelet-blur-1d.c:28
+#: operations/common/wavelet-blur.c:27 operations/common-cxx/focus-blur.c:85
+#: operations/common-cxx/lens-blur.cc:24
+#: operations/common-cxx/variable-blur.c:30
+#: operations/common-gpl3+/shadows-highlights.c:40
+#: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:44
+#: operations/common-gpl3+/whirl-pinch.c:46
+#: operations/external/matting-levin.c:29 operations/workshop/boxblur-1d.c:27
+#: operations/workshop/boxblur.c:24
+#: operations/workshop/external/spyrograph.c:63
+msgid "Radius"
+msgstr "Радіус"
+
+#: operations/common/bevel.c:88
+msgid "Radius of softening for making bump of the shape."
+msgstr "Радіус пом'якшення для створення рельєфу форми."
+
+#: operations/common/bevel.c:91 operations/common-gpl3+/bump-map.c:56
+#: operations/common-gpl3+/emboss.c:40
+msgid "Elevation"
+msgstr "Висота"
+
+#: operations/common/bevel.c:92
+msgid "Elevation angle of the Bevel."
+msgstr "Кут підняття фаски."
+
+#. The only issue  with this filter is that emboss depth= above 15 does nothing on chamfer bevel , but works great on bump bevel.
+#. so I made an extra node just for it that only updates emboss depth=, as a result depth and sharpness' are co-existing properties
+#.
+#. I am fully aware 'depth' and 'detail' are just words used to describe the same thing.
+#: operations/common/bevel.c:103 operations/common-gpl3+/bump-map.c:59
+#: operations/common-gpl3+/emboss.c:45
+#: operations/common-gpl3+/fractal-trace.c:60
+#: operations/common-gpl3+/texturize-canvas.c:44
+msgid "Depth"
+msgstr "Глибина"
+
+#: operations/common/bevel.c:104
+msgid "Emboss depth - Brings out depth and detail of the bump bevel."
+msgstr "Глибина рельєфу — надає глибини і деталізації рельєфу фаски."
+
+#: operations/common/bevel.c:108
+msgid "Light Angle"
+msgstr "Кут освітлення"
+
+#: operations/common/bevel.c:109
+msgid "Direction of a light source illuminating and shading the bevel."
+msgstr "Напрям на джерело світла, що освітлює та відтіняє рельєф."
+
+#: operations/common/bevel.c:307
+msgid "Bevel"
+msgstr "Фаска"
+
+#: operations/common/bevel.c:309
+msgid ""
+"Two bevel effects in one place, Chamfer - which simulates lighting of "
+"chamfered 3D-edges, and Bump - the second make a 3D inflation effect by an "
+"emboss covering a blur. Both bevels benefit from color filled alpha defined "
+"shapes."
+msgstr ""
+"Два ефекти барельєфа в одному місці. «Фаска» — імітує освітлення рельєфу "
+"просторових країв, і «Витискання» — застосовує ефект просторового надування "
+"накладанням рельєфу з розмиванням. Обидва рельєфи покращуються від "
+"заповнених кольором прозорих визначених форм."
+
+#: operations/common/bevel.c:311
+msgid "Bevel..."
+msgstr "Фаска…"
+
 #: operations/common/bilateral-filter.c:26
 #: operations/common/domain-transform.c:29 operations/common/dropshadow.c:46
-#: operations/common-cxx/focus-blur.c:45 operations/common-cxx/lens-blur.cc:25
+#: operations/common/inner-glow.c:69 operations/common-cxx/focus-blur.c:45
+#: operations/common-cxx/lens-blur.cc:25
 #: operations/common-gpl3+/gaussian-blur-selective.c:29
 #: operations/workshop/bilateral-filter-fast.c:43
-#: operations/workshop/inner-glow.c:69
 msgid "Blur radius"
 msgstr "Радіус розмивання"
 
@@ -699,23 +840,6 @@ msgstr "М’якість"
 #: operations/common/bloom.c:31
 msgid "Glow-area edge softness"
 msgstr "М'якість краю області німба"
-
-#: operations/common/bloom.c:35 operations/common/box-blur.c:25
-#: operations/common/c2g.c:28 operations/common/edge-neon.c:47
-#: operations/common/local-threshold.c:24 operations/common/median-blur.c:42
-#: operations/common/snn-mean.c:26 operations/common/stress.c:27
-#: operations/common/unsharp-mask.c:24 operations/common/vignette.c:40
-#: operations/common/wavelet-blur-1d.c:28 operations/common/wavelet-blur.c:27
-#: operations/common-cxx/focus-blur.c:85 operations/common-cxx/lens-blur.cc:24
-#: operations/common-cxx/variable-blur.c:30
-#: operations/common-gpl3+/shadows-highlights.c:40
-#: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:44
-#: operations/common-gpl3+/whirl-pinch.c:46
-#: operations/external/matting-levin.c:29 operations/workshop/boxblur-1d.c:27
-#: operations/workshop/boxblur.c:24 operations/workshop/bevel.c:83
-#: operations/workshop/external/spyrograph.c:63
-msgid "Radius"
-msgstr "Радіус"
 
 #: operations/common/bloom.c:36 operations/common-gpl3+/softglow.c:26
 msgid "Glow radius"
@@ -1000,14 +1124,13 @@ msgstr "Намалювати візерунок шахової дошки"
 
 #: operations/common/color.c:24 operations/common/color.c:87
 #: operations/common/color-overlay.c:26 operations/common/dropshadow.c:67
-#: operations/common/grid.c:64 operations/common/long-shadow.c:83
-#: operations/common/rectangle.c:48 operations/common/vignette.c:36
-#: operations/common-gpl3+/color-to-alpha.c:29
+#: operations/common/grid.c:64 operations/common/inner-glow.c:91
+#: operations/common/long-shadow.c:83 operations/common/rectangle.c:48
+#: operations/common/vignette.c:36 operations/common-gpl3+/color-to-alpha.c:29
 #: operations/common-gpl3+/supernova.c:60
 #: operations/common-gpl3+/tile-paper.c:31
 #: operations/common-gpl3+/value-propagate.c:54 operations/external/text.c:37
 #: operations/external/vector-fill.c:26 operations/external/vector-stroke.c:27
-#: operations/workshop/inner-glow.c:91
 msgid "Color"
 msgstr "Колір"
 
@@ -1079,7 +1202,7 @@ msgstr ""
 "Розтягнути гаму кольорів так, щоб вона вкривала максимально можливий "
 "діапазон, зберігши відтінок і освітленість незмінними."
 
-#: operations/common/color-overlay.c:27 operations/workshop/inner-glow.c:92
+#: operations/common/color-overlay.c:27 operations/common/inner-glow.c:92
 msgid "The color to paint over the input"
 msgstr "Колір для малювання поверх вхідного"
 
@@ -1809,27 +1932,28 @@ msgstr ""
 "рекурсивної методики перетворення областей. Подібний до двобічного фільтра, "
 "але працює швидше."
 
-#: operations/common/dropshadow.c:27 operations/common/median-blur.c:27
-#: operations/common/pixelize.c:28 operations/common/vignette.c:26
-#: operations/common-cxx/focus-blur.c:35 operations/workshop/inner-glow.c:39
+#: operations/common/dropshadow.c:27 operations/common/inner-glow.c:39
+#: operations/common/median-blur.c:27 operations/common/pixelize.c:28
+#: operations/common/vignette.c:26 operations/common-cxx/focus-blur.c:35
 msgid "Square"
 msgstr "Квадрат"
 
-#: operations/common/dropshadow.c:28 operations/common/median-blur.c:28
-#: operations/common/newsprint.c:26 operations/common/vignette.c:25
-#: operations/common-cxx/focus-blur.c:34 operations/workshop/inner-glow.c:40
+#: operations/common/dropshadow.c:28 operations/common/inner-glow.c:40
+#: operations/common/median-blur.c:28 operations/common/newsprint.c:26
+#: operations/common/vignette.c:25 operations/common-cxx/focus-blur.c:34
 msgid "Circle"
 msgstr "Коло"
 
-#: operations/common/dropshadow.c:29 operations/common/median-blur.c:29
-#: operations/common/newsprint.c:27 operations/common/pixelize.c:26
-#: operations/common/vignette.c:27 operations/common-cxx/focus-blur.c:36
-#: operations/workshop/inner-glow.c:41
+#: operations/common/dropshadow.c:29 operations/common/inner-glow.c:41
+#: operations/common/median-blur.c:29 operations/common/newsprint.c:27
+#: operations/common/pixelize.c:26 operations/common/vignette.c:27
+#: operations/common-cxx/focus-blur.c:36
 msgid "Diamond"
 msgstr "Ромб"
 
-#: operations/common/dropshadow.c:32 operations/common/layer.c:36
-#: operations/common/rectangle.c:26 operations/common-gpl3+/plasma.c:40
+#: operations/common/dropshadow.c:32 operations/common/inner-glow.c:51
+#: operations/common/layer.c:36 operations/common/rectangle.c:26
+#: operations/common-gpl3+/plasma.c:40
 #: operations/common-gpl3+/polar-coordinates.c:52
 #: operations/common-gpl3+/spiral.c:35 operations/core/crop.c:25
 #: operations/transform/border-align.c:24 operations/transform/reflect.c:26
@@ -1837,16 +1961,16 @@ msgstr "Ромб"
 #: operations/transform/scale-size-keepaspect.c:25
 #: operations/transform/shear.c:25 operations/transform/translate.c:25
 #: operations/workshop/external/spyrograph.c:51
-#: operations/workshop/inner-glow.c:51
 msgid "X"
 msgstr "X"
 
-#: operations/common/dropshadow.c:33 operations/workshop/inner-glow.c:52
+#: operations/common/dropshadow.c:33 operations/common/inner-glow.c:52
 msgid "Horizontal shadow offset"
 msgstr "Зміщення тіні за горизонталлю"
 
-#: operations/common/dropshadow.c:39 operations/common/layer.c:41
-#: operations/common/rectangle.c:31 operations/common-gpl3+/plasma.c:47
+#: operations/common/dropshadow.c:39 operations/common/inner-glow.c:59
+#: operations/common/layer.c:41 operations/common/rectangle.c:31
+#: operations/common-gpl3+/plasma.c:47
 #: operations/common-gpl3+/polar-coordinates.c:59
 #: operations/common-gpl3+/spiral.c:41 operations/core/crop.c:30
 #: operations/transform/border-align.c:30 operations/transform/reflect.c:30
@@ -1854,27 +1978,26 @@ msgstr "Зміщення тіні за горизонталлю"
 #: operations/transform/scale-size-keepaspect.c:30
 #: operations/transform/shear.c:29 operations/transform/translate.c:31
 #: operations/workshop/external/spyrograph.c:57
-#: operations/workshop/inner-glow.c:59
 msgid "Y"
 msgstr "Y"
 
-#: operations/common/dropshadow.c:40 operations/workshop/inner-glow.c:60
+#: operations/common/dropshadow.c:40 operations/common/inner-glow.c:60
 msgid "Vertical shadow offset"
 msgstr "Зміщення тіні за вертикаллю"
 
-#: operations/common/dropshadow.c:53 operations/workshop/inner-glow.c:45
+#: operations/common/dropshadow.c:53 operations/common/inner-glow.c:45
 msgid "Grow shape"
 msgstr "Збільшити форму"
 
-#: operations/common/dropshadow.c:56 operations/workshop/inner-glow.c:48
+#: operations/common/dropshadow.c:56 operations/common/inner-glow.c:48
 msgid "The shape to expand or contract the shadow in"
 msgstr "Форма для розширення або стискання тіні"
 
-#: operations/common/dropshadow.c:58 operations/workshop/inner-glow.c:77
+#: operations/common/dropshadow.c:58 operations/common/inner-glow.c:77
 msgid "Grow radius"
 msgstr "Радіус збільшення"
 
-#: operations/common/dropshadow.c:65 operations/workshop/inner-glow.c:84
+#: operations/common/dropshadow.c:65 operations/common/inner-glow.c:84
 msgid ""
 "The distance to expand the shadow before blurring; a negative value will "
 "contract the shadow instead"
@@ -1890,10 +2013,10 @@ msgstr "Колір тіні (типово, «black»)"
 #. It does make sense to sometimes have opacities > 1 (see GEGL logo
 #. * for example)
 #.
-#: operations/common/dropshadow.c:74 operations/common/layer.c:33
-#: operations/common/opacity.c:25 operations/common/opacity.c:289
-#: operations/external/vector-fill.c:29 operations/external/vector-stroke.c:34
-#: operations/workshop/inner-glow.c:86
+#: operations/common/dropshadow.c:74 operations/common/inner-glow.c:86
+#: operations/common/layer.c:33 operations/common/opacity.c:25
+#: operations/common/opacity.c:289 operations/external/vector-fill.c:29
+#: operations/external/vector-stroke.c:34
 msgid "Opacity"
 msgstr "Непрозорість"
 
@@ -2391,6 +2514,40 @@ msgstr "Градієнт зображення"
 msgid "Compute gradient magnitude and/or direction by central differences"
 msgstr ""
 "Обчислити амплітуду градієнта і/або напрямок за допомогою центральних різниць"
+
+#: operations/common/inner-glow.c:96
+msgid "Median fix for non-effected pixels on edges"
+msgstr "Усереднене виправлення для незмінених пікселів на краях"
+
+#: operations/common/inner-glow.c:98
+#| msgid ""
+#| "Median Blur covers uneffected pixels. Making this slider too high will "
+#| "make it outline-like. So only slide it has high as you need to cover thin "
+#| "shape corners.'"
+msgid ""
+"Median Blur covers unaffected pixels. Making this slider too high will make "
+"it outline-like. So only slide it has high as you need to cover thin shape "
+"corners.'"
+msgstr ""
+"Усереднене розмивання стосується незмінених пікселів. Надто велике значення "
+"на цьому повзунку перетворить його на контурне. Тому посувайте його до "
+"позиції, яка потрібна вам для покриття тонких кутів форми."
+
+#: operations/common/inner-glow.c:182
+msgid "Inner Glow"
+msgstr "Внутрішнє сяйво"
+
+#: operations/common/inner-glow.c:184
+msgid ""
+"GEGL does an inner shadow glow effect; for more interesting use different "
+"blend mode than the default, Replace."
+msgstr ""
+"GEGL додає ефекти внутрішнього сяйва; щоб отримати цікавіший результат, "
+"скористайтеся іншим режимом злиття, ніж типовий, «Заміна»."
+
+#: operations/common/inner-glow.c:186
+msgid "Inner Glow..."
+msgstr "Внутрішнє сяйво,"
 
 #: operations/common/introspect.c:27
 msgid "Node"
@@ -5198,22 +5355,6 @@ msgstr "Мозаїчна карта рельєфу"
 msgid "Azimuth"
 msgstr "Азимут"
 
-#: operations/common-gpl3+/bump-map.c:56 operations/common-gpl3+/emboss.c:40
-#: operations/workshop/bevel.c:91
-msgid "Elevation"
-msgstr "Висота"
-
-#. The only issue  with this filter is that emboss depth= above 15 does nothing on chamfer bevel , but works great on bump bevel.
-#. so I made an extra node just for it that only updates emboss depth=, as a result depth and sharpness' are co-existing properties
-#.
-#. I am fully aware 'depth' and 'detail' are just words used to describe the same thing.
-#: operations/common-gpl3+/bump-map.c:59 operations/common-gpl3+/emboss.c:45
-#: operations/common-gpl3+/fractal-trace.c:60
-#: operations/common-gpl3+/texturize-canvas.c:44
-#: operations/workshop/bevel.c:103
-msgid "Depth"
-msgstr "Глибина"
-
 #: operations/common-gpl3+/bump-map.c:74
 msgid "Waterlevel"
 msgstr "Рівень води"
@@ -6755,10 +6896,6 @@ msgstr "Якщо встановлено, візерунок буде дещо б
 #: operations/common-gpl3+/sinus.c:63
 msgid "Bilinear"
 msgstr "Білінійний"
-
-#: operations/common-gpl3+/sinus.c:67 operations/workshop/bevel.c:72
-msgid "Blend Mode"
-msgstr "Режим змішування"
 
 #: operations/common-gpl3+/sinus.c:72
 msgid "Power used to stretch the blend"
@@ -9194,118 +9331,6 @@ msgstr ""
 msgid "BoxBlur"
 msgstr "Прямокутне розмивання"
 
-#: operations/workshop/bevel.c:47
-msgid "Chamfer"
-msgstr "Фаска"
-
-#: operations/workshop/bevel.c:49
-#| msgid "Bump Map"
-msgid "Bump"
-msgstr "Витискання"
-
-#: operations/workshop/bevel.c:52
-#| msgid "Curve Type"
-msgid "Bevel Type"
-msgstr "Тип рельєфу"
-
-#: operations/workshop/bevel.c:55
-#| msgid "The fill opacity to use"
-msgid "The family of bevel to use"
-msgstr "Використане сімейство рельєфів"
-
-#: operations/workshop/bevel.c:59
-msgid "None (for use with GIMPs blending options)"
-msgstr "Немає (для використання з варіантами змішування у GIMP)"
-
-#: operations/workshop/bevel.c:61
-#| msgid "HardLight"
-msgid "Hard Light"
-msgstr "Яскраве світло"
-
-#: operations/workshop/bevel.c:63
-msgid "Multiply"
-msgstr "Множення"
-
-#: operations/workshop/bevel.c:65
-#| msgid "Color model"
-msgid "Color Dodge"
-msgstr "Висвітлювання кольорів"
-
-#: operations/workshop/bevel.c:67
-msgid "Darken"
-msgstr "Затемнення"
-
-#: operations/workshop/bevel.c:69
-msgid "Lighten"
-msgstr "Освітлення"
-
-#: operations/workshop/bevel.c:75
-msgid ""
-"What blending mode the bevel's emboss will be. Light Map is a special blend "
-"mode that allows users to extract the filters output as a light map which "
-"should be put on a layer above or be used with Gimp's blending options."
-msgstr ""
-"Режим змішування для рельєфу фаски. «Карта освітлення» є особливим режимом"
-" змішування, який надає користувачам змогу видобути результати фільтрування"
-" як карту освітлення, яку має бути накладено на шар вище або використано з"
-" варіантами змішування GIMP."
-
-#: operations/workshop/bevel.c:78
-msgid "Distance Map Setting"
-msgstr "Параметр карти відстаней"
-
-#: operations/workshop/bevel.c:80
-msgid ""
-"Distance Map is unique to chamfer bevel and has three settings that alter "
-"the structure of the chamfer."
-msgstr ""
-"«Картка відстаней» є унікальною для фаски і має три параметри, які змінюють"
-" структуру фаски."
-
-#: operations/workshop/bevel.c:88
-msgid "Radius of softening for making bump of the shape."
-msgstr "Радіус пом'якшення для створення рельєфу форми."
-
-#: operations/workshop/bevel.c:92
-#| msgid "Elevation angle (degrees)"
-msgid "Elevation angle of the Bevel."
-msgstr "Кут підняття фаски."
-
-#: operations/workshop/bevel.c:104
-msgid "Emboss depth - Brings out depth and detail of the bump bevel."
-msgstr "Глибина рельєфу — надає глибини і деталізації рельєфу фаски."
-
-#: operations/workshop/bevel.c:108
-#| msgid "Lightness"
-msgid "Light Angle"
-msgstr "Кут освітлення"
-
-#: operations/workshop/bevel.c:109
-#| msgid "Direction of light-source (in degrees)"
-msgid "Direction of a light source illuminating and shading the bevel."
-msgstr "Напрям на джерело світла, що освітлює та відтіняє рельєф."
-
-#: operations/workshop/bevel.c:299
-#| msgid "Levels"
-msgid "Bevel"
-msgstr "Фаска"
-
-#: operations/workshop/bevel.c:301
-msgid ""
-"Two bevel effects in one place, Chamfer - which simulates lighting of "
-"chamfered 3D-edges, and Bump - the second make a 3D inflation effect by an "
-"emboss covering a blur. Both bevels benefit from color filled alpha defined "
-"shapes."
-msgstr ""
-"Два ефекти барельєфа в одному місці. «Фаска» — імітує освітлення рельєфу"
-" просторових країв, і «Витискання» — застосовує ефект просторового надування"
-" накладанням рельєфу з розмиванням. Обидва рельєфи покращуються від"
-" заповнених кольором прозорих визначених форм."
-
-#: operations/workshop/bevel.c:303
-msgid "Bevel..."
-msgstr "Фаска…"
-
 #: operations/workshop/connected-components.c:25
 msgid "Separator"
 msgstr "Роздільник"
@@ -9862,36 +9887,6 @@ msgstr "Мапа градієнта"
 #: operations/workshop/gradient-map.c:245
 msgid "Applies a color gradient."
 msgstr "Застосовує градієнт кольорів."
-
-#: operations/workshop/inner-glow.c:96
-msgid "Median fix for non-effected pixels on edges"
-msgstr "Усереднене виправлення для незмінених пікселів на краях"
-
-#: operations/workshop/inner-glow.c:98
-msgid ""
-"Median Blur covers uneffected pixels. Making this slider too high will make "
-"it outline-like. So only slide it has high as you need to cover thin shape "
-"corners.'"
-msgstr ""
-"Усереднене розмивання стосується незмінених пікселів. Надто велике значення "
-"на цьому повзунку перетворить його на контурне. Тому посувайте його до "
-"позиції, яка потрібна вам для покриття тонких кутів форми."
-
-#: operations/workshop/inner-glow.c:182
-msgid "Inner Glow"
-msgstr "Внутрішнє сяйво"
-
-#: operations/workshop/inner-glow.c:184
-msgid ""
-"GEGL does an inner shadow glow effect; for more interesting use different "
-"blend mode than the default, Replace."
-msgstr ""
-"GEGL додає ефекти внутрішнього сяйва; щоб отримати цікавіший результат, "
-"скористайтеся іншим режимом злиття, ніж типовий, «Заміна»."
-
-#: operations/workshop/inner-glow.c:186
-msgid "Inner Glow..."
-msgstr "Внутрішнє сяйво,"
 
 #: operations/workshop/integral-image.c:25
 msgid "squared integral"
