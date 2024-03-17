@@ -154,7 +154,7 @@ static void attach (GeglOperation *operation)
 
 
 state->blur = gegl_node_new_child (gegl,
-                                  "operation", "gegl:gaussian-blur",
+                                  "operation", "gegl:gaussian-blur", "clip-extent", FALSE,   "abyss-policy", 0,                
                                   NULL);
 
 state->emb   = gegl_node_new_child (gegl,
@@ -191,14 +191,14 @@ state->median   = gegl_node_new_child (gegl,
                                   NULL);
 
                                     #define EMBEDDEDGRAPH \
-" opacity value=1.7 median-blur radius=0 id=0 dst-out aux=[ ref=0  component-extract component=alpha   levels in-low=0.15  color-to-alpha opacity-threshold=0.4  ]  median-blur radius=0 "\
+" opacity value=1.7 median-blur abyss-policy=none radius=0 id=0 dst-out aux=[ ref=0  component-extract component=alpha   levels in-low=0.15  color-to-alpha opacity-threshold=0.4  ]  median-blur abyss-policy=none radius=0 "\
                               
 state->thresholdalpha   = gegl_node_new_child (gegl,
                                   "operation", "gegl:gegl", "string", EMBEDDEDGRAPH,
                                   NULL);
 
                                     #define EMBEDDEDGRAPH2 \
-" opacity value=2.2 median-blur radius=0 "\
+" opacity value=2.2 median-blur abyss-policy=none radius=0 "\
 
 state->fixbump   = gegl_node_new_child (gegl,
                                   "operation", "gegl:gegl", "string", EMBEDDEDGRAPH2, /* I prefer using median-blur radius=0 over gegl:alpha-clip*/
