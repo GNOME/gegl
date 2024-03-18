@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-03-17 00:43+0000\n"
-"PO-Revision-Date: 2024-03-17 11:19+0100\n"
+"POT-Creation-Date: 2024-03-18 11:13+0000\n"
+"PO-Revision-Date: 2024-03-18 17:00+0100\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language: sl_SI\n"
@@ -704,13 +704,12 @@ msgid "Distance Map Setting"
 msgstr "Nastavitev zemljevida oddaljenosti"
 
 #: operations/common/bevel.c:80
-#, fuzzy
 msgid ""
 "Distance Map is unique to chamfer bevel and has three settings that alter "
 "the structure of the chamfer."
 msgstr ""
-"Zemljevid oddaljenosti je edinstven za posnetke in ima tri nastavitve, ki "
-"spreminjajo strukturo posnetka."
+"Zemljevid oddaljenosti je edinstven za izbočenost posnetega robu in ima tri "
+"nastavitve, ki spreminjajo strukturo posnetega robu."
 
 #: operations/common/bevel.c:83 operations/common/bloom.c:35
 #: operations/common/box-blur.c:25 operations/common/c2g.c:28
@@ -755,9 +754,8 @@ msgid "Depth"
 msgstr "Globina"
 
 #: operations/common/bevel.c:104
-#, fuzzy
 msgid "Emboss depth - Brings out depth and detail of the bump bevel."
-msgstr "Globina reliefa - pokaže globino in podrobnosti poševnega roba."
+msgstr "Globina reliefa - pokaže globino in podrobnosti izbočenosti odtisa."
 
 #: operations/common/bevel.c:108
 msgid "Light Angle"
@@ -772,17 +770,16 @@ msgid "Bevel"
 msgstr "Izbočeno"
 
 #: operations/common/bevel.c:309
-#, fuzzy
 msgid ""
 "Two bevel effects in one place, Chamfer - which simulates lighting of "
 "chamfered 3D-edges, and Bump - the second make a 3D inflation effect by an "
 "emboss covering a blur. Both bevels benefit from color filled alpha defined "
 "shapes."
 msgstr ""
-"Dva poševna učinka na enem mestu, Chamfer - ki simulira osvetlitev posnetih "
-"3D-robov, in Bump - drugi naredita 3D učinek inflacije z reliefom, ki "
-"pokriva zamegljenost. Oba poševnika imata koristi od alfa definiranih oblik, "
-"napolnjenih z barvo."
+"Dva učinka izbočenosti na enem mestu, Posneti rob - ki simulira osvetlitev "
+"posnetih 3D-robov, in Odtis - drugi naredi 3D-učinek inflacije z reliefom, "
+"ki pokriva zabrisanost. Obe izbočenosti imata koristi od z alfo definiranih "
+"likov z barvnim polnilom."
 
 #: operations/common/bevel.c:311
 msgid "Bevel..."
@@ -2502,19 +2499,19 @@ msgstr "Popravek mediane za neprizadete slikovne točke na robovih"
 
 #: operations/common/inner-glow.c:98
 msgid ""
-"Median Blur covers unaffected pixels. Making this slider too high will make "
-"it outline-like. So only slide it has high as you need to cover thin shape "
-"corners.'"
+"Median Blur covers uneffected pixels. Making this slider too high will make "
+"it outline-like. So only slide it as high as you need to cover thin shape "
+"corners."
 msgstr ""
 "Zabrisanost mediane zajema neprizadete slikovne točke. Če bo ta drsnik "
 "previsoko, bo podobno orisu. Torej ga samo podrsajte tako visoko, kot "
 "morate, da pokrijete tanke vogale lika."
 
-#: operations/common/inner-glow.c:182
+#: operations/common/inner-glow.c:183
 msgid "Inner Glow"
 msgstr "Notranje žarenje"
 
-#: operations/common/inner-glow.c:184
+#: operations/common/inner-glow.c:185
 msgid ""
 "GEGL does an inner shadow glow effect; for more interesting use different "
 "blend mode than the default, Replace."
@@ -2522,7 +2519,7 @@ msgstr ""
 "GEGL naredi učinek notranjega senčnega žarenja; za bolj zanimivo uporabite "
 "drugačen način zlivanja od privzetega - Zamenjaj."
 
-#: operations/common/inner-glow.c:186
+#: operations/common/inner-glow.c:187
 msgid "Inner Glow..."
 msgstr "Notranje žarenje …"
 
