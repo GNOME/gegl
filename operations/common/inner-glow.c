@@ -31,7 +31,7 @@
 #ifdef GEGL_PROPERTIES
 
 #define IGGUIDE \
-"id=1 dst-atop aux=[ ref=1 color value=#ffffff ] crop xor srgb=true aux=[ ref=1 ] color-overlay value=#000000 "\
+"id=1 dst-atop aux=[ ref=1 color value=#ffffff ]  xor srgb=true aux=[ ref=1 ] color-overlay value=#000000 "\
  /* This is a GEGL Graph. It replaces color with transparency and transparency with color. */
 
 
@@ -109,7 +109,7 @@ property_double  (cover, _("Median fix for non-effected pixels on edges"), 60)
 static void attach (GeglOperation *operation)
 {
   GeglNode *gegl = operation->node;
-  GeglNode *input, *it, *shadow, *hiddencolor, *color, *atop, *median, *crop, *in,  *output;
+  GeglNode *input, *it, *shadow, *hiddencolor, *color, *atop, *median, *in,  *output;
   GeglColor *hidden_color = gegl_color_new ("#00ffffAA");
  /* Inner Glow's GEGL Graph will break without this hidden color */
 
@@ -143,11 +143,6 @@ static void attach (GeglOperation *operation)
                                   "operation", "gegl:src-atop",
                                   NULL);
 
-
-  crop    = gegl_node_new_child (gegl,
-                                  "operation", "gegl:crop",
-                                  NULL);
-
   median     = gegl_node_new_child (gegl, "operation", "gegl:median-blur",
                                          "radius",       1,
                                          "abyss-policy",     GEGL_ABYSS_NONE,
@@ -164,7 +159,7 @@ gegl_operation_meta_redirect (operation, "y", shadow, "y");
 gegl_operation_meta_redirect (operation, "cover", median, "alpha-percentile");
 
 
- gegl_node_link_many (input, it,  shadow, hiddencolor, atop, in, median, color, crop, output, NULL);
+ gegl_node_link_many (input, it,  shadow, hiddencolor, atop, in, median, color, output, NULL);
  gegl_node_connect (in, "aux", input, "output");
 
 }
