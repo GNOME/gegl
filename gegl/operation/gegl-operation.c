@@ -471,20 +471,34 @@ gegl_operation_list_properties (const gchar *operation_type,
                                 guint       *n_properties_p)
 {
   GParamSpec  **pspecs;
+  GParamSpec  **properties;
   GType         type;
   GObjectClass *klass;
+  guint         n_pspecs = 0;
+  gint          i;
+
+  g_return_val_if_fail (n_properties_p, NULL);
+
+  *n_properties_p = 0;
 
   type = gegl_operation_gtype_from_name (operation_type);
   if (!type)
-    {
-      if (n_properties_p)
-        *n_properties_p = 0;
-      return NULL;
-    }
+    return NULL;
+
   klass  = g_type_class_ref (type);
-  pspecs = g_object_class_list_properties (klass, n_properties_p);
+  pspecs = g_object_class_list_properties (klass, &n_pspecs);
   g_type_class_unref (klass);
-  return pspecs;
+
+  properties = g_new0 (GParamSpec *, n_pspecs);
+  for (i = 0; i < n_pspecs; i++)
+    {
+      if (g_param_spec_get_qdata (pspecs[i],
+                                  g_quark_from_string ("gegl-op-property-obsolete-name")) == NULL)
+        properties[(*n_properties_p)++] = pspecs[i];
+    }
+  g_free (pspecs);
+
+  return properties;
 }
 
 GParamSpec *
@@ -502,6 +516,89 @@ gegl_operation_find_property (const gchar *operation_type,
   klass  = g_type_class_ref (type);
   ret = g_object_class_find_property (klass, property_name);
   g_type_class_unref (klass);
+
+  if (ret != NULL &&
+      g_param_spec_get_qdata (ret,
+                              g_quark_from_string ("gegl-op-property-obsolete-name")))
+    ret = NULL;
+
+  return ret;
+}
+
+GParamSpec *
+gegl_operation_find_property_for_version (const gchar *operation_name,
+                                          const gchar *property_name,
+                                          const gchar *op_version)
+{
+  GParamSpec   *ret = NULL;
+  GType         type;
+  const gchar  *last_version;
+
+  type = gegl_operation_gtype_from_name (operation_name);
+  if (!type)
+    return NULL;
+
+  g_return_val_if_fail (op_version == NULL ||
+                        gegl_operation_is_supported_version (operation_name, op_version), NULL);
+
+  last_version = gegl_operation_get_op_version (operation_name);
+
+  if (op_version != NULL && g_strcmp0 (last_version, op_version) != 0)
+    {
+      GObjectClass  *klass;
+      gchar        **versions;
+      GParamSpec   **pspecs;
+      guint          n_pspecs = 0;
+      gint           i;
+
+      klass    = g_type_class_ref (type);
+      pspecs   = g_object_class_list_properties (klass, &n_pspecs);
+      versions = gegl_operation_get_supported_versions (operation_name);
+
+      for (i = 0; i < n_pspecs; i++)
+        {
+          const gchar *obsolete_name = NULL;
+          const gchar *minver        = NULL;
+          const gchar *maxver        = NULL;
+
+          obsolete_name = g_param_spec_get_qdata (pspecs[i], g_quark_from_string ("gegl-op-property-obsolete-name"));
+          minver        = g_param_spec_get_qdata (pspecs[i], g_quark_from_string ("gegl-op-property-minver"));
+          maxver        = g_param_spec_get_qdata (pspecs[i], g_quark_from_string ("gegl-op-property-maxver"));
+
+          if (obsolete_name && g_strcmp0 (obsolete_name, property_name) == 0)
+            {
+              for (gint j = 0; versions[j]; j++)
+                {
+                  if (minver == NULL || g_strcmp0 (minver, versions[j]) == 0)
+                    {
+                      for (gint k = j; versions[k]; k++)
+                        {
+                          if (g_strcmp0 (op_version, versions[k]) == 0)
+                            {
+                              ret = pspecs[i];
+                              break;
+                            }
+                          else if (g_strcmp0 (maxver, versions[k]) == 0)
+                            {
+                              break;
+                            }
+                        }
+                      break;
+                    }
+                }
+            }
+
+          if (ret)
+            break;
+        }
+
+      g_free (pspecs);
+      g_strfreev (versions);
+      g_type_class_unref (klass);
+    }
+
+  if (! ret)
+    ret = gegl_operation_find_property (operation_name, property_name);
 
   return ret;
 }
@@ -852,6 +949,78 @@ gegl_operation_get_key (const gchar *operation_name,
   ret = gegl_operation_class_get_key (GEGL_OPERATION_CLASS (klass), key_name);
   g_type_class_unref (klass);
   return ret;
+}
+
+const char *
+gegl_operation_get_op_version (const char *op_name)
+{
+  const gchar *ret = gegl_operation_get_key (op_name, "op-version");
+  if (!ret)
+    ret = "0:0";
+  return ret;
+}
+
+gchar **
+gegl_operation_get_supported_versions (const gchar *operation_name)
+{
+  const gchar   *op_version;
+  const gchar   *outdated_versions;
+  GStrvBuilder  *builder;
+  gchar        **supported_versions;
+
+  op_version        = gegl_operation_get_op_version (operation_name);
+  outdated_versions = gegl_operation_get_key (operation_name, "obsolete-op-versions");
+
+  builder = g_strv_builder_new ();
+
+  if (outdated_versions)
+    {
+      gchar **versions;
+      gint    i;
+
+      versions = g_strsplit (outdated_versions, ",", -1);
+      for (i = 0; versions[i]; i++)
+        {
+          gchar *version = g_strstrip (versions[i]);
+
+          if (strlen (version) > 0 && g_strcmp0 (version, op_version) != 0)
+            g_strv_builder_add (builder, version);
+        }
+
+      g_strfreev (versions);
+    }
+
+  g_strv_builder_add (builder, op_version);
+  supported_versions = g_strv_builder_end (builder);
+  g_strv_builder_unref (builder);
+
+  return supported_versions;
+}
+
+gboolean
+gegl_operation_is_supported_version (const gchar *operation_name,
+                                     const gchar *op_version)
+{
+  gchar    **supported_versions;
+  gchar     *stripped_version = g_strstrip (g_strdup (op_version));
+  gboolean   supported        = FALSE;
+  gint       i;
+
+  supported_versions = gegl_operation_get_supported_versions (operation_name);
+
+  for (i = 0; supported_versions[i]; i++)
+    {
+      if (g_strcmp0 (supported_versions[i], stripped_version) == 0)
+        {
+          supported = TRUE;
+          break;
+        }
+    }
+
+  g_strfreev (supported_versions);
+  g_free (stripped_version);
+
+  return supported;
 }
 
 gboolean

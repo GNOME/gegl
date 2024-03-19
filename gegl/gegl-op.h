@@ -261,6 +261,7 @@ gegl_module_register (GTypeModule *module)
 #define ui_steps(small_increment, big_increment)
 #define ui_meta(key,val)
 #define ui_digits(digits)
+#define obsolete(propname,minver,maxver)
 
 #define ITEM(name,label,def_val, type)
 #define ITEM2(name,label,def_val,type) ITEM(name,label,def_val,type)
@@ -846,6 +847,7 @@ gegl_op_class_intern_init (gpointer klass)
 #undef ui_gamma
 #undef ui_meta
 #undef ui_digits
+#undef obsolete
 
 #define REGISTER_IF_ANY \
     if (pspec && current_prop >=0) {\
@@ -873,6 +875,11 @@ gegl_op_class_intern_init (gpointer klass)
 #define ui_digits(digits) \
     upspec->ui_digits = digits; \
     ui_digits_set = TRUE;
+
+#define obsolete(obsolete_name,minver,maxver) \
+    g_param_spec_set_qdata (pspec, g_quark_from_string ("gegl-op-property-minver"), minver); \
+    g_param_spec_set_qdata (pspec, g_quark_from_string ("gegl-op-property-maxver"), maxver); \
+    g_param_spec_set_qdata (pspec, g_quark_from_string ("gegl-op-property-obsolete-name"), #obsolete_name);
 
 #define property_double(name, label, def_val) \
     REGISTER_IF_ANY  \

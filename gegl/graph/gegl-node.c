@@ -77,6 +77,7 @@ struct _GeglNodePrivate
   GSList          *children;  /*  used for children */
   GeglNode        *parent;
   gchar           *name;
+  gchar           *op_version;
   gchar           *debug_name;
   GeglEvalManager *eval_manager;
 };
@@ -112,6 +113,7 @@ static void            gegl_node_set_operation_object     (GeglNode      *self,
                                                            GeglOperation *operation);
 static void            gegl_node_set_op_class             (GeglNode      *self,
                                                            const gchar   *op_class,
+                                                           const gchar   *op_version,
                                                            const gchar   *first_property,
                                                            va_list        var_args);
 static void            gegl_node_disconnect_sinks         (GeglNode      *self);
@@ -289,6 +291,7 @@ gegl_node_finalize (GObject *gobject)
   g_clear_object (&self->operation);
   g_clear_object (&self->output_visitable);
   g_free (self->priv->name);
+  g_free (self->priv->op_version);
   g_free (self->priv->debug_name);
 
   g_mutex_clear (&self->mutex);
@@ -335,7 +338,7 @@ gegl_node_local_set_property (GObject      *gobject,
 #if defined(__GNUC__)
           memset(&null, 0, sizeof(null));
 #endif
-          gegl_node_set_op_class (node, g_value_get_string (value), NULL, null);
+          gegl_node_set_op_class (node, g_value_get_string (value), NULL, NULL, null);
         }
         break;
 
@@ -1313,6 +1316,7 @@ gegl_node_visitable_depends_on (GeglVisitable *visitable)
 static void
 gegl_node_set_op_class (GeglNode    *node,
                         const gchar *op_class,
+                        const gchar *op_version,
                         const gchar *first_property,
                         va_list      var_args)
 {
@@ -1331,7 +1335,7 @@ gegl_node_set_op_class (GeglNode    *node,
           g_warning ("Failed to set operation type %s, using a passthrough op instead", op_class);
           if (strcmp (op_class, "gegl:nop"))
             {
-              gegl_node_set_op_class (node, "gegl:nop", NULL, var_args);
+              gegl_node_set_op_class (node, "gegl:nop", NULL, NULL, var_args);
             }
           else
             {
@@ -1355,6 +1359,9 @@ gegl_node_set_op_class (GeglNode    *node,
                                                        var_args));
       gegl_node_set_operation_object (node, operation);
       g_object_unref (operation);
+
+      if (op_version)
+        gegl_node_set_op_version (node, op_version);
     }
 }
 
@@ -1537,6 +1544,7 @@ gegl_node_set_valist (GeglNode    *self,
       if (!strcmp (property_name, "operation"))
         {
           const gchar *op_class;
+          const gchar *op_version = NULL;
           const gchar *op_first_property;
 
           op_class          = va_arg (var_args, gchar *);
@@ -1545,14 +1553,27 @@ gegl_node_set_valist (GeglNode    *self,
           if (self->operation)
             g_object_thaw_notify (G_OBJECT (self->operation));
 
+          if (! g_strcmp0 (op_first_property, "op-version"))
+            {
+              op_version        = va_arg (var_args, gchar *);
+              op_first_property = va_arg (var_args, gchar *);
+            }
+
           /* pass the following properties as construction properties
            * to the operation */
-          gegl_node_set_op_class (self, op_class, op_first_property, var_args);
+          gegl_node_set_op_class (self, op_class, op_version, op_first_property, var_args);
 
           if (self->operation)
             g_object_freeze_notify (G_OBJECT (self->operation));
 
           break;
+        }
+      else if (!strcmp (property_name, "op-version"))
+        {
+          const gchar *op_version;
+
+          op_version = va_arg (var_args, gchar *);
+          gegl_node_set_op_version (self, op_version);
         }
       else
         {
@@ -1561,18 +1582,21 @@ gegl_node_set_valist (GeglNode    *self,
           gchar      *error  = NULL;
           GObject    *object = NULL;
 
-          pspec = g_object_class_find_property (G_OBJECT_GET_CLASS (self),
-                                                property_name);
-          if (pspec)
+          if (self->operation)
             {
-              object = G_OBJECT (self);
+              pspec = gegl_node_find_property (self, property_name);
+              if (pspec)
+                {
+                  object = G_OBJECT (self->operation);
+                  property_name = pspec->name;
+                }
             }
-          else if (self->operation)
+          else
             {
-              pspec = g_object_class_find_property (G_OBJECT_GET_CLASS (self->operation),
+              pspec = g_object_class_find_property (G_OBJECT_GET_CLASS (self),
                                                     property_name);
               if (pspec)
-                object = G_OBJECT (self->operation);
+                object = G_OBJECT (self);
             }
 
           if (!object)
@@ -1652,16 +1676,9 @@ gegl_node_set_property (GeglNode     *self,
   g_return_if_fail (property_name != NULL);
   g_return_if_fail (value != NULL);
 
-  pspec = g_object_class_find_property (G_OBJECT_GET_CLASS (self), property_name);
-  if (pspec)
-    {
-      g_object_set_property (G_OBJECT (self), property_name, value);
-      return;
-    }
-
-  if (self->operation)
-    pspec = g_object_class_find_property (G_OBJECT_GET_CLASS (self->operation), property_name);
-  if (pspec)
+  if (self->operation &&
+      (pspec = gegl_operation_find_property_for_version (GEGL_OPERATION_GET_CLASS (self->operation)->name,
+                                                         property_name, self->priv->op_version)))
     {
       if (G_IS_PARAM_SPEC_ENUM (pspec) && G_VALUE_HOLDS (value, G_TYPE_STRING))
         {
@@ -1678,7 +1695,7 @@ gegl_node_set_property (GeglNode     *self,
               GValue value = G_VALUE_INIT;
               g_value_init (&value, G_TYPE_FROM_CLASS (&enum_class->g_type_class));
               g_value_set_enum (&value, enum_value->value);
-              g_object_set_property (G_OBJECT (self->operation), property_name, &value);
+              g_object_set_property (G_OBJECT (self->operation), pspec->name, &value);
               g_value_unset (&value);
               return;
             }
@@ -1687,13 +1704,125 @@ gegl_node_set_property (GeglNode     *self,
                      value_string,
                      property_name);
         }
-      g_object_set_property (G_OBJECT (self->operation), property_name, value);
+      g_object_set_property (G_OBJECT (self->operation), pspec->name, value);
+      return;
+    }
+
+  pspec = g_object_class_find_property (G_OBJECT_GET_CLASS (self), property_name);
+  if (pspec)
+    {
+      g_object_set_property (G_OBJECT (self), property_name, value);
       return;
     }
 
   g_warning ("%s is not a valid property of %s",
              property_name,
              gegl_node_get_debug_name (self));
+}
+
+GParamSpec **
+gegl_node_list_properties (GeglNode      *node,
+                           const gchar ***names,
+                           guint         *n_properties_p)
+{
+  GParamSpec    **pspecs;
+  GParamSpec    **properties;
+  GeglOperation  *operation;
+  const gchar    *op_name;
+  const char     *op_version;
+  gchar         **versions;
+  GType           type;
+  GObjectClass   *klass;
+  guint           n_pspecs = 0;
+  gint            i;
+
+  g_return_val_if_fail (n_properties_p, NULL);
+
+  operation = gegl_node_get_gegl_operation (node);
+
+  g_return_val_if_fail (operation != NULL, NULL);
+
+  op_name = GEGL_OPERATION_GET_CLASS (node->operation)->name;
+
+  *n_properties_p = 0;
+
+  type = gegl_operation_gtype_from_name (op_name);
+  if (!type)
+    return NULL;
+
+  op_version = node->priv->op_version;
+
+  klass  = g_type_class_ref (type);
+  pspecs = g_object_class_list_properties (klass, &n_pspecs);
+  g_type_class_unref (klass);
+
+  versions = gegl_operation_get_supported_versions (op_name);
+
+  properties = g_new0 (GParamSpec *, n_pspecs);
+  if (names)
+    *names = g_new0 (const gchar *, n_pspecs);
+  for (i = 0; i < n_pspecs; i++)
+    {
+      const gchar *minver   = NULL;
+      const gchar *maxver   = NULL;
+      gboolean     add_prop = FALSE;
+
+      minver = g_param_spec_get_qdata (pspecs[i], g_quark_from_string ("gegl-op-property-minver"));
+      maxver = g_param_spec_get_qdata (pspecs[i], g_quark_from_string ("gegl-op-property-maxver"));
+
+      if (! maxver)
+        {
+          add_prop = TRUE;
+        }
+      else if (op_version != NULL)
+        {
+          for (gint j = 0; versions[j]; j++)
+            {
+              if (minver == NULL || g_strcmp0 (minver, versions[j]) == 0)
+                {
+                  for (gint k = j; versions[k]; k++)
+                    {
+                      if (g_strcmp0 (op_version, versions[k]) == 0)
+                        {
+                          add_prop = TRUE;
+                          break;
+                        }
+                      else if (g_strcmp0 (maxver, versions[k]) == 0)
+                        {
+                          break;
+                        }
+                    }
+                  break;
+                }
+              else if (g_strcmp0 (op_version, versions[j]) == 0)
+                {
+                  break;
+                }
+            }
+        }
+
+      if (add_prop)
+        {
+          if (names)
+            {
+              const gchar *name;
+
+              name = g_param_spec_get_qdata (pspecs[i],
+                                             g_quark_from_string ("gegl-op-property-obsolete-name"));
+
+              if (name == NULL)
+                name = pspecs[i]->name;
+
+              (*names)[*n_properties_p] = name;
+            }
+          properties[(*n_properties_p)++] = pspecs[i];
+        }
+    }
+
+  g_free (pspecs);
+  g_strfreev (versions);
+
+  return properties;
 }
 
 void
@@ -1712,22 +1841,22 @@ gegl_node_get_property (GeglNode    *self,
    * correct type automaticaly.
    */
 
+  if (self->operation &&
+      (pspec = gegl_operation_find_property_for_version (GEGL_OPERATION_GET_CLASS (self->operation)->name,
+                                                         property_name, self->priv->op_version)))
+    {
+      if (!G_IS_VALUE (value))
+        g_value_init (value, pspec->value_type);
+      g_object_get_property (G_OBJECT (self->operation), pspec->name, value);
+      return;
+    }
+
   pspec = g_object_class_find_property (G_OBJECT_GET_CLASS (self), property_name);
   if (pspec)
     {
       if (!G_IS_VALUE (value))
         g_value_init (value, pspec->value_type);
       g_object_get_property (G_OBJECT (self), property_name, value);
-      return;
-    }
-
-  if (self->operation)
-    pspec = g_object_class_find_property (G_OBJECT_GET_CLASS (self->operation), property_name);
-  if (pspec)
-    {
-      if (!G_IS_VALUE (value))
-        g_value_init (value, pspec->value_type);
-      g_object_get_property (G_OBJECT (self->operation), property_name, value);
       return;
     }
 
@@ -1746,11 +1875,11 @@ gegl_node_find_property (GeglNode    *self,
   g_return_val_if_fail (property_name != NULL, NULL);
 
   if (self->operation)
-    pspec = g_object_class_find_property (
-      G_OBJECT_GET_CLASS (G_OBJECT (self->operation)), property_name);
+    pspec = gegl_operation_find_property_for_version (GEGL_OPERATION_GET_CLASS (self->operation)->name,
+                                                      property_name, self->priv->op_version);
   if (!pspec)
-    pspec = g_object_class_find_property (
-      G_OBJECT_GET_CLASS (G_OBJECT (self)), property_name);
+    pspec = g_object_class_find_property (G_OBJECT_GET_CLASS (G_OBJECT (self)), property_name);
+
   return pspec;
 }
 
@@ -2456,12 +2585,94 @@ void gegl_node_progress (GeglNode *node,
   }
 }
 
-const char *gegl_operation_get_op_version (const char *op_name)
+void
+gegl_node_set_op_version (GeglNode    *node,
+                          const gchar *op_version)
 {
-  const gchar *ret = gegl_operation_get_key (op_name, "op-version");
-  if (!ret)
-    ret = "0:0";
-  return ret;
+  const gchar *op_name;
+  gint         i;
+
+  g_return_if_fail (GEGL_IS_NODE (node));
+  g_return_if_fail (node->operation != NULL);
+
+  op_name = GEGL_OPERATION_GET_CLASS (node->operation)->name;
+
+  g_return_if_fail (op_version == NULL ||
+                    gegl_operation_is_supported_version (op_name, op_version));
+
+  if (op_version != NULL &&
+      g_strcmp0 (op_version, gegl_operation_get_op_version (op_name)) == 0)
+    op_version = NULL;
+
+  if (g_strcmp0 (op_version, node->priv->op_version) == 0)
+    return;
+
+  if (node->priv->op_version != NULL && op_version != NULL)
+    {
+      g_critical ("%s: changing %s version from %s to %s failed. "
+                  "You can either set to an older version before setting "
+                  "any property or reset to the latest version.",
+                  G_STRFUNC, gegl_node_get_debug_name (node),
+                  node->priv->op_version, op_version);
+      return;
+    }
+
+  if (op_version != NULL)
+    {
+      GParamSpec **properties;
+      guint        n_properties;
+
+      properties = gegl_operation_list_properties (op_name, &n_properties);
+      for (i = 0; i < n_properties; i++)
+        {
+          GParamSpec *pspec = properties[i];
+          GValue      value = G_VALUE_INIT;
+
+          g_value_init (&value, pspec->value_type);
+          g_object_get_property (G_OBJECT (node->operation), pspec->name, &value);
+
+          if (! g_param_value_defaults (pspec, &value))
+            {
+              g_critical ("%s: the 'op-version' key must be set on %s "
+                          "before setting any operation property.",
+                          G_STRFUNC, gegl_node_get_debug_name (node));
+              g_value_unset (&value);
+              g_free (properties);
+              return;
+            }
+
+          g_value_unset (&value);
+        }
+      g_free (properties);
+    }
+
+  g_clear_pointer (&node->priv->op_version, g_free);
+
+  if (op_version != NULL)
+    node->priv->op_version = g_strdup (op_version);
+}
+
+const gchar *
+gegl_node_get_op_version (GeglNode *node)
+{
+  g_return_val_if_fail (GEGL_IS_NODE (node), NULL);
+
+  if (node->operation == NULL)
+    return NULL;
+
+  if (node->priv->op_version)
+    return (const gchar *) node->priv->op_version;
+  else
+    return gegl_operation_get_op_version (GEGL_OPERATION_GET_CLASS (node->operation)->name);
+}
+
+gboolean
+gegl_node_is_last_version (GeglNode *node)
+{
+  g_return_val_if_fail (GEGL_IS_NODE (node), FALSE);
+  g_return_val_if_fail (node->operation, FALSE);
+
+  return (node->priv->op_version == NULL);
 }
 
 void

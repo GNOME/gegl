@@ -71,8 +71,16 @@ gboolean       gegl_has_operation           (const gchar *operation_type);
  * @operation_type: the name of the operation type we want to query to properties of.
  * @n_properties_p: (out caller-allocates): return location for number of properties.
  *
- * Return value: (transfer container) (array length=n_properties_p): An allocated array of #GParamSpecs describing the properties
- * of the operation available when a node has operation_type set. The list should be freed with g_free after use.
+ * This function will return all properties in the last version of
+ * @operation_type. If you are looking for the property list of a specific
+ * version of the same operation, call [method@Gegl.Node.list_properties]
+ * instead on the node where the operation version was set.
+ *
+ * Returns: (transfer container) (array length=n_properties_p): An
+ *          allocated array of [class@GObject.ParamSpec] describing the
+ *          properties of the operation available when a node has
+ *          @operation_type set. The array should be freed with `g_free` after
+ *          use.
  */
 GParamSpec** gegl_operation_list_properties (const gchar   *operation_type,
                                              guint         *n_properties_p);
@@ -83,11 +91,32 @@ GParamSpec** gegl_operation_list_properties (const gchar   *operation_type,
  * @operation_type: the name of the operation type we want to locate a property on.
  * @property_name: the name of the property we seek.
  *
- * Return value: (transfer none): The paramspec of the matching property - or
- * NULL if there as no match.
+ * This function will search a property named @property_name in the last
+ * version of @operation_type. If you are looking for a property on a specific
+ * version of the same operation, call
+ * [func@Gegl.Operation.find_property_for_version] instead.
+ *
+ * Returns: (transfer none): The paramspec of the matching property - or
+ *          %NULL if there are no match.
  */
 GParamSpec * gegl_operation_find_property (const gchar *operation_type,
                                            const gchar *property_name);
+
+/**
+ * gegl_operation_find_property_for_version:
+ * @operation_name: the name of the operation type we want to locate a property on.
+ * @property_name: the name of the property we seek.
+ * @op_version: the version of @operation_name which @property pertains to.
+ *
+ * This function should be used instead of [func@Gegl.Operation.find_property]
+ * when looking up a property for a specific version of this operation.
+ *
+ * Returns: (transfer none): The paramspec of the matching property - or
+ *          %NULL if there are no match.
+ */
+GParamSpec * gegl_operation_find_property_for_version (const gchar *operation_name,
+                                                       const gchar *property_name,
+                                                       const gchar *op_version);
 
 /**
  * gegl_operation_get_property_key:
@@ -150,6 +179,39 @@ gchar      ** gegl_operation_list_keys         (const gchar *operation_type,
 
 const gchar * gegl_operation_get_key            (const gchar *operation_type,
                                                  const gchar *key_name);
+
+/**
+ * gegl_operation_get_op_version:
+ * @operation_name: the name of the operation type we want to know the version of.
+ *
+ * Gets the current version of @operation_name (i.e. the default version for a
+ * node of this operation type, if no "op-version" is set explicitly).
+ *
+ * To know the operation version actually set on a [class@Node], use
+ * [method@Gegl.Node.get_op_version] instead.
+ *
+ * Returns: the default version for this operation.
+ */
+const char  * gegl_operation_get_op_version         (const gchar  *operation_name);
+
+/**
+ * gegl_operation_get_supported_versions:
+ * @operation_name: the name of the operation
+ *
+ * Returns: (array zero-terminated=1) (transfer full): the list of supported
+ *          versions. The order matters (first is older, last is current version).
+ */
+gchar      ** gegl_operation_get_supported_versions (const gchar *operation_name);
+
+/**
+ * gegl_operation_is_supported_version:
+ * @operation_name: the name of the operation
+ * @op_version:     a version string.
+ *
+ * Returns: a boolean telling whether the operation can run with arguments of @op_version.
+ */
+gboolean      gegl_operation_is_supported_version   (const gchar *operation_name,
+                                                     const gchar *op_version);
 
 
 G_END_DECLS

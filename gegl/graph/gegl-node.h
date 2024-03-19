@@ -207,14 +207,23 @@ gboolean      gegl_node_disconnect       (GeglNode      *node,
  * pairs, followed by NULL.
  *
  * Set properties on a node, possible properties to be set are the properties
- * of the currently set operations as well as <em>"name"</em> and
- * <em>"operation"</em>. <em>"operation"</em> changes the current operations
- * set for the node, <em>"name"</em> doesn't have any role internally in
- * GEGL.
- * ---
- * gegl_node_set (node, "brightness", -0.2,
- *                      "contrast",   2.0,
- *                      NULL);
+ * of the currently set operations as well as `"name"`, `"op-version"` and
+ * `"operation"`. `"operation"` changes the current operations set for the
+ * node, `"op-version"` changes the version of the operation whose parameters
+ * are going to be set, `"name"` doesn't have any role internally in GEGL.
+ *
+ * When setting "operation", you should do it before setting any operation
+ * properties. When setting "op-version", you should do it immediately after
+ * setting "operation".
+ *
+ * For instance:
+ *
+ * ```C
+ * gegl_node_set (node,
+ *                "brightness", -0.2,
+ *                "contrast",   2.0,
+ *                NULL);
+ * ```
  */
 void          gegl_node_set              (GeglNode      *node,
                                           const gchar   *first_property_name,
@@ -611,6 +620,31 @@ gchar      ** gegl_node_list_output_pads (GeglNode      *node);
 GeglNode     * gegl_node_create_child    (GeglNode      *parent,
                                           const gchar   *operation);
 
+/**
+ * gegl_node_list_properties:
+ * @node: a #GeglNode with operation set.
+ * @names: (out) (array length=n_properties_p) (transfer container): the names
+ *         to use in [method@Gegl.Node.set_property]. Values are static
+ *         strings. Free the array with `g_free`.
+ * @n_properties_p: (out): return location for number of properties.
+ *
+ * Unlike [func@Gegl.Operation.list_properties], this function may return
+ * obsolete properties depending on the operation version, as set by
+ * [method@Gegl.Node.set_op_version].
+ *
+ * While @names will usually map to paramspec names, they may be different for
+ * obsolete properties. [method@Gegl.Node.set] will retrieve the correct
+ * paramspec name from the obsolete name stored in @names, depending on the
+ * operation version set by [method@Gegl.Node.set_op_version].
+ *
+ * Returns: (transfer container) (array length=n_properties_p): An allocated
+ *          array of [class@GObject.ParamSpec] describing the properties of the
+ *          operation set on @node. The array should be freed with `g_free`
+ *          after use.
+ */
+GParamSpec  ** gegl_node_list_properties (GeglNode      *node,
+                                          const gchar ***names,
+                                          guint         *n_properties_p);
 
 /**
  * gegl_node_get_property: (skip)
@@ -712,7 +746,36 @@ gboolean        gegl_node_is_graph       (GeglNode *node);
 
 void       gegl_node_progress (GeglNode *node, gdouble progress, gchar *message);
 
-const char *gegl_operation_get_op_version (const gchar *op_name);
+/**
+ * gegl_node_set_op_version:
+ * @node: a #GeglNode
+ * @op_version: (nullable): the version of the internal [class@Gegl.Operation].
+ *
+ * Sets the operation version to use. A %NULL @op_version corresponds to the
+ * latest implementation of the operation.
+ *
+ * Note that you can only set an obsolete version before setting any property
+ * of the operation, yet you can reset to the latest version anytime.
+ */
+void           gegl_node_set_op_version      (GeglNode     *node,
+                                              const gchar  *op_version);
+/**
+ * gegl_node_get_op_version:
+ * @node: a #GeglNode
+ *
+ * Gets the operation version currently set.
+ */
+const gchar  * gegl_node_get_op_version      (GeglNode     *node);
+
+/**
+ * gegl_node_is_last_version:
+ * @node: a #GeglNode
+ *
+ * Informs whethere @node uses the last version of the operation associated
+ * with this node.
+ */
+gboolean       gegl_node_is_last_version     (GeglNode     *node);
+
 void
 gegl_node_set_enum_as_string (GeglNode   *node,
                               const char *key,
