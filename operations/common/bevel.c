@@ -14,10 +14,10 @@
  * License along with GEGL; if not, see <https://www.gnu.org/licenses/>.
  *
  * Copyright 2023 Øyvind Kolås <pippin@gimp.org>
- * 2022-2024 Beaver (Universal Bevel - a new bevel filter candidate for Gimp 3 that combines my bevel algorithms - featuring the algorithm of my  bevel, custom bevel, 
+ * 2022-2024 Sam Lester (Official Bevel - a new bevel filter candidate for Gimp 3 that combines my bevel algorithms - featuring the algorithm of my  bevel, custom bevel, 
    and sharp bevel all in one filter) 
 
-Bump Bevel Graph inspired by Beaver's plugin Custom Bevel from 2022
+Bump Bevel Graph inspired by my plugin Custom Bevel from 2022
 
 median-blur radius=1 alpha-percentile=80
 gaussian-blur std-dev-x=4 std-dev-y=4
@@ -26,7 +26,7 @@ emboss ]
 id=0 dst-out aux=[ ref=0  component-extract component=alpha   levels in-low=0.15  color-to-alpha opacity-threshold=0.4  ] opacity value=2 median-blur radius=0
 
 
-Chamfer Bevel Graph inspired by Beaver's plugin Sharp Bevel from 2023
+Chamfer Bevel Graph inspired by my plugin Sharp Bevel from 2023
 
 median-blur radius=1 alpha-percentile=80
 id=1 src-in aux=[ ref=1 
@@ -67,6 +67,8 @@ enum_start (gchamfer_blend_mode)
               N_("Darken"))
   enum_value (CHAMFER_BLEND_LIGHTEN,   "lighten",
               N_("Lighten"))
+  enum_value (CHAMFER_BLEND_ADD,   "add",
+              N_("Add"))
 enum_end (gChamferBlendMode)
 
 property_enum (blendmode, _("Blend Mode"),
@@ -74,15 +76,14 @@ property_enum (blendmode, _("Blend Mode"),
     CHAMFER_BLEND_HARDLIGHT)
   description (_("What blending mode the bevel's emboss will be. Light Map is a special blend mode that allows users to extract the filters output as a light map which should be put on a layer above or be used with Gimp's blending options."))
 
-
 property_enum (metric, _("Distance Map Setting"),
                GeglDistanceMetric, gegl_distance_metric, GEGL_DISTANCE_METRIC_CHEBYSHEV)
     description (_("Distance Map is unique to chamfer bevel and has three settings that alter the structure of the chamfer."))
 ui_meta ("visible", "!type {bump}" )
 
 property_double (radius, _("Radius"), 3.0)
-  value_range (1.0, 5.0)
-  ui_range (1.0, 3.5)
+  value_range (1.0, 8.0)
+  ui_range (1.0, 8.0)
   ui_gamma (1.5)
 ui_meta ("visible", "!type {chamfer}" )
     description (_("Radius of softening for making bump of the shape."))
@@ -151,8 +152,6 @@ static void attach (GeglOperation *operation)
   state->input    = gegl_node_get_input_proxy (gegl, "input");
   state->output   = gegl_node_get_output_proxy (gegl, "output");
 
-
-
 state->blur = gegl_node_new_child (gegl,
                                   "operation", "gegl:gaussian-blur", "clip-extent", FALSE,   "abyss-policy", 0,                
                                   NULL);
@@ -164,7 +163,6 @@ state->emb   = gegl_node_new_child (gegl,
 state->emb2   = gegl_node_new_child (gegl,
                                   "operation", "gegl:emboss", "depth", 15,
                                   NULL);
-
 
 state->opacity   = gegl_node_new_child (gegl,
                                   "operation", "gegl:opacity", "value", 0.8,
@@ -242,6 +240,10 @@ static void update_graph (GeglOperation *operation)
     case CHAMFER_BLEND_COLORDODGE: blend_op = "gegl:color-dodge"; break; 
     case CHAMFER_BLEND_DARKEN:     blend_op = "gegl:darken"; break;
     case CHAMFER_BLEND_LIGHTEN:    blend_op = "gegl:lighten"; break;
+    case CHAMFER_BLEND_ADD:    blend_op = "gegl:add"; break;
+  if (o->blendmode == CHAMFER_BLEND_COLORDODGE) gegl_node_set (state->blend, "srgb", TRUE, NULL);
+
+
   }
   gegl_node_set (state->blend, "operation", blend_op, NULL);
 
