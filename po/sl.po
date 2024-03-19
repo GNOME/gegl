@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-03-18 11:13+0000\n"
-"PO-Revision-Date: 2024-03-18 17:00+0100\n"
+"POT-Creation-Date: 2024-03-19 16:26+0000\n"
+"PO-Revision-Date: 2024-03-19 20:50+0100\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language: sl_SI\n"
@@ -684,11 +684,15 @@ msgstr "Potemni"
 msgid "Lighten"
 msgstr "Posvetli"
 
-#: operations/common/bevel.c:72 operations/common-gpl3+/sinus.c:67
+#: operations/common/bevel.c:71 operations/workshop/external/paint-select.cc:30
+msgid "Add"
+msgstr "Dodaj"
+
+#: operations/common/bevel.c:74 operations/common-gpl3+/sinus.c:67
 msgid "Blend Mode"
 msgstr "Način zlivanja"
 
-#: operations/common/bevel.c:75
+#: operations/common/bevel.c:77
 msgid ""
 "What blending mode the bevel's emboss will be. Light Map is a special blend "
 "mode that allows users to extract the filters output as a light map which "
@@ -699,11 +703,11 @@ msgstr ""
 "kot svetlobni zemljevid, ki ga je treba postaviti na plast nad ali uporabiti "
 "z možnostmi zlivanja Gimp."
 
-#: operations/common/bevel.c:78
+#: operations/common/bevel.c:79
 msgid "Distance Map Setting"
 msgstr "Nastavitev zemljevida oddaljenosti"
 
-#: operations/common/bevel.c:80
+#: operations/common/bevel.c:81
 msgid ""
 "Distance Map is unique to chamfer bevel and has three settings that alter "
 "the structure of the chamfer."
@@ -711,7 +715,7 @@ msgstr ""
 "Zemljevid oddaljenosti je edinstven za izbočenost posnetega robu in ima tri "
 "nastavitve, ki spreminjajo strukturo posnetega robu."
 
-#: operations/common/bevel.c:83 operations/common/bloom.c:35
+#: operations/common/bevel.c:84 operations/common/bloom.c:35
 #: operations/common/box-blur.c:25 operations/common/c2g.c:28
 #: operations/common/edge-neon.c:47 operations/common/local-threshold.c:24
 #: operations/common/median-blur.c:42 operations/common/snn-mean.c:26
@@ -729,16 +733,16 @@ msgstr ""
 msgid "Radius"
 msgstr "Radij"
 
-#: operations/common/bevel.c:88
+#: operations/common/bevel.c:89
 msgid "Radius of softening for making bump of the shape."
 msgstr "Polmer mehčanja za izdelavo izbokline v obliki lika."
 
-#: operations/common/bevel.c:91 operations/common-gpl3+/bump-map.c:56
+#: operations/common/bevel.c:92 operations/common-gpl3+/bump-map.c:56
 #: operations/common-gpl3+/emboss.c:40
 msgid "Elevation"
 msgstr "Dvignjenost"
 
-#: operations/common/bevel.c:92
+#: operations/common/bevel.c:93
 msgid "Elevation angle of the Bevel."
 msgstr "Kot dvignjenosti izbočenja."
 
@@ -746,30 +750,30 @@ msgstr "Kot dvignjenosti izbočenja."
 #. so I made an extra node just for it that only updates emboss depth=, as a result depth and sharpness' are co-existing properties
 #.
 #. I am fully aware 'depth' and 'detail' are just words used to describe the same thing.
-#: operations/common/bevel.c:103 operations/common-gpl3+/bump-map.c:59
+#: operations/common/bevel.c:104 operations/common-gpl3+/bump-map.c:59
 #: operations/common-gpl3+/emboss.c:45
 #: operations/common-gpl3+/fractal-trace.c:60
 #: operations/common-gpl3+/texturize-canvas.c:44
 msgid "Depth"
 msgstr "Globina"
 
-#: operations/common/bevel.c:104
+#: operations/common/bevel.c:105
 msgid "Emboss depth - Brings out depth and detail of the bump bevel."
 msgstr "Globina reliefa - pokaže globino in podrobnosti izbočenosti odtisa."
 
-#: operations/common/bevel.c:108
+#: operations/common/bevel.c:109
 msgid "Light Angle"
 msgstr "Kot svetlobe"
 
-#: operations/common/bevel.c:109
+#: operations/common/bevel.c:110
 msgid "Direction of a light source illuminating and shading the bevel."
 msgstr "Smer svetlobnega vira, ki osvetljuje in senči izbočenje oz. relief."
 
-#: operations/common/bevel.c:307
+#: operations/common/bevel.c:309
 msgid "Bevel"
 msgstr "Izbočeno"
 
-#: operations/common/bevel.c:309
+#: operations/common/bevel.c:311
 msgid ""
 "Two bevel effects in one place, Chamfer - which simulates lighting of "
 "chamfered 3D-edges, and Bump - the second make a 3D inflation effect by an "
@@ -781,7 +785,7 @@ msgstr ""
 "ki pokriva zabrisanost. Obe izbočenosti imata koristi od z alfo definiranih "
 "likov z barvnim polnilom."
 
-#: operations/common/bevel.c:311
+#: operations/common/bevel.c:313
 msgid "Bevel..."
 msgstr "Izbočeno …"
 
@@ -2500,18 +2504,18 @@ msgstr "Popravek mediane za neprizadete slikovne točke na robovih"
 #: operations/common/inner-glow.c:98
 msgid ""
 "Median Blur covers uneffected pixels. Making this slider too high will make "
-"it outline-like. So only slide it as high as you need to cover thin shape "
-"corners."
+"it outline-like. So only slide it has high as you need to cover thin shape "
+"corners.'"
 msgstr ""
 "Zabrisanost mediane zajema neprizadete slikovne točke. Če bo ta drsnik "
 "previsoko, bo podobno orisu. Torej ga samo podrsajte tako visoko, kot "
 "morate, da pokrijete tanke vogale lika."
 
-#: operations/common/inner-glow.c:183
+#: operations/common/inner-glow.c:178
 msgid "Inner Glow"
 msgstr "Notranje žarenje"
 
-#: operations/common/inner-glow.c:185
+#: operations/common/inner-glow.c:180
 msgid ""
 "GEGL does an inner shadow glow effect; for more interesting use different "
 "blend mode than the default, Replace."
@@ -2519,7 +2523,7 @@ msgstr ""
 "GEGL naredi učinek notranjega senčnega žarenja; za bolj zanimivo uporabite "
 "drugačen način zlivanja od privzetega - Zamenjaj."
 
-#: operations/common/inner-glow.c:187
+#: operations/common/inner-glow.c:182
 msgid "Inner Glow..."
 msgstr "Notranje žarenje …"
 
@@ -9366,10 +9370,6 @@ msgid ""
 msgstr ""
 "Skriptiranje prototipov filtra/skladatelja z lua na ravni slikovne točke. "
 "Glejte http://pippin.gimp.org/image-processing/ za več podrobnosti."
-
-#: operations/workshop/external/paint-select.cc:30
-msgid "Add"
-msgstr "Dodaj"
 
 #: operations/workshop/external/paint-select.cc:31
 msgid "Subtract"
