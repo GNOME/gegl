@@ -14,11 +14,11 @@
  * License along with GEGL; if not, see <https://www.gnu.org/licenses/>.
  *
  * Copyright 2006 Øyvind Kolås <pippin@gimp.org>
- * 2022 Beaver (GEGL inner glow) *2023 InnerShadow for GEGL Styles
+ * 2022 Sam Lester (GEGL inner glow) *2023 InnerShadow for GEGL Styles
  */
 
- /* The name innerglow has already been taken by Beaver's most popular text styling plugin GEGL Effects. Which is a incompatible fork of this. (they cannot be swapped)
-    Releases of GEGL Effects post May 2023 use (beaver:innerglow) name space but for now thousands of people are using the plugin and they will experience a breakage
+ /* The name innerglow has already been taken by Sam's most popular text styling plugin GEGL Effects. Which is a incompatible fork of this. (they cannot be swapped)
+    Releases of GEGL Effects post May 2023 use (namespace:innerglow) name space but for now thousands of people are using the plugin and they will experience a breakage
     if they don't rountinely update. I assume they don't. */
 
  /* This filter is a stand alone meant to be fused with Gimp's blending options. But it also is meant to be called with GEGL Styles 
@@ -31,7 +31,7 @@
 #ifdef GEGL_PROPERTIES
 
 #define IGGUIDE \
-"id=1 dst-atop aux=[ ref=1 color value=#ffffff ]  xor srgb=true aux=[ ref=1 ] color-overlay value=#000000 "\
+"id=1 dst-atop aux=[ ref=1 color value=#ffffff ] crop  xor srgb=true aux=[ ref=1 ] color-overlay value=#000000 "\
  /* This is a GEGL Graph. It replaces color with transparency and transparency with color. */
 
 
@@ -95,7 +95,7 @@ property_color (value, _("Color"), "#fbff00")
 
 property_double  (cover, _("Median fix for non-effected pixels on edges"), 60)
   value_range (50, 100)
-  description (_("Median Blur covers uneffected pixels. Making this slider too high will make it outline-like. So only slide it as high as you need to cover thin shape corners."))
+  description (_("Median Blur covers uneffected pixels. Making this slider too high will make it outline-like. So only slide it has high as you need to cover thin shape corners.'"))
  /* This option has to be visible as certain inner shadows will look bad if it is locked at 100. And if it is disabled all the pixels on the text's edges will be unmodified.  */
 
 #else
