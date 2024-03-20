@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-03-17 00:43+0000\n"
-"PO-Revision-Date: 2024-03-17 08:54+0200\n"
+"POT-Creation-Date: 2024-03-19 16:26+0000\n"
+"PO-Revision-Date: 2024-03-20 12:09+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
 "Language: uk\n"
@@ -683,11 +683,15 @@ msgstr "Затемнення"
 msgid "Lighten"
 msgstr "Освітлення"
 
-#: operations/common/bevel.c:72 operations/common-gpl3+/sinus.c:67
+#: operations/common/bevel.c:71 operations/workshop/external/paint-select.cc:30
+msgid "Add"
+msgstr "Додати"
+
+#: operations/common/bevel.c:74 operations/common-gpl3+/sinus.c:67
 msgid "Blend Mode"
 msgstr "Режим змішування"
 
-#: operations/common/bevel.c:75
+#: operations/common/bevel.c:77
 msgid ""
 "What blending mode the bevel's emboss will be. Light Map is a special blend "
 "mode that allows users to extract the filters output as a light map which "
@@ -698,11 +702,11 @@ msgstr ""
 "як карту освітлення, яку має бути накладено на шар вище або використано з "
 "варіантами змішування GIMP."
 
-#: operations/common/bevel.c:78
+#: operations/common/bevel.c:79
 msgid "Distance Map Setting"
 msgstr "Параметр карти відстаней"
 
-#: operations/common/bevel.c:80
+#: operations/common/bevel.c:81
 msgid ""
 "Distance Map is unique to chamfer bevel and has three settings that alter "
 "the structure of the chamfer."
@@ -710,7 +714,7 @@ msgstr ""
 "«Картка відстаней» є унікальною для фаски і має три параметри, які змінюють "
 "структуру фаски."
 
-#: operations/common/bevel.c:83 operations/common/bloom.c:35
+#: operations/common/bevel.c:84 operations/common/bloom.c:35
 #: operations/common/box-blur.c:25 operations/common/c2g.c:28
 #: operations/common/edge-neon.c:47 operations/common/local-threshold.c:24
 #: operations/common/median-blur.c:42 operations/common/snn-mean.c:26
@@ -728,16 +732,16 @@ msgstr ""
 msgid "Radius"
 msgstr "Радіус"
 
-#: operations/common/bevel.c:88
+#: operations/common/bevel.c:89
 msgid "Radius of softening for making bump of the shape."
 msgstr "Радіус пом'якшення для створення рельєфу форми."
 
-#: operations/common/bevel.c:91 operations/common-gpl3+/bump-map.c:56
+#: operations/common/bevel.c:92 operations/common-gpl3+/bump-map.c:56
 #: operations/common-gpl3+/emboss.c:40
 msgid "Elevation"
 msgstr "Висота"
 
-#: operations/common/bevel.c:92
+#: operations/common/bevel.c:93
 msgid "Elevation angle of the Bevel."
 msgstr "Кут підняття фаски."
 
@@ -745,30 +749,30 @@ msgstr "Кут підняття фаски."
 #. so I made an extra node just for it that only updates emboss depth=, as a result depth and sharpness' are co-existing properties
 #.
 #. I am fully aware 'depth' and 'detail' are just words used to describe the same thing.
-#: operations/common/bevel.c:103 operations/common-gpl3+/bump-map.c:59
+#: operations/common/bevel.c:104 operations/common-gpl3+/bump-map.c:59
 #: operations/common-gpl3+/emboss.c:45
 #: operations/common-gpl3+/fractal-trace.c:60
 #: operations/common-gpl3+/texturize-canvas.c:44
 msgid "Depth"
 msgstr "Глибина"
 
-#: operations/common/bevel.c:104
+#: operations/common/bevel.c:105
 msgid "Emboss depth - Brings out depth and detail of the bump bevel."
 msgstr "Глибина рельєфу — надає глибини і деталізації рельєфу фаски."
 
-#: operations/common/bevel.c:108
+#: operations/common/bevel.c:109
 msgid "Light Angle"
 msgstr "Кут освітлення"
 
-#: operations/common/bevel.c:109
+#: operations/common/bevel.c:110
 msgid "Direction of a light source illuminating and shading the bevel."
 msgstr "Напрям на джерело світла, що освітлює та відтіняє рельєф."
 
-#: operations/common/bevel.c:307
+#: operations/common/bevel.c:309
 msgid "Bevel"
 msgstr "Фаска"
 
-#: operations/common/bevel.c:309
+#: operations/common/bevel.c:311
 msgid ""
 "Two bevel effects in one place, Chamfer - which simulates lighting of "
 "chamfered 3D-edges, and Bump - the second make a 3D inflation effect by an "
@@ -780,7 +784,7 @@ msgstr ""
 "накладанням рельєфу з розмиванням. Обидва рельєфи покращуються від "
 "заповнених кольором прозорих визначених форм."
 
-#: operations/common/bevel.c:311
+#: operations/common/bevel.c:313
 msgid "Bevel..."
 msgstr "Фаска…"
 
@@ -2521,11 +2525,11 @@ msgstr "Усереднене виправлення для незмінених 
 
 #: operations/common/inner-glow.c:98
 #| msgid ""
-#| "Median Blur covers uneffected pixels. Making this slider too high will "
+#| "Median Blur covers unaffected pixels. Making this slider too high will "
 #| "make it outline-like. So only slide it has high as you need to cover thin "
 #| "shape corners.'"
 msgid ""
-"Median Blur covers unaffected pixels. Making this slider too high will make "
+"Median Blur covers uneffected pixels. Making this slider too high will make "
 "it outline-like. So only slide it has high as you need to cover thin shape "
 "corners.'"
 msgstr ""
@@ -2533,11 +2537,11 @@ msgstr ""
 "на цьому повзунку перетворить його на контурне. Тому посувайте його до "
 "позиції, яка потрібна вам для покриття тонких кутів форми."
 
-#: operations/common/inner-glow.c:182
+#: operations/common/inner-glow.c:178
 msgid "Inner Glow"
 msgstr "Внутрішнє сяйво"
 
-#: operations/common/inner-glow.c:184
+#: operations/common/inner-glow.c:180
 msgid ""
 "GEGL does an inner shadow glow effect; for more interesting use different "
 "blend mode than the default, Replace."
@@ -2545,7 +2549,7 @@ msgstr ""
 "GEGL додає ефекти внутрішнього сяйва; щоб отримати цікавіший результат, "
 "скористайтеся іншим режимом злиття, ніж типовий, «Заміна»."
 
-#: operations/common/inner-glow.c:186
+#: operations/common/inner-glow.c:182
 msgid "Inner Glow..."
 msgstr "Внутрішнє сяйво,"
 
@@ -9465,10 +9469,6 @@ msgid ""
 msgstr ""
 "Скриптове прототипування з lua для створення/фільтрування на рівні пікселів. "
 "Докладніший опис можна знайти на http://pippin.gimp.org/image-processing/"
-
-#: operations/workshop/external/paint-select.cc:30
-msgid "Add"
-msgstr "Додати"
 
 #: operations/workshop/external/paint-select.cc:31
 msgid "Subtract"
