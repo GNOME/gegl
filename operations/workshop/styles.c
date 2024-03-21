@@ -591,7 +591,7 @@ typedef struct
 
 static void attach (GeglOperation *operation)
 {
-fprintf(stderr, "in attach\n");
+//fprintf(stderr, "in attach\n");
   GeglNode *gegl = operation->node;
   GeglProperties *o = GEGL_PROPERTIES (operation);
   /*All nodes relating to repair gegl graph*/
@@ -831,7 +831,7 @@ fprintf(stderr, "in attach\n");
       GeglNode *bevellighting      = gegl_node_new_child (gegl, "operation", "gegl:levels",
                                          NULL);
  /*Nodes relating to Color Overlay*/
-fprintf(stderr, "start of meta_redirect\n");
+//fprintf(stderr, "start of meta_redirect\n");
   gegl_operation_meta_redirect (operation, "optioncolor", thecoloroverlay, "value");
   /*Nodes relating to Image File Overlay*/
   gegl_operation_meta_redirect (operation, "imagesrc",   image, "src");
@@ -986,7 +986,7 @@ static void update_graph (GeglOperation *operation)
   GeglNode *swapbevelso;
   GeglNode *swapbevelblendmodeso;
 
-fprintf(stderr, "in update_graph\n");
+//fprintf(stderr, "in update_graph\n");
 
 const char *blend_bevel = "gegl:nop";
   switch (o->bevelblend) {
@@ -1010,7 +1010,7 @@ const char *blend_bevel = "gegl:nop";
   if (o->innergblend == GEGL_BLEND_MODE_TYPE_OVERLAYIG) gegl_node_set (state->innerglowblend, "srgb", TRUE, NULL);
   if (o->innergblend == GEGL_BLEND_MODE_TYPE_PLUSIG) gegl_node_set (state->innerglowblend, "srgb", TRUE, NULL);
 
-fprintf(stderr, "inner_glow_blend is %s\n", inner_glow_blend);
+//fprintf(stderr, "inner_glow_blend is %s\n", inner_glow_blend);
   }
   gegl_node_set (state->innerglowblend, "operation", inner_glow_blend, NULL); 
 
@@ -1228,7 +1228,7 @@ else
       gegl_node_link_many (state->nopcolor, state->coloroverlaypolicy, NULL);
       gegl_node_connect (state->beforecoloroverlaypolicy, "aux", state->coloroverlaypolicy, "output");
 /*      gegl_node_connect (state->coloroverlaypolicy, "aux", state->thecoloroverlay, "output"); */
-fprintf(stderr, "end of update_graph\n");
+//fprintf(stderr, "end of update_graph\n");
   }
 }
 
@@ -1251,7 +1251,7 @@ GeglOperationMetaClass *operation_meta_class = GEGL_OPERATION_META_CLASS (klass)
     "description", _("An engine to style text and add popular effects to alpha channel images. Effects include outline, bevel, shadow, and inner glow all in one place."
                      ""),
     "gimp:menu-path", "<Image>/Filters/Generic/",
-    "gimp:menu-label", _("GEGL Styles (Text Styling Engine)..."),
+    "gimp:menu-label", _("Text Styling..."),
     NULL);
 }
 
