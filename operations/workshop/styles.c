@@ -27,65 +27,65 @@ I hope Gimp's team is not overwhelmed by my complexity because this is the first
 #ifdef GEGL_PROPERTIES
 /* This is an ENUM list that divides GEGL Styles into three parts*/
 enum_start (partoffiltertobedisplayed)
-enum_value   (GEGL_UI_OUTLINESHADOW, "outlineshadow", N_IGNORED("Color, Outline and Shadow"))
-enum_value   (GEGL_UI_INNERGLOWBEVEL, "innerglowbevel", N_IGNORED("Bevel and Inner Glow"))
-enum_value   (GEGL_UI_IMAGEOUTLINEBEVEL, "imageoutlinebevel", N_IGNORED("Image upload and Outline Bevel"))
+enum_value   (GEGL_UI_OUTLINESHADOW, "outlineshadow", N_("Color, Outline and Shadow"))
+enum_value   (GEGL_UI_INNERGLOWBEVEL, "innerglowbevel", N_("Bevel and Inner Glow"))
+enum_value   (GEGL_UI_IMAGEOUTLINEBEVEL, "imageoutlinebevel", N_("Image upload and Outline Bevel"))
   enum_end (endoflist)
 
     /* List of all GUI options */
 
     /* GUI Change list in GUI */
 
-property_enum(guichange, _IGNORED("Part of filter to be displayed"),
+property_enum(guichange, _("Part of filter to be displayed"),
     endoflist, partoffiltertobedisplayed,
     GEGL_UI_OUTLINESHADOW)
-  description(_IGNORED("Display a different part of the GUI"))
+  description(_("Display a different part of the GUI"))
 
     /* Color Overlays GUI options begin here */
 
-property_color  (optioncolor, _IGNORED("Color overlay"), "#ffffff")
+property_color  (optioncolor, _("Color overlay"), "#ffffff")
   ui_meta ("visible", "guichange {outlineshadow}")
-    description (_IGNORED("Color overlay setting"))
+    description (_("Color overlay setting"))
 
-property_enum (policycolor, _IGNORED("Color policy"),
-    description (_IGNORED("Change the blend mode of the color overlay"))
+property_enum (policycolor, _("Color policy"),
+    description (_("Change the blend mode of the color overlay"))
     GeglBlendColorOverlay, gegl_blend_color_overlay,
     GEGL_BLEND_MODE_TYPE_MULTIPLY_COLOR)
   ui_meta ("visible", "guichange {outlineshadow}")
 
 enum_start (gegl_blend_color_overlay)
   enum_value (GEGL_BLEND_MODE_TYPE_NO_COLOR,      "nocolor",
-              N_IGNORED("No Color"))
+              N_("No Color"))
   enum_value (GEGL_BLEND_MODE_TYPE_MULTIPLY_COLOR,      "multiply",
-              N_IGNORED("Multiply"))
+              N_("Multiply"))
   enum_value (GEGL_BLEND_MODE_TYPE_SOLID_COLOR,      "solidcolor",
-              N_IGNORED("Solid Color"))
+              N_("Solid Color"))
 enum_end (GeglBlendColorOverlay)
 
 
     /* Outline's normal GUI options begin here */
 
-property_boolean (enableoutline, _IGNORED("Enable Outline"), FALSE)
-  description    (_IGNORED("Disable or enable the outline"))
+property_boolean (enableoutline, _("Enable Outline"), FALSE)
+  description    (_("Disable or enable the outline"))
   ui_meta ("visible", "guichange {outlineshadow}")
 
-property_double (outlineopacity, _IGNORED("Outline opacity"), 1)
+property_double (outlineopacity, _("Outline opacity"), 1)
   value_range   (0.0, 1.0)
   ui_steps      (0.01, 0.10)
-  description    (_IGNORED("Opacity of the outline"))
+  description    (_("Opacity of the outline"))
   ui_meta ("visible", "guichange {outlineshadow}")
   ui_meta     ("sensitive", " enableoutline")
 
-property_double (outline_x, _IGNORED("Outline X"), 0.0)
-  description   (_IGNORED("Horizontal outline offset"))
+property_double (outline_x, _("Outline X"), 0.0)
+  description   (_("Horizontal outline offset"))
   ui_range      (-15.0, 15.0)
   ui_steps      (1, 10)
   ui_meta       ("axis", "x")
   ui_meta ("visible", "guichange {outlineshadow}")
   ui_meta     ("sensitive", " enableoutline")
 
-property_double (outline_y, _IGNORED("Outline Y"), 0.0)
-  description   (_IGNORED("Vertical outline offset"))
+property_double (outline_y, _("Outline Y"), 0.0)
+  description   (_("Vertical outline offset"))
   ui_range      (-15.0, 15.0)
   ui_steps      (1, 10)
   ui_meta       ("axis", "y")
@@ -94,94 +94,94 @@ property_double (outline_y, _IGNORED("Outline Y"), 0.0)
 
 /* Should correspond to GeglMedianBlurNeighborhood in median-blur.c */
 enum_start (gegl_styles_grow_shapes)
-  enum_value (GEGL_stroke_GROW_SHAPE_SQUARE,  "square",  N_IGNORED("Square"))
-  enum_value (GEGL_stroke_GROW_SHAPE_CIRCLE,  "circle",  N_IGNORED("Circle"))
-  enum_value (GEGL_stroke_GROW_SHAPE_DIAMOND, "diamond", N_IGNORED("Diamond"))
+  enum_value (GEGL_stroke_GROW_SHAPE_SQUARE,  "square",  N_("Square"))
+  enum_value (GEGL_stroke_GROW_SHAPE_CIRCLE,  "circle",  N_("Circle"))
+  enum_value (GEGL_stroke_GROW_SHAPE_DIAMOND, "diamond", N_("Diamond"))
 enum_end (shapegrowend)
 
-property_enum   (outlinegrowshape, _IGNORED("Outline grow shape"),
+property_enum   (outlinegrowshape, _("Outline grow shape"),
                  shapegrowend, gegl_styles_grow_shapes,
                  GEGL_stroke_GROW_SHAPE_CIRCLE)
-  description   (_IGNORED("The shape to expand or contract the outline in"))
+  description   (_("The shape to expand or contract the outline in"))
   ui_meta ("visible", "guichange {outlineshadow}")
   ui_meta     ("sensitive", " enableoutline")
 
-property_double (outlineblur, _IGNORED("Outline blur radius"), 0.0)
+property_double (outlineblur, _("Outline blur radius"), 0.0)
   value_range   (0.0, 3)
   ui_range      (0.0, 3.0)
   ui_steps      (1, 5)
   ui_gamma      (1.5)
   ui_meta       ("unit", "pixel-distance")
-  description    (_IGNORED("A mild blur for the outline"))
+  description    (_("A mild blur for the outline"))
   ui_meta ("visible", "guichange {outlineshadow}")
   ui_meta     ("sensitive", " enableoutline")
 
-property_double (outline, _IGNORED("Outline grow radius"), 12.0)
+property_double (outline, _("Outline grow radius"), 12.0)
   value_range   (0.0, G_MAXDOUBLE)
   ui_range      (0, 100.0)
   ui_digits     (0)
   ui_steps      (1, 5)
   ui_gamma      (1.5)
   ui_meta       ("unit", "pixel-distance")
-  description (_IGNORED("The distance to expand the outline"))
+  description (_("The distance to expand the outline"))
   ui_meta ("visible", "guichange {outlineshadow}")
   ui_meta     ("sensitive", " enableoutline")
 
     /* Shadow's GUI options begin here */
-property_color (outlinecolor, _IGNORED("Outline color’s"), "#000000")
-  description    (_IGNORED("Color of the outline (defaults to 'black') "))
+property_color (outlinecolor, _("Outline color’s"), "#000000")
+  description    (_("Color of the outline (defaults to 'black') "))
     /* TRANSLATORS: the string 'black' should not be translated */
   ui_meta ("visible", "guichange {outlineshadow}")
   ui_meta     ("sensitive", " enableoutline")
 
-property_double (shadowopacity, _IGNORED("Shadow/Glow opacity"), 0.0)
+property_double (shadowopacity, _("Shadow/Glow opacity"), 0.0)
   value_range   (0.0, 1.0)
   ui_range      (0.0, 1.0)
   ui_steps      (0.01, 0.10)
-  description    (_IGNORED("Shadow opacity which will also enable or disable the shadow glow effect"))
+  description    (_("Shadow opacity which will also enable or disable the shadow glow effect"))
   ui_meta ("visible", "guichange {outlineshadow}")
 
 
-property_double (shadow_x, _IGNORED("Shadow/Glow X"), 10.0)
-  description   (_IGNORED("Horizontal shadow offset"))
+property_double (shadow_x, _("Shadow/Glow X"), 10.0)
+  description   (_("Horizontal shadow offset"))
   ui_range      (-40.0, 40.0)
   ui_steps      (1, 10)
   ui_meta       ("unit", "pixel-distance")
   ui_meta       ("axis", "x")
-  description    (_IGNORED("Horizontal axis of the shadow glow"))
+  description    (_("Horizontal axis of the shadow glow"))
   ui_meta ("visible", "guichange {outlineshadow}")
 
-property_double (shadow_y, _IGNORED("Shadow/Glow Y"), 10.0)
-  description   (_IGNORED("Vertical shadow offset"))
+property_double (shadow_y, _("Shadow/Glow Y"), 10.0)
+  description   (_("Vertical shadow offset"))
   ui_range      (-40.0, 40.0)
   ui_steps      (1, 10)
   ui_meta       ("unit", "pixel-distance")
   ui_meta       ("axis", "y")
-  description    (_IGNORED("Vertical axis of the shadow glow"))
+  description    (_("Vertical axis of the shadow glow"))
   ui_meta ("visible", "guichange {outlineshadow}")
 
-property_color  (shadowcolor, _IGNORED("Shadow/Glow’s color"), "black")
+property_color  (shadowcolor, _("Shadow/Glow’s color"), "black")
     /* TRANSLATORS: the string 'black' should not be translated */
-  description   (_IGNORED("The shadow's color (defaults to 'black')"))
+  description   (_("The shadow's color (defaults to 'black')"))
   ui_meta ("visible", "guichange {outlineshadow}")
 
-property_double (shadowgrowradius, _IGNORED("Shadow/Glow grow radius"), 0.0)
+property_double (shadowgrowradius, _("Shadow/Glow grow radius"), 0.0)
   value_range   (0.0, 100.0)
   ui_range      (0.0, 50.0)
   ui_digits     (0)
   ui_steps      (1, 5)
   ui_gamma      (1.5)
   ui_meta       ("unit", "pixel-distance")
-  description (_IGNORED("The distance to expand the shadow before blurring."))
+  description (_("The distance to expand the shadow before blurring."))
   ui_meta ("visible", "guichange {outlineshadow}")
 
-property_double (shadowradius, _IGNORED("Shadow/Glow blur radius"), 12.0)
+property_double (shadowradius, _("Shadow/Glow blur radius"), 12.0)
   value_range   (0.0, G_MAXDOUBLE)
   ui_range      (0.0, 110.0)
   ui_steps      (1, 5)
   ui_gamma      (1.5)
   ui_meta       ("unit", "pixel-distance")
-  description    (_IGNORED("The shadow’s blur range"))
+  description    (_("The shadow’s blur range"))
   ui_meta ("visible", "guichange {outlineshadow}")
 
     /* Bevel's GUI options begin here */
@@ -189,26 +189,26 @@ property_double (shadowradius, _IGNORED("Shadow/Glow blur radius"), 12.0)
     /* This is the Bevel's ENUM List listed in the GUI */
 
 /* This is the ENUM list for bevel's emboss blend modes */
-property_boolean (enablebevel, _IGNORED("Enable Bevel"), FALSE)
-  description   (_IGNORED("Whether to add a bevel effect"))
+property_boolean (enablebevel, _("Enable Bevel"), FALSE)
+  description   (_("Whether to add a bevel effect"))
   ui_meta ("visible", "guichange {innerglowbevel}")
 
 
 enum_start (gegl_blend_mode_for_bevel)
   enum_value (GEGL_BLEND_MODE_TYPE_MULTIPLY_BEVEL,      "multiply",
-              N_IGNORED("Multiply"))
+              N_("Multiply"))
   enum_value (GEGL_BLEND_MODE_TYPE_ADD_BEVEL,      "add",
-              N_IGNORED("Add"))
+              N_("Add"))
   enum_value (GEGL_BLEND_MODE_TYPE_HARDLIGHT_BEVEL,      "hardlight",
-              N_IGNORED("Hard Light"))
+              N_("Hard Light"))
   enum_value (GEGL_BLEND_MODE_TYPE_DARKEN_BEVEL,      "darken",
-              N_IGNORED("Darken"))
+              N_("Darken"))
   enum_value (GEGL_BLEND_MODE_TYPE_COLORDODGE_BEVEL,      "colordodge",
-              N_IGNORED("Color Dodge"))
+              N_("Color Dodge"))
 enum_end (GeglBlendModeForBevel)
 
-property_enum (bevelblend, _IGNORED("Bevel blend mode"),
-    description (_IGNORED("Blend mode of the bevel"))
+property_enum (bevelblend, _("Bevel blend mode"),
+    description (_("Blend mode of the bevel"))
     GeglBlendModeForBevel, gegl_blend_mode_for_bevel,
     GEGL_BLEND_MODE_TYPE_MULTIPLY_BEVEL)
   ui_meta ("visible", "guichange {innerglowbevel}")
@@ -216,55 +216,55 @@ property_enum (bevelblend, _IGNORED("Bevel blend mode"),
 
 enum_start (gbevel_listing)
   enum_value (GEGL_BEVEL_CHAMFER,      "chamferbevel",
-              N_IGNORED("Chamfer Bevel"))
+              N_("Chamfer Bevel"))
   enum_value (GEGL_BEVEL_BUMP,      "bumpbevel",
-              N_IGNORED("Bump Bevel"))
+              N_("Bump Bevel"))
 enum_end (gbevellisting)
 
-property_enum (beveltype, _IGNORED("Select Bevel"),
+property_enum (beveltype, _("Select Bevel"),
     gbevellisting, gbevel_listing,
     GEGL_BEVEL_BUMP)
-    description (_IGNORED("Type of bevel "))
+    description (_("Type of bevel "))
   ui_meta ("visible", "guichange {innerglowbevel}")
   ui_meta     ("sensitive", " enablebevel")
 
 
 
-property_int (beveldepth, _IGNORED("Bevel depth"), 100)
-    description (_IGNORED("Emboss depth for the bevel"))
+property_int (beveldepth, _("Bevel depth"), 100)
+    description (_("Emboss depth for the bevel"))
     value_range (1, 100)
   ui_meta ("visible", "guichange {innerglowbevel}")
   ui_meta     ("sensitive", " enablebevel")
 
 
-property_double (bevelelevation, _IGNORED("Bevel elevation"), 55.0)
-    description (_IGNORED("Emboss elevation of the bevel"))
+property_double (bevelelevation, _("Bevel elevation"), 55.0)
+    description (_("Emboss elevation of the bevel"))
     value_range (55, 125)
     ui_meta ("unit", "degree")
   ui_meta ("visible", "guichange {innerglowbevel}")
   ui_meta     ("sensitive", " enablebevel")
 
 
-property_double (bevelazimuth, _IGNORED("Bevel azimuth"), 75.0)
-    description (_IGNORED("Emboss azimuth of the bevel"))
+property_double (bevelazimuth, _("Bevel azimuth"), 75.0)
+    description (_("Emboss azimuth of the bevel"))
     value_range (0.0, 360.0)
   ui_steps      (0.01, 0.50)
   ui_meta ("visible", "guichange {innerglowbevel}")
   ui_meta     ("sensitive", " enablebevel")
 
 
-property_double (bevelradius, _IGNORED("Bevel radius (bump only)"), 5.0)
+property_double (bevelradius, _("Bevel radius (bump only)"), 5.0)
   value_range (1.0, 8.0)
   ui_range (1.0, 8.0)
   ui_gamma (1.5)
-  description    (_IGNORED("Internal gaussian blur to inflate the bump bevel. This option does not work on chamfer"))
+  description    (_("Internal gaussian blur to inflate the bump bevel. This option does not work on chamfer"))
   ui_meta ("visible", "guichange {innerglowbevel}")
   ui_meta     ("sensitive", " enablebevel")
 
 
 
-property_double (beveloutlow, _IGNORED("Levels low output lighting for Bevel"), 0.0)
-    description (_IGNORED("Levels low output as a light adjustment for the bevel"))
+property_double (beveloutlow, _("Levels low output lighting for Bevel"), 0.0)
+    description (_("Levels low output as a light adjustment for the bevel"))
     ui_range    (0.0, 0.2)
     value_range    (0.0, 0.2)
   ui_steps      (0.01, 0.50)
@@ -272,8 +272,8 @@ property_double (beveloutlow, _IGNORED("Levels low output lighting for Bevel"), 
   ui_meta     ("sensitive", " enablebevel")
 
 
-property_double (bevelouthigh, _IGNORED("Levels high output lighting for Bevel"), 1.0)
-    description (_IGNORED("Levels high output as a light adjustment for the bevel"))
+property_double (bevelouthigh, _("Levels high output lighting for Bevel"), 1.0)
+    description (_("Levels high output as a light adjustment for the bevel"))
     ui_range    (1.0, 1.2)
     value_range    (1.0, 1.2)
   ui_steps      (0.01, 0.50)
@@ -281,8 +281,8 @@ property_double (bevelouthigh, _IGNORED("Levels high output lighting for Bevel")
   ui_meta     ("sensitive", " enablebevel")
 
 
-property_double (beveldark, _IGNORED("Dark Bevel/ignore image mode"), 0.00)
-    description (_IGNORED("This instructs the bevel to ignore image details if there is an image file overlay below it. It also allows bevel to work better when the user selects darker colors. The effect is noticeable on bump bevel but barely effects chamfer bevel"))
+property_double (beveldark, _("Dark Bevel/ignore image mode"), 0.00)
+    description (_("This instructs the bevel to ignore image details if there is an image file overlay below it. It also allows bevel to work better when the user selects darker colors. The effect is noticeable on bump bevel but barely effects chamfer bevel"))
   value_range   (0.00, 1.0)
   ui_steps      (0.01, 0.50)
   ui_meta ("visible", "guichange {innerglowbevel}")
@@ -292,8 +292,8 @@ property_double (beveldark, _IGNORED("Dark Bevel/ignore image mode"), 0.00)
 
     /* Inner Glow GUI options begin here */
 
-property_boolean (enableinnerglow, _IGNORED("Enable Inner Glow"), FALSE)
-  description   (_IGNORED("Whether to add the inner glow effect"))
+property_boolean (enableinnerglow, _("Enable Inner Glow"), FALSE)
+  description   (_("Whether to add the inner glow effect"))
   ui_meta ("visible", "guichange {innerglowbevel}")
 
     /* This is the Inner Glow's ENUM List  */
@@ -302,108 +302,108 @@ property_boolean (enableinnerglow, _IGNORED("Enable Inner Glow"), FALSE)
 ALT means their srgb=true is true  */
 enum_start (gegl_blend_mode_type_innerglowblend)
   enum_value (GEGL_BLEND_MODE_TYPE_NORMALIG,      "normal",
-              N_IGNORED("Normal"))
+              N_("Normal"))
   enum_value (GEGL_BLEND_MODE_TYPE_OVERLAYIG,      "overlay",
-              N_IGNORED("Overlay"))
+              N_("Overlay"))
   enum_value (GEGL_BLEND_MODE_TYPE_SCREENIG,      "screen",
-              N_IGNORED("Screen"))
+              N_("Screen"))
   enum_value (GEGL_BLEND_MODE_TYPE_HARDLIGHTIG,      "hardlight",
-              N_IGNORED("Hardlight"))
+              N_("Hardlight"))
   enum_value (GEGL_BLEND_MODE_TYPE_COLORDODGEIG,      "colordodge",
-              N_IGNORED("Color Dodge"))
+              N_("Color Dodge"))
   enum_value (GEGL_BLEND_MODE_TYPE_PLUSIG,      "plus",
-              N_IGNORED("Plus"))
+              N_("Plus"))
 enum_end (GeglBlendModeTypeigblend)
 
-property_enum (innergblend, _IGNORED("Blend mode of Inner Glow"),
+property_enum (innergblend, _("Blend mode of Inner Glow"),
     GeglBlendModeTypeigblend, gegl_blend_mode_type_innerglowblend,
     GEGL_BLEND_MODE_TYPE_NORMALIG)
   ui_meta ("visible", "guichange {innerglowbevel}")
   ui_meta     ("sensitive", " enableinnerglow")
 
-property_double (innergradius, _IGNORED("Inner Glow's blur radius"), 6.0)
+property_double (innergradius, _("Inner Glow's blur radius"), 6.0)
   value_range   (0.0, 30.0)
   ui_range      (0.0, 30.0)
   ui_steps      (1, 5)
   ui_gamma      (1.5)
   ui_meta       ("unit", "pixel-distance")
-  description (_IGNORED("Blur control of the inner glow"))
+  description (_("Blur control of the inner glow"))
   ui_meta ("visible", "guichange {innerglowbevel}")
   ui_meta     ("sensitive", " enableinnerglow")
 
-property_double (innerggrowradius, _IGNORED("Inner Glow's grow radius"), 5)
+property_double (innerggrowradius, _("Inner Glow's grow radius"), 5)
   value_range   (1, 30.0)
   ui_range      (1, 30.0)
   ui_digits     (0)
   ui_steps      (1, 5)
   ui_gamma      (1.5)
   ui_meta       ("unit", "pixel-distance")
-  description (_IGNORED("The distance to expand the inner glow before blurring"))
+  description (_("The distance to expand the inner glow before blurring"))
   ui_meta ("visible", "guichange {innerglowbevel}")
   ui_meta     ("sensitive", " enableinnerglow")
 
-property_double (innergopacity, _IGNORED("Inner Glow's opacity"), 1.00)
+property_double (innergopacity, _("Inner Glow's opacity"), 1.00)
   value_range   (0.0, 1.00)
   ui_steps      (0.01, 0.10)
-  description (_IGNORED("Opacity of the inner glow"))
+  description (_("Opacity of the inner glow"))
   ui_meta ("visible", "guichange {innerglowbevel}")
   ui_meta     ("sensitive", " enableinnerglow")
 
-property_color (innergvalue, _IGNORED("Inner Glow's color"), "#ff8f00")
-    description (_IGNORED("The color of the inner glow"))
+property_color (innergvalue, _("Inner Glow's color"), "#ff8f00")
+    description (_("The color of the inner glow"))
   ui_meta ("visible", "guichange {innerglowbevel}")
   ui_meta     ("sensitive", " enableinnerglow")
 
-property_double  (innergtreatment, _IGNORED("Inner Glow's unmodified pixel fix"), 60)
+property_double  (innergtreatment, _("Inner Glow's unmodified pixel fix"), 60)
   value_range (50, 85)
-  description (_IGNORED("Cover pixels that inner glow might miss"))
+  description (_("Cover pixels that inner glow might miss"))
   ui_meta ("visible", "guichange {innerglowbevel}")
   ui_meta     ("sensitive", " enableinnerglow")
  /* Without this Inner Glow would miss many pixels around alpha defined shapes edges'*/
 
     /* Image file overlay GUI options begin here */
 
-property_boolean (enableimage, _IGNORED("Enable image upload"), TRUE)
-  description   (_IGNORED("Whether to enable or disable the image file upload."))
+property_boolean (enableimage, _("Enable image upload"), TRUE)
+  description   (_("Whether to enable or disable the image file upload."))
 ui_meta ("visible", "guichange {imageoutlinebevel}")
 
-property_file_path(imagesrc, _IGNORED("Image file overlay"), "")
-  description (_IGNORED("Upload an image file from your computer to be in the fill area. Allows (png, jpg, raw, svg, bmp, tif, ...)"))
+property_file_path(imagesrc, _("Image file overlay"), "")
+  description (_("Upload an image file from your computer to be in the fill area. Allows (png, jpg, raw, svg, bmp, tif, ...)"))
 ui_meta ("visible", "guichange {imageoutlinebevel}")
   ui_meta     ("sensitive", " enableimage")
 
-property_double(imageopacity, _IGNORED("Opacity of image file overlay"), 1.0)
+property_double(imageopacity, _("Opacity of image file overlay"), 1.0)
     value_range (0.0, 1.0)
 ui_meta ("visible", "guichange {imageoutlinebevel}")
-  description (_IGNORED("Opacity of the image file overlay that was uploaded. "))
+  description (_("Opacity of the image file overlay that was uploaded. "))
   ui_meta     ("sensitive", " enableimage")
 
     /* 
-property_double (imagehue, _IGNORED("Hue rotation"),  0.0)
-   description  (_IGNORED("Hue adjustment"))
+property_double (imagehue, _("Hue rotation"),  0.0)
+   description  (_("Hue adjustment"))
    value_range  (-180.0, 180.0)
-  description (_IGNORED("Hue rotation of the uploaded image file or whatever is on canvas"))
+  description (_("Hue rotation of the uploaded image file or whatever is on canvas"))
 ui_meta ("visible", "guichange {imageoutlinebevel}") */
 
-property_double (imagesaturation, _IGNORED("Saturation"), 1.0)
-   description  (_IGNORED("Saturation adjustment of the uploaded image file or whatever is on canvas"))
+property_double (imagesaturation, _("Saturation"), 1.0)
+   description  (_("Saturation adjustment of the uploaded image file or whatever is on canvas"))
    value_range  (0.0, 3.0)
 ui_meta ("visible", "guichange {imageoutlinebevel}")
 
-property_double (imagelightness, _IGNORED("Lightness"), 0.0)
-   description  (_IGNORED("Lightness adjustment of the uploaded image file or whatever is on canvas"))
+property_double (imagelightness, _("Lightness"), 0.0)
+   description  (_("Lightness adjustment of the uploaded image file or whatever is on canvas"))
    value_range  (-20.0, 20.0)
 ui_meta ("visible", "guichange {imageoutlinebevel}")
 
     /* Outline special options in GUI begin here */
-property_boolean (enablespecialoutline, _IGNORED("Enable advanced options on Outline (requires outline)"), FALSE)
-  description    (_IGNORED("Turn on advanced outline abilities"))
+property_boolean (enablespecialoutline, _("Enable advanced options on Outline (requires outline)"), FALSE)
+  description    (_("Turn on advanced outline abilities"))
 ui_meta ("visible", "guichange {imageoutlinebevel}")
   ui_meta     ("sensitive", " enableoutline")
 
 
-property_boolean (enableoutlinebevel, _IGNORED("Enable Outline Bevel (requires advanced options)"), TRUE)
-  description    (_IGNORED("Turn on outlines ability to bevel"))
+property_boolean (enableoutlinebevel, _("Enable Outline Bevel (requires advanced options)"), TRUE)
+  description    (_("Turn on outlines ability to bevel"))
 ui_meta ("visible", "guichange {imageoutlinebevel}")
   ui_meta     ("sensitive", " enablespecialoutline")
 
@@ -412,49 +412,49 @@ ui_meta ("visible", "guichange {imageoutlinebevel}")
 /* This is the ENUM list for bevel outline's emboss blend modes */
 enum_start (gegl_blend_mode_for_bevel_outline)
   enum_value (GEGL_BLEND_MODE_TYPE_MULTIPLY_BEVEL_OUTLINE,      "multiply",
-              N_IGNORED("Multiply"))
+              N_("Multiply"))
   enum_value (GEGL_BLEND_MODE_TYPE_ADD_BEVEL_OUTLINE,      "add",
-              N_IGNORED("Add"))
+              N_("Add"))
   enum_value (GEGL_BLEND_MODE_TYPE_HARDLIGHT_BEVEL_OUTLINE,      "hardlight",
-              N_IGNORED("Hard Light"))
+              N_("Hard Light"))
   enum_value (GEGL_BLEND_MODE_TYPE_DARKEN_BEVEL_OUTLINE,      "darken",
-              N_IGNORED("Darken"))
+              N_("Darken"))
   enum_value (GEGL_BLEND_MODE_TYPE_COLORDODGE_BEVEL_OUTLINE,      "colordodge",
-              N_IGNORED("Color Dodge"))
+              N_("Color Dodge"))
 enum_end (GeglBlendModeForBevelOutline)
 
 
-property_enum (osblend, _IGNORED("Outline Bevel blend mode"),
-    description (_IGNORED("Blend mode of the outline bevel"))
+property_enum (osblend, _("Outline Bevel blend mode"),
+    description (_("Blend mode of the outline bevel"))
     GeglBlendModeForBevelOutline, gegl_blend_mode_for_bevel_outline,
     GEGL_BLEND_MODE_TYPE_MULTIPLY_BEVEL_OUTLINE)
 ui_meta ("visible", "guichange {imageoutlinebevel}")
   ui_meta     ("sensitive", " enablespecialoutline")
 
 
-property_int (osdepth, _IGNORED("Outline Bevel depth"), 15)
-    description (_IGNORED("Emboss depth for the outline bevel"))
+property_int (osdepth, _("Outline Bevel depth"), 15)
+    description (_("Emboss depth for the outline bevel"))
     value_range (1, 100)
 ui_meta ("visible", "guichange {imageoutlinebevel}")
   ui_meta     ("sensitive", " enablespecialoutline")
 
-property_double (oselevation, _IGNORED("Outline Bevel elevation"), 47.0)
-    description (_IGNORED("Emboss elevation for the outline bevel"))
+property_double (oselevation, _("Outline Bevel elevation"), 47.0)
+    description (_("Emboss elevation for the outline bevel"))
     value_range (0, 180)
     ui_meta ("unit", "degree")
 ui_meta ("visible", "guichange {imageoutlinebevel}")
   ui_meta     ("sensitive", " enablespecialoutline")
 
-property_double (osazimuth, _IGNORED("Outline Bevel azimuth"), 55.0)
-    description (_IGNORED("Emboss azimuth for the outline bevel"))
+property_double (osazimuth, _("Outline Bevel azimuth"), 55.0)
+    description (_("Emboss azimuth for the outline bevel"))
     value_range (0.0, 360.0)
     ui_steps      (0.01, 0.50)
 ui_meta ("visible", "guichange {imageoutlinebevel}")
   ui_meta     ("sensitive", " enablespecialoutline")
 
 
-property_double (osradius, _IGNORED("Outline Bevel radius"), 3.0)
-    description (_IGNORED("Internal gaussian blur to inflate the outline bevel"))
+property_double (osradius, _("Outline Bevel radius"), 3.0)
+    description (_("Internal gaussian blur to inflate the outline bevel"))
   value_range (1.0, 8.0)
   ui_range (1.0, 8.0)
   ui_gamma (1.5)
@@ -462,33 +462,33 @@ ui_meta ("visible", "guichange {imageoutlinebevel}")
   ui_meta     ("sensitive", " enablespecialoutline")
 
 
-property_boolean (enableimageoutline, _IGNORED("Enable image upload on Outline (requires advance effects)"), TRUE)
-  description   (_IGNORED("Whether to enable or disable the image file upload."))
+property_boolean (enableimageoutline, _("Enable image upload on Outline (requires advance effects)"), TRUE)
+  description   (_("Whether to enable or disable the image file upload."))
 ui_meta ("visible", "guichange {imageoutlinebevel}")
   ui_meta     ("sensitive", " enablespecialoutline")
 
-property_file_path(ossrc, _IGNORED("Outline image file overlay"), "")
-  description (_IGNORED("Upload an image file from your computer to be in the outline area. Allows (png, jpg, raw, svg, bmp, tif, ..."))
+property_file_path(ossrc, _("Outline image file overlay"), "")
+  description (_("Upload an image file from your computer to be in the outline area. Allows (png, jpg, raw, svg, bmp, tif, ..."))
 ui_meta ("visible", "guichange {imageoutlinebevel}")
   ui_meta     ("sensitive", " enablespecialoutline")
 
 
-property_double (ossrcopacity, _IGNORED("Outline image opacity"), 1.0)
-   description  (_IGNORED("Outline image opacity adjustment"))
+property_double (ossrcopacity, _("Outline image opacity"), 1.0)
+   description  (_("Outline image opacity adjustment"))
    value_range  (0.0, 1.0)
 ui_meta ("visible", "guichange {imageoutlinebevel}")
   ui_meta     ("sensitive", " enablespecialoutline")
 
-property_double (osoutlow, _IGNORED("Levels low output lighting for Outline Bevel"), 0.0)
-    description (_IGNORED("Levels low output as a light adjustment for the bevel"))
+property_double (osoutlow, _("Levels low output lighting for Outline Bevel"), 0.0)
+    description (_("Levels low output as a light adjustment for the bevel"))
     ui_range    (0.0, 0.2)
     value_range (0.0, 0.2)
   ui_steps      (0.01, 0.50)
 ui_meta ("visible", "guichange {imageoutlinebevel}")
   ui_meta     ("sensitive", " enablespecialoutline")
 
-property_double (osouthigh, _IGNORED("Levels high output lighting for Outline Bevel"), 1)
-    description (_IGNORED("Levels high output as a light adjustment for the outline bevel"))
+property_double (osouthigh, _("Levels high output lighting for Outline Bevel"), 1)
+    description (_("Levels high output as a light adjustment for the outline bevel"))
     ui_range    (1.0, 1.2)
     value_range    (1.0, 1.2)
   ui_steps      (0.01, 0.50)
@@ -496,8 +496,8 @@ ui_meta ("visible", "guichange {imageoutlinebevel}")
   ui_meta     ("sensitive", " enablespecialoutline")
 
 
-property_double (osdark, _IGNORED("Outline Dark Bevel/ignore image mode"), 0.0)
-    description (_IGNORED("This instructs the outline bevel to ignore image details if there is an image file overlay below it. It also allows outline bevel to work better when the user selects darker colors."))
+property_double (osdark, _("Outline Dark Bevel/ignore image mode"), 0.0)
+    description (_("This instructs the outline bevel to ignore image details if there is an image file overlay below it. It also allows outline bevel to work better when the user selects darker colors."))
   value_range   (0.00, 1.00)
   ui_steps      (0.01, 0.50)
 ui_meta ("visible", "guichange {imageoutlinebevel}")
@@ -507,8 +507,6 @@ ui_meta ("visible", "guichange {imageoutlinebevel}")
     /* end of list of all GUI options */
 
 #else
-#define _IGNORED(str)   (str)
-#define N_IGNORED(str)  (str)
 #define GEGL_OP_META
 #define GEGL_OP_NAME     styles
 #define GEGL_OP_C_SOURCE styles.c
@@ -1247,13 +1245,13 @@ GeglOperationMetaClass *operation_meta_class = GEGL_OPERATION_META_CLASS (klass)
 
   gegl_operation_class_set_keys (operation_class,
     "name",        "gegl:styles",
-    "title",       _IGNORED("GEGL Styles"),
+    "title",       _("GEGL Styles"),
     "categories",  "Generic",
     "reference-hash", "129945ed565h8500fca01b2ac",
-    "description", _IGNORED("An engine to style text and add popular effects to alpha channel images. Effects include outline, bevel, shadow, and inner glow all in one place."
+    "description", _("An engine to style text and add popular effects to alpha channel images. Effects include outline, bevel, shadow, and inner glow all in one place."
                      ""),
     "gimp:menu-path", "<Image>/Filters/Generic/",
-    "gimp:menu-label", _IGNORED("GEGL Styles (Text Styling Engine)..."),
+    "gimp:menu-label", _("GEGL Styles (Text Styling Engine)..."),
     NULL);
 }
 
