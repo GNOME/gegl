@@ -128,7 +128,7 @@ property_double (outline, _("Outline grow radius"), 12.0)
   ui_meta     ("sensitive", " enableoutline")
 
     /* Shadow's GUI options begin here */
-property_color (outlinecolor, _("Outline color’s"), "#000000")
+property_color (outlinecolor, _("Outline’s color"), "#000000")
   description    (_("Color of the outline (defaults to 'black') "))
     /* TRANSLATORS: the string 'black' should not be translated */
   ui_meta ("visible", "guichange {outlineshadow}")
@@ -162,7 +162,7 @@ property_double (shadow_y, _("Shadow/Glow Y"), 10.0)
 
 property_color  (shadowcolor, _("Shadow/Glow’s color"), "black")
     /* TRANSLATORS: the string 'black' should not be translated */
-  description   (_("The shadow's color (defaults to 'black')"))
+  description   (_("The shadow’s color (defaults to 'black')"))
   ui_meta ("visible", "guichange {outlineshadow}")
 
 property_double (shadowgrowradius, _("Shadow/Glow grow radius"), 0.0)
@@ -462,13 +462,13 @@ ui_meta ("visible", "guichange {imageoutlinebevel}")
   ui_meta     ("sensitive", " enablespecialoutline")
 
 
-property_boolean (enableimageoutline, _("Enable image upload on Outline (requires advance effects)"), TRUE)
+property_boolean (enableimageoutline, _("Enable image upload on Outline (requires advanced effects)"), TRUE)
   description   (_("Whether to enable or disable the image file upload."))
 ui_meta ("visible", "guichange {imageoutlinebevel}")
   ui_meta     ("sensitive", " enablespecialoutline")
 
 property_file_path(ossrc, _("Outline image file overlay"), "")
-  description (_("Upload an image file from your computer to be in the outline area. Allows (png, jpg, raw, svg, bmp, tif, ..."))
+  description (_("Upload an image file from your computer to be in the outline area. Allows (png, jpg, raw, svg, bmp, tif, ...)"))
 ui_meta ("visible", "guichange {imageoutlinebevel}")
   ui_meta     ("sensitive", " enablespecialoutline")
 
@@ -480,7 +480,7 @@ ui_meta ("visible", "guichange {imageoutlinebevel}")
   ui_meta     ("sensitive", " enablespecialoutline")
 
 property_double (osoutlow, _("Levels low output lighting for Outline Bevel"), 0.0)
-    description (_("Levels low output as a light adjustment for the bevel"))
+    description (_("Levels low output as a light adjustment for the outline bevel"))
     ui_range    (0.0, 0.2)
     value_range (0.0, 0.2)
   ui_steps      (0.01, 0.50)

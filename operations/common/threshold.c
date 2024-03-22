@@ -30,7 +30,7 @@ property_double (value, _("Threshold"), 0.5) // TODO : rename low - to match GIM
 property_double (high, _("High"), 1.0)
     value_range (-200, 200)
     ui_range    (0, 1)
-    description(_("Highest value to be include as white."))
+    description(_("Highest value to be included as white."))
 
 #else
 

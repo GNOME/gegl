@@ -28,7 +28,7 @@ property_int (bitdepth, _("Bitdepth"), -1)
   description (_("-1, 8, 16, 32 and 64 are the currently accepted values, -1 means auto"))
   value_range (-1, 64)
 property_int (fp, _("use floating point"), -1)
-  description (_("floating point -1 means auto, 0 means integer 1 meant float."))
+  description (_("floating point -1 means auto, 0 means integer, 1 means float."))
   value_range (-1, 1)
 
 property_object(metadata, _("Metadata"), GEGL_TYPE_METADATA)
