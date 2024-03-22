@@ -7,15 +7,23 @@
 #
 # * smoothness = uniformità
 # * smooth = uniforma
-# * smoothing = smussamento, levigatura, omogeneizzazione
+# * smoothing = uniformazione, levigatura, omogeneizzazione
 # * clustering = clustering (metodo statistico detto anche analisi dei gruppi)
 # * K-means = K-means (metodo di clustering)
+# * overlay = rivestimento
+# * fillet = filetto, smusso tondo, modanatura 
+# * bevel = smusso - https://en.wikipedia.org/wiki/Bevel
+# * chamfer = cianfrino - https://it.wikipedia.org/wiki/Cianfrinatura
+# * bump = sbalzo
+# * emboss = rilievo, goffrato
+# * deboss = impresso, inciso 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: GEGL_0_2_0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-18 13:58+0100\n"
-"PO-Revision-Date: 2024-03-18 15:31+0100\n"
+"POT-Creation-Date: 2024-03-22 00:16+0100\n"
+"PO-Revision-Date: 2024-03-22 14:32+0100\n"
 "Last-Translator: Marco Ciampa <ciampix@posteo.net>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -672,19 +680,23 @@ msgstr "La tipo di smussatura da usare"
 msgid "None (for use with GIMPs blending options)"
 msgstr "Nessuna (da usare con le opzioni di fusione di GIMP)"
 
-#: ../operations/common/bevel.c:61
+#: ../operations/common/bevel.c:61 ../operations/workshop/styles.c:203
+#: ../operations/workshop/styles.c:419
 msgid "Hard Light"
 msgstr "Alteluci"
 
-#: ../operations/common/bevel.c:63
+#: ../operations/common/bevel.c:63 ../operations/workshop/styles.c:60
+#: ../operations/workshop/styles.c:199 ../operations/workshop/styles.c:415
 msgid "Multiply"
 msgstr "Moltiplicatore"
 
-#: ../operations/common/bevel.c:65
+#: ../operations/common/bevel.c:65 ../operations/workshop/styles.c:207
+#: ../operations/workshop/styles.c:313 ../operations/workshop/styles.c:423
 msgid "Color Dodge"
 msgstr "Scansa colore"
 
-#: ../operations/common/bevel.c:67
+#: ../operations/common/bevel.c:67 ../operations/workshop/styles.c:205
+#: ../operations/workshop/styles.c:421
 msgid "Darken"
 msgstr "Inscurisci"
 
@@ -692,28 +704,40 @@ msgstr "Inscurisci"
 msgid "Lighten"
 msgstr "Schiara"
 
-#: ../operations/common/bevel.c:72 ../operations/common-gpl3+/sinus.c:67
+#: ../operations/common/bevel.c:71
+#: ../operations/workshop/external/paint-select.cc:30
+#: ../operations/workshop/styles.c:201 ../operations/workshop/styles.c:417
+msgid "Add"
+msgstr "Aggiungi"
+
+#: ../operations/common/bevel.c:74 ../operations/common-gpl3+/sinus.c:67
 msgid "Blend Mode"
 msgstr "Modalità fusione"
 
-#: ../operations/common/bevel.c:75
+#: ../operations/common/bevel.c:77
 msgid ""
 "What blending mode the bevel's emboss will be. Light Map is a special blend "
 "mode that allows users to extract the filters output as a light map which "
 "should be put on a layer above or be used with Gimp's blending options."
-msgstr "Quale modalità di fusione sarà il rilievo dello smusso. Mappa luce è una modalità di fusione speciale che consente agli utenti di estrarre il risultato dei filtri come una mappa di luce che dovrebbe essere posizionata su un livello superiore o utilizzata con le opzioni di fusione di GIMP."
+msgstr ""
+"Quale modalità di fusione sarà il rilievo dello smusso. Mappa luce è una "
+"modalità di fusione speciale che consente agli utenti di estrarre il "
+"risultato dei filtri come una mappa di luce che dovrebbe essere posizionata "
+"su un livello superiore o utilizzata con le opzioni di fusione di GIMP."
 
-#: ../operations/common/bevel.c:78
+#: ../operations/common/bevel.c:79
 msgid "Distance Map Setting"
 msgstr "Impostazioni di distanza mappa"
 
-#: ../operations/common/bevel.c:80
+#: ../operations/common/bevel.c:81
 msgid ""
 "Distance Map is unique to chamfer bevel and has three settings that alter "
 "the structure of the chamfer."
-msgstr "La mappa distanza è unica per raccordare lo smusso e presenta tre impostazioni che alterano la struttura del raccordo."
+msgstr ""
+"La mappa distanza è unica per raccordare lo smusso e presenta tre "
+"impostazioni che alterano la struttura del raccordo."
 
-#: ../operations/common/bevel.c:83 ../operations/common/bloom.c:35
+#: ../operations/common/bevel.c:84 ../operations/common/bloom.c:35
 #: ../operations/common/box-blur.c:25 ../operations/common/c2g.c:28
 #: ../operations/common/edge-neon.c:47
 #: ../operations/common/local-threshold.c:24
@@ -734,16 +758,16 @@ msgstr "La mappa distanza è unica per raccordare lo smusso e presenta tre impos
 msgid "Radius"
 msgstr "Raggio"
 
-#: ../operations/common/bevel.c:88
+#: ../operations/common/bevel.c:89
 msgid "Radius of softening for making bump of the shape."
 msgstr "Raggio di ammorbidimento per dare rilievo alla forma."
 
-#: ../operations/common/bevel.c:91 ../operations/common-gpl3+/bump-map.c:56
+#: ../operations/common/bevel.c:92 ../operations/common-gpl3+/bump-map.c:56
 #: ../operations/common-gpl3+/emboss.c:40
 msgid "Elevation"
 msgstr "Elevazione"
 
-#: ../operations/common/bevel.c:92
+#: ../operations/common/bevel.c:93
 msgid "Elevation angle of the Bevel."
 msgstr "Angolo elevazione della smussatura."
 
@@ -751,38 +775,44 @@ msgstr "Angolo elevazione della smussatura."
 #. so I made an extra node just for it that only updates emboss depth=, as a result depth and sharpness' are co-existing properties
 #.
 #. I am fully aware 'depth' and 'detail' are just words used to describe the same thing.
-#: ../operations/common/bevel.c:103 ../operations/common-gpl3+/bump-map.c:59
+#: ../operations/common/bevel.c:104 ../operations/common-gpl3+/bump-map.c:59
 #: ../operations/common-gpl3+/emboss.c:45
 #: ../operations/common-gpl3+/fractal-trace.c:60
 #: ../operations/common-gpl3+/texturize-canvas.c:44
 msgid "Depth"
 msgstr "Profondità"
 
-#: ../operations/common/bevel.c:104
+#: ../operations/common/bevel.c:105
 msgid "Emboss depth - Brings out depth and detail of the bump bevel."
-msgstr "Profondità di rilievo - Mette in risalto la profondità e i dettagli della smussatura del rilievo."
+msgstr ""
+"Profondità di rilievo - Mette in risalto la profondità e i dettagli della "
+"smussatura del rilievo."
 
-#: ../operations/common/bevel.c:108
+#: ../operations/common/bevel.c:109
 msgid "Light Angle"
 msgstr "Angolo luce"
 
-#: ../operations/common/bevel.c:109
+#: ../operations/common/bevel.c:110
 msgid "Direction of a light source illuminating and shading the bevel."
 msgstr "Direzione di una sorgente di luce che illumina e ombreggia lo smusso."
 
-#: ../operations/common/bevel.c:307
+#: ../operations/common/bevel.c:309
 msgid "Bevel"
 msgstr "Smusso"
 
-#: ../operations/common/bevel.c:309
+#: ../operations/common/bevel.c:311
 msgid ""
 "Two bevel effects in one place, Chamfer - which simulates lighting of "
 "chamfered 3D-edges, and Bump - the second make a 3D inflation effect by an "
 "emboss covering a blur. Both bevels benefit from color filled alpha defined "
 "shapes."
-msgstr "Due effetti smusso in uno, Raccordo, che simula l'illuminazione dei bordi raccordati 3D, e Rilievo, il secondo crea un effetto gonfiaggio 3D mediante un rilievo che copre le sfocature. Entrambi gli smussi beneficiano di forme definite alfa riempite di colore."
+msgstr ""
+"Due effetti smusso in uno, Raccordo, che simula l'illuminazione dei bordi "
+"raccordati 3D, e Rilievo, il secondo crea un effetto gonfiaggio 3D mediante "
+"un rilievo che copre le sfocature. Entrambi gli smussi beneficiano di forme "
+"definite alfa riempite di colore."
 
-#: ../operations/common/bevel.c:311
+#: ../operations/common/bevel.c:313
 msgid "Bevel..."
 msgstr "Smusso..."
 
@@ -836,7 +866,7 @@ msgstr "Soglia"
 
 #: ../operations/common/bloom.c:27
 msgid "Glow-area brightness threshold"
-msgstr "Soglia luminosità area chiarore"
+msgstr "Soglia luminosità area bagliore"
 
 #: ../operations/common/bloom.c:30 ../operations/common/vignette.c:46
 msgid "Softness"
@@ -844,11 +874,11 @@ msgstr "Morbidezza"
 
 #: ../operations/common/bloom.c:31
 msgid "Glow-area edge softness"
-msgstr "Gradualità bordo area chiarore"
+msgstr "Gradualità bordo area bagliore"
 
 #: ../operations/common/bloom.c:36 ../operations/common-gpl3+/softglow.c:26
 msgid "Glow radius"
-msgstr "Raggio chiarore"
+msgstr "Raggio bagliore"
 
 #: ../operations/common/bloom.c:42 ../operations/common/noise-reduction.c:26
 #: ../operations/common-cxx/denoise-dct.cc:38
@@ -858,7 +888,7 @@ msgstr "Forza"
 
 #: ../operations/common/bloom.c:43
 msgid "Glow strength"
-msgstr "Forza chiarore"
+msgstr "Forza bagliore"
 
 #: ../operations/common/bloom.c:47
 msgid "Limit exposure"
@@ -874,7 +904,7 @@ msgstr "Fiore"
 
 #: ../operations/common/bloom.c:206
 msgid "Add glow around bright areas"
-msgstr "Aggiunge un chiarore attorno alle aree luminose"
+msgstr "Aggiunge un bagliore attorno alle aree luminose"
 
 #: ../operations/common/box-blur.c:26 ../operations/common/snn-mean.c:27
 #: ../operations/workshop/boxblur.c:25
@@ -1169,12 +1199,19 @@ msgstr ""
 msgid "Grid size"
 msgstr "Dimensione griglia"
 
+#.
+#. property_double (imagehue, _("Hue rotation"),  0.0)
+#. description  (_("Hue adjustment"))
+#. value_range  (-180.0, 180.0)
+#. description (_("Hue rotation of the uploaded image file or whatever is on canvas"))
+#. ui_meta ("visible", "guichange {imageoutlinebevel}")
 #: ../operations/common/color-assimilation-grid.c:31
 #: ../operations/common/color-rotate.c:84 ../operations/common/fattal02.c:39
 #: ../operations/common/mantiuk06.c:33 ../operations/common/noise-hsv.c:34
 #: ../operations/common/saturation.c:404
 #: ../operations/external/lcms-from-profile.c:35
 #: ../operations/workshop/selective-hue-saturation.c:38
+#: ../operations/workshop/styles.c:388
 msgid "Saturation"
 msgstr "Saturazione"
 
@@ -1974,19 +2011,21 @@ msgstr ""
 #: ../operations/common/dropshadow.c:27 ../operations/common/inner-glow.c:39
 #: ../operations/common/median-blur.c:27 ../operations/common/pixelize.c:28
 #: ../operations/common/vignette.c:26 ../operations/common-cxx/focus-blur.c:35
+#: ../operations/workshop/styles.c:97
 msgid "Square"
 msgstr "Quadrato"
 
 #: ../operations/common/dropshadow.c:28 ../operations/common/inner-glow.c:40
 #: ../operations/common/median-blur.c:28 ../operations/common/newsprint.c:26
 #: ../operations/common/vignette.c:25 ../operations/common-cxx/focus-blur.c:34
+#: ../operations/workshop/styles.c:98
 msgid "Circle"
 msgstr "Cerchio"
 
 #: ../operations/common/dropshadow.c:29 ../operations/common/inner-glow.c:41
 #: ../operations/common/median-blur.c:29 ../operations/common/newsprint.c:27
 #: ../operations/common/pixelize.c:26 ../operations/common/vignette.c:27
-#: ../operations/common-cxx/focus-blur.c:36
+#: ../operations/common-cxx/focus-blur.c:36 ../operations/workshop/styles.c:99
 msgid "Diamond"
 msgstr "Rombo"
 
@@ -2006,6 +2045,7 @@ msgid "X"
 msgstr "X"
 
 #: ../operations/common/dropshadow.c:33 ../operations/common/inner-glow.c:52
+#: ../operations/workshop/styles.c:146
 msgid "Horizontal shadow offset"
 msgstr "Scostamento orizzontale dell'ombra"
 
@@ -2025,6 +2065,7 @@ msgid "Y"
 msgstr "Y"
 
 #: ../operations/common/dropshadow.c:40 ../operations/common/inner-glow.c:60
+#: ../operations/workshop/styles.c:155
 msgid "Vertical shadow offset"
 msgstr "Scostamento verticale dell'ombra"
 
@@ -2049,7 +2090,7 @@ msgstr ""
 "negativo contrarrà invece l'ombra"
 
 #. TRANSLATORS: the string 'black' should not be translated
-#: ../operations/common/dropshadow.c:69
+#: ../operations/common/dropshadow.c:69 ../operations/workshop/styles.c:165
 msgid "The shadow's color (defaults to 'black')"
 msgstr "Il colore dell'ombra (predefinito è \"black\")"
 
@@ -2444,6 +2485,7 @@ msgstr "Regolazione crominanza"
 
 #: ../operations/common/hue-chroma.c:33 ../operations/common/noise-cie-lch.c:29
 #: ../operations/workshop/selective-hue-saturation.c:42
+#: ../operations/workshop/styles.c:393
 msgid "Lightness"
 msgstr "Luminosità"
 
@@ -2572,9 +2614,9 @@ msgstr "Correzione mediana per i pixel sui bordi non coinvolti"
 #: ../operations/common/inner-glow.c:98
 msgid ""
 "Median Blur covers uneffected pixels. Making this slider too high will make "
-"it outline-like. So only slide it as high as you need to cover thin shape "
-"corners."
-msgstr "La sfocatura mediana copre i pixel non interessati. Ponendo questo cursore troppo in alto lo renderà simile a un contorno. Perciò farlo scorrere solo fino all'altezza necessaria per coprire gli angoli sottili della forma."
+"it outline-like. So only slide it has high as you need to cover thin shape "
+"corners.'"
+msgstr "La sfocatura mediana copre i pixel non interessati. Ponendo questo cursore troppo in alto la si renderà simile a un contorno. Perciò farlo scorrere solo fino all'altezza necessaria per coprire gli angoli di forma sottile."
 
 #: ../operations/common/inner-glow.c:178
 msgid "Inner Glow"
@@ -2584,7 +2626,10 @@ msgstr "Bagliore interno"
 msgid ""
 "GEGL does an inner shadow glow effect; for more interesting use different "
 "blend mode than the default, Replace."
-msgstr "GEGL crea un effetto di bagliore interno; per usi più interessanti selezionare una modalità di fusione diversa da quella predefinita, Sostituisci."
+msgstr ""
+"GEGL crea un effetto di bagliore interno; per usi più interessanti "
+"selezionare una modalità di fusione diversa da quella predefinita, "
+"Sostituisci."
 
 #: ../operations/common/inner-glow.c:182
 msgid "Inner Glow..."
@@ -4682,7 +4727,10 @@ msgstr "Il valore più alto da includere come bianco."
 msgid ""
 "Thresholds the image to white/black based on either the global values set in "
 "the value (low) and high properties, or per pixel from the aux input."
-msgstr "Applica una soglia all'immagine per produrre un'immagine bianco/nera basandosi sui valori globali impostati nelle proprietà del valore (basso) alto o per pixel dall'ingresso ausiliare."
+msgstr ""
+"Applica una soglia all'immagine per produrre un'immagine bianco/nera "
+"basandosi sui valori globali impostati nelle proprietà del valore (basso) "
+"alto o per pixel dall'ingresso ausiliare."
 
 #: ../operations/common/tile.c:24
 msgid "Horizontal offset"
@@ -9511,10 +9559,6 @@ msgstr ""
 "Prototipaggio di scripting con lua per filtri/compositori a livello di "
 "pixel. Consultare http://pippin.gimp.org/image-processing/ per i dettagli."
 
-#: ../operations/workshop/external/paint-select.cc:30
-msgid "Add"
-msgstr "Aggiungi"
-
 #: ../operations/workshop/external/paint-select.cc:31
 msgid "Subtract"
 msgstr "Sottrai"
@@ -10033,4 +10077,487 @@ msgstr "Ottimizza il dither"
 msgid ""
 "Shuffles pixels, and quantization with neighbors to optimize dither, by "
 "shuffling neighboring pixels."
-msgstr "Scambia pixel e quantizzazione con i pixel vicini per ottimizzare il dither."
+msgstr ""
+"Scambia pixel e quantizzazione con i pixel vicini per ottimizzare il dither."
+
+#: ../operations/workshop/styles.c:30
+msgid "Color, Outline and Shadow"
+msgstr "Colore, contorno e ombra"
+
+#: ../operations/workshop/styles.c:31
+msgid "Bevel and Inner Glow"
+msgstr "Smusso e bagliore interno"
+
+#: ../operations/workshop/styles.c:32
+msgid "Image upload and Outline Bevel"
+msgstr "Caricamento immagine e smusso contorno"
+
+#. List of all GUI options
+#. GUI Change list in GUI
+#: ../operations/workshop/styles.c:39
+msgid "Part of filter to be displayed"
+msgstr "Parte del filtro da mostrare"
+
+#: ../operations/workshop/styles.c:42
+msgid "Display a different part of the GUI"
+msgstr "Mostra una parte diversa della GUI"
+
+#. Color Overlays GUI options begin here
+#: ../operations/workshop/styles.c:46
+msgid "Color overlay"
+msgstr "Sovrapposizione colore"
+
+#: ../operations/workshop/styles.c:48
+msgid "Color overlay setting"
+msgstr "Impostazione sovrapposizione colore"
+
+#: ../operations/workshop/styles.c:50
+msgid "Color policy"
+msgstr "Politica del colore"
+
+#: ../operations/workshop/styles.c:51
+msgid "Change the blend mode of the color overlay"
+msgstr "Cambia la modalità di fusione della sovrapposizione colore"
+
+#: ../operations/workshop/styles.c:58
+msgid "No Color"
+msgstr "Nesun colore"
+
+#: ../operations/workshop/styles.c:62
+msgid "Solid Color"
+msgstr "Colore pieno"
+
+#. Outline's normal GUI options begin here
+#: ../operations/workshop/styles.c:68
+msgid "Enable Outline"
+msgstr "Abilita contorno"
+
+#: ../operations/workshop/styles.c:69
+msgid "Disable or enable the outline"
+msgstr "Disabilita o abilita il contorno"
+
+#: ../operations/workshop/styles.c:72
+msgid "Outline opacity"
+msgstr "Opacità contorno"
+
+#: ../operations/workshop/styles.c:75
+msgid "Opacity of the outline"
+msgstr "Opacità del contorno"
+
+#: ../operations/workshop/styles.c:79
+msgid "Outline X"
+msgstr "X contorno"
+
+#: ../operations/workshop/styles.c:80
+msgid "Horizontal outline offset"
+msgstr "Scostamento contorno orizzontale"
+
+#: ../operations/workshop/styles.c:87
+msgid "Outline Y"
+msgstr "Y contorno"
+
+#: ../operations/workshop/styles.c:88
+msgid "Vertical outline offset"
+msgstr "Scostamento contorno verticale"
+
+#: ../operations/workshop/styles.c:102
+msgid "Outline grow shape"
+msgstr "Forma crescita contorno"
+
+#: ../operations/workshop/styles.c:105
+msgid "The shape to expand or contract the outline in"
+msgstr "La forma a cui espandere o contrarre il contorno"
+
+#: ../operations/workshop/styles.c:109
+msgid "Outline blur radius"
+msgstr "Raggio sfocatura contorno"
+
+#: ../operations/workshop/styles.c:115
+msgid "A mild blur for the outline"
+msgstr "Una lieve sfocatura per il contorno"
+
+#: ../operations/workshop/styles.c:119
+msgid "Outline grow radius"
+msgstr "Raggio crescita contorno"
+
+#: ../operations/workshop/styles.c:126
+msgid "The distance to expand the outline"
+msgstr "La forma a cui espandere il contorno"
+
+#. Shadow's GUI options begin here
+#: ../operations/workshop/styles.c:131
+msgid "Outline color’s"
+msgstr "Colori del contorno"
+
+#: ../operations/workshop/styles.c:132
+msgid "Color of the outline (defaults to 'black') "
+msgstr "Colore del contorno (predefinito a 'black')"
+
+#: ../operations/workshop/styles.c:137
+msgid "Shadow/Glow opacity"
+msgstr "Opacità ombra/bagliore"
+
+#: ../operations/workshop/styles.c:141
+msgid "Shadow opacity which will also enable or disable the shadow glow effect"
+msgstr "Opacità dell'ombra che abiliterà o disabiliterà anche l'effetto bagliore dell'ombra"
+
+#: ../operations/workshop/styles.c:145
+msgid "Shadow/Glow X"
+msgstr "X Ombra/Bagliore"
+
+#: ../operations/workshop/styles.c:151
+msgid "Horizontal axis of the shadow glow"
+msgstr "Scostamento asse orizzontale dell'ombra bagliore"
+
+#: ../operations/workshop/styles.c:154
+msgid "Shadow/Glow Y"
+msgstr "Y Ombra/Bagliore"
+
+#: ../operations/workshop/styles.c:160
+msgid "Vertical axis of the shadow glow"
+msgstr "Scostamento asse verticale dell'ombra bagliore"
+
+#: ../operations/workshop/styles.c:163
+msgid "Shadow/Glow’s color"
+msgstr "Colore ombra/bagliore"
+
+#: ../operations/workshop/styles.c:168
+msgid "Shadow/Glow grow radius"
+msgstr "Raggio crescita ombra/bagliore"
+
+#: ../operations/workshop/styles.c:175
+msgid "The distance to expand the shadow before blurring."
+msgstr "La distanza di espansione dell'ombra prima della sfocatura."
+
+#: ../operations/workshop/styles.c:178
+msgid "Shadow/Glow blur radius"
+msgstr "Raggio di sfocamento ombra/bagliore"
+
+#: ../operations/workshop/styles.c:184
+msgid "The shadow’s blur range"
+msgstr "Il campo di sfocamento dell'ombra"
+
+#. Bevel's GUI options begin here
+#. This is the Bevel's ENUM List listed in the GUI
+#. This is the ENUM list for bevel's emboss blend modes
+#: ../operations/workshop/styles.c:192
+msgid "Enable Bevel"
+msgstr "Abilita smusso"
+
+#: ../operations/workshop/styles.c:193
+msgid "Whether to add a bevel effect"
+msgstr "Se aggiungere un effetto smusso"
+
+#: ../operations/workshop/styles.c:210
+msgid "Bevel blend mode"
+msgstr "Modalità fusione smusso"
+
+#: ../operations/workshop/styles.c:211
+msgid "Blend mode of the bevel"
+msgstr "Modalità di fusione dello smusso"
+
+#: ../operations/workshop/styles.c:219
+msgid "Chamfer Bevel"
+msgstr "Smusso sciamfrino"
+
+#: ../operations/workshop/styles.c:221
+msgid "Bump Bevel"
+msgstr "Smusso a sbalzo"
+
+#: ../operations/workshop/styles.c:224
+msgid "Select Bevel"
+msgstr "Seleziona smusso"
+
+#: ../operations/workshop/styles.c:227
+msgid "Type of bevel "
+msgstr "Tipo di smusso"
+
+#: ../operations/workshop/styles.c:233
+msgid "Bevel depth"
+msgstr "Profondità smusso"
+
+#: ../operations/workshop/styles.c:234
+msgid "Emboss depth for the bevel"
+msgstr "Profondità rilievo dello smusso"
+
+#: ../operations/workshop/styles.c:240
+msgid "Bevel elevation"
+msgstr "Elevazione smusso"
+
+#: ../operations/workshop/styles.c:241
+msgid "Emboss elevation of the bevel"
+msgstr "Elevazione rilievo dello smusso"
+
+#: ../operations/workshop/styles.c:248
+msgid "Bevel azimuth"
+msgstr "Azimut smusso"
+
+#: ../operations/workshop/styles.c:249
+msgid "Emboss azimuth of the bevel"
+msgstr "Azimut rilievo dello smusso"
+
+#: ../operations/workshop/styles.c:256
+msgid "Bevel radius (bump only)"
+msgstr "Raggio smusso (solo sbalzo)"
+
+#: ../operations/workshop/styles.c:260
+msgid ""
+"Internal gaussian blur to inflate the bump bevel. This option does not work "
+"on chamfer"
+msgstr "Sfocatura gaussiana interna per gonfiare lo sbalzo dello smusso. Questa opzione non funziona sul cianfrino"
+
+#: ../operations/workshop/styles.c:266
+msgid "Levels low output lighting for Bevel"
+msgstr "Livella bassa l'illuminazione d'uscita per lo smusso"
+
+#: ../operations/workshop/styles.c:267 ../operations/workshop/styles.c:483
+msgid "Levels low output as a light adjustment for the bevel"
+msgstr "Livella bassa l'uscita come regolazione della luce per lo smusso"
+
+#: ../operations/workshop/styles.c:275
+msgid "Levels high output lighting for Bevel"
+msgstr "Livella alta l'illuminazione d'uscita per lo smusso"
+
+#: ../operations/workshop/styles.c:276
+msgid "Levels high output as a light adjustment for the bevel"
+msgstr "Livella alta l'uscita come regolazione della luce per lo smusso"
+
+#: ../operations/workshop/styles.c:284
+msgid "Dark Bevel/ignore image mode"
+msgstr "Smusso scuro/modalità ignora immagine"
+
+#: ../operations/workshop/styles.c:285
+msgid ""
+"This instructs the bevel to ignore image details if there is an image file "
+"overlay below it. It also allows bevel to work better when the user selects "
+"darker colors. The effect is noticeable on bump bevel but barely effects "
+"chamfer bevel"
+msgstr "Ciò indica alla smussatura di ignorare i dettagli dell'immagine se sotto di essa è presente una sovrapposizione di file immagine. Consente inoltre alla smussatura di funzionare meglio quando l'utente seleziona colori più scuri. L'effetto è evidente sullo smusso a smusso, ma influisce a malapena sullo smusso a smusso"
+
+#. This operation is extremely important for bevels with image file overlays
+#. Inner Glow GUI options begin here
+#: ../operations/workshop/styles.c:295
+msgid "Enable Inner Glow"
+msgstr "Abilita bagliore interno"
+
+#: ../operations/workshop/styles.c:296
+msgid "Whether to add the inner glow effect"
+msgstr "Se aggiungere l'effetto bagliore interno"
+
+#: ../operations/workshop/styles.c:305
+msgid "Normal"
+msgstr "Normale"
+
+#: ../operations/workshop/styles.c:307
+msgid "Overlay"
+msgstr "Rivestimento"
+
+#: ../operations/workshop/styles.c:309
+msgid "Screen"
+msgstr "Schermo"
+
+#: ../operations/workshop/styles.c:311
+msgid "Hardlight"
+msgstr "Alteluci"
+
+#: ../operations/workshop/styles.c:315
+msgid "Plus"
+msgstr "Plus"
+
+#: ../operations/workshop/styles.c:318
+msgid "Blend mode of Inner Glow"
+msgstr "Modalità fusione del bagliore interno"
+
+#: ../operations/workshop/styles.c:324
+msgid "Inner Glow's blur radius"
+msgstr "Raggio sfocatura bagliore interno"
+
+#: ../operations/workshop/styles.c:330
+msgid "Blur control of the inner glow"
+msgstr "Controllo sfocatura del bagliore interno"
+
+#: ../operations/workshop/styles.c:334
+msgid "Inner Glow's grow radius"
+msgstr "Raggio di crescita bagliore interno"
+
+#: ../operations/workshop/styles.c:341
+msgid "The distance to expand the inner glow before blurring"
+msgstr "La distanza di espansione del bagliore interno prima della sfocatura"
+
+#: ../operations/workshop/styles.c:345
+msgid "Inner Glow's opacity"
+msgstr "Opacità bagliore interno"
+
+#: ../operations/workshop/styles.c:348
+msgid "Opacity of the inner glow"
+msgstr "L'opacità del bagliore interno"
+
+#: ../operations/workshop/styles.c:352
+msgid "Inner Glow's color"
+msgstr "Colore bagliore interno"
+
+#: ../operations/workshop/styles.c:353
+msgid "The color of the inner glow"
+msgstr "Il colore del bagliore interno"
+
+#: ../operations/workshop/styles.c:357
+msgid "Inner Glow's unmodified pixel fix"
+msgstr "Correzione pixel bagliore interno"
+
+#: ../operations/workshop/styles.c:359
+msgid "Cover pixels that inner glow might miss"
+msgstr "Copre i pixel che il bagliore interno potrebbe non intercettare"
+
+#. Without this Inner Glow would miss many pixels around alpha defined shapes edges'
+#. Image file overlay GUI options begin here
+#: ../operations/workshop/styles.c:366
+msgid "Enable image upload"
+msgstr "Abilita caricamento immagini"
+
+#: ../operations/workshop/styles.c:367 ../operations/workshop/styles.c:466
+msgid "Whether to enable or disable the image file upload."
+msgstr "Se abilitare o disabilitare il caricamento dei file immagine."
+
+#: ../operations/workshop/styles.c:370
+msgid "Image file overlay"
+msgstr "Sovrapposizione file immagine"
+
+#: ../operations/workshop/styles.c:371
+msgid ""
+"Upload an image file from your computer to be in the fill area. Allows (png, "
+"jpg, raw, svg, bmp, tif, ...)"
+msgstr "Carica un file immagine dal computer nell'area di riempimento. Consente (png, jpg, raw, svg, bmp, tif, ...)"
+
+#: ../operations/workshop/styles.c:375
+msgid "Opacity of image file overlay"
+msgstr "Opacità file immagine sovrapposta"
+
+#: ../operations/workshop/styles.c:378
+msgid "Opacity of the image file overlay that was uploaded. "
+msgstr "Opacità del file immagine sovrapposta che è stata caricata."
+
+#: ../operations/workshop/styles.c:389
+msgid ""
+"Saturation adjustment of the uploaded image file or whatever is on canvas"
+msgstr "Regolazione della saturazione del file immagine caricato o di qualsiasi cosa sia sul'area di disegno"
+
+#: ../operations/workshop/styles.c:394
+msgid ""
+"Lightness adjustment of the uploaded image file or whatever is on canvas"
+msgstr "Regolazione della luminosità del file immagine caricato o di qualsiasi cosa sia su tela "
+
+#. Outline special options in GUI begin here
+#: ../operations/workshop/styles.c:399
+msgid "Enable advanced options on Outline (requires outline)"
+msgstr "Abilita opzioni avanzate su contorno (richiede contorno) "
+
+#: ../operations/workshop/styles.c:400
+msgid "Turn on advanced outline abilities"
+msgstr "Attiva le abilità contorno avanzate"
+
+#: ../operations/workshop/styles.c:405
+msgid "Enable Outline Bevel (requires advanced options)"
+msgstr "Abilita smusso contorno (richiede opzioni avanzate)"
+
+#: ../operations/workshop/styles.c:406
+msgid "Turn on outlines ability to bevel"
+msgstr "Attiva per i contorni la possibilità di smusso"
+
+#: ../operations/workshop/styles.c:427
+msgid "Outline Bevel blend mode"
+msgstr "Modalità fusione smusso contorno"
+
+#: ../operations/workshop/styles.c:428
+msgid "Blend mode of the outline bevel"
+msgstr "Modalità fusione dello smusso contorno"
+
+#: ../operations/workshop/styles.c:435
+msgid "Outline Bevel depth"
+msgstr "Profondità smusso contorno"
+
+#: ../operations/workshop/styles.c:436
+msgid "Emboss depth for the outline bevel"
+msgstr "Profondità rilievo smusso del contorno"
+
+#: ../operations/workshop/styles.c:441
+msgid "Outline Bevel elevation"
+msgstr "Elevazione smusso del contorno "
+
+#: ../operations/workshop/styles.c:442
+msgid "Emboss elevation for the outline bevel"
+msgstr ""
+
+#: ../operations/workshop/styles.c:448
+msgid "Outline Bevel azimuth"
+msgstr ""
+
+#: ../operations/workshop/styles.c:449
+msgid "Emboss azimuth for the outline bevel"
+msgstr ""
+
+#: ../operations/workshop/styles.c:456
+msgid "Outline Bevel radius"
+msgstr ""
+
+#: ../operations/workshop/styles.c:457
+msgid "Internal gaussian blur to inflate the outline bevel"
+msgstr ""
+
+#: ../operations/workshop/styles.c:465
+msgid "Enable image upload on Outline (requires advance effects)"
+msgstr ""
+
+#: ../operations/workshop/styles.c:470
+msgid "Outline image file overlay"
+msgstr ""
+
+#: ../operations/workshop/styles.c:471
+msgid ""
+"Upload an image file from your computer to be in the outline area. Allows "
+"(png, jpg, raw, svg, bmp, tif, ..."
+msgstr "Caricato file immagine dal computer nell'area del contorno. Permette (png, jpg, raw, svg, bmp, tif, ...)"
+
+#: ../operations/workshop/styles.c:476
+msgid "Outline image opacity"
+msgstr "Contorna opacità immagine"
+
+#: ../operations/workshop/styles.c:477
+msgid "Outline image opacity adjustment"
+msgstr "Regolazione opacità contorno immagine"
+
+#: ../operations/workshop/styles.c:482
+msgid "Levels low output lighting for Outline Bevel"
+msgstr ""
+
+#: ../operations/workshop/styles.c:490
+msgid "Levels high output lighting for Outline Bevel"
+msgstr ""
+
+#: ../operations/workshop/styles.c:491
+msgid "Levels high output as a light adjustment for the outline bevel"
+msgstr ""
+
+#: ../operations/workshop/styles.c:499
+msgid "Outline Dark Bevel/ignore image mode"
+msgstr ""
+
+#: ../operations/workshop/styles.c:500
+msgid ""
+"This instructs the outline bevel to ignore image details if there is an "
+"image file overlay below it. It also allows outline bevel to work better "
+"when the user selects darker colors."
+msgstr ""
+
+#: ../operations/workshop/styles.c:1248
+msgid "GEGL Styles"
+msgstr "Stili GEGL"
+
+#: ../operations/workshop/styles.c:1251
+msgid ""
+"An engine to style text and add popular effects to alpha channel images. "
+"Effects include outline, bevel, shadow, and inner glow all in one place."
+msgstr "Un motore per stilizzare il testo e aggiungere effetti popolari alle immagini del canale alfa. Gli effetti includono contorno, smusso, ombra e bagliore interno, tutto in un unico posto."
+
+#: ../operations/workshop/styles.c:1254
+msgid "Text Styling..."
+msgstr "Stilizzazione stesto..."
