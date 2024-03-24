@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl.master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-03-21 15:12+0000\n"
-"PO-Revision-Date: 2024-03-22 17:35+0100\n"
+"POT-Creation-Date: 2024-03-23 17:53+0000\n"
+"PO-Revision-Date: 2024-03-24 15:36+0100\n"
 "Last-Translator: Rodrigo Lledó Milanca <rodhos92@gmail.com>\n"
 "Language-Team: Spanish - Spain <gnome-es-list@gnome.org>\n"
 "Language: es_ES\n"
@@ -672,7 +672,7 @@ msgid "None (for use with GIMPs blending options)"
 msgstr "Ninguno (para usar con las opciones de mezcla de GIMP)"
 
 #: operations/common/bevel.c:61 operations/workshop/styles.c:203
-#: operations/workshop/styles.c:419
+#: operations/workshop/styles.c:311 operations/workshop/styles.c:419
 msgid "Hard Light"
 msgstr "Luz fuerte"
 
@@ -724,8 +724,8 @@ msgid ""
 "Distance Map is unique to chamfer bevel and has three settings that alter "
 "the structure of the chamfer."
 msgstr ""
-"El mapa de distancia es exclusivo del biselado y tiene tres ajustes que "
-"alteran la estructura del bisel."
+"El mapa de distancia es exclusivo del bisel de chaflán y tiene tres ajustes "
+"que alteran la estructura del chaflán."
 
 #: operations/common/bevel.c:84 operations/common/bloom.c:35
 #: operations/common/box-blur.c:25 operations/common/c2g.c:28
@@ -747,7 +747,7 @@ msgstr "Radio"
 
 #: operations/common/bevel.c:89
 msgid "Radius of softening for making bump of the shape."
-msgstr "Radio de ablandamiento para hacer bulto de la forma."
+msgstr "Radio de ablandamiento para hacer relieve de la forma."
 
 #: operations/common/bevel.c:92 operations/common-gpl3+/bump-map.c:56
 #: operations/common-gpl3+/emboss.c:40
@@ -773,7 +773,7 @@ msgstr "Profundidad"
 msgid "Emboss depth - Brings out depth and detail of the bump bevel."
 msgstr ""
 "Profundidad de relieve: resalta la profundidad y el detalle del bisel de "
-"bulto."
+"relieve."
 
 #: operations/common/bevel.c:109
 msgid "Light Angle"
@@ -794,10 +794,10 @@ msgid ""
 "emboss covering a blur. Both bevels benefit from color filled alpha defined "
 "shapes."
 msgstr ""
-"Dos efectos de bisel en un solo lugar, Biselar: que simula la iluminación de "
-"los bordes biselados 3D, y Bulto: el segundo hace un efecto de inflación 3D "
+"Dos efectos de bisel en un solo lugar, Chaflán: que simula la iluminación de "
+"bordes 3D chaflanados, y Relieve: el segundo hace un efecto de inflación 3D "
 "por un relieve que cubre un desenfoque. Ambos biseles se benefician de "
-"formas definidas por alfa relleno de color."
+"figuras definidas por alfa relleno de color."
 
 #: operations/common/bevel.c:313
 msgid "Bevel..."
@@ -2040,7 +2040,7 @@ msgstr ""
 "negativo hará que la sombra se contraiga"
 
 #. TRANSLATORS: the string 'black' should not be translated
-#: operations/common/dropshadow.c:69 operations/workshop/styles.c:165
+#: operations/common/dropshadow.c:69
 msgid "The shadow's color (defaults to 'black')"
 msgstr "El color de la sombra (el predeterminado es «negro»)"
 
@@ -2558,10 +2558,15 @@ msgid "Median fix for non-effected pixels on edges"
 msgstr "Corrección de la mediana para los píxeles no afectados en los bordes"
 
 #: operations/common/inner-glow.c:98
+#, fuzzy
+#| msgid ""
+#| "Median Blur covers uneffected pixels. Making this slider too high will "
+#| "make it outline-like. So only slide it has high as you need to cover thin "
+#| "shape corners.'"
 msgid ""
 "Median Blur covers uneffected pixels. Making this slider too high will make "
-"it outline-like. So only slide it has high as you need to cover thin shape "
-"corners.'"
+"it outline-like. So only slide it as high as you need to cover thin shape "
+"corners."
 msgstr ""
 "El desenfoque de mediana cubre los píxeles no afectados. Si desliza "
 "demasiado a la derecha hará que parezca un contorno. Así que deslícelo solo "
@@ -4677,7 +4682,9 @@ msgid "Lowest value to be included."
 msgstr "Valor más bajo que incluir."
 
 #: operations/common/threshold.c:33
-msgid "Highest value to be include as white."
+#, fuzzy
+#| msgid "Highest value to be include as white."
+msgid "Highest value to be included as white."
 msgstr "Valor más alto que incluir como blanco."
 
 #: operations/common/threshold.c:169
@@ -8676,7 +8683,9 @@ msgid "use floating point"
 msgstr "usar coma flotante"
 
 #: operations/external/tiff-save.c:31
-msgid "floating point -1 means auto, 0 means integer 1 meant float."
+#, fuzzy
+#| msgid "floating point -1 means auto, 0 means integer 1 meant float."
+msgid "floating point -1 means auto, 0 means integer, 1 means float."
 msgstr ""
 "coma flotante -1 significa auto, 0 significa entero y 1 significa flotante."
 
@@ -10182,7 +10191,9 @@ msgstr "La forma dentro de la que expandir o contraer la sombra"
 
 #. Shadow's GUI options begin here
 #: operations/workshop/styles.c:131
-msgid "Outline color’s"
+#, fuzzy
+#| msgid "Outline color’s"
+msgid "Outline’s color"
 msgstr "Color del contorno"
 
 #: operations/workshop/styles.c:132
@@ -10232,6 +10243,13 @@ msgstr "Desplazamiento vertical de la sombra"
 #| msgid "Shadow color"
 msgid "Shadow/Glow’s color"
 msgstr "Color de sombra"
+
+#. TRANSLATORS: the string 'black' should not be translated
+#: operations/workshop/styles.c:165
+#, fuzzy
+#| msgid "The shadow's color (defaults to 'black')"
+msgid "The shadow’s color (defaults to 'black')"
+msgstr "El color de la sombra (el predeterminado es «negro»)"
 
 #: operations/workshop/styles.c:168
 #, fuzzy
@@ -10287,10 +10305,8 @@ msgid "Chamfer Bevel"
 msgstr "Chaflán"
 
 #: operations/workshop/styles.c:221
-#, fuzzy
-#| msgid "Bevel"
 msgid "Bump Bevel"
-msgstr "Bisel"
+msgstr "Bisel de relieve"
 
 #: operations/workshop/styles.c:224
 msgid "Select Bevel"
@@ -10306,7 +10322,7 @@ msgstr "Profundidad de bisel"
 
 #: operations/workshop/styles.c:234
 msgid "Emboss depth for the bevel"
-msgstr ""
+msgstr "Profundidad de relieve del bisel"
 
 #: operations/workshop/styles.c:240
 msgid "Bevel elevation"
@@ -10326,37 +10342,39 @@ msgstr "El valor del azimut"
 
 #: operations/workshop/styles.c:249
 msgid "Emboss azimuth of the bevel"
-msgstr ""
+msgstr "Acimut de relieve del bisel"
 
 #: operations/workshop/styles.c:256
 msgid "Bevel radius (bump only)"
-msgstr ""
+msgstr "Radio del bisel (solo relieve)"
 
 #: operations/workshop/styles.c:260
 msgid ""
 "Internal gaussian blur to inflate the bump bevel. This option does not work "
 "on chamfer"
 msgstr ""
+"Desenfoque gaussiano interno para inflar el bisel de relieve. Esta opción no "
+"funciona en chaflán."
 
 #: operations/workshop/styles.c:266
 msgid "Levels low output lighting for Bevel"
-msgstr ""
+msgstr "Nivela la salida de baja iluminación del bisel"
 
-#: operations/workshop/styles.c:267 operations/workshop/styles.c:483
+#: operations/workshop/styles.c:267
 msgid "Levels low output as a light adjustment for the bevel"
-msgstr ""
+msgstr "Nivela la salida baja como un ajuste de luz del bisel"
 
 #: operations/workshop/styles.c:275
 msgid "Levels high output lighting for Bevel"
-msgstr ""
+msgstr "Nivela la salida de alta iluminación del bisel"
 
 #: operations/workshop/styles.c:276
 msgid "Levels high output as a light adjustment for the bevel"
-msgstr ""
+msgstr "Nivela la salida alta como un ajuste de luz del bisel"
 
 #: operations/workshop/styles.c:284
 msgid "Dark Bevel/ignore image mode"
-msgstr ""
+msgstr "Bisel oscuro/ignorar modo de imagen"
 
 #: operations/workshop/styles.c:285
 msgid ""
@@ -10365,6 +10383,10 @@ msgid ""
 "darker colors. The effect is noticeable on bump bevel but barely effects "
 "chamfer bevel"
 msgstr ""
+"Esto le indica al bisel que ignore los detalles de la imagen si hay un "
+"archivo de imagen superpuesto debajo. También permite que el bisel funcione "
+"mejor cuando el usuario selecciona colores más oscuros. El efecto es "
+"perceptible en el bisel de relieve, pero apenas afecta al bisel de chaflán"
 
 #. This operation is extremely important for bevels with image file overlays
 #. Inner Glow GUI options begin here
@@ -10376,10 +10398,9 @@ msgstr "Brillo interior"
 
 #: operations/workshop/styles.c:296
 msgid "Whether to add the inner glow effect"
-msgstr ""
+msgstr "Indica si añadir el efecto de brillo interior"
 
 #: operations/workshop/styles.c:305
-#| msgid "Normalize"
 msgid "Normal"
 msgstr "Normal"
 
@@ -10393,19 +10414,13 @@ msgstr "Revestimiento de color"
 msgid "Screen"
 msgstr "Pantalla"
 
-#: operations/workshop/styles.c:311
-#, fuzzy
-#| msgid "Hard Light"
-msgid "Hardlight"
-msgstr "Luz fuerte"
-
 #: operations/workshop/styles.c:315
 msgid "Plus"
-msgstr ""
+msgstr "Más"
 
 #: operations/workshop/styles.c:318
 msgid "Blend mode of Inner Glow"
-msgstr ""
+msgstr "Modo de mezcla del brillo interior"
 
 #: operations/workshop/styles.c:324
 #, fuzzy
@@ -10427,7 +10442,7 @@ msgstr "Radio del resplandor"
 
 #: operations/workshop/styles.c:341
 msgid "The distance to expand the inner glow before blurring"
-msgstr ""
+msgstr "La distancia que expandir el brillo interior antes del desenfoque"
 
 #: operations/workshop/styles.c:345
 #, fuzzy
@@ -10437,7 +10452,7 @@ msgstr "Brillo interior"
 
 #: operations/workshop/styles.c:348
 msgid "Opacity of the inner glow"
-msgstr ""
+msgstr "Opacidad del brillo interior"
 
 #: operations/workshop/styles.c:352
 #, fuzzy
@@ -10453,11 +10468,11 @@ msgstr "El color de la supernova."
 
 #: operations/workshop/styles.c:357
 msgid "Inner Glow's unmodified pixel fix"
-msgstr ""
+msgstr "Corrección de píxeles sin modificar del brillo interior"
 
 #: operations/workshop/styles.c:359
 msgid "Cover pixels that inner glow might miss"
-msgstr ""
+msgstr "Cubre los píxeles que el brillo interior podría pasar por alto"
 
 #. Without this Inner Glow would miss many pixels around alpha defined shapes edges'
 #. Image file overlay GUI options begin here
@@ -10469,11 +10484,11 @@ msgstr "Cargador de imágenes WebP."
 
 #: operations/workshop/styles.c:367 operations/workshop/styles.c:466
 msgid "Whether to enable or disable the image file upload."
-msgstr ""
+msgstr "Indica si activar o desactivar la carga de archivos de imagen."
 
 #: operations/workshop/styles.c:370
 msgid "Image file overlay"
-msgstr ""
+msgstr "Superposición de archivos de imagen"
 
 #: operations/workshop/styles.c:371
 #, fuzzy
@@ -10491,17 +10506,21 @@ msgstr "Ruta del vídeo que cargar"
 
 #: operations/workshop/styles.c:378
 msgid "Opacity of the image file overlay that was uploaded. "
-msgstr ""
+msgstr "Opacidad de la superposición del archivo de imagen que se cargó. "
 
 #: operations/workshop/styles.c:389
 msgid ""
 "Saturation adjustment of the uploaded image file or whatever is on canvas"
 msgstr ""
+"Ajuste de saturación del archivo de imagen cargado o de lo que esté en el "
+"lienzo"
 
 #: operations/workshop/styles.c:394
 msgid ""
 "Lightness adjustment of the uploaded image file or whatever is on canvas"
 msgstr ""
+"Ajuste de luminosidad del archivo de imagen cargado o lo que esté en el "
+"lienzo"
 
 #. Outline special options in GUI begin here
 #: operations/workshop/styles.c:399
@@ -10563,7 +10582,7 @@ msgid "Internal gaussian blur to inflate the outline bevel"
 msgstr ""
 
 #: operations/workshop/styles.c:465
-msgid "Enable image upload on Outline (requires advance effects)"
+msgid "Enable image upload on Outline (requires advanced effects)"
 msgstr ""
 
 #: operations/workshop/styles.c:470
@@ -10575,7 +10594,7 @@ msgstr ""
 #| msgid "Source image file path (png, jpg, raw, svg, bmp, tif, ...)"
 msgid ""
 "Upload an image file from your computer to be in the outline area. Allows "
-"(png, jpg, raw, svg, bmp, tif, ..."
+"(png, jpg, raw, svg, bmp, tif, ...)"
 msgstr "Ruta del archivo de imagen de origen (png, jpg, raw, svg, bmp, tif, …)"
 
 #: operations/workshop/styles.c:476
@@ -10592,6 +10611,10 @@ msgstr "Ajuste del punto blanco"
 
 #: operations/workshop/styles.c:482
 msgid "Levels low output lighting for Outline Bevel"
+msgstr ""
+
+#: operations/workshop/styles.c:483
+msgid "Levels low output as a light adjustment for the outline bevel"
 msgstr ""
 
 #: operations/workshop/styles.c:490
@@ -10613,19 +10636,24 @@ msgid ""
 "when the user selects darker colors."
 msgstr ""
 
-#: operations/workshop/styles.c:1248
+#: operations/workshop/styles.c:1243
 msgid "GEGL Styles"
 msgstr "Estilos de GEGL"
 
-#: operations/workshop/styles.c:1251
+#: operations/workshop/styles.c:1246
 msgid ""
 "An engine to style text and add popular effects to alpha channel images. "
 "Effects include outline, bevel, shadow, and inner glow all in one place."
 msgstr ""
 
-#: operations/workshop/styles.c:1254
+#: operations/workshop/styles.c:1249
 msgid "Text Styling..."
 msgstr ""
+
+#, fuzzy
+#~| msgid "Hard Light"
+#~ msgid "Hardlight"
+#~ msgstr "Luz fuerte"
 
 #~ msgid "Soft Light"
 #~ msgstr "Luz suave"
