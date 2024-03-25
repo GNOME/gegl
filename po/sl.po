@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-03-23 17:53+0000\n"
-"PO-Revision-Date: 2024-03-24 18:19+0100\n"
+"POT-Creation-Date: 2024-03-24 17:20+0000\n"
+"PO-Revision-Date: 2024-03-25 15:44+0100\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language: sl_SI\n"
@@ -10143,38 +10143,51 @@ msgid "Bevel radius (bump only)"
 msgstr "Polmer izbočenosti (samo izboklina)"
 
 #: operations/workshop/styles.c:260
+#, fuzzy
 msgid ""
 "Internal gaussian blur to inflate the bump bevel. This option does not work "
 "on chamfer"
 msgstr ""
+"Notranja Gaussova zabrisanost, da napihne reliefno izbočenje. Ta možnost ne "
+"deluje na posnetem robu"
 
 #: operations/workshop/styles.c:266
+#, fuzzy
 msgid "Levels low output lighting for Bevel"
-msgstr ""
+msgstr "Izravna nizko izhodno osvetlitev za izbočenost"
 
 #: operations/workshop/styles.c:267
+#, fuzzy
 msgid "Levels low output as a light adjustment for the bevel"
-msgstr ""
+msgstr "Izravna nizki izhod kot prilagoditev osvetlitve za izbočenost"
 
 #: operations/workshop/styles.c:275
+#, fuzzy
 msgid "Levels high output lighting for Bevel"
-msgstr ""
+msgstr "Izravna visoko izhodno osvetlitev za izbočenost"
 
 #: operations/workshop/styles.c:276
+#, fuzzy
 msgid "Levels high output as a light adjustment for the bevel"
-msgstr ""
+msgstr "Izravna visok izhod kot prilagoditev osvetlitve za izbočenost"
 
 #: operations/workshop/styles.c:284
+#, fuzzy
 msgid "Dark Bevel/ignore image mode"
-msgstr ""
+msgstr "Temna izbočenost / prezri način slike"
 
 #: operations/workshop/styles.c:285
+#, fuzzy
 msgid ""
 "This instructs the bevel to ignore image details if there is an image file "
 "overlay below it. It also allows bevel to work better when the user selects "
 "darker colors. The effect is noticeable on bump bevel but barely effects "
 "chamfer bevel"
 msgstr ""
+"To naroči izbbočenosti, naj prezre podrobnosti slike, če je pod njim "
+"prekrivna slikovna datoteka. Prav tako omogoča, da izbočenost deluje bolje, "
+"ko uporabnik izbere temnejše barve. Učinek je opazen na izbočenosti, vendar "
+"komaj vpliva na posneti rob izbočenosti"
 
 #. This operation is extremely important for bevels with image file overlays
 #. Inner Glow GUI options begin here
@@ -10220,7 +10233,7 @@ msgstr "Polmer naraščanja notranjega žarenja"
 
 #: operations/workshop/styles.c:341
 msgid "The distance to expand the inner glow before blurring"
-msgstr ""
+msgstr "Razdalja za širitev notranjega žarenja pred zabrisanostjo."
 
 #: operations/workshop/styles.c:345
 msgid "Inner Glow's opacity"
@@ -10239,12 +10252,14 @@ msgid "The color of the inner glow"
 msgstr "Barva notranjega žarenja"
 
 #: operations/workshop/styles.c:357
+#, fuzzy
 msgid "Inner Glow's unmodified pixel fix"
-msgstr ""
+msgstr "Popravek nespremenjenih slikovnih točk notranjega žarenja"
 
 #: operations/workshop/styles.c:359
+#, fuzzy
 msgid "Cover pixels that inner glow might miss"
-msgstr ""
+msgstr "Prekrijte slikovne točke, ki jih morda notranje žarenje zgreši"
 
 #. Without this Inner Glow would miss many pixels around alpha defined shapes edges'
 #. Image file overlay GUI options begin here
@@ -10254,11 +10269,12 @@ msgstr "Omogoči nalaganje slik"
 
 #: operations/workshop/styles.c:367 operations/workshop/styles.c:466
 msgid "Whether to enable or disable the image file upload."
-msgstr ""
+msgstr "Ali želite omogočiti ali onemogočiti prenos slikovne datoteke."
 
 #: operations/workshop/styles.c:370
+#, fuzzy
 msgid "Image file overlay"
-msgstr ""
+msgstr "Prekrivanje s slikovno datoteko"
 
 #: operations/workshop/styles.c:371
 msgid ""
@@ -10273,18 +10289,23 @@ msgid "Opacity of image file overlay"
 msgstr "Prekrivnost prekrivanja slikovne datoteke"
 
 #: operations/workshop/styles.c:378
+#, fuzzy
 msgid "Opacity of the image file overlay that was uploaded. "
-msgstr ""
+msgstr "Prekrivnost prekrivne datoteke slike, ki je naložena."
 
 #: operations/workshop/styles.c:389
 msgid ""
 "Saturation adjustment of the uploaded image file or whatever is on canvas"
 msgstr ""
+"Prilagoditev nasičenosti naložene slikovne datoteke ali česarkoli, kar je na "
+"platnu"
 
 #: operations/workshop/styles.c:394
 msgid ""
 "Lightness adjustment of the uploaded image file or whatever is on canvas"
 msgstr ""
+"Prilagoditev svetlosti naložene slikovne datoteke ali česarkoli, kar je na "
+"platnu"
 
 #. Outline special options in GUI begin here
 #: operations/workshop/styles.c:399
@@ -10296,60 +10317,73 @@ msgid "Turn on advanced outline abilities"
 msgstr "Vklopite napredne funkcije orisa"
 
 #: operations/workshop/styles.c:405
+#, fuzzy
 msgid "Enable Outline Bevel (requires advanced options)"
-msgstr ""
+msgstr "Omogoči izbočenost orisa (zahteva napredne možnosti)"
 
 #: operations/workshop/styles.c:406
+#, fuzzy
 msgid "Turn on outlines ability to bevel"
-msgstr ""
+msgstr "Vklopi zmožnost orisa za poševni rob"
 
 #: operations/workshop/styles.c:427
+#, fuzzy
 msgid "Outline Bevel blend mode"
-msgstr ""
+msgstr "Načina zlivanja izbočenja orisa"
 
 #: operations/workshop/styles.c:428
+#, fuzzy
 msgid "Blend mode of the outline bevel"
-msgstr ""
+msgstr "Način zlivanja izbočenja orisa"
 
 #: operations/workshop/styles.c:435
+#, fuzzy
 msgid "Outline Bevel depth"
-msgstr ""
+msgstr "Globina izbočenosti orisa"
 
 #: operations/workshop/styles.c:436
+#, fuzzy
 msgid "Emboss depth for the outline bevel"
-msgstr ""
+msgstr "Globina reliefne okrasitve za izbočenost orisa"
 
 #: operations/workshop/styles.c:441
+#, fuzzy
 msgid "Outline Bevel elevation"
-msgstr ""
+msgstr "Dvig izbočenosti orisa"
 
 #: operations/workshop/styles.c:442
+#, fuzzy
 msgid "Emboss elevation for the outline bevel"
-msgstr ""
+msgstr "Dvig reliefne okrasitve za izbočenost orisa"
 
 #: operations/workshop/styles.c:448
+#, fuzzy
 msgid "Outline Bevel azimuth"
-msgstr ""
+msgstr "Azimut izbočenosti orisa"
 
 #: operations/workshop/styles.c:449
+#, fuzzy
 msgid "Emboss azimuth for the outline bevel"
-msgstr ""
+msgstr "Azimut reliefne okrasitve za izbočenost orisa"
 
 #: operations/workshop/styles.c:456
+#, fuzzy
 msgid "Outline Bevel radius"
-msgstr ""
+msgstr "Polmer izbočenosti orisa"
 
 #: operations/workshop/styles.c:457
+#, fuzzy
 msgid "Internal gaussian blur to inflate the outline bevel"
-msgstr ""
+msgstr "Notranja Gaussova zabrisanost za napihovanje izbočenosti orisa"
 
 #: operations/workshop/styles.c:465
 msgid "Enable image upload on Outline (requires advanced effects)"
 msgstr "Omogoči nalaganje slik v orisu (zahteva napredne učinke)"
 
 #: operations/workshop/styles.c:470
+#, fuzzy
 msgid "Outline image file overlay"
-msgstr ""
+msgstr "Oris prekrivanja s slikovno datoteko"
 
 #: operations/workshop/styles.c:471
 msgid ""
@@ -10368,16 +10402,19 @@ msgid "Outline image opacity adjustment"
 msgstr "Prilagoditev prekrivnosti orisa slike"
 
 #: operations/workshop/styles.c:482
+#, fuzzy
 msgid "Levels low output lighting for Outline Bevel"
-msgstr ""
+msgstr "Izravna nizko izhodno osvetlitev za izbočenost orisa"
 
 #: operations/workshop/styles.c:483
+#, fuzzy
 msgid "Levels low output as a light adjustment for the outline bevel"
-msgstr ""
+msgstr "Izravna nizki izhod kot prilagoditev osvetlitve za izbočenost orisa"
 
 #: operations/workshop/styles.c:490
+#, fuzzy
 msgid "Levels high output lighting for Outline Bevel"
-msgstr ""
+msgstr "Izravna visoko izhodno osvetlitev za izbočenost orisa"
 
 #: operations/workshop/styles.c:491
 #, fuzzy
