@@ -139,10 +139,6 @@ os_win32  = host_os.contains('mingw') or host_os.contains('windows')
 os_android= host_os.contains('android')
 os_osx    = host_os.contains('darwin')
 
-if os_osx and cc.get_id() != 'clang'
-  error('You should use Clang on OSx.')
-endif
-
 host_cpu_family = host_machine.cpu_family()
 if   host_cpu_family == 'x86'
   have_x86 = true
