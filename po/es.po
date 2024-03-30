@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl.master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-03-24 14:37+0000\n"
-"PO-Revision-Date: 2024-03-24 16:52+0100\n"
+"POT-Creation-Date: 2024-03-30 00:50+0000\n"
+"PO-Revision-Date: 2024-03-30 20:17+0100\n"
 "Last-Translator: Rodrigo Lledó Milanca <rodhos92@gmail.com>\n"
 "Language-Team: Spanish - Spain <gnome-es-list@gnome.org>\n"
 "Language: es_ES\n"
@@ -10494,8 +10494,8 @@ msgid "Internal gaussian blur to inflate the outline bevel"
 msgstr "Desenfoque gaussiano interno para inflar el bisel de contorno"
 
 #: operations/workshop/styles.c:465
-msgid "Enable image upload on Outline (requires advanced effects)"
-msgstr "Activar la carga de imágenes en contorno (requiere efectos avanzados)"
+msgid "Enable image upload on Outline (requires advanced options)"
+msgstr "Activar la carga de imágenes en contorno (requiere opciones avanzadas)"
 
 #: operations/workshop/styles.c:470
 msgid "Outline image file overlay"
