@@ -7,10 +7,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-03-23 17:53+0000\n"
-"PO-Revision-Date: 2024-03-23 22:08+0200\n"
+"POT-Creation-Date: 2024-03-30 00:50+0000\n"
+"PO-Revision-Date: 2024-03-30 11:15+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
-"Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
+"Language-Team: Ukrainian\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2541,10 +2541,6 @@ msgid "Median fix for non-effected pixels on edges"
 msgstr "Усереднене виправлення для незмінених пікселів на краях"
 
 #: operations/common/inner-glow.c:98
-#| msgid ""
-#| "Median Blur covers uneffected pixels. Making this slider too high will "
-#| "make it outline-like. So only slide it has high as you need to cover thin "
-#| "shape corners.'"
 msgid ""
 "Median Blur covers uneffected pixels. Making this slider too high will make "
 "it outline-like. So only slide it as high as you need to cover thin shape "
@@ -4656,7 +4652,6 @@ msgid "Lowest value to be included."
 msgstr "Найнижче включене значення."
 
 #: operations/common/threshold.c:33
-#| msgid "Highest value to be include as white."
 msgid "Highest value to be included as white."
 msgstr "Найвище значення, яке буде включено як білий колір."
 
@@ -8636,7 +8631,6 @@ msgid "use floating point"
 msgstr "використовувати числа з рухомою крапкою"
 
 #: operations/external/tiff-save.c:31
-#| msgid "floating point -1 means auto, 0 means integer 1 meant float."
 msgid "floating point -1 means auto, 0 means integer, 1 means float."
 msgstr ""
 "Значення із рухомою крапкою -1 означає «автоматично», 0 означає «ціле», 1 "
@@ -10117,7 +10111,6 @@ msgstr "Відстань розширення контуру"
 
 #. Shadow's GUI options begin here
 #: operations/workshop/styles.c:131
-#| msgid "Outline color’s"
 msgid "Outline’s color"
 msgstr "Колір контуру"
 
@@ -10156,7 +10149,6 @@ msgstr "Колір тіні/сяйва"
 
 #. TRANSLATORS: the string 'black' should not be translated
 #: operations/workshop/styles.c:165
-#| msgid "The shadow's color (defaults to 'black')"
 msgid "The shadow’s color (defaults to 'black')"
 msgstr "Колір тіні (типово, «black»)"
 
@@ -10447,19 +10439,16 @@ msgid "Internal gaussian blur to inflate the outline bevel"
 msgstr "Внутрішнє гаусове розмивання для розширення фаски контуру"
 
 #: operations/workshop/styles.c:465
-#| msgid "Enable image upload on Outline (requires advance effects)"
-msgid "Enable image upload on Outline (requires advanced effects)"
+#| msgid "Enable image upload on Outline (requires advanced effects)"
+msgid "Enable image upload on Outline (requires advanced options)"
 msgstr ""
-"Увімкнути вивантаження зображень на контур (потребує додаткових ефектів)"
+"Увімкнути вивантаження зображень на контур (потребує додаткових можливостей)"
 
 #: operations/workshop/styles.c:470
 msgid "Outline image file overlay"
 msgstr "Накладка-файл зображення контуру"
 
 #: operations/workshop/styles.c:471
-#| msgid ""
-#| "Upload an image file from your computer to be in the outline area. Allows "
-#| "(png, jpg, raw, svg, bmp, tif, ..."
 msgid ""
 "Upload an image file from your computer to be in the outline area. Allows "
 "(png, jpg, raw, svg, bmp, tif, ...)"
@@ -10480,7 +10469,6 @@ msgid "Levels low output lighting for Outline Bevel"
 msgstr "Низькорівневе виведення світла для фаски контуру"
 
 #: operations/workshop/styles.c:483
-#| msgid "Levels high output as a light adjustment for the outline bevel"
 msgid "Levels low output as a light adjustment for the outline bevel"
 msgstr "Низькорівневе виведення як коригування освітлення для фаски контуру"
 
