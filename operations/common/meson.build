@@ -102,6 +102,7 @@ gegl_common_sources = files(
   'stress.c',
   'stretch-contrast-hsv.c',
   'stretch-contrast.c',
+  'styles.c',
   'svg-huerotate.c',
   'svg-luminancetoalpha.c',
   'svg-matrix.c',

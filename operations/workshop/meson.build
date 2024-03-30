@@ -18,8 +18,7 @@ gegl_workshop_sources = files(
   'rawbayer-load.c',
   'segment-kmeans.c',
   'shuffle-search.c',
-  'selective-hue-saturation.c',
-  'styles.c'
+  'selective-hue-saturation.c'
 )
 
 gegl_workshop_sources += custom_target('module_workshop.c',

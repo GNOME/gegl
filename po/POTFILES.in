@@ -116,6 +116,7 @@ operations/common/spherize.c
 operations/common/stress.c
 operations/common/stretch-contrast.c
 operations/common/stretch-contrast-hsv.c
+operations/common/styles.c
 operations/common/svg-huerotate.c
 operations/common/svg-luminancetoalpha.c
 operations/common/svg-matrix.c
@@ -303,4 +304,3 @@ operations/workshop/rawbayer-load.c
 operations/workshop/segment-kmeans.c
 operations/workshop/selective-hue-saturation.c
 operations/workshop/shuffle-search.c
-operations/workshop/styles.c
