@@ -768,7 +768,7 @@ msgid ""
 "chamfered 3D-edges, and Bump - the second make a 3D inflation effect by an "
 "emboss covering a blur. Both bevels benefit from color filled alpha defined "
 "shapes."
-msgstr ""
+msgstr "Bi alaka-efektu toki bakarrean. alaka normala - 3D ertz alakatuen argiztapena simulatzen dituena, eta erliebea - bigarrenak 3Daren puzte-efektua sortzen du lausotze bat estaltzen duen bozeltze baten bidez. Bi alakek kolorez betetako eta alfa gisa definitutako formak baliatzen dituzte."
 
 #: operations/common/bevel.c:313
 msgid "Bevel..."
@@ -2434,14 +2434,14 @@ msgstr "Kalkulatu gradientearen magnitudea eta/edo norabidea diferentzia zentral
 
 #: operations/common/inner-glow.c:96
 msgid "Median fix for non-effected pixels on edges"
-msgstr ""
+msgstr "Medianaren konponketa ertzetan aldatu ez diren pixeletarako"
 
 #: operations/common/inner-glow.c:98
 msgid ""
 "Median Blur covers uneffected pixels. Making this slider too high will make "
 "it outline-like. So only slide it as high as you need to cover thin shape "
 "corners."
-msgstr ""
+msgstr "Mediana-lausotzeak aldatu ez diren pixelak estaltzen ditu. Graduatzaile hau altuegi badago, eskemaren antza izango du. Beraz, aldatu ertzeko izkina meheak estaltzeko adina soilik."
 
 #: operations/common/inner-glow.c:178
 msgid "Inner Glow"
@@ -9478,7 +9478,7 @@ msgstr "Alaka eta barneko dirdira"
 
 #: operations/workshop/styles.c:32
 msgid "Image upload and Outline Bevel"
-msgstr ""
+msgstr "Irudia kargatzea eta eskema-alaka"
 
 #. List of all GUI options
 #. GUI Change list in GUI
@@ -9550,11 +9550,11 @@ msgstr "Eskemaren desplazamendu bertikala"
 
 #: operations/workshop/styles.c:102
 msgid "Outline grow shape"
-msgstr ""
+msgstr "Eskema hedatzeko forma"
 
 #: operations/workshop/styles.c:105
 msgid "The shape to expand or contract the outline in"
-msgstr ""
+msgstr "Eskema hedatzeko edo uzkurtzeko erabiliko den forma"
 
 #: operations/workshop/styles.c:109
 msgid "Outline blur radius"
@@ -9566,7 +9566,7 @@ msgstr "Lausotze leuna eskemarako"
 
 #: operations/workshop/styles.c:119
 msgid "Outline grow radius"
-msgstr ""
+msgstr "Eskema hedatzeko erradioa"
 
 #: operations/workshop/styles.c:126
 msgid "The distance to expand the outline"
@@ -9587,137 +9587,137 @@ msgstr "Itzalaren/Dirdiraren opakutasuna"
 
 #: operations/workshop/styles.c:141
 msgid "Shadow opacity which will also enable or disable the shadow glow effect"
-msgstr ""
+msgstr "Itzalen opakutasuna, itzalaren dirdira-efektua ere gaitu edo desgaituko du"
 
 #: operations/workshop/styles.c:145
 msgid "Shadow/Glow X"
-msgstr ""
+msgstr "Itzala/Dirdira X"
 
 #: operations/workshop/styles.c:151
 msgid "Horizontal axis of the shadow glow"
-msgstr ""
+msgstr "Itzalaren dirdiraren ardatz horizontala"
 
 #: operations/workshop/styles.c:154
 msgid "Shadow/Glow Y"
-msgstr ""
+msgstr "Itzala/Dirdira Y"
 
 #: operations/workshop/styles.c:160
 msgid "Vertical axis of the shadow glow"
-msgstr ""
+msgstr "Itzalaren dirdiraren ardatz bertikala"
 
 #: operations/workshop/styles.c:163
 msgid "Shadow/Glow’s color"
-msgstr ""
+msgstr "Itzalaren/Dirdiraren kolorea"
 
 #. TRANSLATORS: the string 'black' should not be translated
 #: operations/workshop/styles.c:165
 msgid "The shadow’s color (defaults to 'black')"
-msgstr ""
+msgstr "Itzalaren kolorea (lehenetsia beltza da)"
 
 #: operations/workshop/styles.c:168
 msgid "Shadow/Glow grow radius"
-msgstr ""
+msgstr "Itzalaren/Dirdiraren hedatze-erradioa"
 
 #: operations/workshop/styles.c:175
 msgid "The distance to expand the shadow before blurring."
-msgstr ""
+msgstr "Itzala lausotu baino lehen hedatuko den distantzia."
 
 #: operations/workshop/styles.c:178
 msgid "Shadow/Glow blur radius"
-msgstr ""
+msgstr "Itzalaren/Dirdiraren lausotze-erradioa"
 
 #: operations/workshop/styles.c:184
 msgid "The shadow’s blur range"
-msgstr ""
+msgstr "Itzalaren lausotze-barrutia"
 
 #. Bevel's GUI options begin here
 #. This is the Bevel's ENUM List listed in the GUI
 #. This is the ENUM list for bevel's emboss blend modes
 #: operations/workshop/styles.c:192
 msgid "Enable Bevel"
-msgstr ""
+msgstr "Gaitu alaka"
 
 #: operations/workshop/styles.c:193
 msgid "Whether to add a bevel effect"
-msgstr ""
+msgstr "Alaka-efektua gehituko den ala ez"
 
 #: operations/workshop/styles.c:210
 msgid "Bevel blend mode"
-msgstr ""
+msgstr "Alakaren nahaste-modua"
 
 #: operations/workshop/styles.c:211
 msgid "Blend mode of the bevel"
-msgstr ""
+msgstr "Alakaren nahaste-modua"
 
 #: operations/workshop/styles.c:219
 msgid "Chamfer Bevel"
-msgstr ""
+msgstr "Alaka normala"
 
 #: operations/workshop/styles.c:221
 msgid "Bump Bevel"
-msgstr ""
+msgstr "Erliebe-alaka"
 
 #: operations/workshop/styles.c:224
 msgid "Select Bevel"
-msgstr ""
+msgstr "Hautatu alaka"
 
 #: operations/workshop/styles.c:227
 msgid "Type of bevel "
-msgstr ""
+msgstr "Alaka mota "
 
 #: operations/workshop/styles.c:233
 msgid "Bevel depth"
-msgstr ""
+msgstr "Alakaren sakonera"
 
 #: operations/workshop/styles.c:234
 msgid "Emboss depth for the bevel"
-msgstr ""
+msgstr "Alakaren bozeltze-sakonera"
 
 #: operations/workshop/styles.c:240
 msgid "Bevel elevation"
-msgstr ""
+msgstr "Alakaren altuera"
 
 #: operations/workshop/styles.c:241
 msgid "Emboss elevation of the bevel"
-msgstr ""
+msgstr "Alakaren bozeltze-altuera"
 
 #: operations/workshop/styles.c:248
 msgid "Bevel azimuth"
-msgstr ""
+msgstr "Alakaren azimuta"
 
 #: operations/workshop/styles.c:249
 msgid "Emboss azimuth of the bevel"
-msgstr ""
+msgstr "Alakaren bozeltze-azimuta"
 
 #: operations/workshop/styles.c:256
 msgid "Bevel radius (bump only)"
-msgstr ""
+msgstr "Alakaren erradioa (erliebea soilik)"
 
 #: operations/workshop/styles.c:260
 msgid ""
 "Internal gaussian blur to inflate the bump bevel. This option does not work "
 "on chamfer"
-msgstr ""
+msgstr "Erliebe-alaka puzteko barneko lausotze gausstarra. Aukera honek ez du funtzionatzen alaka normalean"
 
 #: operations/workshop/styles.c:266
 msgid "Levels low output lighting for Bevel"
-msgstr ""
+msgstr "Irteera baxuko argiztatzea berdintzen du alakarako"
 
 #: operations/workshop/styles.c:267
 msgid "Levels low output as a light adjustment for the bevel"
-msgstr ""
+msgstr "Irteera baxua berdintzen du alakaren argi-doikuntzarako"
 
 #: operations/workshop/styles.c:275
 msgid "Levels high output lighting for Bevel"
-msgstr ""
+msgstr "Irteera altuko argiztatzea berdintzen du alakarako"
 
 #: operations/workshop/styles.c:276
 msgid "Levels high output as a light adjustment for the bevel"
-msgstr ""
+msgstr "Irteera altua berdintzen du alakaren argi-doikuntzarako"
 
 #: operations/workshop/styles.c:284
 msgid "Dark Bevel/ignore image mode"
-msgstr ""
+msgstr "Alaka iluna/ezikusi irudi-modua"
 
 #: operations/workshop/styles.c:285
 msgid ""
@@ -9725,17 +9725,17 @@ msgid ""
 "overlay below it. It also allows bevel to work better when the user selects "
 "darker colors. The effect is noticeable on bump bevel but barely effects "
 "chamfer bevel"
-msgstr ""
+msgstr "Honen bidez, alakak irudiaren xehetasunei ez ikusiarena egingo die azpian irudi-fitxategi baten gainjartzea badago. Erabiltzaileak kolore ilunagoak hauatzean alakak hobeto funtzionatzea ahalbidetzen du. Efektu hau nabarmena da erliebe-alakan, baina ia ez du eraginik alaka normalean"
 
 #. This operation is extremely important for bevels with image file overlays
 #. Inner Glow GUI options begin here
 #: operations/workshop/styles.c:295
 msgid "Enable Inner Glow"
-msgstr ""
+msgstr "Gaitu barneko dirdira"
 
 #: operations/workshop/styles.c:296
 msgid "Whether to add the inner glow effect"
-msgstr ""
+msgstr "Barneko dirdiraren efektua gehituko den ala ez"
 
 #: operations/workshop/styles.c:305
 msgid "Normal"
@@ -9751,7 +9751,7 @@ msgstr "Pantaila"
 
 #: operations/workshop/styles.c:315
 msgid "Plus"
-msgstr ""
+msgstr "Plus"
 
 #: operations/workshop/styles.c:318
 msgid "Blend mode of Inner Glow"
@@ -9767,11 +9767,11 @@ msgstr "Barneko dirdiraren lausotze-kontrola"
 
 #: operations/workshop/styles.c:334
 msgid "Inner Glow's grow radius"
-msgstr ""
+msgstr "Barneko dirdiraren hedatze-erradioa"
 
 #: operations/workshop/styles.c:341
 msgid "The distance to expand the inner glow before blurring"
-msgstr ""
+msgstr "Barneko dirdira lausotu baino lehen hedatuko den distantzia"
 
 #: operations/workshop/styles.c:345
 msgid "Inner Glow's opacity"
@@ -9791,155 +9791,155 @@ msgstr "Barneko dirdiraren kolorea"
 
 #: operations/workshop/styles.c:357
 msgid "Inner Glow's unmodified pixel fix"
-msgstr ""
+msgstr "Barneko dirdiraren aldatu gabeko pixelen konpontzea"
 
 #: operations/workshop/styles.c:359
 msgid "Cover pixels that inner glow might miss"
-msgstr ""
+msgstr "Barneko dirdirak aldatzen ez dituen pixelak estaltzen ditu"
 
 #. Without this Inner Glow would miss many pixels around alpha defined shapes edges'
 #. Image file overlay GUI options begin here
 #: operations/workshop/styles.c:366
 msgid "Enable image upload"
-msgstr ""
+msgstr "Gaitu irudia kargatzea"
 
 #: operations/workshop/styles.c:367 operations/workshop/styles.c:466
 msgid "Whether to enable or disable the image file upload."
-msgstr ""
+msgstr "Irudi-fitxategia kargatzea gaitu edo desgaituko den."
 
 #: operations/workshop/styles.c:370
 msgid "Image file overlay"
-msgstr ""
+msgstr "Irudi-fitxategiaren gainjartzea"
 
 #: operations/workshop/styles.c:371
 msgid ""
 "Upload an image file from your computer to be in the fill area. Allows (png, "
 "jpg, raw, svg, bmp, tif, ...)"
-msgstr ""
+msgstr "Kargatu irudi-fitxategi bat ordenagailutik betegarri-arean sartzeko. Honakoak onartzen dira: png, jpg, raw, svg, bmp, tif..."
 
 #: operations/workshop/styles.c:375
 msgid "Opacity of image file overlay"
-msgstr ""
+msgstr "Irudi-fitxategiaren gainjartzearen opakutasuna"
 
 #: operations/workshop/styles.c:378
 msgid "Opacity of the image file overlay that was uploaded. "
-msgstr ""
+msgstr "Kargatu den irudi-fitxategiaren gainjartzearen opakutasuna. "
 
 #: operations/workshop/styles.c:389
 msgid ""
 "Saturation adjustment of the uploaded image file or whatever is on canvas"
-msgstr ""
+msgstr "Kargatutako irudi-fitxategiaren edo oihalean dagoen edozerren saturazio-doikuntza"
 
 #: operations/workshop/styles.c:394
 msgid ""
 "Lightness adjustment of the uploaded image file or whatever is on canvas"
-msgstr ""
+msgstr "Kargatutako irudi-fitxategiaren edo oihalean dagoen edozerren argiztapen-doikuntza"
 
 #. Outline special options in GUI begin here
 #: operations/workshop/styles.c:399
 msgid "Enable advanced options on Outline (requires outline)"
-msgstr ""
+msgstr "Gaitu aukera aurreratuak eskeman (eskema behar da)"
 
 #: operations/workshop/styles.c:400
 msgid "Turn on advanced outline abilities"
-msgstr ""
+msgstr "Aktibatu eskema-gaitasun aurreratuak"
 
 #: operations/workshop/styles.c:405
 msgid "Enable Outline Bevel (requires advanced options)"
-msgstr ""
+msgstr "Gaitu eskema-alaka (aukera aurreratuak behar dira)"
 
 #: operations/workshop/styles.c:406
 msgid "Turn on outlines ability to bevel"
-msgstr ""
+msgstr "Aktibatu eskemak alakatzeko gaitasuna"
 
 #: operations/workshop/styles.c:427
 msgid "Outline Bevel blend mode"
-msgstr ""
+msgstr "Eskema-alakaren nahaste-modua"
 
 #: operations/workshop/styles.c:428
 msgid "Blend mode of the outline bevel"
-msgstr ""
+msgstr "Eskema-alakaren nahaste-modua"
 
 #: operations/workshop/styles.c:435
 msgid "Outline Bevel depth"
-msgstr ""
+msgstr "Eskema-alakaren sakonera"
 
 #: operations/workshop/styles.c:436
 msgid "Emboss depth for the outline bevel"
-msgstr ""
+msgstr "Eskema-alakaren bozeltze-sakonera"
 
 #: operations/workshop/styles.c:441
 msgid "Outline Bevel elevation"
-msgstr ""
+msgstr "Eskema-alakaren altuera"
 
 #: operations/workshop/styles.c:442
 msgid "Emboss elevation for the outline bevel"
-msgstr ""
+msgstr "Eskema-alakaren bozeltze-altuera"
 
 #: operations/workshop/styles.c:448
 msgid "Outline Bevel azimuth"
-msgstr ""
+msgstr "Eskema-alakaren azimuta"
 
 #: operations/workshop/styles.c:449
 msgid "Emboss azimuth for the outline bevel"
-msgstr ""
+msgstr "Eskema-alakaren bozeltze-azimuta"
 
 #: operations/workshop/styles.c:456
 msgid "Outline Bevel radius"
-msgstr ""
+msgstr "Eskema-alakaren erradioa"
 
 #: operations/workshop/styles.c:457
 msgid "Internal gaussian blur to inflate the outline bevel"
-msgstr ""
+msgstr "Eskemaren alaka puzteko barneko lausotze gaustarra"
 
 #: operations/workshop/styles.c:465
 msgid "Enable image upload on Outline (requires advanced options)"
-msgstr ""
+msgstr "Gaitu eskema-irudia kargatzea (aukera aurreratuak behar dira)"
 
 #: operations/workshop/styles.c:470
 msgid "Outline image file overlay"
-msgstr ""
+msgstr "Eskeman irudi-fitxategia gainjartzea"
 
 #: operations/workshop/styles.c:471
 msgid ""
 "Upload an image file from your computer to be in the outline area. Allows "
 "(png, jpg, raw, svg, bmp, tif, ...)"
-msgstr ""
+msgstr "Kargatu irudi-fitxategi bat ordenagailutik eskema-arean sartzeko. Honakoak onartzen dira: png, jpg, raw, svg, bmp, tif..."
 
 #: operations/workshop/styles.c:476
 msgid "Outline image opacity"
-msgstr ""
+msgstr "Eskema-irudiaren opakutasuna"
 
 #: operations/workshop/styles.c:477
 msgid "Outline image opacity adjustment"
-msgstr ""
+msgstr "Eskema-irudiaren opakutasunaren doikuntza"
 
 #: operations/workshop/styles.c:482
 msgid "Levels low output lighting for Outline Bevel"
-msgstr ""
+msgstr "Irteera baxuko argiztatzea berdintzen du eskema-alakarako"
 
 #: operations/workshop/styles.c:483
 msgid "Levels low output as a light adjustment for the outline bevel"
-msgstr ""
+msgstr "Irteera baxua berdintzen du eskema-alakaren argi-doikuntzarako"
 
 #: operations/workshop/styles.c:490
 msgid "Levels high output lighting for Outline Bevel"
-msgstr ""
+msgstr "Irteera altuko argiztatzea berdintzen du eskema-alakarako"
 
 #: operations/workshop/styles.c:491
 msgid "Levels high output as a light adjustment for the outline bevel"
-msgstr ""
+msgstr "Irteera altua berdintzen du eskema-alakaren argi-doikuntzarako"
 
 #: operations/workshop/styles.c:499
 msgid "Outline Dark Bevel/ignore image mode"
-msgstr ""
+msgstr "Eskemaren alaka iluna/ezikusi irudi-modua"
 
 #: operations/workshop/styles.c:500
 msgid ""
 "This instructs the outline bevel to ignore image details if there is an "
 "image file overlay below it. It also allows outline bevel to work better "
 "when the user selects darker colors."
-msgstr ""
+msgstr "Honek eskema-alakari esaten dio irudiaren xehetasunei ez ikusiarena egiteko irudi-fitxategi baten gainjartzea badago azpian. Eskema-alakak hobeto funtzionatzen du erabiltzaileak kolore ilunagoak aukeratzen baditu."
 
 #: operations/workshop/styles.c:1243
 msgid "GEGL Styles"
@@ -9949,7 +9949,7 @@ msgstr "GEGL estiloak"
 msgid ""
 "An engine to style text and add popular effects to alpha channel images. "
 "Effects include outline, bevel, shadow, and inner glow all in one place."
-msgstr ""
+msgstr "Testuari estiloa emateko eta alfa kanaleko irudiei efektu ezagunak gehitzeko motor bat. Efektuak honakoak dira: alaka, itzala eta barneko dirdira."
 
 #: operations/workshop/styles.c:1249
 msgid "Text Styling..."
