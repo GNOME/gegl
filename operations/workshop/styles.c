@@ -15,7 +15,7 @@
  *
  * Copyright 2006 Øyvind Kolås <pippin@gimp.org>
  *Sam Lester - inspired by GEGL Effects from May 2022.  *2023 Sam Lester GEGL Styles a special fork of GEGL Effects intended for Gimp 2.99/3
- *2022 BarefootLiam (for helping give Inner Glow a disable checkbox) 
+ *2022 BarefootLiam (for helping give Inner Glow a disable checkbox)
 
 If it was not for me recreating GEGL Drop Shadow like graph from scratch in the "All nodes relating to Outline here" this filter would have been watered down.
 I hope Gimp's team is not overwhelmed by my complexity because this is the first GEGL operation to use 55+ or more nodes when everything is enabled
@@ -43,11 +43,11 @@ property_enum(guichange, _("Part of filter to be displayed"),
 
     /* Color Overlays GUI options begin here */
 
-property_color  (optioncolor, _("Color overlay"), "#ffffff")
+property_color  (color_fill, _("Color overlay"), "#ffffff")
   ui_meta ("visible", "guichange {outlineshadow}")
     description (_("Color overlay setting"))
 
-property_enum (policycolor, _("Color policy"),
+property_enum (color_policy, _("Color policy"),
     description (_("Change the blend mode of the color overlay"))
     GeglBlendColorOverlay, gegl_blend_color_overlay,
     GEGL_BLEND_MODE_TYPE_MULTIPLY_COLOR)
@@ -69,7 +69,7 @@ property_boolean (enableoutline, _("Enable Outline"), FALSE)
   description    (_("Disable or enable the outline"))
   ui_meta ("visible", "guichange {outlineshadow}")
 
-property_double (outlineopacity, _("Outline opacity"), 1)
+property_double (outline_opacity, _("Outline opacity"), 1)
   value_range   (0.0, 1.0)
   ui_steps      (0.01, 0.10)
   description    (_("Opacity of the outline"))
@@ -99,14 +99,14 @@ enum_start (gegl_styles_grow_shapes)
   enum_value (GEGL_stroke_GROW_SHAPE_DIAMOND, "diamond", N_("Diamond"))
 enum_end (shapegrowend)
 
-property_enum   (outlinegrowshape, _("Outline grow shape"),
+property_enum   (outline_grow_shape, _("Outline grow shape"),
                  shapegrowend, gegl_styles_grow_shapes,
                  GEGL_stroke_GROW_SHAPE_CIRCLE)
   description   (_("The shape to expand or contract the outline in"))
   ui_meta ("visible", "guichange {outlineshadow}")
   ui_meta     ("sensitive", " enableoutline")
 
-property_double (outlineblur, _("Outline blur radius"), 0.0)
+property_double (outline_blur, _("Outline blur radius"), 0.0)
   value_range   (0.0, 3)
   ui_range      (0.0, 3.0)
   ui_steps      (1, 5)
@@ -128,13 +128,13 @@ property_double (outline, _("Outline grow radius"), 12.0)
   ui_meta     ("sensitive", " enableoutline")
 
     /* Shadow's GUI options begin here */
-property_color (outlinecolor, _("Outline’s color"), "#000000")
+property_color (outline_color, _("Outline’s color"), "#000000")
   description    (_("Color of the outline (defaults to 'black') "))
     /* TRANSLATORS: the string 'black' should not be translated */
   ui_meta ("visible", "guichange {outlineshadow}")
   ui_meta     ("sensitive", " enableoutline")
 
-property_double (shadowopacity, _("Shadow/Glow opacity"), 0.0)
+property_double (shadow_opacity, _("Shadow/Glow opacity"), 0.0)
   value_range   (0.0, 1.0)
   ui_range      (0.0, 1.0)
   ui_steps      (0.01, 0.10)
@@ -160,12 +160,12 @@ property_double (shadow_y, _("Shadow/Glow Y"), 10.0)
   description    (_("Vertical axis of the shadow glow"))
   ui_meta ("visible", "guichange {outlineshadow}")
 
-property_color  (shadowcolor, _("Shadow/Glow’s color"), "black")
+property_color  (shadow_color, _("Shadow/Glow’s color"), "black")
     /* TRANSLATORS: the string 'black' should not be translated */
   description   (_("The shadow’s color (defaults to 'black')"))
   ui_meta ("visible", "guichange {outlineshadow}")
 
-property_double (shadowgrowradius, _("Shadow/Glow grow radius"), 0.0)
+property_double (shadow_grow_radius, _("Shadow/Glow grow radius"), 0.0)
   value_range   (0.0, 100.0)
   ui_range      (0.0, 50.0)
   ui_digits     (0)
@@ -175,7 +175,7 @@ property_double (shadowgrowradius, _("Shadow/Glow grow radius"), 0.0)
   description (_("The distance to expand the shadow before blurring."))
   ui_meta ("visible", "guichange {outlineshadow}")
 
-property_double (shadowradius, _("Shadow/Glow blur radius"), 12.0)
+property_double (shadow_radius, _("Shadow/Glow blur radius"), 12.0)
   value_range   (0.0, G_MAXDOUBLE)
   ui_range      (0.0, 110.0)
   ui_steps      (1, 5)
@@ -207,7 +207,7 @@ enum_start (gegl_blend_mode_for_bevel)
               N_("Color Dodge"))
 enum_end (GeglBlendModeForBevel)
 
-property_enum (bevelblend, _("Bevel blend mode"),
+property_enum (bevel_blend, _("Bevel blend mode"),
     description (_("Blend mode of the bevel"))
     GeglBlendModeForBevel, gegl_blend_mode_for_bevel,
     GEGL_BLEND_MODE_TYPE_MULTIPLY_BEVEL)
@@ -221,7 +221,7 @@ enum_start (gbevel_listing)
               N_("Bump Bevel"))
 enum_end (gbevellisting)
 
-property_enum (beveltype, _("Select Bevel"),
+property_enum (bevel_type, _("Select Bevel"),
     gbevellisting, gbevel_listing,
     GEGL_BEVEL_BUMP)
     description (_("Type of bevel "))
@@ -230,14 +230,14 @@ property_enum (beveltype, _("Select Bevel"),
 
 
 
-property_int (beveldepth, _("Bevel depth"), 100)
+property_int (bevel_depth, _("Bevel depth"), 100)
     description (_("Emboss depth for the bevel"))
     value_range (1, 100)
   ui_meta ("visible", "guichange {innerglowbevel}")
   ui_meta     ("sensitive", " enablebevel")
 
 
-property_double (bevelelevation, _("Bevel elevation"), 55.0)
+property_double (bevel_elevation, _("Bevel elevation"), 55.0)
     description (_("Emboss elevation of the bevel"))
     value_range (55, 125)
     ui_meta ("unit", "degree")
@@ -245,7 +245,7 @@ property_double (bevelelevation, _("Bevel elevation"), 55.0)
   ui_meta     ("sensitive", " enablebevel")
 
 
-property_double (bevelazimuth, _("Bevel azimuth"), 75.0)
+property_double (bevel_azimuth, _("Bevel azimuth"), 75.0)
     description (_("Emboss azimuth of the bevel"))
     value_range (0.0, 360.0)
   ui_steps      (0.01, 0.50)
@@ -253,7 +253,7 @@ property_double (bevelazimuth, _("Bevel azimuth"), 75.0)
   ui_meta     ("sensitive", " enablebevel")
 
 
-property_double (bevelradius, _("Bevel radius (bump only)"), 5.0)
+property_double (bevel_radius, _("Bevel radius (bump only)"), 5.0)
   value_range (1.0, 8.0)
   ui_range (1.0, 8.0)
   ui_gamma (1.5)
@@ -263,7 +263,7 @@ property_double (bevelradius, _("Bevel radius (bump only)"), 5.0)
 
 
 
-property_double (beveloutlow, _("Levels low output lighting for Bevel"), 0.0)
+property_double (bevel_outlow, _("Levels low output lighting for Bevel"), 0.0)
     description (_("Levels low output as a light adjustment for the bevel"))
     ui_range    (0.0, 0.2)
     value_range    (0.0, 0.2)
@@ -272,7 +272,7 @@ property_double (beveloutlow, _("Levels low output lighting for Bevel"), 0.0)
   ui_meta     ("sensitive", " enablebevel")
 
 
-property_double (bevelouthigh, _("Levels high output lighting for Bevel"), 1.0)
+property_double (bevel_outhigh, _("Levels high output lighting for Bevel"), 1.0)
     description (_("Levels high output as a light adjustment for the bevel"))
     ui_range    (1.0, 1.2)
     value_range    (1.0, 1.2)
@@ -281,7 +281,7 @@ property_double (bevelouthigh, _("Levels high output lighting for Bevel"), 1.0)
   ui_meta     ("sensitive", " enablebevel")
 
 
-property_double (beveldark, _("Dark Bevel/ignore image mode"), 0.00)
+property_double (bevel_dark, _("Dark Bevel/ignore image mode"), 0.00)
     description (_("This instructs the bevel to ignore image details if there is an image file overlay below it. It also allows bevel to work better when the user selects darker colors. The effect is noticeable on bump bevel but barely effects chamfer bevel"))
   value_range   (0.00, 1.0)
   ui_steps      (0.01, 0.50)
@@ -315,13 +315,13 @@ enum_start (gegl_blend_mode_type_innerglowblend)
               N_("Plus"))
 enum_end (GeglBlendModeTypeigblend)
 
-property_enum (innergblend, _("Blend mode of Inner Glow"),
+property_enum (ig_blend, _("Blend mode of Inner Glow"),
     GeglBlendModeTypeigblend, gegl_blend_mode_type_innerglowblend,
     GEGL_BLEND_MODE_TYPE_NORMALIG)
   ui_meta ("visible", "guichange {innerglowbevel}")
   ui_meta     ("sensitive", " enableinnerglow")
 
-property_double (innergradius, _("Inner Glow's blur radius"), 6.0)
+property_double (ig_radius, _("Inner Glow's blur radius"), 6.0)
   value_range   (0.0, 30.0)
   ui_range      (0.0, 30.0)
   ui_steps      (1, 5)
@@ -331,7 +331,7 @@ property_double (innergradius, _("Inner Glow's blur radius"), 6.0)
   ui_meta ("visible", "guichange {innerglowbevel}")
   ui_meta     ("sensitive", " enableinnerglow")
 
-property_double (innerggrowradius, _("Inner Glow's grow radius"), 5)
+property_double (ig_grow_radius, _("Inner Glow's grow radius"), 5)
   value_range   (1, 30.0)
   ui_range      (1, 30.0)
   ui_digits     (0)
@@ -342,19 +342,19 @@ property_double (innerggrowradius, _("Inner Glow's grow radius"), 5)
   ui_meta ("visible", "guichange {innerglowbevel}")
   ui_meta     ("sensitive", " enableinnerglow")
 
-property_double (innergopacity, _("Inner Glow's opacity"), 1.00)
+property_double (ig_opacity, _("Inner Glow's opacity"), 1.00)
   value_range   (0.0, 1.00)
   ui_steps      (0.01, 0.10)
   description (_("Opacity of the inner glow"))
   ui_meta ("visible", "guichange {innerglowbevel}")
   ui_meta     ("sensitive", " enableinnerglow")
 
-property_color (innergvalue, _("Inner Glow's color"), "#ff8f00")
+property_color (ig_value, _("Inner Glow's color"), "#ff8f00")
     description (_("The color of the inner glow"))
   ui_meta ("visible", "guichange {innerglowbevel}")
   ui_meta     ("sensitive", " enableinnerglow")
 
-property_double  (innergtreatment, _("Inner Glow's unmodified pixel fix"), 60)
+property_double  (ig_treatment, _("Inner Glow's unmodified pixel fix"), 60)
   value_range (50, 85)
   description (_("Cover pixels that inner glow might miss"))
   ui_meta ("visible", "guichange {innerglowbevel}")
@@ -367,30 +367,30 @@ property_boolean (enableimage, _("Enable image upload"), TRUE)
   description   (_("Whether to enable or disable the image file upload."))
 ui_meta ("visible", "guichange {imageoutlinebevel}")
 
-property_file_path(imagesrc, _("Image file overlay"), "")
+property_file_path(image_src, _("Image file overlay"), "")
   description (_("Upload an image file from your computer to be in the fill area. Allows (png, jpg, raw, svg, bmp, tif, ...)"))
 ui_meta ("visible", "guichange {imageoutlinebevel}")
   ui_meta     ("sensitive", " enableimage")
 
-property_double(imageopacity, _("Opacity of image file overlay"), 1.0)
+property_double(image_opacity, _("Opacity of image file overlay"), 1.0)
     value_range (0.0, 1.0)
 ui_meta ("visible", "guichange {imageoutlinebevel}")
   description (_("Opacity of the image file overlay that was uploaded. "))
   ui_meta     ("sensitive", " enableimage")
 
-    /* 
+    /*
 property_double (imagehue, _("Hue rotation"),  0.0)
    description  (_("Hue adjustment"))
    value_range  (-180.0, 180.0)
   description (_("Hue rotation of the uploaded image file or whatever is on canvas"))
 ui_meta ("visible", "guichange {imageoutlinebevel}") */
 
-property_double (imagesaturation, _("Saturation"), 1.0)
+property_double (image_saturation, _("Saturation"), 1.0)
    description  (_("Saturation adjustment of the uploaded image file or whatever is on canvas"))
    value_range  (0.0, 3.0)
 ui_meta ("visible", "guichange {imageoutlinebevel}")
 
-property_double (imagelightness, _("Lightness"), 0.0)
+property_double (image_lightness, _("Lightness"), 0.0)
    description  (_("Lightness adjustment of the uploaded image file or whatever is on canvas"))
    value_range  (-20.0, 20.0)
 ui_meta ("visible", "guichange {imageoutlinebevel}")
@@ -424,7 +424,7 @@ enum_start (gegl_blend_mode_for_bevel_outline)
 enum_end (GeglBlendModeForBevelOutline)
 
 
-property_enum (osblend, _("Outline Bevel blend mode"),
+property_enum (os_blend, _("Outline Bevel blend mode"),
     description (_("Blend mode of the outline bevel"))
     GeglBlendModeForBevelOutline, gegl_blend_mode_for_bevel_outline,
     GEGL_BLEND_MODE_TYPE_MULTIPLY_BEVEL_OUTLINE)
@@ -432,20 +432,20 @@ ui_meta ("visible", "guichange {imageoutlinebevel}")
   ui_meta     ("sensitive", " enablespecialoutline")
 
 
-property_int (osdepth, _("Outline Bevel depth"), 15)
+property_int (os_depth, _("Outline Bevel depth"), 15)
     description (_("Emboss depth for the outline bevel"))
     value_range (1, 100)
 ui_meta ("visible", "guichange {imageoutlinebevel}")
   ui_meta     ("sensitive", " enablespecialoutline")
 
-property_double (oselevation, _("Outline Bevel elevation"), 47.0)
+property_double (os_elevation, _("Outline Bevel elevation"), 47.0)
     description (_("Emboss elevation for the outline bevel"))
     value_range (0, 180)
     ui_meta ("unit", "degree")
 ui_meta ("visible", "guichange {imageoutlinebevel}")
   ui_meta     ("sensitive", " enablespecialoutline")
 
-property_double (osazimuth, _("Outline Bevel azimuth"), 55.0)
+property_double (os_azimuth, _("Outline Bevel azimuth"), 55.0)
     description (_("Emboss azimuth for the outline bevel"))
     value_range (0.0, 360.0)
     ui_steps      (0.01, 0.50)
@@ -453,7 +453,7 @@ ui_meta ("visible", "guichange {imageoutlinebevel}")
   ui_meta     ("sensitive", " enablespecialoutline")
 
 
-property_double (osradius, _("Outline Bevel radius"), 3.0)
+property_double (os_radius, _("Outline Bevel radius"), 3.0)
     description (_("Internal gaussian blur to inflate the outline bevel"))
   value_range (1.0, 8.0)
   ui_range (1.0, 8.0)
@@ -462,24 +462,24 @@ ui_meta ("visible", "guichange {imageoutlinebevel}")
   ui_meta     ("sensitive", " enablespecialoutline")
 
 
-property_boolean (enableimageoutline, _("Enable image upload on Outline (requires advanced effects)"), TRUE)
+property_boolean (enableimageoutline, _("Enable image upload on Outline (requires advanced options)"), TRUE)
   description   (_("Whether to enable or disable the image file upload."))
 ui_meta ("visible", "guichange {imageoutlinebevel}")
   ui_meta     ("sensitive", " enablespecialoutline")
 
-property_file_path(ossrc, _("Outline image file overlay"), "")
+property_file_path(os_src, _("Outline image file overlay"), "")
   description (_("Upload an image file from your computer to be in the outline area. Allows (png, jpg, raw, svg, bmp, tif, ...)"))
 ui_meta ("visible", "guichange {imageoutlinebevel}")
   ui_meta     ("sensitive", " enablespecialoutline")
 
 
-property_double (ossrcopacity, _("Outline image opacity"), 1.0)
+property_double (os_src_opacity, _("Outline image opacity"), 1.0)
    description  (_("Outline image opacity adjustment"))
    value_range  (0.0, 1.0)
 ui_meta ("visible", "guichange {imageoutlinebevel}")
   ui_meta     ("sensitive", " enablespecialoutline")
 
-property_double (osoutlow, _("Levels low output lighting for Outline Bevel"), 0.0)
+property_double (os_outlow, _("Levels low output lighting for Outline Bevel"), 0.0)
     description (_("Levels low output as a light adjustment for the outline bevel"))
     ui_range    (0.0, 0.2)
     value_range (0.0, 0.2)
@@ -487,7 +487,7 @@ property_double (osoutlow, _("Levels low output lighting for Outline Bevel"), 0.
 ui_meta ("visible", "guichange {imageoutlinebevel}")
   ui_meta     ("sensitive", " enablespecialoutline")
 
-property_double (osouthigh, _("Levels high output lighting for Outline Bevel"), 1)
+property_double (os_outhigh, _("Levels high output lighting for Outline Bevel"), 1)
     description (_("Levels high output as a light adjustment for the outline bevel"))
     ui_range    (1.0, 1.2)
     value_range    (1.0, 1.2)
@@ -496,7 +496,7 @@ ui_meta ("visible", "guichange {imageoutlinebevel}")
   ui_meta     ("sensitive", " enablespecialoutline")
 
 
-property_double (osdark, _("Outline Dark Bevel/ignore image mode"), 0.0)
+property_double (os_dark, _("Outline Dark Bevel/ignore image mode"), 0.0)
     description (_("This instructs the outline bevel to ignore image details if there is an image file overlay below it. It also allows outline bevel to work better when the user selects darker colors."))
   value_range   (0.00, 1.00)
   ui_steps      (0.01, 0.50)
@@ -586,7 +586,7 @@ typedef struct
   GeglNode *innerglowblend;
   GeglNode *nopig;
   GeglNode *invisibleblend3;
-} State; 
+} State;
 
 
 static void attach (GeglOperation *operation)
@@ -700,7 +700,7 @@ static void attach (GeglOperation *operation)
   GeglNode *blurso      = gegl_node_new_child (gegl, "operation", "gegl:gaussian-blur",
                                          "clip-extent", FALSE,
                                          "abyss-policy", 0,
-                                         NULL);            
+                                         NULL);
 
   GeglNode *atopso    = gegl_node_new_child (gegl,
                                   "operation", "gegl:src-atop",
@@ -801,7 +801,7 @@ static void attach (GeglOperation *operation)
   /*This is a GEGL Graph that does something like Gimp's threshold alpha filter or Curves on alpha channel. It gets rid of excesses on GEGL only blend modes.*/
 
       GeglNode *bevelbump = gegl_node_new_child (gegl,     "operation", "gegl:bevel", "type", 1, "blendmode", 0,
-                              
+
                                   NULL);
 
       GeglNode *darkbevel = gegl_node_new_child (gegl,
@@ -831,54 +831,54 @@ static void attach (GeglOperation *operation)
       GeglNode *bevellighting      = gegl_node_new_child (gegl, "operation", "gegl:levels",
                                          NULL);
  /*Nodes relating to Color Overlay*/
-  gegl_operation_meta_redirect (operation, "optioncolor", thecoloroverlay, "value");
+  gegl_operation_meta_redirect (operation, "color_fill", thecoloroverlay, "value");
   /*Nodes relating to Image File Overlay*/
-  gegl_operation_meta_redirect (operation, "imagesrc",   image, "src");
-  gegl_operation_meta_redirect (operation, "imageopacity",   image, "opacity");
+  gegl_operation_meta_redirect (operation, "image_src",   image, "src");
+  gegl_operation_meta_redirect (operation, "image_opacity",   image, "opacity");
 /*  gegl_operation_meta_redirect (operation, "imagehue",   imageadjustments, "hue"); */
-  gegl_operation_meta_redirect (operation, "imagesaturation",   imageadjustments2, "scale");
-  gegl_operation_meta_redirect (operation, "imagelightness",   imageadjustments, "lightness");
+  gegl_operation_meta_redirect (operation, "image_saturation",   imageadjustments2, "scale");
+  gegl_operation_meta_redirect (operation, "image_lightness",   imageadjustments, "lightness");
   /*Nodes relating to Drop Shadow*/
   gegl_operation_meta_redirect (operation, "shadow_x",   ds, "x");
   gegl_operation_meta_redirect (operation, "shadow_y",   ds, "y");
-  gegl_operation_meta_redirect (operation, "shadowopacity",   ds, "opacity");
-  gegl_operation_meta_redirect (operation, "shadowgrowradius",   ds, "grow-radius");
-  gegl_operation_meta_redirect (operation, "shadowradius",   ds, "radius");
-  gegl_operation_meta_redirect (operation, "shadowcolor",   ds, "color");
+  gegl_operation_meta_redirect (operation, "shadow_opacity",   ds, "opacity");
+  gegl_operation_meta_redirect (operation, "shadow_grow_radius",   ds, "grow-radius");
+  gegl_operation_meta_redirect (operation, "shadow_radius",   ds, "radius");
+  gegl_operation_meta_redirect (operation, "shadow_color",   ds, "color");
   /*Nodes relating to Outline and its special ability to bevel and image file overlay itself*/
   gegl_operation_meta_redirect (operation, "outline",   strokeso, "radius");
-  gegl_operation_meta_redirect (operation, "outlineblur",   blurso, "std-dev-x");
-  gegl_operation_meta_redirect (operation, "outlineblur",   blurso, "std-dev-y");
+  gegl_operation_meta_redirect (operation, "outline_blur",   blurso, "std-dev-x");
+  gegl_operation_meta_redirect (operation, "outline_blur",   blurso, "std-dev-y");
   gegl_operation_meta_redirect (operation, "outline_x",   moveso, "x");
   gegl_operation_meta_redirect (operation, "outline_y",   moveso, "y");
-  gegl_operation_meta_redirect (operation, "outlinegrowshape",   strokeso, "neighborhood");
-  gegl_operation_meta_redirect (operation, "outlineopacity",   opacityso, "value");
-  gegl_operation_meta_redirect (operation, "outlinecolor",   colorso, "value");
+  gegl_operation_meta_redirect (operation, "outline_grow_shape",   strokeso, "neighborhood");
+  gegl_operation_meta_redirect (operation, "outline_opacity",   opacityso, "value");
+  gegl_operation_meta_redirect (operation, "outline_color",   colorso, "value");
   /*Outline's special ability subsection (named os for Outline Special)*/
-  gegl_operation_meta_redirect (operation, "osradius",   bevelso, "radius");
-  gegl_operation_meta_redirect (operation, "oselevation",   bevelso, "elevation");
-  gegl_operation_meta_redirect (operation, "osdepth",   bevelso, "depth");
-  gegl_operation_meta_redirect (operation, "osazimuth",   bevelso, "azimuth");
-  gegl_operation_meta_redirect (operation, "osdark",     darkbeveloutline, "out-low");
-  gegl_operation_meta_redirect (operation, "ossrc",   layerso, "src");
-  gegl_operation_meta_redirect (operation, "ossrcopacity",   layerso, "opacity");
-  gegl_operation_meta_redirect (operation, "osoutlow",   bevellightingso, "out-low");
-  gegl_operation_meta_redirect (operation, "osouthigh",   bevellightingso, "out-high");
+  gegl_operation_meta_redirect (operation, "os_radius",   bevelso, "radius");
+  gegl_operation_meta_redirect (operation, "os_elevation",   bevelso, "elevation");
+  gegl_operation_meta_redirect (operation, "os_depth",   bevelso, "depth");
+  gegl_operation_meta_redirect (operation, "os_azimuth",   bevelso, "azimuth");
+  gegl_operation_meta_redirect (operation, "os_dark",     darkbeveloutline, "out-low");
+  gegl_operation_meta_redirect (operation, "os_src",   layerso, "src");
+  gegl_operation_meta_redirect (operation, "os_src_opacity",   layerso, "opacity");
+  gegl_operation_meta_redirect (operation, "os_outlow",   bevellightingso, "out-low");
+  gegl_operation_meta_redirect (operation, "os_outhigh",   bevellightingso, "out-high");
   /*Nodes relating to Inner Glow*/
-  gegl_operation_meta_redirect (operation, "innerggrowradius",   innerglow, "grow-radius");
-  gegl_operation_meta_redirect (operation, "innergradius",   innerglow, "radius");
-  gegl_operation_meta_redirect (operation, "innergopacity",   innerglow, "opacity");
-  gegl_operation_meta_redirect (operation, "innergvalue",   innerglow, "value");
-  gegl_operation_meta_redirect (operation, "innergtreatment",   innerglow, "cover");
+  gegl_operation_meta_redirect (operation, "ig_grow_radius",   innerglow, "grow-radius");
+  gegl_operation_meta_redirect (operation, "ig_radius",   innerglow, "radius");
+  gegl_operation_meta_redirect (operation, "ig_opacity",   innerglow, "opacity");
+  gegl_operation_meta_redirect (operation, "ig_value",   innerglow, "value");
+  gegl_operation_meta_redirect (operation, "ig_treatment",   innerglow, "cover");
   /*Nodes relating to Bevel*/
-  gegl_operation_meta_redirect (operation, "beveldepth",   bevelbump, "depth");
-  gegl_operation_meta_redirect (operation, "bevelradius",   bevelbump, "radius");
-  gegl_operation_meta_redirect (operation, "bevelelevation",   bevelbump, "elevation");
-  gegl_operation_meta_redirect (operation, "bevelazimuth",   bevelbump, "azimuth");
-  gegl_operation_meta_redirect (operation, "beveldark",   darkbevel, "out-low");
-  gegl_operation_meta_redirect (operation, "beveloutlow",   bevellighting, "out-low");
-  gegl_operation_meta_redirect (operation, "beveltype",   bevelbump, "type");
-  gegl_operation_meta_redirect (operation, "bevelouthigh",   bevellighting, "out-high");
+  gegl_operation_meta_redirect (operation, "bevel_depth",   bevelbump, "depth");
+  gegl_operation_meta_redirect (operation, "bevel_radius",   bevelbump, "radius");
+  gegl_operation_meta_redirect (operation, "bevel_elevation",   bevelbump, "elevation");
+  gegl_operation_meta_redirect (operation, "bevel_azimuth",   bevelbump, "azimuth");
+  gegl_operation_meta_redirect (operation, "bevel_dark",   darkbevel, "out-low");
+  gegl_operation_meta_redirect (operation, "bevel_outlow",   bevellighting, "out-low");
+  gegl_operation_meta_redirect (operation, "bevel_type",   bevelbump, "type");
+  gegl_operation_meta_redirect (operation, "bevel_outhigh",   bevellighting, "out-high");
 
 /*These are the nodes that launch at startup but afterward the state-> nodes kick in.*/
          gegl_node_link_many (input, nopimage, atopi, nopcolor, beforecoloroverlaypolicy, crop,  nopreplaceontop, replaceontop, nopig, innerglowblend, inputso, behindso, ds,  repairgeglgraph,  output, NULL);
@@ -888,9 +888,9 @@ static void attach (GeglOperation *operation)
     gegl_node_connect (bevelblendmodeso, "aux", nopb3so, "output");
     gegl_node_link_many (atopso, darkbeveloutline, bevelso, bevellightingso, bevelalphaso, nopb3so,  NULL);
     gegl_node_connect (atopso, "aux", layerso, "output");
-    gegl_node_link_many (nopso, layerso,  NULL); 
+    gegl_node_link_many (nopso, layerso,  NULL);
     gegl_node_connect (replaceontop2so, "aux", bevelblendmodeso, "output");
-    gegl_node_link_many (idrefbevelblendmodeso, bevelblendmodeso,  NULL); 
+    gegl_node_link_many (idrefbevelblendmodeso, bevelblendmodeso,  NULL);
  All nodes relating to Inner Glow here
       gegl_node_link_many (nopig, innerglow, NULL);
       gegl_node_connect (innerglowblend, "aux", innerglow, "output");
@@ -898,7 +898,7 @@ static void attach (GeglOperation *operation)
    gegl_node_link_many (nopimage, image, imageadjustments, imageadjustments2, NULL);
       gegl_node_connect (atopi, "aux", imageadjustments2, "output");
 /* All nodes relating to bevel here
-      gegl_node_link_many ( nopreplaceontop, nopb, bevelblendmode, NULL); 
+      gegl_node_link_many ( nopreplaceontop, nopb, bevelblendmode, NULL);
       gegl_node_link_many (nopb, darkbevel, bevelbump, bevellighting, bevelalpha,  NULL);
       gegl_node_connect (bevelblendmode, "aux", bevelalpha, "output");
       gegl_node_connect (replaceontop, "aux", bevelblendmode, "output"); */
@@ -986,43 +986,43 @@ static void update_graph (GeglOperation *operation)
   GeglNode *swapbevelblendmodeso;
 
 const char *blend_bevel = "gegl:nop";
-  switch (o->bevelblend) {
+  switch (o->bevel_blend) {
     case GEGL_BLEND_MODE_TYPE_MULTIPLY_BEVEL_OUTLINE:  blend_bevel = "gegl:multiply"; break;
     case GEGL_BLEND_MODE_TYPE_ADD_BEVEL_OUTLINE:  blend_bevel = "gegl:add"; break;
     case GEGL_BLEND_MODE_TYPE_HARDLIGHT_BEVEL_OUTLINE:  blend_bevel = "gegl:hard-light"; break;
     case GEGL_BLEND_MODE_TYPE_DARKEN_BEVEL_OUTLINE: blend_bevel = "gegl:darken"; break;
     case GEGL_BLEND_MODE_TYPE_COLORDODGE_BEVEL: blend_bevel = "gegl:color-dodge"; break;
-  if (o->bevelblend == GEGL_BLEND_MODE_TYPE_COLORDODGE_BEVEL) gegl_node_set (state->bevelblendmode, "srgb", TRUE, NULL);
+  if (o->bevel_blend == GEGL_BLEND_MODE_TYPE_COLORDODGE_BEVEL) gegl_node_set (state->bevelblendmode, "srgb", TRUE, NULL);
   }
   gegl_node_set (state->bevelblendmode, "operation", blend_bevel, NULL);
 
   const char *inner_glow_blend = "gegl:nop"; /* This is where inner glow's blend mode is swapped */
-  switch (o->innergblend) {
+  switch (o->ig_blend) {
     case GEGL_BLEND_MODE_TYPE_NORMALIG: inner_glow_blend = "gegl:src-atop"; break;
     case GEGL_BLEND_MODE_TYPE_OVERLAYIG: inner_glow_blend = "gegl:overlay"; break;
     case GEGL_BLEND_MODE_TYPE_SCREENIG: inner_glow_blend = "gegl:screen"; break;
     case GEGL_BLEND_MODE_TYPE_HARDLIGHTIG: inner_glow_blend =  "gegl:hard-light"; break;
     case GEGL_BLEND_MODE_TYPE_COLORDODGEIG: inner_glow_blend = "gegl:color-dodge"; break;
     case GEGL_BLEND_MODE_TYPE_PLUSIG: inner_glow_blend = "gegl:plus"; break;
-  if (o->innergblend == GEGL_BLEND_MODE_TYPE_OVERLAYIG) gegl_node_set (state->innerglowblend, "srgb", TRUE, NULL);
-  if (o->innergblend == GEGL_BLEND_MODE_TYPE_PLUSIG) gegl_node_set (state->innerglowblend, "srgb", TRUE, NULL);
+  if (o->ig_blend == GEGL_BLEND_MODE_TYPE_OVERLAYIG) gegl_node_set (state->innerglowblend, "srgb", TRUE, NULL);
+  if (o->ig_blend == GEGL_BLEND_MODE_TYPE_PLUSIG) gegl_node_set (state->innerglowblend, "srgb", TRUE, NULL);
 
   }
-  gegl_node_set (state->innerglowblend, "operation", inner_glow_blend, NULL); 
+  gegl_node_set (state->innerglowblend, "operation", inner_glow_blend, NULL);
 
   const char *blend_outline_bevel = "gegl:nop";
-  switch (o->osblend) {
+  switch (o->os_blend) {
     case GEGL_BLEND_MODE_TYPE_MULTIPLY_BEVEL_OUTLINE:  blend_outline_bevel = "gegl:multiply"; break;
     case GEGL_BLEND_MODE_TYPE_ADD_BEVEL_OUTLINE:  blend_outline_bevel = "gegl:add"; break;
     case GEGL_BLEND_MODE_TYPE_HARDLIGHT_BEVEL_OUTLINE:  blend_outline_bevel = "gegl:hard-light"; break;
     case GEGL_BLEND_MODE_TYPE_DARKEN_BEVEL_OUTLINE: blend_outline_bevel = "gegl:darken"; break;
     case GEGL_BLEND_MODE_TYPE_COLORDODGE_BEVEL_OUTLINE: blend_outline_bevel = "gegl:color-dodge"; break;
-  if (o->osblend == GEGL_BLEND_MODE_TYPE_COLORDODGE_BEVEL_OUTLINE) gegl_node_set (state->bevelblendmodeso, "srgb", TRUE, NULL);
+  if (o->os_blend == GEGL_BLEND_MODE_TYPE_COLORDODGE_BEVEL_OUTLINE) gegl_node_set (state->bevelblendmodeso, "srgb", TRUE, NULL);
   }
   gegl_node_set (state->bevelblendmodeso, "operation", blend_outline_bevel, NULL);
 
   const char *blend_color = "gegl:nop";
-  switch (o->policycolor) {
+  switch (o->color_policy) {
     case GEGL_BLEND_MODE_TYPE_NO_COLOR:  blend_color = "gegl:dst"; break;
     case GEGL_BLEND_MODE_TYPE_MULTIPLY_COLOR:  blend_color = "gegl:multiply"; break;
     case GEGL_BLEND_MODE_TYPE_SOLID_COLOR:   blend_color = "gegl:src"; break;
@@ -1033,21 +1033,21 @@ const char *blend_bevel = "gegl:nop";
 
 /*Nodes relating to special outline bevel's switching to the invisible blend mode (gegl:dst)
  so GEGL Styles does nothing on startup. */
-  if (!o->enablespecialoutline) gegl_node_disconnect(state->replaceontop2so, "aux"); 
+  if (!o->enablespecialoutline) gegl_node_disconnect(state->replaceontop2so, "aux");
   if (!o->enablespecialoutline) swapreplaceontop2so = state->invisibleblend2;
   if (o->enablespecialoutline) swapreplaceontop2so = state->replaceontop2so;
 
 /*Nodes relating to bevel being enabled/disabled*/
 
-  if (!o->enablebevel) gegl_node_disconnect(state->replaceontop, "aux"); 
+  if (!o->enablebevel) gegl_node_disconnect(state->replaceontop, "aux");
   if (o->enablebevel)  gegl_node_connect(state->bevelblendmode, "output", state->replaceontop, "aux");
   if (!o->enablebevel) swapbevelbump = state->nothing1;
   if (o->enablebevel) swapbevelbump = state->bevelbump;
-  /*if (!o->enablebevel) swapreplaceontop = invisibleblend; 
+  /*if (!o->enablebevel) swapreplaceontop = invisibleblend;
   if (o->enablebevel) swapreplaceontop = state->replaceontop;*/
   if (o->enablebevel) swapbevelalpha  = state->bevelalpha;
   if (!o->enablebevel) swapbevelalpha  = state->nothing2;
-  if (fabs (o->beveldark) > 0.0001) swapdarkbevel = state->darkbevel;
+  if (fabs (o->bevel_dark) > 0.0001) swapdarkbevel = state->darkbevel;
   else swapdarkbevel = state->nothing3;
 
 /*Nodes relating to image file upload being enabled disabled*/
@@ -1065,10 +1065,10 @@ For some odd reason this was slowing things down. So it got the boot.
   else swapds = state->nothing6;*/
 
 /*Nodes relating to outline being enabled/disabled*/
-  if (!o->enableoutline) gegl_node_disconnect(state->behindso, "aux"); 
+  if (!o->enableoutline) gegl_node_disconnect(state->behindso, "aux");
 
 /*Nodes relating to inner glow being enabled/disabled*/
-  if (!o->enableinnerglow) gegl_node_disconnect(state->innerglowblend, "aux"); 
+  if (!o->enableinnerglow) gegl_node_disconnect(state->innerglowblend, "aux");
 
 /*Nodes relating to outline bevel being enabled/disabled*/
   if (o->enableoutlinebevel) swapbevelso = state->bevelso;
@@ -1095,9 +1095,9 @@ I choose enable outline only because I had to choose one checkbox. */
     gegl_node_connect (swapbevelblendmodeso, "aux", state->nopb3so, "output");
     gegl_node_link_many (state->atopso, state->darkbeveloutline, swapbevelso, state->bevellightingso, state->bevelalphaso, state->nopb3so,  NULL);
     gegl_node_connect (state->atopso, "aux", swaplayerso, "output");
-    gegl_node_link_many (state->nopso, swaplayerso,   NULL); 
+    gegl_node_link_many (state->nopso, swaplayerso,   NULL);
     gegl_node_connect (swapreplaceontop2so, "aux", swapbevelblendmodeso, "output");
-    gegl_node_link_many (state->idrefbevelblendmodeso, swapbevelblendmodeso,  NULL); 
+    gegl_node_link_many (state->idrefbevelblendmodeso, swapbevelblendmodeso,  NULL);
 /* All nodes relating to Inner Glow here*/
       gegl_node_link_many (state->nopig, state->innerglow, NULL);
       gegl_node_connect (state->innerglowblend, "aux", state->innerglow, "output");
@@ -1105,7 +1105,7 @@ I choose enable outline only because I had to choose one checkbox. */
       gegl_node_link_many (state->nopimage, swapimage, state->imageadjustments, state->imageadjustments2, NULL);
       gegl_node_connect (state->atopi, "aux", state->imageadjustments2, "output");
 /* All nodes relating to bevel here*/
-      gegl_node_link_many ( state->nopreplaceontop, state->nopb, state->bevelblendmode, NULL); 
+      gegl_node_link_many ( state->nopreplaceontop, state->nopb, state->bevelblendmode, NULL);
       gegl_node_link_many (state->nopb, swapdarkbevel, swapbevelbump, state->bevellighting,  swapbevelalpha,  NULL);
       gegl_node_connect (state->bevelblendmode, "aux", swapbevelalpha, "output");
       gegl_node_connect (swapreplaceontop, "aux", state->bevelblendmode, "output");
@@ -1114,8 +1114,8 @@ I choose enable outline only because I had to choose one checkbox. */
       gegl_node_connect (state->beforecoloroverlaypolicy, "aux", state->coloroverlaypolicy, "output");
 /*      gegl_node_connect (state->coloroverlaypolicy, "aux", state->thecoloroverlay, "output"); */
   }
-  else 
-  { 
+  else
+  {
 
   /* INNERGLOW + NORMAL OUTLINE */
          gegl_node_link_many (state->input, state->nopimage, state->atopi, state->nopcolor, state->beforecoloroverlaypolicy, state->crop,  state->nopreplaceontop, swapreplaceontop,  state->nopig, state->innerglowblend, state->inputso, state->behindso, /*state->ds state->repairgeglgraph,*/ state->output, NULL);
@@ -1129,7 +1129,7 @@ I choose enable outline only because I had to choose one checkbox. */
       gegl_node_link_many (state->nopimage, swapimage, state->imageadjustments, state->imageadjustments2, NULL);
       gegl_node_connect (state->atopi, "aux", state->imageadjustments2, "output");
 /* All nodes relating to bevel here*/
-      gegl_node_link_many ( state->nopreplaceontop, state->nopb, state->bevelblendmode, NULL); 
+      gegl_node_link_many ( state->nopreplaceontop, state->nopb, state->bevelblendmode, NULL);
       gegl_node_link_many (state->nopb, swapdarkbevel, swapbevelbump, state->bevellighting, swapbevelalpha,  NULL);
       gegl_node_connect (state->bevelblendmode, "aux", swapbevelalpha, "output");
       gegl_node_connect (swapreplaceontop, "aux", state->bevelblendmode, "output");
@@ -1138,8 +1138,8 @@ I choose enable outline only because I had to choose one checkbox. */
       gegl_node_connect (state->beforecoloroverlaypolicy, "aux", state->coloroverlaypolicy, "output");
 /*      gegl_node_connect (state->coloroverlaypolicy, "aux", state->thecoloroverlay, "output"); */
   }
-  else 
-  { 
+  else
+  {
  /*NO OUTLINE INNER GLOW */
          gegl_node_link_many (state->input, state->nopimage, state->atopi, state->nopcolor, state->beforecoloroverlaypolicy, state->crop, state->nopreplaceontop, swapreplaceontop,  state->nopig, state->innerglowblend,  /*state->ds state->repairgeglgraph, */ state->output, NULL);
 /* All nodes relating to Inner Glow here*/
@@ -1149,7 +1149,7 @@ I choose enable outline only because I had to choose one checkbox. */
       gegl_node_link_many (state->nopimage, swapimage, state->imageadjustments, state->imageadjustments2, NULL);
       gegl_node_connect (state->atopi, "aux", state->imageadjustments2, "output");
 /* All nodes relating to bevel here*/
-      gegl_node_link_many ( state->nopreplaceontop, state->nopb, state->bevelblendmode, NULL); 
+      gegl_node_link_many ( state->nopreplaceontop, state->nopb, state->bevelblendmode, NULL);
       gegl_node_link_many (state->nopb, swapdarkbevel, swapbevelbump, state->bevellighting, swapbevelalpha,  NULL);
       gegl_node_connect (state->bevelblendmode, "aux", swapbevelalpha, "output");
       gegl_node_connect (swapreplaceontop, "aux", state->bevelblendmode, "output");
@@ -1159,7 +1159,7 @@ I choose enable outline only because I had to choose one checkbox. */
 /*      gegl_node_connect (state->coloroverlaypolicy, "aux", state->thecoloroverlay, "output"); */
     }
 
-else 
+else
  /*SPECIAL OUTLINE*/
   if (o->enableoutline)
   if (o->enablespecialoutline)
@@ -1171,14 +1171,14 @@ else
     gegl_node_connect (swapbevelblendmodeso, "aux", state->nopb3so, "output");
     gegl_node_link_many (state->atopso, state->darkbeveloutline, swapbevelso, state->bevellightingso,  state->bevelalphaso, state->nopb3so,  NULL);
     gegl_node_connect (state->atopso, "aux", swaplayerso, "output");
-    gegl_node_link_many (state->nopso, swaplayerso, NULL); 
+    gegl_node_link_many (state->nopso, swaplayerso, NULL);
     gegl_node_connect (swapreplaceontop2so, "aux", swapbevelblendmodeso, "output");
-    gegl_node_link_many (state->idrefbevelblendmodeso, swapbevelblendmodeso,  NULL); 
+    gegl_node_link_many (state->idrefbevelblendmodeso, swapbevelblendmodeso,  NULL);
 /* All nodes relating to image file upload here*/
       gegl_node_link_many (state->nopimage, swapimage, state->imageadjustments, state->imageadjustments2, NULL);
       gegl_node_connect (state->atopi, "aux", state->imageadjustments2, "output");
 /* All nodes relating to bevel here*/
-      gegl_node_link_many ( state->nopreplaceontop, state->nopb, state->bevelblendmode, NULL); 
+      gegl_node_link_many ( state->nopreplaceontop, state->nopb, state->bevelblendmode, NULL);
       gegl_node_link_many (state->nopb, swapdarkbevel, swapbevelbump, state->bevellighting,  swapbevelalpha,  NULL);
       gegl_node_connect (state->bevelblendmode, "aux", swapbevelalpha, "output");
       gegl_node_connect (swapreplaceontop, "aux", state->bevelblendmode, "output");
@@ -1188,8 +1188,8 @@ else
 /*      gegl_node_connect (state->coloroverlaypolicy, "aux", state->thecoloroverlay, "output"); */
 
   }
-  else 
-  { 
+  else
+  {
  /*NORMAL OUTLINE*/
          gegl_node_link_many (state->input, state->nopimage, state->atopi, state->nopcolor, state->beforecoloroverlaypolicy, state->crop, state->nopreplaceontop, swapreplaceontop, state->inputso, state->behindso, /*state->ds state->repairgeglgraph,*/ state->output, NULL);
 /* All nodes relating to Outline here*/
@@ -1199,27 +1199,27 @@ else
       gegl_node_link_many (state->nopimage, swapimage, state->imageadjustments, state->imageadjustments2, NULL);
       gegl_node_connect (state->atopi, "aux", state->imageadjustments2, "output");
 /* All nodes relating to bevel here*/
-      gegl_node_link_many ( state->nopreplaceontop, state->nopb, state->bevelblendmode, NULL); 
+      gegl_node_link_many ( state->nopreplaceontop, state->nopb, state->bevelblendmode, NULL);
       gegl_node_link_many (state->nopb, swapdarkbevel, swapbevelbump, state->bevellighting,  swapbevelalpha,  NULL);
       gegl_node_connect (state->bevelblendmode, "aux", swapbevelalpha, "output");
-      gegl_node_connect (swapreplaceontop, "aux", state->bevelblendmode, "output"); 
+      gegl_node_connect (swapreplaceontop, "aux", state->bevelblendmode, "output");
 /* All nodes relating to color overlay here*/
       gegl_node_link_many (state->nopcolor, state->coloroverlaypolicy, NULL);
       gegl_node_connect (state->beforecoloroverlaypolicy, "aux", state->coloroverlaypolicy, "output");
 /*      gegl_node_connect (state->coloroverlaypolicy, "aux", state->thecoloroverlay, "output"); */
   }
-  else  
-  { 
+  else
+  {
  /*NO OUTLINE*/
        gegl_node_link_many (state->input, state->nopimage, state->atopi, state->nopcolor, state->beforecoloroverlaypolicy, state->crop, state->nopreplaceontop, swapreplaceontop, /*state->ds, state->repairgeglgraph,*/ state->output, NULL);
 /* All nodes relating to image file upload here*/
       gegl_node_link_many (state->nopimage, swapimage, state->imageadjustments, state->imageadjustments2, NULL);
       gegl_node_connect (state->atopi, "aux", state->imageadjustments2, "output");
 /* All nodes relating to bevel here*/
-      gegl_node_link_many ( state->nopreplaceontop, state->nopb, state->bevelblendmode, NULL); 
+      gegl_node_link_many ( state->nopreplaceontop, state->nopb, state->bevelblendmode, NULL);
       gegl_node_link_many (state->nopb, swapdarkbevel, swapbevelbump, state->bevellighting,  swapbevelalpha,  NULL);
       gegl_node_connect (state->bevelblendmode, "aux", swapbevelalpha, "output");
-      gegl_node_connect (swapreplaceontop, "aux", state->bevelblendmode, "output"); 
+      gegl_node_connect (swapreplaceontop, "aux", state->bevelblendmode, "output");
 /* All nodes relating to color overlay here*/
       gegl_node_link_many (state->nopcolor, state->coloroverlaypolicy, NULL);
       gegl_node_connect (state->beforecoloroverlaypolicy, "aux", state->coloroverlaypolicy, "output");
