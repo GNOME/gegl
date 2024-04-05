@@ -21,7 +21,7 @@
     Releases of GEGL Effects post May 2023 use (namespace:innerglow) name space but for now thousands of people are using the plugin and they will experience a breakage
     if they don't rountinely update. I assume they don't. */
 
- /* This filter is a stand alone meant to be fused with Gimp's blending options. But it also is meant to be called with GEGL Styles 
+ /* This filter is a stand alone meant to be fused with Gimp's blending options. But it also is meant to be called with GEGL Styles
     From a technical perspective this is literally inverted transparency a drop shadow then removal of the color fill that drop shadow applied too*/
 
 
@@ -109,7 +109,7 @@ property_double  (cover, _("Median fix for non-effected pixels on edges"), 60)
 static void attach (GeglOperation *operation)
 {
   GeglNode *gegl = operation->node;
-  GeglNode *input, *it, *shadow, *hiddencolor, *color, *atop, *median, *in,  *output;
+  GeglNode *input, *it, *shadow, *hiddencolor, *color, *atop, *median, *in, *crop,  *output;
   GeglColor *hidden_color = gegl_color_new ("#00ffffAA");
  /* Inner Glow's GEGL Graph will break without this hidden color */
 
@@ -147,6 +147,10 @@ static void attach (GeglOperation *operation)
                                          "radius",       1,
                                          "abyss-policy",     GEGL_ABYSS_NONE,
                                          NULL);
+
+  crop    = gegl_node_new_child (gegl,
+                                  "operation", "gegl:crop",
+                                  NULL);
  /* This is meant so inner glow to reach pixels in tight corners */
 
 gegl_operation_meta_redirect (operation, "grow_radius", shadow, "grow-radius");
@@ -159,7 +163,7 @@ gegl_operation_meta_redirect (operation, "y", shadow, "y");
 gegl_operation_meta_redirect (operation, "cover", median, "alpha-percentile");
 
 
- gegl_node_link_many (input, it,  shadow, hiddencolor, atop, in, median, color, output, NULL);
+ gegl_node_link_many (input, it,  shadow, hiddencolor, atop, in, median, color, crop, output, NULL);
  gegl_node_connect (in, "aux", input, "output");
 
 }
