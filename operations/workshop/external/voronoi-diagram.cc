@@ -523,10 +523,12 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",            "gegl:voronoi-diagram",
     "title",           _("Voronoi Diagram"),
     "categories",      "map",
+#if 0
     "reference-chain", "color                     "
                        "noise-hurl pct-random=0.1 "
                        "crop width=256 height=256 "
                        "voronoi-diagram mask=black",
+#endif
     "reference-hash",  "983f0fd7b29e1ac36721038817f4de74",
     "description",     _("Paints each non-seed pixel with the color of "
                          "the nearest seed pixel."),

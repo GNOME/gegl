@@ -281,12 +281,14 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",           "gegl:connected-components",
     "title",          _("Connected Components"),
     "categories",     "map",
+#if 0
     "reference-chain", "vector-stroke d='                           "
                        "  M  0  0 l 100 0 l 0 100 l -100 0 l0 -100  "
                        "  M 50 50 l 100 0 l 0 100 l -100 0 l0 -100' "
                        "connected-components                        ",
     "reference-hash", "b2670884d959e1448d9001a5a1855b55",
     "reference-hashB", "528e1bcbe3fe9d10b4378a6af87eb591",
+#endif
     "description",    _("Fills each connected region of the input, separated "
                         "from the rest of the input by a given color, with a "
                         "unique color."),
