@@ -74,21 +74,21 @@ TestCase tests[] = {
 
     {"over aux= [ ",
      "svg:src-over",
-     "No such op 'gegl:['"}, 
+     "gegl:over has no aux property, properties: 'srgb', "},
 
-    /* the following cause undesired warnings on console */
+    /* the following cause undesired warnings on console and does not look nice */
     {"over aux=[ string='foo bar' ]",
      "svg:src-over",
-     ""},
+     "(null) does not have a pad called output"},
 
-    /* the following should have error message */
+    /* the following should have better error messages */
     {"over aux=[ ",
      "svg:src-over",
-     ""},
+     "(null) does not have a pad called output"},
 
     {"over aux=[ ]",
      "svg:src-over",
-     ""},
+     "(null) does not have a pad called output"},
 
     {"exposure foo=2",
      "gegl:exposure",
