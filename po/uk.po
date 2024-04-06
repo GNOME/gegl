@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-03-30 00:50+0000\n"
-"PO-Revision-Date: 2024-03-30 11:15+0200\n"
+"POT-Creation-Date: 2024-04-06 15:52+0000\n"
+"PO-Revision-Date: 2024-04-06 19:15+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian\n"
 "Language: uk\n"
@@ -663,23 +663,23 @@ msgstr "Використане сімейство рельєфів"
 msgid "None (for use with GIMPs blending options)"
 msgstr "Немає (для використання з варіантами змішування у GIMP)"
 
-#: operations/common/bevel.c:61 operations/workshop/styles.c:203
-#: operations/workshop/styles.c:311 operations/workshop/styles.c:419
+#: operations/common/bevel.c:61 operations/common/styles.c:203
+#: operations/common/styles.c:311 operations/common/styles.c:419
 msgid "Hard Light"
 msgstr "Яскраве світло"
 
-#: operations/common/bevel.c:63 operations/workshop/styles.c:60
-#: operations/workshop/styles.c:199 operations/workshop/styles.c:415
+#: operations/common/bevel.c:63 operations/common/styles.c:60
+#: operations/common/styles.c:199 operations/common/styles.c:415
 msgid "Multiply"
 msgstr "Множення"
 
-#: operations/common/bevel.c:65 operations/workshop/styles.c:207
-#: operations/workshop/styles.c:313 operations/workshop/styles.c:423
+#: operations/common/bevel.c:65 operations/common/styles.c:207
+#: operations/common/styles.c:313 operations/common/styles.c:423
 msgid "Color Dodge"
 msgstr "Висвітлювання кольорів"
 
-#: operations/common/bevel.c:67 operations/workshop/styles.c:205
-#: operations/workshop/styles.c:421
+#: operations/common/bevel.c:67 operations/common/styles.c:205
+#: operations/common/styles.c:421
 msgid "Darken"
 msgstr "Затемнення"
 
@@ -687,8 +687,9 @@ msgstr "Затемнення"
 msgid "Lighten"
 msgstr "Освітлення"
 
-#: operations/common/bevel.c:71 operations/workshop/external/paint-select.cc:30
-#: operations/workshop/styles.c:201 operations/workshop/styles.c:417
+#: operations/common/bevel.c:71 operations/common/styles.c:201
+#: operations/common/styles.c:417
+#: operations/workshop/external/paint-select.cc:30
 msgid "Add"
 msgstr "Додати"
 
@@ -1169,10 +1170,9 @@ msgstr "Розмір ґратки"
 #: operations/common/color-assimilation-grid.c:31
 #: operations/common/color-rotate.c:84 operations/common/fattal02.c:39
 #: operations/common/mantiuk06.c:33 operations/common/noise-hsv.c:34
-#: operations/common/saturation.c:404
+#: operations/common/saturation.c:404 operations/common/styles.c:388
 #: operations/external/lcms-from-profile.c:35
 #: operations/workshop/selective-hue-saturation.c:38
-#: operations/workshop/styles.c:388
 msgid "Saturation"
 msgstr "Насиченість"
 
@@ -1950,22 +1950,22 @@ msgstr ""
 
 #: operations/common/dropshadow.c:27 operations/common/inner-glow.c:39
 #: operations/common/median-blur.c:27 operations/common/pixelize.c:28
-#: operations/common/vignette.c:26 operations/common-cxx/focus-blur.c:35
-#: operations/workshop/styles.c:97
+#: operations/common/styles.c:97 operations/common/vignette.c:26
+#: operations/common-cxx/focus-blur.c:35
 msgid "Square"
 msgstr "Квадрат"
 
 #: operations/common/dropshadow.c:28 operations/common/inner-glow.c:40
 #: operations/common/median-blur.c:28 operations/common/newsprint.c:26
-#: operations/common/vignette.c:25 operations/common-cxx/focus-blur.c:34
-#: operations/workshop/styles.c:98
+#: operations/common/styles.c:98 operations/common/vignette.c:25
+#: operations/common-cxx/focus-blur.c:34
 msgid "Circle"
 msgstr "Коло"
 
 #: operations/common/dropshadow.c:29 operations/common/inner-glow.c:41
 #: operations/common/median-blur.c:29 operations/common/newsprint.c:27
-#: operations/common/pixelize.c:26 operations/common/vignette.c:27
-#: operations/common-cxx/focus-blur.c:36 operations/workshop/styles.c:99
+#: operations/common/pixelize.c:26 operations/common/styles.c:99
+#: operations/common/vignette.c:27 operations/common-cxx/focus-blur.c:36
 msgid "Diamond"
 msgstr "Ромб"
 
@@ -1983,7 +1983,7 @@ msgid "X"
 msgstr "X"
 
 #: operations/common/dropshadow.c:33 operations/common/inner-glow.c:52
-#: operations/workshop/styles.c:146
+#: operations/common/styles.c:146
 msgid "Horizontal shadow offset"
 msgstr "Зміщення тіні за горизонталлю"
 
@@ -2001,7 +2001,7 @@ msgid "Y"
 msgstr "Y"
 
 #: operations/common/dropshadow.c:40 operations/common/inner-glow.c:60
-#: operations/workshop/styles.c:155
+#: operations/common/styles.c:155
 msgid "Vertical shadow offset"
 msgstr "Зміщення тіні за вертикаллю"
 
@@ -2416,8 +2416,8 @@ msgid "Chroma adjustment"
 msgstr "Регулювання колірності"
 
 #: operations/common/hue-chroma.c:33 operations/common/noise-cie-lch.c:29
+#: operations/common/styles.c:393
 #: operations/workshop/selective-hue-saturation.c:42
-#: operations/workshop/styles.c:393
 msgid "Lightness"
 msgstr "Освітленість"
 
@@ -2550,11 +2550,11 @@ msgstr ""
 "на цьому повзунку перетворить його на контурне. Тому посувайте його до "
 "позиції, яка потрібна вам для покриття тонких кутів форми."
 
-#: operations/common/inner-glow.c:178
+#: operations/common/inner-glow.c:182
 msgid "Inner Glow"
 msgstr "Внутрішнє сяйво"
 
-#: operations/common/inner-glow.c:180
+#: operations/common/inner-glow.c:184
 msgid ""
 "GEGL does an inner shadow glow effect; for more interesting use different "
 "blend mode than the default, Replace."
@@ -2562,7 +2562,7 @@ msgstr ""
 "GEGL додає ефекти внутрішнього сяйва; щоб отримати цікавіший результат, "
 "скористайтеся іншим режимом злиття, ніж типовий, «Заміна»."
 
-#: operations/common/inner-glow.c:182
+#: operations/common/inner-glow.c:186
 msgid "Inner Glow..."
 msgstr "Внутрішнє сяйво,"
 
@@ -4604,6 +4604,511 @@ msgstr ""
 "(малоконтрастні зображення, дуже темні зображення та дуже світлі "
 "зображення). Ця версія відрізняється від «Авторозтягування контрастності» "
 "тим, що працює у просторі HSV із зберігає відтінок."
+
+#: operations/common/styles.c:30
+msgid "Color, Outline and Shadow"
+msgstr "Колір, контур і тінь"
+
+#: operations/common/styles.c:31
+msgid "Bevel and Inner Glow"
+msgstr "Фаска та внутрішнє сяйво"
+
+#: operations/common/styles.c:32
+msgid "Image upload and Outline Bevel"
+msgstr "Вивантаження зображення та фаска контуру"
+
+#. List of all GUI options
+#. GUI Change list in GUI
+#: operations/common/styles.c:39
+msgid "Part of filter to be displayed"
+msgstr "Частина фільтра, яку слід показати"
+
+#: operations/common/styles.c:42
+msgid "Display a different part of the GUI"
+msgstr "Показати іншу частину графічного інтерфейсу"
+
+#. Color Overlays GUI options begin here
+#: operations/common/styles.c:46
+msgid "Color overlay"
+msgstr "Накладання кольору"
+
+#: operations/common/styles.c:48
+msgid "Color overlay setting"
+msgstr "Параметр накладки кольору"
+
+#: operations/common/styles.c:50
+msgid "Color policy"
+msgstr "Правила кольорів"
+
+#: operations/common/styles.c:51
+msgid "Change the blend mode of the color overlay"
+msgstr "Змінити режим злиття накладки кольорів"
+
+#: operations/common/styles.c:58
+msgid "No Color"
+msgstr "Без кольору"
+
+#: operations/common/styles.c:62
+msgid "Solid Color"
+msgstr "Суцільний колір"
+
+#. Outline's normal GUI options begin here
+#: operations/common/styles.c:68
+msgid "Enable Outline"
+msgstr "Увімкнути контур"
+
+#: operations/common/styles.c:69
+msgid "Disable or enable the outline"
+msgstr "Вимкнути або увімкнути контур"
+
+#: operations/common/styles.c:72
+msgid "Outline opacity"
+msgstr "Непрозорість контуру"
+
+#: operations/common/styles.c:75
+msgid "Opacity of the outline"
+msgstr "Непрозорість контуру"
+
+#: operations/common/styles.c:79
+msgid "Outline X"
+msgstr "Контур за X"
+
+#: operations/common/styles.c:80
+msgid "Horizontal outline offset"
+msgstr "Горизонтальний зсув контуру"
+
+#: operations/common/styles.c:87
+msgid "Outline Y"
+msgstr "Контур за Y"
+
+#: operations/common/styles.c:88
+msgid "Vertical outline offset"
+msgstr "Вертикальний зсув контуру"
+
+#: operations/common/styles.c:102
+msgid "Outline grow shape"
+msgstr "Форма зростання контуру"
+
+#: operations/common/styles.c:105
+msgid "The shape to expand or contract the outline in"
+msgstr "Форма для розширення або стискання контуру"
+
+#: operations/common/styles.c:109
+msgid "Outline blur radius"
+msgstr "Радіус розмивання контуру"
+
+#: operations/common/styles.c:115
+msgid "A mild blur for the outline"
+msgstr "М'яке розмиття для контуру"
+
+#: operations/common/styles.c:119
+msgid "Outline grow radius"
+msgstr "Радіус збільшення контуру"
+
+#: operations/common/styles.c:126
+msgid "The distance to expand the outline"
+msgstr "Відстань розширення контуру"
+
+#. Shadow's GUI options begin here
+#: operations/common/styles.c:131
+msgid "Outline’s color"
+msgstr "Колір контуру"
+
+#: operations/common/styles.c:132
+msgid "Color of the outline (defaults to 'black') "
+msgstr "Колір контуру (типовим є чорний)"
+
+#: operations/common/styles.c:137
+msgid "Shadow/Glow opacity"
+msgstr "Непрозорість тіні/сяйва"
+
+#: operations/common/styles.c:141
+msgid ""
+"Shadow opacity which will also enable or disable the shadow glow effect"
+msgstr "Непрозорість тіні, яка також вмикає або вимикає ефект тіні/сяйва"
+
+#: operations/common/styles.c:145
+msgid "Shadow/Glow X"
+msgstr "X тіні/сяйва"
+
+#: operations/common/styles.c:151
+msgid "Horizontal axis of the shadow glow"
+msgstr "Горизонтальна вісь тіні або сяйва"
+
+#: operations/common/styles.c:154
+msgid "Shadow/Glow Y"
+msgstr "Y тіні/сяйва"
+
+#: operations/common/styles.c:160
+msgid "Vertical axis of the shadow glow"
+msgstr "Вертикальна вісь тіні або сяйва"
+
+#: operations/common/styles.c:163
+msgid "Shadow/Glow’s color"
+msgstr "Колір тіні/сяйва"
+
+#. TRANSLATORS: the string 'black' should not be translated
+#: operations/common/styles.c:165
+msgid "The shadow’s color (defaults to 'black')"
+msgstr "Колір тіні (типово, «black»)"
+
+#: operations/common/styles.c:168
+msgid "Shadow/Glow grow radius"
+msgstr "Радіус зростання тіні/сяйва"
+
+#: operations/common/styles.c:175
+msgid "The distance to expand the shadow before blurring."
+msgstr "Відстань поширення тіні до розмивання."
+
+#: operations/common/styles.c:178
+msgid "Shadow/Glow blur radius"
+msgstr "Радіус розмивання тіні/сяйва"
+
+#: operations/common/styles.c:184
+msgid "The shadow’s blur range"
+msgstr "Діапазон розмивання тіні"
+
+#. Bevel's GUI options begin here
+#. This is the Bevel's ENUM List listed in the GUI
+#. This is the ENUM list for bevel's emboss blend modes
+#: operations/common/styles.c:192
+msgid "Enable Bevel"
+msgstr "Увімкнути фаску"
+
+#: operations/common/styles.c:193
+msgid "Whether to add a bevel effect"
+msgstr "Визначає, чи слід додавати ефект фаски"
+
+#: operations/common/styles.c:210
+msgid "Bevel blend mode"
+msgstr "Режим змішування фаски"
+
+#: operations/common/styles.c:211
+msgid "Blend mode of the bevel"
+msgstr "Режим змішування для фаски"
+
+#: operations/common/styles.c:219
+msgid "Chamfer Bevel"
+msgstr "Витесати фаску"
+
+#: operations/common/styles.c:221
+msgid "Bump Bevel"
+msgstr "Витиснути фаску"
+
+#: operations/common/styles.c:224
+msgid "Select Bevel"
+msgstr "Вибір фаски"
+
+#: operations/common/styles.c:227
+msgid "Type of bevel "
+msgstr "Тип фаски"
+
+#: operations/common/styles.c:233
+msgid "Bevel depth"
+msgstr "Глибина фаски"
+
+#: operations/common/styles.c:234
+msgid "Emboss depth for the bevel"
+msgstr "Глибина рельєфу для фаски"
+
+#: operations/common/styles.c:240
+msgid "Bevel elevation"
+msgstr "Висота фаски"
+
+#: operations/common/styles.c:241
+msgid "Emboss elevation of the bevel"
+msgstr "Висота рельєфу фаски"
+
+#: operations/common/styles.c:248
+msgid "Bevel azimuth"
+msgstr "Азимут фаски"
+
+#: operations/common/styles.c:249
+msgid "Emboss azimuth of the bevel"
+msgstr "Азимут рельєфу фаски"
+
+#: operations/common/styles.c:256
+msgid "Bevel radius (bump only)"
+msgstr "Радіус фаски (лише витискання)"
+
+#: operations/common/styles.c:260
+msgid ""
+"Internal gaussian blur to inflate the bump bevel. This option does not work "
+"on chamfer"
+msgstr ""
+"Внутрішнє гаусове розмивання для розширення витискної фаски. Цей параметр не "
+"працює для витесаної фаски"
+
+#: operations/common/styles.c:266
+msgid "Levels low output lighting for Bevel"
+msgstr "Низькорівневе виведення світла для фаски"
+
+#: operations/common/styles.c:267
+msgid "Levels low output as a light adjustment for the bevel"
+msgstr "Низькорівневе виведення як коригування освітлення для фаски"
+
+#: operations/common/styles.c:275
+msgid "Levels high output lighting for Bevel"
+msgstr "Високорівневе виведення світла для фаски"
+
+#: operations/common/styles.c:276
+msgid "Levels high output as a light adjustment for the bevel"
+msgstr "Високорівневе виведення як коригування освітлення для фаски"
+
+#: operations/common/styles.c:284
+msgid "Dark Bevel/ignore image mode"
+msgstr "Темна фаска/ігнорувати режим зображення"
+
+#: operations/common/styles.c:285
+msgid ""
+"This instructs the bevel to ignore image details if there is an image file "
+"overlay below it. It also allows bevel to work better when the user selects "
+"darker colors. The effect is noticeable on bump bevel but barely effects "
+"chamfer bevel"
+msgstr ""
+"Це означає, що фаска ігнорує деталі зображення, якщо під нею є накладка "
+"файла зображення. Це також уможливлює кращу роботу фаски, коли користувач "
+"вибирає темніші кольори. Ефект помітний на витискній фасці, але майже не "
+"впливає на витесану фаску"
+
+#. This operation is extremely important for bevels with image file overlays
+#. Inner Glow GUI options begin here
+#: operations/common/styles.c:295
+msgid "Enable Inner Glow"
+msgstr "Увімкнути внутрішнє сяйво"
+
+#: operations/common/styles.c:296
+msgid "Whether to add the inner glow effect"
+msgstr "Визначає, чи слід додавати ефект внутрішнього сяйва"
+
+#: operations/common/styles.c:305
+msgid "Normal"
+msgstr "Звичайний"
+
+#: operations/common/styles.c:307
+msgid "Overlay"
+msgstr "Накладання"
+
+#: operations/common/styles.c:309
+msgid "Screen"
+msgstr "Проєктування"
+
+#: operations/common/styles.c:315
+msgid "Plus"
+msgstr "Додавання"
+
+#: operations/common/styles.c:318
+msgid "Blend mode of Inner Glow"
+msgstr "Режим розмивання внутрішнього сяйва"
+
+#: operations/common/styles.c:324
+msgid "Inner Glow's blur radius"
+msgstr "Радіус розмивання внутрішнього сяйва"
+
+#: operations/common/styles.c:330
+msgid "Blur control of the inner glow"
+msgstr "Керування розмиванням внутрішнього сяйва"
+
+#: operations/common/styles.c:334
+msgid "Inner Glow's grow radius"
+msgstr "Радіус зростання внутрішнього сяйва"
+
+#: operations/common/styles.c:341
+msgid "The distance to expand the inner glow before blurring"
+msgstr "Відстань поширення внутрішнього сяйва до розмивання"
+
+#: operations/common/styles.c:345
+msgid "Inner Glow's opacity"
+msgstr "Непрозорість внутрішнього сяйва"
+
+#: operations/common/styles.c:348
+msgid "Opacity of the inner glow"
+msgstr "Непрозорість внутрішнього сяйва"
+
+#: operations/common/styles.c:352
+msgid "Inner Glow's color"
+msgstr "Колір внутрішнього сяйва"
+
+#: operations/common/styles.c:353
+msgid "The color of the inner glow"
+msgstr "Колір внутрішнього сяйва"
+
+#: operations/common/styles.c:357
+msgid "Inner Glow's unmodified pixel fix"
+msgstr "Виправлення внутрішнього сяйва для незмінених пікселів"
+
+#: operations/common/styles.c:359
+msgid "Cover pixels that inner glow might miss"
+msgstr "Покрити пікселі, які може пропустити ефект внутрішнього сяйва"
+
+#. Without this Inner Glow would miss many pixels around alpha defined shapes edges'
+#. Image file overlay GUI options begin here
+#: operations/common/styles.c:366
+msgid "Enable image upload"
+msgstr "Увімкнути вивантаження зображення"
+
+#: operations/common/styles.c:367 operations/common/styles.c:466
+msgid "Whether to enable or disable the image file upload."
+msgstr "Визначає, увімкнути чи вимкнути вивантаження файлів зображень."
+
+#: operations/common/styles.c:370
+msgid "Image file overlay"
+msgstr "Накладка-файл на зображення"
+
+#: operations/common/styles.c:371
+msgid ""
+"Upload an image file from your computer to be in the fill area. Allows (png, "
+"jpg, raw, svg, bmp, tif, ...)"
+msgstr ""
+"Вивантажити файл зображення з вашого комп'ютера для заповнення області "
+"заливання. (Можна використовувати png, jpg, raw, svg, bmp, tif, ...)"
+
+#: operations/common/styles.c:375
+msgid "Opacity of image file overlay"
+msgstr "Непрозорість накладки-файла зображення"
+
+#: operations/common/styles.c:378
+msgid "Opacity of the image file overlay that was uploaded. "
+msgstr "Непрозорість файлової накладки зображення, яке було вивантажено. "
+
+#: operations/common/styles.c:389
+msgid ""
+"Saturation adjustment of the uploaded image file or whatever is on canvas"
+msgstr "Коригування насиченості вивантаженого файла зображення на полотні"
+
+#: operations/common/styles.c:394
+msgid ""
+"Lightness adjustment of the uploaded image file or whatever is on canvas"
+msgstr "Коригування освітленості вивантаженого файла зображення на полотні"
+
+#. Outline special options in GUI begin here
+#: operations/common/styles.c:399
+msgid "Enable advanced options on Outline (requires outline)"
+msgstr "Увімкнути додаткові параметри контуру (потребує увімкнення контуру)"
+
+#: operations/common/styles.c:400
+msgid "Turn on advanced outline abilities"
+msgstr "Увімкнути додаткові можливості роботи з контуром"
+
+#: operations/common/styles.c:405
+msgid "Enable Outline Bevel (requires advanced options)"
+msgstr "Увімкнути фаску контуру (потребує додаткових параметрів)"
+
+#: operations/common/styles.c:406
+msgid "Turn on outlines ability to bevel"
+msgstr "Увімкнути можливість створення фаски для контуру"
+
+#: operations/common/styles.c:427
+msgid "Outline Bevel blend mode"
+msgstr "Режим злиття фаски контуру"
+
+#: operations/common/styles.c:428
+msgid "Blend mode of the outline bevel"
+msgstr "Режим змішування для фаски контуру"
+
+#: operations/common/styles.c:435
+msgid "Outline Bevel depth"
+msgstr "Глибина фаски контуру"
+
+#: operations/common/styles.c:436
+msgid "Emboss depth for the outline bevel"
+msgstr "Глибина рельєфу для фаски контуру"
+
+#: operations/common/styles.c:441
+msgid "Outline Bevel elevation"
+msgstr "Висота фаски контуру"
+
+#: operations/common/styles.c:442
+msgid "Emboss elevation for the outline bevel"
+msgstr "Висота рельєфу для фаски контуру"
+
+#: operations/common/styles.c:448
+msgid "Outline Bevel azimuth"
+msgstr "Азимут фаски контуру"
+
+#: operations/common/styles.c:449
+msgid "Emboss azimuth for the outline bevel"
+msgstr "Азимут рельєфу для фаски контуру"
+
+#: operations/common/styles.c:456
+msgid "Outline Bevel radius"
+msgstr "Радіус фаски контуру"
+
+#: operations/common/styles.c:457
+msgid "Internal gaussian blur to inflate the outline bevel"
+msgstr "Внутрішнє гаусове розмивання для розширення фаски контуру"
+
+#: operations/common/styles.c:465
+msgid "Enable image upload on Outline (requires advanced options)"
+msgstr ""
+"Увімкнути вивантаження зображень на контур (потребує додаткових можливостей)"
+
+#: operations/common/styles.c:470
+msgid "Outline image file overlay"
+msgstr "Накладка-файл зображення контуру"
+
+#: operations/common/styles.c:471
+msgid ""
+"Upload an image file from your computer to be in the outline area. Allows "
+"(png, jpg, raw, svg, bmp, tif, ...)"
+msgstr ""
+"Вивантажити файл зображення з вашого комп'ютера для заповнення області "
+"контуру. (Можна використовувати png, jpg, raw, svg, bmp, tif, ...)"
+
+#: operations/common/styles.c:476
+msgid "Outline image opacity"
+msgstr "Непрозорість зображення контуру"
+
+#: operations/common/styles.c:477
+msgid "Outline image opacity adjustment"
+msgstr "Коригування непрозорості зображення-контуру"
+
+#: operations/common/styles.c:482
+msgid "Levels low output lighting for Outline Bevel"
+msgstr "Низькорівневе виведення світла для фаски контуру"
+
+#: operations/common/styles.c:483
+msgid "Levels low output as a light adjustment for the outline bevel"
+msgstr "Низькорівневе виведення як коригування освітлення для фаски контуру"
+
+#: operations/common/styles.c:490
+msgid "Levels high output lighting for Outline Bevel"
+msgstr "Високорівневе виведення світла для фаски контуру"
+
+#: operations/common/styles.c:491
+msgid "Levels high output as a light adjustment for the outline bevel"
+msgstr "Високорівневе виведення як коригування освітлення для фаски контуру"
+
+#: operations/common/styles.c:499
+msgid "Outline Dark Bevel/ignore image mode"
+msgstr "Темна фаска контуру/ігнорувати режим зображення"
+
+#: operations/common/styles.c:500
+msgid ""
+"This instructs the outline bevel to ignore image details if there is an "
+"image file overlay below it. It also allows outline bevel to work better "
+"when the user selects darker colors."
+msgstr ""
+"Наказу алгоритму фаски контуру ігнорувати деталі зображення, якщо під ним є "
+"файлова накладка-зображення. Це також покращує роботу ефекту фаски контуру, "
+"якщо користувач вибирає темніші кольори."
+
+#: operations/common/styles.c:1243
+msgid "GEGL Styles"
+msgstr "Стилі GEGL"
+
+#: operations/common/styles.c:1246
+msgid ""
+"An engine to style text and add popular effects to alpha channel images. "
+"Effects include outline, bevel, shadow, and inner glow all in one place."
+msgstr ""
+"Рушій для стилізації текст та додавання популярних ефектів до зображень із "
+"каналом прозорості. Серед ефектів одразу контур, фаска, тінь та внутрішнє "
+"сяйво."
+
+#: operations/common/styles.c:1249
+msgid "Text Styling..."
+msgstr "Стилізація тексту…"
 
 #: operations/common/svg-huerotate.c:27 operations/common/svg-matrix.c:27
 #: operations/common/svg-saturate.c:25
@@ -8262,13 +8767,13 @@ msgstr "Непрозорість заповнення"
 
 #: operations/external/path.c:54 operations/external/vector-fill.c:40
 #: operations/external/vector-stroke.c:41
-#: operations/workshop/external/ctx-script.c:26
+#: operations/workshop/external/ctx-script.c:64
 msgid "Vector"
 msgstr "Векторний"
 
 #: operations/external/path.c:55 operations/external/vector-fill.c:41
 #: operations/external/vector-stroke.c:42
-#: operations/workshop/external/ctx-script.c:27
+#: operations/workshop/external/ctx-script.c:65
 msgid "A GeglVector representing the path of the stroke"
 msgstr "GeglVector контуру мазка"
 
@@ -9380,7 +9885,7 @@ msgstr "Нормалізувати виведення до діапазону [�
 msgid "Connected Components"
 msgstr "З'єднані компоненти"
 
-#: operations/workshop/connected-components.c:290
+#: operations/workshop/connected-components.c:292
 msgid ""
 "Fills each connected region of the input, separated from the rest of the "
 "input by a given color, with a unique color."
@@ -9435,13 +9940,14 @@ msgstr ""
 "Тестова операція для виконання відображення 1:1 вхідних даних до результату "
 "під час дискретизації"
 
-#: operations/workshop/external/ctx-script.c:126
+#: operations/workshop/external/ctx-script.c:180
 msgid "Ctx script"
 msgstr "Скрипт ctx"
 
-#: operations/workshop/external/ctx-script.c:128
-msgid "Renders a ctx vector graphics"
-msgstr "Обробляє векторну графіку ctx"
+#: operations/workshop/external/ctx-script.c:182
+#| msgid "Renders a ctx vector graphics"
+msgid "Renders a ctx vector graphics script"
+msgstr "Обробляє сценарій векторної графіки ctx"
 
 #: operations/workshop/external/gluas.c:29
 msgid "Script"
@@ -9818,7 +10324,7 @@ msgstr "Визначає, чи краї зображення також засі
 msgid "Voronoi Diagram"
 msgstr "Діаграма Вороного"
 
-#: operations/workshop/external/voronoi-diagram.cc:531
+#: operations/workshop/external/voronoi-diagram.cc:533
 msgid "Paints each non-seed pixel with the color of the nearest seed pixel."
 msgstr ""
 "Замальовує кожен незасіяниий піксель кольором найближчого засіяного пікселя."
@@ -10004,512 +10510,6 @@ msgid ""
 msgstr ""
 "Перемішує пікселі і виконує квантизацію із сусідніми пікселями для "
 "оптимізації розмивання шляхом перемішування сусідніх пікселів."
-
-#: operations/workshop/styles.c:30
-msgid "Color, Outline and Shadow"
-msgstr "Колір, контур і тінь"
-
-#: operations/workshop/styles.c:31
-msgid "Bevel and Inner Glow"
-msgstr "Фаска та внутрішнє сяйво"
-
-#: operations/workshop/styles.c:32
-msgid "Image upload and Outline Bevel"
-msgstr "Вивантаження зображення та фаска контуру"
-
-#. List of all GUI options
-#. GUI Change list in GUI
-#: operations/workshop/styles.c:39
-msgid "Part of filter to be displayed"
-msgstr "Частина фільтра, яку слід показати"
-
-#: operations/workshop/styles.c:42
-msgid "Display a different part of the GUI"
-msgstr "Показати іншу частину графічного інтерфейсу"
-
-#. Color Overlays GUI options begin here
-#: operations/workshop/styles.c:46
-msgid "Color overlay"
-msgstr "Накладання кольору"
-
-#: operations/workshop/styles.c:48
-msgid "Color overlay setting"
-msgstr "Параметр накладки кольору"
-
-#: operations/workshop/styles.c:50
-msgid "Color policy"
-msgstr "Правила кольорів"
-
-#: operations/workshop/styles.c:51
-msgid "Change the blend mode of the color overlay"
-msgstr "Змінити режим злиття накладки кольорів"
-
-#: operations/workshop/styles.c:58
-msgid "No Color"
-msgstr "Без кольору"
-
-#: operations/workshop/styles.c:62
-msgid "Solid Color"
-msgstr "Суцільний колір"
-
-#. Outline's normal GUI options begin here
-#: operations/workshop/styles.c:68
-msgid "Enable Outline"
-msgstr "Увімкнути контур"
-
-#: operations/workshop/styles.c:69
-msgid "Disable or enable the outline"
-msgstr "Вимкнути або увімкнути контур"
-
-#: operations/workshop/styles.c:72
-msgid "Outline opacity"
-msgstr "Непрозорість контуру"
-
-#: operations/workshop/styles.c:75
-msgid "Opacity of the outline"
-msgstr "Непрозорість контуру"
-
-#: operations/workshop/styles.c:79
-msgid "Outline X"
-msgstr "Контур за X"
-
-#: operations/workshop/styles.c:80
-msgid "Horizontal outline offset"
-msgstr "Горизонтальний зсув контуру"
-
-#: operations/workshop/styles.c:87
-msgid "Outline Y"
-msgstr "Контур за Y"
-
-#: operations/workshop/styles.c:88
-msgid "Vertical outline offset"
-msgstr "Вертикальний зсув контуру"
-
-#: operations/workshop/styles.c:102
-msgid "Outline grow shape"
-msgstr "Форма зростання контуру"
-
-#: operations/workshop/styles.c:105
-msgid "The shape to expand or contract the outline in"
-msgstr "Форма для розширення або стискання контуру"
-
-#: operations/workshop/styles.c:109
-msgid "Outline blur radius"
-msgstr "Радіус розмивання контуру"
-
-#: operations/workshop/styles.c:115
-msgid "A mild blur for the outline"
-msgstr "М'яке розмиття для контуру"
-
-#: operations/workshop/styles.c:119
-msgid "Outline grow radius"
-msgstr "Радіус збільшення контуру"
-
-#: operations/workshop/styles.c:126
-msgid "The distance to expand the outline"
-msgstr "Відстань розширення контуру"
-
-#. Shadow's GUI options begin here
-#: operations/workshop/styles.c:131
-msgid "Outline’s color"
-msgstr "Колір контуру"
-
-#: operations/workshop/styles.c:132
-msgid "Color of the outline (defaults to 'black') "
-msgstr "Колір контуру (типовим є чорний)"
-
-#: operations/workshop/styles.c:137
-msgid "Shadow/Glow opacity"
-msgstr "Непрозорість тіні/сяйва"
-
-#: operations/workshop/styles.c:141
-msgid ""
-"Shadow opacity which will also enable or disable the shadow glow effect"
-msgstr "Непрозорість тіні, яка також вмикає або вимикає ефект тіні/сяйва"
-
-#: operations/workshop/styles.c:145
-msgid "Shadow/Glow X"
-msgstr "X тіні/сяйва"
-
-#: operations/workshop/styles.c:151
-msgid "Horizontal axis of the shadow glow"
-msgstr "Горизонтальна вісь тіні або сяйва"
-
-#: operations/workshop/styles.c:154
-msgid "Shadow/Glow Y"
-msgstr "Y тіні/сяйва"
-
-#: operations/workshop/styles.c:160
-msgid "Vertical axis of the shadow glow"
-msgstr "Вертикальна вісь тіні або сяйва"
-
-#: operations/workshop/styles.c:163
-msgid "Shadow/Glow’s color"
-msgstr "Колір тіні/сяйва"
-
-#. TRANSLATORS: the string 'black' should not be translated
-#: operations/workshop/styles.c:165
-msgid "The shadow’s color (defaults to 'black')"
-msgstr "Колір тіні (типово, «black»)"
-
-#: operations/workshop/styles.c:168
-msgid "Shadow/Glow grow radius"
-msgstr "Радіус зростання тіні/сяйва"
-
-#: operations/workshop/styles.c:175
-msgid "The distance to expand the shadow before blurring."
-msgstr "Відстань поширення тіні до розмивання."
-
-#: operations/workshop/styles.c:178
-msgid "Shadow/Glow blur radius"
-msgstr "Радіус розмивання тіні/сяйва"
-
-#: operations/workshop/styles.c:184
-msgid "The shadow’s blur range"
-msgstr "Діапазон розмивання тіні"
-
-#. Bevel's GUI options begin here
-#. This is the Bevel's ENUM List listed in the GUI
-#. This is the ENUM list for bevel's emboss blend modes
-#: operations/workshop/styles.c:192
-msgid "Enable Bevel"
-msgstr "Увімкнути фаску"
-
-#: operations/workshop/styles.c:193
-msgid "Whether to add a bevel effect"
-msgstr "Визначає, чи слід додавати ефект фаски"
-
-#: operations/workshop/styles.c:210
-msgid "Bevel blend mode"
-msgstr "Режим змішування фаски"
-
-#: operations/workshop/styles.c:211
-msgid "Blend mode of the bevel"
-msgstr "Режим змішування для фаски"
-
-#: operations/workshop/styles.c:219
-msgid "Chamfer Bevel"
-msgstr "Витесати фаску"
-
-#: operations/workshop/styles.c:221
-msgid "Bump Bevel"
-msgstr "Витиснути фаску"
-
-#: operations/workshop/styles.c:224
-msgid "Select Bevel"
-msgstr "Вибір фаски"
-
-#: operations/workshop/styles.c:227
-msgid "Type of bevel "
-msgstr "Тип фаски"
-
-#: operations/workshop/styles.c:233
-msgid "Bevel depth"
-msgstr "Глибина фаски"
-
-#: operations/workshop/styles.c:234
-msgid "Emboss depth for the bevel"
-msgstr "Глибина рельєфу для фаски"
-
-#: operations/workshop/styles.c:240
-msgid "Bevel elevation"
-msgstr "Висота фаски"
-
-#: operations/workshop/styles.c:241
-msgid "Emboss elevation of the bevel"
-msgstr "Висота рельєфу фаски"
-
-#: operations/workshop/styles.c:248
-msgid "Bevel azimuth"
-msgstr "Азимут фаски"
-
-#: operations/workshop/styles.c:249
-msgid "Emboss azimuth of the bevel"
-msgstr "Азимут рельєфу фаски"
-
-#: operations/workshop/styles.c:256
-msgid "Bevel radius (bump only)"
-msgstr "Радіус фаски (лише витискання)"
-
-#: operations/workshop/styles.c:260
-msgid ""
-"Internal gaussian blur to inflate the bump bevel. This option does not work "
-"on chamfer"
-msgstr ""
-"Внутрішнє гаусове розмивання для розширення витискної фаски. Цей параметр не "
-"працює для витесаної фаски"
-
-#: operations/workshop/styles.c:266
-msgid "Levels low output lighting for Bevel"
-msgstr "Низькорівневе виведення світла для фаски"
-
-#: operations/workshop/styles.c:267
-msgid "Levels low output as a light adjustment for the bevel"
-msgstr "Низькорівневе виведення як коригування освітлення для фаски"
-
-#: operations/workshop/styles.c:275
-msgid "Levels high output lighting for Bevel"
-msgstr "Високорівневе виведення світла для фаски"
-
-#: operations/workshop/styles.c:276
-msgid "Levels high output as a light adjustment for the bevel"
-msgstr "Високорівневе виведення як коригування освітлення для фаски"
-
-#: operations/workshop/styles.c:284
-msgid "Dark Bevel/ignore image mode"
-msgstr "Темна фаска/ігнорувати режим зображення"
-
-#: operations/workshop/styles.c:285
-msgid ""
-"This instructs the bevel to ignore image details if there is an image file "
-"overlay below it. It also allows bevel to work better when the user selects "
-"darker colors. The effect is noticeable on bump bevel but barely effects "
-"chamfer bevel"
-msgstr ""
-"Це означає, що фаска ігнорує деталі зображення, якщо під нею є накладка "
-"файла зображення. Це також уможливлює кращу роботу фаски, коли користувач "
-"вибирає темніші кольори. Ефект помітний на витискній фасці, але майже не "
-"впливає на витесану фаску"
-
-#. This operation is extremely important for bevels with image file overlays
-#. Inner Glow GUI options begin here
-#: operations/workshop/styles.c:295
-msgid "Enable Inner Glow"
-msgstr "Увімкнути внутрішнє сяйво"
-
-#: operations/workshop/styles.c:296
-msgid "Whether to add the inner glow effect"
-msgstr "Визначає, чи слід додавати ефект внутрішнього сяйва"
-
-#: operations/workshop/styles.c:305
-msgid "Normal"
-msgstr "Звичайний"
-
-#: operations/workshop/styles.c:307
-msgid "Overlay"
-msgstr "Накладання"
-
-#: operations/workshop/styles.c:309
-msgid "Screen"
-msgstr "Проєктування"
-
-#: operations/workshop/styles.c:315
-msgid "Plus"
-msgstr "Додавання"
-
-#: operations/workshop/styles.c:318
-msgid "Blend mode of Inner Glow"
-msgstr "Режим розмивання внутрішнього сяйва"
-
-#: operations/workshop/styles.c:324
-msgid "Inner Glow's blur radius"
-msgstr "Радіус розмивання внутрішнього сяйва"
-
-#: operations/workshop/styles.c:330
-msgid "Blur control of the inner glow"
-msgstr "Керування розмиванням внутрішнього сяйва"
-
-#: operations/workshop/styles.c:334
-msgid "Inner Glow's grow radius"
-msgstr "Радіус зростання внутрішнього сяйва"
-
-#: operations/workshop/styles.c:341
-msgid "The distance to expand the inner glow before blurring"
-msgstr "Відстань поширення внутрішнього сяйва до розмивання"
-
-#: operations/workshop/styles.c:345
-msgid "Inner Glow's opacity"
-msgstr "Непрозорість внутрішнього сяйва"
-
-#: operations/workshop/styles.c:348
-msgid "Opacity of the inner glow"
-msgstr "Непрозорість внутрішнього сяйва"
-
-#: operations/workshop/styles.c:352
-msgid "Inner Glow's color"
-msgstr "Колір внутрішнього сяйва"
-
-#: operations/workshop/styles.c:353
-msgid "The color of the inner glow"
-msgstr "Колір внутрішнього сяйва"
-
-#: operations/workshop/styles.c:357
-msgid "Inner Glow's unmodified pixel fix"
-msgstr "Виправлення внутрішнього сяйва для незмінених пікселів"
-
-#: operations/workshop/styles.c:359
-msgid "Cover pixels that inner glow might miss"
-msgstr "Покрити пікселі, які може пропустити ефект внутрішнього сяйва"
-
-#. Without this Inner Glow would miss many pixels around alpha defined shapes edges'
-#. Image file overlay GUI options begin here
-#: operations/workshop/styles.c:366
-msgid "Enable image upload"
-msgstr "Увімкнути вивантаження зображення"
-
-#: operations/workshop/styles.c:367 operations/workshop/styles.c:466
-msgid "Whether to enable or disable the image file upload."
-msgstr "Визначає, увімкнути чи вимкнути вивантаження файлів зображень."
-
-#: operations/workshop/styles.c:370
-msgid "Image file overlay"
-msgstr "Накладка-файл на зображення"
-
-#: operations/workshop/styles.c:371
-msgid ""
-"Upload an image file from your computer to be in the fill area. Allows (png, "
-"jpg, raw, svg, bmp, tif, ...)"
-msgstr ""
-"Вивантажити файл зображення з вашого комп'ютера для заповнення області "
-"заливання. (Можна використовувати png, jpg, raw, svg, bmp, tif, ...)"
-
-#: operations/workshop/styles.c:375
-msgid "Opacity of image file overlay"
-msgstr "Непрозорість накладки-файла зображення"
-
-#: operations/workshop/styles.c:378
-msgid "Opacity of the image file overlay that was uploaded. "
-msgstr "Непрозорість файлової накладки зображення, яке було вивантажено. "
-
-#: operations/workshop/styles.c:389
-msgid ""
-"Saturation adjustment of the uploaded image file or whatever is on canvas"
-msgstr "Коригування насиченості вивантаженого файла зображення на полотні"
-
-#: operations/workshop/styles.c:394
-msgid ""
-"Lightness adjustment of the uploaded image file or whatever is on canvas"
-msgstr "Коригування освітленості вивантаженого файла зображення на полотні"
-
-#. Outline special options in GUI begin here
-#: operations/workshop/styles.c:399
-msgid "Enable advanced options on Outline (requires outline)"
-msgstr "Увімкнути додаткові параметри контуру (потребує увімкнення контуру)"
-
-#: operations/workshop/styles.c:400
-msgid "Turn on advanced outline abilities"
-msgstr "Увімкнути додаткові можливості роботи з контуром"
-
-#: operations/workshop/styles.c:405
-msgid "Enable Outline Bevel (requires advanced options)"
-msgstr "Увімкнути фаску контуру (потребує додаткових параметрів)"
-
-#: operations/workshop/styles.c:406
-msgid "Turn on outlines ability to bevel"
-msgstr "Увімкнути можливість створення фаски для контуру"
-
-#: operations/workshop/styles.c:427
-msgid "Outline Bevel blend mode"
-msgstr "Режим злиття фаски контуру"
-
-#: operations/workshop/styles.c:428
-msgid "Blend mode of the outline bevel"
-msgstr "Режим змішування для фаски контуру"
-
-#: operations/workshop/styles.c:435
-msgid "Outline Bevel depth"
-msgstr "Глибина фаски контуру"
-
-#: operations/workshop/styles.c:436
-msgid "Emboss depth for the outline bevel"
-msgstr "Глибина рельєфу для фаски контуру"
-
-#: operations/workshop/styles.c:441
-msgid "Outline Bevel elevation"
-msgstr "Висота фаски контуру"
-
-#: operations/workshop/styles.c:442
-msgid "Emboss elevation for the outline bevel"
-msgstr "Висота рельєфу для фаски контуру"
-
-#: operations/workshop/styles.c:448
-msgid "Outline Bevel azimuth"
-msgstr "Азимут фаски контуру"
-
-#: operations/workshop/styles.c:449
-msgid "Emboss azimuth for the outline bevel"
-msgstr "Азимут рельєфу для фаски контуру"
-
-#: operations/workshop/styles.c:456
-msgid "Outline Bevel radius"
-msgstr "Радіус фаски контуру"
-
-#: operations/workshop/styles.c:457
-msgid "Internal gaussian blur to inflate the outline bevel"
-msgstr "Внутрішнє гаусове розмивання для розширення фаски контуру"
-
-#: operations/workshop/styles.c:465
-#| msgid "Enable image upload on Outline (requires advanced effects)"
-msgid "Enable image upload on Outline (requires advanced options)"
-msgstr ""
-"Увімкнути вивантаження зображень на контур (потребує додаткових можливостей)"
-
-#: operations/workshop/styles.c:470
-msgid "Outline image file overlay"
-msgstr "Накладка-файл зображення контуру"
-
-#: operations/workshop/styles.c:471
-msgid ""
-"Upload an image file from your computer to be in the outline area. Allows "
-"(png, jpg, raw, svg, bmp, tif, ...)"
-msgstr ""
-"Вивантажити файл зображення з вашого комп'ютера для заповнення області "
-"контуру. (Можна використовувати png, jpg, raw, svg, bmp, tif, ...)"
-
-#: operations/workshop/styles.c:476
-msgid "Outline image opacity"
-msgstr "Непрозорість зображення контуру"
-
-#: operations/workshop/styles.c:477
-msgid "Outline image opacity adjustment"
-msgstr "Коригування непрозорості зображення-контуру"
-
-#: operations/workshop/styles.c:482
-msgid "Levels low output lighting for Outline Bevel"
-msgstr "Низькорівневе виведення світла для фаски контуру"
-
-#: operations/workshop/styles.c:483
-msgid "Levels low output as a light adjustment for the outline bevel"
-msgstr "Низькорівневе виведення як коригування освітлення для фаски контуру"
-
-#: operations/workshop/styles.c:490
-msgid "Levels high output lighting for Outline Bevel"
-msgstr "Високорівневе виведення світла для фаски контуру"
-
-#: operations/workshop/styles.c:491
-msgid "Levels high output as a light adjustment for the outline bevel"
-msgstr "Високорівневе виведення як коригування освітлення для фаски контуру"
-
-#: operations/workshop/styles.c:499
-msgid "Outline Dark Bevel/ignore image mode"
-msgstr "Темна фаска контуру/ігнорувати режим зображення"
-
-#: operations/workshop/styles.c:500
-msgid ""
-"This instructs the outline bevel to ignore image details if there is an "
-"image file overlay below it. It also allows outline bevel to work better "
-"when the user selects darker colors."
-msgstr ""
-"Наказу алгоритму фаски контуру ігнорувати деталі зображення, якщо під ним є "
-"файлова накладка-зображення. Це також покращує роботу ефекту фаски контуру, "
-"якщо користувач вибирає темніші кольори."
-
-#: operations/workshop/styles.c:1243
-msgid "GEGL Styles"
-msgstr "Стилі GEGL"
-
-#: operations/workshop/styles.c:1246
-msgid ""
-"An engine to style text and add popular effects to alpha channel images. "
-"Effects include outline, bevel, shadow, and inner glow all in one place."
-msgstr ""
-"Рушій для стилізації текст та додавання популярних ефектів до зображень із "
-"каналом прозорості. Серед ефектів одразу контур, фаска, тінь та внутрішнє "
-"сяйво."
-
-#: operations/workshop/styles.c:1249
-msgid "Text Styling..."
-msgstr "Стилізація тексту…"
 
 #~| msgid "Hard Light"
 #~ msgid "Hardlight"
