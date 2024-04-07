@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-03-30 00:50+0000\n"
-"PO-Revision-Date: 2024-03-31 17:18+0200\n"
+"POT-Creation-Date: 2024-04-06 15:52+0000\n"
+"PO-Revision-Date: 2024-04-07 13:25+0200\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language: sl_SI\n"
@@ -664,23 +664,23 @@ msgstr "Družina izbočenosti, ki jo želite uporabiti"
 msgid "None (for use with GIMPs blending options)"
 msgstr "Brez (za uporabo z možnostmi zlivanja GIMP)"
 
-#: operations/common/bevel.c:61 operations/workshop/styles.c:203
-#: operations/workshop/styles.c:311 operations/workshop/styles.c:419
+#: operations/common/bevel.c:61 operations/common/styles.c:203
+#: operations/common/styles.c:311 operations/common/styles.c:419
 msgid "Hard Light"
 msgstr "Ostra svetloba"
 
-#: operations/common/bevel.c:63 operations/workshop/styles.c:60
-#: operations/workshop/styles.c:199 operations/workshop/styles.c:415
+#: operations/common/bevel.c:63 operations/common/styles.c:60
+#: operations/common/styles.c:199 operations/common/styles.c:415
 msgid "Multiply"
 msgstr "Pomnoži"
 
-#: operations/common/bevel.c:65 operations/workshop/styles.c:207
-#: operations/workshop/styles.c:313 operations/workshop/styles.c:423
+#: operations/common/bevel.c:65 operations/common/styles.c:207
+#: operations/common/styles.c:313 operations/common/styles.c:423
 msgid "Color Dodge"
 msgstr "Barvni izmik"
 
-#: operations/common/bevel.c:67 operations/workshop/styles.c:205
-#: operations/workshop/styles.c:421
+#: operations/common/bevel.c:67 operations/common/styles.c:205
+#: operations/common/styles.c:421
 msgid "Darken"
 msgstr "Potemni"
 
@@ -688,8 +688,9 @@ msgstr "Potemni"
 msgid "Lighten"
 msgstr "Posvetli"
 
-#: operations/common/bevel.c:71 operations/workshop/external/paint-select.cc:30
-#: operations/workshop/styles.c:201 operations/workshop/styles.c:417
+#: operations/common/bevel.c:71 operations/common/styles.c:201
+#: operations/common/styles.c:417
+#: operations/workshop/external/paint-select.cc:30
 msgid "Add"
 msgstr "Dodaj"
 
@@ -1161,10 +1162,9 @@ msgstr "Velikost mreže"
 #: operations/common/color-assimilation-grid.c:31
 #: operations/common/color-rotate.c:84 operations/common/fattal02.c:39
 #: operations/common/mantiuk06.c:33 operations/common/noise-hsv.c:34
-#: operations/common/saturation.c:404
+#: operations/common/saturation.c:404 operations/common/styles.c:388
 #: operations/external/lcms-from-profile.c:35
 #: operations/workshop/selective-hue-saturation.c:38
-#: operations/workshop/styles.c:388
 msgid "Saturation"
 msgstr "Nasičenost"
 
@@ -1939,22 +1939,22 @@ msgstr ""
 
 #: operations/common/dropshadow.c:27 operations/common/inner-glow.c:39
 #: operations/common/median-blur.c:27 operations/common/pixelize.c:28
-#: operations/common/vignette.c:26 operations/common-cxx/focus-blur.c:35
-#: operations/workshop/styles.c:97
+#: operations/common/styles.c:97 operations/common/vignette.c:26
+#: operations/common-cxx/focus-blur.c:35
 msgid "Square"
 msgstr "Kvadrat"
 
 #: operations/common/dropshadow.c:28 operations/common/inner-glow.c:40
 #: operations/common/median-blur.c:28 operations/common/newsprint.c:26
-#: operations/common/vignette.c:25 operations/common-cxx/focus-blur.c:34
-#: operations/workshop/styles.c:98
+#: operations/common/styles.c:98 operations/common/vignette.c:25
+#: operations/common-cxx/focus-blur.c:34
 msgid "Circle"
 msgstr "Krog"
 
 #: operations/common/dropshadow.c:29 operations/common/inner-glow.c:41
 #: operations/common/median-blur.c:29 operations/common/newsprint.c:27
-#: operations/common/pixelize.c:26 operations/common/vignette.c:27
-#: operations/common-cxx/focus-blur.c:36 operations/workshop/styles.c:99
+#: operations/common/pixelize.c:26 operations/common/styles.c:99
+#: operations/common/vignette.c:27 operations/common-cxx/focus-blur.c:36
 msgid "Diamond"
 msgstr "Karo"
 
@@ -1972,7 +1972,7 @@ msgid "X"
 msgstr "X"
 
 #: operations/common/dropshadow.c:33 operations/common/inner-glow.c:52
-#: operations/workshop/styles.c:146
+#: operations/common/styles.c:146
 msgid "Horizontal shadow offset"
 msgstr "Vodoravni odmik sence"
 
@@ -1990,7 +1990,7 @@ msgid "Y"
 msgstr "Y"
 
 #: operations/common/dropshadow.c:40 operations/common/inner-glow.c:60
-#: operations/workshop/styles.c:155
+#: operations/common/styles.c:155
 msgid "Vertical shadow offset"
 msgstr "Navpični odmik sence"
 
@@ -2397,8 +2397,8 @@ msgid "Chroma adjustment"
 msgstr "Prilagoditev krome"
 
 #: operations/common/hue-chroma.c:33 operations/common/noise-cie-lch.c:29
+#: operations/common/styles.c:393
 #: operations/workshop/selective-hue-saturation.c:42
-#: operations/workshop/styles.c:393
 msgid "Lightness"
 msgstr "Svetlost"
 
@@ -2528,11 +2528,11 @@ msgstr ""
 "previsoko, bo podobno orisu. Torej ga samo podrsajte tako visoko, kot "
 "morate, da pokrijete tanke vogale lika."
 
-#: operations/common/inner-glow.c:178
+#: operations/common/inner-glow.c:182
 msgid "Inner Glow"
 msgstr "Notranje žarenje"
 
-#: operations/common/inner-glow.c:180
+#: operations/common/inner-glow.c:184
 msgid ""
 "GEGL does an inner shadow glow effect; for more interesting use different "
 "blend mode than the default, Replace."
@@ -2540,7 +2540,7 @@ msgstr ""
 "GEGL naredi učinek notranjega senčnega žarenja; za bolj zanimivo uporabite "
 "drugačen način zlivanja od privzetega - Zamenjaj."
 
-#: operations/common/inner-glow.c:182
+#: operations/common/inner-glow.c:186
 msgid "Inner Glow..."
 msgstr "Notranje žarenje …"
 
@@ -4554,6 +4554,514 @@ msgstr ""
 "kontrastne, zelo temne ali zelo svetle slike). Ta različica se razlikuje od "
 "Samodejno raztegni kontrast v tem, da deluje v prostoru HSV ter ohranja "
 "obarvanost."
+
+#: operations/common/styles.c:30
+msgid "Color, Outline and Shadow"
+msgstr "Barva, oris in senca"
+
+#: operations/common/styles.c:31
+msgid "Bevel and Inner Glow"
+msgstr "Izbočenost in notranje žarenje"
+
+#: operations/common/styles.c:32
+msgid "Image upload and Outline Bevel"
+msgstr "Nalaganje slik in izbočenost orisa"
+
+#. List of all GUI options
+#. GUI Change list in GUI
+#: operations/common/styles.c:39
+msgid "Part of filter to be displayed"
+msgstr "Del filtra, ki bo prikazan"
+
+#: operations/common/styles.c:42
+msgid "Display a different part of the GUI"
+msgstr "Prikažite drug del uporabniškega vmesnika"
+
+#. Color Overlays GUI options begin here
+#: operations/common/styles.c:46
+msgid "Color overlay"
+msgstr "Barvno prekrivanje"
+
+#: operations/common/styles.c:48
+msgid "Color overlay setting"
+msgstr "Nastavitev prekrivanja barv"
+
+#: operations/common/styles.c:50
+msgid "Color policy"
+msgstr "Barvni model/politika"
+
+#: operations/common/styles.c:51
+msgid "Change the blend mode of the color overlay"
+msgstr "Spremenite način zlivanja barvnega prekrivanja"
+
+#: operations/common/styles.c:58
+msgid "No Color"
+msgstr "Brez barve"
+
+#: operations/common/styles.c:62
+msgid "Solid Color"
+msgstr "Enobarvno"
+
+#. Outline's normal GUI options begin here
+#: operations/common/styles.c:68
+msgid "Enable Outline"
+msgstr "Omogoči oris"
+
+#: operations/common/styles.c:69
+msgid "Disable or enable the outline"
+msgstr "Onemogočite ali omogočite oris"
+
+#: operations/common/styles.c:72
+msgid "Outline opacity"
+msgstr "Prekrivnost orisa"
+
+#: operations/common/styles.c:75
+msgid "Opacity of the outline"
+msgstr "Prekrivnost orisa"
+
+#: operations/common/styles.c:79
+msgid "Outline X"
+msgstr "Oris X"
+
+#: operations/common/styles.c:80
+msgid "Horizontal outline offset"
+msgstr "Vodoravni odmik orisa"
+
+#: operations/common/styles.c:87
+msgid "Outline Y"
+msgstr "Oris Y"
+
+#: operations/common/styles.c:88
+msgid "Vertical outline offset"
+msgstr "Navpični odmik orisa"
+
+#: operations/common/styles.c:102
+msgid "Outline grow shape"
+msgstr "Lik rasti orisa"
+
+#: operations/common/styles.c:105
+msgid "The shape to expand or contract the outline in"
+msgstr "Lik, v katerega razširi ali skrči oris"
+
+#: operations/common/styles.c:109
+msgid "Outline blur radius"
+msgstr "Polmer zabrisanosti orisa"
+
+#: operations/common/styles.c:115
+msgid "A mild blur for the outline"
+msgstr "Blaga zabrisanost orisa"
+
+#: operations/common/styles.c:119
+msgid "Outline grow radius"
+msgstr "Polmer rasti orisa"
+
+#: operations/common/styles.c:126
+msgid "The distance to expand the outline"
+msgstr "Razdalja za širjenje orisa"
+
+#. Shadow's GUI options begin here
+#: operations/common/styles.c:131
+msgid "Outline’s color"
+msgstr "Barva orisa"
+
+#: operations/common/styles.c:132
+msgid "Color of the outline (defaults to 'black') "
+msgstr "Barva orisa (privzeto ‘black’, črna)"
+
+#: operations/common/styles.c:137
+msgid "Shadow/Glow opacity"
+msgstr "Prekrivnost sence/žarenja"
+
+#: operations/common/styles.c:141
+msgid "Shadow opacity which will also enable or disable the shadow glow effect"
+msgstr ""
+"Prekrivnost sence, ki bo omogočila ali onemogočila tudi učinek žarenja sence"
+
+#: operations/common/styles.c:145
+msgid "Shadow/Glow X"
+msgstr "X sence/žarenja"
+
+#: operations/common/styles.c:151
+msgid "Horizontal axis of the shadow glow"
+msgstr "Vodoravna os žarenja sence"
+
+#: operations/common/styles.c:154
+msgid "Shadow/Glow Y"
+msgstr "Y sence/žarenja"
+
+#: operations/common/styles.c:160
+msgid "Vertical axis of the shadow glow"
+msgstr "Navpična os žarenja sence"
+
+#: operations/common/styles.c:163
+msgid "Shadow/Glow’s color"
+msgstr "Barva sence/žarenja"
+
+#. TRANSLATORS: the string 'black' should not be translated
+#: operations/common/styles.c:165
+msgid "The shadow’s color (defaults to 'black')"
+msgstr "Barva sence (privzeto črna, 'black')"
+
+#: operations/common/styles.c:168
+msgid "Shadow/Glow grow radius"
+msgstr "Polmer naraščanja sence/žarenja"
+
+#: operations/common/styles.c:175
+msgid "The distance to expand the shadow before blurring."
+msgstr "Razdalja za širitev sence pred zabrisanostjo."
+
+#: operations/common/styles.c:178
+msgid "Shadow/Glow blur radius"
+msgstr "Polmer zabrisanosti sence/žarenja"
+
+#: operations/common/styles.c:184
+msgid "The shadow’s blur range"
+msgstr "Obseg zabrisanosti sence"
+
+#. Bevel's GUI options begin here
+#. This is the Bevel's ENUM List listed in the GUI
+#. This is the ENUM list for bevel's emboss blend modes
+#: operations/common/styles.c:192
+msgid "Enable Bevel"
+msgstr "Omogoči izbočenost"
+
+#: operations/common/styles.c:193
+msgid "Whether to add a bevel effect"
+msgstr "Ali želite dodati učinek izbočenosti"
+
+#: operations/common/styles.c:210
+msgid "Bevel blend mode"
+msgstr "Način zlivanja izbočenosti"
+
+#: operations/common/styles.c:211
+msgid "Blend mode of the bevel"
+msgstr "Način zlivanja izbočenja"
+
+#: operations/common/styles.c:219
+msgid "Chamfer Bevel"
+msgstr "Posneti rob"
+
+#: operations/common/styles.c:221
+msgid "Bump Bevel"
+msgstr "Izbočeni odtis"
+
+#: operations/common/styles.c:224
+msgid "Select Bevel"
+msgstr "Izberite izbočenost"
+
+#: operations/common/styles.c:227
+msgid "Type of bevel "
+msgstr "Vrsta izbočenosti"
+
+#: operations/common/styles.c:233
+msgid "Bevel depth"
+msgstr "Globina izbočenosti"
+
+#: operations/common/styles.c:234
+msgid "Emboss depth for the bevel"
+msgstr "Globina reliefnega okrasa izbočenosti"
+
+#: operations/common/styles.c:240
+msgid "Bevel elevation"
+msgstr "Dvignjenost izbočenja"
+
+#: operations/common/styles.c:241
+msgid "Emboss elevation of the bevel"
+msgstr "Dvignjenost reliefnega okrasa izbočenja."
+
+#: operations/common/styles.c:248
+msgid "Bevel azimuth"
+msgstr "Azimut izbočenosti"
+
+#: operations/common/styles.c:249
+msgid "Emboss azimuth of the bevel"
+msgstr "Azimut reliefnega okrasa izbočenosti"
+
+#: operations/common/styles.c:256
+msgid "Bevel radius (bump only)"
+msgstr "Polmer izbočenosti (samo izboklina)"
+
+#: operations/common/styles.c:260
+msgid ""
+"Internal gaussian blur to inflate the bump bevel. This option does not work "
+"on chamfer"
+msgstr ""
+"Notranja Gaussova zabrisanost, da napihne reliefno izbočenje. Ta možnost ne "
+"deluje na posnetem robu"
+
+#: operations/common/styles.c:266
+msgid "Levels low output lighting for Bevel"
+msgstr "Izravna nizko izhodno osvetlitev za izbočenost"
+
+#: operations/common/styles.c:267
+msgid "Levels low output as a light adjustment for the bevel"
+msgstr "Izravna nizki izhod kot prilagoditev osvetlitve za izbočenost"
+
+#: operations/common/styles.c:275
+msgid "Levels high output lighting for Bevel"
+msgstr "Izravna visoko izhodno osvetlitev za izbočenost"
+
+#: operations/common/styles.c:276
+msgid "Levels high output as a light adjustment for the bevel"
+msgstr "Izravna visok izhod kot prilagoditev osvetlitve za izbočenost"
+
+#: operations/common/styles.c:284
+msgid "Dark Bevel/ignore image mode"
+msgstr "Temna izbočenost / prezri način slike"
+
+#: operations/common/styles.c:285
+msgid ""
+"This instructs the bevel to ignore image details if there is an image file "
+"overlay below it. It also allows bevel to work better when the user selects "
+"darker colors. The effect is noticeable on bump bevel but barely effects "
+"chamfer bevel"
+msgstr ""
+"To naroči izbočenosti, naj prezre podrobnosti slike, če je pod njim "
+"prekrivna slikovna datoteka. Prav tako omogoča, da izbočenost deluje bolje, "
+"ko uporabnik izbere temnejše barve. Učinek je opazen na izbočenosti, vendar "
+"komaj vpliva na posneti rob izbočenosti"
+
+#. This operation is extremely important for bevels with image file overlays
+#. Inner Glow GUI options begin here
+#: operations/common/styles.c:295
+msgid "Enable Inner Glow"
+msgstr "Omogoči notranje žarenje"
+
+#: operations/common/styles.c:296
+msgid "Whether to add the inner glow effect"
+msgstr "Ali želite dodati učinek notranjega žarenja"
+
+#: operations/common/styles.c:305
+msgid "Normal"
+msgstr "Navadna"
+
+#: operations/common/styles.c:307
+msgid "Overlay"
+msgstr "Prekrij"
+
+#: operations/common/styles.c:309
+msgid "Screen"
+msgstr "Zaslon"
+
+#: operations/common/styles.c:315
+msgid "Plus"
+msgstr "Plus"
+
+#: operations/common/styles.c:318
+msgid "Blend mode of Inner Glow"
+msgstr "Način zlivanja notranjega žarenja"
+
+#: operations/common/styles.c:324
+msgid "Inner Glow's blur radius"
+msgstr "Polmer zabrisanosti notranjega žarenja"
+
+#: operations/common/styles.c:330
+msgid "Blur control of the inner glow"
+msgstr "Nadzor zabrisanosti notranjega žarenja"
+
+#: operations/common/styles.c:334
+msgid "Inner Glow's grow radius"
+msgstr "Polmer naraščanja notranjega žarenja"
+
+#: operations/common/styles.c:341
+msgid "The distance to expand the inner glow before blurring"
+msgstr "Razdalja za širitev notranjega žarenja pred zabrisanostjo."
+
+#: operations/common/styles.c:345
+msgid "Inner Glow's opacity"
+msgstr "Prekrivnost notranjega žarenja"
+
+#: operations/common/styles.c:348
+msgid "Opacity of the inner glow"
+msgstr "Prekrivnost notranjega žarenja"
+
+#: operations/common/styles.c:352
+msgid "Inner Glow's color"
+msgstr "Barva notranjega žarenja"
+
+#: operations/common/styles.c:353
+msgid "The color of the inner glow"
+msgstr "Barva notranjega žarenja"
+
+#: operations/common/styles.c:357
+msgid "Inner Glow's unmodified pixel fix"
+msgstr "Popravek nespremenjenih slikovnih točk notranjega žarenja"
+
+#: operations/common/styles.c:359
+msgid "Cover pixels that inner glow might miss"
+msgstr "Prekrijte slikovne točke, ki jih morda notranje žarenje zgreši"
+
+#. Without this Inner Glow would miss many pixels around alpha defined shapes edges'
+#. Image file overlay GUI options begin here
+#: operations/common/styles.c:366
+msgid "Enable image upload"
+msgstr "Omogoči nalaganje slik"
+
+#: operations/common/styles.c:367 operations/common/styles.c:466
+msgid "Whether to enable or disable the image file upload."
+msgstr "Ali želite omogočiti ali onemogočiti prenos slikovne datoteke."
+
+#: operations/common/styles.c:370
+msgid "Image file overlay"
+msgstr "Prekrivanje s slikovno datoteko"
+
+#: operations/common/styles.c:371
+msgid ""
+"Upload an image file from your computer to be in the fill area. Allows (png, "
+"jpg, raw, svg, bmp, tif, ...)"
+msgstr ""
+"Naložite slikovno datoteko iz računalnika, da bo v področju polnila. Omogoča "
+"datoteke vrste png, jpg, raw, svg, bmp, tif, ..."
+
+#: operations/common/styles.c:375
+msgid "Opacity of image file overlay"
+msgstr "Prekrivnost prekrivanja slikovne datoteke"
+
+#: operations/common/styles.c:378
+msgid "Opacity of the image file overlay that was uploaded. "
+msgstr "Prekrivnost prekrivne datoteke slike, ki je naložena."
+
+#: operations/common/styles.c:389
+msgid ""
+"Saturation adjustment of the uploaded image file or whatever is on canvas"
+msgstr ""
+"Prilagoditev nasičenosti naložene slikovne datoteke ali česarkoli, kar je na "
+"platnu"
+
+#: operations/common/styles.c:394
+msgid ""
+"Lightness adjustment of the uploaded image file or whatever is on canvas"
+msgstr ""
+"Prilagoditev svetlosti naložene slikovne datoteke ali česarkoli, kar je na "
+"platnu"
+
+#. Outline special options in GUI begin here
+#: operations/common/styles.c:399
+msgid "Enable advanced options on Outline (requires outline)"
+msgstr "Omogoči napredne možnosti orisa (zahteva oris)"
+
+#: operations/common/styles.c:400
+msgid "Turn on advanced outline abilities"
+msgstr "Vklopite napredne funkcije orisa"
+
+#: operations/common/styles.c:405
+msgid "Enable Outline Bevel (requires advanced options)"
+msgstr "Omogoči izbočenost orisa (zahteva napredne možnosti)"
+
+#: operations/common/styles.c:406
+msgid "Turn on outlines ability to bevel"
+msgstr "Vklopi zmožnost orisa za poševni rob"
+
+#: operations/common/styles.c:427
+msgid "Outline Bevel blend mode"
+msgstr "Načina zlivanja izbočenja orisa"
+
+#: operations/common/styles.c:428
+msgid "Blend mode of the outline bevel"
+msgstr "Način zlivanja izbočenja orisa"
+
+#: operations/common/styles.c:435
+msgid "Outline Bevel depth"
+msgstr "Globina izbočenosti orisa"
+
+#: operations/common/styles.c:436
+msgid "Emboss depth for the outline bevel"
+msgstr "Globina reliefne okrasitve za izbočenost orisa"
+
+#: operations/common/styles.c:441
+msgid "Outline Bevel elevation"
+msgstr "Dvig izbočenosti orisa"
+
+#: operations/common/styles.c:442
+msgid "Emboss elevation for the outline bevel"
+msgstr "Dvig reliefne okrasitve za izbočenost orisa"
+
+#: operations/common/styles.c:448
+msgid "Outline Bevel azimuth"
+msgstr "Azimut izbočenosti orisa"
+
+#: operations/common/styles.c:449
+msgid "Emboss azimuth for the outline bevel"
+msgstr "Azimut reliefne okrasitve za izbočenost orisa"
+
+#: operations/common/styles.c:456
+msgid "Outline Bevel radius"
+msgstr "Polmer izbočenosti orisa"
+
+#: operations/common/styles.c:457
+msgid "Internal gaussian blur to inflate the outline bevel"
+msgstr "Notranja Gaussova zabrisanost za napihovanje izbočenosti orisa"
+
+#: operations/common/styles.c:465
+msgid "Enable image upload on Outline (requires advanced options)"
+msgstr "Omogoči nalaganje slik v orisu (zahteva napredne učinke)"
+
+#: operations/common/styles.c:470
+msgid "Outline image file overlay"
+msgstr "Oris prekrivanja s slikovno datoteko"
+
+#: operations/common/styles.c:471
+msgid ""
+"Upload an image file from your computer to be in the outline area. Allows "
+"(png, jpg, raw, svg, bmp, tif, ...)"
+msgstr ""
+"Prenesite slikovno datoteko iz računalnika, da bo v območju orisa. Omogoča "
+"datoteke vrste png, jpg, raw, svg, bmp, tif, ..."
+
+#: operations/common/styles.c:476
+msgid "Outline image opacity"
+msgstr "Prekrivnost orisa slike"
+
+#: operations/common/styles.c:477
+msgid "Outline image opacity adjustment"
+msgstr "Prilagoditev prekrivnosti orisa slike"
+
+#: operations/common/styles.c:482
+msgid "Levels low output lighting for Outline Bevel"
+msgstr "Izravna nizko izhodno osvetlitev za izbočenost orisa"
+
+#: operations/common/styles.c:483
+msgid "Levels low output as a light adjustment for the outline bevel"
+msgstr "Izravna nizki izhod kot prilagoditev osvetlitve za izbočenost orisa"
+
+#: operations/common/styles.c:490
+msgid "Levels high output lighting for Outline Bevel"
+msgstr "Izravna visoko izhodno osvetlitev za izbočenost orisa"
+
+#: operations/common/styles.c:491
+msgid "Levels high output as a light adjustment for the outline bevel"
+msgstr "Ravni visokega izhoda kot prilagoditev svetlobe za oris izbočenosti"
+
+#: operations/common/styles.c:499
+msgid "Outline Dark Bevel/ignore image mode"
+msgstr "Oris temnega poševnega / prezrtega načina slike"
+
+#: operations/common/styles.c:500
+msgid ""
+"This instructs the outline bevel to ignore image details if there is an "
+"image file overlay below it. It also allows outline bevel to work better "
+"when the user selects darker colors."
+msgstr ""
+"To naroči orisu, da poševni rob prezre podrobnosti slike, če je pod njim "
+"prekrivna slikovna datoteka. Prav tako omogoča, da orisni poševni rob deluje "
+"bolje, ko uporabnik izbere temnejše barve."
+
+#: operations/common/styles.c:1243
+msgid "GEGL Styles"
+msgstr "Slogi GEGL"
+
+#: operations/common/styles.c:1246
+msgid ""
+"An engine to style text and add popular effects to alpha channel images. "
+"Effects include outline, bevel, shadow, and inner glow all in one place."
+msgstr ""
+"Mehanizem za oblikovanje besedila in dodajanje priljubljenih učinkov slikam "
+"z alfa-kanalom. Učinki na enem mestu vključujejo oris, izbočenost, senco in "
+"notranje žarenje."
+
+#: operations/common/styles.c:1249
+msgid "Text Styling..."
+msgstr "Oblikovanje besedila ..."
 
 #: operations/common/svg-huerotate.c:27 operations/common/svg-matrix.c:27
 #: operations/common/svg-saturate.c:25
@@ -8187,13 +8695,13 @@ msgstr "Prekrivnost polnila, ki jo želite uporabiti"
 
 #: operations/external/path.c:54 operations/external/vector-fill.c:40
 #: operations/external/vector-stroke.c:41
-#: operations/workshop/external/ctx-script.c:26
+#: operations/workshop/external/ctx-script.c:64
 msgid "Vector"
 msgstr "Vektor"
 
 #: operations/external/path.c:55 operations/external/vector-fill.c:41
 #: operations/external/vector-stroke.c:42
-#: operations/workshop/external/ctx-script.c:27
+#: operations/workshop/external/ctx-script.c:65
 msgid "A GeglVector representing the path of the stroke"
 msgstr "Vektor GeglVector, ki predstavlja pot poteze"
 
@@ -9287,7 +9795,7 @@ msgstr "Normaliziraj izhod v obsegu [osnova,osnova + korak]"
 msgid "Connected Components"
 msgstr "Povezane komponente"
 
-#: operations/workshop/connected-components.c:290
+#: operations/workshop/connected-components.c:292
 msgid ""
 "Fills each connected region of the input, separated from the rest of the "
 "input by a given color, with a unique color."
@@ -9340,13 +9848,13 @@ msgstr ""
 "Poskusna operacija za preslikavo 1:1 z vhoda na izhod, medtem poteka "
 "vzorčenje."
 
-#: operations/workshop/external/ctx-script.c:126
+#: operations/workshop/external/ctx-script.c:180
 msgid "Ctx script"
 msgstr "Skript Ctx"
 
-#: operations/workshop/external/ctx-script.c:128
-msgid "Renders a ctx vector graphics"
-msgstr "Upodobi vektorsko grafiko ctx"
+#: operations/workshop/external/ctx-script.c:182
+msgid "Renders a ctx vector graphics script"
+msgstr "Izriše skript vektorske grafike ctx"
 
 #: operations/workshop/external/gluas.c:29
 msgid "Script"
@@ -9721,7 +10229,7 @@ msgstr "Ali so robovi slike tudi sejani"
 msgid "Voronoi Diagram"
 msgstr "Voronojev diagram"
 
-#: operations/workshop/external/voronoi-diagram.cc:531
+#: operations/workshop/external/voronoi-diagram.cc:533
 msgid "Paints each non-seed pixel with the color of the nearest seed pixel."
 msgstr ""
 "Vsako nesejano slikovno točko pobarva z barvo najbližje sejane slikovne "
@@ -9906,511 +10414,3 @@ msgid ""
 msgstr ""
 "Premeša slikovne točke in kvantifikacijo s sosedi, da optimizira stresanje, "
 "tako da premeša sosednje slikovne točke."
-
-#: operations/workshop/styles.c:30
-msgid "Color, Outline and Shadow"
-msgstr "Barva, oris in senca"
-
-#: operations/workshop/styles.c:31
-msgid "Bevel and Inner Glow"
-msgstr "Izbočenost in notranje žarenje"
-
-#: operations/workshop/styles.c:32
-msgid "Image upload and Outline Bevel"
-msgstr "Nalaganje slik in izbočenost orisa"
-
-#. List of all GUI options
-#. GUI Change list in GUI
-#: operations/workshop/styles.c:39
-msgid "Part of filter to be displayed"
-msgstr "Del filtra, ki bo prikazan"
-
-#: operations/workshop/styles.c:42
-msgid "Display a different part of the GUI"
-msgstr "Prikažite drug del uporabniškega vmesnika"
-
-#. Color Overlays GUI options begin here
-#: operations/workshop/styles.c:46
-msgid "Color overlay"
-msgstr "Barvno prekrivanje"
-
-#: operations/workshop/styles.c:48
-msgid "Color overlay setting"
-msgstr "Nastavitev prekrivanja barv"
-
-#: operations/workshop/styles.c:50
-msgid "Color policy"
-msgstr "Barvni model/politika"
-
-#: operations/workshop/styles.c:51
-msgid "Change the blend mode of the color overlay"
-msgstr "Spremenite način zlivanja barvnega prekrivanja"
-
-#: operations/workshop/styles.c:58
-msgid "No Color"
-msgstr "Brez barve"
-
-#: operations/workshop/styles.c:62
-msgid "Solid Color"
-msgstr "Enobarvno"
-
-#. Outline's normal GUI options begin here
-#: operations/workshop/styles.c:68
-msgid "Enable Outline"
-msgstr "Omogoči oris"
-
-#: operations/workshop/styles.c:69
-msgid "Disable or enable the outline"
-msgstr "Onemogočite ali omogočite oris"
-
-#: operations/workshop/styles.c:72
-msgid "Outline opacity"
-msgstr "Prekrivnost orisa"
-
-#: operations/workshop/styles.c:75
-msgid "Opacity of the outline"
-msgstr "Prekrivnost orisa"
-
-#: operations/workshop/styles.c:79
-msgid "Outline X"
-msgstr "Oris X"
-
-#: operations/workshop/styles.c:80
-msgid "Horizontal outline offset"
-msgstr "Vodoravni odmik orisa"
-
-#: operations/workshop/styles.c:87
-msgid "Outline Y"
-msgstr "Oris Y"
-
-#: operations/workshop/styles.c:88
-msgid "Vertical outline offset"
-msgstr "Navpični odmik orisa"
-
-#: operations/workshop/styles.c:102
-msgid "Outline grow shape"
-msgstr "Lik rasti orisa"
-
-#: operations/workshop/styles.c:105
-msgid "The shape to expand or contract the outline in"
-msgstr "Lik, v katerega razširi ali skrči oris"
-
-#: operations/workshop/styles.c:109
-msgid "Outline blur radius"
-msgstr "Polmer zabrisanosti orisa"
-
-#: operations/workshop/styles.c:115
-msgid "A mild blur for the outline"
-msgstr "Blaga zabrisanost orisa"
-
-#: operations/workshop/styles.c:119
-msgid "Outline grow radius"
-msgstr "Polmer rasti orisa"
-
-#: operations/workshop/styles.c:126
-msgid "The distance to expand the outline"
-msgstr "Razdalja za širjenje orisa"
-
-#. Shadow's GUI options begin here
-#: operations/workshop/styles.c:131
-msgid "Outline’s color"
-msgstr "Barva orisa"
-
-#: operations/workshop/styles.c:132
-msgid "Color of the outline (defaults to 'black') "
-msgstr "Barva orisa (privzeto ‘black’, črna)"
-
-#: operations/workshop/styles.c:137
-msgid "Shadow/Glow opacity"
-msgstr "Prekrivnost sence/žarenja"
-
-#: operations/workshop/styles.c:141
-msgid "Shadow opacity which will also enable or disable the shadow glow effect"
-msgstr ""
-"Prekrivnost sence, ki bo omogočila ali onemogočila tudi učinek žarenja sence"
-
-#: operations/workshop/styles.c:145
-msgid "Shadow/Glow X"
-msgstr "X sence/žarenja"
-
-#: operations/workshop/styles.c:151
-msgid "Horizontal axis of the shadow glow"
-msgstr "Vodoravna os žarenja sence"
-
-#: operations/workshop/styles.c:154
-msgid "Shadow/Glow Y"
-msgstr "Y sence/žarenja"
-
-#: operations/workshop/styles.c:160
-msgid "Vertical axis of the shadow glow"
-msgstr "Navpična os žarenja sence"
-
-#: operations/workshop/styles.c:163
-msgid "Shadow/Glow’s color"
-msgstr "Barva sence/žarenja"
-
-#. TRANSLATORS: the string 'black' should not be translated
-#: operations/workshop/styles.c:165
-msgid "The shadow’s color (defaults to 'black')"
-msgstr "Barva sence (privzeto črna, 'black')"
-
-#: operations/workshop/styles.c:168
-msgid "Shadow/Glow grow radius"
-msgstr "Polmer naraščanja sence/žarenja"
-
-#: operations/workshop/styles.c:175
-msgid "The distance to expand the shadow before blurring."
-msgstr "Razdalja za širitev sence pred zabrisanostjo."
-
-#: operations/workshop/styles.c:178
-msgid "Shadow/Glow blur radius"
-msgstr "Polmer zabrisanosti sence/žarenja"
-
-#: operations/workshop/styles.c:184
-msgid "The shadow’s blur range"
-msgstr "Obseg zabrisanosti sence"
-
-#. Bevel's GUI options begin here
-#. This is the Bevel's ENUM List listed in the GUI
-#. This is the ENUM list for bevel's emboss blend modes
-#: operations/workshop/styles.c:192
-msgid "Enable Bevel"
-msgstr "Omogoči izbočenost"
-
-#: operations/workshop/styles.c:193
-msgid "Whether to add a bevel effect"
-msgstr "Ali želite dodati učinek izbočenosti"
-
-#: operations/workshop/styles.c:210
-msgid "Bevel blend mode"
-msgstr "Način zlivanja izbočenosti"
-
-#: operations/workshop/styles.c:211
-msgid "Blend mode of the bevel"
-msgstr "Način zlivanja izbočenja"
-
-#: operations/workshop/styles.c:219
-msgid "Chamfer Bevel"
-msgstr "Posneti rob"
-
-#: operations/workshop/styles.c:221
-msgid "Bump Bevel"
-msgstr "Izbočeni odtis"
-
-#: operations/workshop/styles.c:224
-msgid "Select Bevel"
-msgstr "Izberite izbočenost"
-
-#: operations/workshop/styles.c:227
-msgid "Type of bevel "
-msgstr "Vrsta izbočenosti"
-
-#: operations/workshop/styles.c:233
-msgid "Bevel depth"
-msgstr "Globina izbočenosti"
-
-#: operations/workshop/styles.c:234
-msgid "Emboss depth for the bevel"
-msgstr "Globina reliefnega okrasa izbočenosti"
-
-#: operations/workshop/styles.c:240
-msgid "Bevel elevation"
-msgstr "Dvignjenost izbočenja"
-
-#: operations/workshop/styles.c:241
-msgid "Emboss elevation of the bevel"
-msgstr "Dvignjenost reliefnega okrasa izbočenja."
-
-#: operations/workshop/styles.c:248
-msgid "Bevel azimuth"
-msgstr "Azimut izbočenosti"
-
-#: operations/workshop/styles.c:249
-msgid "Emboss azimuth of the bevel"
-msgstr "Azimut reliefnega okrasa izbočenosti"
-
-#: operations/workshop/styles.c:256
-msgid "Bevel radius (bump only)"
-msgstr "Polmer izbočenosti (samo izboklina)"
-
-#: operations/workshop/styles.c:260
-msgid ""
-"Internal gaussian blur to inflate the bump bevel. This option does not work "
-"on chamfer"
-msgstr ""
-"Notranja Gaussova zabrisanost, da napihne reliefno izbočenje. Ta možnost ne "
-"deluje na posnetem robu"
-
-#: operations/workshop/styles.c:266
-msgid "Levels low output lighting for Bevel"
-msgstr "Izravna nizko izhodno osvetlitev za izbočenost"
-
-#: operations/workshop/styles.c:267
-msgid "Levels low output as a light adjustment for the bevel"
-msgstr "Izravna nizki izhod kot prilagoditev osvetlitve za izbočenost"
-
-#: operations/workshop/styles.c:275
-msgid "Levels high output lighting for Bevel"
-msgstr "Izravna visoko izhodno osvetlitev za izbočenost"
-
-#: operations/workshop/styles.c:276
-msgid "Levels high output as a light adjustment for the bevel"
-msgstr "Izravna visok izhod kot prilagoditev osvetlitve za izbočenost"
-
-#: operations/workshop/styles.c:284
-msgid "Dark Bevel/ignore image mode"
-msgstr "Temna izbočenost / prezri način slike"
-
-#: operations/workshop/styles.c:285
-msgid ""
-"This instructs the bevel to ignore image details if there is an image file "
-"overlay below it. It also allows bevel to work better when the user selects "
-"darker colors. The effect is noticeable on bump bevel but barely effects "
-"chamfer bevel"
-msgstr ""
-"To naroči izbočenosti, naj prezre podrobnosti slike, če je pod njim "
-"prekrivna slikovna datoteka. Prav tako omogoča, da izbočenost deluje bolje, "
-"ko uporabnik izbere temnejše barve. Učinek je opazen na izbočenosti, vendar "
-"komaj vpliva na posneti rob izbočenosti"
-
-#. This operation is extremely important for bevels with image file overlays
-#. Inner Glow GUI options begin here
-#: operations/workshop/styles.c:295
-msgid "Enable Inner Glow"
-msgstr "Omogoči notranje žarenje"
-
-#: operations/workshop/styles.c:296
-msgid "Whether to add the inner glow effect"
-msgstr "Ali želite dodati učinek notranjega žarenja"
-
-#: operations/workshop/styles.c:305
-msgid "Normal"
-msgstr "Navadna"
-
-#: operations/workshop/styles.c:307
-msgid "Overlay"
-msgstr "Prekrij"
-
-#: operations/workshop/styles.c:309
-msgid "Screen"
-msgstr "Zaslon"
-
-#: operations/workshop/styles.c:315
-msgid "Plus"
-msgstr "Plus"
-
-#: operations/workshop/styles.c:318
-msgid "Blend mode of Inner Glow"
-msgstr "Način zlivanja notranjega žarenja"
-
-#: operations/workshop/styles.c:324
-msgid "Inner Glow's blur radius"
-msgstr "Polmer zabrisanosti notranjega žarenja"
-
-#: operations/workshop/styles.c:330
-msgid "Blur control of the inner glow"
-msgstr "Nadzor zabrisanosti notranjega žarenja"
-
-#: operations/workshop/styles.c:334
-msgid "Inner Glow's grow radius"
-msgstr "Polmer naraščanja notranjega žarenja"
-
-#: operations/workshop/styles.c:341
-msgid "The distance to expand the inner glow before blurring"
-msgstr "Razdalja za širitev notranjega žarenja pred zabrisanostjo."
-
-#: operations/workshop/styles.c:345
-msgid "Inner Glow's opacity"
-msgstr "Prekrivnost notranjega žarenja"
-
-#: operations/workshop/styles.c:348
-msgid "Opacity of the inner glow"
-msgstr "Prekrivnost notranjega žarenja"
-
-#: operations/workshop/styles.c:352
-msgid "Inner Glow's color"
-msgstr "Barva notranjega žarenja"
-
-#: operations/workshop/styles.c:353
-msgid "The color of the inner glow"
-msgstr "Barva notranjega žarenja"
-
-#: operations/workshop/styles.c:357
-msgid "Inner Glow's unmodified pixel fix"
-msgstr "Popravek nespremenjenih slikovnih točk notranjega žarenja"
-
-#: operations/workshop/styles.c:359
-msgid "Cover pixels that inner glow might miss"
-msgstr "Prekrijte slikovne točke, ki jih morda notranje žarenje zgreši"
-
-#. Without this Inner Glow would miss many pixels around alpha defined shapes edges'
-#. Image file overlay GUI options begin here
-#: operations/workshop/styles.c:366
-msgid "Enable image upload"
-msgstr "Omogoči nalaganje slik"
-
-#: operations/workshop/styles.c:367 operations/workshop/styles.c:466
-msgid "Whether to enable or disable the image file upload."
-msgstr "Ali želite omogočiti ali onemogočiti prenos slikovne datoteke."
-
-#: operations/workshop/styles.c:370
-msgid "Image file overlay"
-msgstr "Prekrivanje s slikovno datoteko"
-
-#: operations/workshop/styles.c:371
-msgid ""
-"Upload an image file from your computer to be in the fill area. Allows (png, "
-"jpg, raw, svg, bmp, tif, ...)"
-msgstr ""
-"Naložite slikovno datoteko iz računalnika, da bo v področju polnila. Omogoča "
-"datoteke vrste png, jpg, raw, svg, bmp, tif, ..."
-
-#: operations/workshop/styles.c:375
-msgid "Opacity of image file overlay"
-msgstr "Prekrivnost prekrivanja slikovne datoteke"
-
-#: operations/workshop/styles.c:378
-msgid "Opacity of the image file overlay that was uploaded. "
-msgstr "Prekrivnost prekrivne datoteke slike, ki je naložena."
-
-#: operations/workshop/styles.c:389
-msgid ""
-"Saturation adjustment of the uploaded image file or whatever is on canvas"
-msgstr ""
-"Prilagoditev nasičenosti naložene slikovne datoteke ali česarkoli, kar je na "
-"platnu"
-
-#: operations/workshop/styles.c:394
-msgid ""
-"Lightness adjustment of the uploaded image file or whatever is on canvas"
-msgstr ""
-"Prilagoditev svetlosti naložene slikovne datoteke ali česarkoli, kar je na "
-"platnu"
-
-#. Outline special options in GUI begin here
-#: operations/workshop/styles.c:399
-msgid "Enable advanced options on Outline (requires outline)"
-msgstr "Omogoči napredne možnosti orisa (zahteva oris)"
-
-#: operations/workshop/styles.c:400
-msgid "Turn on advanced outline abilities"
-msgstr "Vklopite napredne funkcije orisa"
-
-#: operations/workshop/styles.c:405
-msgid "Enable Outline Bevel (requires advanced options)"
-msgstr "Omogoči izbočenost orisa (zahteva napredne možnosti)"
-
-#: operations/workshop/styles.c:406
-msgid "Turn on outlines ability to bevel"
-msgstr "Vklopi zmožnost orisa za poševni rob"
-
-#: operations/workshop/styles.c:427
-msgid "Outline Bevel blend mode"
-msgstr "Načina zlivanja izbočenja orisa"
-
-#: operations/workshop/styles.c:428
-msgid "Blend mode of the outline bevel"
-msgstr "Način zlivanja izbočenja orisa"
-
-#: operations/workshop/styles.c:435
-msgid "Outline Bevel depth"
-msgstr "Globina izbočenosti orisa"
-
-#: operations/workshop/styles.c:436
-msgid "Emboss depth for the outline bevel"
-msgstr "Globina reliefne okrasitve za izbočenost orisa"
-
-#: operations/workshop/styles.c:441
-msgid "Outline Bevel elevation"
-msgstr "Dvig izbočenosti orisa"
-
-#: operations/workshop/styles.c:442
-msgid "Emboss elevation for the outline bevel"
-msgstr "Dvig reliefne okrasitve za izbočenost orisa"
-
-#: operations/workshop/styles.c:448
-msgid "Outline Bevel azimuth"
-msgstr "Azimut izbočenosti orisa"
-
-#: operations/workshop/styles.c:449
-msgid "Emboss azimuth for the outline bevel"
-msgstr "Azimut reliefne okrasitve za izbočenost orisa"
-
-#: operations/workshop/styles.c:456
-msgid "Outline Bevel radius"
-msgstr "Polmer izbočenosti orisa"
-
-#: operations/workshop/styles.c:457
-msgid "Internal gaussian blur to inflate the outline bevel"
-msgstr "Notranja Gaussova zabrisanost za napihovanje izbočenosti orisa"
-
-#: operations/workshop/styles.c:465
-msgid "Enable image upload on Outline (requires advanced options)"
-msgstr "Omogoči nalaganje slik v orisu (zahteva napredne učinke)"
-
-#: operations/workshop/styles.c:470
-msgid "Outline image file overlay"
-msgstr "Oris prekrivanja s slikovno datoteko"
-
-#: operations/workshop/styles.c:471
-msgid ""
-"Upload an image file from your computer to be in the outline area. Allows "
-"(png, jpg, raw, svg, bmp, tif, ...)"
-msgstr ""
-"Prenesite slikovno datoteko iz računalnika, da bo v območju orisa. Omogoča "
-"datoteke vrste png, jpg, raw, svg, bmp, tif, ..."
-
-#: operations/workshop/styles.c:476
-msgid "Outline image opacity"
-msgstr "Prekrivnost orisa slike"
-
-#: operations/workshop/styles.c:477
-msgid "Outline image opacity adjustment"
-msgstr "Prilagoditev prekrivnosti orisa slike"
-
-#: operations/workshop/styles.c:482
-msgid "Levels low output lighting for Outline Bevel"
-msgstr "Izravna nizko izhodno osvetlitev za izbočenost orisa"
-
-#: operations/workshop/styles.c:483
-msgid "Levels low output as a light adjustment for the outline bevel"
-msgstr "Izravna nizki izhod kot prilagoditev osvetlitve za izbočenost orisa"
-
-#: operations/workshop/styles.c:490
-msgid "Levels high output lighting for Outline Bevel"
-msgstr "Izravna visoko izhodno osvetlitev za izbočenost orisa"
-
-#: operations/workshop/styles.c:491
-msgid "Levels high output as a light adjustment for the outline bevel"
-msgstr "Ravni visokega izhoda kot prilagoditev svetlobe za oris izbočenosti"
-
-#: operations/workshop/styles.c:499
-msgid "Outline Dark Bevel/ignore image mode"
-msgstr "Oris temnega poševnega / prezrtega načina slike"
-
-#: operations/workshop/styles.c:500
-msgid ""
-"This instructs the outline bevel to ignore image details if there is an "
-"image file overlay below it. It also allows outline bevel to work better "
-"when the user selects darker colors."
-msgstr ""
-"To naroči orisu, da poševni rob prezre podrobnosti slike, če je pod njim "
-"prekrivna slikovna datoteka. Prav tako omogoča, da orisni poševni rob deluje "
-"bolje, ko uporabnik izbere temnejše barve."
-
-#: operations/workshop/styles.c:1243
-msgid "GEGL Styles"
-msgstr "Slogi GEGL"
-
-#: operations/workshop/styles.c:1246
-msgid ""
-"An engine to style text and add popular effects to alpha channel images. "
-"Effects include outline, bevel, shadow, and inner glow all in one place."
-msgstr ""
-"Mehanizem za oblikovanje besedila in dodajanje priljubljenih učinkov slikam "
-"z alfa-kanalom. Učinki na enem mestu vključujejo oris, izbočenost, senco in "
-"notranje žarenje."
-
-#: operations/workshop/styles.c:1249
-msgid "Text Styling..."
-msgstr "Oblikovanje besedila ..."
