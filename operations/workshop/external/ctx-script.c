@@ -61,8 +61,11 @@
 "g m23.330 19.800c-0.354 .005-0.671 .119-0.880 .341c-0.614 .640-0.497 1.613-0.027 2.219c-0.066-0.221-0.120-0.452-0.100-0.683c0-0.192 .208-0.167 .294-0.047c.149 .116 .290 .283 .492 .296c.158 .006 .253-0.169 .190-0.307c-0.047-0.184-0.17-0.356-0.145-0.553c.027-0.154 .212-0.228 .348-0.168c.198 .062 .354 .235 .567 .250c.150 .003 .260-0.176 .181-0.307c-0.099 -0.217 -0.319 -0.349 -0.415 -0.566c-0.010 -0.026 -0.010 -0.057 .010 -0.081l0 0c.091 -0.112 .256 -0.072 .379 -0.052c.166 .039 .330 .093 .482 .171c-0.418 -0.349 -0.925 -0.519 -1.374 -0.513z rgb.549 .502 .451F G\nG\n" \
 "restore\n" 
 
+property_boolean (u8, _("8bit sRGB "), TRUE)
+  description ("Render using R'aG'AB'a u8 (rather than linear RaGaBaA float); the user->device space color maping is identity by default; thus changing the meaning of colors set in the script.")
+
 property_string (d, _("Vector"), SAMPLE)
-  description (_("A GeglVector representing the path of the stroke"))
+  description (_("A string containing a ctx protocol drawing."))
   ui_meta ("multiline", "true")
 
 
@@ -74,6 +77,13 @@ property_string (d, _("Vector"), SAMPLE)
 
 #include "gegl-op.h"
 
+typedef struct
+{
+  int   width;
+  int   height;
+  char *str;
+  Ctx  *drawing;
+} State;
 
 static GeglRectangle
 get_bounding_box (GeglOperation *operation)
@@ -108,23 +118,38 @@ static void
 prepare (GeglOperation *operation)
 {
   GeglProperties    *o       = GEGL_PROPERTIES (operation);
+  State *state;
+  if (!o->user_data)
+     o->user_data = g_malloc0 (sizeof(State));
+  state = o->user_data;
+
   const Babl *input_format  = gegl_operation_get_source_format (operation, "input");
   const Babl *input_space   = input_format?babl_format_get_space (input_format):NULL;
 
+  if (o->u8)
+  gegl_operation_set_format (operation, "output", babl_format_with_space ("R'aG'aB'aA u8", input_space));
+  else
   gegl_operation_set_format (operation, "output", babl_format_with_space ("RaGaBaA float", input_space));
 
   GeglRectangle bounds = get_bounding_box (operation);
 
-#if 0
-  if (o->user_data)
-    ctx_destroy (o->user_data);
-  o->user_data = ctx_new_drawlist (bounds.width, bounds.height);
-#else
-  if (!o->user_data)
-    o->user_data = ctx_new_drawlist (bounds.width, bounds.height);
-#endif
-  ctx_drawlist_clear (o->user_data);
-  ctx_parse (o->user_data, o->d);
+
+  if (state->width != bounds.width ||
+      state->height != bounds.height ||
+      state->str == NULL ||
+      strcmp(state->str, o->d))
+  {
+     if (state->drawing)
+       ctx_destroy (state->drawing);
+     if (state->str)
+       g_free (state->str);
+     state->width = bounds.width;
+     state->height = bounds.height;
+     state->str = g_strdup (o->d);
+     state->drawing = ctx_new_drawlist (bounds.width, bounds.height);
+     ctx_parse (state->drawing, state->str);
+  }
+
 }
 
 #include <stdio.h>
@@ -138,48 +163,68 @@ process (GeglOperation       *operation,
          gint                 level)
 {
   GeglProperties *o = GEGL_PROPERTIES (operation);
+  State *state = o->user_data;
   const Babl *format =  gegl_operation_get_format (operation, "output");
 
-  gegl_buffer_copy (input, result, GEGL_ABYSS_NONE, output, result);
-  guchar *data = gegl_malloc(result->width*result->height*4*4);
-  gegl_buffer_get (input, result, 1.0, format, data, result->width*4*4, GEGL_ABYSS_NONE);
+  int bpp = o->u8?4:16;
+  guchar *data = gegl_malloc(result->width*result->height*bpp);
   Ctx *ctx;
+  gegl_buffer_copy (input, result, GEGL_ABYSS_NONE, output, result);
+  gegl_buffer_get (input, result, 1.0, format, data, result->width*bpp, GEGL_ABYSS_NONE);
   ctx = ctx_new_for_framebuffer (data, result->width, result->height,
-                                 result->width * 4 * 4, CTX_FORMAT_RGBAF);
+                                 result->width * bpp,
+				 o->u8?CTX_FORMAT_RGBA8:CTX_FORMAT_RGBAF);
 
   ctx_translate (ctx, -result->x, -result->y);
   ctx_save(ctx);
-  //ctx_parse (ctx, o->d);
-  ctx_render_ctx (o->user_data, ctx);
+  ctx_render_ctx (state->drawing, ctx);
   ctx_restore(ctx);
 
-  ctx_free (ctx);
+  ctx_destroy (ctx);
 
-  gegl_buffer_set (output, result, 0, format, data, result->width*4*4);
+  gegl_buffer_set (output, result, 0, format, data, result->width*bpp);
   gegl_free (data);
 
   return  TRUE;
 }
 
+static void state_destroy (State *state)
+{
+  if (state->str) g_free (state->str);
+  if (state->drawing) ctx_destroy (state->drawing);
+  g_free (state);
+}
+
+static void
+dispose (GObject *object)
+{
+  GeglProperties  *o = GEGL_PROPERTIES (object);
+  state_destroy (o->user_data);
+  G_OBJECT_CLASS (gegl_op_parent_class)->dispose (object);
+}
+
 static void
 gegl_op_class_init (GeglOpClass *klass)
 {
+  GObjectClass             *object_class;
   GeglOperationClass       *operation_class;
   GeglOperationFilterClass *filter_class;
 
-
+  object_class    = G_OBJECT_CLASS (klass);
   operation_class = GEGL_OPERATION_CLASS (klass);
   filter_class    = GEGL_OPERATION_FILTER_CLASS (klass);
 
   filter_class->process = process;
   operation_class->get_bounding_box = get_bounding_box;
   operation_class->prepare = prepare;
+  object_class->dispose    = dispose;
+//operation_class->threaded = FALSE;
 
   gegl_operation_class_set_keys (operation_class,
     "name",        "gegl:ctx-script",
-    "title",       _("Ctx script"),
+    "title",       "Ctx script",
     "categories",  "render:vector",
-    "description", _("Renders a ctx vector graphics script"),
+    "description", "Renders a ctx vector graphics script",
     NULL);
 }
 
