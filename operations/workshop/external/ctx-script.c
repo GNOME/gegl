@@ -83,7 +83,7 @@ typedef struct
   int   height;
   char *str;
   Ctx  *drawing;
-  guint8 *icc;
+  const guint8 *icc;
   int     icc_length;
 } State;
 
@@ -115,9 +115,9 @@ prepare (GeglOperation *operation)
   const Babl *input_space   = input_format?babl_format_get_space (input_format):NULL;
 
   if (o->u8)
-  gegl_operation_set_format (operation, "output", babl_format_with_space ("R'aG'aB'aA u8", input_space));
+    gegl_operation_set_format (operation, "output", babl_format_with_space ("R'aG'aB'aA u8", input_space));
   else
-  gegl_operation_set_format (operation, "output", babl_format_with_space ("RaGaBaA float", input_space));
+    gegl_operation_set_format (operation, "output", babl_format_with_space ("R'aG'aB'aA float", input_space));
 
   GeglRectangle bounds = get_bounding_box (operation);
 
