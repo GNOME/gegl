@@ -1,4 +1,4 @@
-/* ctx git commit: 71c65496 */
+/* ctx git commit: d1347d0b */
 /* 
  * ctx.h is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -11390,8 +11390,7 @@ struct _CtxRasterizer
   float      x;
   float      y;
 
-  float      first_x;
-  float      first_y;
+  int        first_edge;
 
   uint16_t    blit_x;
   uint16_t    blit_y;
@@ -21322,6 +21321,7 @@ ctx_rasterizer_generate_coverage_apply_grad (CtxRasterizer *rasterizer,
 static inline void
 ctx_rasterizer_reset (CtxRasterizer *rasterizer)
 {
+  rasterizer->first_edge = -1;
   rasterizer->has_prev        =   
   rasterizer->edge_list.count =    // ready for new edges
   rasterizer->edge_pos        =   
@@ -21793,6 +21793,7 @@ static inline int ctx_rasterizer_add_point (CtxRasterizer *rasterizer, int x1, i
       CtxSegment *segment = & ((CtxSegment*)rasterizer->edge_list.entries)[rasterizer->edge_list.count-1];
       segment->code = CTX_NEW_EDGE;
       rasterizer->has_prev = 1;
+      rasterizer->first_edge = rasterizer->edge_list.count-1;
     }
   return ret;
 }
@@ -21815,13 +21816,38 @@ static void ctx_rasterizer_poly_to_edges (CtxRasterizer *rasterizer)
 
 static inline void ctx_rasterizer_close_path (CtxRasterizer *rasterizer)
 {
-  if (rasterizer->has_prev>0)
+  int x0 = rasterizer->inner_x;
+  int y0 = rasterizer->inner_y;
+  if ((rasterizer->has_prev > 0) & (rasterizer->first_edge>=0))
     {
-      ctx_rasterizer_line_to (rasterizer, rasterizer->first_x, rasterizer->first_y);
-      // to a hack - find first_x.. and next - (or keep pointer to first_x instead
-      // mark this edge separately for detection in stroker - or maybe
-      // simply assume that if they are equal it should be?
-      rasterizer->has_prev = 0;
+
+      if (rasterizer->first_edge>=0)
+      {
+        CtxSegment *segment = & ((CtxSegment*)rasterizer->edge_list.entries)[rasterizer->first_edge];
+	if (segment->code == CTX_NEW_EDGE)
+	{
+          CtxSegment entry = {{CTX_EDGE, 0, 0, 0, 0, 0}};
+          int x1 = segment->x0;
+	  int y1 = segment->y0;
+          entry.x0=x0;
+          entry.y0=y0;
+          entry.x1=x1;
+          entry.y1=y1;
+          ctx_rasterizer_update_inner_point (rasterizer, x1, y1);
+          rasterizer->has_prev = 0;
+	  rasterizer->first_edge = -1;
+          ctx_edgelist_add_single (&rasterizer->edge_list, (CtxEntry*)&entry);
+   entry = *segment;
+   entry.code = CTX_EDGE;
+
+	  entry.x1 = entry.x1 * 0.001f + entry.x0 * 0.999f;
+	  entry.y1 = entry.y1 * 0.001f + entry.y0 * 0.999f;
+
+          ctx_edgelist_add_single (&rasterizer->edge_list, (CtxEntry*)&entry);
+	  // shorten to half length?
+          return;
+	}
+      }
     }
 }
 
@@ -21834,10 +21860,9 @@ static inline void ctx_rasterizer_move_to (CtxRasterizer *rasterizer, float x, f
 {
   int tx = 0, ty = 0;
 
-  rasterizer->first_x  =
   rasterizer->x        = x;
-  rasterizer->first_y  =
   rasterizer->y        = y;
+  rasterizer->first_edge = rasterizer->edge_list.count - 1; // ?
   rasterizer->has_prev = -1;
   _ctx_user_to_device_prepped (rasterizer->state, x,y, &tx, &ty);
 
@@ -22275,7 +22300,7 @@ ctx_rasterizer_fill (CtxRasterizer *rasterizer)
     rasterizer->state->ink_max_y = ctx_maxi (rasterizer->state->ink_max_y, rasterizer->scan_max / CTX_FULL_AA);
 
 #if CTX_FAST_FILL_RECT
-  if (rasterizer->edge_list.count == 4)
+  if (rasterizer->edge_list.count == 5)
     {
       CtxSegment *entry0 = &(((CtxSegment*)(rasterizer->edge_list.entries)))[0];
       CtxSegment *entry1 = &(((CtxSegment*)(rasterizer->edge_list.entries)))[1];
@@ -22834,7 +22859,7 @@ ctx_rasterizer_stroke (CtxRasterizer *rasterizer)
   memcpy (temp, rasterizer->edge_list.entries, sizeof (temp) );
 #if CTX_FAST_FILL_RECT
 #if CTX_FAST_STROKE_RECT
-  if (rasterizer->edge_list.count == 4)
+  if (rasterizer->edge_list.count == 5)
     {
       CtxSegment *entry0 = &((CtxSegment*)rasterizer->edge_list.entries)[0];
       CtxSegment *entry1 = &((CtxSegment*)rasterizer->edge_list.entries)[1];
@@ -22868,16 +22893,6 @@ ctx_rasterizer_stroke (CtxRasterizer *rasterizer)
   rasterizer->aa = ctx_mini(aa_backup, 5);
     {
     {
-      if (line_width < 5.0f)
-      {
-#if 1
-      factor *= 0.95f; /* this hack adjustment makes sharp 1px and 2px strokewidths
-      //                 end up sharp without erronious AA; we seem to be off by
-      //                 one somewhere else, causing the need for this
-      //                 */
-      line_width *= 0.95f;
-#endif
-      }
       ctx_rasterizer_reset (rasterizer); /* then start afresh with our stroked shape  */
       CtxMatrix transform_backup = gstate->transform;
       _ctx_matrix_identity (&gstate->transform);
@@ -23163,7 +23178,7 @@ ctx_rasterizer_clip_apply (CtxRasterizer *rasterizer,
   if (((rasterizer->clip_rectangle==1) | (!rasterizer->clip_buffer))
       )
   {
-    if (count == 4)
+    if (count == 5)
     {
       if ((coords[0][0] == coords[1][0]) &
           (coords[0][1] == coords[3][1]) &
