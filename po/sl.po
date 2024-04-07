@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-04-06 15:52+0000\n"
-"PO-Revision-Date: 2024-04-07 13:25+0200\n"
+"POT-Creation-Date: 2024-04-07 14:32+0000\n"
+"PO-Revision-Date: 2024-04-07 17:18+0200\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language: sl_SI\n"
@@ -8695,13 +8695,12 @@ msgstr "Prekrivnost polnila, ki jo želite uporabiti"
 
 #: operations/external/path.c:54 operations/external/vector-fill.c:40
 #: operations/external/vector-stroke.c:41
-#: operations/workshop/external/ctx-script.c:64
+#: operations/workshop/external/ctx-script.c:67
 msgid "Vector"
 msgstr "Vektor"
 
 #: operations/external/path.c:55 operations/external/vector-fill.c:41
 #: operations/external/vector-stroke.c:42
-#: operations/workshop/external/ctx-script.c:65
 msgid "A GeglVector representing the path of the stroke"
 msgstr "Vektor GeglVector, ki predstavlja pot poteze"
 
@@ -9848,13 +9847,13 @@ msgstr ""
 "Poskusna operacija za preslikavo 1:1 z vhoda na izhod, medtem poteka "
 "vzorčenje."
 
-#: operations/workshop/external/ctx-script.c:180
-msgid "Ctx script"
-msgstr "Skript Ctx"
+#: operations/workshop/external/ctx-script.c:64
+msgid "8bit sRGB "
+msgstr "8-bitni sRGB "
 
-#: operations/workshop/external/ctx-script.c:182
-msgid "Renders a ctx vector graphics script"
-msgstr "Izriše skript vektorske grafike ctx"
+#: operations/workshop/external/ctx-script.c:68
+msgid "A string containing a ctx protocol drawing."
+msgstr "Niz, ki vsebuje risbo protokola ctx."
 
 #: operations/workshop/external/gluas.c:29
 msgid "Script"
