@@ -175,6 +175,7 @@ can_run_host_binaries = meson.can_run_host_binaries()
 cflags_common = []
 cflags_c      = []
 cflags_cpp    = []
+lflags_common = []
 
 cflags_common += '-DHAVE_CONFIG_H'
 
@@ -202,6 +203,13 @@ if os_win32
   cflags_common += '-D_FILE_OFFSET_BITS=64'
 endif
 
+# Generate .pdb (CodeView) debug symbols (makes possible to debug with DIA SDK)
+pdb_support = cc.has_argument('-gcodeview') and cc.has_link_argument('-Wl,--pdb=')
+if os_win32 and pdb_support
+  cflags_common += '-gcodeview'
+  lflags_common += '-Wl,--pdb='
+endif
+
 
 cflags_common += cc.get_supported_arguments(['-ftree-vectorize'])
 
@@ -224,6 +232,7 @@ cflags_cpp = cflags_common + cflags_cpp
 
 add_project_arguments(cc.get_supported_arguments(cflags_c), language: 'c')
 add_project_arguments(cpp.get_supported_arguments(cflags_cpp), language: 'cpp')
+add_project_link_arguments(lflags_common, language: [ 'c', 'cpp' ])
 
 ################################################################################
 # Build Utilities
@@ -510,6 +519,14 @@ endif
 
 build_reference = get_option('gtk-doc') or build_gi_docgen
 
+#########################################################################
+# Install native debug data (.pdb) on Windows
+# Ideally meson should take care of it automatically.
+# See: https://github.com/mesonbuild/meson/issues/12977
+if os_win32 and pdb_support
+  install_win_debug_script = find_program('./meson_install_win_debug.sh')
+  meson.add_install_script(install_win_debug_script)
+endif
 
 #########################################################################
 # Subdirs
