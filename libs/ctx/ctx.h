@@ -1,4 +1,4 @@
-/* ctx git commit: d1347d0b */
+/* ctx git commit: cfea6782 */
 /* 
  * ctx.h is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -445,12 +445,25 @@ ctx_font_extents (Ctx   *ctx,
                   float *descent,
                   float *line_gap);
 
-/**
- * ctx_parse:
- *
- * Parses a string containg text ctx protocol data.
- */
 void ctx_parse            (Ctx *ctx, const char *string);
+
+/**
+ * ctx_parse_animation:
+ * elapsed_time the 
+ *
+ * Parses a string containg ctx protocol data, including an overlayed
+ * scene and key-framing synax.
+ *
+ * pass in the scene_no you expect to render in the pointer for scene_no
+ * actual rendered scene is returned here.
+ *
+ * elapsed time for scene to render, if we are beyond the specified scene
+ * adjust elapsed_time to reflect elapsed time in actually rendered scene.
+ */
+void
+ctx_parse_animation (Ctx *ctx, const char *string,
+		     float *elapsed_time, 
+                     int   *scene_no);
 
 /**
  * low level glyph drawing calls, unless you are integrating harfbuzz
@@ -2444,10 +2457,10 @@ typedef enum _CtxColorSpace CtxColorSpace;
  *
  * The set profiles follows the graphics state.
  */
-void ctx_colorspace (Ctx           *ctx,
-                     CtxColorSpace  space_slot,
-                     unsigned char *data,
-                     int            data_length);
+void ctx_colorspace (Ctx                 *ctx,
+                     CtxColorSpace        space_slot,
+                     const unsigned char *data,
+                     int                  data_length);
 
 
 
@@ -5445,6 +5458,9 @@ static inline CtxList *ctx_list_find_custom (CtxList *list,
 #endif
 #endif
 
+#ifndef CTX_RASTERIZER_ALLOW_DIRECT
+#define CTX_RASTERIZER_ALLOW_DIRECT 1
+#endif
 
 #ifndef CTX_FAST_FILL_RECT
 #define CTX_FAST_FILL_RECT 1    /*  matters most for tiny rectangles where it shaves overhead, for larger rectangles
@@ -6288,12 +6304,13 @@ static inline CtxList *ctx_list_find_custom (CtxList *list,
 int ctx_a85enc_len (int input_length);
 int ctx_a85enc (const void *srcp, char *dst, int count);
 
+
+#endif
+
 #if CTX_PARSER
 
 int ctx_a85dec (const char *src, char *dst, int count);
 int ctx_a85len (const char *src, int count);
-#endif
-
 #endif
 #ifndef __CTX_EXTRA_H
 #define __CTX_EXTRA_H
@@ -6620,10 +6637,10 @@ void ctx_rasterizer_colorspace_babl (CtxState      *state,
                                      CtxColorSpace  space_slot,
                                      const Babl    *space);
 #endif
-void ctx_rasterizer_colorspace_icc (CtxState      *state,
-                                    CtxColorSpace  space_slot,
-                                    char          *icc_data,
-                                    int            icc_length);
+void ctx_rasterizer_colorspace_icc (CtxState            *state,
+                                    CtxColorSpace        space_slot,
+                                    const unsigned char *icc_data,
+                                    int                  icc_length);
 
 
 CtxBuffer *ctx_buffer_new_bare (void);
@@ -11226,7 +11243,7 @@ struct _Ctx
 #define ctx_process(ctx,entry)  ctx->process (ctx, (CtxCommand *)(entry));
 #else
 static inline void
-ctx_process (Ctx *ctx, CtxEntry *entry)
+ctx_process (Ctx *ctx, const CtxEntry *entry)
 {
   ctx->process (ctx, (CtxCommand *) entry);
 }
@@ -20664,6 +20681,8 @@ ctx_rasterizer_generate_coverage_set_grad (CtxRasterizer *rasterizer,
 
 #define CTX_RASTERIZER_MAX_EMPTIES  16
 #define CTX_RASTERIZER_MAX_SOLID    16
+#undef CTX_RASTERIZER_SWITCH_DISPATCH
+#define CTX_RASTERIZER_SWITCH_DISPATCH 0
 
 inline static void
 ctx_rasterizer_generate_coverage_apply_grad (CtxRasterizer *rasterizer,
@@ -21433,7 +21452,7 @@ ctx_rasterizer_rasterize_edges2 (CtxRasterizer *rasterizer, const int fill_rule,
   minx *= (minx>0);
  
   int pixs = maxx - minx + 1;
-  uint8_t _coverage[pixs];
+  uint8_t _coverage[pixs+8]; // XXX this might hide some valid asan warnings
   uint8_t *coverage = &_coverage[0];
   ctx_apply_coverage_fun apply_coverage = rasterizer->apply_coverage;
 
@@ -21630,7 +21649,7 @@ CTX_SIMD_SUFFIX (ctx_rasterizer_rasterize_edges) (CtxRasterizer *rasterizer, con
 void
 CTX_SIMD_SUFFIX (ctx_rasterizer_rasterize_edges) (CtxRasterizer *rasterizer, const int fill_rule)
 {
-#if 0
+#if CTX_RASTERIZER_ALLOW_DIRECT
   int allow_direct = !(0 
 #if CTX_ENABLE_CLIP
          | ((rasterizer->clip_buffer!=NULL) & (!rasterizer->clip_rectangle))
@@ -36539,10 +36558,10 @@ void ctx_rasterizer_colorspace_babl (CtxState      *state,
 }
 #endif
 
-void ctx_rasterizer_colorspace_icc (CtxState      *state,
-                                    CtxColorSpace  space_slot,
-                                    char          *icc_data,
-                                    int            icc_length)
+void ctx_rasterizer_colorspace_icc (CtxState            *state,
+                                    CtxColorSpace        space_slot,
+                                    const unsigned char *icc_data,
+                                    int                  icc_length)
 {
 #if CTX_BABL
    const char *error = NULL;
@@ -36552,7 +36571,7 @@ void ctx_rasterizer_colorspace_icc (CtxState      *state,
    else if (icc_length < 32)
    {
       if (icc_data[0] == '0' && icc_data[1] == 'x')
-        sscanf (icc_data, "%p", &space);
+        sscanf ((char*)icc_data, "%p", &space);
       else
       {
         char tmp[24];
@@ -36572,7 +36591,7 @@ void ctx_rasterizer_colorspace_icc (CtxState      *state,
 
    if (!space)
    {
-     space = babl_space_from_icc (icc_data, icc_length, BABL_ICC_INTENT_RELATIVE_COLORIMETRIC, &error);
+     space = babl_space_from_icc ((char*)icc_data, icc_length, BABL_ICC_INTENT_RELATIVE_COLORIMETRIC, &error);
    }
    if (space)
    {
@@ -36581,10 +36600,10 @@ void ctx_rasterizer_colorspace_icc (CtxState      *state,
 #endif
 }
 
-void ctx_colorspace (Ctx           *ctx,
-                     CtxColorSpace  space_slot,
-                     unsigned char *data,
-                     int            data_length)
+void ctx_colorspace (Ctx                 *ctx,
+                     CtxColorSpace        space_slot,
+                     const unsigned char *data,
+                     int                  data_length)
 {
   if (data)
   {
@@ -41597,7 +41616,7 @@ static inline void ctx_svg_arc_to (Ctx *ctx, float rx, float ry,
                          // to offer headroom for multiplexing
 
 
-#define CTX_REPORT_COL_ROW 0
+#define CTX_REPORT_COL_ROW 1
 
 struct
   _CtxParser
@@ -41650,6 +41669,12 @@ struct
   int   (*get_prop)(void *prop_data, const char *key, char **data, int *len);
   void *prop_data;
   int   prev_byte;
+
+#if CTX_REPORT_COL_ROW
+  char *error;
+  int   error_col;
+  int   error_row;
+#endif
 };
 
 void
@@ -41736,6 +41761,8 @@ void ctx_parser_destroy (CtxParser *parser)
   if (parser->holding)
     ctx_free (parser->holding);
 #endif
+  if (parser->error)
+    ctx_free (parser->error);
   ctx_free (parser);
 }
 
@@ -42159,17 +42186,20 @@ static void ctx_parser_dispatch_command (CtxParser *parser)
 {
   CtxCode cmd = parser->command;
   Ctx *ctx = parser->ctx;
+  if (parser->error) return;
 
   if (parser->expected_args != CTX_ARG_STRING_OR_NUMBER &&
       parser->expected_args != CTX_ARG_COLLECT_NUMBERS &&
       parser->expected_args != parser->n_numbers)
     {
 #if CTX_REPORT_COL_ROW
-         fprintf (stderr, "ctx:%i:%i %c got %i instead of %i args\n",
+       char *error = ctx_malloc (256);
+       sprintf (error, "ctx:%i:%i %c got %i instead of %i args\n",
                parser->line, parser->col,
                cmd, parser->n_numbers, parser->expected_args);
+       parser->error = error;
 #endif
-      //return;
+      return;
     }
 
 #define arg(a)  (parser->numbers[a])
@@ -42404,8 +42434,8 @@ static void ctx_parser_dispatch_command (CtxParser *parser)
           float ay = 2 * ctx_y (ctx) - cy;
           ctx_curve_to (ctx, ax, ay, arg(0) +  cx, arg(1) + cy,
                         arg(2) + cx, arg(3) + cy);
-          parser->pcx = arg(0) + cx;
-          parser->pcy = arg(1) + cy;
+          parser->pcx = arg(2) + cx;
+          parser->pcy = arg(3) + cy;
         }
         break;
       case CTX_SMOOTH_TO:
@@ -42414,8 +42444,8 @@ static void ctx_parser_dispatch_command (CtxParser *parser)
           float ay = 2 * ctx_y (ctx) - parser->pcy;
           ctx_curve_to (ctx, ax, ay, arg(0), arg(1),
                         arg(2), arg(3) );
-          parser->pcx = arg(0);
-          parser->pcx = arg(1);
+          parser->pcx = arg(2);
+          parser->pcx = arg(3);
         }
         break;
       case CTX_SMOOTHQ_TO:
@@ -43146,7 +43176,14 @@ static inline void ctx_parser_feed_byte (CtxParser *parser, char byte)
                 parser->decimal = 0;
                 break;
               case '.':
-                //if (parser->decimal) // TODO permit .13.32.43 to equivalent to .12 .32 .43
+                if (parser->decimal){
+                  if (parser->state == CTX_PARSER_NEGATIVE_NUMBER)
+                    { parser->numbers[parser->n_numbers] *= -1; }
+                  parser->state = CTX_PARSER_NUMBER;
+                  parser->numbers[parser->n_numbers+1] = 0;
+		  if (parser->n_numbers < CTX_PARSER_MAX_ARGS)
+                    parser->n_numbers ++;
+		}
                 parser->decimal = 1;
                 break;
               case '0': case '1': case '2': case '3': case '4':
@@ -43395,8 +43432,8 @@ ctx_parse (Ctx *ctx, const char *string)
 }
 
 CTX_EXPORT void
-ctx_parse2 (Ctx *ctx, const char *string, float *scene_elapsed_time, 
-            int *scene_no_p)
+ctx_parse_animation (Ctx *ctx, const char *string, float *scene_elapsed_time, 
+                     int *scene_no_p)
 {
   float time = *scene_elapsed_time;
   int scene_no = *scene_no_p;
@@ -43406,10 +43443,10 @@ ctx_parse2 (Ctx *ctx, const char *string, float *scene_elapsed_time,
 
   int i;
 
-again:
+//again:
   i = 0;
 
-  // XXX : this doesn't work when there are [ 's in the text
+  // XXX : this doesn't work when there are [  or ('s in text
 
   int scene_pos = 0;
   int last_scene = 0;
@@ -43433,7 +43470,7 @@ again:
             {
               scene_no ++;
               (*scene_no_p)++;
-              *scene_elapsed_time = time = 0;
+              *scene_elapsed_time = time = time- scene_duration;
             }
             else
             {
@@ -43462,7 +43499,8 @@ again:
   {
      scene_no = 0;
      (*scene_no_p) = 0;
-     goto again;
+     return;
+     //goto again;
   }
   
   if (scene_no == 0 && last_scene==0 && string[i]==0)
@@ -43560,6 +43598,7 @@ again:
            val = _ctx_parse_float (eq+1, &ep);
 
         keys[n_keys] = key;
+	if (n_keys < MAX_KEY_FRAMES-1)
         values[n_keys++] = val;
 
         i+=(ep-sp)-1;
@@ -44070,7 +44109,7 @@ static void ctx_drawlist_backend_destroy (CtxBackend *backend)
   ctx_free (backend);
 }
 
-static void ctx_update_current_path (Ctx *ctx, CtxEntry *entry)
+static void ctx_update_current_path (Ctx *ctx, const CtxEntry *entry)
 {
 #if CTX_CURRENT_PATH
   switch (entry->code)
@@ -49604,7 +49643,7 @@ inline static void ctx_term_process (Ctx *ctx,
    */
   ctx_interpret_style (&ctx->state, &command->entry, ctx);
   ctx_interpret_transforms (&ctx->state, &command->entry, ctx);
-  ctx_interpret_pos (&ctx->state, &command->entry, ctx);
+  ctx_interpret_pos_bare (&ctx->state, &command->entry, ctx);
 
   /* directly forward */
   ctx_process (term->host, &command->entry);
@@ -52109,7 +52148,7 @@ _ctx_glyphs (Ctx     *ctx,
 #define CTX_MAX_WORD_LEN 128
 
 #if 1
-static int ctx_glyph_find (Ctx *ctx, CtxFont *font, uint32_t unichar)
+int ctx_glyph_find (Ctx *ctx, CtxFont *font, uint32_t unichar)
 {
   int length = ctx_font_get_length (font);
   for (int i = 0; i < length; i++)
@@ -52925,12 +52964,10 @@ ctx_print_int (CtxFormatter *formatter, int val)
 static void
 ctx_print_float (CtxFormatter *formatter, float val)
 {
-  int wasneg = 0;
   if (val < 0.0f)
   {
     ctx_formatter_addstr (formatter, "-", 1);
     val = -val;
-    wasneg = 1;
   }
   int remainder = ((int)(val*10000))%10000;
   if (remainder % 10 > 5)
@@ -52938,8 +52975,9 @@ ctx_print_float (CtxFormatter *formatter, float val)
   else
     remainder /= 10;
 
-  if (!formatter->longform && ((((int)val))==0) && (remainder) && !wasneg)
+  if (!formatter->longform && ((((int)val))==0) && (remainder))
   {
+    // 
   }
   else
   {
@@ -53127,28 +53165,28 @@ static void _ctx_print_name (CtxFormatter *formatter, int code)
     switch (code)
       {
         case CTX_GLOBAL_ALPHA:      name[1]='a'; break;
-        case CTX_COMPOSITING_MODE:  name[1]='m'; break;
-        case CTX_BLEND_MODE:        name[1]='B'; break;
-        case CTX_EXTEND:            name[1]='e'; break;
-        case CTX_TEXT_ALIGN:        name[1]='t'; break;
         case CTX_TEXT_BASELINE:     name[1]='b'; break;
-        case CTX_TEXT_DIRECTION:    name[1]='d'; break;
-        case CTX_FONT_SIZE:         name[1]='f'; break;
-        case CTX_MITER_LIMIT:       name[1]='l'; break;
-        case CTX_LINE_JOIN:         name[1]='j'; break;
         case CTX_LINE_CAP:          name[1]='c'; break;
-        case CTX_LINE_WIDTH:        name[1]='w'; break;
-        case CTX_LINE_DASH_OFFSET:  name[1]='D'; break;
+        case CTX_TEXT_DIRECTION:    name[1]='d'; break;
+        case CTX_EXTEND:            name[1]='e'; break;
+        case CTX_FONT_SIZE:         name[1]='f'; break;
+        case CTX_LINE_JOIN:         name[1]='j'; break;
+        case CTX_MITER_LIMIT:       name[1]='l'; break;
+        case CTX_COMPOSITING_MODE:  name[1]='m'; break;
         case CTX_STROKE_POS:        name[1]='p'; break;
+        case CTX_FILL_RULE:         name[1]='r'; break;
+        case CTX_SHADOW_BLUR:       name[1]='s'; break;
+        case CTX_TEXT_ALIGN:        name[1]='t'; break;
+        case CTX_LINE_WIDTH:        name[1]='w'; break;
+        case CTX_SHADOW_OFFSET_X:   name[1]='x'; break;
+        case CTX_SHADOW_OFFSET_Y:   name[1]='y'; break;
+        case CTX_BLEND_MODE:        name[1]='B'; break;
+        case CTX_SHADOW_COLOR:      name[1]='C'; break;
+        case CTX_LINE_DASH_OFFSET:  name[1]='D'; break;
         case CTX_LINE_HEIGHT:       name[1]='H'; break;
         case CTX_WRAP_LEFT:         name[1]='L'; break;
         case CTX_WRAP_RIGHT:        name[1]='R'; break;
         case CTX_IMAGE_SMOOTHING:   name[1]='S'; break;
-        case CTX_SHADOW_BLUR:       name[1]='s'; break;
-        case CTX_SHADOW_COLOR:      name[1]='C'; break;
-        case CTX_SHADOW_OFFSET_X:   name[1]='x'; break;
-        case CTX_SHADOW_OFFSET_Y:   name[1]='y'; break;
-        case CTX_FILL_RULE:         name[1]='r'; break;
         default:
           name[0] = code;
           name[1] = 0;
@@ -55410,7 +55448,7 @@ ctx_interpret_style (CtxState *state, const CtxEntry *entry, void *data)
       case CTX_COLOR_SPACE:
         /* move this out of this function and only do it in rasterizer? XXX */
         ctx_rasterizer_colorspace_icc (state, (CtxColorSpace)c->colorspace.space_slot,
-                                              (char*)c->colorspace.data,
+                                              (const unsigned char*)c->colorspace.data,
                                               c->colorspace.data_len);
         break;
       case CTX_IMAGE_SMOOTHING:
