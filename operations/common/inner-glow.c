@@ -17,10 +17,6 @@
  * 2022 Sam Lester (GEGL inner glow) *2023 InnerShadow for GEGL Styles
  */
 
- /* The name innerglow has already been taken by Sam's most popular text styling plugin GEGL Effects. Which is a incompatible fork of this. (they cannot be swapped)
-    Releases of GEGL Effects post May 2023 use (namespace:innerglow) name space but for now thousands of people are using the plugin and they will experience a breakage
-    if they don't rountinely update. I assume they don't. */
-
  /* This filter is a stand alone meant to be fused with Gimp's blending options. But it also is meant to be called with GEGL Styles
     From a technical perspective this is literally inverted transparency a drop shadow then removal of the color fill that drop shadow applied too*/
 
@@ -31,7 +27,7 @@
 #ifdef GEGL_PROPERTIES
 
 #define IGGUIDE \
-"id=1 dst-atop aux=[ ref=1 color value=#ffffff ] crop  xor srgb=true aux=[ ref=1 ] color-overlay value=#000000 "\
+"id=1 dst-atop aux=[ ref=1 color value=#ffffff ] crop aux=[ ref=1 ]  xor srgb=true aux=[ ref=1 ] color-overlay value=#000000 "\
  /* This is a GEGL Graph. It replaces color with transparency and transparency with color. */
 
 
@@ -75,8 +71,8 @@ property_double (radius, _("Blur radius"), 7.5)
 
 
 property_double (grow_radius, _("Grow radius"), 4.0)
-  value_range   (2, 30.0)
-  ui_range      (2, 30.0)
+  value_range   (1, 30.0)
+  ui_range      (1, 30.0)
   ui_digits     (0)
   ui_steps      (1, 5)
   ui_gamma      (1.5)
@@ -165,6 +161,7 @@ gegl_operation_meta_redirect (operation, "cover", median, "alpha-percentile");
 
  gegl_node_link_many (input, it,  shadow, hiddencolor, atop, in, median, color, crop, output, NULL);
  gegl_node_connect (in, "aux", input, "output");
+ gegl_node_connect (crop, "aux", input, "output");
 
 }
 
