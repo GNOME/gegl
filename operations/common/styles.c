@@ -14,8 +14,7 @@
  * License along with GEGL; if not, see <https://www.gnu.org/licenses/>.
  *
  * Copyright 2006 Øyvind Kolås <pippin@gimp.org>
- *Sam Lester - inspired by GEGL Effects from May 2022.  *2023 Sam Lester GEGL Styles a special fork of GEGL Effects intended for Gimp 2.99/3
- *2022 BarefootLiam (for helping give Inner Glow a disable checkbox)
+ * 2023 Sam Lester, GEGL Styles is based on a 2022 text styling plugin, BarefootLiam helped with inner glow's checkbox
 
 If it was not for me recreating GEGL Drop Shadow like graph from scratch in the "All nodes relating to Outline here" this filter would have been watered down.
 I hope Gimp's team is not overwhelmed by my complexity because this is the first GEGL operation to use 55+ or more nodes when everything is enabled
@@ -906,6 +905,7 @@ static void attach (GeglOperation *operation)
      gegl_node_link_many (nopcolor, coloroverlaypolicy, NULL);
       gegl_node_connect (beforecoloroverlaypolicy, "aux", coloroverlaypolicy, "output");
       gegl_node_connect (coloroverlaypolicy, "aux", thecoloroverlay, "output");
+      gegl_node_connect (crop, "aux", input, "output");
 
  /* Now save points to the various gegl nodes so we can rewire them in
    * update_graph() later
@@ -1113,6 +1113,7 @@ I choose enable outline only because I had to choose one checkbox. */
       gegl_node_link_many (state->nopcolor, state->coloroverlaypolicy, NULL);
       gegl_node_connect (state->beforecoloroverlaypolicy, "aux", state->coloroverlaypolicy, "output");
 /*      gegl_node_connect (state->coloroverlaypolicy, "aux", state->thecoloroverlay, "output"); */
+      gegl_node_connect (state->crop, "aux", state->input, "output");
   }
   else
   {
@@ -1137,6 +1138,7 @@ I choose enable outline only because I had to choose one checkbox. */
       gegl_node_link_many (state->nopcolor, state->coloroverlaypolicy, NULL);
       gegl_node_connect (state->beforecoloroverlaypolicy, "aux", state->coloroverlaypolicy, "output");
 /*      gegl_node_connect (state->coloroverlaypolicy, "aux", state->thecoloroverlay, "output"); */
+      gegl_node_connect (state->crop, "aux", state->input, "output");
   }
   else
   {
@@ -1157,6 +1159,7 @@ I choose enable outline only because I had to choose one checkbox. */
       gegl_node_link_many (state->nopcolor, state->coloroverlaypolicy, NULL);
       gegl_node_connect (state->beforecoloroverlaypolicy, "aux", state->coloroverlaypolicy, "output");
 /*      gegl_node_connect (state->coloroverlaypolicy, "aux", state->thecoloroverlay, "output"); */
+      gegl_node_connect (state->crop, "aux", state->input, "output");
     }
 
 else
@@ -1186,6 +1189,7 @@ else
       gegl_node_link_many (state->nopcolor, state->coloroverlaypolicy, NULL);
       gegl_node_connect (state->beforecoloroverlaypolicy, "aux", state->coloroverlaypolicy, "output");
 /*      gegl_node_connect (state->coloroverlaypolicy, "aux", state->thecoloroverlay, "output"); */
+      gegl_node_connect (state->crop, "aux", state->input, "output");
 
   }
   else
@@ -1207,6 +1211,7 @@ else
       gegl_node_link_many (state->nopcolor, state->coloroverlaypolicy, NULL);
       gegl_node_connect (state->beforecoloroverlaypolicy, "aux", state->coloroverlaypolicy, "output");
 /*      gegl_node_connect (state->coloroverlaypolicy, "aux", state->thecoloroverlay, "output"); */
+      gegl_node_connect (state->crop, "aux", state->input, "output");
   }
   else
   {
@@ -1224,6 +1229,7 @@ else
       gegl_node_link_many (state->nopcolor, state->coloroverlaypolicy, NULL);
       gegl_node_connect (state->beforecoloroverlaypolicy, "aux", state->coloroverlaypolicy, "output");
 /*      gegl_node_connect (state->coloroverlaypolicy, "aux", state->thecoloroverlay, "output"); */
+      gegl_node_connect (state->crop, "aux", state->input, "output");
   }
 }
 
