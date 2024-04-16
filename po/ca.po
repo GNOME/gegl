@@ -3360,7 +3360,7 @@ msgstr "Punt PSSquare (o euclidià)"
 
 #: operations/common/newsprint.c:29
 msgid "Crossing Lines"
-msgstr "línies creuades"
+msgstr "Línies creuades"
 
 #: operations/common/newsprint.c:33
 msgid "White on Black"
