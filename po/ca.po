@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-02-28 01:14+0000\n"
-"PO-Revision-Date: 2024-02-28 19:34+0000\n"
+"POT-Creation-Date: 2024-04-16 19:53+0000\n"
+"PO-Revision-Date: 2024-04-17 19:34+0000\n"
 "Last-Translator: Jordi Mas i Hernàndez <jmas@softcatala.org>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "Language: ca\n"
@@ -647,12 +647,166 @@ msgstr "Retalla l'alfa"
 msgid "Keep alpha values inside a specific range"
 msgstr "Mantén els valors alfa dins d'un interval específic"
 
+#: operations/common/bevel.c:47
+msgid "Chamfer"
+msgstr "Xamfrà"
+
+#: operations/common/bevel.c:49
+msgid "Bump"
+msgstr "Relleu"
+
+#: operations/common/bevel.c:52
+msgid "Bevel Type"
+msgstr "Tipus de bisell"
+
+#: operations/common/bevel.c:55
+msgid "The family of bevel to use"
+msgstr "La família del bisell a utilitzar"
+
+#: operations/common/bevel.c:59
+msgid "None (for use with GIMPs blending options)"
+msgstr "Cap (per utilitzar amb les opcions de barreja del GIMP)"
+
+#: operations/common/bevel.c:61 operations/common/styles.c:202
+#: operations/common/styles.c:310 operations/common/styles.c:418
+msgid "Hard Light"
+msgstr "Llum forta"
+
+#: operations/common/bevel.c:63 operations/common/styles.c:59
+#: operations/common/styles.c:198 operations/common/styles.c:414
+msgid "Multiply"
+msgstr "Multiplica"
+
+#: operations/common/bevel.c:65 operations/common/styles.c:206
+#: operations/common/styles.c:312 operations/common/styles.c:422
+msgid "Color Dodge"
+msgstr "Esvaïment del color"
+
+#: operations/common/bevel.c:67 operations/common/styles.c:204
+#: operations/common/styles.c:420
+msgid "Darken"
+msgstr "Enfosqueix"
+
+#: operations/common/bevel.c:69
+msgid "Lighten"
+msgstr "Aclareix"
+
+#: operations/common/bevel.c:71 operations/common/styles.c:200
+#: operations/common/styles.c:416
+#: operations/workshop/external/paint-select.cc:30
+msgid "Add"
+msgstr "Afegeix"
+
+#: operations/common/bevel.c:74 operations/common-gpl3+/sinus.c:67
+msgid "Blend Mode"
+msgstr "Mode degradat"
+
+#: operations/common/bevel.c:77
+msgid ""
+"What blending mode the bevel's emboss will be. Light Map is a special blend "
+"mode that allows users to extract the filters output as a light map which "
+"should be put on a layer above or be used with Gimp's blending options."
+msgstr ""
+"Quin mode de barreja serà el relleu del bisell. El mapa de llum és un mode "
+"de barreja especial que permet als usuaris extreure la sortida dels filtres "
+"com un mapa de llum que s'ha de posar en una capa de sobre o utilitzar amb "
+"les opcions de barreja de Gimp."
+
+#: operations/common/bevel.c:79
+msgid "Distance Map Setting"
+msgstr "Configuració del mapa de distància"
+
+#: operations/common/bevel.c:81
+msgid ""
+"Distance Map is unique to chamfer bevel and has three settings that alter "
+"the structure of the chamfer."
+msgstr ""
+"El Mapa de distància és únic per al bisell i té tres configuracions que "
+"alteren l'estructura del xamfrà."
+
+#: operations/common/bevel.c:84 operations/common/bloom.c:35
+#: operations/common/box-blur.c:25 operations/common/c2g.c:28
+#: operations/common/edge-neon.c:47 operations/common/local-threshold.c:24
+#: operations/common/median-blur.c:42 operations/common/snn-mean.c:26
+#: operations/common/stress.c:27 operations/common/unsharp-mask.c:24
+#: operations/common/vignette.c:40 operations/common/wavelet-blur-1d.c:28
+#: operations/common/wavelet-blur.c:27 operations/common-cxx/focus-blur.c:85
+#: operations/common-cxx/lens-blur.cc:24
+#: operations/common-cxx/variable-blur.c:30
+#: operations/common-gpl3+/shadows-highlights.c:40
+#: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:44
+#: operations/common-gpl3+/whirl-pinch.c:46
+#: operations/external/matting-levin.c:29 operations/workshop/boxblur-1d.c:27
+#: operations/workshop/boxblur.c:24
+#: operations/workshop/external/spyrograph.c:63
+msgid "Radius"
+msgstr "Radi"
+
+#: operations/common/bevel.c:89
+msgid "Radius of softening for making bump of the shape."
+msgstr "Radi de suavitzat per fer relleu de la forma."
+
+#: operations/common/bevel.c:92 operations/common-gpl3+/bump-map.c:56
+#: operations/common-gpl3+/emboss.c:40
+msgid "Elevation"
+msgstr "Elevació"
+
+#: operations/common/bevel.c:93
+msgid "Elevation angle of the Bevel."
+msgstr "Angle d'elevació del bisell."
+
+#. The only issue  with this filter is that emboss depth= above 15 does
+#. nothing on chamfer bevel , but works great on bump bevel.
+#. so I made an extra node just for it that only updates emboss depth=, as a
+#. result depth and sharpness' are co-existing properties
+#. I am fully aware 'depth' and 'detail' are just words used to describe the
+#. same thing.
+#: operations/common/bevel.c:104 operations/common-gpl3+/bump-map.c:59
+#: operations/common-gpl3+/emboss.c:45
+#: operations/common-gpl3+/fractal-trace.c:60
+#: operations/common-gpl3+/texturize-canvas.c:44
+msgid "Depth"
+msgstr "Profunditat"
+
+#: operations/common/bevel.c:105
+msgid "Emboss depth - Brings out depth and detail of the bump bevel."
+msgstr ""
+"Profunditat de relleu - Aporta profunditat i detall del bisell de relleu."
+
+#: operations/common/bevel.c:109
+msgid "Light Angle"
+msgstr "Angle clar"
+
+#: operations/common/bevel.c:110
+msgid "Direction of a light source illuminating and shading the bevel."
+msgstr "Direcció d'una font de llum que il·lumina i ombreja el bisell."
+
+#: operations/common/bevel.c:309
+msgid "Bevel"
+msgstr "Bisell"
+
+#: operations/common/bevel.c:311
+msgid ""
+"Two bevel effects in one place, Chamfer - which simulates lighting of "
+"chamfered 3D-edges, and Bump - the second make a 3D inflation effect by an "
+"emboss covering a blur. Both bevels benefit from color filled alpha defined "
+"shapes."
+msgstr ""
+"Dos efectes bisellats en un sol lloc, Xamfrà -que simula la il·luminació de "
+"vores 3D xamfragades, i Relleu - el segon fa un efecte d'inflació 3D "
+"mitjançant una relleu que cobreix un difuminat. Ambdós bisells es beneficien"
+" de formes definides alfa plenes de color."
+
+#: operations/common/bevel.c:313
+msgid "Bevel..."
+msgstr "Bevel..."
+
 #: operations/common/bilateral-filter.c:26
 #: operations/common/domain-transform.c:29 operations/common/dropshadow.c:46
-#: operations/common-cxx/focus-blur.c:45 operations/common-cxx/lens-blur.cc:25
+#: operations/common/inner-glow.c:65 operations/common-cxx/focus-blur.c:45
+#: operations/common-cxx/lens-blur.cc:25
 #: operations/common-gpl3+/gaussian-blur-selective.c:29
 #: operations/workshop/bilateral-filter-fast.c:43
-#: operations/workshop/inner-glow.c:69
 msgid "Blur radius"
 msgstr "Radi del difuminat"
 
@@ -704,23 +858,6 @@ msgstr "Flonjor"
 #: operations/common/bloom.c:31
 msgid "Glow-area edge softness"
 msgstr "Suavitat de la vora lluent"
-
-#: operations/common/bloom.c:35 operations/common/box-blur.c:25
-#: operations/common/c2g.c:28 operations/common/edge-neon.c:47
-#: operations/common/local-threshold.c:24 operations/common/median-blur.c:42
-#: operations/common/snn-mean.c:26 operations/common/stress.c:27
-#: operations/common/unsharp-mask.c:24 operations/common/vignette.c:40
-#: operations/common/wavelet-blur-1d.c:28 operations/common/wavelet-blur.c:27
-#: operations/common-cxx/focus-blur.c:85 operations/common-cxx/lens-blur.cc:24
-#: operations/common-cxx/variable-blur.c:30
-#: operations/common-gpl3+/shadows-highlights.c:40
-#: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:44
-#: operations/common-gpl3+/whirl-pinch.c:46
-#: operations/external/matting-levin.c:29 operations/workshop/boxblur-1d.c:27
-#: operations/workshop/boxblur.c:24 operations/workshop/bevel.c:83
-#: operations/workshop/external/spyrograph.c:63
-msgid "Radius"
-msgstr "Radi"
 
 #: operations/common/bloom.c:36 operations/common-gpl3+/softglow.c:26
 msgid "Glow radius"
@@ -1006,14 +1143,13 @@ msgstr "Renderitza un patró del tipus tauler d'escacs"
 
 #: operations/common/color.c:24 operations/common/color.c:87
 #: operations/common/color-overlay.c:26 operations/common/dropshadow.c:67
-#: operations/common/grid.c:64 operations/common/long-shadow.c:83
-#: operations/common/rectangle.c:48 operations/common/vignette.c:36
-#: operations/common-gpl3+/color-to-alpha.c:29
+#: operations/common/grid.c:64 operations/common/inner-glow.c:87
+#: operations/common/long-shadow.c:83 operations/common/rectangle.c:48
+#: operations/common/vignette.c:36 operations/common-gpl3+/color-to-alpha.c:29
 #: operations/common-gpl3+/supernova.c:60
 #: operations/common-gpl3+/tile-paper.c:31
 #: operations/common-gpl3+/value-propagate.c:54 operations/external/text.c:37
 #: operations/external/vector-fill.c:26 operations/external/vector-stroke.c:27
-#: operations/workshop/inner-glow.c:91
 msgid "Color"
 msgstr "Color"
 
@@ -1034,10 +1170,16 @@ msgstr ""
 msgid "Grid size"
 msgstr "Mida de la graella"
 
+#. property_double (imagehue, _("Hue rotation"),  0.0)
+#. description  (_("Hue adjustment"))
+#. value_range  (-180.0, 180.0)
+#. description (_("Hue rotation of the uploaded image file or whatever is on
+#. canvas"))
+#. ui_meta ("visible", "guichange {imageoutlinebevel}")
 #: operations/common/color-assimilation-grid.c:31
 #: operations/common/color-rotate.c:84 operations/common/fattal02.c:39
 #: operations/common/mantiuk06.c:33 operations/common/noise-hsv.c:34
-#: operations/common/saturation.c:404
+#: operations/common/saturation.c:404 operations/common/styles.c:387
 #: operations/external/lcms-from-profile.c:35
 #: operations/workshop/selective-hue-saturation.c:38
 msgid "Saturation"
@@ -1085,7 +1227,7 @@ msgstr ""
 "Estirament del croma del color per a cobrir-ne la franja el màxim possible, "
 "mantenint el to i la lluminositat sense tocar."
 
-#: operations/common/color-overlay.c:27 operations/workshop/inner-glow.c:92
+#: operations/common/color-overlay.c:27 operations/common/inner-glow.c:88
 msgid "The color to paint over the input"
 msgstr "El color del dibuix sobre l'entrada"
 
@@ -1821,27 +1963,30 @@ msgstr ""
 "recursiva de transformació del domini. Similar a un filtre bilateral, però "
 "més ràpid de calcular."
 
-#: operations/common/dropshadow.c:27 operations/common/median-blur.c:27
-#: operations/common/pixelize.c:28 operations/common/vignette.c:26
-#: operations/common-cxx/focus-blur.c:35 operations/workshop/inner-glow.c:39
+#: operations/common/dropshadow.c:27 operations/common/inner-glow.c:35
+#: operations/common/median-blur.c:27 operations/common/pixelize.c:28
+#: operations/common/styles.c:96 operations/common/vignette.c:26
+#: operations/common-cxx/focus-blur.c:35
 msgid "Square"
 msgstr "Quadrat"
 
-#: operations/common/dropshadow.c:28 operations/common/median-blur.c:28
-#: operations/common/newsprint.c:26 operations/common/vignette.c:25
-#: operations/common-cxx/focus-blur.c:34 operations/workshop/inner-glow.c:40
+#: operations/common/dropshadow.c:28 operations/common/inner-glow.c:36
+#: operations/common/median-blur.c:28 operations/common/newsprint.c:26
+#: operations/common/styles.c:97 operations/common/vignette.c:25
+#: operations/common-cxx/focus-blur.c:34
 msgid "Circle"
 msgstr "Cercle"
 
-#: operations/common/dropshadow.c:29 operations/common/median-blur.c:29
-#: operations/common/newsprint.c:27 operations/common/pixelize.c:26
+#: operations/common/dropshadow.c:29 operations/common/inner-glow.c:37
+#: operations/common/median-blur.c:29 operations/common/newsprint.c:27
+#: operations/common/pixelize.c:26 operations/common/styles.c:98
 #: operations/common/vignette.c:27 operations/common-cxx/focus-blur.c:36
-#: operations/workshop/inner-glow.c:41
 msgid "Diamond"
 msgstr "Diamant"
 
-#: operations/common/dropshadow.c:32 operations/common/layer.c:36
-#: operations/common/rectangle.c:26 operations/common-gpl3+/plasma.c:40
+#: operations/common/dropshadow.c:32 operations/common/inner-glow.c:47
+#: operations/common/layer.c:36 operations/common/rectangle.c:26
+#: operations/common-gpl3+/plasma.c:40
 #: operations/common-gpl3+/polar-coordinates.c:52
 #: operations/common-gpl3+/spiral.c:35 operations/core/crop.c:25
 #: operations/transform/border-align.c:24 operations/transform/reflect.c:26
@@ -1849,16 +1994,17 @@ msgstr "Diamant"
 #: operations/transform/scale-size-keepaspect.c:25
 #: operations/transform/shear.c:25 operations/transform/translate.c:25
 #: operations/workshop/external/spyrograph.c:51
-#: operations/workshop/inner-glow.c:51
 msgid "X"
 msgstr "X"
 
-#: operations/common/dropshadow.c:33 operations/workshop/inner-glow.c:52
+#: operations/common/dropshadow.c:33 operations/common/inner-glow.c:48
+#: operations/common/styles.c:145
 msgid "Horizontal shadow offset"
 msgstr "Desplaçament horitzontal de l'ombra"
 
-#: operations/common/dropshadow.c:39 operations/common/layer.c:41
-#: operations/common/rectangle.c:31 operations/common-gpl3+/plasma.c:47
+#: operations/common/dropshadow.c:39 operations/common/inner-glow.c:55
+#: operations/common/layer.c:41 operations/common/rectangle.c:31
+#: operations/common-gpl3+/plasma.c:47
 #: operations/common-gpl3+/polar-coordinates.c:59
 #: operations/common-gpl3+/spiral.c:41 operations/core/crop.c:30
 #: operations/transform/border-align.c:30 operations/transform/reflect.c:30
@@ -1866,27 +2012,27 @@ msgstr "Desplaçament horitzontal de l'ombra"
 #: operations/transform/scale-size-keepaspect.c:30
 #: operations/transform/shear.c:29 operations/transform/translate.c:31
 #: operations/workshop/external/spyrograph.c:57
-#: operations/workshop/inner-glow.c:59
 msgid "Y"
 msgstr "Y"
 
-#: operations/common/dropshadow.c:40 operations/workshop/inner-glow.c:60
+#: operations/common/dropshadow.c:40 operations/common/inner-glow.c:56
+#: operations/common/styles.c:154
 msgid "Vertical shadow offset"
 msgstr "Desplaçament vertical de l'ombra"
 
-#: operations/common/dropshadow.c:53 operations/workshop/inner-glow.c:45
+#: operations/common/dropshadow.c:53 operations/common/inner-glow.c:41
 msgid "Grow shape"
 msgstr "Engrandeix la forma"
 
-#: operations/common/dropshadow.c:56 operations/workshop/inner-glow.c:48
+#: operations/common/dropshadow.c:56 operations/common/inner-glow.c:44
 msgid "The shape to expand or contract the shadow in"
 msgstr "La forma per a expandir o contraure l'ombra de dins"
 
-#: operations/common/dropshadow.c:58 operations/workshop/inner-glow.c:77
+#: operations/common/dropshadow.c:58 operations/common/inner-glow.c:73
 msgid "Grow radius"
 msgstr "Engrandeix el radi"
 
-#: operations/common/dropshadow.c:65 operations/workshop/inner-glow.c:84
+#: operations/common/dropshadow.c:65 operations/common/inner-glow.c:80
 msgid ""
 "The distance to expand the shadow before blurring; a negative value will "
 "contract the shadow instead"
@@ -1901,10 +2047,10 @@ msgstr "El color de l'ombra (per defecte és «negre»)"
 
 #. It does make sense to sometimes have opacities > 1 (see GEGL logo
 #. * for example)
-#: operations/common/dropshadow.c:74 operations/common/layer.c:33
-#: operations/common/opacity.c:25 operations/common/opacity.c:289
-#: operations/external/vector-fill.c:29 operations/external/vector-stroke.c:34
-#: operations/workshop/inner-glow.c:86
+#: operations/common/dropshadow.c:74 operations/common/inner-glow.c:82
+#: operations/common/layer.c:33 operations/common/opacity.c:25
+#: operations/common/opacity.c:289 operations/external/vector-fill.c:29
+#: operations/external/vector-stroke.c:34
 msgid "Opacity"
 msgstr "Opacitat"
 
@@ -2284,6 +2430,7 @@ msgid "Chroma adjustment"
 msgstr "Ajustament de crominància"
 
 #: operations/common/hue-chroma.c:33 operations/common/noise-cie-lch.c:29
+#: operations/common/styles.c:392
 #: operations/workshop/selective-hue-saturation.c:42
 msgid "Lightness"
 msgstr "Claredat"
@@ -2401,6 +2548,37 @@ msgstr "Degradat de la imatge"
 msgid "Compute gradient magnitude and/or direction by central differences"
 msgstr ""
 "Calcula la magnitud del degradat i/o la direcció de les diferències centrals"
+
+#: operations/common/inner-glow.c:92
+msgid "Median fix for non-effected pixels on edges"
+msgstr "Correcció de la mediana per als píxels no afectats a les vores"
+
+#: operations/common/inner-glow.c:94
+msgid ""
+"Median Blur covers uneffected pixels. Making this slider too high will make "
+"it outline-like. So only slide it as high as you need to cover thin shape "
+"corners."
+msgstr ""
+"La Mitjana de difuminat cobreix els píxels no afectats. Si el control "
+"lliscant és massa alt, es convertirà en un esbós. Així que només llisca-ho "
+"tan alt com necessitis per cobrir cantonades de forma fina."
+
+#: operations/common/inner-glow.c:179
+msgid "Inner Glow"
+msgstr "Lluentor interior"
+
+#: operations/common/inner-glow.c:181
+msgid ""
+"GEGL does an inner shadow glow effect; for more interesting use different "
+"blend mode than the default, Replace."
+msgstr ""
+"El GEGL fa un efecte de brillantor d'ombra interior; per a un ús més "
+"interessant, utilitzeu un mode de barreja diferent del predeterminat. "
+"Reemplaça."
+
+#: operations/common/inner-glow.c:183
+msgid "Inner Glow..."
+msgstr "Lluentor interior..."
 
 #: operations/common/introspect.c:27
 msgid "Node"
@@ -4438,6 +4616,638 @@ msgstr ""
 "Aquesta versió difereix del Contrast Autostretch, que funciona en l'espai "
 "HSV, i conserva el to."
 
+#: operations/common/styles.c:29
+msgid "Color, Outline and Shadow"
+msgstr "Color, contorn i ombra"
+
+#: operations/common/styles.c:30
+msgid "Bevel and Inner Glow"
+msgstr "Bisell i lluentor interior"
+
+#: operations/common/styles.c:31
+#, fuzzy
+msgid "Image upload and Outline Bevel"
+msgstr "Càrrega d'imatge i perfil de perfil"
+
+#. List of all GUI options
+#. GUI Change list in GUI
+#: operations/common/styles.c:38
+#, fuzzy
+#| msgid "Path of file to load"
+msgid "Part of filter to be displayed"
+msgstr "Part del filtre a mostrar"
+
+#: operations/common/styles.c:41
+#, fuzzy
+msgid "Display a different part of the GUI"
+msgstr "Mostra una part diferent de la IGU"
+
+#. Color Overlays GUI options begin here
+#: operations/common/styles.c:45
+msgid "Color overlay"
+msgstr "Superposició del color"
+
+#: operations/common/styles.c:47
+msgid "Color overlay setting"
+msgstr "Ajustament de la superposició del color"
+
+#: operations/common/styles.c:49
+msgid "Color policy"
+msgstr "Política de color"
+
+#: operations/common/styles.c:50
+msgid "Change the blend mode of the color overlay"
+msgstr "Canvia el mode de barreja de la superposició de color"
+
+#: operations/common/styles.c:57
+msgid "No Color"
+msgstr "Sense color"
+
+#: operations/common/styles.c:61
+msgid "Solid Color"
+msgstr "Color sòlid"
+
+#. Outline's normal GUI options begin here
+#: operations/common/styles.c:67
+msgid "Enable Outline"
+msgstr "Habilita el contorn"
+
+#: operations/common/styles.c:68
+msgid "Disable or enable the outline"
+msgstr "Inhabilita o habilita el contorn"
+
+#: operations/common/styles.c:71
+msgid "Outline opacity"
+msgstr "Opacitat del contorn"
+
+#: operations/common/styles.c:74
+msgid "Opacity of the outline"
+msgstr "Opacitat del contorn"
+
+#: operations/common/styles.c:78
+msgid "Outline X"
+msgstr "Esquema X"
+
+#: operations/common/styles.c:79
+msgid "Horizontal outline offset"
+msgstr "Desplaçament horitzontal del contorn"
+
+#: operations/common/styles.c:86
+msgid "Outline Y"
+msgstr "Contorn Y"
+
+#: operations/common/styles.c:87
+msgid "Vertical outline offset"
+msgstr "Desplaçament vertical del contorn"
+
+#: operations/common/styles.c:101
+#, fuzzy
+#| msgid "Grow shape"
+msgid "Outline grow shape"
+msgstr "Forma de creixement de l'esquema"
+
+#: operations/common/styles.c:104
+#, fuzzy
+#| msgid "The shape to expand or contract the shadow in"
+msgid "The shape to expand or contract the outline in"
+msgstr "La forma per ampliar o contraure l'esquema a"
+
+#: operations/common/styles.c:108
+#, fuzzy
+#| msgid "Out-of-focus blur radius"
+msgid "Outline blur radius"
+msgstr "Radi de difuminat del contorn"
+
+#: operations/common/styles.c:114
+#, fuzzy
+msgid "A mild blur for the outline"
+msgstr "Un difuminat suau per al contorn"
+
+#: operations/common/styles.c:118
+#, fuzzy
+#| msgid "Grow radius"
+msgid "Outline grow radius"
+msgstr "Radi de creixement de l'esquema"
+
+#: operations/common/styles.c:125
+#, fuzzy
+#| msgid "The shape to expand or contract the shadow in"
+msgid "The distance to expand the outline"
+msgstr "La distància per a ampliar el contorn"
+
+#. Shadow's GUI options begin here
+#: operations/common/styles.c:130
+#, fuzzy
+#| msgid "Joints color"
+msgid "Outline’s color"
+msgstr "Color del contorn"
+
+#: operations/common/styles.c:131
+#, fuzzy
+#| msgid "Color for the text (defaults to 'black')"
+msgid "Color of the outline (defaults to 'black') "
+msgstr "Color del contorn (predeterminat a «negre»)"
+
+#: operations/common/styles.c:136
+#, fuzzy
+#| msgid "Fade opacity"
+msgid "Shadow/Glow opacity"
+msgstr "Opacitat de l'ombra/lluïssor"
+
+#: operations/common/styles.c:140
+#, fuzzy
+msgid ""
+"Shadow opacity which will also enable or disable the shadow glow effect"
+msgstr ""
+"Opacitat de l'ombra que també habilitarà o inhabilitarà l'efecte de "
+"brillantor de l'ombra"
+
+#: operations/common/styles.c:144
+#, fuzzy
+#| msgid "Shadow color"
+msgid "Shadow/Glow X"
+msgstr "Ombra/Lluïssor X"
+
+#: operations/common/styles.c:150
+#, fuzzy
+#| msgid "Horizontal shadow offset"
+msgid "Horizontal axis of the shadow glow"
+msgstr "Eix horitzontal de l'ombra brillant"
+
+#: operations/common/styles.c:153
+#, fuzzy
+#| msgid "Shadow color"
+msgid "Shadow/Glow Y"
+msgstr "Ombra/Lluïssor Y"
+
+#: operations/common/styles.c:159
+#, fuzzy
+#| msgid "Vertical shadow offset"
+msgid "Vertical axis of the shadow glow"
+msgstr "Eix vertical de l'ombra brillant"
+
+#: operations/common/styles.c:162
+#, fuzzy
+#| msgid "Shadow color"
+msgid "Shadow/Glow’s color"
+msgstr "Color de l'ombra/lluïssor"
+
+#. TRANSLATORS: the string 'black' should not be translated
+#: operations/common/styles.c:164
+#, fuzzy
+#| msgid "The shadow's color (defaults to 'black')"
+msgid "The shadow’s color (defaults to 'black')"
+msgstr "El color de l'ombra (predeterminat a «negre»)"
+
+#: operations/common/styles.c:167
+#, fuzzy
+#| msgid "Glow radius"
+msgid "Shadow/Glow grow radius"
+msgstr "Radi de creixement de l'ombra/llum"
+
+#: operations/common/styles.c:174
+#, fuzzy
+#| msgid ""
+#| "The distance to expand the shadow before blurring; a negative value will "
+#| "contract the shadow instead"
+msgid "The distance to expand the shadow before blurring."
+msgstr "La distància per a expandir l'ombra abans de difuminar."
+
+#: operations/common/styles.c:177
+#, fuzzy
+#| msgid "Maximal blur radius"
+msgid "Shadow/Glow blur radius"
+msgstr "Radi del difuminat de l'ombra/lluïssor"
+
+#: operations/common/styles.c:183
+#, fuzzy
+msgid "The shadow’s blur range"
+msgstr "L'interval de difuminat de l'ombra"
+
+#. Bevel's GUI options begin here
+#. This is the Bevel's ENUM List listed in the GUI
+#. This is the ENUM list for bevel's emboss blend modes
+#: operations/common/styles.c:191
+msgid "Enable Bevel"
+msgstr "Habilita el bisell"
+
+#: operations/common/styles.c:192
+msgid "Whether to add a bevel effect"
+msgstr "Si s'ha d'afegir un efecte bisell"
+
+#: operations/common/styles.c:209
+msgid "Bevel blend mode"
+msgstr "Mode de barreja bisell"
+
+#: operations/common/styles.c:210
+#, fuzzy
+#| msgid "Elevation angle of the Bevel."
+msgid "Blend mode of the bevel"
+msgstr "Mode de barreja del bisell"
+
+#: operations/common/styles.c:218
+#, fuzzy
+#| msgid "Chamfer"
+msgid "Chamfer Bevel"
+msgstr "Camer Bevel"
+
+#: operations/common/styles.c:220
+#, fuzzy
+#| msgid "Bevel"
+msgid "Bump Bevel"
+msgstr "Bolca el bisell"
+
+#: operations/common/styles.c:223
+msgid "Select Bevel"
+msgstr "Selecciona un bisell"
+
+#: operations/common/styles.c:226
+msgid "Type of bevel "
+msgstr "Tipus de bisell"
+
+#: operations/common/styles.c:232
+msgid "Bevel depth"
+msgstr "Profunditat del bisell"
+
+#: operations/common/styles.c:233
+msgid "Emboss depth for the bevel"
+msgstr "Realça la profunditat del bisell"
+
+#: operations/common/styles.c:239
+#, fuzzy
+#| msgid "Elevation"
+msgid "Bevel elevation"
+msgstr "Elevació del bisell"
+
+#: operations/common/styles.c:240
+#, fuzzy
+#| msgid "Elevation angle of the Bevel."
+msgid "Emboss elevation of the bevel"
+msgstr "Elevació del bisell amb relleu"
+
+#: operations/common/styles.c:247
+msgid "Bevel azimuth"
+msgstr "Azimut del bisell"
+
+#: operations/common/styles.c:248
+msgid "Emboss azimuth of the bevel"
+msgstr "Realça l'azimut del bisell"
+
+#: operations/common/styles.c:255
+#, fuzzy
+msgid "Bevel radius (bump only)"
+msgstr "Radi de bisell (només relleu)"
+
+#: operations/common/styles.c:259
+#, fuzzy
+msgid ""
+"Internal gaussian blur to inflate the bump bevel. This option does not work "
+"on chamfer"
+msgstr ""
+"Difuminat intern gaussià per inflar el bisell de relleu. Aquesta opció no "
+"funciona amb el xamfrà"
+
+#: operations/common/styles.c:265
+#, fuzzy
+msgid "Levels low output lighting for Bevel"
+msgstr "Nivells d'il·luminació de baixa sortida per a Bevel"
+
+#: operations/common/styles.c:266
+#, fuzzy
+msgid "Levels low output as a light adjustment for the bevel"
+msgstr "Nivells de baixa sortida com a ajust de llum per al bisell"
+
+#: operations/common/styles.c:274
+#, fuzzy
+msgid "Levels high output lighting for Bevel"
+msgstr "Nivells d'il·luminació d'alta sortida per a Bevel"
+
+#: operations/common/styles.c:275
+#, fuzzy
+msgid "Levels high output as a light adjustment for the bevel"
+msgstr "Nivells d'alta sortida com a ajust de llum per al bisell"
+
+#: operations/common/styles.c:283
+#, fuzzy
+msgid "Dark Bevel/ignore image mode"
+msgstr "Mode d'imatge Bisell fosc/ignora"
+
+#: operations/common/styles.c:284
+#, fuzzy
+msgid ""
+"This instructs the bevel to ignore image details if there is an image file "
+"overlay below it. It also allows bevel to work better when the user selects "
+"darker colors. The effect is noticeable on bump bevel but barely effects "
+"chamfer bevel"
+msgstr ""
+"Això indica al bisell que ignori els detalls de la imatge si hi ha una "
+"superposició de fitxer d'imatge a sota. També permet que el bisell funcioni "
+"millor quan l'usuari selecciona colors més foscos. L'efecte es nota en el "
+"bisell de relleu però amb prou feines afecta el bisell de xamfrà"
+
+#. This operation is extremely important for bevels with image file overlays
+#. Inner Glow GUI options begin here
+#: operations/common/styles.c:294
+#, fuzzy
+#| msgid "Inner Glow"
+msgid "Enable Inner Glow"
+msgstr "Activa la resplendor interna"
+
+#: operations/common/styles.c:295
+#, fuzzy
+msgid "Whether to add the inner glow effect"
+msgstr "Si s'ha d'afegir l'efecte de lluentor interior"
+
+#: operations/common/styles.c:304
+msgid "Normal"
+msgstr "Normal"
+
+#: operations/common/styles.c:306
+msgid "Overlay"
+msgstr "Superposició"
+
+#: operations/common/styles.c:308
+msgid "Screen"
+msgstr "Pantalla"
+
+#: operations/common/styles.c:314
+msgid "Plus"
+msgstr "Plus"
+
+#: operations/common/styles.c:317
+#, fuzzy
+msgid "Blend mode of Inner Glow"
+msgstr "Mode de barreja de la lluentor interior"
+
+#: operations/common/styles.c:323
+#, fuzzy
+#| msgid "Glow radius"
+msgid "Inner Glow's blur radius"
+msgstr "Radi de difuminat de la lluentor interior"
+
+#: operations/common/styles.c:329
+#, fuzzy
+#| msgid "Blue threshold of the input color"
+msgid "Blur control of the inner glow"
+msgstr "Control del difuminat de la lluentor interior"
+
+#: operations/common/styles.c:333
+#, fuzzy
+#| msgid "Glow radius"
+msgid "Inner Glow's grow radius"
+msgstr "Radi de creixement de la lluentor interior"
+
+#: operations/common/styles.c:340
+#, fuzzy
+msgid "The distance to expand the inner glow before blurring"
+msgstr "La distància per a expandir la lluentor interior abans de difuminar"
+
+#: operations/common/styles.c:344
+#, fuzzy
+#| msgid "Inner Glow"
+msgid "Inner Glow's opacity"
+msgstr "Opacitat de la lluentor interior"
+
+#: operations/common/styles.c:347
+#, fuzzy
+msgid "Opacity of the inner glow"
+msgstr "Opacitat de la lluentor interior"
+
+#: operations/common/styles.c:351
+#, fuzzy
+#| msgid "Inner Glow"
+msgid "Inner Glow's color"
+msgstr "Color de la lluentor interior"
+
+#: operations/common/styles.c:352
+#, fuzzy
+#| msgid "The color of supernova."
+msgid "The color of the inner glow"
+msgstr "El color de la lluentor interior"
+
+#: operations/common/styles.c:356
+#, fuzzy
+msgid "Inner Glow's unmodified pixel fix"
+msgstr "Correcció de píxels sense modificar de la lluentor interior"
+
+#: operations/common/styles.c:358
+#, fuzzy
+msgid "Cover pixels that inner glow might miss"
+msgstr "Cobreix els píxels que la lluentor interior podria perdre"
+
+#. Without this Inner Glow would miss many pixels around alpha defined shapes
+#. edges'
+#. Image file overlay GUI options begin here
+#: operations/common/styles.c:365
+#, fuzzy
+#| msgid "WebP image loader."
+msgid "Enable image upload"
+msgstr "Habilita la pujada d'imatges"
+
+#: operations/common/styles.c:366 operations/common/styles.c:465
+#, fuzzy
+msgid "Whether to enable or disable the image file upload."
+msgstr "Si s'ha d'activar o desactivar la càrrega del fitxer d'imatge."
+
+#: operations/common/styles.c:369
+#, fuzzy
+msgid "Image file overlay"
+msgstr "Superposició del fitxer d'imatge"
+
+#: operations/common/styles.c:370
+#, fuzzy
+#| msgid "Source image file path (png, jpg, raw, svg, bmp, tif, ...)"
+msgid ""
+"Upload an image file from your computer to be in the fill area. Allows (png,"
+" jpg, raw, svg, bmp, tif, ...)"
+msgstr ""
+"Pengeu un fitxer d'imatge des de l'ordinador per estar a l'àrea "
+"d'emplenament. Permet (png, jpg, raw, SVG, bmp, tif, ...)"
+
+#: operations/common/styles.c:374
+#, fuzzy
+#| msgid "Path of video file to load"
+msgid "Opacity of image file overlay"
+msgstr "Opacitat de la superposició del fitxer d'imatge"
+
+#: operations/common/styles.c:377
+#, fuzzy
+msgid "Opacity of the image file overlay that was uploaded. "
+msgstr "Opacitat de la superposició de fitxer d'imatge que s'ha carregat."
+
+#: operations/common/styles.c:388
+#, fuzzy
+msgid ""
+"Saturation adjustment of the uploaded image file or whatever is on canvas"
+msgstr "Ajust de saturació del fitxer d'imatge pujat o el que sigui al llenç"
+
+#: operations/common/styles.c:393
+#, fuzzy
+msgid ""
+"Lightness adjustment of the uploaded image file or whatever is on canvas"
+msgstr ""
+"Ajust de la claredat del fitxer d'imatge pujat o el que sigui al llenç"
+
+#. Outline special options in GUI begin here
+#: operations/common/styles.c:398
+#, fuzzy
+msgid "Enable advanced options on Outline (requires outline)"
+msgstr "Activa les opcions avançades a l'esquema (requereix un esquema)"
+
+#: operations/common/styles.c:399
+#, fuzzy
+msgid "Turn on advanced outline abilities"
+msgstr "Activa les habilitats avançades del contorn"
+
+#: operations/common/styles.c:404
+#, fuzzy
+msgid "Enable Outline Bevel (requires advanced options)"
+msgstr "Activa el bisell de l'esquema (requereix opcions avançades)"
+
+#: operations/common/styles.c:405
+#, fuzzy
+msgid "Turn on outlines ability to bevel"
+msgstr "Activa la capacitat dels contorns per bisell"
+
+#: operations/common/styles.c:426
+#, fuzzy
+msgid "Outline Bevel blend mode"
+msgstr "Mode de barreja Esquema de bisell"
+
+#: operations/common/styles.c:427
+#, fuzzy
+msgid "Blend mode of the outline bevel"
+msgstr "Mode de barreja del bisell del contorn"
+
+#: operations/common/styles.c:434
+#, fuzzy
+msgid "Outline Bevel depth"
+msgstr "Profunditat del bisell del contorn"
+
+#: operations/common/styles.c:435
+msgid "Emboss depth for the outline bevel"
+msgstr "Realça la profunditat per al bisell del contorn"
+
+#: operations/common/styles.c:440
+#, fuzzy
+msgid "Outline Bevel elevation"
+msgstr "Elevació del bisell de l'esquema"
+
+#: operations/common/styles.c:441
+#, fuzzy
+msgid "Emboss elevation for the outline bevel"
+msgstr "Realça l'elevació per al bisell del contorn"
+
+#: operations/common/styles.c:447
+#, fuzzy
+msgid "Outline Bevel azimuth"
+msgstr "Esquema bisell azimut"
+
+#: operations/common/styles.c:448
+#, fuzzy
+msgid "Emboss azimuth for the outline bevel"
+msgstr "Realça l'azimut per al bisell del contorn"
+
+#: operations/common/styles.c:455
+#, fuzzy
+msgid "Outline Bevel radius"
+msgstr "Radi del bisell de l'esquema"
+
+#: operations/common/styles.c:456
+#, fuzzy
+msgid "Internal gaussian blur to inflate the outline bevel"
+msgstr "Difuminat intern gaussià per a inflar el bisell del contorn"
+
+#: operations/common/styles.c:464
+#, fuzzy
+msgid "Enable image upload on Outline (requires advanced options)"
+msgstr "Activa la càrrega d'imatges a l'esquema (requereix opcions avançades)"
+
+#: operations/common/styles.c:469
+#, fuzzy
+msgid "Outline image file overlay"
+msgstr "Superposició del fitxer d'imatge de contorn"
+
+#: operations/common/styles.c:470
+#, fuzzy
+#| msgid "Source image file path (png, jpg, raw, svg, bmp, tif, ...)"
+msgid ""
+"Upload an image file from your computer to be in the outline area. Allows "
+"(png, jpg, raw, svg, bmp, tif, ...)"
+msgstr ""
+"Pengeu un fitxer d'imatge des de l'ordinador per a estar a l'àrea d'esquema."
+" Permet (png, jpg, raw, SVG, bmp, tif, ...)"
+
+#: operations/common/styles.c:475
+#, fuzzy
+#| msgid "Fade opacity"
+msgid "Outline image opacity"
+msgstr "Opacitat de la imatge del contorn"
+
+#: operations/common/styles.c:476
+#, fuzzy
+#| msgid "White point adjustment"
+msgid "Outline image opacity adjustment"
+msgstr "Ajustament de l'opacitat de la imatge del contorn"
+
+#: operations/common/styles.c:481
+#, fuzzy
+msgid "Levels low output lighting for Outline Bevel"
+msgstr "Nivells d'il·luminació de baixa sortida per al bisell d'esquema"
+
+#: operations/common/styles.c:482
+#, fuzzy
+msgid "Levels low output as a light adjustment for the outline bevel"
+msgstr ""
+"Nivells de baixa sortida com a ajust de llum per al bisell del contorn"
+
+#: operations/common/styles.c:489
+#, fuzzy
+msgid "Levels high output lighting for Outline Bevel"
+msgstr "Nivells d'il·luminació d'alta sortida per a l'esquema de bisell"
+
+#: operations/common/styles.c:490
+#, fuzzy
+msgid "Levels high output as a light adjustment for the outline bevel"
+msgstr "Nivells d'alta sortida com a ajust de llum per al bisell del contorn"
+
+#: operations/common/styles.c:498
+#, fuzzy
+msgid "Outline Dark Bevel/ignore image mode"
+msgstr "Mode d'imatge de perfil fosc/ignora el contorn"
+
+#: operations/common/styles.c:499
+#, fuzzy
+msgid ""
+"This instructs the outline bevel to ignore image details if there is an "
+"image file overlay below it. It also allows outline bevel to work better "
+"when the user selects darker colors."
+msgstr ""
+"Això indica al bisell del contorn que ignori els detalls de la imatge si hi "
+"ha una superposició de fitxer d'imatge a sota. També permet que el bisell de"
+" contorn funcioni millor quan l'usuari selecciona colors més foscos."
+
+#: operations/common/styles.c:1249
+#, fuzzy
+#| msgid "Style"
+msgid "GEGL Styles"
+msgstr "Estils GEGL"
+
+#: operations/common/styles.c:1252
+#, fuzzy
+msgid ""
+"An engine to style text and add popular effects to alpha channel images. "
+"Effects include outline, bevel, shadow, and inner glow all in one place."
+msgstr ""
+"Un motor per a estilitzar el text i afegir efectes populars a les imatges "
+"del canal alfa. Els efectes inclouen contorn, bisell, ombra i lluentor "
+"interior tot en un sol lloc."
+
+#: operations/common/styles.c:1255
+#, fuzzy
+msgid "Text Styling..."
+msgstr "Estil del text..."
+
 #: operations/common/svg-huerotate.c:27 operations/common/svg-matrix.c:27
 #: operations/common/svg-saturate.c:25
 msgid "Values"
@@ -4485,8 +5295,10 @@ msgid "Lowest value to be included."
 msgstr "Valor més baix a incloure."
 
 #: operations/common/threshold.c:33
-msgid "Highest value to be include as white."
-msgstr "El valor més alt a incloure com a blanc."
+#, fuzzy
+#| msgid "Highest value to be include as white."
+msgid "Highest value to be included as white."
+msgstr "Valor més alt a incloure com a blanc."
 
 #: operations/common/threshold.c:169
 msgid ""
@@ -5213,24 +6025,6 @@ msgstr "Mapa de relleu enrajolat"
 #: operations/common-gpl3+/bump-map.c:51 operations/common-gpl3+/emboss.c:34
 msgid "Azimuth"
 msgstr "Azimut"
-
-#: operations/common-gpl3+/bump-map.c:56 operations/common-gpl3+/emboss.c:40
-#: operations/workshop/bevel.c:91
-msgid "Elevation"
-msgstr "Elevació"
-
-#. The only issue  with this filter is that emboss depth= above 15 does
-#. nothing on chamfer bevel , but works great on bump bevel.
-#. so I made an extra node just for it that only updates emboss depth=, as a
-#. result depth and sharpness' are co-existing properties
-#. I am fully aware 'depth' and 'detail' are just words used to describe the
-#. same thing.
-#: operations/common-gpl3+/bump-map.c:59 operations/common-gpl3+/emboss.c:45
-#: operations/common-gpl3+/fractal-trace.c:60
-#: operations/common-gpl3+/texturize-canvas.c:44
-#: operations/workshop/bevel.c:103
-msgid "Depth"
-msgstr "Profunditat"
 
 #: operations/common-gpl3+/bump-map.c:74
 msgid "Waterlevel"
@@ -6775,10 +7569,6 @@ msgstr "Si es defineix, el patró serà una mica més distorsionat"
 msgid "Bilinear"
 msgstr "Bilineal"
 
-#: operations/common-gpl3+/sinus.c:67 operations/workshop/bevel.c:72
-msgid "Blend Mode"
-msgstr "Mode degradat"
-
 #: operations/common-gpl3+/sinus.c:72
 msgid "Power used to stretch the blend"
 msgstr "Força per a estirar el degradat"
@@ -8127,13 +8917,11 @@ msgstr "L'opacitat de l'emplenament que s'utilitzarà"
 
 #: operations/external/path.c:54 operations/external/vector-fill.c:40
 #: operations/external/vector-stroke.c:41
-#: operations/workshop/external/ctx-script.c:26
 msgid "Vector"
 msgstr "Vector"
 
 #: operations/external/path.c:55 operations/external/vector-fill.c:41
 #: operations/external/vector-stroke.c:42
-#: operations/workshop/external/ctx-script.c:27
 msgid "A GeglVector representing the path of the stroke"
 msgstr "Un vector Gegl que representa el camí del traç"
 
@@ -8498,9 +9286,10 @@ msgid "use floating point"
 msgstr "Utilitza punt flotant"
 
 #: operations/external/tiff-save.c:31
-msgid "floating point -1 means auto, 0 means integer 1 meant float."
+msgid "floating point -1 means auto, 0 means integer, 1 means float."
 msgstr ""
-"El punt flotant -1 vol dir automàtic, 0 vol dir enter, 1 vol dir decimal."
+"coma flotant -1 significa automàtic, 0 significa enter, 1 significa "
+"float."
 
 #: operations/external/tiff-save.c:825
 msgid "TIFF File Saver"
@@ -9214,110 +10003,6 @@ msgstr "Difuminat generat amb la mitjana dels colors d'una filera veïna."
 msgid "BoxBlur"
 msgstr "Difuminat enquadrat"
 
-#: operations/workshop/bevel.c:47
-msgid "Chamfer"
-msgstr "Xamfrà"
-
-#: operations/workshop/bevel.c:49
-msgid "Bump"
-msgstr "Relleu"
-
-#: operations/workshop/bevel.c:52
-msgid "Bevel Type"
-msgstr "Tipus de bisell"
-
-#: operations/workshop/bevel.c:55
-msgid "The family of bevel to use"
-msgstr "La família del bisell a utilitzar"
-
-#: operations/workshop/bevel.c:59
-msgid "None (for use with GIMPs blending options)"
-msgstr "Cap (per utilitzar amb les opcions de barreja del GIMP)"
-
-#: operations/workshop/bevel.c:61
-msgid "Hard Light"
-msgstr "Llum forta"
-
-#: operations/workshop/bevel.c:63
-msgid "Multiply"
-msgstr "Multiplica"
-
-#: operations/workshop/bevel.c:65
-msgid "Color Dodge"
-msgstr "Esvaïment del color"
-
-#: operations/workshop/bevel.c:67
-msgid "Darken"
-msgstr "Enfosqueix"
-
-#: operations/workshop/bevel.c:69
-msgid "Lighten"
-msgstr "Aclareix"
-
-#: operations/workshop/bevel.c:75
-msgid ""
-"What blending mode the bevel's emboss will be. Light Map is a special blend "
-"mode that allows users to extract the filters output as a light map which "
-"should be put on a layer above or be used with Gimp's blending options."
-msgstr ""
-"Quin mode de barreja serà el relleu del bisell. El mapa de llum és un mode de "
-"barreja especial que permet als usuaris extreure la sortida dels filtres com"
-" un mapa de llum que s'ha de posar en una capa de sobre o utilitzar amb les "
-"opcions de barreja de Gimp."
-
-#: operations/workshop/bevel.c:78
-msgid "Distance Map Setting"
-msgstr "Configuració del mapa de distància"
-
-#: operations/workshop/bevel.c:80
-msgid ""
-"Distance Map is unique to chamfer bevel and has three settings that alter "
-"the structure of the chamfer."
-msgstr ""
-"El Mapa de distància és únic per al bisell i té tres configuracions que "
-"alteren l'estructura del xamfrà."
-
-#: operations/workshop/bevel.c:88
-msgid "Radius of softening for making bump of the shape."
-msgstr "Radi de suavitzat per fer relleu de la forma."
-
-#: operations/workshop/bevel.c:92
-msgid "Elevation angle of the Bevel."
-msgstr "Angle d'elevació del bisell."
-
-#: operations/workshop/bevel.c:104
-msgid "Emboss depth - Brings out depth and detail of the bump bevel."
-msgstr ""
-"Profunditat de relleu - Aporta profunditat i detall del bisell de relleu."
-
-#: operations/workshop/bevel.c:108
-msgid "Light Angle"
-msgstr "Angle clar"
-
-#: operations/workshop/bevel.c:109
-msgid "Direction of a light source illuminating and shading the bevel."
-msgstr "Direcció d'una font de llum que il·lumina i ombreja el bisell."
-
-#: operations/workshop/bevel.c:299
-msgid "Bevel"
-msgstr "Bisell"
-
-#: operations/workshop/bevel.c:301
-msgid ""
-"Two bevel effects in one place, Chamfer - which simulates lighting of "
-"chamfered 3D-edges, and Bump - the second make a 3D inflation effect by an "
-"emboss covering a blur. Both bevels benefit from color filled alpha defined "
-"shapes."
-msgstr ""
-"Dos efectes bisellats en un sol lloc, Xamfrà -que simula la il·luminació de"
-" vores 3D xamfragades, i Relleu - el segon fa un efecte d'inflació 3D "
-"mitjançant una relleu que cobreix un difuminat. Ambdós bisells es beneficien"
-" de formes definides alfa plenes de color."
-
-#: operations/workshop/bevel.c:303
-msgid "Bevel..."
-msgstr "Bevel..."
-
 #: operations/workshop/connected-components.c:25
 msgid "Separator"
 msgstr "Separador"
@@ -9350,7 +10035,7 @@ msgstr "Normalitza la sortida a un rang [base,base + pas]"
 msgid "Connected Components"
 msgstr "Components connectats"
 
-#: operations/workshop/connected-components.c:290
+#: operations/workshop/connected-components.c:292
 msgid ""
 "Fills each connected region of the input, separated from the rest of the "
 "input by a given color, with a unique color."
@@ -9405,14 +10090,6 @@ msgstr ""
 "Operació de prova per a fer un mapa 1:1, des de l'entrada a la sortida, "
 "mentre es mostreja"
 
-#: operations/workshop/external/ctx-script.c:126
-msgid "Ctx script"
-msgstr "Script Ctx"
-
-#: operations/workshop/external/ctx-script.c:128
-msgid "Renders a ctx vector graphics"
-msgstr "Renderitza un gràfic vectorial ctx"
-
 #: operations/workshop/external/gluas.c:29
 msgid "Script"
 msgstr "Script"
@@ -9452,10 +10129,6 @@ msgid ""
 msgstr ""
 "Prototip de script de filtre/compositor a nivell de píxel amb lua. Vegeu "
 "http://pippin.gimp.org/image-processing/ per a més detalls."
-
-#: operations/workshop/external/paint-select.cc:30
-msgid "Add"
-msgstr "Afegeix"
 
 #: operations/workshop/external/paint-select.cc:31
 msgid "Subtract"
@@ -9793,7 +10466,7 @@ msgstr "Si les vores de la imatge també se sembren"
 msgid "Voronoi Diagram"
 msgstr "Diagrama Voronoi"
 
-#: operations/workshop/external/voronoi-diagram.cc:531
+#: operations/workshop/external/voronoi-diagram.cc:533
 msgid "Paints each non-seed pixel with the color of the nearest seed pixel."
 msgstr ""
 "Pinta cada píxel sense sembrar amb el color del píxel sembrat més proper."
@@ -9878,37 +10551,6 @@ msgstr "Mapa de degradat"
 #: operations/workshop/gradient-map.c:245
 msgid "Applies a color gradient."
 msgstr "Aplica un degradat de color."
-
-#: operations/workshop/inner-glow.c:96
-msgid "Median fix for non-effected pixels on edges"
-msgstr "Correcció de la mediana per als píxels no afectats a les vores"
-
-#: operations/workshop/inner-glow.c:98
-msgid ""
-"Median Blur covers uneffected pixels. Making this slider too high will make "
-"it outline-like. So only slide it has high as you need to cover thin shape "
-"corners.'"
-msgstr ""
-"La mitjana de difuminat cobreix els píxels no afectats. Si el control "
-"lliscant és massa alt, es convertirà en un esbós. Per tant, només lliscar-la"
-" té altura, ja que cal cobrir cantonades de forma fina."
-
-#: operations/workshop/inner-glow.c:182
-msgid "Inner Glow"
-msgstr "Lluentor interior"
-
-#: operations/workshop/inner-glow.c:184
-msgid ""
-"GEGL does an inner shadow glow effect; for more interesting use different "
-"blend mode than the default, Replace."
-msgstr ""
-"El GEGL fa un efecte de brillantor d'ombra interior; per a un ús més "
-"interessant, utilitzeu un mode de barreja diferent del predeterminat. "
-"Reemplaça."
-
-#: operations/workshop/inner-glow.c:186
-msgid "Inner Glow..."
-msgstr "Lluentor interior..."
 
 #: operations/workshop/integral-image.c:25
 msgid "squared integral"
@@ -10011,3 +10653,9 @@ msgid ""
 msgstr ""
 "Barreja els píxels i quantifica amb els veïns per optimitzar el tramat, "
 "barrejant els píxels veïns."
+
+#~ msgid "Ctx script"
+#~ msgstr "Script Ctx"
+
+#~ msgid "Renders a ctx vector graphics"
+#~ msgstr "Renderitza un gràfic vectorial ctx"
