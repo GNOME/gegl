@@ -482,6 +482,84 @@ gegl_color_get_cmyk (GeglColor  *self,
   if (a) *a = cmyk[3];
 }
 
+void
+gegl_color_set_hsva (GeglColor  *self,
+                     gdouble     h,
+                     gdouble     s,
+                     gdouble     v,
+                     gdouble     a,
+                     const Babl *space)
+{
+  const Babl   *format  = babl_format_with_space ("HSVA float", space);
+  const gfloat  hsva[4] = {h, s, v, a};
+
+  g_return_if_fail (GEGL_IS_COLOR (self));
+  g_return_if_fail (space == NULL || babl_format_get_space (format));
+
+  gegl_color_set_pixel (self, format, hsva);
+}
+
+void
+gegl_color_get_hsva (GeglColor  *self,
+                     gdouble    *h,
+                     gdouble    *s,
+                     gdouble    *v,
+                     gdouble    *a,
+                     const Babl *space)
+{
+  const Babl *format  = babl_format_with_space ("HSVA float", space);
+  gfloat      hsva[4];
+
+  g_return_if_fail (GEGL_IS_COLOR (self));
+  g_return_if_fail (space == NULL || babl_space_is_rgb (babl_format_get_space (format)));
+
+  gegl_color_get_pixel (self, format, hsva);
+
+  if (h) *h = hsva[0];
+  if (s) *s = hsva[1];
+  if (v) *v = hsva[2];
+  if (a) *a = hsva[3];
+}
+
+void
+gegl_color_set_hsla (GeglColor  *self,
+                     gdouble     h,
+                     gdouble     s,
+                     gdouble     l,
+                     gdouble     a,
+                     const Babl *space)
+{
+  const Babl   *format  = babl_format_with_space ("HSLA float", space);
+  const gfloat  hsla[4] = {h, s, l, a};
+
+  g_return_if_fail (GEGL_IS_COLOR (self));
+  g_return_if_fail (space == NULL || babl_format_get_space (format));
+
+  gegl_color_set_pixel (self, format, hsla);
+}
+
+void
+gegl_color_get_hsla (GeglColor  *self,
+                     gdouble    *h,
+                     gdouble    *s,
+                     gdouble    *l,
+                     gdouble    *a,
+                     const Babl *space)
+{
+  const Babl *format  = babl_format_with_space ("HSLA float", space);
+  gfloat      hsla[4];
+
+  g_return_if_fail (GEGL_IS_COLOR (self));
+  g_return_if_fail (space == NULL || babl_space_is_rgb (babl_format_get_space (format)));
+
+  gegl_color_get_pixel (self, format, hsla);
+
+  if (h) *h = hsla[0];
+  if (s) *s = hsla[1];
+  if (l) *l = hsla[2];
+  if (a) *a = hsla[3];
+}
+
 static void
 gegl_color_set_from_string (GeglColor   *self,
                             const gchar *color_string)

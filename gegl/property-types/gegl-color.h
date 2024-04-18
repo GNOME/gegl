@@ -59,7 +59,7 @@ GType        gegl_color_get_type               (void) G_GNUC_CONST;
  *
  * - RGB hexadecimal notation: #rrggbb[aa] / #rgb[a]
  * - Named colors, limited to the 16 specified in HTML4
- * 
+ *
  * To specify linear-light floating-point RGB, use: rgb[a](0.40, 0.44, 0.92 [, a])
  * The normal bounds are [0.0 1.0], unlike CSS which is [0 255]. Out-of-bounds values are allowed.
  */
@@ -195,6 +195,84 @@ void         gegl_color_set_cmyk               (GeglColor   *color,
                                                 gdouble      magenta,
                                                 gdouble      yellow,
                                                 gdouble      key,
+                                                gdouble      alpha,
+                                                const Babl  *space);
+
+/**
+ * gegl_color_get_hsva:
+ * @color: a #GeglColor
+ * @hue: (out): hue return location.
+ * @saturation: (out): saturation return location.
+ * @value: (out): value return location.
+ * @alpha: (out): alpha return location.
+ * @space: (nullable): RGB space.
+ *
+ * Retrieves the current set color stored as @space.
+ * If @space is %NULL, this is equivalent to requesting color in the default
+ * sRGB space.
+ */
+void         gegl_color_get_hsva               (GeglColor   *color,
+                                                gdouble     *hue,
+                                                gdouble     *saturation,
+                                                gdouble     *value,
+                                                gdouble     *alpha,
+                                                const Babl  *space);
+
+/**
+ * gegl_color_set_hsva:
+ * @color: a #GeglColor
+ * @hue: hue value.
+ * @saturation: saturation value.
+ * @value: value value.
+ * @alpha: alpha value.
+ * @space: (nullable): RGB space.
+ *
+ * Set color as HSVA data stored as @space. If @space is %NULL, this is
+ * equivalent to storing with the default sRGB space.
+ */
+void         gegl_color_set_hsva               (GeglColor   *color,
+                                                gdouble      hue,
+                                                gdouble      saturation,
+                                                gdouble      value,
+                                                gdouble      alpha,
+                                                const Babl  *space);
+
+/**
+ * gegl_color_get_hsla:
+ * @color: a #GeglColor
+ * @hue: (out): hue return location.
+ * @saturation: (out): saturation return location.
+ * @value: (out): value return location.
+ * @alpha: (out): alpha return location.
+ * @space: (nullable): RGB space.
+ *
+ * Retrieves the current set color stored as @space.
+ * If @space is %NULL, this is equivalent to requesting color in the default
+ * sRGB space.
+ */
+void         gegl_color_get_hsla               (GeglColor   *color,
+                                                gdouble     *hue,
+                                                gdouble     *saturation,
+                                                gdouble     *lightness,
+                                                gdouble     *alpha,
+                                                const Babl  *space);
+
+/**
+ * gegl_color_set_hsla:
+ * @color: a #GeglColor
+ * @hue: hue value.
+ * @saturation: saturation value.
+ * @lightness: lightness value.
+ * @alpha: alpha value.
+ * @space: (nullable): RGB space.
+ *
+ * Set color as HSLA data stored as @space. If @space is %NULL, this is
+ * equivalent to storing with the default sRGB space.
+ */
+void         gegl_color_set_hsla               (GeglColor   *color,
+                                                gdouble      hue,
+                                                gdouble      saturation,
+                                                gdouble      lightness,
                                                 gdouble      alpha,
                                                 const Babl  *space);
 
