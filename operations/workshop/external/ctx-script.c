@@ -61,13 +61,22 @@
 "g m23.330 19.800c-0.354 .005-0.671 .119-0.880 .341c-0.614 .640-0.497 1.613-0.027 2.219c-0.066-0.221-0.120-0.452-0.100-0.683c0-0.192 .208-0.167 .294-0.047c.149 .116 .290 .283 .492 .296c.158 .006 .253-0.169 .190-0.307c-0.047-0.184-0.17-0.356-0.145-0.553c.027-0.154 .212-0.228 .348-0.168c.198 .062 .354 .235 .567 .250c.150 .003 .260-0.176 .181-0.307c-0.099 -0.217 -0.319 -0.349 -0.415 -0.566c-0.010 -0.026 -0.010 -0.057 .010 -0.081l0 0c.091 -0.112 .256 -0.072 .379 -0.052c.166 .039 .330 .093 .482 .171c-0.418 -0.349 -0.925 -0.519 -1.374 -0.513z rgb.549 .502 .451F G\nG\n" \
 "restore\n" 
 
-property_boolean (u8, "8bit sRGB ", TRUE)
+property_boolean (u8, "8bit sRGB ", FALSE)
   description ("Render using R'aG'AB'a u8 (rather than linear RaGaBaA float); the user->device space color maping is identity by default; thus changing the meaning of colors set in the script.")
+  ui_meta ("visible", "0")
 
-property_string (d, "Vector data", SAMPLE)
-  description ("A string containing a ctx protocol drawing.")
+property_string (d, "ctx data", SAMPLE)
+  description ("A string containing a ctx protocol document.")
   ui_meta ("multiline", "true")
 
+property_boolean (play, "play", FALSE)
+property_boolean (loop_scene, "loop scene", FALSE)
+property_int (page, "page", 0)
+  value_range (0, 1000)
+  ui_range (0, 100)
+property_double (time, "time", 0.0)
+  value_range (0.0, 120.0)
+  ui_range (0.0, 10.0)
 
 #else
 
@@ -84,7 +93,9 @@ typedef struct
   char *str;
   Ctx  *drawing;
   const guint8 *icc;
-  int     icc_length;
+  int   icc_length;
+  GTimer *timer;
+  guint playback_handle;
 } State;
 
 static GeglRectangle
@@ -102,22 +113,42 @@ get_bounding_box (GeglOperation *operation)
 }
 
 
+static gboolean playback_cb (gpointer user_data)
+{
+  GeglOperation *operation = user_data;
+  GeglProperties    *o     = GEGL_PROPERTIES (operation);
+  State *state             = o->user_data;
+  float elapsed = g_timer_elapsed (state->timer, NULL);
+  if (operation->node)
+  {
+    gegl_node_set (operation->node, "time", o->time + elapsed, NULL);
+  }
+  g_timer_start (state->timer);
+  return TRUE;
+}
+
+
 static void
 prepare (GeglOperation *operation)
 {
   GeglProperties    *o       = GEGL_PROPERTIES (operation);
   State *state;
-  if (!o->user_data)
+  if (!o->user_data) {
      o->user_data = g_malloc0 (sizeof(State));
+  }
   state = o->user_data;
 
   const Babl *input_format  = gegl_operation_get_source_format (operation, "input");
   const Babl *input_space   = input_format?babl_format_get_space (input_format):NULL;
 
   if (o->u8)
+  {
     gegl_operation_set_format (operation, "output", babl_format_with_space ("R'aG'aB'aA u8", input_space));
+  }
   else
+  {
     gegl_operation_set_format (operation, "output", babl_format_with_space ("R'aG'aB'aA float", input_space));
+  }
 
   GeglRectangle bounds = get_bounding_box (operation);
 
@@ -125,21 +156,68 @@ prepare (GeglOperation *operation)
   if (state->width != bounds.width ||
       state->height != bounds.height ||
       state->str == NULL ||
-      strcmp(state->str, o->d))
+      strcmp(state->str, o->d) || 
+      1)
   {
      if (state->drawing)
+     {
        ctx_destroy (state->drawing);
+     }
      if (state->str)
+     {
        g_free (state->str);
+     }
      state->width = bounds.width;
      state->height = bounds.height;
      state->str = g_strdup (o->d);
      state->drawing = ctx_new_drawlist (bounds.width, bounds.height);
-     ctx_parse (state->drawing, state->str);
+
+     float time = o->time;
+     int   scene_no = o->page;
+
+     ctx_parse_animation (state->drawing, state->str, &time, &scene_no);
+     if (scene_no != o->page)
+     {
+	if (o->loop_scene)
+	{
+	  time = o->time = 0.0f;
+          scene_no = o->page;
+          ctx_parse_animation (state->drawing, state->str, &time, &scene_no);
+	}
+	else
+	{
+	  o->page = scene_no;
+	  o->time = time;
+	}
+     }
+
      state->icc = NULL;
      state->icc_length = 0;
      if (input_space)
-       state->icc = babl_space_get_icc (input_space, &state->icc_length);
+     {
+       state->icc = (uint8_t*)babl_space_get_icc (input_space, &state->icc_length);
+     }
+  }
+
+  if (o->play)
+  {
+    if (!state->timer)
+    {
+      state->timer = g_timer_new ();
+    }
+    if (state->playback_handle == 0)
+    {
+      state->playback_handle = g_idle_add (playback_cb, operation);
+      g_timer_start (state->timer);
+    }
+  }
+  else
+  {
+    if (state->playback_handle)
+    {
+       g_source_remove (state->playback_handle);
+       state->playback_handle = 0;
+    }
   }
 
 }
@@ -188,8 +266,20 @@ process (GeglOperation       *operation,
 
 static void state_destroy (State *state)
 {
-  if (state->str) g_free (state->str);
-  if (state->drawing) ctx_destroy (state->drawing);
+  if (state->str)
+  {
+    g_free (state->str);
+  }
+  if (state->drawing)
+  {
+    ctx_destroy (state->drawing);
+  }
+  if (state->playback_handle)
+  {
+    g_source_remove (state->playback_handle);
+    state->playback_handle = 0;
+  }
+
   g_free (state);
 }
 
@@ -199,6 +289,16 @@ dispose (GObject *object)
   GeglProperties  *o = GEGL_PROPERTIES (object);
   state_destroy (o->user_data);
   G_OBJECT_CLASS (gegl_op_parent_class)->dispose (object);
+}
+
+static GeglSplitStrategy
+get_split_strategy (GeglOperation        *operation,
+                    GeglOperationContext *context,   
+                    const gchar          *output_prop,
+                    const GeglRectangle  *result,
+                    gint                  level)
+{
+  return GEGL_SPLIT_STRATEGY_HORIZONTAL;
 }
 
 static void
@@ -213,6 +313,7 @@ gegl_op_class_init (GeglOpClass *klass)
   filter_class    = GEGL_OPERATION_FILTER_CLASS (klass);
 
   filter_class->process = process;
+  filter_class->get_split_strategy = get_split_strategy;
   operation_class->get_bounding_box = get_bounding_box;
   operation_class->prepare = prepare;
   object_class->dispose    = dispose;
