@@ -43042,13 +43042,6 @@ static void ctx_parser_transform_cell (CtxParser *parser, CtxCode code, int arg_
     }
 }
 
-// %h %v %m %M
-
-static void ctx_parser_number_done (CtxParser *parser)
-{
-
-}
-
 static void ctx_parser_word_done (CtxParser *parser)
 {
   parser->holding[parser->pos]=0;
