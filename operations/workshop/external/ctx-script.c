@@ -216,7 +216,7 @@ prepare (GeglOperation *operation)
 
      state->icc = NULL;
      state->icc_length = 0;
-     if (input_space)
+     if (input_space && input_space != babl_space("sRGB"))
      {
        state->icc = (uint8_t*)babl_space_get_icc (input_space, &state->icc_length);
      }
