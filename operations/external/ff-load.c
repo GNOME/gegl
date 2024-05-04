@@ -250,7 +250,11 @@ decode_audio (GeglOperation *operation,
               while (samples_left)
               {
                  int sample_count = samples_left;
+#if LIBAVCODEC_VERSION_MAJOR < 61
                  int channels = MIN(p->audio_stream->codecpar->channels, GEGL_MAX_AUDIO_CHANNELS);
+#else
+                 int channels = MIN(p->audio_stream->codecpar->ch_layout.nb_channels, GEGL_MAX_AUDIO_CHANNELS);
+#endif
                  GeglAudioFragment *af = gegl_audio_fragment_new (o->audio_sample_rate, channels,
                             AV_CH_LAYOUT_STEREO, samples_left);
   //);
@@ -553,7 +557,11 @@ prepare (GeglOperation *operation)
           else
             {
               o->audio_sample_rate = p->audio_stream->codecpar->sample_rate;
+#if LIBAVCODEC_VERSION_MAJOR < 61
               o->audio_channels = MIN(p->audio_stream->codecpar->channels, GEGL_MAX_AUDIO_CHANNELS);
+#else
+              o->audio_channels = MIN(p->audio_stream->codecpar->ch_layout.nb_channels, GEGL_MAX_AUDIO_CHANNELS);
+#endif
             }
         }
 

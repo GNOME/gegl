@@ -315,8 +315,13 @@ add_audio_stream (GeglProperties *o, AVFormatContext * oc, int codec_id)
   }
   cp->sample_rate = o->audio_sample_rate;
 
+#if LIBAVCODEC_VERSION_MAJOR < 61
   cp->channel_layout = AV_CH_LAYOUT_STEREO;
   cp->channels = 2;
+#else
+  cp->ch_layout.u.mask = AV_CH_LAYOUT_STEREO;
+  cp->ch_layout.nb_channels = 2;
+#endif
 
   return st;
 }
@@ -392,8 +397,13 @@ static AVFrame *alloc_audio_frame(AVCodecContext *c, int nb_samples)
 
   frame->format         = c->sample_fmt;
 
+#if LIBAVCODEC_VERSION_MAJOR < 61
   frame->channel_layout = c->channel_layout;
   frame->channels = c->channels;
+#else
+  frame->ch_layout = c->ch_layout;
+  frame->ch_layout.nb_channels = c->ch_layout.nb_channels;
+#endif
   frame->sample_rate    = c->sample_rate;
   frame->nb_samples     = nb_samples;
 
@@ -423,8 +433,13 @@ static void encode_audio_fragments (Priv *p, AVFormatContext *oc, AVStream *st, 
         {
           float left = 0, right = 0;
           get_sample_data (p, i + p->audio_read_pos, &left, &right);
+#if LIBAVCODEC_VERSION_MAJOR < 61
           ((float*)frame->data[0])[c->channels*i+0] = left;
           ((float*)frame->data[0])[c->channels*i+1] = right;
+#else
+          ((float*)frame->data[0])[c->ch_layout.nb_channels*i+0] = left;
+          ((float*)frame->data[0])[c->ch_layout.nb_channels*i+1] = right;
+#endif
         }
         break;
       case AV_SAMPLE_FMT_FLTP:
@@ -441,8 +456,13 @@ static void encode_audio_fragments (Priv *p, AVFormatContext *oc, AVStream *st, 
         {
           float left = 0, right = 0;
           get_sample_data (p, i + p->audio_read_pos, &left, &right);
+#if LIBAVCODEC_VERSION_MAJOR < 61
           ((int16_t*)frame->data[0])[c->channels*i+0] = left * (1<<15);
           ((int16_t*)frame->data[0])[c->channels*i+1] = right * (1<<15);
+#else
+          ((int16_t*)frame->data[0])[c->ch_layout.nb_channels*i+0] = left * (1<<15);
+          ((int16_t*)frame->data[0])[c->ch_layout.nb_channels*i+1] = right * (1<<15);
+#endif
         }
         break;
       case AV_SAMPLE_FMT_S32:
@@ -450,8 +470,8 @@ static void encode_audio_fragments (Priv *p, AVFormatContext *oc, AVStream *st, 
         {
           float left = 0, right = 0;
           get_sample_data (p, i + p->audio_read_pos, &left, &right);
-          ((int32_t*)frame->data[0])[c->channels*i+0] = left * (1<<31);
-          ((int32_t*)frame->data[0])[c->channels*i+1] = right * (1<<31);
+          ((int32_t*)frame->data[0])[c->ch_layout.nb_channels*i+0] = left * (1<<31);
+          ((int32_t*)frame->data[0])[c->ch_layout.nb_channels*i+1] = right * (1<<31);
         }
         break;
       case AV_SAMPLE_FMT_S32P:
