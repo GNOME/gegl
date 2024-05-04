@@ -470,8 +470,13 @@ static void encode_audio_fragments (Priv *p, AVFormatContext *oc, AVStream *st, 
         {
           float left = 0, right = 0;
           get_sample_data (p, i + p->audio_read_pos, &left, &right);
+#if LIBAVCODEC_VERSION_MAJOR < 61
+          ((int32_t*)frame->data[0])[c->channels*i+0] = left * (1<<31);
+          ((int32_t*)frame->data[0])[c->channels*i+1] = right * (1<<31);
+#else
           ((int32_t*)frame->data[0])[c->ch_layout.nb_channels*i+0] = left * (1<<31);
           ((int32_t*)frame->data[0])[c->ch_layout.nb_channels*i+1] = right * (1<<31);
+#endif
         }
         break;
       case AV_SAMPLE_FMT_S32P:
