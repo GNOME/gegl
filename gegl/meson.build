@@ -129,18 +129,34 @@ if g_ir.found()
     'opencl' / 'gegl-cl-introspection-support.h',
   )
 
-  gegl_gir = gnome.generate_gir(gegl_lib,
-    sources: introspection_sources,
-    nsversion: api_version,
-    namespace: 'Gegl',
-    identifier_prefix: 'Gegl',
-    symbol_prefix: 'gegl',
-    header: 'gegl.h',
-    includes: [ 'GLib-2.0', 'GObject-2.0', 'Babl-0.1' ],
-    dependencies: [babl],
-    export_packages: 'gegl-' + api_version,
-    install: true,
-  )
+  if meson.version().version_compare('>=1.2')
+    gegl_gir = gnome.generate_gir(gegl_lib,
+      sources: introspection_sources,
+      nsversion: api_version,
+      namespace: 'Gegl',
+      identifier_prefix: 'Gegl',
+      symbol_prefix: 'gegl',
+      header: 'gegl.h',
+      includes: [ 'GLib-2.0', 'GObject-2.0', 'Babl-0.1' ],
+      dependencies: [babl],
+      export_packages: 'gegl-' + api_version,
+      install: true,
+      env: ['GEGL_CACHE_SIZE=256'],
+    )
+  else
+    gegl_gir = gnome.generate_gir(gegl_lib,
+      sources: introspection_sources,
+      nsversion: api_version,
+      namespace: 'Gegl',
+      identifier_prefix: 'Gegl',
+      symbol_prefix: 'gegl',
+      header: 'gegl.h',
+      includes: [ 'GLib-2.0', 'GObject-2.0', 'Babl-0.1' ],
+      dependencies: [babl],
+      export_packages: 'gegl-' + api_version,
+      install: true,
+    )
+  endif
 
   if vapigen.found()
     configure_file(
