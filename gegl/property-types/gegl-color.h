@@ -242,7 +242,7 @@ void         gegl_color_set_hsva               (GeglColor   *color,
  * @color: a #GeglColor
  * @hue: (out): hue return location.
  * @saturation: (out): saturation return location.
- * @value: (out): value return location.
+ * @lightness: (out): value return location.
  * @alpha: (out): alpha return location.
  * @space: (nullable): RGB space.
  *
