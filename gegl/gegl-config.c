@@ -330,13 +330,16 @@ gegl_config_class_init (GeglConfigClass *klass)
     if (default_tile_cache_size < mem_min)
       default_tile_cache_size = mem_min;
 
-  g_object_class_install_property (gobject_class, PROP_TILE_CACHE_SIZE,
-                                   g_param_spec_uint64 ("tile-cache-size",
-                                                        "Tile Cache size",
-                                                        "size of tile cache in bytes",
-                                                        0, G_MAXUINT64, default_tile_cache_size,
-                                                        G_PARAM_READWRITE |
-                                                        G_PARAM_STATIC_STRINGS));
+    if (getenv ("GEGL_BUILD")) /* make .gir reproducible */
+       default_tile_cache_size = 1024 * 1024 * 256;
+
+    g_object_class_install_property (gobject_class, PROP_TILE_CACHE_SIZE,
+                                     g_param_spec_uint64 ("tile-cache-size",
+                                     "Tile Cache size",
+                                     "size of tile cache in bytes",
+                                     0, G_MAXUINT64, default_tile_cache_size,
+                                     G_PARAM_READWRITE |
+                                     G_PARAM_STATIC_STRINGS));
   }
 
   g_object_class_install_property (gobject_class, PROP_CHUNK_SIZE,
@@ -375,6 +378,10 @@ gegl_config_class_init (GeglConfigClass *klass)
 
   _gegl_threads = g_get_num_processors ();
   _gegl_threads = MIN (_gegl_threads, GEGL_MAX_THREADS);
+
+  if (getenv ("GEGL_BUILD")) // to make .gir reproducible
+    _gegl_threads = GEGL_MAX_THREADS;
+
   g_object_class_install_property (gobject_class, PROP_THREADS,
                                    g_param_spec_int ("threads",
                                                      "Number of threads",

@@ -141,7 +141,7 @@ if g_ir.found()
       dependencies: [babl],
       export_packages: 'gegl-' + api_version,
       install: true,
-      env: ['GEGL_CACHE_SIZE=256'],
+      env: ['GEGL_BUILD=1'],
     )
   else
     gegl_gir = gnome.generate_gir(gegl_lib,
