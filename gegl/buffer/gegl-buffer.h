@@ -658,9 +658,9 @@ GeglBuffer * gegl_buffer_linear_new_from_data (const gpointer       data,
 /**
  * gegl_buffer_linear_open: (skip)
  * @buffer: a #GeglBuffer.
- * @extent: region to open, pass NULL for entire buffer.
- * @rowstride: return location for rowstride.
- * @format: desired format or NULL to use buffers format.
+ * @extent: (nullable): region to open, pass NULL for entire buffer.
+ * @rowstride: (out) (optional): return location for rowstride.
+ * @format: (nullable): desired format or NULL to use buffers format.
  *
  * Raw direct random access to the full data of a buffer in linear memory.
  *
