@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl.master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-03-30 00:50+0000\n"
-"PO-Revision-Date: 2024-03-30 20:17+0100\n"
+"POT-Creation-Date: 2024-04-07 17:30+0000\n"
+"PO-Revision-Date: 2024-05-14 04:35+0200\n"
 "Last-Translator: Rodrigo Lledó Milanca <rodhos92@gmail.com>\n"
 "Language-Team: Spanish - Spain <gnome-es-list@gnome.org>\n"
 "Language: es_ES\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.4.2\n"
+"X-Generator: Poedit 3.4.3\n"
 
 #: bin/gegl.c:179
 #, c-format
@@ -671,23 +671,23 @@ msgstr "La familia de bisel que usar"
 msgid "None (for use with GIMPs blending options)"
 msgstr "Ninguno (para usar con las opciones de mezcla de GIMP)"
 
-#: operations/common/bevel.c:61 operations/workshop/styles.c:203
-#: operations/workshop/styles.c:311 operations/workshop/styles.c:419
+#: operations/common/bevel.c:61 operations/common/styles.c:203
+#: operations/common/styles.c:311 operations/common/styles.c:419
 msgid "Hard Light"
 msgstr "Luz fuerte"
 
-#: operations/common/bevel.c:63 operations/workshop/styles.c:60
-#: operations/workshop/styles.c:199 operations/workshop/styles.c:415
+#: operations/common/bevel.c:63 operations/common/styles.c:60
+#: operations/common/styles.c:199 operations/common/styles.c:415
 msgid "Multiply"
 msgstr "Multiplicar"
 
-#: operations/common/bevel.c:65 operations/workshop/styles.c:207
-#: operations/workshop/styles.c:313 operations/workshop/styles.c:423
+#: operations/common/bevel.c:65 operations/common/styles.c:207
+#: operations/common/styles.c:313 operations/common/styles.c:423
 msgid "Color Dodge"
 msgstr "Aclarar color"
 
-#: operations/common/bevel.c:67 operations/workshop/styles.c:205
-#: operations/workshop/styles.c:421
+#: operations/common/bevel.c:67 operations/common/styles.c:205
+#: operations/common/styles.c:421
 msgid "Darken"
 msgstr "Oscurecer"
 
@@ -695,8 +695,9 @@ msgstr "Oscurecer"
 msgid "Lighten"
 msgstr "Aclarar"
 
-#: operations/common/bevel.c:71 operations/workshop/external/paint-select.cc:30
-#: operations/workshop/styles.c:201 operations/workshop/styles.c:417
+#: operations/common/bevel.c:71 operations/common/styles.c:201
+#: operations/common/styles.c:417
+#: operations/workshop/external/paint-select.cc:30
 msgid "Add"
 msgstr "Añadir"
 
@@ -1177,10 +1178,9 @@ msgstr "Tamaño de la cuadrícula"
 #: operations/common/color-assimilation-grid.c:31
 #: operations/common/color-rotate.c:84 operations/common/fattal02.c:39
 #: operations/common/mantiuk06.c:33 operations/common/noise-hsv.c:34
-#: operations/common/saturation.c:404
+#: operations/common/saturation.c:404 operations/common/styles.c:388
 #: operations/external/lcms-from-profile.c:35
 #: operations/workshop/selective-hue-saturation.c:38
-#: operations/workshop/styles.c:388
 msgid "Saturation"
 msgstr "Saturación"
 
@@ -1964,22 +1964,22 @@ msgstr ""
 
 #: operations/common/dropshadow.c:27 operations/common/inner-glow.c:39
 #: operations/common/median-blur.c:27 operations/common/pixelize.c:28
-#: operations/common/vignette.c:26 operations/common-cxx/focus-blur.c:35
-#: operations/workshop/styles.c:97
+#: operations/common/styles.c:97 operations/common/vignette.c:26
+#: operations/common-cxx/focus-blur.c:35
 msgid "Square"
 msgstr "Cuadrado"
 
 #: operations/common/dropshadow.c:28 operations/common/inner-glow.c:40
 #: operations/common/median-blur.c:28 operations/common/newsprint.c:26
-#: operations/common/vignette.c:25 operations/common-cxx/focus-blur.c:34
-#: operations/workshop/styles.c:98
+#: operations/common/styles.c:98 operations/common/vignette.c:25
+#: operations/common-cxx/focus-blur.c:34
 msgid "Circle"
 msgstr "Círculo"
 
 #: operations/common/dropshadow.c:29 operations/common/inner-glow.c:41
 #: operations/common/median-blur.c:29 operations/common/newsprint.c:27
-#: operations/common/pixelize.c:26 operations/common/vignette.c:27
-#: operations/common-cxx/focus-blur.c:36 operations/workshop/styles.c:99
+#: operations/common/pixelize.c:26 operations/common/styles.c:99
+#: operations/common/vignette.c:27 operations/common-cxx/focus-blur.c:36
 msgid "Diamond"
 msgstr "Diamante"
 
@@ -1997,7 +1997,7 @@ msgid "X"
 msgstr "X"
 
 #: operations/common/dropshadow.c:33 operations/common/inner-glow.c:52
-#: operations/workshop/styles.c:146
+#: operations/common/styles.c:146
 msgid "Horizontal shadow offset"
 msgstr "Desplazamiento horizontal de la sombra"
 
@@ -2015,7 +2015,7 @@ msgid "Y"
 msgstr "Y"
 
 #: operations/common/dropshadow.c:40 operations/common/inner-glow.c:60
-#: operations/workshop/styles.c:155
+#: operations/common/styles.c:155
 msgid "Vertical shadow offset"
 msgstr "Desplazamiento vertical de la sombra"
 
@@ -2432,8 +2432,8 @@ msgid "Chroma adjustment"
 msgstr "Ajuste de chroma"
 
 #: operations/common/hue-chroma.c:33 operations/common/noise-cie-lch.c:29
+#: operations/common/styles.c:393
 #: operations/workshop/selective-hue-saturation.c:42
-#: operations/workshop/styles.c:393
 msgid "Lightness"
 msgstr "Brillo"
 
@@ -2550,7 +2550,7 @@ msgstr "Degradado de imagen"
 #: operations/common/image-gradient.c:228
 msgid "Compute gradient magnitude and/or direction by central differences"
 msgstr ""
-"Calcular la magnitud del degradado y/o dirección mediante las diferencias "
+"Calcular la magnitud y/o dirección del gradiente mediante las diferencias "
 "centrales"
 
 #: operations/common/inner-glow.c:96
@@ -2567,11 +2567,11 @@ msgstr ""
 "demasiado a la derecha hará que parezca un contorno. Así que deslícelo solo "
 "lo que necesite para cubrir las esquinas delgadas."
 
-#: operations/common/inner-glow.c:178
+#: operations/common/inner-glow.c:182
 msgid "Inner Glow"
 msgstr "Brillo interior"
 
-#: operations/common/inner-glow.c:180
+#: operations/common/inner-glow.c:184
 msgid ""
 "GEGL does an inner shadow glow effect; for more interesting use different "
 "blend mode than the default, Replace."
@@ -2580,7 +2580,7 @@ msgstr ""
 "interesante, utilice un modo de mezcla diferente al predeterminado, "
 "Reemplazar."
 
-#: operations/common/inner-glow.c:182
+#: operations/common/inner-glow.c:186
 msgid "Inner Glow..."
 msgstr "Brillo interior…"
 
@@ -4630,6 +4630,517 @@ msgstr ""
 "difiere de «Autoestiramiento de contraste» en que trabaja en el espacio HSV "
 "y conserva el tono."
 
+#: operations/common/styles.c:30
+msgid "Color, Outline and Shadow"
+msgstr "Color, contorno y sombra"
+
+#: operations/common/styles.c:31
+msgid "Bevel and Inner Glow"
+msgstr "Bisel y brillo interior"
+
+#: operations/common/styles.c:32
+msgid "Image upload and Outline Bevel"
+msgstr "Carga de imagen y bisel de contorno"
+
+#. List of all GUI options
+#. GUI Change list in GUI
+#: operations/common/styles.c:39
+msgid "Part of filter to be displayed"
+msgstr "Parte del filtro que se mostrará"
+
+#: operations/common/styles.c:42
+msgid "Display a different part of the GUI"
+msgstr "Mostrar una parte diferente de la IGU"
+
+#. Color Overlays GUI options begin here
+#: operations/common/styles.c:46
+msgid "Color overlay"
+msgstr "Superposición de color"
+
+#: operations/common/styles.c:48
+msgid "Color overlay setting"
+msgstr "Ajuste de superposición de color"
+
+#: operations/common/styles.c:50
+msgid "Color policy"
+msgstr "Política de color"
+
+#: operations/common/styles.c:51
+msgid "Change the blend mode of the color overlay"
+msgstr "Cambiar el modo de mezcla de la superposición de color"
+
+#: operations/common/styles.c:58
+msgid "No Color"
+msgstr "Sin color"
+
+#: operations/common/styles.c:62
+msgid "Solid Color"
+msgstr "Color sólido"
+
+#. Outline's normal GUI options begin here
+#: operations/common/styles.c:68
+msgid "Enable Outline"
+msgstr "Activar contorno"
+
+#: operations/common/styles.c:69
+msgid "Disable or enable the outline"
+msgstr "Desactivar o activar el contorno"
+
+#: operations/common/styles.c:72
+msgid "Outline opacity"
+msgstr "Opacidad del contorno"
+
+#: operations/common/styles.c:75
+msgid "Opacity of the outline"
+msgstr "Opacidad del contorno"
+
+#: operations/common/styles.c:79
+msgid "Outline X"
+msgstr "Contorno X"
+
+#: operations/common/styles.c:80
+msgid "Horizontal outline offset"
+msgstr "Desplazamiento horizontal del contorno"
+
+#: operations/common/styles.c:87
+msgid "Outline Y"
+msgstr "Contorno Y"
+
+#: operations/common/styles.c:88
+msgid "Vertical outline offset"
+msgstr "Desplazamiento vertical del contorno"
+
+#: operations/common/styles.c:102
+msgid "Outline grow shape"
+msgstr "Forma de crecimiento del contorno"
+
+#: operations/common/styles.c:105
+msgid "The shape to expand or contract the outline in"
+msgstr "La forma dentro de la que expandir o contraer el contorno"
+
+#: operations/common/styles.c:109
+msgid "Outline blur radius"
+msgstr "Radio de desenfoque del contorno"
+
+#: operations/common/styles.c:115
+msgid "A mild blur for the outline"
+msgstr "Un ligero desenfoque para el contorno"
+
+#: operations/common/styles.c:119
+msgid "Outline grow radius"
+msgstr "Radio de crecimiento del contorno"
+
+#: operations/common/styles.c:126
+msgid "The distance to expand the outline"
+msgstr "La distancia a la que expandir el contorno"
+
+#. Shadow's GUI options begin here
+#: operations/common/styles.c:131
+msgid "Outline’s color"
+msgstr "Color del contorno"
+
+# the string 'black' should not be translated
+#: operations/common/styles.c:132
+msgid "Color of the outline (defaults to 'black') "
+msgstr "Color del contorno (el predeterminado es «black») "
+
+#: operations/common/styles.c:137
+msgid "Shadow/Glow opacity"
+msgstr "Opacidad de sombra/brillo"
+
+#: operations/common/styles.c:141
+msgid "Shadow opacity which will also enable or disable the shadow glow effect"
+msgstr ""
+"Opacidad de la sombra que también activará o desactivará el efecto de brillo "
+"de la sombra"
+
+#: operations/common/styles.c:145
+msgid "Shadow/Glow X"
+msgstr "Sombra/Brillo X"
+
+#: operations/common/styles.c:151
+msgid "Horizontal axis of the shadow glow"
+msgstr "Eje horizontal del brillo de la sombra"
+
+#: operations/common/styles.c:154
+msgid "Shadow/Glow Y"
+msgstr "Sombra/Brillo Y"
+
+#: operations/common/styles.c:160
+msgid "Vertical axis of the shadow glow"
+msgstr "Eje vertical del brillo de la sombra"
+
+#: operations/common/styles.c:163
+msgid "Shadow/Glow’s color"
+msgstr "Color de sombra/brillo"
+
+#. TRANSLATORS: the string 'black' should not be translated
+#: operations/common/styles.c:165
+msgid "The shadow’s color (defaults to 'black')"
+msgstr "El color de la sombra (el predeterminado es «black»)"
+
+#: operations/common/styles.c:168
+msgid "Shadow/Glow grow radius"
+msgstr "Radio de crecimiento de sombra/brillo"
+
+#: operations/common/styles.c:175
+msgid "The distance to expand the shadow before blurring."
+msgstr "La distancia a la que expandir la sombra antes de desenfocar."
+
+#: operations/common/styles.c:178
+msgid "Shadow/Glow blur radius"
+msgstr "Radio de desenfoque de sombra/brillo"
+
+#: operations/common/styles.c:184
+msgid "The shadow’s blur range"
+msgstr "El rango de desenfoque de la sombra"
+
+#. Bevel's GUI options begin here
+#. This is the Bevel's ENUM List listed in the GUI
+#. This is the ENUM list for bevel's emboss blend modes
+#: operations/common/styles.c:192
+msgid "Enable Bevel"
+msgstr "Activar bisel"
+
+#: operations/common/styles.c:193
+msgid "Whether to add a bevel effect"
+msgstr "Indica si añadir un efecto de biselado"
+
+#: operations/common/styles.c:210
+msgid "Bevel blend mode"
+msgstr "Modo de mezcla del bisel"
+
+#: operations/common/styles.c:211
+msgid "Blend mode of the bevel"
+msgstr "Modo de mezcla del bisel"
+
+#: operations/common/styles.c:219
+msgid "Chamfer Bevel"
+msgstr "Bisel de chaflán"
+
+#: operations/common/styles.c:221
+msgid "Bump Bevel"
+msgstr "Bisel de relieve"
+
+#: operations/common/styles.c:224
+msgid "Select Bevel"
+msgstr "Seleccionar bisel"
+
+#: operations/common/styles.c:227
+msgid "Type of bevel "
+msgstr "Tipo de bisel "
+
+#: operations/common/styles.c:233
+msgid "Bevel depth"
+msgstr "Profundidad de bisel"
+
+#: operations/common/styles.c:234
+msgid "Emboss depth for the bevel"
+msgstr "Profundidad de relieve del bisel"
+
+#: operations/common/styles.c:240
+msgid "Bevel elevation"
+msgstr "Elevación del bisel"
+
+#: operations/common/styles.c:241
+msgid "Emboss elevation of the bevel"
+msgstr "Elevación de relieve del bisel"
+
+#: operations/common/styles.c:248
+msgid "Bevel azimuth"
+msgstr "Acimut del bisel"
+
+#: operations/common/styles.c:249
+msgid "Emboss azimuth of the bevel"
+msgstr "Acimut de relieve del bisel"
+
+#: operations/common/styles.c:256
+msgid "Bevel radius (bump only)"
+msgstr "Radio del bisel (solo relieve)"
+
+#: operations/common/styles.c:260
+msgid ""
+"Internal gaussian blur to inflate the bump bevel. This option does not work "
+"on chamfer"
+msgstr ""
+"Desenfoque gaussiano interno para inflar el bisel de relieve. Esta opción no "
+"funciona en chaflán."
+
+#: operations/common/styles.c:266
+msgid "Levels low output lighting for Bevel"
+msgstr "Nivela la salida de baja iluminación del bisel"
+
+#: operations/common/styles.c:267
+msgid "Levels low output as a light adjustment for the bevel"
+msgstr "Nivela la salida baja como un ajuste de luz del bisel"
+
+#: operations/common/styles.c:275
+msgid "Levels high output lighting for Bevel"
+msgstr "Nivela la salida de alta iluminación del bisel"
+
+#: operations/common/styles.c:276
+msgid "Levels high output as a light adjustment for the bevel"
+msgstr "Nivela la salida alta como un ajuste de luz del bisel"
+
+#: operations/common/styles.c:284
+msgid "Dark Bevel/ignore image mode"
+msgstr "Bisel oscuro/ignorar modo de imagen"
+
+#: operations/common/styles.c:285
+msgid ""
+"This instructs the bevel to ignore image details if there is an image file "
+"overlay below it. It also allows bevel to work better when the user selects "
+"darker colors. The effect is noticeable on bump bevel but barely effects "
+"chamfer bevel"
+msgstr ""
+"Esto le indica al bisel que ignore los detalles de la imagen si hay un "
+"archivo de imagen superpuesto debajo. También permite que el bisel funcione "
+"mejor cuando el usuario selecciona colores más oscuros. El efecto es "
+"perceptible en el bisel de relieve, pero apenas afecta al bisel de chaflán"
+
+#. This operation is extremely important for bevels with image file overlays
+#. Inner Glow GUI options begin here
+#: operations/common/styles.c:295
+msgid "Enable Inner Glow"
+msgstr "Activar brillo interior"
+
+#: operations/common/styles.c:296
+msgid "Whether to add the inner glow effect"
+msgstr "Indica si añadir el efecto de brillo interior"
+
+#: operations/common/styles.c:305
+msgid "Normal"
+msgstr "Normal"
+
+#: operations/common/styles.c:307
+msgid "Overlay"
+msgstr "Superposición"
+
+#: operations/common/styles.c:309
+msgid "Screen"
+msgstr "Pantalla"
+
+#: operations/common/styles.c:315
+msgid "Plus"
+msgstr "Más"
+
+#: operations/common/styles.c:318
+msgid "Blend mode of Inner Glow"
+msgstr "Modo de mezcla del brillo interior"
+
+#: operations/common/styles.c:324
+msgid "Inner Glow's blur radius"
+msgstr "Radio de desenfoque del brillo interior"
+
+#: operations/common/styles.c:330
+msgid "Blur control of the inner glow"
+msgstr "Control de desenfoque del brillo interior"
+
+#: operations/common/styles.c:334
+msgid "Inner Glow's grow radius"
+msgstr "Radio de crecimiento del brillo interior"
+
+#: operations/common/styles.c:341
+msgid "The distance to expand the inner glow before blurring"
+msgstr "La distancia que expandir el brillo interior antes del desenfoque"
+
+#: operations/common/styles.c:345
+msgid "Inner Glow's opacity"
+msgstr "Opacidad del brillo interior"
+
+#: operations/common/styles.c:348
+msgid "Opacity of the inner glow"
+msgstr "Opacidad del brillo interior"
+
+#: operations/common/styles.c:352
+msgid "Inner Glow's color"
+msgstr "Color del brillo interior"
+
+#: operations/common/styles.c:353
+msgid "The color of the inner glow"
+msgstr "El color del brillo interior"
+
+#: operations/common/styles.c:357
+msgid "Inner Glow's unmodified pixel fix"
+msgstr "Corrección de píxeles sin modificar del brillo interior"
+
+#: operations/common/styles.c:359
+msgid "Cover pixels that inner glow might miss"
+msgstr "Cubre los píxeles que el brillo interior podría pasar por alto"
+
+#. Without this Inner Glow would miss many pixels around alpha defined shapes edges'
+#. Image file overlay GUI options begin here
+#: operations/common/styles.c:366
+msgid "Enable image upload"
+msgstr "Activar la carga de imágenes"
+
+#: operations/common/styles.c:367 operations/common/styles.c:466
+msgid "Whether to enable or disable the image file upload."
+msgstr "Indica si activar o desactivar la carga de archivos de imagen."
+
+#: operations/common/styles.c:370
+msgid "Image file overlay"
+msgstr "Superposición de archivos de imagen"
+
+#: operations/common/styles.c:371
+msgid ""
+"Upload an image file from your computer to be in the fill area. Allows (png, "
+"jpg, raw, svg, bmp, tif, ...)"
+msgstr ""
+"Cargar un archivo de imagen de su equipo al área de relleno. Se permite "
+"(png, jpg, raw, svg, bmp, tif, …)"
+
+#: operations/common/styles.c:375
+msgid "Opacity of image file overlay"
+msgstr "Opacidad del archivo de imagen superpuesto"
+
+#: operations/common/styles.c:378
+msgid "Opacity of the image file overlay that was uploaded. "
+msgstr "Opacidad de la superposición del archivo de imagen que se cargó. "
+
+#: operations/common/styles.c:389
+msgid ""
+"Saturation adjustment of the uploaded image file or whatever is on canvas"
+msgstr ""
+"Ajuste de saturación del archivo de imagen cargado o de lo que esté en el "
+"lienzo"
+
+#: operations/common/styles.c:394
+msgid ""
+"Lightness adjustment of the uploaded image file or whatever is on canvas"
+msgstr ""
+"Ajuste de luminosidad del archivo de imagen cargado o lo que esté en el "
+"lienzo"
+
+#. Outline special options in GUI begin here
+#: operations/common/styles.c:399
+msgid "Enable advanced options on Outline (requires outline)"
+msgstr "Activar opciones avanzadas de contorno (requiere contorno)"
+
+#: operations/common/styles.c:400
+msgid "Turn on advanced outline abilities"
+msgstr "Activar capacidades avanzadas de contorno"
+
+#: operations/common/styles.c:405
+msgid "Enable Outline Bevel (requires advanced options)"
+msgstr "Activar bisel de contorno (requiere opciones avanzadas)"
+
+#: operations/common/styles.c:406
+msgid "Turn on outlines ability to bevel"
+msgstr "Activar la capacidad de los contornos de biselar"
+
+#: operations/common/styles.c:427
+msgid "Outline Bevel blend mode"
+msgstr "Modo de mezcla del bisel de contorno"
+
+#: operations/common/styles.c:428
+msgid "Blend mode of the outline bevel"
+msgstr "Modo de mezcla del bisel de contorno"
+
+#: operations/common/styles.c:435
+msgid "Outline Bevel depth"
+msgstr "Profundidad del bisel de contorno"
+
+#: operations/common/styles.c:436
+msgid "Emboss depth for the outline bevel"
+msgstr "Profundidad de relieve del bisel de contorno"
+
+#: operations/common/styles.c:441
+msgid "Outline Bevel elevation"
+msgstr "Elevación del bisel de contorno"
+
+#: operations/common/styles.c:442
+msgid "Emboss elevation for the outline bevel"
+msgstr "Elevación de relieve del bisel de contorno"
+
+#: operations/common/styles.c:448
+msgid "Outline Bevel azimuth"
+msgstr "Acimut del bisel de contorno"
+
+#: operations/common/styles.c:449
+msgid "Emboss azimuth for the outline bevel"
+msgstr "Acimut de relieve del bisel de contorno"
+
+#: operations/common/styles.c:456
+msgid "Outline Bevel radius"
+msgstr "Radio del bisel de contorno"
+
+#: operations/common/styles.c:457
+msgid "Internal gaussian blur to inflate the outline bevel"
+msgstr "Desenfoque gaussiano interno para inflar el bisel de contorno"
+
+#: operations/common/styles.c:465
+msgid "Enable image upload on Outline (requires advanced options)"
+msgstr "Activar la carga de imágenes en contorno (requiere opciones avanzadas)"
+
+#: operations/common/styles.c:470
+msgid "Outline image file overlay"
+msgstr "Superposición de archivos de imagen en contorno"
+
+#: operations/common/styles.c:471
+msgid ""
+"Upload an image file from your computer to be in the outline area. Allows "
+"(png, jpg, raw, svg, bmp, tif, ...)"
+msgstr ""
+"Cargar un archivo de imagen de su equipo al área de contorno. Se permite "
+"(png, jpg, raw, svg, bmp, tif, …)"
+
+#: operations/common/styles.c:476
+msgid "Outline image opacity"
+msgstr "Opacidad de imagen de contorno"
+
+#: operations/common/styles.c:477
+msgid "Outline image opacity adjustment"
+msgstr "Ajuste de opacidad de la imagen del contorno"
+
+#: operations/common/styles.c:482
+msgid "Levels low output lighting for Outline Bevel"
+msgstr "Nivela la salida de baja iluminación del bisel de contorno"
+
+#: operations/common/styles.c:483
+msgid "Levels low output as a light adjustment for the outline bevel"
+msgstr "Nivela la salida baja como un ajuste de luz del bisel de contorno"
+
+#: operations/common/styles.c:490
+msgid "Levels high output lighting for Outline Bevel"
+msgstr "Nivela la salida de alta iluminación del bisel de contorno"
+
+#: operations/common/styles.c:491
+msgid "Levels high output as a light adjustment for the outline bevel"
+msgstr "Nivela la salida alta como un ajuste de luz del bisel de contorno"
+
+#: operations/common/styles.c:499
+msgid "Outline Dark Bevel/ignore image mode"
+msgstr "Bisel de contorno oscuro/ignorar modo de imagen"
+
+#: operations/common/styles.c:500
+msgid ""
+"This instructs the outline bevel to ignore image details if there is an "
+"image file overlay below it. It also allows outline bevel to work better "
+"when the user selects darker colors."
+msgstr ""
+"Esto le indica al bisel de contorno que ignore los detalles de la imagen si "
+"hay un archivo de imagen superpuesto debajo de él. También permite que el "
+"bisel de contorno funcione mejor cuando el usuario selecciona colores más "
+"oscuros."
+
+#: operations/common/styles.c:1243
+msgid "GEGL Styles"
+msgstr "Estilos de GEGL"
+
+#: operations/common/styles.c:1246
+msgid ""
+"An engine to style text and add popular effects to alpha channel images. "
+"Effects include outline, bevel, shadow, and inner glow all in one place."
+msgstr ""
+"Un motor para diseñar texto y agregar efectos populares a las imágenes del "
+"canal alfa. Los efectos incluyen contorno, bisel, sombra y brillo interior, "
+"todo en un solo lugar."
+
+#: operations/common/styles.c:1249
+msgid "Text Styling..."
+msgstr "Diseño de texto…"
+
 #: operations/common/svg-huerotate.c:27 operations/common/svg-matrix.c:27
 #: operations/common/svg-saturate.c:25
 msgid "Values"
@@ -5230,7 +5741,7 @@ msgstr "Deformación"
 
 #: operations/common-cxx/warp.cc:988
 msgid "Compute a relative displacement mapping from a stroke"
-msgstr "Calcular un mapeado de desplazamiento relativo a partir de un trazo"
+msgstr "Calcular un mapeado del desplazamiento relativo a partir de un trazo"
 
 #: operations/common-gpl3+/antialias.c:293
 msgid "Scale3X Antialiasing"
@@ -8300,13 +8811,11 @@ msgstr "Opacidad del relleno que usar"
 
 #: operations/external/path.c:54 operations/external/vector-fill.c:40
 #: operations/external/vector-stroke.c:41
-#: operations/workshop/external/ctx-script.c:26
 msgid "Vector"
 msgstr "Vector"
 
 #: operations/external/path.c:55 operations/external/vector-fill.c:41
 #: operations/external/vector-stroke.c:42
-#: operations/workshop/external/ctx-script.c:27
 msgid "A GeglVector representing the path of the stroke"
 msgstr "Un vector GeglVector que representa la ruta del trazo"
 
@@ -9422,7 +9931,7 @@ msgstr "Normalizar la salida al rango [base,base + paso]"
 msgid "Connected Components"
 msgstr "Componentes conectados"
 
-#: operations/workshop/connected-components.c:290
+#: operations/workshop/connected-components.c:292
 msgid ""
 "Fills each connected region of the input, separated from the rest of the "
 "input by a given color, with a unique color."
@@ -9481,14 +9990,6 @@ msgid "Test op to do a 1:1 map of input to output, while sampling"
 msgstr ""
 "Operación de prueba que hace una asignación 1:1 de la entrada a la salida, "
 "durante el muestreo"
-
-#: operations/workshop/external/ctx-script.c:126
-msgid "Ctx script"
-msgstr "Script ctx"
-
-#: operations/workshop/external/ctx-script.c:128
-msgid "Renders a ctx vector graphics"
-msgstr "Renderiza un ctx de gráficos de vectoriales"
 
 #: operations/workshop/external/gluas.c:29
 msgid "Script"
@@ -9866,7 +10367,7 @@ msgstr "Indica si los bordes de la imagen también están sembrados"
 msgid "Voronoi Diagram"
 msgstr "Diagrama de Voronoi"
 
-#: operations/workshop/external/voronoi-diagram.cc:531
+#: operations/workshop/external/voronoi-diagram.cc:533
 msgid "Paints each non-seed pixel with the color of the nearest seed pixel."
 msgstr ""
 "Pinta cada píxel que no es semilla con el color del píxel semilla más "
@@ -10054,516 +10555,11 @@ msgstr ""
 "Reorganiza píxeles y cuantifica con vecinos para optimizar el difuminado, "
 "mezclando píxeles adyacentes."
 
-#: operations/workshop/styles.c:30
-msgid "Color, Outline and Shadow"
-msgstr "Color, contorno y sombra"
-
-#: operations/workshop/styles.c:31
-msgid "Bevel and Inner Glow"
-msgstr "Bisel y brillo interior"
-
-#: operations/workshop/styles.c:32
-msgid "Image upload and Outline Bevel"
-msgstr "Carga de imagen y bisel de contorno"
-
-#. List of all GUI options
-#. GUI Change list in GUI
-#: operations/workshop/styles.c:39
-msgid "Part of filter to be displayed"
-msgstr "Parte del filtro que se mostrará"
-
-#: operations/workshop/styles.c:42
-msgid "Display a different part of the GUI"
-msgstr "Mostrar una parte diferente de la IGU"
-
-#. Color Overlays GUI options begin here
-#: operations/workshop/styles.c:46
-msgid "Color overlay"
-msgstr "Superposición de color"
-
-#: operations/workshop/styles.c:48
-msgid "Color overlay setting"
-msgstr "Ajuste de superposición de color"
-
-#: operations/workshop/styles.c:50
-msgid "Color policy"
-msgstr "Política de color"
-
-#: operations/workshop/styles.c:51
-msgid "Change the blend mode of the color overlay"
-msgstr "Cambiar el modo de mezcla de la superposición de color"
-
-#: operations/workshop/styles.c:58
-msgid "No Color"
-msgstr "Sin color"
-
-#: operations/workshop/styles.c:62
-msgid "Solid Color"
-msgstr "Color sólido"
-
-#. Outline's normal GUI options begin here
-#: operations/workshop/styles.c:68
-msgid "Enable Outline"
-msgstr "Activar contorno"
-
-#: operations/workshop/styles.c:69
-msgid "Disable or enable the outline"
-msgstr "Desactivar o activar el contorno"
-
-#: operations/workshop/styles.c:72
-msgid "Outline opacity"
-msgstr "Opacidad del contorno"
-
-#: operations/workshop/styles.c:75
-msgid "Opacity of the outline"
-msgstr "Opacidad del contorno"
-
-#: operations/workshop/styles.c:79
-msgid "Outline X"
-msgstr "Contorno X"
-
-#: operations/workshop/styles.c:80
-msgid "Horizontal outline offset"
-msgstr "Desplazamiento horizontal del contorno"
-
-#: operations/workshop/styles.c:87
-msgid "Outline Y"
-msgstr "Contorno Y"
-
-#: operations/workshop/styles.c:88
-msgid "Vertical outline offset"
-msgstr "Desplazamiento vertical del contorno"
-
-#: operations/workshop/styles.c:102
-msgid "Outline grow shape"
-msgstr "Forma de crecimiento del contorno"
-
-#: operations/workshop/styles.c:105
-msgid "The shape to expand or contract the outline in"
-msgstr "La forma dentro de la que expandir o contraer el contorno"
-
-#: operations/workshop/styles.c:109
-msgid "Outline blur radius"
-msgstr "Radio de desenfoque del contorno"
-
-#: operations/workshop/styles.c:115
-msgid "A mild blur for the outline"
-msgstr "Un ligero desenfoque para el contorno"
-
-#: operations/workshop/styles.c:119
-msgid "Outline grow radius"
-msgstr "Radio de crecimiento del contorno"
-
-#: operations/workshop/styles.c:126
-msgid "The distance to expand the outline"
-msgstr "La distancia a la que expandir el contorno"
-
-#. Shadow's GUI options begin here
-#: operations/workshop/styles.c:131
-msgid "Outline’s color"
-msgstr "Color del contorno"
-
-# the string 'black' should not be translated
-#: operations/workshop/styles.c:132
-msgid "Color of the outline (defaults to 'black') "
-msgstr "Color del contorno (el predeterminado es «black») "
-
-#: operations/workshop/styles.c:137
-msgid "Shadow/Glow opacity"
-msgstr "Opacidad de sombra/brillo"
-
-#: operations/workshop/styles.c:141
-msgid "Shadow opacity which will also enable or disable the shadow glow effect"
-msgstr ""
-"Opacidad de la sombra que también activará o desactivará el efecto de brillo "
-"de la sombra"
-
-#: operations/workshop/styles.c:145
-msgid "Shadow/Glow X"
-msgstr "Sombra/Brillo X"
-
-#: operations/workshop/styles.c:151
-msgid "Horizontal axis of the shadow glow"
-msgstr "Eje horizontal del brillo de la sombra"
-
-#: operations/workshop/styles.c:154
-msgid "Shadow/Glow Y"
-msgstr "Sombra/Brillo Y"
-
-#: operations/workshop/styles.c:160
-msgid "Vertical axis of the shadow glow"
-msgstr "Eje vertical del brillo de la sombra"
-
-#: operations/workshop/styles.c:163
-msgid "Shadow/Glow’s color"
-msgstr "Color de sombra/brillo"
-
-#. TRANSLATORS: the string 'black' should not be translated
-#: operations/workshop/styles.c:165
-msgid "The shadow’s color (defaults to 'black')"
-msgstr "El color de la sombra (el predeterminado es «black»)"
-
-#: operations/workshop/styles.c:168
-msgid "Shadow/Glow grow radius"
-msgstr "Radio de crecimiento de sombra/brillo"
-
-#: operations/workshop/styles.c:175
-msgid "The distance to expand the shadow before blurring."
-msgstr "La distancia a la que expandir la sombra antes de desenfocar."
-
-#: operations/workshop/styles.c:178
-msgid "Shadow/Glow blur radius"
-msgstr "Radio de desenfoque de sombra/brillo"
-
-#: operations/workshop/styles.c:184
-msgid "The shadow’s blur range"
-msgstr "El rango de desenfoque de la sombra"
-
-#. Bevel's GUI options begin here
-#. This is the Bevel's ENUM List listed in the GUI
-#. This is the ENUM list for bevel's emboss blend modes
-#: operations/workshop/styles.c:192
-msgid "Enable Bevel"
-msgstr "Activar bisel"
-
-#: operations/workshop/styles.c:193
-msgid "Whether to add a bevel effect"
-msgstr "Indica si añadir un efecto de biselado"
-
-#: operations/workshop/styles.c:210
-msgid "Bevel blend mode"
-msgstr "Modo de mezcla del bisel"
-
-#: operations/workshop/styles.c:211
-msgid "Blend mode of the bevel"
-msgstr "Modo de mezcla del bisel"
-
-#: operations/workshop/styles.c:219
-msgid "Chamfer Bevel"
-msgstr "Bisel de chaflán"
-
-#: operations/workshop/styles.c:221
-msgid "Bump Bevel"
-msgstr "Bisel de relieve"
-
-#: operations/workshop/styles.c:224
-msgid "Select Bevel"
-msgstr "Seleccionar bisel"
-
-#: operations/workshop/styles.c:227
-msgid "Type of bevel "
-msgstr "Tipo de bisel "
-
-#: operations/workshop/styles.c:233
-msgid "Bevel depth"
-msgstr "Profundidad de bisel"
-
-#: operations/workshop/styles.c:234
-msgid "Emboss depth for the bevel"
-msgstr "Profundidad de relieve del bisel"
-
-#: operations/workshop/styles.c:240
-msgid "Bevel elevation"
-msgstr "Elevación del bisel"
-
-#: operations/workshop/styles.c:241
-msgid "Emboss elevation of the bevel"
-msgstr "Elevación de relieve del bisel"
-
-#: operations/workshop/styles.c:248
-msgid "Bevel azimuth"
-msgstr "Acimut del bisel"
-
-#: operations/workshop/styles.c:249
-msgid "Emboss azimuth of the bevel"
-msgstr "Acimut de relieve del bisel"
-
-#: operations/workshop/styles.c:256
-msgid "Bevel radius (bump only)"
-msgstr "Radio del bisel (solo relieve)"
-
-#: operations/workshop/styles.c:260
-msgid ""
-"Internal gaussian blur to inflate the bump bevel. This option does not work "
-"on chamfer"
-msgstr ""
-"Desenfoque gaussiano interno para inflar el bisel de relieve. Esta opción no "
-"funciona en chaflán."
-
-#: operations/workshop/styles.c:266
-msgid "Levels low output lighting for Bevel"
-msgstr "Nivela la salida de baja iluminación del bisel"
-
-#: operations/workshop/styles.c:267
-msgid "Levels low output as a light adjustment for the bevel"
-msgstr "Nivela la salida baja como un ajuste de luz del bisel"
-
-#: operations/workshop/styles.c:275
-msgid "Levels high output lighting for Bevel"
-msgstr "Nivela la salida de alta iluminación del bisel"
-
-#: operations/workshop/styles.c:276
-msgid "Levels high output as a light adjustment for the bevel"
-msgstr "Nivela la salida alta como un ajuste de luz del bisel"
-
-#: operations/workshop/styles.c:284
-msgid "Dark Bevel/ignore image mode"
-msgstr "Bisel oscuro/ignorar modo de imagen"
-
-#: operations/workshop/styles.c:285
-msgid ""
-"This instructs the bevel to ignore image details if there is an image file "
-"overlay below it. It also allows bevel to work better when the user selects "
-"darker colors. The effect is noticeable on bump bevel but barely effects "
-"chamfer bevel"
-msgstr ""
-"Esto le indica al bisel que ignore los detalles de la imagen si hay un "
-"archivo de imagen superpuesto debajo. También permite que el bisel funcione "
-"mejor cuando el usuario selecciona colores más oscuros. El efecto es "
-"perceptible en el bisel de relieve, pero apenas afecta al bisel de chaflán"
-
-#. This operation is extremely important for bevels with image file overlays
-#. Inner Glow GUI options begin here
-#: operations/workshop/styles.c:295
-msgid "Enable Inner Glow"
-msgstr "Activar brillo interior"
-
-#: operations/workshop/styles.c:296
-msgid "Whether to add the inner glow effect"
-msgstr "Indica si añadir el efecto de brillo interior"
-
-#: operations/workshop/styles.c:305
-msgid "Normal"
-msgstr "Normal"
-
-#: operations/workshop/styles.c:307
-msgid "Overlay"
-msgstr "Superposición"
-
-#: operations/workshop/styles.c:309
-msgid "Screen"
-msgstr "Pantalla"
-
-#: operations/workshop/styles.c:315
-msgid "Plus"
-msgstr "Más"
-
-#: operations/workshop/styles.c:318
-msgid "Blend mode of Inner Glow"
-msgstr "Modo de mezcla del brillo interior"
-
-#: operations/workshop/styles.c:324
-msgid "Inner Glow's blur radius"
-msgstr "Radio de desenfoque del brillo interior"
-
-#: operations/workshop/styles.c:330
-msgid "Blur control of the inner glow"
-msgstr "Control de desenfoque del brillo interior"
-
-#: operations/workshop/styles.c:334
-msgid "Inner Glow's grow radius"
-msgstr "Radio de crecimiento del brillo interior"
-
-#: operations/workshop/styles.c:341
-msgid "The distance to expand the inner glow before blurring"
-msgstr "La distancia que expandir el brillo interior antes del desenfoque"
-
-#: operations/workshop/styles.c:345
-msgid "Inner Glow's opacity"
-msgstr "Opacidad del brillo interior"
-
-#: operations/workshop/styles.c:348
-msgid "Opacity of the inner glow"
-msgstr "Opacidad del brillo interior"
-
-#: operations/workshop/styles.c:352
-msgid "Inner Glow's color"
-msgstr "Color del brillo interior"
-
-#: operations/workshop/styles.c:353
-msgid "The color of the inner glow"
-msgstr "El color del brillo interior"
-
-#: operations/workshop/styles.c:357
-msgid "Inner Glow's unmodified pixel fix"
-msgstr "Corrección de píxeles sin modificar del brillo interior"
-
-#: operations/workshop/styles.c:359
-msgid "Cover pixels that inner glow might miss"
-msgstr "Cubre los píxeles que el brillo interior podría pasar por alto"
-
-#. Without this Inner Glow would miss many pixels around alpha defined shapes edges'
-#. Image file overlay GUI options begin here
-#: operations/workshop/styles.c:366
-msgid "Enable image upload"
-msgstr "Activar la carga de imágenes"
-
-#: operations/workshop/styles.c:367 operations/workshop/styles.c:466
-msgid "Whether to enable or disable the image file upload."
-msgstr "Indica si activar o desactivar la carga de archivos de imagen."
-
-#: operations/workshop/styles.c:370
-msgid "Image file overlay"
-msgstr "Superposición de archivos de imagen"
-
-#: operations/workshop/styles.c:371
-msgid ""
-"Upload an image file from your computer to be in the fill area. Allows (png, "
-"jpg, raw, svg, bmp, tif, ...)"
-msgstr ""
-"Cargar un archivo de imagen de su equipo al área de relleno. Se permite "
-"(png, jpg, raw, svg, bmp, tif, …)"
-
-#: operations/workshop/styles.c:375
-msgid "Opacity of image file overlay"
-msgstr "Opacidad del archivo de imagen superpuesto"
-
-#: operations/workshop/styles.c:378
-msgid "Opacity of the image file overlay that was uploaded. "
-msgstr "Opacidad de la superposición del archivo de imagen que se cargó. "
-
-#: operations/workshop/styles.c:389
-msgid ""
-"Saturation adjustment of the uploaded image file or whatever is on canvas"
-msgstr ""
-"Ajuste de saturación del archivo de imagen cargado o de lo que esté en el "
-"lienzo"
-
-#: operations/workshop/styles.c:394
-msgid ""
-"Lightness adjustment of the uploaded image file or whatever is on canvas"
-msgstr ""
-"Ajuste de luminosidad del archivo de imagen cargado o lo que esté en el "
-"lienzo"
-
-#. Outline special options in GUI begin here
-#: operations/workshop/styles.c:399
-msgid "Enable advanced options on Outline (requires outline)"
-msgstr "Activar opciones avanzadas de contorno (requiere contorno)"
-
-#: operations/workshop/styles.c:400
-msgid "Turn on advanced outline abilities"
-msgstr "Activar capacidades avanzadas de contorno"
-
-#: operations/workshop/styles.c:405
-msgid "Enable Outline Bevel (requires advanced options)"
-msgstr "Activar bisel de contorno (requiere opciones avanzadas)"
-
-#: operations/workshop/styles.c:406
-msgid "Turn on outlines ability to bevel"
-msgstr "Activar la capacidad de los contornos de biselar"
-
-#: operations/workshop/styles.c:427
-msgid "Outline Bevel blend mode"
-msgstr "Modo de mezcla del bisel de contorno"
-
-#: operations/workshop/styles.c:428
-msgid "Blend mode of the outline bevel"
-msgstr "Modo de mezcla del bisel de contorno"
-
-#: operations/workshop/styles.c:435
-msgid "Outline Bevel depth"
-msgstr "Profundidad del bisel de contorno"
-
-#: operations/workshop/styles.c:436
-msgid "Emboss depth for the outline bevel"
-msgstr "Profundidad de relieve del bisel de contorno"
-
-#: operations/workshop/styles.c:441
-msgid "Outline Bevel elevation"
-msgstr "Elevación del bisel de contorno"
-
-#: operations/workshop/styles.c:442
-msgid "Emboss elevation for the outline bevel"
-msgstr "Elevación de relieve del bisel de contorno"
-
-#: operations/workshop/styles.c:448
-msgid "Outline Bevel azimuth"
-msgstr "Acimut del bisel de contorno"
-
-#: operations/workshop/styles.c:449
-msgid "Emboss azimuth for the outline bevel"
-msgstr "Acimut de relieve del bisel de contorno"
-
-#: operations/workshop/styles.c:456
-msgid "Outline Bevel radius"
-msgstr "Radio del bisel de contorno"
-
-#: operations/workshop/styles.c:457
-msgid "Internal gaussian blur to inflate the outline bevel"
-msgstr "Desenfoque gaussiano interno para inflar el bisel de contorno"
-
-#: operations/workshop/styles.c:465
-msgid "Enable image upload on Outline (requires advanced options)"
-msgstr "Activar la carga de imágenes en contorno (requiere opciones avanzadas)"
-
-#: operations/workshop/styles.c:470
-msgid "Outline image file overlay"
-msgstr "Superposición de archivos de imagen en contorno"
-
-#: operations/workshop/styles.c:471
-msgid ""
-"Upload an image file from your computer to be in the outline area. Allows "
-"(png, jpg, raw, svg, bmp, tif, ...)"
-msgstr ""
-"Cargar un archivo de imagen de su equipo al área de contorno. Se permite "
-"(png, jpg, raw, svg, bmp, tif, …)"
-
-#: operations/workshop/styles.c:476
-msgid "Outline image opacity"
-msgstr "Opacidad de imagen de contorno"
-
-#: operations/workshop/styles.c:477
-msgid "Outline image opacity adjustment"
-msgstr "Ajuste de opacidad de la imagen del contorno"
-
-#: operations/workshop/styles.c:482
-msgid "Levels low output lighting for Outline Bevel"
-msgstr "Nivela la salida de baja iluminación del bisel de contorno"
-
-#: operations/workshop/styles.c:483
-msgid "Levels low output as a light adjustment for the outline bevel"
-msgstr "Nivela la salida baja como un ajuste de luz del bisel de contorno"
-
-#: operations/workshop/styles.c:490
-msgid "Levels high output lighting for Outline Bevel"
-msgstr "Nivela la salida de alta iluminación del bisel de contorno"
-
-#: operations/workshop/styles.c:491
-msgid "Levels high output as a light adjustment for the outline bevel"
-msgstr "Nivela la salida alta como un ajuste de luz del bisel de contorno"
-
-#: operations/workshop/styles.c:499
-msgid "Outline Dark Bevel/ignore image mode"
-msgstr "Bisel de contorno oscuro/ignorar modo de imagen"
-
-#: operations/workshop/styles.c:500
-msgid ""
-"This instructs the outline bevel to ignore image details if there is an "
-"image file overlay below it. It also allows outline bevel to work better "
-"when the user selects darker colors."
-msgstr ""
-"Esto le indica al bisel de contorno que ignore los detalles de la imagen si "
-"hay un archivo de imagen superpuesto debajo de él. También permite que el "
-"bisel de contorno funcione mejor cuando el usuario selecciona colores más "
-"oscuros."
-
-#: operations/workshop/styles.c:1243
-msgid "GEGL Styles"
-msgstr "Estilos de GEGL"
-
-#: operations/workshop/styles.c:1246
-msgid ""
-"An engine to style text and add popular effects to alpha channel images. "
-"Effects include outline, bevel, shadow, and inner glow all in one place."
-msgstr ""
-"Un motor para diseñar texto y agregar efectos populares a las imágenes del "
-"canal alfa. Los efectos incluyen contorno, bisel, sombra y brillo interior, "
-"todo en un solo lugar."
-
-#: operations/workshop/styles.c:1249
-msgid "Text Styling..."
-msgstr "Diseño de texto…"
+#~ msgid "Ctx script"
+#~ msgstr "Script ctx"
+
+#~ msgid "Renders a ctx vector graphics"
+#~ msgstr "Renderiza un ctx de gráficos de vectoriales"
 
 #, fuzzy
 #~| msgid "Hard Light"
