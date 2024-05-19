@@ -84,7 +84,9 @@ gegl_path_parse (const gchar  *path,
                  gboolean      check,
                  GList       **check_failed)
 {
+#ifndef G_OS_WIN32
   const gchar  *home;
+#endif
   gchar       **patharray;
   GList        *list      = NULL;
   GList        *fail_list = NULL;
@@ -94,7 +96,9 @@ gegl_path_parse (const gchar  *path,
   if (!path || !*path || max_paths < 1 || max_paths > 256)
     return NULL;
 
+#ifndef G_OS_WIN32
   home = g_get_home_dir ();
+#endif
 
   patharray = g_strsplit (path, G_SEARCHPATH_SEPARATOR_S, max_paths);
 
@@ -161,7 +165,7 @@ gegl_datafiles_read_directories (const gchar            *path_str,
                                  gpointer                user_data)
 {
   GeglDatafileData  file_data;
-  struct stat       filestat;
+  GStatBuf          filestat;
   gchar            *local_path;
   GList            *path;
   GList            *list;
