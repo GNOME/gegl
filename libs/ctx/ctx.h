@@ -1,4 +1,4 @@
-/* ctx git commit: c6ffc108 */
+/* ctx git commit: 8df2ebcc */
 /* 
  * ctx.h is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -1726,6 +1726,8 @@ typedef enum
                               
   CTX_STROKE_POS       = 150, // kp
   CTX_FEATHER          = 151, // kp
+			     
+#define CTX_LAST_COMMAND  CTX_FEATHER
 
   CTX_STROKE_RECT      = 200, // strokeRect - only exist in long form
   CTX_FILL_RECT        = 201, // fillRect   - only exist in long form
@@ -2624,6 +2626,7 @@ typedef enum _CtxAntialias CtxAntialias;
 void         ctx_set_antialias (Ctx *ctx, CtxAntialias antialias);
 CtxAntialias ctx_get_antialias (Ctx *ctx);
 
+int ctx_is_set (Ctx *ctx, uint32_t hash);
 
 #ifdef __cplusplus
 }
@@ -10992,7 +10995,7 @@ struct _CtxKeyDbEntry
 
 struct _CtxState
 {
-  unsigned int  has_moved:1;
+  int  has_moved;
   unsigned int  has_clipped:1;
   int8_t        source; // used for the single-shifting to stroking
                 // 0  = fill
@@ -11005,6 +11008,8 @@ struct _CtxState
 
   float         x;
   float         y;
+  float         first_x;
+  float         first_y;
   int           ink_min_x;
   int           ink_min_y;
   int           ink_max_x;
@@ -20062,6 +20067,12 @@ CTX_SIMD_SUFFIX (ctx_composite_setup) (CtxRasterizer *rasterizer)
     case CTX_SOURCE_LINEAR_GRADIENT:
     case CTX_SOURCE_RADIAL_GRADIENT:
       ctx_gradient_cache_prime (rasterizer);
+
+      _ctx_matrix_multiply (&rasterizer->state->gstate.source_fill.transform,
+                            &rasterizer->state->gstate.transform,
+                            &rasterizer->state->gstate.source_fill.set_transform
+                            );
+      ctx_matrix_invert (&rasterizer->state->gstate.source_fill.transform);
       break;
     case CTX_SOURCE_TEXTURE:
 
@@ -22072,11 +22083,8 @@ ctx_rasterizer_close_path (CtxRasterizer *rasterizer)
 {
   int x0 = rasterizer->inner_x;
   int y0 = rasterizer->inner_y;
-  if ((rasterizer->has_prev > 0) & (rasterizer->first_edge>=0))
+  if (rasterizer->first_edge>=0)
     {
-
-      if (rasterizer->first_edge>=0)
-      {
         CtxSegment *segment = & ((CtxSegment*)rasterizer->edge_list.entries)[rasterizer->first_edge];
 	if (segment->code == CTX_NEW_EDGE)
 	{
@@ -22087,18 +22095,24 @@ ctx_rasterizer_close_path (CtxRasterizer *rasterizer)
           entry.y0=y0;
           entry.x1=x1;
           entry.y1=y1;
-          ctx_rasterizer_update_inner_point (rasterizer, x1, y1);
+	  // XXX 
           rasterizer->has_prev = 0;
 	  rasterizer->first_edge = -1;
           ctx_edgelist_add_single (&rasterizer->edge_list, (CtxEntry*)&entry);
-   entry = *segment;
-   entry.code = CTX_CLOSE_EDGE;
+          entry = *segment;
+          entry.code = CTX_CLOSE_EDGE;
 
           ctx_edgelist_add_single (&rasterizer->edge_list, (CtxEntry*)&entry);
-	  // shorten to half length?
+
+          ctx_rasterizer_update_inner_point (rasterizer, x1, y1);
+
+	  float nx = x1 * (1.0f / CTX_SUBDIV);
+	  float ny = y1 * (1.0f / CTX_FULL_AA);
+	  ctx_device_to_user(rasterizer->backend.ctx, &nx, &ny);
+          rasterizer->x = nx;
+          rasterizer->y = ny;
           return;
 	}
-      }
     }
 }
 
@@ -24168,6 +24182,7 @@ ctx_rasterizer_process (Ctx *ctx, const CtxCommand *c)
       case CTX_LINEAR_GRADIENT:
       case CTX_RADIAL_GRADIENT:
         ctx_interpret_style (state, entry, NULL);
+	ctx_matrix_identity (&state->gstate.source_fill.set_transform);
         ctx_state_gradient_clear_stops (state);
 #if CTX_GRADIENT_CACHE
         rasterizer->gradient_cache_valid = 0;
@@ -24419,6 +24434,21 @@ foo:
       case CTX_IMAGE_SMOOTHING:
         ctx_interpret_style (state, entry, NULL);
         rasterizer->comp_op = NULL;
+        break;
+      case CTX_VIEW_BOX:
+	{ // XXX : this can screw with transforms if one is not careful
+	   float x = ctx_arg_float(0),
+                       y = ctx_arg_float(1),
+                       width = ctx_arg_float(2),
+                       height = ctx_arg_float(2);
+	   float factor = ctx_width (ctx)/width;
+	   float factorh = ctx_height (ctx)/height;
+
+	   if (factorh <= factor) factor = factorh;
+
+	   ctx_translate (ctx, x, y);
+	   ctx_scale (ctx, factor, factor);
+	}
         break;
     }
   ctx_interpret_pos_bare (state, entry, NULL);
@@ -35589,6 +35619,9 @@ static float ctx_string_index_to_float (int index)
   return CTX_KEYDB_STRING_START + index;
 }
 
+static char ctx_kv_num[8][32];
+static int ctx_num_idx = 0;
+
 static void *ctx_state_get_blob (CtxState *state, uint32_t key)
 {
   float stored = ctx_state_get (state, key);
@@ -35599,8 +35632,15 @@ static void *ctx_state_get_blob (CtxState *state, uint32_t key)
      return &state->stringpool[idx];
   }
 
-  // format number as string?
-  return NULL;
+  float negZ = -0.0f;
+
+  if (-stored == 0.0f) return NULL;//"";
+
+  ctx_num_idx ++;
+  if (ctx_num_idx >=8) ctx_num_idx = 0;
+  snprintf (&ctx_kv_num[ctx_num_idx], 31, "%.6f", stored);
+
+  return ctx_kv_num[ctx_num_idx];
 }
 
 static const char *ctx_state_get_string (CtxState *state, uint32_t key)
@@ -41898,9 +41938,10 @@ void ctx_parser_destroy (CtxParser *parser)
 }
 
 
+
 static int ctx_parser_set_command (CtxParser *parser, CtxCode code)
 {
-  if (code < 150 && code >= 32)
+  if (code <= CTX_LAST_COMMAND && code >= 32)
   {
   parser->expected_args = ctx_arguments_for_code (code);
   parser->n_args = 0;
@@ -42569,22 +42610,24 @@ static void ctx_parser_dispatch_command (CtxParser *parser)
 	  float oy = ctx_y (ctx);
           float ax = 2 * ox - cx;
           float ay = 2 * oy - cy;
-          ctx_curve_to (ctx, ax, ay, arg(0) +  ox, arg(1) + oy,
-                        arg(2) + ox, arg(3) + oy);
           parser->pcx = arg(0) + ox;
           parser->pcy = arg(1) + oy;
+          ctx_curve_to (ctx, ax, ay, arg(0) +  ox, arg(1) + oy,
+                        arg(2) + ox, arg(3) + oy);
         }
         break;
       case CTX_SMOOTH_TO:
         {
           float cx = parser->pcx;
           float cy = parser->pcy;
-          float ax = 2 * ctx_x (ctx) - cx;
-          float ay = 2 * ctx_y (ctx) - cy;
+	  float ox = ctx_x (ctx);
+	  float oy = ctx_y (ctx);
+          float ax = 2 * ox - cx;
+          float ay = 2 * oy - cy;
           ctx_curve_to (ctx, ax, ay, arg(0), arg(1),
                         arg(2), arg(3) );
           parser->pcx = arg(0);
-          parser->pcx = arg(1);
+          parser->pcy = arg(1);
         }
         break;
       case CTX_SMOOTHQ_TO:
@@ -43045,6 +43088,17 @@ static void ctx_parser_transform_cell (CtxParser *parser, CtxCode code, int arg_
 static void ctx_parser_word_done (CtxParser *parser)
 {
   parser->holding[parser->pos]=0;
+
+  if (parser->pos > 1 && (parser->holding[0]=='Z' || 
+			  parser->holding[0]=='z'))
+  {
+    ctx_close_path (parser->ctx);
+    memmove (parser->holding, parser->holding+1, parser->pos-1);
+    parser->pos--;
+    ctx_parser_word_done (parser);
+    return;
+  }
+
   //int old_args = parser->expected_args;
   int command = ctx_parser_resolve_command (parser, parser->holding);
   if ((command >= 0 && command < 32)
@@ -55176,7 +55230,7 @@ ctx_get_font (Ctx *ctx)
 
 void ctx_line_to (Ctx *ctx, float x, float y)
 {
-  if (CTX_UNLIKELY(!ctx->state.has_moved))
+  if (ctx->state.has_moved <= 0)
     { CTX_PROCESS_F (CTX_MOVE_TO, x, y); }
   else
     { CTX_PROCESS_F (CTX_LINE_TO, x, y); }
@@ -56043,41 +56097,83 @@ ctx_interpret_pos_bare (CtxState *state, const CtxEntry *entry, void *data)
       case CTX_STROKE:
         state->has_moved = 0;
         break;
+      case CTX_CLOSE_PATH:
+	state->x = state->first_x;
+	state->y = state->first_y;
+        state->has_moved = -1;
+	break;
       case CTX_MOVE_TO:
       case CTX_LINE_TO:
         state->x = ctx_arg_float (0);
         state->y = ctx_arg_float (1);
-        state->has_moved = 1;
+	if (state->has_moved<=0)
+	{
+	  state->first_x = state->x;
+	  state->first_y = state->y;
+          state->has_moved = 1;
+	}
         break;
       case CTX_CURVE_TO:
         state->x = ctx_arg_float (4);
         state->y = ctx_arg_float (5);
-        state->has_moved = 1;
+	if (state->has_moved<=0)
+	{
+	  state->first_x = state->x;
+	  state->first_y = state->y;
+          state->has_moved = 1;
+	}
         break;
       case CTX_QUAD_TO:
         state->x = ctx_arg_float (2);
         state->y = ctx_arg_float (3);
-        state->has_moved = 1;
+	if (state->has_moved<=0)
+	{
+	  state->first_x = state->x;
+	  state->first_y = state->y;
+          state->has_moved = 1;
+	}
         break;
       case CTX_ARC:
         state->x = ctx_arg_float (0) + ctx_cosf (ctx_arg_float (4) ) * ctx_arg_float (2);
         state->y = ctx_arg_float (1) + ctx_sinf (ctx_arg_float (4) ) * ctx_arg_float (2);
-        state->has_moved = 1;
+	if (state->has_moved<=0)
+	{
+	  state->first_x = state->x;
+	  state->first_y = state->y;
+          state->has_moved = 1;
+	}
         break;
       case CTX_REL_MOVE_TO:
       case CTX_REL_LINE_TO:
         state->x += ctx_arg_float (0);
         state->y += ctx_arg_float (1);
+
+	if (state->has_moved<=0)
+	{
+	  state->first_x = state->x;
+	  state->first_y = state->y;
+          state->has_moved = 1;
+	}
         break;
       case CTX_REL_CURVE_TO:
         state->x += ctx_arg_float (4);
         state->y += ctx_arg_float (5);
+	if (state->has_moved<=0)
+	{
+	  state->first_x = state->x;
+	  state->first_y = state->y;
+          state->has_moved = 1;
+	}
         break;
       case CTX_REL_QUAD_TO:
         state->x += ctx_arg_float (2);
         state->y += ctx_arg_float (3);
-        break;
-        // XXX missing some smooths
+	if (state->has_moved<=0)
+	{
+	  state->first_x = state->x;
+	  state->first_y = state->y;
+          state->has_moved = 1;
+	}
     }
 }
 
@@ -56106,6 +56202,7 @@ static void
 ctx_state_init (CtxState *state)
 {
   memset (state, 0, sizeof (CtxState) );
+  state->gstate.global_alpha_u8 = 255;
   state->gstate.global_alpha_u8 = 255;
   state->gstate.global_alpha_f  = 1.0;
   state->gstate.font_size       = 32; // default HTML canvas is 10px sans
@@ -68408,6 +68505,7 @@ void vt_draw (VT *vt, Ctx *ctx, double x0, double y0)
   }
 
 
+#if 0
   for (int i = 0; i < 4; i++)
     {
       if (vt->leds[i])
@@ -68417,6 +68515,8 @@ void vt_draw (VT *vt, Ctx *ctx, double x0, double y0)
           ctx_fill (ctx);
         }
     }
+#endif
+
   ctx_restore (ctx);
 //#define SCROLL_SPEED 0.25;
 #define SCROLL_SPEED 0.001;
