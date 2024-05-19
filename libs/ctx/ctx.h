@@ -1,4 +1,4 @@
-/* ctx git commit: 8df2ebcc */
+/* ctx git commit: 19207d00 */
 /* 
  * ctx.h is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -35632,13 +35632,11 @@ static void *ctx_state_get_blob (CtxState *state, uint32_t key)
      return &state->stringpool[idx];
   }
 
-  float negZ = -0.0f;
-
   if (-stored == 0.0f) return NULL;//"";
 
   ctx_num_idx ++;
   if (ctx_num_idx >=8) ctx_num_idx = 0;
-  snprintf (&ctx_kv_num[ctx_num_idx], 31, "%.6f", stored);
+  snprintf (&ctx_kv_num[ctx_num_idx][0], 31, "%.6f", stored);
 
   return ctx_kv_num[ctx_num_idx];
 }
