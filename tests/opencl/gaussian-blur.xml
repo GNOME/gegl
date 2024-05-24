@@ -4,6 +4,7 @@
     <params>
       <param name='std-dev-x'>10.0</param>
       <param name='std-dev-y'>10.0</param>
+      <param name='filter'>fir</param>
     </params>
   </node>
   <node operation='gegl:load'>

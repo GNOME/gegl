@@ -316,7 +316,7 @@ def main():
     if args.imgcmp_args: imgcmp_cmd += args.imgcmp_args
     imgcmp_cmd = flatten(imgcmp_cmd)
 
-    no_ocl_env = test_env
+    no_ocl_env = dict(test_env) # Make a deep copy
     no_ocl_env["GEGL_USE_OPENCL"] = "no"
 
     if args.verbose:
