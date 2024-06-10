@@ -14,16 +14,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl-master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-02-28 01:14+0000\n"
-"PO-Revision-Date: 2024-03-01 18:37+0800\n"
+"POT-Creation-Date: 2024-04-07 17:30+0000\n"
+"PO-Revision-Date: 2024-06-10 10:53+0800\n"
 "Last-Translator: lumingzh <lumingzh@qq.com>\n"
-"Language-Team: Chinese - China <i18n-zh@googlegroups.com>\n"
+"Language-Team: Chinese (China) <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0\n"
-"X-Generator: Gtranslator 45.3\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Gtranslator 46.1\n"
 
 #: bin/gegl.c:179
 #, c-format
@@ -639,12 +639,158 @@ msgstr "裁减透明"
 msgid "Keep alpha values inside a specific range"
 msgstr "保持透明值在一个特定范围内"
 
+#: operations/common/bevel.c:47
+msgid "Chamfer"
+msgstr "倒角"
+
+#: operations/common/bevel.c:49
+msgid "Bump"
+msgstr "凹凸"
+
+#: operations/common/bevel.c:52
+msgid "Bevel Type"
+msgstr "斜面类型"
+
+#: operations/common/bevel.c:55
+msgid "The family of bevel to use"
+msgstr "要使用的斜面类型"
+
+#: operations/common/bevel.c:59
+msgid "None (for use with GIMPs blending options)"
+msgstr "无（用于 GIMP 混合选项）"
+
+#: operations/common/bevel.c:61 operations/common/styles.c:203
+#: operations/common/styles.c:311 operations/common/styles.c:419
+msgid "Hard Light"
+msgstr "硬光"
+
+#: operations/common/bevel.c:63 operations/common/styles.c:60
+#: operations/common/styles.c:199 operations/common/styles.c:415
+msgid "Multiply"
+msgstr "正片叠底"
+
+#: operations/common/bevel.c:65 operations/common/styles.c:207
+#: operations/common/styles.c:313 operations/common/styles.c:423
+msgid "Color Dodge"
+msgstr "颜色减淡"
+
+#: operations/common/bevel.c:67 operations/common/styles.c:205
+#: operations/common/styles.c:421
+msgid "Darken"
+msgstr "变暗"
+
+#: operations/common/bevel.c:69
+msgid "Lighten"
+msgstr "变亮"
+
+#: operations/common/bevel.c:71 operations/common/styles.c:201
+#: operations/common/styles.c:417
+#: operations/workshop/external/paint-select.cc:30
+msgid "Add"
+msgstr "添加"
+
+#: operations/common/bevel.c:74 operations/common-gpl3+/sinus.c:67
+msgid "Blend Mode"
+msgstr "混合模式"
+
+#: operations/common/bevel.c:77
+msgid ""
+"What blending mode the bevel's emboss will be. Light Map is a special blend "
+"mode that allows users to extract the filters output as a light map which "
+"should be put on a layer above or be used with Gimp's blending options."
+msgstr ""
+"倒角凸起将会成为的混合模式。光照映射是一种允许用户提取滤镜输出作为光照映射放"
+"置在图层上方或与 GIMP 混合选项配合使用的特殊混合模式。"
+
+#: operations/common/bevel.c:79
+msgid "Distance Map Setting"
+msgstr "距离映射设置"
+
+#: operations/common/bevel.c:81
+msgid ""
+"Distance Map is unique to chamfer bevel and has three settings that alter "
+"the structure of the chamfer."
+msgstr "距离映射对于倒角斜面是唯一的且具有三种改变倒角结构的设置。"
+
+#: operations/common/bevel.c:84 operations/common/bloom.c:35
+#: operations/common/box-blur.c:25 operations/common/c2g.c:28
+#: operations/common/edge-neon.c:47 operations/common/local-threshold.c:24
+#: operations/common/median-blur.c:42 operations/common/snn-mean.c:26
+#: operations/common/stress.c:27 operations/common/unsharp-mask.c:24
+#: operations/common/vignette.c:40 operations/common/wavelet-blur-1d.c:28
+#: operations/common/wavelet-blur.c:27 operations/common-cxx/focus-blur.c:85
+#: operations/common-cxx/lens-blur.cc:24
+#: operations/common-cxx/variable-blur.c:30
+#: operations/common-gpl3+/shadows-highlights.c:40
+#: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:44
+#: operations/common-gpl3+/whirl-pinch.c:46
+#: operations/external/matting-levin.c:29 operations/workshop/boxblur-1d.c:27
+#: operations/workshop/boxblur.c:24
+#: operations/workshop/external/spyrograph.c:63
+msgid "Radius"
+msgstr "半径"
+
+#: operations/common/bevel.c:89
+msgid "Radius of softening for making bump of the shape."
+msgstr "形成该形状凹凸的柔化半径。"
+
+#: operations/common/bevel.c:92 operations/common-gpl3+/bump-map.c:56
+#: operations/common-gpl3+/emboss.c:40
+msgid "Elevation"
+msgstr "海拔"
+
+#: operations/common/bevel.c:93
+msgid "Elevation angle of the Bevel."
+msgstr "斜面的高度角。"
+
+#. The only issue  with this filter is that emboss depth= above 15 does nothing on chamfer bevel , but works great on bump bevel.
+#. so I made an extra node just for it that only updates emboss depth=, as a result depth and sharpness' are co-existing properties
+#.
+#. I am fully aware 'depth' and 'detail' are just words used to describe the same thing.
+#: operations/common/bevel.c:104 operations/common-gpl3+/bump-map.c:59
+#: operations/common-gpl3+/emboss.c:45
+#: operations/common-gpl3+/fractal-trace.c:60
+#: operations/common-gpl3+/texturize-canvas.c:44
+msgid "Depth"
+msgstr "深度"
+
+#: operations/common/bevel.c:105
+msgid "Emboss depth - Brings out depth and detail of the bump bevel."
+msgstr "凸起深度 - 显示凹凸斜面的深度和细节。"
+
+#: operations/common/bevel.c:109
+msgid "Light Angle"
+msgstr "光照角度"
+
+#: operations/common/bevel.c:110
+msgid "Direction of a light source illuminating and shading the bevel."
+msgstr "光源照明和着色斜面的方向。"
+
+#: operations/common/bevel.c:309
+msgid "Bevel"
+msgstr "斜面"
+
+#: operations/common/bevel.c:311
+msgid ""
+"Two bevel effects in one place, Chamfer - which simulates lighting of "
+"chamfered 3D-edges, and Bump - the second make a 3D inflation effect by an "
+"emboss covering a blur. Both bevels benefit from color filled alpha defined "
+"shapes."
+msgstr ""
+"同一位置的两个斜面效果：倒角 - 模拟倒角 3D 边缘的光照；凹凸 - 第二个通过覆盖"
+"一层模糊的凸起形成一种 3D 膨胀效果。两种斜面都得益于透明定义形状所填充的颜"
+"色。"
+
+#: operations/common/bevel.c:313
+msgid "Bevel..."
+msgstr "斜面…"
+
 #: operations/common/bilateral-filter.c:26
 #: operations/common/domain-transform.c:29 operations/common/dropshadow.c:46
-#: operations/common-cxx/focus-blur.c:45 operations/common-cxx/lens-blur.cc:25
+#: operations/common/inner-glow.c:69 operations/common-cxx/focus-blur.c:45
+#: operations/common-cxx/lens-blur.cc:25
 #: operations/common-gpl3+/gaussian-blur-selective.c:29
 #: operations/workshop/bilateral-filter-fast.c:43
-#: operations/workshop/inner-glow.c:69
 msgid "Blur radius"
 msgstr "模糊半径"
 
@@ -692,23 +838,6 @@ msgstr "柔和度"
 #: operations/common/bloom.c:31
 msgid "Glow-area edge softness"
 msgstr "辉光区域边缘柔和度"
-
-#: operations/common/bloom.c:35 operations/common/box-blur.c:25
-#: operations/common/c2g.c:28 operations/common/edge-neon.c:47
-#: operations/common/local-threshold.c:24 operations/common/median-blur.c:42
-#: operations/common/snn-mean.c:26 operations/common/stress.c:27
-#: operations/common/unsharp-mask.c:24 operations/common/vignette.c:40
-#: operations/common/wavelet-blur-1d.c:28 operations/common/wavelet-blur.c:27
-#: operations/common-cxx/focus-blur.c:85 operations/common-cxx/lens-blur.cc:24
-#: operations/common-cxx/variable-blur.c:30
-#: operations/common-gpl3+/shadows-highlights.c:40
-#: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:44
-#: operations/common-gpl3+/whirl-pinch.c:46
-#: operations/external/matting-levin.c:29 operations/workshop/boxblur-1d.c:27
-#: operations/workshop/boxblur.c:24 operations/workshop/bevel.c:83
-#: operations/workshop/external/spyrograph.c:63
-msgid "Radius"
-msgstr "半径"
 
 #: operations/common/bloom.c:36 operations/common-gpl3+/softglow.c:26
 msgid "Glow radius"
@@ -978,14 +1107,13 @@ msgstr "渲染棋盘图案"
 
 #: operations/common/color.c:24 operations/common/color.c:87
 #: operations/common/color-overlay.c:26 operations/common/dropshadow.c:67
-#: operations/common/grid.c:64 operations/common/long-shadow.c:83
-#: operations/common/rectangle.c:48 operations/common/vignette.c:36
-#: operations/common-gpl3+/color-to-alpha.c:29
+#: operations/common/grid.c:64 operations/common/inner-glow.c:91
+#: operations/common/long-shadow.c:83 operations/common/rectangle.c:48
+#: operations/common/vignette.c:36 operations/common-gpl3+/color-to-alpha.c:29
 #: operations/common-gpl3+/supernova.c:60
 #: operations/common-gpl3+/tile-paper.c:31
 #: operations/common-gpl3+/value-propagate.c:54 operations/external/text.c:37
 #: operations/external/vector-fill.c:26 operations/external/vector-stroke.c:27
-#: operations/workshop/inner-glow.c:91
 msgid "Color"
 msgstr "颜色"
 
@@ -1004,10 +1132,16 @@ msgstr "生成用指定颜色完全填充的缓冲区，使用 gegl:crop 以获�
 msgid "Grid size"
 msgstr "网格大小"
 
+#.
+#. property_double (imagehue, _("Hue rotation"),  0.0)
+#. description  (_("Hue adjustment"))
+#. value_range  (-180.0, 180.0)
+#. description (_("Hue rotation of the uploaded image file or whatever is on canvas"))
+#. ui_meta ("visible", "guichange {imageoutlinebevel}")
 #: operations/common/color-assimilation-grid.c:31
 #: operations/common/color-rotate.c:84 operations/common/fattal02.c:39
 #: operations/common/mantiuk06.c:33 operations/common/noise-hsv.c:34
-#: operations/common/saturation.c:404
+#: operations/common/saturation.c:404 operations/common/styles.c:388
 #: operations/external/lcms-from-profile.c:35
 #: operations/workshop/selective-hue-saturation.c:38
 msgid "Saturation"
@@ -1051,7 +1185,7 @@ msgid ""
 "lightness untouched."
 msgstr "拉伸色彩浓度以覆盖最大的可能范围，保持色相和亮度不变。"
 
-#: operations/common/color-overlay.c:27 operations/workshop/inner-glow.c:92
+#: operations/common/color-overlay.c:27 operations/common/inner-glow.c:92
 msgid "The color to paint over the input"
 msgstr "覆盖输入要绘制的颜色"
 
@@ -1765,27 +1899,30 @@ msgid ""
 msgstr ""
 "通过区域变换递归方法实现的边缘保留平滑滤镜。与双向滤镜相似，但计算更快。"
 
-#: operations/common/dropshadow.c:27 operations/common/median-blur.c:27
-#: operations/common/pixelize.c:28 operations/common/vignette.c:26
-#: operations/common-cxx/focus-blur.c:35 operations/workshop/inner-glow.c:39
+#: operations/common/dropshadow.c:27 operations/common/inner-glow.c:39
+#: operations/common/median-blur.c:27 operations/common/pixelize.c:28
+#: operations/common/styles.c:97 operations/common/vignette.c:26
+#: operations/common-cxx/focus-blur.c:35
 msgid "Square"
 msgstr "方形"
 
-#: operations/common/dropshadow.c:28 operations/common/median-blur.c:28
-#: operations/common/newsprint.c:26 operations/common/vignette.c:25
-#: operations/common-cxx/focus-blur.c:34 operations/workshop/inner-glow.c:40
+#: operations/common/dropshadow.c:28 operations/common/inner-glow.c:40
+#: operations/common/median-blur.c:28 operations/common/newsprint.c:26
+#: operations/common/styles.c:98 operations/common/vignette.c:25
+#: operations/common-cxx/focus-blur.c:34
 msgid "Circle"
 msgstr "圆形"
 
-#: operations/common/dropshadow.c:29 operations/common/median-blur.c:29
-#: operations/common/newsprint.c:27 operations/common/pixelize.c:26
+#: operations/common/dropshadow.c:29 operations/common/inner-glow.c:41
+#: operations/common/median-blur.c:29 operations/common/newsprint.c:27
+#: operations/common/pixelize.c:26 operations/common/styles.c:99
 #: operations/common/vignette.c:27 operations/common-cxx/focus-blur.c:36
-#: operations/workshop/inner-glow.c:41
 msgid "Diamond"
 msgstr "菱形"
 
-#: operations/common/dropshadow.c:32 operations/common/layer.c:36
-#: operations/common/rectangle.c:26 operations/common-gpl3+/plasma.c:40
+#: operations/common/dropshadow.c:32 operations/common/inner-glow.c:51
+#: operations/common/layer.c:36 operations/common/rectangle.c:26
+#: operations/common-gpl3+/plasma.c:40
 #: operations/common-gpl3+/polar-coordinates.c:52
 #: operations/common-gpl3+/spiral.c:35 operations/core/crop.c:25
 #: operations/transform/border-align.c:24 operations/transform/reflect.c:26
@@ -1793,16 +1930,17 @@ msgstr "菱形"
 #: operations/transform/scale-size-keepaspect.c:25
 #: operations/transform/shear.c:25 operations/transform/translate.c:25
 #: operations/workshop/external/spyrograph.c:51
-#: operations/workshop/inner-glow.c:51
 msgid "X"
 msgstr "X"
 
-#: operations/common/dropshadow.c:33 operations/workshop/inner-glow.c:52
+#: operations/common/dropshadow.c:33 operations/common/inner-glow.c:52
+#: operations/common/styles.c:146
 msgid "Horizontal shadow offset"
 msgstr "水平阴影偏移"
 
-#: operations/common/dropshadow.c:39 operations/common/layer.c:41
-#: operations/common/rectangle.c:31 operations/common-gpl3+/plasma.c:47
+#: operations/common/dropshadow.c:39 operations/common/inner-glow.c:59
+#: operations/common/layer.c:41 operations/common/rectangle.c:31
+#: operations/common-gpl3+/plasma.c:47
 #: operations/common-gpl3+/polar-coordinates.c:59
 #: operations/common-gpl3+/spiral.c:41 operations/core/crop.c:30
 #: operations/transform/border-align.c:30 operations/transform/reflect.c:30
@@ -1810,27 +1948,27 @@ msgstr "水平阴影偏移"
 #: operations/transform/scale-size-keepaspect.c:30
 #: operations/transform/shear.c:29 operations/transform/translate.c:31
 #: operations/workshop/external/spyrograph.c:57
-#: operations/workshop/inner-glow.c:59
 msgid "Y"
 msgstr "Y"
 
-#: operations/common/dropshadow.c:40 operations/workshop/inner-glow.c:60
+#: operations/common/dropshadow.c:40 operations/common/inner-glow.c:60
+#: operations/common/styles.c:155
 msgid "Vertical shadow offset"
 msgstr "竖直阴影偏移"
 
-#: operations/common/dropshadow.c:53 operations/workshop/inner-glow.c:45
+#: operations/common/dropshadow.c:53 operations/common/inner-glow.c:45
 msgid "Grow shape"
 msgstr "增长形状"
 
-#: operations/common/dropshadow.c:56 operations/workshop/inner-glow.c:48
+#: operations/common/dropshadow.c:56 operations/common/inner-glow.c:48
 msgid "The shape to expand or contract the shadow in"
 msgstr "扩张或收缩包含阴影的形状"
 
-#: operations/common/dropshadow.c:58 operations/workshop/inner-glow.c:77
+#: operations/common/dropshadow.c:58 operations/common/inner-glow.c:77
 msgid "Grow radius"
 msgstr "增长半径"
 
-#: operations/common/dropshadow.c:65 operations/workshop/inner-glow.c:84
+#: operations/common/dropshadow.c:65 operations/common/inner-glow.c:84
 msgid ""
 "The distance to expand the shadow before blurring; a negative value will "
 "contract the shadow instead"
@@ -1844,10 +1982,10 @@ msgstr "阴影的颜色（默认为“黑色”）"
 #. It does make sense to sometimes have opacities > 1 (see GEGL logo
 #. * for example)
 #.
-#: operations/common/dropshadow.c:74 operations/common/layer.c:33
-#: operations/common/opacity.c:25 operations/common/opacity.c:289
-#: operations/external/vector-fill.c:29 operations/external/vector-stroke.c:34
-#: operations/workshop/inner-glow.c:86
+#: operations/common/dropshadow.c:74 operations/common/inner-glow.c:86
+#: operations/common/layer.c:33 operations/common/opacity.c:25
+#: operations/common/opacity.c:289 operations/external/vector-fill.c:29
+#: operations/external/vector-stroke.c:34
 msgid "Opacity"
 msgstr "不透明度"
 
@@ -2209,6 +2347,7 @@ msgid "Chroma adjustment"
 msgstr "色度调整"
 
 #: operations/common/hue-chroma.c:33 operations/common/noise-cie-lch.c:29
+#: operations/common/styles.c:393
 #: operations/workshop/selective-hue-saturation.c:42
 msgid "Lightness"
 msgstr "亮度"
@@ -2323,6 +2462,35 @@ msgstr "图像渐变"
 #: operations/common/image-gradient.c:228
 msgid "Compute gradient magnitude and/or direction by central differences"
 msgstr "使用中心差分计算渐变量级和/或方向"
+
+#: operations/common/inner-glow.c:96
+msgid "Median fix for non-effected pixels on edges"
+msgstr "用于边缘上未受影响像素的中值修复"
+
+#: operations/common/inner-glow.c:98
+msgid ""
+"Median Blur covers uneffected pixels. Making this slider too high will make "
+"it outline-like. So only slide it as high as you need to cover thin shape "
+"corners."
+msgstr ""
+"中值模糊会覆盖未受影响的像素。将该滑块拉的太高会使其形成类似轮廓的效果。所以"
+"仅将其拉到您需要的程度来覆盖细小形状角落。"
+
+#: operations/common/inner-glow.c:182
+msgid "Inner Glow"
+msgstr "内发光"
+
+#: operations/common/inner-glow.c:184
+msgid ""
+"GEGL does an inner shadow glow effect; for more interesting use different "
+"blend mode than the default, Replace."
+msgstr ""
+"GEGL 生成内部阴影发光效果；要获得更多有趣效果可以试用不同的混合模式代替默认模"
+"式。"
+
+#: operations/common/inner-glow.c:186
+msgid "Inner Glow..."
+msgstr "内发光…"
 
 #: operations/common/introspect.c:27
 msgid "Node"
@@ -4257,6 +4425,500 @@ msgstr ""
 "很亮的图像）的图像。该版本与自动拉伸对比度不同在于其工作在 HSV 空间且保留色"
 "相。"
 
+#: operations/common/styles.c:30
+msgid "Color, Outline and Shadow"
+msgstr "颜色、轮廓和阴影"
+
+#: operations/common/styles.c:31
+msgid "Bevel and Inner Glow"
+msgstr "倒角和内发光"
+
+#: operations/common/styles.c:32
+msgid "Image upload and Outline Bevel"
+msgstr "图像上传和轮廓倒角"
+
+#. List of all GUI options
+#. GUI Change list in GUI
+#: operations/common/styles.c:39
+msgid "Part of filter to be displayed"
+msgstr "显示的部分滤镜"
+
+#: operations/common/styles.c:42
+msgid "Display a different part of the GUI"
+msgstr "显示用户界面的不同部分"
+
+#. Color Overlays GUI options begin here
+#: operations/common/styles.c:46
+msgid "Color overlay"
+msgstr "色彩叠加"
+
+#: operations/common/styles.c:48
+msgid "Color overlay setting"
+msgstr "色彩叠加设置"
+
+#: operations/common/styles.c:50
+msgid "Color policy"
+msgstr "色彩策略"
+
+#: operations/common/styles.c:51
+msgid "Change the blend mode of the color overlay"
+msgstr "更改色彩叠加的混合模式"
+
+#: operations/common/styles.c:58
+msgid "No Color"
+msgstr "无颜色"
+
+#: operations/common/styles.c:62
+msgid "Solid Color"
+msgstr "纯色"
+
+#. Outline's normal GUI options begin here
+#: operations/common/styles.c:68
+msgid "Enable Outline"
+msgstr "启用轮廓"
+
+#: operations/common/styles.c:69
+msgid "Disable or enable the outline"
+msgstr "禁用或启用轮廓"
+
+#: operations/common/styles.c:72
+msgid "Outline opacity"
+msgstr "轮廓不透明度"
+
+#: operations/common/styles.c:75
+msgid "Opacity of the outline"
+msgstr "轮廓的不透明度"
+
+#: operations/common/styles.c:79
+msgid "Outline X"
+msgstr "轮廓 X"
+
+#: operations/common/styles.c:80
+msgid "Horizontal outline offset"
+msgstr "水平轮廓偏移"
+
+#: operations/common/styles.c:87
+msgid "Outline Y"
+msgstr "轮廓 Y"
+
+#: operations/common/styles.c:88
+msgid "Vertical outline offset"
+msgstr "竖直轮廓偏移"
+
+#: operations/common/styles.c:102
+msgid "Outline grow shape"
+msgstr "轮廓增长形状"
+
+#: operations/common/styles.c:105
+msgid "The shape to expand or contract the outline in"
+msgstr "轮廓扩张或收缩的形状"
+
+#: operations/common/styles.c:109
+msgid "Outline blur radius"
+msgstr "轮廓模糊半径"
+
+#: operations/common/styles.c:115
+msgid "A mild blur for the outline"
+msgstr "用于轮廓的轻度模糊"
+
+#: operations/common/styles.c:119
+msgid "Outline grow radius"
+msgstr "轮廓增长半径"
+
+#: operations/common/styles.c:126
+msgid "The distance to expand the outline"
+msgstr "轮廓扩张的距离"
+
+#. Shadow's GUI options begin here
+#: operations/common/styles.c:131
+msgid "Outline’s color"
+msgstr "轮廓颜色"
+
+#: operations/common/styles.c:132
+msgid "Color of the outline (defaults to 'black') "
+msgstr "轮廓的颜色（默认为“black”）"
+
+#: operations/common/styles.c:137
+msgid "Shadow/Glow opacity"
+msgstr "阴影/辉光不透明度"
+
+#: operations/common/styles.c:141
+msgid "Shadow opacity which will also enable or disable the shadow glow effect"
+msgstr "将同样启用或禁用阴影辉光效果的阴影不透明度"
+
+#: operations/common/styles.c:145
+msgid "Shadow/Glow X"
+msgstr "阴影/辉光 X"
+
+#: operations/common/styles.c:151
+msgid "Horizontal axis of the shadow glow"
+msgstr "阴影辉光的水平坐标轴"
+
+#: operations/common/styles.c:154
+msgid "Shadow/Glow Y"
+msgstr "阴影/辉光 Y"
+
+#: operations/common/styles.c:160
+msgid "Vertical axis of the shadow glow"
+msgstr "阴影辉光的竖直坐标轴"
+
+#: operations/common/styles.c:163
+msgid "Shadow/Glow’s color"
+msgstr "阴影/辉光颜色"
+
+#. TRANSLATORS: the string 'black' should not be translated
+#: operations/common/styles.c:165
+msgid "The shadow’s color (defaults to 'black')"
+msgstr "阴影的颜色（默认为“black”）"
+
+#: operations/common/styles.c:168
+msgid "Shadow/Glow grow radius"
+msgstr "阴影/辉光增长半径"
+
+#: operations/common/styles.c:175
+msgid "The distance to expand the shadow before blurring."
+msgstr "阴影在模糊之前扩张的距离。"
+
+#: operations/common/styles.c:178
+msgid "Shadow/Glow blur radius"
+msgstr "阴影/辉光模糊半径"
+
+#: operations/common/styles.c:184
+msgid "The shadow’s blur range"
+msgstr "阴影的模糊范围"
+
+#. Bevel's GUI options begin here
+#. This is the Bevel's ENUM List listed in the GUI
+#. This is the ENUM list for bevel's emboss blend modes
+#: operations/common/styles.c:192
+msgid "Enable Bevel"
+msgstr "启用倒角"
+
+#: operations/common/styles.c:193
+msgid "Whether to add a bevel effect"
+msgstr "是否添加斜面效果"
+
+#: operations/common/styles.c:210
+msgid "Bevel blend mode"
+msgstr "斜面混合模式"
+
+#: operations/common/styles.c:211
+msgid "Blend mode of the bevel"
+msgstr "倒角斜面的混合模式"
+
+#: operations/common/styles.c:219
+msgid "Chamfer Bevel"
+msgstr "斜切斜面"
+
+#: operations/common/styles.c:221
+msgid "Bump Bevel"
+msgstr "凹凸斜面"
+
+#: operations/common/styles.c:224
+msgid "Select Bevel"
+msgstr "选择斜面"
+
+#: operations/common/styles.c:227
+msgid "Type of bevel "
+msgstr "斜面类型"
+
+#: operations/common/styles.c:233
+msgid "Bevel depth"
+msgstr "斜面深度"
+
+#: operations/common/styles.c:234
+msgid "Emboss depth for the bevel"
+msgstr "倒角斜面的浮雕深度"
+
+#: operations/common/styles.c:240
+msgid "Bevel elevation"
+msgstr "斜面海拔"
+
+#: operations/common/styles.c:241
+msgid "Emboss elevation of the bevel"
+msgstr "倒角斜面的浮雕海拔高度"
+
+#: operations/common/styles.c:248
+msgid "Bevel azimuth"
+msgstr "斜面方位角"
+
+#: operations/common/styles.c:249
+msgid "Emboss azimuth of the bevel"
+msgstr "倒角斜面的浮雕方位角"
+
+#: operations/common/styles.c:256
+msgid "Bevel radius (bump only)"
+msgstr "斜面半径（仅凹凸可用）"
+
+#: operations/common/styles.c:260
+msgid ""
+"Internal gaussian blur to inflate the bump bevel. This option does not work "
+"on chamfer"
+msgstr "使凹凸斜面膨胀的内部高斯模糊。该选项对斜切斜面无效"
+
+#: operations/common/styles.c:266
+msgid "Levels low output lighting for Bevel"
+msgstr "为斜面平整低输出光照"
+
+#: operations/common/styles.c:267
+msgid "Levels low output as a light adjustment for the bevel"
+msgstr "将低输出作为斜面的光照调整进行平整"
+
+#: operations/common/styles.c:275
+msgid "Levels high output lighting for Bevel"
+msgstr "为斜面平整高输出光照"
+
+#: operations/common/styles.c:276
+msgid "Levels high output as a light adjustment for the bevel"
+msgstr "将高输出作为斜面的光照调整进行平整"
+
+#: operations/common/styles.c:284
+msgid "Dark Bevel/ignore image mode"
+msgstr "深色斜面/忽略图像模式"
+
+#: operations/common/styles.c:285
+msgid ""
+"This instructs the bevel to ignore image details if there is an image file "
+"overlay below it. It also allows bevel to work better when the user selects "
+"darker colors. The effect is noticeable on bump bevel but barely effects "
+"chamfer bevel"
+msgstr ""
+"如果有图像文件叠加在斜面下方该选项将使斜面忽略图像细节。当用户选择较深颜色时"
+"它也可让倒角获得更好效果。这个效果在凹凸斜面上较为明显但在斜切斜面上几乎没有"
+"区别"
+
+#. This operation is extremely important for bevels with image file overlays
+#. Inner Glow GUI options begin here
+#: operations/common/styles.c:295
+msgid "Enable Inner Glow"
+msgstr "启用内发光"
+
+#: operations/common/styles.c:296
+msgid "Whether to add the inner glow effect"
+msgstr "是否添加内发光效果"
+
+#: operations/common/styles.c:305
+msgid "Normal"
+msgstr "标准"
+
+#: operations/common/styles.c:307
+msgid "Overlay"
+msgstr "叠加"
+
+#: operations/common/styles.c:309
+msgid "Screen"
+msgstr "滤色"
+
+#: operations/common/styles.c:315
+msgid "Plus"
+msgstr "相加"
+
+#: operations/common/styles.c:318
+msgid "Blend mode of Inner Glow"
+msgstr "内发光的混合模式"
+
+#: operations/common/styles.c:324
+msgid "Inner Glow's blur radius"
+msgstr "内发光的模糊半径"
+
+#: operations/common/styles.c:330
+msgid "Blur control of the inner glow"
+msgstr "对内发光的模糊控制"
+
+#: operations/common/styles.c:334
+msgid "Inner Glow's grow radius"
+msgstr "内发光的增长半径"
+
+#: operations/common/styles.c:341
+msgid "The distance to expand the inner glow before blurring"
+msgstr "在模糊前扩展内发光的距离"
+
+#: operations/common/styles.c:345
+msgid "Inner Glow's opacity"
+msgstr "内发光的不透明度"
+
+#: operations/common/styles.c:348
+msgid "Opacity of the inner glow"
+msgstr "内发光的不透明度"
+
+#: operations/common/styles.c:352
+msgid "Inner Glow's color"
+msgstr "内发光的颜色"
+
+#: operations/common/styles.c:353
+msgid "The color of the inner glow"
+msgstr "内发光的颜色"
+
+#: operations/common/styles.c:357
+msgid "Inner Glow's unmodified pixel fix"
+msgstr "内发光的未更改像素修复"
+
+#: operations/common/styles.c:359
+msgid "Cover pixels that inner glow might miss"
+msgstr "覆盖内发光可能会丢失的像素"
+
+#. Without this Inner Glow would miss many pixels around alpha defined shapes edges'
+#. Image file overlay GUI options begin here
+#: operations/common/styles.c:366
+msgid "Enable image upload"
+msgstr "启用图像上传"
+
+#: operations/common/styles.c:367 operations/common/styles.c:466
+msgid "Whether to enable or disable the image file upload."
+msgstr "是否启用或禁用图像文件的上传。"
+
+#: operations/common/styles.c:370
+msgid "Image file overlay"
+msgstr "图像文件叠加"
+
+#: operations/common/styles.c:371
+msgid ""
+"Upload an image file from your computer to be in the fill area. Allows (png, "
+"jpg, raw, svg, bmp, tif, ...)"
+msgstr "从您的计算机将图像文件上传至填充区域（png、jpg、raw、svg、bmp、tif…）"
+
+#: operations/common/styles.c:375
+msgid "Opacity of image file overlay"
+msgstr "图像文件叠加的不透明度"
+
+#: operations/common/styles.c:378
+msgid "Opacity of the image file overlay that was uploaded. "
+msgstr "上传的图像文件叠加的不透明度。"
+
+#: operations/common/styles.c:389
+msgid ""
+"Saturation adjustment of the uploaded image file or whatever is on canvas"
+msgstr "对上传的图像文件或任何在画布上对象的饱和度调整"
+
+#: operations/common/styles.c:394
+msgid ""
+"Lightness adjustment of the uploaded image file or whatever is on canvas"
+msgstr "对上传的图像文件或任何在画布上对象的亮度调整"
+
+#. Outline special options in GUI begin here
+#: operations/common/styles.c:399
+msgid "Enable advanced options on Outline (requires outline)"
+msgstr "启用轮廓高级选项（需要轮廓）"
+
+#: operations/common/styles.c:400
+msgid "Turn on advanced outline abilities"
+msgstr "开启高级轮廓能力"
+
+#: operations/common/styles.c:405
+msgid "Enable Outline Bevel (requires advanced options)"
+msgstr "启用轮廓倒角（需要高级选项）"
+
+#: operations/common/styles.c:406
+msgid "Turn on outlines ability to bevel"
+msgstr "开启轮廓的倒角能力"
+
+#: operations/common/styles.c:427
+msgid "Outline Bevel blend mode"
+msgstr "轮廓斜面混合模式"
+
+#: operations/common/styles.c:428
+msgid "Blend mode of the outline bevel"
+msgstr "轮廓斜面的混合模式"
+
+#: operations/common/styles.c:435
+msgid "Outline Bevel depth"
+msgstr "轮廓斜面深度"
+
+#: operations/common/styles.c:436
+msgid "Emboss depth for the outline bevel"
+msgstr "轮廓斜面的浮雕深度"
+
+#: operations/common/styles.c:441
+msgid "Outline Bevel elevation"
+msgstr "轮廓斜面海拔"
+
+#: operations/common/styles.c:442
+msgid "Emboss elevation for the outline bevel"
+msgstr "轮廓斜面的浮雕海拔高度"
+
+#: operations/common/styles.c:448
+msgid "Outline Bevel azimuth"
+msgstr "轮廓斜面方位角"
+
+#: operations/common/styles.c:449
+msgid "Emboss azimuth for the outline bevel"
+msgstr "轮廓斜面的浮雕方位角"
+
+#: operations/common/styles.c:456
+msgid "Outline Bevel radius"
+msgstr "轮廓斜面半径"
+
+#: operations/common/styles.c:457
+msgid "Internal gaussian blur to inflate the outline bevel"
+msgstr "使轮廓斜面膨胀的内部高斯模糊"
+
+#: operations/common/styles.c:465
+msgid "Enable image upload on Outline (requires advanced options)"
+msgstr "启用轮廓上的图像上传（需要高级选项）"
+
+#: operations/common/styles.c:470
+msgid "Outline image file overlay"
+msgstr "轮廓图像文件叠加"
+
+#: operations/common/styles.c:471
+msgid ""
+"Upload an image file from your computer to be in the outline area. Allows "
+"(png, jpg, raw, svg, bmp, tif, ...)"
+msgstr "从您的计算机将图像文件上传至轮廓区域（png、jpg、raw、svg、bmp、tif…）"
+
+#: operations/common/styles.c:476
+msgid "Outline image opacity"
+msgstr "轮廓图像不透明度"
+
+#: operations/common/styles.c:477
+msgid "Outline image opacity adjustment"
+msgstr "轮廓图像不透明度调整"
+
+#: operations/common/styles.c:482
+msgid "Levels low output lighting for Outline Bevel"
+msgstr "为轮廓斜面平整低输出光照"
+
+#: operations/common/styles.c:483
+msgid "Levels low output as a light adjustment for the outline bevel"
+msgstr "将低输出作为轮廓斜面的光照调整进行平整"
+
+#: operations/common/styles.c:490
+msgid "Levels high output lighting for Outline Bevel"
+msgstr "为轮廓斜面平整高输出光照"
+
+#: operations/common/styles.c:491
+msgid "Levels high output as a light adjustment for the outline bevel"
+msgstr "将高输出作为轮廓斜面的光照调整进行平整"
+
+#: operations/common/styles.c:499
+msgid "Outline Dark Bevel/ignore image mode"
+msgstr "轮廓深色斜面/忽略图像模式"
+
+#: operations/common/styles.c:500
+msgid ""
+"This instructs the outline bevel to ignore image details if there is an "
+"image file overlay below it. It also allows outline bevel to work better "
+"when the user selects darker colors."
+msgstr ""
+"如果有图像文件叠加在轮廓斜面下方该选项将使斜面忽略图像细节。当用户选择较深颜"
+"色时它也可让轮廓倒角获得更好效果。"
+
+#: operations/common/styles.c:1243
+msgid "GEGL Styles"
+msgstr "GEGL 样式"
+
+#: operations/common/styles.c:1246
+msgid ""
+"An engine to style text and add popular effects to alpha channel images. "
+"Effects include outline, bevel, shadow, and inner glow all in one place."
+msgstr ""
+"使文字风格化并对透明通道图像添加流行效果的引擎。包括轮廓、倒角、阴影和内发光"
+"等效果都在一个地方。"
+
+#: operations/common/styles.c:1249
+msgid "Text Styling..."
+msgstr "文本样式…"
+
 #: operations/common/svg-huerotate.c:27 operations/common/svg-matrix.c:27
 #: operations/common/svg-saturate.c:25
 msgid "Values"
@@ -4304,7 +4966,7 @@ msgid "Lowest value to be included."
 msgstr "要包含的最低值。"
 
 #: operations/common/threshold.c:33
-msgid "Highest value to be include as white."
+msgid "Highest value to be included as white."
 msgstr "要作为白色包含的最高值。"
 
 #: operations/common/threshold.c:169
@@ -4997,22 +5659,6 @@ msgstr "平铺凹凸贴图"
 #: operations/common-gpl3+/bump-map.c:51 operations/common-gpl3+/emboss.c:34
 msgid "Azimuth"
 msgstr "方位"
-
-#: operations/common-gpl3+/bump-map.c:56 operations/common-gpl3+/emboss.c:40
-#: operations/workshop/bevel.c:91
-msgid "Elevation"
-msgstr "海拔"
-
-#. The only issue  with this filter is that emboss depth= above 15 does nothing on chamfer bevel , but works great on bump bevel.
-#. so I made an extra node just for it that only updates emboss depth=, as a result depth and sharpness' are co-existing properties
-#.
-#. I am fully aware 'depth' and 'detail' are just words used to describe the same thing.
-#: operations/common-gpl3+/bump-map.c:59 operations/common-gpl3+/emboss.c:45
-#: operations/common-gpl3+/fractal-trace.c:60
-#: operations/common-gpl3+/texturize-canvas.c:44
-#: operations/workshop/bevel.c:103
-msgid "Depth"
-msgstr "深度"
 
 #: operations/common-gpl3+/bump-map.c:74
 msgid "Waterlevel"
@@ -6527,10 +7173,6 @@ msgstr "如果设置，图案将有更多扭曲"
 msgid "Bilinear"
 msgstr "双线性"
 
-#: operations/common-gpl3+/sinus.c:67 operations/workshop/bevel.c:72
-msgid "Blend Mode"
-msgstr "混合模式"
-
 #: operations/common-gpl3+/sinus.c:72
 msgid "Power used to stretch the blend"
 msgstr "用来拉伸混合的力量"
@@ -7832,13 +8474,11 @@ msgstr "使用的填充不透明度"
 
 #: operations/external/path.c:54 operations/external/vector-fill.c:40
 #: operations/external/vector-stroke.c:41
-#: operations/workshop/external/ctx-script.c:26
 msgid "Vector"
 msgstr "矢量"
 
 #: operations/external/path.c:55 operations/external/vector-fill.c:41
 #: operations/external/vector-stroke.c:42
-#: operations/workshop/external/ctx-script.c:27
 msgid "A GeglVector representing the path of the stroke"
 msgstr "一个表示笔廓路径的 GeglVector"
 
@@ -8190,8 +8830,8 @@ msgid "use floating point"
 msgstr "使用浮点"
 
 #: operations/external/tiff-save.c:31
-msgid "floating point -1 means auto, 0 means integer 1 meant float."
-msgstr "浮点 -1 代表自动，0 代表整型 1 代表浮点。"
+msgid "floating point -1 means auto, 0 means integer, 1 means float."
+msgstr "浮点 -1 代表自动，0 代表整型，1 代表浮点。"
 
 #: operations/external/tiff-save.c:825
 msgid "TIFF File Saver"
@@ -8851,104 +9491,6 @@ msgstr "模糊结果取自对行相邻区域颜色的平均。"
 msgid "BoxBlur"
 msgstr "盒子模糊"
 
-#: operations/workshop/bevel.c:47
-msgid "Chamfer"
-msgstr "倒角"
-
-#: operations/workshop/bevel.c:49
-msgid "Bump"
-msgstr "凹凸"
-
-#: operations/workshop/bevel.c:52
-msgid "Bevel Type"
-msgstr "斜面类型"
-
-#: operations/workshop/bevel.c:55
-msgid "The family of bevel to use"
-msgstr "要使用的斜面类型"
-
-#: operations/workshop/bevel.c:59
-msgid "None (for use with GIMPs blending options)"
-msgstr "无（用于 GIMP 混合选项）"
-
-#: operations/workshop/bevel.c:61
-msgid "Hard Light"
-msgstr "硬光"
-
-#: operations/workshop/bevel.c:63
-msgid "Multiply"
-msgstr "正片叠底"
-
-#: operations/workshop/bevel.c:65
-msgid "Color Dodge"
-msgstr "颜色减淡"
-
-#: operations/workshop/bevel.c:67
-msgid "Darken"
-msgstr "变暗"
-
-#: operations/workshop/bevel.c:69
-msgid "Lighten"
-msgstr "变亮"
-
-#: operations/workshop/bevel.c:75
-msgid ""
-"What blending mode the bevel's emboss will be. Light Map is a special blend "
-"mode that allows users to extract the filters output as a light map which "
-"should be put on a layer above or be used with Gimp's blending options."
-msgstr ""
-"倒角凸起将会成为的混合模式。光照映射是一种允许用户提取滤镜输出作为光照映射放"
-"置在图层上方或与 GIMP 混合选项配合使用的特殊混合模式。"
-
-#: operations/workshop/bevel.c:78
-msgid "Distance Map Setting"
-msgstr "距离映射设置"
-
-#: operations/workshop/bevel.c:80
-msgid ""
-"Distance Map is unique to chamfer bevel and has three settings that alter "
-"the structure of the chamfer."
-msgstr "距离映射对于倒角斜面是唯一的且具有三种改变倒角结构的设置。"
-
-#: operations/workshop/bevel.c:88
-msgid "Radius of softening for making bump of the shape."
-msgstr "形成该形状凹凸的柔化半径。"
-
-#: operations/workshop/bevel.c:92
-msgid "Elevation angle of the Bevel."
-msgstr "斜面的高度角。"
-
-#: operations/workshop/bevel.c:104
-msgid "Emboss depth - Brings out depth and detail of the bump bevel."
-msgstr "凸起深度 - 显示凹凸斜面的深度和细节。"
-
-#: operations/workshop/bevel.c:108
-msgid "Light Angle"
-msgstr "光照角度"
-
-#: operations/workshop/bevel.c:109
-msgid "Direction of a light source illuminating and shading the bevel."
-msgstr "光源照明和着色斜面的方向。"
-
-#: operations/workshop/bevel.c:299
-msgid "Bevel"
-msgstr "斜面"
-
-#: operations/workshop/bevel.c:301
-msgid ""
-"Two bevel effects in one place, Chamfer - which simulates lighting of "
-"chamfered 3D-edges, and Bump - the second make a 3D inflation effect by an "
-"emboss covering a blur. Both bevels benefit from color filled alpha defined "
-"shapes."
-msgstr ""
-"同一位置的两个斜面效果：倒角 - 模拟倒角 3D 边缘的光照；凹凸 - 第二个通过覆盖"
-"一层模糊的凸起形成一种 3D 膨胀效果。两种斜面都得益于透明定义形状所填充的颜"
-"色。"
-
-#: operations/workshop/bevel.c:303
-msgid "Bevel..."
-msgstr "斜面…"
-
 #: operations/workshop/connected-components.c:25
 msgid "Separator"
 msgstr "分离器"
@@ -8981,7 +9523,7 @@ msgstr "标准化输出到范围 [基数,基数+步长]"
 msgid "Connected Components"
 msgstr "连接的分量"
 
-#: operations/workshop/connected-components.c:290
+#: operations/workshop/connected-components.c:292
 msgid ""
 "Fills each connected region of the input, separated from the rest of the "
 "input by a given color, with a unique color."
@@ -9027,14 +9569,6 @@ msgstr "同样"
 msgid "Test op to do a 1:1 map of input to output, while sampling"
 msgstr "采样时做一个输入到输出的 1:1 映射来测试操作"
 
-#: operations/workshop/external/ctx-script.c:126
-msgid "Ctx script"
-msgstr "Ctx 脚本"
-
-#: operations/workshop/external/ctx-script.c:128
-msgid "Renders a ctx vector graphics"
-msgstr "渲染 ctx 矢量图形"
-
 #: operations/workshop/external/gluas.c:29
 msgid "Script"
 msgstr "脚本"
@@ -9074,10 +9608,6 @@ msgid ""
 msgstr ""
 "像素级别的滤镜/合成 lua 脚本原型。参阅 http://pippin.gimp.org/image-"
 "processing/ 获取详情。"
-
-#: operations/workshop/external/paint-select.cc:30
-msgid "Add"
-msgstr "添加"
 
 #: operations/workshop/external/paint-select.cc:31
 msgid "Subtract"
@@ -9408,7 +9938,7 @@ msgstr "图像边缘是否也要播种"
 msgid "Voronoi Diagram"
 msgstr "沃罗诺伊图"
 
-#: operations/workshop/external/voronoi-diagram.cc:531
+#: operations/workshop/external/voronoi-diagram.cc:533
 msgid "Paints each non-seed pixel with the color of the nearest seed pixel."
 msgstr "使用最近种子像素的颜色绘制每个非种子像素。"
 
@@ -9487,35 +10017,6 @@ msgstr "渐变映射"
 #: operations/workshop/gradient-map.c:245
 msgid "Applies a color gradient."
 msgstr "应用色彩渐变。"
-
-#: operations/workshop/inner-glow.c:96
-msgid "Median fix for non-effected pixels on edges"
-msgstr "用于边缘上未受影响像素的中值修复"
-
-#: operations/workshop/inner-glow.c:98
-msgid ""
-"Median Blur covers uneffected pixels. Making this slider too high will make "
-"it outline-like. So only slide it has high as you need to cover thin shape "
-"corners.'"
-msgstr ""
-"中值模糊会覆盖未受影响的像素。将该滑块拉的太高会使其形成类似轮廓的效果。所以"
-"仅将其拉到您需要的程度来覆盖细小形状角落。"
-
-#: operations/workshop/inner-glow.c:182
-msgid "Inner Glow"
-msgstr "内发光"
-
-#: operations/workshop/inner-glow.c:184
-msgid ""
-"GEGL does an inner shadow glow effect; for more interesting use different "
-"blend mode than the default, Replace."
-msgstr ""
-"GEGL 生成内部阴影发光效果；要获得更多有趣效果可以试用不同的混合模式代替默认模"
-"式。"
-
-#: operations/workshop/inner-glow.c:186
-msgid "Inner Glow..."
-msgstr "内发光…"
 
 #: operations/workshop/integral-image.c:25
 msgid "squared integral"
@@ -9614,6 +10115,12 @@ msgid ""
 "Shuffles pixels, and quantization with neighbors to optimize dither, by "
 "shuffling neighboring pixels."
 msgstr "混合像素，通过混合邻近像素，并用邻近像素量化来优化递色。"
+
+#~ msgid "Ctx script"
+#~ msgstr "Ctx 脚本"
+
+#~ msgid "Renders a ctx vector graphics"
+#~ msgstr "渲染 ctx 矢量图形"
 
 #~ msgid "Soft Light"
 #~ msgstr "柔光"
