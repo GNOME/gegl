@@ -210,6 +210,14 @@ endif
 #  lflags_common += '-Wl,--pdb='
 #endif
 
+if os_win32 and cc.get_id() == 'clang'
+  # Optimize DWARF symbols to Dr. Mingw
+  # https://github.com/jrfonseca/drmingw/issues/42
+  cflags_common += '-gdwarf-aranges'
+  # Workaround to get colored output
+  # https://github.com/msys2/MINGW-packages/issues/2988
+  cflags_common += '-fansi-escape-codes'
+endif
 
 cflags_common += cc.get_supported_arguments(['-ftree-vectorize'])
 
