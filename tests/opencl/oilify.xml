@@ -1,6 +1,13 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <gegl>
   <node operation='gegl:oilify'>
+  <params>
+    <param name='mask_radius'>4</param>
+    <param name='exponent'>8</param>
+    <param name='intensities'>128</param>
+    <!-- use_inten parameter switches between the two kernels -->
+    <param name='use_inten'>TRUE</param>
+  </params>
   </node>
   <node operation='gegl:load'>
     <params>

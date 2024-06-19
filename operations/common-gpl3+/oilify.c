@@ -336,6 +336,7 @@ static GeglClRunData *cl_data = NULL;
 static gboolean
 cl_oilify (cl_mem               in_tex,
            cl_mem               out_tex,
+           cl_mem               inten_tex,
            size_t               global_worksize,
            const GeglRectangle *roi,
            gint                 mask_radius,
@@ -345,7 +346,7 @@ cl_oilify (cl_mem               in_tex,
 {
 
   const size_t gbl_size[2] = {roi->width, roi->height};
-  cl_int radius      = mask_radius;
+  cl_int radius      = ceil (mask_radius);
   cl_int intensities = number_of_intensities;
   cl_float exp       = (gfloat) exponent;
   cl_int cl_err      = 0;
@@ -371,6 +372,12 @@ cl_oilify (cl_mem               in_tex,
   cl_err = gegl_clSetKernelArg (cl_data->kernel[use_inten], arg++,
                                 sizeof(cl_mem), (void *) &out_tex);
   CL_CHECK;
+  if (use_inten)
+  {
+    cl_err = gegl_clSetKernelArg (cl_data->kernel[use_inten], arg++,
+                                  sizeof (cl_mem), (void *) &inten_tex);
+    CL_CHECK;
+  }
   cl_err = gegl_clSetKernelArg (cl_data->kernel[use_inten], arg++,
                                 sizeof(cl_int), (void *) &radius);
   CL_CHECK;
@@ -397,11 +404,13 @@ static gboolean
 cl_process (GeglOperation       *operation,
             GeglBuffer          *input,
             GeglBuffer          *output,
+            const Babl          *inten_format,
             const GeglRectangle *result)
 {
   const Babl *in_format  = gegl_operation_get_format (operation, "input");
   const Babl *out_format = gegl_operation_get_format (operation, "output");
-  gint err;
+  gint  inten_buf        = 0;
+  gint  err;
 
   GeglProperties *o = GEGL_PROPERTIES (operation);
 
@@ -421,6 +430,20 @@ cl_process (GeglOperation       *operation,
                                              o->mask_radius,
                                              GEGL_ABYSS_CLAMP);
 
+  if (o->use_inten)
+  {
+    inten_buf = gegl_buffer_cl_iterator_add_2 (i,
+                                               input,
+                                               result,
+                                               inten_format,
+                                               GEGL_CL_BUFFER_READ,
+                                               o->mask_radius,
+                                               o->mask_radius,
+                                               o->mask_radius,
+                                               o->mask_radius,
+                                               GEGL_ABYSS_CLAMP);
+  }
+
   while (gegl_buffer_cl_iterator_next (i, &err))
     {
       if (err)
@@ -428,6 +451,8 @@ cl_process (GeglOperation       *operation,
 
       err = cl_oilify (i->tex[read],
                        i->tex[0],
+/* inten_buf sets to output buffer if use_inten is set to FALSE and won't be used */
+                       i->tex[inten_buf],
                        i->size[0],
                        &i->roi[0],
                        o->mask_radius,
@@ -474,7 +499,7 @@ process (GeglOperation       *operation,
   /* the opencl implementation doesn't (yet) support the parameter buffers */
 
   if (aux == NULL && aux2 == NULL && gegl_operation_use_opencl (operation))
-    if (cl_process (operation, input, output, result))
+    if (cl_process (operation, input, output, y_format, result))
       return TRUE;
 
   src_rect         = *result;

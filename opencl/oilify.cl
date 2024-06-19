@@ -53,7 +53,11 @@ kernel void kernel_oilify(global float4 *in,
   for (i = 0; i < intensities; i++)
   {
     ratio = hist[i] / hist_max;
-    weight = pow(ratio, (float4)exponent);
+    weight = 1.0f;
+
+    for (j = 0; j < exponent; j++)
+      weight *= ratio;
+
     sum += weight * (float4)i;
     div += weight;
   }
@@ -62,6 +66,7 @@ kernel void kernel_oilify(global float4 *in,
 
 kernel void kernel_oilify_inten(global float4 *in,
                              global float4 *out,
+                             global float  *inten_buf,
                              const int mask_radius,
                              const int intensities,
                              const float exponent)
@@ -77,6 +82,8 @@ kernel void kernel_oilify_inten(global float4 *in,
   int i, j, intensity;
   int radius_sq = mask_radius * mask_radius;
   float4 temp_pixel;
+  float  tmp_px_inten;
+
   for (i = 0; i < intensities; i++)
   {
     hist_inten[i] = 0;
@@ -93,10 +100,8 @@ kernel void kernel_oilify_inten(global float4 *in,
             temp_pixel.y = clamp(temp_pixel.y, 0.f, 1.f);
             temp_pixel.z = clamp(temp_pixel.z, 0.f, 1.f);
             temp_pixel.w = clamp(temp_pixel.w, 0.f, 1.f);
-            /*Calculate intensity on the fly, GPU does it fast*/
-            intensity = (int)((0.299 * temp_pixel.x
-                      +0.587 * temp_pixel.y
-                      +0.114 * temp_pixel.z) * (float)(intensities-1));
+            tmp_px_inten = inten_buf[x + i + (y + j) * src_width];
+            intensity = tmp_px_inten * (float)(intensities-1);
             hist_inten[intensity] += 1;
             cumulative_rgb[intensity] += temp_pixel;
           }
@@ -118,7 +123,11 @@ kernel void kernel_oilify_inten(global float4 *in,
     if (hist_inten[i] > 0)
     {
       ratio = (float)(hist_inten[i]) / (float)(inten_max);
-      weight = pow(ratio, exponent);
+      weight = 1.0f;
+
+      for (j = 0; j < exponent; j++)
+        weight *= ratio;
+
       mult_inten = weight / (float)(hist_inten[i]);
 
       div += weight;
