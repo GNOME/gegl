@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<gegl>
+  <node operation='gegl:focus-blur'>
+    <params>
+      <!-- [gaussian, lens]-->
+      <param name='blur_type'>gaussian</param>
+      <param name='blur_radius'>25.0</param>
+      <!-- [circle, square, diamond, horizontal, vertical]-->
+      <param name='shape'>circle</param>
+      <param name='x'>0.5</param>
+      <param name='y'>0.5</param>
+      <param name='radius'>0.75</param>
+      <param name='focus'>0.25</param>
+      <param name='midpoint'>0.5</param>
+      <param name='aspect_ratio'>0.0</param>
+      <param name='rotation'>0.0</param>
+    </params>
+  </node>
+  <node operation='gegl:load'>
+    <params>
+      <param name='path'>../compositions/data/car-stack.png</param>
+    </params>
+  </node>
+</gegl>
