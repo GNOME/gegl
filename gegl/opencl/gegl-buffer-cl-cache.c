@@ -136,15 +136,28 @@ _gegl_buffer_cl_cache_flush2 (GeglTileHandlerCache *cache,
   gpointer data;
   gboolean need_cl = FALSE;
 
+  gint cnt = 0;
+
+  g_mutex_lock (&cache_mutex);
+
   for (elem=cache_entries; elem; elem=elem->next)
     {
       CacheEntry *entry = elem->data;
 
-      if (entry->valid && entry->tile_storage->cache == cache
-          && (!roi || gegl_rectangle_intersect (&tmp, roi, &entry->roi)))
+      cnt++;
+
+      if (entry->valid && ! GEGL_IS_BUFFER (entry->buffer))
+        {
+          g_printerr ("_gegl_buffer_cl_cache_flush2: invalid buffer!\n");
+        }
+      else if (entry->valid && GEGL_IS_BUFFER (entry->buffer) &&
+          entry->tile_storage->cache == cache &&
+          (!roi || gegl_rectangle_intersect (&tmp, roi, &entry->roi)))
         {
           entry->valid = FALSE;
           entry->used ++;
+
+          g_printerr ("cache entry %d\n", cnt);
 
           gegl_cl_color_babl (entry->buffer->soft_format, &size);
 
@@ -153,8 +166,12 @@ _gegl_buffer_cl_cache_flush2 (GeglTileHandlerCache *cache,
           cl_err = gegl_clEnqueueReadBuffer(gegl_cl_get_command_queue(),
                                             entry->tex, CL_TRUE, 0, entry->roi.width * entry->roi.height * size, data,
                                             0, NULL, NULL);
+          CL_CHECK;
+
           /* tile-ize */
+          g_mutex_unlock (&cache_mutex);
           gegl_buffer_set (entry->buffer, &entry->roi, 0, entry->buffer->soft_format, data, GEGL_AUTO_ROWSTRIDE);
+          g_mutex_lock (&cache_mutex);
 
           entry->used --;
           need_cl = TRUE;
@@ -164,6 +181,8 @@ _gegl_buffer_cl_cache_flush2 (GeglTileHandlerCache *cache,
           CL_CHECK;
         }
     }
+  g_mutex_unlock (&cache_mutex);
+
 
   if (need_cl)
     {
@@ -195,6 +214,7 @@ _gegl_buffer_cl_cache_flush2 (GeglTileHandlerCache *cache,
   return TRUE;
 
 error:
+  g_printerr ("ERROR in _gegl_buffer_cl_cache_flush2, cl error: %d\n", cl_err);
 
   g_mutex_lock (&cache_mutex);
 
