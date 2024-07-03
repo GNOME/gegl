@@ -50,16 +50,18 @@ cache_entry_find_invalid (gpointer *data)
 {
   GList *elem;
 
+  //g_mutex_lock (&cache_mutex);
   for (elem=cache_entries; elem; elem=elem->next)
     {
       CacheEntry *e = elem->data;
       if (!e->valid && e->used == 0)
         {
           *data = e;
+          //g_mutex_unlock (&cache_mutex);
           return TRUE;
         }
     }
-
+  //g_mutex_unlock (&cache_mutex);
   *data = NULL;
   return FALSE;
 }
@@ -68,8 +70,11 @@ cl_mem
 gegl_buffer_cl_cache_get (GeglBuffer          *buffer,
                           const GeglRectangle *roi)
 {
-  GList *elem;
+  GList  *elem;
+  cl_mem  tex;
 
+  //g_printerr ("OpenCL cache get\n");
+  g_mutex_lock (&cache_mutex);
   for (elem=cache_entries; elem; elem=elem->next)
     {
       CacheEntry *e = elem->data;
@@ -77,9 +82,12 @@ gegl_buffer_cl_cache_get (GeglBuffer          *buffer,
           && gegl_rectangle_equal (&e->roi, roi))
         {
           e->used ++;
-          return e->tex;
+          tex = e->tex;
+          g_mutex_unlock (&cache_mutex);
+          return tex;
         }
     }
+  g_mutex_unlock (&cache_mutex);
   return NULL;
 }
 
@@ -88,16 +96,21 @@ gegl_buffer_cl_cache_release (cl_mem tex)
 {
   GList *elem;
 
+  g_printerr ("OpenCL cache release\n");
+
+  g_mutex_lock (&cache_mutex);
   for (elem=cache_entries; elem; elem=elem->next)
     {
       CacheEntry *e = elem->data;
       if (e->tex == tex)
         {
           e->used --;
+          g_mutex_unlock (&cache_mutex);
           g_assert (e->used >= 0);
           return TRUE;
         }
     }
+  g_mutex_unlock (&cache_mutex);
   return FALSE;
 }
 
@@ -154,10 +167,15 @@ _gegl_buffer_cl_cache_flush2 (GeglTileHandlerCache *cache,
           entry->tile_storage->cache == cache &&
           (!roi || gegl_rectangle_intersect (&tmp, roi, &entry->roi)))
         {
+          GeglBuffer    *buf;
+          GeglRectangle  rect;
+          Babl          *soft_format;
+
+
           entry->valid = FALSE;
           entry->used ++;
 
-          g_printerr ("cache entry %d\n", cnt);
+          //g_printerr ("cache entry %d\n", cnt);
 
           gegl_cl_color_babl (entry->buffer->soft_format, &size);
 
@@ -169,8 +187,18 @@ _gegl_buffer_cl_cache_flush2 (GeglTileHandlerCache *cache,
           CL_CHECK;
 
           /* tile-ize */
+          /* jb: not sure if it matters too much, but in theory setting local vars
+             before unlocking could ensure those values don't get changed between
+             unlocking and the call to gegl_buffer_set. */
+          buf = entry->buffer;
+          rect   = entry->roi;
+          soft_format = entry->buffer->soft_format;
           g_mutex_unlock (&cache_mutex);
-          gegl_buffer_set (entry->buffer, &entry->roi, 0, entry->buffer->soft_format, data, GEGL_AUTO_ROWSTRIDE);
+          /* jb: we need to unlock here or else we get a deadlock, because
+             gegl_buffer_set also uses a locking mechanism. However, this is
+             a point where other threads may interfere with the cache. */
+          gegl_buffer_set (buf, &rect, 0, soft_format, data, GEGL_AUTO_ROWSTRIDE);
+//          gegl_buffer_set (entry->buffer, &entry->roi, 0, entry->buffer->soft_format, data, GEGL_AUTO_ROWSTRIDE);
           g_mutex_lock (&cache_mutex);
 
           entry->used --;
@@ -234,6 +262,7 @@ gboolean
 gegl_buffer_cl_cache_flush2 (GeglTileHandlerCache *cache,
                              const GeglRectangle  *roi)
 {
+  //g_printerr ("OpenCL gegl_buffer_cl_cache_flush2\n");
   return _gegl_buffer_cl_cache_flush2 (cache, roi);
 }
 
@@ -241,6 +270,7 @@ gboolean
 gegl_buffer_cl_cache_flush (GeglBuffer          *buffer,
                             const GeglRectangle *roi)
 {
+  //g_printerr ("OpenCL gegl_buffer_cl_cache_flush\n");
   return _gegl_buffer_cl_cache_flush2 (buffer->tile_storage->cache, roi);
 }
 
@@ -252,6 +282,9 @@ gegl_buffer_cl_cache_invalidate (GeglBuffer          *buffer,
   GList *elem;
   gpointer data;
 
+  g_printerr ("OpenCL cache invalidate\n");
+
+  g_mutex_lock (&cache_mutex);
   for (elem=cache_entries; elem; elem=elem->next)
     {
       CacheEntry *e = elem->data;
@@ -264,7 +297,7 @@ gegl_buffer_cl_cache_invalidate (GeglBuffer          *buffer,
         }
     }
 
-  g_mutex_lock (&cache_mutex);
+  //g_mutex_lock (&cache_mutex);
 
   while (cache_entry_find_invalid (&data))
     {
@@ -277,14 +310,14 @@ gegl_buffer_cl_cache_invalidate (GeglBuffer          *buffer,
 
   g_mutex_unlock (&cache_mutex);
 
-#if 0
-  g_printf ("-- ");
-  for (elem=cache_entry; elem; elem=elem->next)
+#if 1
+  g_printerr ("-- \n");
+  for (elem=cache_entries; elem; elem=elem->next)
     {
       CacheEntry *e = elem->data;
-      g_printf ("%p %p {%d, %d, %d, %d} %d | ", e->tex, e->buffer, e->roi.x, e->roi.y, e->roi.width, e->roi.height, e->valid);
+      g_printerr ("%p %p {%d, %d, %d, %d} %d | \n", e->tex, e->buffer, e->roi.x, e->roi.y, e->roi.width, e->roi.height, e->valid);
     }
-  g_printf ("\n");
+  g_printerr ("\n");
 #endif
 
 }
