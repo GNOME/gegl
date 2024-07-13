@@ -29,7 +29,9 @@ __kernel void cl_alien_map(__global const float4 *in,
                         + sin((2.0f * in_v.xyz - unit) * freq.xyz + phaseshift.xyz));
   float4 out_v;
 
-  out_v.xyz = keep.xyz ? in_v.xyz : tmp;
+  out_v.x = keep.x ? in_v.x : tmp.x;
+  out_v.y = keep.y ? in_v.y : tmp.y;
+  out_v.z = keep.z ? in_v.z : tmp.z;
   out_v.w   = in_v.w;
   out[gid]  = out_v;
 }
