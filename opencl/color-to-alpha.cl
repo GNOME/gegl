@@ -1,63 +1,77 @@
+#define EPSILON 0.00001
+#define NORMALIZE(d, tt, ot, c) ((d - tt) / (min (ot, c) - tt))
+
 __kernel void cl_color_to_alpha(__global const float4 *in,
                                 __global       float4 *out,
-                                float4                color)
+                                         const float4  color,
+                                         const float   transparency_threshold,
+                                         const float   opacity_threshold)
 {
-  int gid = get_global_id(0);
-  float4 in_v = in[gid];
-  float4 out_v = in_v;
-  float4 alpha;
+  const int    gid         = get_global_id (0);
+  const float4 in_v        = in[gid];
+        float4 out_v       = in_v;
+  const float4 d           = fabs (out_v - color);
+        float4 a;
+  const float  input_alpha = out_v.w;
+  const float  tt          = transparency_threshold;
+  const float  ot          = opacity_threshold;
+        float  alpha       = 0.0f;
+        float  dist        = 0.0f;
 
-  alpha.w = in_v.w;
+  a = select (
+        select (
+          select (NORMALIZE (d, tt, ot, 1.0f - color),
+                  NORMALIZE (d, tt, ot, color), out_v < color),
+                1.0f, d > ot - (float4)EPSILON),
+              0.0f, d < tt + (float4)EPSILON);
 
-  /*First component*/
-  if ( color.x < 0.00001f )
-    alpha.x = in_v.x;
-  else if ( in_v.x > color.x + 0.00001f )
-    alpha.x = (in_v.x - color.x) / (1.0f - color.x);
-  else if ( in_v.x < color.x - 0.00001f )
-    alpha.x = (color.x - in_v.x) / color.x;
-  else
-    alpha.x = 0.0f;
-  /*Second component*/
-  if ( color.y < 0.00001f )
-    alpha.y = in_v.y;
-  else if ( in_v.y > color.y + 0.00001f )
-    alpha.y = (in_v.y - color.y) / (1.0f - color.y);
-  else if ( in_v.y < color.y - 0.00001f )
-    alpha.y = (color.y - in_v.y) / color.y;
-  else
-    alpha.y = 0.0f;
-  /*Third component*/
-  if ( color.z < 0.00001f )
-    alpha.z = in_v.z;
-  else if ( in_v.z > color.z + 0.00001f )
-    alpha.z = (in_v.z - color.z) / (1.0f - color.z);
-  else if ( in_v.z < color.z - 0.00001f )
-    alpha.z = (color.z - in_v.z) / color.z;
-  else
-    alpha.z = 0.0f;
+/* The above version could be hardware optimized and essentially does the below
+   loop except for the if a[i] > alpha statements, it's vectorized code so there
+   could be some performance benefits.
 
-  if (alpha.x > alpha.y)
+  for (int i = 0; i < 3; i++)
     {
-      if (alpha.x > alpha.z)
-        out_v.w = alpha.x;
+      if (d[i] < tt + EPSILON)
+        a[i] = 0.0f;
+      else if (d[i] > ot - EPSILON)
+        a[i] = 1.0f;
+      else if (out_v[i] < color[i])
+        a[i] = NORMALIZE (d[i], tt, ot, color[i]);
       else
-        out_v.w = alpha.z;
+        a[i] = NORMALIZE (d[i], tt, ot, 1.0f - color[i]);
+
+      if (a[i] > alpha)
+        {
+          alpha = a[i];
+          dist  = d[i];
+        }
     }
-  else if (alpha.y > alpha.z)
+*/
+
+  if (a[2] > a[1] && a[2] > a[0])
     {
-      out_v.w = alpha.y;
+      alpha = a[2];
+      dist  = d[2];
+    }
+  else if (a[1] > a[0])
+    {
+      alpha = a[1];
+      dist  = d[1];
     }
   else
     {
-      out_v.w = alpha.z;
+      alpha = a[0];
+      dist  = d[0];
     }
 
-  if (out_v.w >= 0.00001f)
+  if (alpha > EPSILON)
     {
-      out_v.xyz = (out_v.xyz - color.xyz) / out_v.www + color.xyz;
-      out_v.w *= alpha.w;
+      const float  ratio     = tt / dist;
+      const float  alpha_inv = 1.0f / alpha;
+      const float4 c         = color + (out_v - color) * ratio;
+      out_v                  = c + (out_v - c) * alpha_inv;
     }
 
-    out[gid] = out_v;
+  out_v.w  = input_alpha * alpha;
+  out[gid] = out_v;
 }

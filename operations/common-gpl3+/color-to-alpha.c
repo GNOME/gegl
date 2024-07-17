@@ -146,13 +146,6 @@ color_to_alpha (const gfloat *color,
   dst[3] *= alpha;
 }
 
-
-/* FIXME:  the transparency-threshold and opacity-threshold properties are not
- * handled by the opencl version atm.  re-enable the opencl version once
- * they're implemented.
- */
-#if 0
-
 #include "opencl/gegl-cl.h"
 #include "opencl/color-to-alpha.cl.h"
 
@@ -166,9 +159,11 @@ cl_process (GeglOperation       *operation,
             const GeglRectangle *roi,
             gint                level)
 {
-  GeglProperties *o = GEGL_PROPERTIES (operation);
-  gfloat      color[4];
-  gegl_color_get_pixel (o->color, babl_format ("R'G'B'A float"), color);
+  GeglProperties *o  = GEGL_PROPERTIES (operation);
+  gfloat          tt = o->transparency_threshold;
+  gfloat          ot = o->opacity_threshold;
+  gfloat          color[4];
+  gegl_color_get_pixel (o->color, gegl_operation_get_format (operation, "output"), color);
 
   if (!cl_data)
     {
@@ -186,11 +181,20 @@ cl_process (GeglOperation       *operation,
     f_color.s[2] = color[2];
     f_color.s[3] = color[3];
 
-    cl_err = gegl_clSetKernelArg(cl_data->kernel[0], 0,  sizeof(cl_mem),   (void*)&in);
+    cl_err = gegl_clSetKernelArg (cl_data->kernel[0], 0,
+                                  sizeof (cl_mem),    (void*) &in);
     CL_CHECK;
-    cl_err = gegl_clSetKernelArg(cl_data->kernel[0], 1,  sizeof(cl_mem),   (void*)&out);
+    cl_err = gegl_clSetKernelArg (cl_data->kernel[0], 1,
+                                  sizeof (cl_mem),    (void*) &out);
     CL_CHECK;
-    cl_err = gegl_clSetKernelArg(cl_data->kernel[0], 2,  sizeof(cl_float4),(void*)&f_color);
+    cl_err = gegl_clSetKernelArg (cl_data->kernel[0], 2,
+                                  sizeof (cl_float4), (void*) &f_color);
+    CL_CHECK;
+    cl_err = gegl_clSetKernelArg (cl_data->kernel[0], 3,
+                                  sizeof (float),     (void*) &tt);
+    CL_CHECK;
+    cl_err = gegl_clSetKernelArg (cl_data->kernel[0], 4,
+                                  sizeof (float),     (void*) &ot);
     CL_CHECK;
 
     cl_err = gegl_clEnqueueNDRangeKernel(gegl_cl_get_command_queue (),
@@ -205,8 +209,6 @@ cl_process (GeglOperation       *operation,
  error:
   return TRUE;
 }
-
-#endif
 
 static gboolean
 process (GeglOperation       *operation,
@@ -271,14 +273,10 @@ gegl_op_class_init (GeglOpClass *klass)
   filter_class    = GEGL_OPERATION_POINT_FILTER_CLASS (klass);
 
   filter_class->process    = process;
-#if 0 /* see opencl comment above */
   filter_class->cl_process = cl_process;
-#endif
 
   operation_class->prepare = prepare;
-#if 0 /* see opencl comment above */
   operation_class->opencl_support = TRUE;
-#endif
 
   gegl_operation_class_set_keys (operation_class,
     "name",        "gegl:color-to-alpha",
