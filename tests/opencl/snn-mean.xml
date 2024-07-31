@@ -1,6 +1,10 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <gegl>
   <node operation='gegl:snn-mean'>
+    <params>
+      <param name='radius'>1</param>
+      <param name='pairs'>1</param>
+    </params>
   </node>
   <node operation='gegl:load'>
     <params>
