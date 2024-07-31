@@ -19,6 +19,7 @@
 #ifndef __GEGL_CL_H__
 #define __GEGL_CL_H__
 
+#include "gegl-cl-version.h"
 #include "gegl-cl-types.h"
 #include "gegl-cl-init.h"
 #include "gegl-cl-color.h"

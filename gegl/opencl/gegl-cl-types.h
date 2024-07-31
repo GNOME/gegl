@@ -21,10 +21,8 @@
 
 #include <glib-object.h>
 
-#include "cl.h"
-#include "cl_gl.h"
-#include "cl_gl_ext.h"
-#include "cl_ext.h"
+#include "gegl-cl-version.h"
+#include "opencl.h"
 
 struct _GeglClTexture
 {
