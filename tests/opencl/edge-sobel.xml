@@ -3,7 +3,8 @@
   <node operation='gegl:edge-sobel'>
     <params>
       <param name='horizontal'>1</param>
-      <param name='vertical'>1</param>
+      <param name='vertical'>0</param>
+      <param name='keep_sign'>1</param>
     </params>
   </node>
   <node operation='gegl:load'>

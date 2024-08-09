@@ -60,24 +60,13 @@ static void prepare (GeglOperation *operation)
   const Babl *space = gegl_operation_get_source_space (operation, "input");
   GeglOperationAreaFilter *area = GEGL_OPERATION_AREA_FILTER (operation);
 
-  const Babl *source_format = gegl_operation_get_source_format (operation, "input");
+  const Babl *format = babl_format_with_space ("RGBA float", space);
 
   area->left = area->right = area->top = area->bottom = SOBEL_RADIUS;
 
-  gegl_operation_set_format (operation, "input", babl_format_with_space ("RGBA float", space));
-
-  if (source_format && !babl_format_has_alpha (source_format))
-    gegl_operation_set_format (operation, "output", babl_format_with_space ("RGB float", space));
-  else
-    gegl_operation_set_format (operation, "output", babl_format_with_space ("RGBA float", space));
+  gegl_operation_set_format (operation, "input", format);
+  gegl_operation_set_format (operation, "output", format);
 }
-
-/** FIXME - disabling CL
- *  CL border handling is broken. As is the whole result is shifted to avoid the
- *  issue. This is causing tests to fail. The shift can be corrected, but real
- *  issue is handling pixels that the sobel kernel needs from outside the image.
- */
-/*
 
 #include "opencl/gegl-cl.h"
 #include "gegl-buffer-cl-iterator.h"
@@ -183,7 +172,6 @@ cl_process (GeglOperation       *operation,
 
   return TRUE;
 }
-*/
 
 static gboolean
 process (GeglOperation       *operation,
@@ -195,15 +183,20 @@ process (GeglOperation       *operation,
   GeglProperties   *o = GEGL_PROPERTIES (operation);
   GeglRectangle compute;
   gboolean has_alpha;
+  gboolean keep_sign  = o->keep_sign;
+  gboolean horizontal = o->horizontal;
+  gboolean vertical   = o->vertical;
 
   compute = gegl_operation_get_required_for_output (operation, "input", result);
   has_alpha = babl_format_has_alpha (gegl_operation_get_format (operation, "output"));
-
-  /*
+/*
+  FIXME: Incorrect results generated when both horizontal and vertical are enabled
+         Incorrect results generated when either horizontal or vertical are enabled
+         and keep_sign is disabled.
+*/
   if (gegl_operation_use_opencl (operation))
-    if (cl_process (operation, input, output, result, has_alpha))
+    if ((!(horizontal && vertical) && keep_sign) && cl_process (operation, input, output, result, has_alpha))
       return TRUE;
-   */
 
   edge_sobel (input, &compute, output, result,
               o->horizontal, o->vertical, o->keep_sign, has_alpha,
@@ -325,9 +318,9 @@ edge_sobel (GeglBuffer          *src,
              */
             for (c = 0; c < 3; c++)
               {
-                hor_grad[c] += (-1.0f * tl_px[c]) + (0.0f * t_px[c]) + (1.0f * tr_px[c]);
-                hor_grad[c] += (-2.0f * l_px[c]) + (0.0f * center_px[c]) + (2.0f * r_px[c]);
-                hor_grad[c] += (-1.0f * bl_px[c]) + (0.0f * b_px[c]) + (1.0f * br_px[c]);
+                hor_grad[c] += (-1.0f * tl_px[c]) + (1.0f * tr_px[c]);
+                hor_grad[c] += (-2.0f * l_px[c]) + (2.0f * r_px[c]);
+                hor_grad[c] += (-1.0f * bl_px[c]) + (1.0f * br_px[c]);
               }
           }
 
@@ -343,15 +336,15 @@ edge_sobel (GeglBuffer          *src,
             for (c = 0; c < 3; c++)
               {
                 ver_grad[c] += (1.0f * tl_px[c]) + (2.0f * t_px[c]) + (1.0f * tr_px[c]);
-                ver_grad[c] += (0.0f * l_px[c]) + (0.0f * center_px[c]) + (0.0f * r_px[c]);
                 ver_grad[c] += (-1.0f * bl_px[c]) + (-2.0f * b_px[c]) + (-1.0f * br_px[c]);
               }
           }
 
         if (horizontal && vertical)
           {
+             /* sqrt(32.0) = 5.656854 */
             for (c = 0; c < 3; c++)
-              gradient[c] = magnitude (hor_grad[c], ver_grad[c]) / sqrtf (32.0f);
+              gradient[c] = magnitude (hor_grad[c], ver_grad[c]) / 5.656854f;
           }
         else
           {
@@ -394,7 +387,7 @@ gegl_op_class_init (GeglOpClass *klass)
   filter_class     = GEGL_OPERATION_FILTER_CLASS (klass);
 
   operation_class->prepare        = prepare;
-  operation_class->opencl_support = TRUE;
+  operation_class->opencl_support = TRUE;  // Partially enabled, read FIXME
   operation_class->threaded       = FALSE; // XXX: the need for this is a bug
 
   filter_class->process           = process;
