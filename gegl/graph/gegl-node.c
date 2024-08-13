@@ -469,6 +469,38 @@ gegl_node_list_output_pads (GeglNode *self)
   return _make_pad_list (self->output_pads);
 }
 
+const gchar *
+gegl_node_get_pad_label (GeglNode    *node,
+                         const gchar *pad_name)
+{
+  GeglPad    *pad;
+  GParamSpec *spec;
+
+  g_return_val_if_fail (GEGL_IS_NODE (node), NULL);
+  g_return_val_if_fail (gegl_node_has_pad (node, pad_name), NULL);
+
+  pad = gegl_node_get_pad (node, pad_name);
+  spec = gegl_pad_get_param_spec (pad);
+
+  return g_param_spec_get_nick (spec);
+}
+
+const gchar *
+gegl_node_get_pad_description (GeglNode    *node,
+                               const gchar *pad_name)
+{
+  GeglPad    *pad;
+  GParamSpec *spec;
+
+  g_return_val_if_fail (GEGL_IS_NODE (node), NULL);
+  g_return_val_if_fail (gegl_node_has_pad (node, pad_name), NULL);
+
+  pad = gegl_node_get_pad (node, pad_name);
+  spec = gegl_pad_get_param_spec (pad);
+
+  return g_param_spec_get_blurb (spec);
+}
+
 /**
  * gegl_node_get_pads:
  * @self: a #GeglNode.

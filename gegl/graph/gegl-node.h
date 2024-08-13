@@ -582,6 +582,26 @@ gchar      ** gegl_node_list_input_pads  (GeglNode      *node);
  */
 gchar      ** gegl_node_list_output_pads (GeglNode      *node);
 
+/**
+ * gegl_node_get_pad_label:
+ * @node: the node we are querying
+ * @pad_name: the pad name we are looking for
+ *
+ * Returns: the display label for @pad_name.
+ */
+const gchar * gegl_node_get_pad_label    (GeglNode      *node,
+                                          const gchar   *pad_name);
+
+/**
+ * gegl_node_get_pad_description:
+ * @node: the node we are querying
+ * @pad_name: the pad name we are looking for
+ *
+ * Returns: the longer description for @pad_name.
+ */
+const gchar * gegl_node_get_pad_description (GeglNode      *node,
+                                             const gchar   *pad_name);
+
 /***
  * Binding conveniences:
  *
