@@ -608,15 +608,15 @@ gegl_op_class_init (GeglOpClass *klass)
   operation_class = GEGL_OPERATION_CLASS (klass);
   composer3_class = GEGL_OPERATION_COMPOSER3_CLASS (klass);
 
-  composer3_class->process         = process;
-  composer3_class->aux_label       = _("Mask radius buffer");
-  composer3_class->aux_description = _("Per pixel buffer for modulating the "
-                                       "mask radius, expecting a scaling "
-                                       "factor in range 0.0-1.0");
-  composer3_class->aux2_label      = _("Exponent buffer");
-  composer3_class->aux_description = _("Per pixel buffer for modulating the "
-                                       "exponent parameter, expecting a "
-                                       "scaling factor in range 0.0-1.0");
+  composer3_class->process          = process;
+  composer3_class->aux_label        = _("Mask radius buffer");
+  composer3_class->aux_description  = _("Per pixel buffer for modulating the "
+                                        "mask radius, expecting a scaling "
+                                        "factor in range 0.0-1.0");
+  composer3_class->aux2_label       = _("Exponent buffer");
+  composer3_class->aux2_description = _("Per pixel buffer for modulating the "
+                                        "exponent parameter, expecting a "
+                                        "scaling factor in range 0.0-1.0");
 
   operation_class->get_required_for_output = get_required_for_output;
   operation_class->prepare                 = prepare;
