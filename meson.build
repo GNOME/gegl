@@ -232,7 +232,7 @@ elif host_cpu_family == 'arm'
   arm_neon_flags = cc.get_supported_arguments(['-mfpu=neon-vfpv4'])
   arm_neon_flags += ['-DSIMD_ARM_NEON']
 elif host_cpu_family == 'aarch64'
-  cflags_common += cc.get_supported_arguments(['-mfpu=neon-vfpv4'])
+  cflags_common += cc.get_supported_arguments(['-mfpu=neon-fp-armv8', '-ftree-vectorize'])
 endif
 
 cflags_c   = cflags_common + cflags_c
