@@ -154,6 +154,90 @@ this_module (void)
 }
 #endif
 
+static gchar *
+gegl_init_get_prefix (void)
+{
+  gchar *prefix = NULL;
+
+#if defined (_WIN32) && !defined (__CYGWIN__)
+
+  prefix = g_win32_get_package_installation_directory_of_module (this_module ());
+
+#elif defined (__APPLE__)
+
+  NSAutoreleasePool *pool;
+  NSString          *resource_path;
+  gchar             *basename;
+  gchar             *basepath;
+  gchar             *dirname;
+
+  pool = [[NSAutoreleasePool alloc] init];
+
+  resource_path = [[NSBundle mainBundle] resourcePath];
+
+  basename = g_path_get_basename ([resource_path UTF8String]);
+  basepath = g_path_get_dirname ([resource_path UTF8String]);
+  dirname  = g_path_get_basename (basepath);
+
+  if (! strcmp (basename, ".libs"))
+    {
+      /*  we are running from the source dir, do normal unix things  */
+
+      prefix = g_strdup (GEGL_PREFIX);
+    }
+  else if (! strcmp (basename, "bin"))
+    {
+      /*  we are running the main app, but not from a bundle, the resource
+       *  path is the directory which contains the executable
+       */
+
+      prefix = g_strdup (basepath);
+    }
+  else if (strstr (basepath, "/Cellar/"))
+    {
+      /*  we are running from a Python.framework bundle built in homebrew
+       *  during the build phase
+       */
+
+      gchar *fulldir = g_strdup (basepath);
+      gchar *lastdir = g_path_get_basename (fulldir);
+      gchar *tmp_fulldir;
+
+      while (strcmp (lastdir, "Cellar"))
+        {
+          tmp_fulldir = g_path_get_dirname (fulldir);
+
+          g_free (lastdir);
+          g_free (fulldir);
+
+          fulldir = tmp_fulldir;
+          lastdir = g_path_get_basename (fulldir);
+        }
+      prefix = g_path_get_dirname (fulldir);
+
+      g_free (fulldir);
+      g_free (lastdir);
+    }
+  else
+    {
+      /*  if none of the above match, we assume that we are really in a bundle  */
+
+      prefix = g_strdup ([resource_path UTF8String]);
+    }
+
+  g_free (basename);
+  g_free (basepath);
+  g_free (dirname);
+
+  [pool drain];
+#endif
+
+  if (prefix == NULL)
+    prefix = g_strdup (GEGL_PREFIX);
+
+  return prefix;
+}
+
 static void
 gegl_init_i18n (void)
 {
@@ -173,11 +257,7 @@ gegl_init_i18n (void)
         {
           gchar *prefix;
 
-          prefix = g_win32_get_package_installation_directory_of_module (this_module ());
-
-          if (prefix == NULL)
-            prefix = g_strdup (GEGL_PREFIX);
-
+          prefix = gegl_init_get_prefix ();
           localedir = g_build_filename (prefix, GEGL_LOCALEDIR, NULL);
           g_free (prefix);
         }
@@ -191,7 +271,13 @@ gegl_init_i18n (void)
       g_free (dir_name_utf16);
 #else
       if (localedir == NULL)
-        localedir = g_build_filename (GEGL_PREFIX, GEGL_LOCALEDIR, NULL);
+        {
+          gchar *prefix;
+
+          prefix = gegl_init_get_prefix ();
+          localedir = g_build_filename (prefix, GEGL_LOCALEDIR, NULL);
+          g_free (prefix);
+        }
 
       bindtextdomain (GETTEXT_PACKAGE, localedir);
 #endif
