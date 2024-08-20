@@ -14,7 +14,8 @@ geglInclude = include_directories(
 gegl_cflags = [
   '-DLIBDIR="@0@"'.format(get_option('prefix') / get_option('libdir')),
   '-DG_LOG_DOMAIN="@0@"'.format('GEGL'),
-  '-DGEGL_LOCALEDIR="@0@"'.format(get_option('prefix') / get_option('localedir')),
+  '-DGEGL_LOCALEDIR="@0@"'.format(get_option('localedir')),
+  '-DGEGL_PREFIX="@0@"'.format(get_option('prefix')),
 ]
 
 gegl_version_h = configure_file(

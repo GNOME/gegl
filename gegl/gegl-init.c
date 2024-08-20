@@ -144,6 +144,16 @@ gegl_config_use_opencl_notify (GObject    *gobject,
                                      NULL);
 }
 
+#if defined (_WIN32) && !defined (__CYGWIN__)
+extern IMAGE_DOS_HEADER __ImageBase;
+
+static HMODULE
+this_module (void)
+{
+  return (HMODULE) &__ImageBase;
+}
+#endif
+
 static void
 gegl_init_i18n (void)
 {
@@ -151,10 +161,44 @@ gegl_init_i18n (void)
 
   if (! i18n_initialized)
     {
-      bindtextdomain (GETTEXT_PACKAGE, GEGL_LOCALEDIR);
+      gchar *localedir = NULL;
+
+      if (g_path_is_absolute (GEGL_LOCALEDIR))
+        localedir = g_strdup (GEGL_LOCALEDIR);
+
+#if defined (_WIN32) && !defined (__CYGWIN__)
+      wchar_t *dir_name_utf16;
+
+      if (localedir == NULL)
+        {
+          gchar *prefix;
+
+          prefix = g_win32_get_package_installation_directory_of_module (this_module ());
+
+          if (prefix == NULL)
+            prefix = g_strdup (GEGL_PREFIX);
+
+          localedir = g_build_filename (prefix, GEGL_LOCALEDIR, NULL);
+          g_free (prefix);
+        }
+
+      dir_name_utf16 = g_utf8_to_utf16 (localedir, -1, NULL, NULL, NULL);
+      if G_UNLIKELY (! dir_name_utf16)
+        g_printerr ("%s: Cannot translate the catalog directory to UTF-16\n", G_STRFUNC);
+      else
+        wbindtextdomain (GETTEXT_PACKAGE, dir_name_utf16);
+
+      g_free (dir_name_utf16);
+#else
+      if (localedir == NULL)
+        localedir = g_build_filename (GEGL_PREFIX, GEGL_LOCALEDIR, NULL);
+
+      bindtextdomain (GETTEXT_PACKAGE, localedir);
+#endif
       bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 
       i18n_initialized = TRUE;
+      g_free (localedir);
     }
 }
 
