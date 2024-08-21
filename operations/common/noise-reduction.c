@@ -153,6 +153,9 @@ static void prepare (GeglOperation *operation)
   gegl_operation_set_format (operation, "output", babl_format_with_space ("R~G~B~A float", space));
 }
 
+#define FIX_OPENCL
+
+#ifndef FIX_OPENCL
 #include "opencl/gegl-cl.h"
 #include "gegl-buffer-cl-iterator.h"
 
@@ -315,6 +318,7 @@ cl_process (GeglOperation       *operation,
 
   return !err;
 }
+#endif
 
 #define INPLACE 1
 
@@ -336,11 +340,11 @@ process (GeglOperation       *operation,
   float *dst_buf;
 #endif
   GeglRectangle rect;
-
+#ifndef FIX_OPENCL
   if (gegl_operation_use_opencl (operation))
     if(cl_process(operation, input, output, result))
       return TRUE;
-
+#endif
   rect = *result;
 
   stride = result->width + o->iterations * 2;
@@ -447,7 +451,9 @@ gegl_op_class_init (GeglOpClass *klass)
   filter_class->process           = process;
   operation_class->process        = operation_process;
   operation_class->prepare        = prepare;
+#ifndef FIX_OPENCL
   operation_class->opencl_support = TRUE;
+#endif
 
   operation_class->get_bounding_box = get_bounding_box;
 
