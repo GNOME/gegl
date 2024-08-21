@@ -219,6 +219,15 @@ if os_win32 and cc.get_id() == 'clang'
   cflags_common += '-fansi-escape-codes'
 endif
 
+# on OSX ObjC and C sources are mixed so adding objc to the linkflags
+
+osx_ldflags = []
+if os_osx
+  add_languages('objc')
+  osx_ldflags += ['-ObjC']
+  add_project_link_arguments(osx_ldflags, language : ['objc', 'c'])
+endif
+
 cflags_common += cc.get_supported_arguments(['-ftree-vectorize'])
 
 if host_cpu_family == 'x86_64'

@@ -269,11 +269,19 @@ gegl_config_class_init (GeglConfigClass *klass)
     /* and available mem from host_statistics64 */
     vm_size_t              page_size = sysconf (_SC_PAGESIZE);
     mach_port_t            host = mach_host_self ();
-    vm_statistics64_data_t vm_stat;
     kern_return_t	         kret;
+
+#if defined(__LP64__)
+    vm_statistics64_data_t vm_stat;
     unsigned int           count = HOST_VM_INFO64_COUNT;
 
     kret = host_statistics64 (host, HOST_VM_INFO64, (host_info64_t)&vm_stat, &count);
+#else
+    vm_statistics_data_t vm_stat;
+    unsigned int           count = HOST_VM_INFO_COUNT;
+
+    kret = host_statistics (host, HOST_VM_INFO, (host_info_t)&vm_stat, &count);
+#endif
 
     if (kret == KERN_SUCCESS)
     {
