@@ -838,7 +838,10 @@ gegl_cl_compile_and_build (const char *program_source, const char *kernel_name[]
                                                          lengths, &errcode);
       CL_CHECK_ONLY (errcode);
 
-      build_errcode = gegl_clBuildProgram (cl_data->program, 0, NULL, NULL, NULL, NULL);
+      if (strstr(cl_state.platform_version, "OpenCL 3.0"))
+        build_errcode = gegl_clBuildProgram(cl_data->program, 0, NULL, "-cl-std=CL3.0 -cl-opt-disable -cl-fp32-correctly-rounded-divide-sqrt", NULL, NULL);
+      else
+        build_errcode = gegl_clBuildProgram(cl_data->program, 0, NULL, "-cl-std=CL1.2 -cl-opt-disable -cl-fp32-correctly-rounded-divide-sqrt", NULL, NULL);
 
       errcode = gegl_clGetProgramBuildInfo (cl_data->program,
                                             gegl_cl_get_device (),
