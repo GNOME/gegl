@@ -242,6 +242,14 @@ add_project_arguments(cc.get_supported_arguments(cflags_c), language: 'c')
 add_project_arguments(cpp.get_supported_arguments(cflags_cpp), language: 'cpp')
 add_project_link_arguments(lflags_common, language: [ 'c', 'cpp' ])
 
+# on OSX ObjC and C sources are mixed so adding objc to the linkflags
+
+if os_osx
+  add_languages('objc')
+  osx_ldflags = ['-Wl,-framework,Foundation', '-Wl,-framework,AppKit', '-ObjC']
+  add_project_link_arguments(osx_ldflags, language : ['objc', 'c'])
+endif
+
 ################################################################################
 # Build Utilities
 
