@@ -250,6 +250,10 @@ if os_osx
   add_project_link_arguments(osx_ldflags, language : ['objc', 'c'])
 endif
 
+if os_osx
+  add_project_arguments('-ObjC', language : 'c')
+endif
+
 ################################################################################
 # Build Utilities
 

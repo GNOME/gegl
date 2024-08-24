@@ -55,6 +55,9 @@ DllMain (HINSTANCE hinstDLL,
 
 #endif
 
+#ifdef __APPLE__
+#import <Foundation/Foundation.h>
+#endif
 
 #include "gegl-debug.h"
 
