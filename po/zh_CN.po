@@ -15,7 +15,7 @@ msgstr ""
 "Project-Id-Version: gegl-master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
 "POT-Creation-Date: 2024-07-26 21:41+0000\n"
-"PO-Revision-Date: 2024-08-24 08:54+0800\n"
+"PO-Revision-Date: 2024-08-24 09:01+0800\n"
 "Last-Translator: lumingzh <lumingzh@qq.com>\n"
 "Language-Team: Chinese (China) <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
@@ -317,7 +317,7 @@ msgstr "非线性"
 
 #: gegl/gegl-enums.c:123 operations/external/lcms-from-profile.c:31
 msgid "Perceptual"
-msgstr "感官"
+msgstr "感知"
 
 #: gegl/gegl-enums.c:124
 msgid "Linear-premultiplied"
@@ -325,7 +325,7 @@ msgstr "线性-自左乘"
 
 #: gegl/gegl-enums.c:125
 msgid "Perceptual-premultiplied"
-msgstr "感官-自左乘"
+msgstr "感知-自左乘"
 
 #: gegl/gegl-enums.c:126
 msgid "Linear-premultiplied-if-alpha"
@@ -333,7 +333,7 @@ msgstr "若透明则线性自左乘"
 
 #: gegl/gegl-enums.c:127
 msgid "Perceptual-premultiplied-if-alpha"
-msgstr "若透明则感官自左乘"
+msgstr "若透明则感知自左乘"
 
 #: gegl/gegl-enums.c:128
 msgid "add-alpha"
@@ -2502,13 +2502,13 @@ msgstr "GEGL 图形可视化工具。"
 
 #: operations/common/invert-gamma.c:52
 msgid "Invert in Perceptual space"
-msgstr "在感官空间中反转"
+msgstr "在感知空间中反转"
 
 #: operations/common/invert-gamma.c:56
 msgid ""
 "Invert the components (except alpha) perceptually, the result is the "
 "corresponding \"negative\" image."
-msgstr "感官化的反转分量（透明除外），结果为相应的“负”图像。"
+msgstr "感知化的反转分量（透明除外），结果为相应的“负”图像。"
 
 #: operations/common/invert-linear.c:54 operations/common-gpl3+/bump-map.c:45
 #: operations/workshop/connected-components.c:28
@@ -8270,11 +8270,11 @@ msgstr "绝对色度"
 
 #: operations/external/lcms-from-profile.c:41
 msgid "Rendering intent"
-msgstr "渲染效果"
+msgstr "再现意图"
 
 #: operations/external/lcms-from-profile.c:44
 msgid "The rendering intent to use in the conversion."
-msgstr "转换中使用的渲染效果。"
+msgstr "转换中使用的再现意图。"
 
 #: operations/external/lcms-from-profile.c:46
 msgid "Black point compensation"
