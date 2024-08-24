@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl-master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-07-26 21:41+0000\n"
-"PO-Revision-Date: 2024-08-24 09:01+0800\n"
+"POT-Creation-Date: 2024-08-24 01:03+0000\n"
+"PO-Revision-Date: 2024-08-24 09:42+0800\n"
 "Last-Translator: lumingzh <lumingzh@qq.com>\n"
 "Language-Team: Chinese (China) <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
@@ -352,40 +352,40 @@ msgstr "永不"
 msgid "Always"
 msgstr "总是"
 
-#: gegl/gegl-init.c:225
+#: gegl/gegl-init.c:355
 msgid "Where GEGL stores its swap"
 msgstr "GEGL 存储其交换区的位置"
 
-#: gegl/gegl-init.c:230
+#: gegl/gegl-init.c:360
 msgid "Compression algorithm used for data stored in the swap"
 msgstr "用于交换区中数据存储的压缩算法"
 
-#: gegl/gegl-init.c:235
+#: gegl/gegl-init.c:365
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr "多少内存（近似值）用于缓存图像"
 
-#: gegl/gegl-init.c:240
+#: gegl/gegl-init.c:370
 msgid "Default size of tiles in GeglBuffers"
 msgstr "GeglBuffers 中默认平铺大小"
 
-#: gegl/gegl-init.c:245
+#: gegl/gegl-init.c:375
 msgid "The count of pixels to compute simultaneously"
 msgstr "同时计算的像素数量"
 
-#: gegl/gegl-init.c:250
+#: gegl/gegl-init.c:380
 msgid ""
 "The quality of rendering, a value between 0.0 (fast) and 1.0 (reference)"
 msgstr "渲染质量， 0.0（快速）和 1.0（参考）之间的一个值"
 
-#: gegl/gegl-init.c:255
+#: gegl/gegl-init.c:385
 msgid "The number of concurrent processing threads to use"
 msgstr "使用并行处理线程的数量"
 
-#: gegl/gegl-init.c:260
+#: gegl/gegl-init.c:390
 msgid "Disable OpenCL"
 msgstr "禁用 OpenCL"
 
-#: gegl/gegl-init.c:272
+#: gegl/gegl-init.c:402
 msgid "Show GEGL Options"
 msgstr "显示 GEGL 选项"
 
@@ -2027,11 +2027,11 @@ msgid ""
 "is used instead."
 msgstr "在结果中保留负值；如果关闭，结果将替换为绝对值。"
 
-#: operations/common/edge-sobel.c:404
+#: operations/common/edge-sobel.c:397
 msgid "Sobel Edge Detection"
 msgstr "索贝尔边缘检测"
 
-#: operations/common/edge-sobel.c:408
+#: operations/common/edge-sobel.c:401
 msgid "Specialized direction-dependent edge detection"
 msgstr "特定的依赖于方向的边缘检测"
 
@@ -3734,11 +3734,11 @@ msgid ""
 "Controls the number of iterations; lower values give less plastic results"
 msgstr "控制迭代次数；降低数值获得更少可塑性结果"
 
-#: operations/common/noise-reduction.c:455
+#: operations/common/noise-reduction.c:461
 msgid "Noise Reduction"
 msgstr "降噪"
 
-#: operations/common/noise-reduction.c:459
+#: operations/common/noise-reduction.c:465
 msgid "Anisotropic smoothing operation"
 msgstr "各向异性平滑操作"
 
@@ -5867,11 +5867,11 @@ msgstr "不透明阈值"
 msgid "The limit above which colors remain opaque."
 msgstr "高于该限制的颜色会保持不透明。"
 
-#: operations/common-gpl3+/color-to-alpha.c:285
+#: operations/common-gpl3+/color-to-alpha.c:283
 msgid "Color to Alpha"
 msgstr "色彩转透明"
 
-#: operations/common-gpl3+/color-to-alpha.c:291
+#: operations/common-gpl3+/color-to-alpha.c:289
 msgid "Convert a specified color to transparency, works best with white."
 msgstr "将指定色彩转换为透明，对白色效果最好。"
 
@@ -9828,8 +9828,8 @@ msgid ""
 "specified line in the input buffer, plotted in a buffer of the specified "
 "size."
 msgstr ""
-"在指定大小缓冲区中策划的沿输入缓冲区中指定线条为红色、绿色和蓝色分量渲染亮度"
-"配置文件。"
+"在输入缓冲区中沿着指定线为红色、绿色和蓝色分量渲染亮度特性文件，绘制在指定大"
+"小的缓冲区中。"
 
 #: operations/workshop/external/spyrograph.c:27
 msgid "Spyrograph"
