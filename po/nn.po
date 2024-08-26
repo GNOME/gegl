@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-07-26 21:41+0000\n"
-"PO-Revision-Date: 2024-07-30 17:55+0200\n"
+"POT-Creation-Date: 2024-08-05 18:10+0000\n"
+"PO-Revision-Date: 2024-08-26 14:40+0200\n"
 "Last-Translator: Kolbjørn Stuestøl <kolbjoern@stuestoel.no>\n"
 "Language-Team: Norwegian Nynorsk <l10n-no@lister.huftis.org>\n"
 "Language: nn\n"
@@ -4572,7 +4572,7 @@ msgstr "Fasett og indre glød"
 
 #: operations/common/styles.c:31
 msgid "Image upload and Outline Bevel"
-msgstr ""
+msgstr "Biletopplasting og fasettkonturen"
 
 #. List of all GUI options
 #. GUI Change list in GUI
@@ -8372,7 +8372,7 @@ msgstr "Komponentar i JPEG 2000 inngangen stemmer ikkje overeins"
 
 #: operations/external/jp2-load.c:257
 msgid "could not create a new Jasper stream"
-msgstr "Klarte ikkje laga ei ny Jasper-strøyming"
+msgstr "klarte ikkje laga ei ny Jasper-strøyming"
 
 #: operations/external/jp2-load.c:277 operations/external/jp2-load.c:279
 #, c-format
