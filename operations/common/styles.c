@@ -974,16 +974,16 @@ static void update_graph (GeglOperation *operation)
   GeglProperties *o = GEGL_PROPERTIES (operation);
   State *state = o->user_data;
   if (!state) return;
-  GeglNode *swapreplaceontop;
-  GeglNode *swapreplaceontop2so;
-  GeglNode *swapbevelalpha;
-  GeglNode *swapbevelbump;
-  GeglNode *swapdarkbevel;
-  GeglNode *swapimage;
-  GeglNode *swaplayerso;
+  GeglNode *swapreplaceontop=NULL;
+  GeglNode *swapreplaceontop2so=NULL;
+  GeglNode *swapbevelalpha=NULL;
+  GeglNode *swapbevelbump=NULL;
+  GeglNode *swapdarkbevel=NULL;
+  GeglNode *swapimage=NULL;
+  GeglNode *swaplayerso=NULL;
 /*  GeglNode *swapds; */
-  GeglNode *swapbevelso;
-  GeglNode *swapbevelblendmodeso;
+  GeglNode *swapbevelso=NULL;
+  GeglNode *swapbevelblendmodeso=NULL;
 
 const char *blend_bevel = "gegl:nop";
   switch (o->bevel_blend) {
