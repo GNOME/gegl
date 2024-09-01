@@ -1,26 +1,26 @@
 # Turkish translation for GEGL.
-# Copyright (C) 2014-2023 gegl's COPYRIGHT HOLDER
+# Copyright (C) 2014-2024 gegl's COPYRIGHT HOLDER
 # This file is distributed under the same license as the gegl package.
 #
 # Muhammet Kara <muhammetk@gmail.com>, 2014.
 # Simge Sezgin <simgesezgin88@gmail.com>, 2015.
-# Sabri Ünal <libreajans@gmail.com>, 2019-2023.
-# Emin Tufan Çetin <etcetin@gmail.com>, 2019-2023.
+# Sabri Ünal <libreajans@gmail.com>, 2019-2024.
+# Emin Tufan Çetin <etcetin@gmail.com>, 2019-2024.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-03-23 17:53+0000\n"
-"PO-Revision-Date: 2024-03-25 17:40+0300\n"
+"POT-Creation-Date: 2024-07-26 21:41+0000\n"
+"PO-Revision-Date: 2024-08-28 22:13+0300\n"
 "Last-Translator: Sabri Ünal <yakushabb@gmail.com>\n"
-"Language-Team: Türkçe <gnome-turk@gnome.org>\n"
+"Language-Team: Türkçe <takim@gnome.org.tr>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 3.4.2\n"
+"X-Generator: Poedit 3.4.3\n"
 "X-POOTLE-MTIME: 1437504675.000000\n"
 
 #: bin/gegl.c:179
@@ -489,12 +489,10 @@ msgid "Module '%s' load error: %s"
 msgstr "'%s' modülü yükleme hatası: %s"
 
 #: gegl/operation/gegl-operation-composer3.c:77
-#, fuzzy
 msgid "Output pad for generated image buffer."
-msgstr "Oluşturulan görüntü arabelleği için Çıktı pedi."
+msgstr "Oluşturulan görüntü tamponu için Çıktı pedi."
 
 #: gegl/operation/gegl-operation-composer3.c:86
-#, fuzzy
 msgid "Input pad, for image buffer input."
 msgstr "Görüntü tampon girdisi için girdi pedi."
 
@@ -700,16 +698,12 @@ msgid "Chamfer"
 msgstr ""
 
 #: operations/common/bevel.c:49
-#, fuzzy
-#| msgid "Bump Map"
 msgid "Bump"
 msgstr "Derinlik Etkisi"
 
 #: operations/common/bevel.c:52
-#, fuzzy
-#| msgid "Curve Type"
 msgid "Bevel Type"
-msgstr "Eğri Türü"
+msgstr "Eğim Türü"
 
 #: operations/common/bevel.c:55
 #, fuzzy
@@ -721,29 +715,29 @@ msgstr "Kullanılacak doldurma ışık geçirmezliği"
 msgid "None (for use with GIMPs blending options)"
 msgstr ""
 
-#: operations/common/bevel.c:61 operations/workshop/styles.c:203
-#: operations/workshop/styles.c:311 operations/workshop/styles.c:419
+#: operations/common/bevel.c:61 operations/common/styles.c:202
+#: operations/common/styles.c:310 operations/common/styles.c:418
 #, fuzzy
 #| msgid "HardLight"
 msgid "Hard Light"
 msgstr "Sert ışık"
 
-#: operations/common/bevel.c:63 operations/workshop/styles.c:60
-#: operations/workshop/styles.c:199 operations/workshop/styles.c:415
+#: operations/common/bevel.c:63 operations/common/styles.c:59
+#: operations/common/styles.c:198 operations/common/styles.c:414
 #, fuzzy
 #| msgid "X multiplier"
 msgid "Multiply"
 msgstr "X çoklayıcı"
 
-#: operations/common/bevel.c:65 operations/workshop/styles.c:207
-#: operations/workshop/styles.c:313 operations/workshop/styles.c:423
+#: operations/common/bevel.c:65 operations/common/styles.c:206
+#: operations/common/styles.c:312 operations/common/styles.c:422
 #, fuzzy
 #| msgid "Color model"
 msgid "Color Dodge"
 msgstr "Renk modeli"
 
-#: operations/common/bevel.c:67 operations/workshop/styles.c:205
-#: operations/workshop/styles.c:421
+#: operations/common/bevel.c:67 operations/common/styles.c:204
+#: operations/common/styles.c:420
 msgid "Darken"
 msgstr "Koyulaştır"
 
@@ -753,14 +747,15 @@ msgstr "Koyulaştır"
 msgid "Lighten"
 msgstr "Parlat"
 
-#: operations/common/bevel.c:71 operations/workshop/external/paint-select.cc:30
-#: operations/workshop/styles.c:201 operations/workshop/styles.c:417
+#: operations/common/bevel.c:71 operations/common/styles.c:200
+#: operations/common/styles.c:416
+#: operations/workshop/external/paint-select.cc:30
 msgid "Add"
 msgstr "Ekle"
 
 #: operations/common/bevel.c:74 operations/common-gpl3+/sinus.c:67
 msgid "Blend Mode"
-msgstr "Karıştırma Kipi"
+msgstr "Harmanlama Kipi"
 
 #: operations/common/bevel.c:77
 msgid ""
@@ -840,10 +835,8 @@ msgid "Direction of a light source illuminating and shading the bevel."
 msgstr "Işık kaynağının yönü (derece olarak)"
 
 #: operations/common/bevel.c:309
-#, fuzzy
-#| msgid "Levels"
 msgid "Bevel"
-msgstr "Düzeyler"
+msgstr "Eğim"
 
 #: operations/common/bevel.c:311
 msgid ""
@@ -855,11 +848,11 @@ msgstr ""
 
 #: operations/common/bevel.c:313
 msgid "Bevel..."
-msgstr ""
+msgstr "Eğim..."
 
 #: operations/common/bilateral-filter.c:26
 #: operations/common/domain-transform.c:29 operations/common/dropshadow.c:46
-#: operations/common/inner-glow.c:69 operations/common-cxx/focus-blur.c:45
+#: operations/common/inner-glow.c:65 operations/common-cxx/focus-blur.c:45
 #: operations/common-cxx/lens-blur.cc:25
 #: operations/common-gpl3+/gaussian-blur-selective.c:29
 #: operations/workshop/bilateral-filter-fast.c:43
@@ -1031,11 +1024,11 @@ msgstr "Buffer Sink"
 #: operations/common/buffer-sink.c:88
 msgid "Create a new GEGL buffer to write the resulting rendering."
 msgstr ""
-"Ortaya çıkan görselleştirmeyi yazmak için yeni bir GEGL arabelleği oluştur."
+"Ortaya çıkan görselleştirmeyi yazmak için yeni bir GEGL tamponu oluştur."
 
 #: operations/common/buffer-source.c:25
 msgid "Input buffer"
-msgstr "Girdi arabelleği"
+msgstr "Girdi tamponu"
 
 #: operations/common/buffer-source.c:26
 msgid "The GeglBuffer to load into the pipeline"
@@ -1197,7 +1190,7 @@ msgstr "Bir dama tahtası örüntüsü görselleştir"
 
 #: operations/common/color.c:24 operations/common/color.c:87
 #: operations/common/color-overlay.c:26 operations/common/dropshadow.c:67
-#: operations/common/grid.c:64 operations/common/inner-glow.c:91
+#: operations/common/grid.c:64 operations/common/inner-glow.c:87
 #: operations/common/long-shadow.c:83 operations/common/rectangle.c:48
 #: operations/common/vignette.c:36 operations/common-gpl3+/color-to-alpha.c:29
 #: operations/common-gpl3+/supernova.c:60
@@ -1233,10 +1226,9 @@ msgstr "Izgara boyutu"
 #: operations/common/color-assimilation-grid.c:31
 #: operations/common/color-rotate.c:84 operations/common/fattal02.c:39
 #: operations/common/mantiuk06.c:33 operations/common/noise-hsv.c:34
-#: operations/common/saturation.c:404
+#: operations/common/saturation.c:404 operations/common/styles.c:387
 #: operations/external/lcms-from-profile.c:35
 #: operations/workshop/selective-hue-saturation.c:38
-#: operations/workshop/styles.c:388
 msgid "Saturation"
 msgstr "Doygunluk"
 
@@ -1283,7 +1275,7 @@ msgstr ""
 "Renk parlaklığını olabildiğince çok erimi kaplayacak biçimde genişlet, renk "
 "tonuna ve aydınlığa dokunma."
 
-#: operations/common/color-overlay.c:27 operations/common/inner-glow.c:92
+#: operations/common/color-overlay.c:27 operations/common/inner-glow.c:88
 msgid "The color to paint over the input"
 msgstr "Girdi üzerine boyanacak renk"
 
@@ -1862,11 +1854,11 @@ msgstr ""
 
 #: operations/common/copy-buffer.c:153
 msgid "Copy Buffer"
-msgstr "Arabelleği Kopyala"
+msgstr "Tamponu Kopyala"
 
 #: operations/common/copy-buffer.c:156
 msgid "Writes image data to an already existing buffer"
-msgstr "Görüntü verilerini zaten varolan bir arabelleğe yazar"
+msgstr "Görüntü verilerini zaten varolan bir tampona yazar"
 
 #: operations/common/difference-of-gaussians.c:24
 msgid "Radius 1"
@@ -1904,7 +1896,7 @@ msgstr "Ekran"
 
 #: operations/common/display.c:144
 msgid "Display the input buffer in a window."
-msgstr "Girdi arabelleğini bir pencerede göster."
+msgstr "Girdi tamponunu bir pencerede göster."
 
 #: operations/common/dither.c:31
 msgid "Red levels"
@@ -2013,28 +2005,28 @@ msgstr ""
 "pürüzsüzleştirme süzgeci. İkili süzgeçlere benzer, ancak hesaplaması daha "
 "hızlıdır."
 
-#: operations/common/dropshadow.c:27 operations/common/inner-glow.c:39
+#: operations/common/dropshadow.c:27 operations/common/inner-glow.c:35
 #: operations/common/median-blur.c:27 operations/common/pixelize.c:28
-#: operations/common/vignette.c:26 operations/common-cxx/focus-blur.c:35
-#: operations/workshop/styles.c:97
+#: operations/common/styles.c:96 operations/common/vignette.c:26
+#: operations/common-cxx/focus-blur.c:35
 msgid "Square"
 msgstr "Kare"
 
-#: operations/common/dropshadow.c:28 operations/common/inner-glow.c:40
+#: operations/common/dropshadow.c:28 operations/common/inner-glow.c:36
 #: operations/common/median-blur.c:28 operations/common/newsprint.c:26
-#: operations/common/vignette.c:25 operations/common-cxx/focus-blur.c:34
-#: operations/workshop/styles.c:98
+#: operations/common/styles.c:97 operations/common/vignette.c:25
+#: operations/common-cxx/focus-blur.c:34
 msgid "Circle"
 msgstr "Daire"
 
-#: operations/common/dropshadow.c:29 operations/common/inner-glow.c:41
+#: operations/common/dropshadow.c:29 operations/common/inner-glow.c:37
 #: operations/common/median-blur.c:29 operations/common/newsprint.c:27
-#: operations/common/pixelize.c:26 operations/common/vignette.c:27
-#: operations/common-cxx/focus-blur.c:36 operations/workshop/styles.c:99
+#: operations/common/pixelize.c:26 operations/common/styles.c:98
+#: operations/common/vignette.c:27 operations/common-cxx/focus-blur.c:36
 msgid "Diamond"
 msgstr "Karo"
 
-#: operations/common/dropshadow.c:32 operations/common/inner-glow.c:51
+#: operations/common/dropshadow.c:32 operations/common/inner-glow.c:47
 #: operations/common/layer.c:36 operations/common/rectangle.c:26
 #: operations/common-gpl3+/plasma.c:40
 #: operations/common-gpl3+/polar-coordinates.c:52
@@ -2047,12 +2039,12 @@ msgstr "Karo"
 msgid "X"
 msgstr "X"
 
-#: operations/common/dropshadow.c:33 operations/common/inner-glow.c:52
-#: operations/workshop/styles.c:146
+#: operations/common/dropshadow.c:33 operations/common/inner-glow.c:48
+#: operations/common/styles.c:145
 msgid "Horizontal shadow offset"
 msgstr "Yatay gölge konumu"
 
-#: operations/common/dropshadow.c:39 operations/common/inner-glow.c:59
+#: operations/common/dropshadow.c:39 operations/common/inner-glow.c:55
 #: operations/common/layer.c:41 operations/common/rectangle.c:31
 #: operations/common-gpl3+/plasma.c:47
 #: operations/common-gpl3+/polar-coordinates.c:59
@@ -2065,24 +2057,24 @@ msgstr "Yatay gölge konumu"
 msgid "Y"
 msgstr "Y"
 
-#: operations/common/dropshadow.c:40 operations/common/inner-glow.c:60
-#: operations/workshop/styles.c:155
+#: operations/common/dropshadow.c:40 operations/common/inner-glow.c:56
+#: operations/common/styles.c:154
 msgid "Vertical shadow offset"
 msgstr "Dikey gölge konumu"
 
-#: operations/common/dropshadow.c:53 operations/common/inner-glow.c:45
+#: operations/common/dropshadow.c:53 operations/common/inner-glow.c:41
 msgid "Grow shape"
 msgstr "Büyüme şekli"
 
-#: operations/common/dropshadow.c:56 operations/common/inner-glow.c:48
+#: operations/common/dropshadow.c:56 operations/common/inner-glow.c:44
 msgid "The shape to expand or contract the shadow in"
 msgstr "Gölgenin büyüme veya küçülme şekli"
 
-#: operations/common/dropshadow.c:58 operations/common/inner-glow.c:77
+#: operations/common/dropshadow.c:58 operations/common/inner-glow.c:73
 msgid "Grow radius"
 msgstr "Büyüme yarıçapı"
 
-#: operations/common/dropshadow.c:65 operations/common/inner-glow.c:84
+#: operations/common/dropshadow.c:65 operations/common/inner-glow.c:80
 msgid ""
 "The distance to expand the shadow before blurring; a negative value will "
 "contract the shadow instead"
@@ -2097,7 +2089,7 @@ msgstr "Gölge rengi (öntanımlı olarak 'black')"
 #. It does make sense to sometimes have opacities > 1 (see GEGL logo
 #. * for example)
 #.
-#: operations/common/dropshadow.c:74 operations/common/inner-glow.c:86
+#: operations/common/dropshadow.c:74 operations/common/inner-glow.c:82
 #: operations/common/layer.c:33 operations/common/opacity.c:25
 #: operations/common/opacity.c:289 operations/external/vector-fill.c:29
 #: operations/external/vector-stroke.c:34
@@ -2110,7 +2102,7 @@ msgstr "Gölge"
 
 #: operations/common/dropshadow.c:188
 msgid "Creates a dropshadow effect on the input buffer"
-msgstr "Girdi arabelleğinde gölge etkisi oluşturur"
+msgstr "Girdi tamponunda gölge etkisi oluşturur"
 
 #: operations/common/edge-neon.c:48
 msgid "Radius of effect (in pixels)"
@@ -2474,8 +2466,8 @@ msgid "Chroma adjustment"
 msgstr "Renk parlaklığı ayarı"
 
 #: operations/common/hue-chroma.c:33 operations/common/noise-cie-lch.c:29
+#: operations/common/styles.c:392
 #: operations/workshop/selective-hue-saturation.c:42
-#: operations/workshop/styles.c:393
 msgid "Lightness"
 msgstr "Aydınlık"
 
@@ -2591,30 +2583,30 @@ msgstr "Görüntü Renk Geçişi"
 msgid "Compute gradient magnitude and/or direction by central differences"
 msgstr "Merkezi farklara göre renk geçişi büyüklüğünü ve/veya yönünü hesapla"
 
-#: operations/common/inner-glow.c:96
+#: operations/common/inner-glow.c:92
 msgid "Median fix for non-effected pixels on edges"
 msgstr ""
 
-#: operations/common/inner-glow.c:98
+#: operations/common/inner-glow.c:94
 msgid ""
 "Median Blur covers uneffected pixels. Making this slider too high will make "
 "it outline-like. So only slide it as high as you need to cover thin shape "
 "corners."
 msgstr ""
 
-#: operations/common/inner-glow.c:178
+#: operations/common/inner-glow.c:179
 msgid "Inner Glow"
-msgstr ""
+msgstr "İç Parıltı"
 
-#: operations/common/inner-glow.c:180
+#: operations/common/inner-glow.c:181
 msgid ""
 "GEGL does an inner shadow glow effect; for more interesting use different "
 "blend mode than the default, Replace."
 msgstr ""
 
-#: operations/common/inner-glow.c:182
+#: operations/common/inner-glow.c:183
 msgid "Inner Glow..."
-msgstr ""
+msgstr "İç Parıltı..."
 
 #: operations/common/introspect.c:27
 msgid "Node"
@@ -4040,8 +4032,8 @@ msgid ""
 "Global opacity value that is always used on top of the optional auxiliary "
 "input buffer."
 msgstr ""
-"Genel ışık geçirmezlik değeri her zaman isteğe bağlı yardımcı girdi "
-"arabelleğin üstünde kullanılır."
+"Genel ışık geçirmezlik değeri her zaman isteğe bağlı yardımcı girdi tamponu "
+"üstünde kullanılır."
 
 #: operations/common/opacity.c:292
 msgid ""
@@ -4053,15 +4045,15 @@ msgstr ""
 
 #: operations/common/open-buffer.c:26
 msgid "a GeglBuffer on disk to open"
-msgstr "Disk üzerinde açılacak bir GEGL arabelleği"
+msgstr "Disk üzerinde açılacak bir GEGL tamponu"
 
 #: operations/common/open-buffer.c:131
 msgid "Open GEGL Buffer"
-msgstr "GEGL Arabelleğini Aç"
+msgstr "GEGL Tamponunu Aç"
 
 #: operations/common/open-buffer.c:133
 msgid "Use an on-disk GeglBuffer as data source."
-msgstr "Veri kaynağı olarak disk üzerinde GEGL arabelleği kullan."
+msgstr "Veri kaynağı olarak disk üzerinde GEGL tamponu kullan."
 
 #: operations/common/over.c:209
 msgid "Normal compositing"
@@ -4611,6 +4603,577 @@ msgstr ""
 "görüntüleri geliştirir. Bu sürüm HSV uzayında çalışan Karşıtlığı "
 "Kendiliğinden Genişlet özelliğinden farklıdır ve renk tonunu korur."
 
+#: operations/common/styles.c:29
+msgid "Color, Outline and Shadow"
+msgstr ""
+
+#: operations/common/styles.c:30
+#, fuzzy
+msgid "Bevel and Inner Glow"
+msgstr "Eğim ve İç Parıltı"
+
+#: operations/common/styles.c:31
+msgid "Image upload and Outline Bevel"
+msgstr ""
+
+#. List of all GUI options
+#. GUI Change list in GUI
+#: operations/common/styles.c:38
+#, fuzzy
+#| msgid "Path of file to load"
+msgid "Part of filter to be displayed"
+msgstr "Yüklenecek dosyanın yolu"
+
+#: operations/common/styles.c:41
+msgid "Display a different part of the GUI"
+msgstr ""
+
+#. Color Overlays GUI options begin here
+#: operations/common/styles.c:45
+#, fuzzy
+#| msgid "Color Overlay"
+msgid "Color overlay"
+msgstr "Renk Kaplama"
+
+#: operations/common/styles.c:47
+#, fuzzy
+#| msgid "Color averaging"
+msgid "Color overlay setting"
+msgstr "Renk ortalaması"
+
+#: operations/common/styles.c:49
+#, fuzzy
+#| msgid "Color model"
+msgid "Color policy"
+msgstr "Renk modeli"
+
+#: operations/common/styles.c:50
+msgid "Change the blend mode of the color overlay"
+msgstr ""
+
+#: operations/common/styles.c:57
+#, fuzzy
+#| msgid "To Color"
+msgid "No Color"
+msgstr "Renge"
+
+#: operations/common/styles.c:61
+#, fuzzy
+#| msgid "To Color"
+msgid "Solid Color"
+msgstr "Renge"
+
+# Wikipediaya göre: Sinematografi ve fotoğrafçılıkta önflaş, filmin veya diğer fotosensörün görüntülenecek sahneye maruz bırakılmadan önce tek tip ışığa maruz bırakılmasıdır. Bu, sensör tarafından kaydedilen toplam ışık girişine bir sapma ekler.
+#. Outline's normal GUI options begin here
+#: operations/common/styles.c:67
+#, fuzzy
+#| msgid "Enable preflashing"
+msgid "Enable Outline"
+msgstr "Ön flaşlamayı etkinleştir"
+
+#: operations/common/styles.c:68
+msgid "Disable or enable the outline"
+msgstr ""
+
+#: operations/common/styles.c:71
+#, fuzzy
+#| msgid "Stroke opacity"
+msgid "Outline opacity"
+msgstr "Darbe ışık geçirmezliği"
+
+#: operations/common/styles.c:74
+#, fuzzy
+#| msgid "Opacity threshold"
+msgid "Opacity of the outline"
+msgstr "Matlık eşiği"
+
+#: operations/common/styles.c:78
+msgid "Outline X"
+msgstr "Anahat X"
+
+#: operations/common/styles.c:79
+#, fuzzy
+#| msgid "Horizontal offset"
+msgid "Horizontal outline offset"
+msgstr "Yatay konum"
+
+#: operations/common/styles.c:86
+msgid "Outline Y"
+msgstr "Anahat Y"
+
+#: operations/common/styles.c:87
+#, fuzzy
+#| msgid "Vertical offset"
+msgid "Vertical outline offset"
+msgstr "Dikey konum"
+
+#: operations/common/styles.c:101
+#, fuzzy
+#| msgid "Grow shape"
+msgid "Outline grow shape"
+msgstr "Büyüme şekli"
+
+#: operations/common/styles.c:104
+#, fuzzy
+#| msgid "The shape to expand or contract the shadow in"
+msgid "The shape to expand or contract the outline in"
+msgstr "Gölgenin büyüme veya küçülme şekli"
+
+#: operations/common/styles.c:108
+msgid "Outline blur radius"
+msgstr "Anahat bulanıklık yarıçapı"
+
+#: operations/common/styles.c:114
+msgid "A mild blur for the outline"
+msgstr ""
+
+#: operations/common/styles.c:118
+msgid "Outline grow radius"
+msgstr "Anahat büyüme yarıçapı"
+
+#: operations/common/styles.c:125
+msgid "The distance to expand the outline"
+msgstr "Anahattın genişletileceği mesafe"
+
+#. Shadow's GUI options begin here
+#: operations/common/styles.c:130
+msgid "Outline’s color"
+msgstr "Anahat rengi"
+
+#: operations/common/styles.c:131
+#, fuzzy
+#| msgid "Color for the text (defaults to 'black')"
+msgid "Color of the outline (defaults to 'black') "
+msgstr "Metin için renk (öntanımlı olarak 'black')"
+
+#: operations/common/styles.c:136
+#, fuzzy
+#| msgid "Fade opacity"
+msgid "Shadow/Glow opacity"
+msgstr "Matlığı soldur"
+
+#: operations/common/styles.c:140
+msgid "Shadow opacity which will also enable or disable the shadow glow effect"
+msgstr ""
+
+#: operations/common/styles.c:144
+#, fuzzy
+#| msgid "Shadow color"
+msgid "Shadow/Glow X"
+msgstr "Gölge rengi"
+
+#: operations/common/styles.c:150
+#, fuzzy
+#| msgid "Horizontal shadow offset"
+msgid "Horizontal axis of the shadow glow"
+msgstr "Yatay gölge konumu"
+
+#: operations/common/styles.c:153
+#, fuzzy
+#| msgid "Shadow color"
+msgid "Shadow/Glow Y"
+msgstr "Gölge rengi"
+
+#: operations/common/styles.c:159
+#, fuzzy
+#| msgid "Vertical shadow offset"
+msgid "Vertical axis of the shadow glow"
+msgstr "Dikey gölge konumu"
+
+#: operations/common/styles.c:162
+#, fuzzy
+#| msgid "Shadow color"
+msgid "Shadow/Glow’s color"
+msgstr "Gölge rengi"
+
+#. TRANSLATORS: the string 'black' should not be translated
+#: operations/common/styles.c:164
+#, fuzzy
+#| msgid "The shadow's color (defaults to 'black')"
+msgid "The shadow’s color (defaults to 'black')"
+msgstr "Gölge rengi (öntanımlı olarak 'black')"
+
+#: operations/common/styles.c:167
+#, fuzzy
+#| msgid "Glow radius"
+msgid "Shadow/Glow grow radius"
+msgstr "Parıltı yarıçapı"
+
+#: operations/common/styles.c:174
+#, fuzzy
+#| msgid ""
+#| "The distance to expand the shadow before blurring; a negative value will "
+#| "contract the shadow instead"
+msgid "The distance to expand the shadow before blurring."
+msgstr ""
+"Bulanıklaştırmadan önce gölgenin büyüme mesafesi; eksi değer gölgeyi küçültür"
+
+#: operations/common/styles.c:177
+#, fuzzy
+#| msgid "Maximal blur radius"
+msgid "Shadow/Glow blur radius"
+msgstr "Azami bulanıklık yarıçapı"
+
+#: operations/common/styles.c:183
+msgid "The shadow’s blur range"
+msgstr ""
+
+#. Bevel's GUI options begin here
+#. This is the Bevel's ENUM List listed in the GUI
+#. This is the ENUM list for bevel's emboss blend modes
+#: operations/common/styles.c:191
+#, fuzzy
+#| msgid "Blue levels"
+msgid "Enable Bevel"
+msgstr "Mavi düzeyleri"
+
+#: operations/common/styles.c:192
+msgid "Whether to add a bevel effect"
+msgstr ""
+
+#: operations/common/styles.c:209
+msgid "Bevel blend mode"
+msgstr "Eğim harmanlama kipi"
+
+#: operations/common/styles.c:210
+msgid "Blend mode of the bevel"
+msgstr "Eğimin harmanlama kipi"
+
+#: operations/common/styles.c:218
+#, fuzzy
+#| msgid "Waterlevel"
+msgid "Chamfer Bevel"
+msgstr "Su düzeyi"
+
+#: operations/common/styles.c:220
+#, fuzzy
+#| msgid "Levels"
+msgid "Bump Bevel"
+msgstr "Düzeyler"
+
+#: operations/common/styles.c:223
+#, fuzzy
+#| msgid "Blue levels"
+msgid "Select Bevel"
+msgstr "Mavi düzeyleri"
+
+#: operations/common/styles.c:226
+#, fuzzy
+#| msgid "Type of map"
+msgid "Type of bevel "
+msgstr "Eşlem türü"
+
+#: operations/common/styles.c:232
+msgid "Bevel depth"
+msgstr "Eğim derinliği"
+
+#: operations/common/styles.c:233
+msgid "Emboss depth for the bevel"
+msgstr ""
+
+#: operations/common/styles.c:239
+msgid "Bevel elevation"
+msgstr "Eğim yüksekliği"
+
+#: operations/common/styles.c:240
+#, fuzzy
+#| msgid "Elevation angle (degrees)"
+msgid "Emboss elevation of the bevel"
+msgstr "Yükselme açısı (derece)"
+
+#: operations/common/styles.c:247
+msgid "Bevel azimuth"
+msgstr "Eğim azimutu"
+
+#: operations/common/styles.c:248
+msgid "Emboss azimuth of the bevel"
+msgstr ""
+
+#: operations/common/styles.c:255
+#, fuzzy
+msgid "Bevel radius (bump only)"
+msgstr "Eğim yarıçapı (sadece tümsek)"
+
+#: operations/common/styles.c:259
+msgid ""
+"Internal gaussian blur to inflate the bump bevel. This option does not work "
+"on chamfer"
+msgstr ""
+
+#: operations/common/styles.c:265
+msgid "Levels low output lighting for Bevel"
+msgstr ""
+
+#: operations/common/styles.c:266
+msgid "Levels low output as a light adjustment for the bevel"
+msgstr ""
+
+#: operations/common/styles.c:274
+msgid "Levels high output lighting for Bevel"
+msgstr ""
+
+#: operations/common/styles.c:275
+msgid "Levels high output as a light adjustment for the bevel"
+msgstr ""
+
+#: operations/common/styles.c:283
+msgid "Dark Bevel/ignore image mode"
+msgstr ""
+
+#: operations/common/styles.c:284
+msgid ""
+"This instructs the bevel to ignore image details if there is an image file "
+"overlay below it. It also allows bevel to work better when the user selects "
+"darker colors. The effect is noticeable on bump bevel but barely effects "
+"chamfer bevel"
+msgstr ""
+
+#. This operation is extremely important for bevels with image file overlays
+#. Inner Glow GUI options begin here
+#: operations/common/styles.c:294
+msgid "Enable Inner Glow"
+msgstr ""
+
+#: operations/common/styles.c:295
+msgid "Whether to add the inner glow effect"
+msgstr ""
+
+#: operations/common/styles.c:304
+msgid "Normal"
+msgstr "Normal"
+
+#: operations/common/styles.c:306
+msgid "Overlay"
+msgstr "Kaplama"
+
+#: operations/common/styles.c:308
+msgid "Screen"
+msgstr "Ekran"
+
+#: operations/common/styles.c:314
+msgid "Plus"
+msgstr ""
+
+#: operations/common/styles.c:317
+msgid "Blend mode of Inner Glow"
+msgstr "İç parıltının harmanlama kipi"
+
+#: operations/common/styles.c:323
+msgid "Inner Glow's blur radius"
+msgstr "İç Parıltı bulanıklık yarıçapı"
+
+#: operations/common/styles.c:329
+#, fuzzy
+#| msgid "Blue threshold of the input color"
+msgid "Blur control of the inner glow"
+msgstr "Girdi renginin mavi eşiği"
+
+#: operations/common/styles.c:333
+msgid "Inner Glow's grow radius"
+msgstr "İç Parıltı büyüme yarıçapı"
+
+#: operations/common/styles.c:340
+msgid "The distance to expand the inner glow before blurring"
+msgstr ""
+
+#: operations/common/styles.c:344
+msgid "Inner Glow's opacity"
+msgstr "İç Parıltı matlığı"
+
+#: operations/common/styles.c:347
+msgid "Opacity of the inner glow"
+msgstr ""
+
+#: operations/common/styles.c:351
+msgid "Inner Glow's color"
+msgstr "İç Parıltı rengi"
+
+#: operations/common/styles.c:352
+#, fuzzy
+#| msgid "The color of supernova."
+msgid "The color of the inner glow"
+msgstr "Süpernova rengi."
+
+#: operations/common/styles.c:356
+msgid "Inner Glow's unmodified pixel fix"
+msgstr "İç Parıltı'nın değiştirilmemiş piksel düzeltmesi"
+
+#: operations/common/styles.c:358
+msgid "Cover pixels that inner glow might miss"
+msgstr ""
+
+#. Without this Inner Glow would miss many pixels around alpha defined shapes edges'
+#. Image file overlay GUI options begin here
+#: operations/common/styles.c:365
+#, fuzzy
+#| msgid "WebP image loader."
+msgid "Enable image upload"
+msgstr "WebP görüntü yükleyici."
+
+#: operations/common/styles.c:366 operations/common/styles.c:465
+msgid "Whether to enable or disable the image file upload."
+msgstr ""
+
+#: operations/common/styles.c:369
+msgid "Image file overlay"
+msgstr ""
+
+#: operations/common/styles.c:370
+#, fuzzy
+#| msgid "Source image file path (png, jpg, raw, svg, bmp, tif, ...)"
+msgid ""
+"Upload an image file from your computer to be in the fill area. Allows (png, "
+"jpg, raw, svg, bmp, tif, ...)"
+msgstr "Kaynak görüntü dosyası yolu (png, jpg, raw, svg, bmp, tif, ...)"
+
+#: operations/common/styles.c:374
+#, fuzzy
+#| msgid "Path of video file to load"
+msgid "Opacity of image file overlay"
+msgstr "Yüklenecek video dosyasının yolu"
+
+#: operations/common/styles.c:377
+msgid "Opacity of the image file overlay that was uploaded. "
+msgstr ""
+
+#: operations/common/styles.c:388
+msgid ""
+"Saturation adjustment of the uploaded image file or whatever is on canvas"
+msgstr ""
+
+#: operations/common/styles.c:393
+msgid ""
+"Lightness adjustment of the uploaded image file or whatever is on canvas"
+msgstr ""
+
+#. Outline special options in GUI begin here
+#: operations/common/styles.c:398
+msgid "Enable advanced options on Outline (requires outline)"
+msgstr ""
+
+#: operations/common/styles.c:399
+msgid "Turn on advanced outline abilities"
+msgstr ""
+
+#: operations/common/styles.c:404
+msgid "Enable Outline Bevel (requires advanced options)"
+msgstr ""
+
+#: operations/common/styles.c:405
+msgid "Turn on outlines ability to bevel"
+msgstr ""
+
+#: operations/common/styles.c:426
+msgid "Outline Bevel blend mode"
+msgstr ""
+
+#: operations/common/styles.c:427
+msgid "Blend mode of the outline bevel"
+msgstr "Anahat eğiminin harmanlama kipi"
+
+#: operations/common/styles.c:434
+msgid "Outline Bevel depth"
+msgstr ""
+
+#: operations/common/styles.c:435
+msgid "Emboss depth for the outline bevel"
+msgstr ""
+
+#: operations/common/styles.c:440
+msgid "Outline Bevel elevation"
+msgstr ""
+
+#: operations/common/styles.c:441
+msgid "Emboss elevation for the outline bevel"
+msgstr ""
+
+#: operations/common/styles.c:447
+msgid "Outline Bevel azimuth"
+msgstr ""
+
+#: operations/common/styles.c:448
+msgid "Emboss azimuth for the outline bevel"
+msgstr ""
+
+#: operations/common/styles.c:455
+msgid "Outline Bevel radius"
+msgstr ""
+
+#: operations/common/styles.c:456
+msgid "Internal gaussian blur to inflate the outline bevel"
+msgstr ""
+
+#: operations/common/styles.c:464
+msgid "Enable image upload on Outline (requires advanced options)"
+msgstr ""
+
+#: operations/common/styles.c:469
+msgid "Outline image file overlay"
+msgstr ""
+
+#: operations/common/styles.c:470
+#, fuzzy
+#| msgid "Source image file path (png, jpg, raw, svg, bmp, tif, ...)"
+msgid ""
+"Upload an image file from your computer to be in the outline area. Allows "
+"(png, jpg, raw, svg, bmp, tif, ...)"
+msgstr "Kaynak görüntü dosyası yolu (png, jpg, raw, svg, bmp, tif, ...)"
+
+#: operations/common/styles.c:475
+#, fuzzy
+#| msgid "Fade opacity"
+msgid "Outline image opacity"
+msgstr "Matlığı soldur"
+
+#: operations/common/styles.c:476
+#, fuzzy
+#| msgid "White point adjustment"
+msgid "Outline image opacity adjustment"
+msgstr "Beyaz nokta ayarı"
+
+#: operations/common/styles.c:481
+msgid "Levels low output lighting for Outline Bevel"
+msgstr ""
+
+#: operations/common/styles.c:482
+msgid "Levels low output as a light adjustment for the outline bevel"
+msgstr ""
+
+#: operations/common/styles.c:489
+msgid "Levels high output lighting for Outline Bevel"
+msgstr ""
+
+#: operations/common/styles.c:490
+msgid "Levels high output as a light adjustment for the outline bevel"
+msgstr ""
+
+#: operations/common/styles.c:498
+msgid "Outline Dark Bevel/ignore image mode"
+msgstr ""
+
+#: operations/common/styles.c:499
+msgid ""
+"This instructs the outline bevel to ignore image details if there is an "
+"image file overlay below it. It also allows outline bevel to work better "
+"when the user selects darker colors."
+msgstr ""
+
+#: operations/common/styles.c:1249
+#, fuzzy
+#| msgid "Style"
+msgid "GEGL Styles"
+msgstr "Biçim"
+
+#: operations/common/styles.c:1252
+msgid ""
+"An engine to style text and add popular effects to alpha channel images. "
+"Effects include outline, bevel, shadow, and inner glow all in one place."
+msgstr ""
+
+#: operations/common/styles.c:1255
+msgid "Text Styling..."
+msgstr ""
+
 #: operations/common/svg-huerotate.c:27 operations/common/svg-matrix.c:27
 #: operations/common/svg-saturate.c:25
 msgid "Values"
@@ -4694,8 +5257,8 @@ msgid ""
 "Make the input buffer seamlessly tileable. The algorithm is not content-"
 "aware, so the result may need post-processing."
 msgstr ""
-"Girdi arabelleğini kusursuz döşe. Algoritma içerik duyarlı değildir, bu "
-"nedenle sonucun işlemden geçirilmesi gerekebilir."
+"Girdi tamponunu kusursuz döşe. Algoritma içerik duyarlı değildir, bu nedenle "
+"sonucun işlemden geçirilmesi gerekebilir."
 
 #: operations/common/unpremultiply.c:78
 msgid "Unpremultiply alpha"
@@ -4898,8 +5461,7 @@ msgstr "alfa değerlerini ağırlık olarak kullanarak iki görüntüyü karış
 #: operations/common/write-buffer.c:26
 msgid "A pre-existing GeglBuffer to write incoming buffer data to."
 msgstr ""
-"Gelen tampon verisinin yazılacağı daha önceden var olan GeglBuffer "
-"arabelleği."
+"Gelen tampon verisinin yazılacağı daha önceden var olan GeglBuffer tamponu."
 
 #: operations/common/write-buffer.c:176
 msgid "Write Buffer"
@@ -5731,13 +6293,13 @@ msgstr "Kutuplaşma"
 #: operations/common-gpl3+/noise-solid.c:64 operations/common-gpl3+/plasma.c:55
 #: operations/common-gpl3+/sinus.c:76 operations/common-gpl3+/spiral.c:87
 msgid "Width of the generated buffer"
-msgstr "Oluşturulan arabelleğin genişliği"
+msgstr "Oluşturulan tamponun genişliği"
 
 #: operations/common-gpl3+/diffraction-patterns.c:86
 #: operations/common-gpl3+/noise-solid.c:72 operations/common-gpl3+/plasma.c:63
 #: operations/common-gpl3+/sinus.c:84 operations/common-gpl3+/spiral.c:95
 msgid "Height of the generated buffer"
-msgstr "Oluşturulan arabelleğin yüksekliği"
+msgstr "Oluşturulan tamponun yüksekliği"
 
 #: operations/common-gpl3+/diffraction-patterns.c:383
 msgid "Diffraction Patterns"
@@ -6144,7 +6706,7 @@ msgstr "Kurtarma uzunluğu"
 
 #: operations/common-gpl3+/fractal-trace.c:69
 msgid "How to deal with pixels outside of the input buffer"
-msgstr "Girdi arabelleğinin dışındaki pikseller nasıl ele alınsın"
+msgstr "Girdi tamponu dışındaki pikseller nasıl ele alınsın"
 
 #: operations/common-gpl3+/fractal-trace.c:175
 msgid "Unsupported fractal type"
@@ -6605,33 +7167,31 @@ msgstr "Yoğunluk Kipi"
 msgid "Use pixel luminance values"
 msgstr "Piksel parlaklık değerlerini kullan"
 
-#: operations/common-gpl3+/oilify.c:587
-#, fuzzy
+#: operations/common-gpl3+/oilify.c:612
 msgid "Mask radius buffer"
-msgstr "Maske yarıçap arabelleği"
+msgstr "Maske yarıçap tamponu"
 
-#: operations/common-gpl3+/oilify.c:588
+#: operations/common-gpl3+/oilify.c:613
 msgid ""
 "Per pixel buffer for modulating the mask radius, expecting a scaling factor "
 "in range 0.0-1.0"
 msgstr ""
 
-#: operations/common-gpl3+/oilify.c:591
-#, fuzzy
+#: operations/common-gpl3+/oilify.c:616
 msgid "Exponent buffer"
-msgstr "Katsayı arabelleği"
+msgstr "Katsayı tamponu"
 
-#: operations/common-gpl3+/oilify.c:592
+#: operations/common-gpl3+/oilify.c:617
 msgid ""
 "Per pixel buffer for modulating the exponent parameter, expecting a scaling "
 "factor in range 0.0-1.0"
 msgstr ""
 
-#: operations/common-gpl3+/oilify.c:603
+#: operations/common-gpl3+/oilify.c:628
 msgid "Oilify"
 msgstr "Yağlı boya"
 
-#: operations/common-gpl3+/oilify.c:607
+#: operations/common-gpl3+/oilify.c:632
 msgid "Emulate an oil painting"
 msgstr "Yağlı boya benzetimi yap"
 
@@ -6657,11 +7217,11 @@ msgstr "Yüksek değerler ayrıntılarda daha çok çeşitlilik sunar"
 
 #: operations/common-gpl3+/plasma.c:41
 msgid "X start of the generated buffer"
-msgstr "Oluşturulan arabelleğin X başlangıcı"
+msgstr "Oluşturulan tamponun X başlangıcı"
 
 #: operations/common-gpl3+/plasma.c:48
 msgid "Y start of the generated buffer"
-msgstr "Oluşturulan arabelleğin Y başlangıcı"
+msgstr "Oluşturulan tamponun Y başlangıcı"
 
 #: operations/common-gpl3+/plasma.c:445
 msgid "Plasma"
@@ -7671,11 +8231,11 @@ msgstr "audio-codec"
 msgid "audio"
 msgstr "audio"
 
-#: operations/external/ff-load.c:868
+#: operations/external/ff-load.c:876
 msgid "FFmpeg Frame Loader"
 msgstr "FFmpeg Çerçeve Yükleyici"
 
-#: operations/external/ff-load.c:870
+#: operations/external/ff-load.c:878
 msgid "FFmpeg video frame importer."
 msgstr "FFmpeg video çerçeve içe aktarıcı."
 
@@ -7820,11 +8380,11 @@ msgstr "i-quant-offset"
 msgid "me-subpel-quality"
 msgstr "me-subpel-quality"
 
-#: operations/external/ff-save.c:1218
+#: operations/external/ff-save.c:1243
 msgid "FFmpeg Frame Saver"
 msgstr "FFmpeg Çerçeve Kaydedici"
 
-#: operations/external/ff-save.c:1220
+#: operations/external/ff-save.c:1245
 msgid "FFmpeg video output sink"
 msgstr "FFmpeg video çıktı havuzu"
 
@@ -8030,7 +8590,7 @@ msgid ""
 "processing."
 msgstr ""
 "ICC renk profilinden bir girdiyi, iyi tanımlanmış babl biçimine dönüştürür. "
-"Arabelleğin verisi daha ileri işleme için GEGL tarafından yönetilecektir."
+"Tamponun verisi daha ileri işleme için GEGL tarafından yönetilecektir."
 
 #: operations/external/matting-levin.c:25
 msgid "Epsilon"
@@ -8213,13 +8773,11 @@ msgstr "Kullanılacak doldurma ışık geçirmezliği"
 
 #: operations/external/path.c:54 operations/external/vector-fill.c:40
 #: operations/external/vector-stroke.c:41
-#: operations/workshop/external/ctx-script.c:26
 msgid "Vector"
 msgstr "Vektör"
 
 #: operations/external/path.c:55 operations/external/vector-fill.c:41
 #: operations/external/vector-stroke.c:42
-#: operations/workshop/external/ctx-script.c:27
 msgid "A GeglVector representing the path of the stroke"
 msgstr "Darbe yolunu temsil eden bir GeglVector"
 
@@ -8426,8 +8984,8 @@ msgid ""
 "Displays the input buffer in an SDL2 window (restricted to one display op/"
 "process, due to SDL2 implementation issues)."
 msgstr ""
-"Girdi arabelleğini bir SDL2 penceresinde görüntüle (SDL2 gerçekleme "
-"sorunları nedeniyle tek ekran op/işlem ile sınırlıdır)."
+"Girdi tamponunu bir SDL2 penceresinde görüntüle (SDL2 gerçekleme sorunları "
+"nedeniyle tek ekran op/işlem ile sınırlıdır)."
 
 #: operations/external/sdl-display.c:27
 msgid "Icon title"
@@ -8446,7 +9004,7 @@ msgid ""
 "Displays the input buffer in an SDL window (restricted to one display op/"
 "process, due to SDL implementation issues)."
 msgstr ""
-"Girdi arabelleğini bir SDL penceresinde görüntüle (SDL gerçekleme sorunları "
+"Girdi tamponunu bir SDL penceresinde görüntüle (SDL gerçekleme sorunları "
 "nedeniyle tek ekran op/işlem ile sınırlı)"
 
 #: operations/external/svg-load.c:31 operations/external/v4l.c:29
@@ -8989,7 +9547,7 @@ msgstr "Döndür"
 
 #: operations/transform/rotate.c:96
 msgid "Rotate the buffer around the specified origin."
-msgstr "Arabelleği belirtilen başlangıç noktasının etrafında döndür."
+msgstr "Tamponu belirtilen başlangıç noktasının etrafında döndür."
 
 #: operations/transform/rotate-on-center.c:31
 msgid "origin-x"
@@ -8998,7 +9556,7 @@ msgstr "origin-x"
 #: operations/transform/rotate-on-center.c:32
 #: operations/transform/rotate-on-center.c:34
 msgid "Ignored. Always uses center of input buffer"
-msgstr "Yok sayıldı. Her zaman girdi arabelleğinin merkezini kullan"
+msgstr "Yok sayıldı. Her zaman girdi tamponu merkezini kullan"
 
 #: operations/transform/rotate-on-center.c:33
 msgid "origin-y"
@@ -9026,7 +9584,7 @@ msgstr "Ölçek oranı"
 
 #: operations/transform/scale-ratio.c:98
 msgid "Scales the buffer according to a ratio."
-msgstr "Bir orana göre arabelleği ölçekler."
+msgstr "Bir orana göre tamponu ölçekler."
 
 #: operations/transform/scale-size.c:26
 #: operations/transform/scale-size-keepaspect.c:26
@@ -9044,7 +9602,7 @@ msgstr "Boyutu ölçekle"
 
 #: operations/transform/scale-size.c:85
 msgid "Scales the buffer according to a size."
-msgstr "Bir boyuta göre arabelleği ölçekle."
+msgstr "Bir boyuta göre tamponu ölçekle."
 
 #: operations/transform/scale-size-keepaspect.c:122
 msgid "Scale size keep aspect"
@@ -9052,7 +9610,7 @@ msgstr "Boyutu ölçekle, en boy oranını koru"
 
 #: operations/transform/scale-size-keepaspect.c:126
 msgid "Scales the buffer to a size, preserving aspect ratio"
-msgstr "En boy oranını koruyarak arabelleği bir boyuta ölçekle"
+msgstr "En boy oranını koruyarak tamponu bir boyuta ölçekle"
 
 #: operations/transform/shear.c:26
 msgid "Horizontal shear amount"
@@ -9068,9 +9626,8 @@ msgstr "Kesme"
 
 #: operations/transform/shear.c:95
 #, fuzzy
-#| msgid "Shears the buffer. "
 msgid "Shears the buffer. "
-msgstr "Arabelleği keser. "
+msgstr "Tamponu keser. "
 
 #: operations/transform/transform.c:25
 msgid "Transformation SVG syntax transformation string"
@@ -9273,7 +9830,7 @@ msgstr "Çıktıyı erime normalleştir [taban,taban + adım]"
 msgid "Connected Components"
 msgstr "Bağlanmış Bileşenler"
 
-#: operations/workshop/connected-components.c:290
+#: operations/workshop/connected-components.c:292
 msgid ""
 "Fills each connected region of the input, separated from the rest of the "
 "input by a given color, with a unique color."
@@ -9324,18 +9881,6 @@ msgid "Test op to do a 1:1 map of input to output, while sampling"
 msgstr ""
 "Örnekleme yaparken op çıktısını 1:1 olan bir girdi haritası yapmak için test "
 "et"
-
-#: operations/workshop/external/ctx-script.c:126
-#, fuzzy
-#| msgid "Script"
-msgid "Ctx script"
-msgstr "Betik"
-
-#: operations/workshop/external/ctx-script.c:128
-#, fuzzy
-#| msgid "Renders a vector stroke"
-msgid "Renders a ctx vector graphics"
-msgstr "Vektör darbesi görselleştir"
 
 #: operations/workshop/external/gluas.c:29
 msgid "Script"
@@ -9596,9 +10141,8 @@ msgid ""
 "specified line in the input buffer, plotted in a buffer of the specified "
 "size."
 msgstr ""
-"Girdi arabelleğinde belirtilen satır boyunca kırmızı, yeşil ve mavi "
-"bileşenler için, çizilerek belirtilmiş tampon boyunca, parlaklık profili "
-"görselleştir."
+"Girdi tamponunda belirtilen satır boyunca kırmızı, yeşil ve mavi bileşenler "
+"için, çizilerek belirtilmiş tampon boyunca, parlaklık profili görselleştir."
 
 #: operations/workshop/external/spyrograph.c:27
 msgid "Spyrograph"
@@ -9713,7 +10257,7 @@ msgstr "Görüntü kenarlarının da parçacıklanıp parçacıklanmayacağı"
 msgid "Voronoi Diagram"
 msgstr "Voronoi Çizimi"
 
-#: operations/workshop/external/voronoi-diagram.cc:531
+#: operations/workshop/external/voronoi-diagram.cc:533
 #, fuzzy
 msgid "Paints each non-seed pixel with the color of the nearest seed pixel."
 msgstr "Her parçacık olmayan beneği en yakın parçacık beneğinin rengiyle boya"
@@ -9896,631 +10440,3 @@ msgid ""
 "Shuffles pixels, and quantization with neighbors to optimize dither, by "
 "shuffling neighboring pixels."
 msgstr ""
-
-#: operations/workshop/styles.c:30
-msgid "Color, Outline and Shadow"
-msgstr ""
-
-#: operations/workshop/styles.c:31
-msgid "Bevel and Inner Glow"
-msgstr ""
-
-#: operations/workshop/styles.c:32
-msgid "Image upload and Outline Bevel"
-msgstr ""
-
-#. List of all GUI options
-#. GUI Change list in GUI
-#: operations/workshop/styles.c:39
-#, fuzzy
-#| msgid "Path of file to load"
-msgid "Part of filter to be displayed"
-msgstr "Yüklenecek dosyanın yolu"
-
-#: operations/workshop/styles.c:42
-msgid "Display a different part of the GUI"
-msgstr ""
-
-#. Color Overlays GUI options begin here
-#: operations/workshop/styles.c:46
-#, fuzzy
-#| msgid "Color Overlay"
-msgid "Color overlay"
-msgstr "Renk Kaplama"
-
-#: operations/workshop/styles.c:48
-#, fuzzy
-#| msgid "Color averaging"
-msgid "Color overlay setting"
-msgstr "Renk ortalaması"
-
-#: operations/workshop/styles.c:50
-#, fuzzy
-#| msgid "Color model"
-msgid "Color policy"
-msgstr "Renk modeli"
-
-#: operations/workshop/styles.c:51
-msgid "Change the blend mode of the color overlay"
-msgstr ""
-
-#: operations/workshop/styles.c:58
-#, fuzzy
-#| msgid "To Color"
-msgid "No Color"
-msgstr "Renge"
-
-#: operations/workshop/styles.c:62
-#, fuzzy
-#| msgid "To Color"
-msgid "Solid Color"
-msgstr "Renge"
-
-# Wikipediaya göre: Sinematografi ve fotoğrafçılıkta önflaş, filmin veya diğer fotosensörün görüntülenecek sahneye maruz bırakılmadan önce tek tip ışığa maruz bırakılmasıdır. Bu, sensör tarafından kaydedilen toplam ışık girişine bir sapma ekler.
-#. Outline's normal GUI options begin here
-#: operations/workshop/styles.c:68
-#, fuzzy
-#| msgid "Enable preflashing"
-msgid "Enable Outline"
-msgstr "Ön flaşlamayı etkinleştir"
-
-#: operations/workshop/styles.c:69
-msgid "Disable or enable the outline"
-msgstr ""
-
-#: operations/workshop/styles.c:72
-#, fuzzy
-#| msgid "Stroke opacity"
-msgid "Outline opacity"
-msgstr "Darbe ışık geçirmezliği"
-
-#: operations/workshop/styles.c:75
-#, fuzzy
-#| msgid "Opacity threshold"
-msgid "Opacity of the outline"
-msgstr "Matlık eşiği"
-
-#: operations/workshop/styles.c:79
-msgid "Outline X"
-msgstr ""
-
-#: operations/workshop/styles.c:80
-#, fuzzy
-#| msgid "Horizontal offset"
-msgid "Horizontal outline offset"
-msgstr "Yatay konum"
-
-#: operations/workshop/styles.c:87
-msgid "Outline Y"
-msgstr ""
-
-#: operations/workshop/styles.c:88
-#, fuzzy
-#| msgid "Vertical offset"
-msgid "Vertical outline offset"
-msgstr "Dikey konum"
-
-#: operations/workshop/styles.c:102
-#, fuzzy
-#| msgid "Grow shape"
-msgid "Outline grow shape"
-msgstr "Büyüme şekli"
-
-#: operations/workshop/styles.c:105
-#, fuzzy
-#| msgid "The shape to expand or contract the shadow in"
-msgid "The shape to expand or contract the outline in"
-msgstr "Gölgenin büyüme veya küçülme şekli"
-
-#: operations/workshop/styles.c:109
-#, fuzzy
-#| msgid "Out-of-focus blur radius"
-msgid "Outline blur radius"
-msgstr "Odak dışı bulanıklık yarıçapı"
-
-#: operations/workshop/styles.c:115
-msgid "A mild blur for the outline"
-msgstr ""
-
-#: operations/workshop/styles.c:119
-#, fuzzy
-#| msgid "Grow radius"
-msgid "Outline grow radius"
-msgstr "Büyüme yarıçapı"
-
-#: operations/workshop/styles.c:126
-#, fuzzy
-#| msgid "The shape to expand or contract the shadow in"
-msgid "The distance to expand the outline"
-msgstr "Gölgenin büyüme veya küçülme şekli"
-
-#. Shadow's GUI options begin here
-#: operations/workshop/styles.c:131
-#, fuzzy
-#| msgid "Joints color"
-msgid "Outline’s color"
-msgstr "Eklem rengi"
-
-#: operations/workshop/styles.c:132
-#, fuzzy
-#| msgid "Color for the text (defaults to 'black')"
-msgid "Color of the outline (defaults to 'black') "
-msgstr "Metin için renk (öntanımlı olarak 'black')"
-
-#: operations/workshop/styles.c:137
-#, fuzzy
-#| msgid "Fade opacity"
-msgid "Shadow/Glow opacity"
-msgstr "Matlığı soldur"
-
-#: operations/workshop/styles.c:141
-msgid "Shadow opacity which will also enable or disable the shadow glow effect"
-msgstr ""
-
-#: operations/workshop/styles.c:145
-#, fuzzy
-#| msgid "Shadow color"
-msgid "Shadow/Glow X"
-msgstr "Gölge rengi"
-
-#: operations/workshop/styles.c:151
-#, fuzzy
-#| msgid "Horizontal shadow offset"
-msgid "Horizontal axis of the shadow glow"
-msgstr "Yatay gölge konumu"
-
-#: operations/workshop/styles.c:154
-#, fuzzy
-#| msgid "Shadow color"
-msgid "Shadow/Glow Y"
-msgstr "Gölge rengi"
-
-#: operations/workshop/styles.c:160
-#, fuzzy
-#| msgid "Vertical shadow offset"
-msgid "Vertical axis of the shadow glow"
-msgstr "Dikey gölge konumu"
-
-#: operations/workshop/styles.c:163
-#, fuzzy
-#| msgid "Shadow color"
-msgid "Shadow/Glow’s color"
-msgstr "Gölge rengi"
-
-#. TRANSLATORS: the string 'black' should not be translated
-#: operations/workshop/styles.c:165
-#, fuzzy
-#| msgid "The shadow's color (defaults to 'black')"
-msgid "The shadow’s color (defaults to 'black')"
-msgstr "Gölge rengi (öntanımlı olarak 'black')"
-
-#: operations/workshop/styles.c:168
-#, fuzzy
-#| msgid "Glow radius"
-msgid "Shadow/Glow grow radius"
-msgstr "Parıltı yarıçapı"
-
-#: operations/workshop/styles.c:175
-#, fuzzy
-#| msgid ""
-#| "The distance to expand the shadow before blurring; a negative value will "
-#| "contract the shadow instead"
-msgid "The distance to expand the shadow before blurring."
-msgstr ""
-"Bulanıklaştırmadan önce gölgenin büyüme mesafesi; eksi değer gölgeyi küçültür"
-
-#: operations/workshop/styles.c:178
-#, fuzzy
-#| msgid "Maximal blur radius"
-msgid "Shadow/Glow blur radius"
-msgstr "Azami bulanıklık yarıçapı"
-
-#: operations/workshop/styles.c:184
-msgid "The shadow’s blur range"
-msgstr ""
-
-#. Bevel's GUI options begin here
-#. This is the Bevel's ENUM List listed in the GUI
-#. This is the ENUM list for bevel's emboss blend modes
-#: operations/workshop/styles.c:192
-#, fuzzy
-#| msgid "Blue levels"
-msgid "Enable Bevel"
-msgstr "Mavi düzeyleri"
-
-#: operations/workshop/styles.c:193
-msgid "Whether to add a bevel effect"
-msgstr ""
-
-#: operations/workshop/styles.c:210
-#, fuzzy
-#| msgid "Blend Mode"
-msgid "Bevel blend mode"
-msgstr "Karıştırma Kipi"
-
-#: operations/workshop/styles.c:211
-#, fuzzy
-#| msgid "Elevation angle (degrees)"
-msgid "Blend mode of the bevel"
-msgstr "Yükselme açısı (derece)"
-
-#: operations/workshop/styles.c:219
-#, fuzzy
-#| msgid "Waterlevel"
-msgid "Chamfer Bevel"
-msgstr "Su düzeyi"
-
-#: operations/workshop/styles.c:221
-#, fuzzy
-#| msgid "Levels"
-msgid "Bump Bevel"
-msgstr "Düzeyler"
-
-#: operations/workshop/styles.c:224
-#, fuzzy
-#| msgid "Blue levels"
-msgid "Select Bevel"
-msgstr "Mavi düzeyleri"
-
-#: operations/workshop/styles.c:227
-#, fuzzy
-#| msgid "Type of map"
-msgid "Type of bevel "
-msgstr "Eşlem türü"
-
-#: operations/workshop/styles.c:233
-#, fuzzy
-#| msgid "Curve Type"
-msgid "Bevel depth"
-msgstr "Eğri Türü"
-
-#: operations/workshop/styles.c:234
-msgid "Emboss depth for the bevel"
-msgstr ""
-
-#: operations/workshop/styles.c:240
-#, fuzzy
-#| msgid "Elevation"
-msgid "Bevel elevation"
-msgstr "Yükselme"
-
-#: operations/workshop/styles.c:241
-#, fuzzy
-#| msgid "Elevation angle (degrees)"
-msgid "Emboss elevation of the bevel"
-msgstr "Yükselme açısı (derece)"
-
-#: operations/workshop/styles.c:248
-#, fuzzy
-#| msgid "Azimuth"
-msgid "Bevel azimuth"
-msgstr "Azimut"
-
-#: operations/workshop/styles.c:249
-msgid "Emboss azimuth of the bevel"
-msgstr ""
-
-#: operations/workshop/styles.c:256
-msgid "Bevel radius (bump only)"
-msgstr ""
-
-#: operations/workshop/styles.c:260
-msgid ""
-"Internal gaussian blur to inflate the bump bevel. This option does not work "
-"on chamfer"
-msgstr ""
-
-#: operations/workshop/styles.c:266
-msgid "Levels low output lighting for Bevel"
-msgstr ""
-
-#: operations/workshop/styles.c:267
-msgid "Levels low output as a light adjustment for the bevel"
-msgstr ""
-
-#: operations/workshop/styles.c:275
-msgid "Levels high output lighting for Bevel"
-msgstr ""
-
-#: operations/workshop/styles.c:276
-msgid "Levels high output as a light adjustment for the bevel"
-msgstr ""
-
-#: operations/workshop/styles.c:284
-msgid "Dark Bevel/ignore image mode"
-msgstr ""
-
-#: operations/workshop/styles.c:285
-msgid ""
-"This instructs the bevel to ignore image details if there is an image file "
-"overlay below it. It also allows bevel to work better when the user selects "
-"darker colors. The effect is noticeable on bump bevel but barely effects "
-"chamfer bevel"
-msgstr ""
-
-#. This operation is extremely important for bevels with image file overlays
-#. Inner Glow GUI options begin here
-#: operations/workshop/styles.c:295
-msgid "Enable Inner Glow"
-msgstr ""
-
-#: operations/workshop/styles.c:296
-msgid "Whether to add the inner glow effect"
-msgstr ""
-
-#: operations/workshop/styles.c:305
-#, fuzzy
-#| msgid "Normalize"
-msgid "Normal"
-msgstr "Normalleştir"
-
-#: operations/workshop/styles.c:307
-#, fuzzy
-#| msgid "Color Overlay"
-msgid "Overlay"
-msgstr "Renk Kaplama"
-
-#: operations/workshop/styles.c:309
-#, fuzzy
-#| msgid "Green"
-msgid "Screen"
-msgstr "Yeşil"
-
-#: operations/workshop/styles.c:315
-msgid "Plus"
-msgstr ""
-
-#: operations/workshop/styles.c:318
-msgid "Blend mode of Inner Glow"
-msgstr ""
-
-#: operations/workshop/styles.c:324
-#, fuzzy
-#| msgid "Glow radius"
-msgid "Inner Glow's blur radius"
-msgstr "Parıltı yarıçapı"
-
-#: operations/workshop/styles.c:330
-#, fuzzy
-#| msgid "Blue threshold of the input color"
-msgid "Blur control of the inner glow"
-msgstr "Girdi renginin mavi eşiği"
-
-#: operations/workshop/styles.c:334
-#, fuzzy
-#| msgid "Glow radius"
-msgid "Inner Glow's grow radius"
-msgstr "Parıltı yarıçapı"
-
-#: operations/workshop/styles.c:341
-msgid "The distance to expand the inner glow before blurring"
-msgstr ""
-
-#: operations/workshop/styles.c:345
-msgid "Inner Glow's opacity"
-msgstr ""
-
-#: operations/workshop/styles.c:348
-msgid "Opacity of the inner glow"
-msgstr ""
-
-#: operations/workshop/styles.c:352
-msgid "Inner Glow's color"
-msgstr ""
-
-#: operations/workshop/styles.c:353
-#, fuzzy
-#| msgid "The color of supernova."
-msgid "The color of the inner glow"
-msgstr "Süpernova rengi."
-
-#: operations/workshop/styles.c:357
-msgid "Inner Glow's unmodified pixel fix"
-msgstr ""
-
-#: operations/workshop/styles.c:359
-msgid "Cover pixels that inner glow might miss"
-msgstr ""
-
-#. Without this Inner Glow would miss many pixels around alpha defined shapes edges'
-#. Image file overlay GUI options begin here
-#: operations/workshop/styles.c:366
-#, fuzzy
-#| msgid "WebP image loader."
-msgid "Enable image upload"
-msgstr "WebP görüntü yükleyici."
-
-#: operations/workshop/styles.c:367 operations/workshop/styles.c:466
-msgid "Whether to enable or disable the image file upload."
-msgstr ""
-
-#: operations/workshop/styles.c:370
-msgid "Image file overlay"
-msgstr ""
-
-#: operations/workshop/styles.c:371
-#, fuzzy
-#| msgid "Source image file path (png, jpg, raw, svg, bmp, tif, ...)"
-msgid ""
-"Upload an image file from your computer to be in the fill area. Allows (png, "
-"jpg, raw, svg, bmp, tif, ...)"
-msgstr "Kaynak görüntü dosyası yolu (png, jpg, raw, svg, bmp, tif, ...)"
-
-#: operations/workshop/styles.c:375
-#, fuzzy
-#| msgid "Path of video file to load"
-msgid "Opacity of image file overlay"
-msgstr "Yüklenecek video dosyasının yolu"
-
-#: operations/workshop/styles.c:378
-msgid "Opacity of the image file overlay that was uploaded. "
-msgstr ""
-
-#: operations/workshop/styles.c:389
-msgid ""
-"Saturation adjustment of the uploaded image file or whatever is on canvas"
-msgstr ""
-
-#: operations/workshop/styles.c:394
-msgid ""
-"Lightness adjustment of the uploaded image file or whatever is on canvas"
-msgstr ""
-
-#. Outline special options in GUI begin here
-#: operations/workshop/styles.c:399
-msgid "Enable advanced options on Outline (requires outline)"
-msgstr ""
-
-#: operations/workshop/styles.c:400
-msgid "Turn on advanced outline abilities"
-msgstr ""
-
-#: operations/workshop/styles.c:405
-msgid "Enable Outline Bevel (requires advanced options)"
-msgstr ""
-
-#: operations/workshop/styles.c:406
-msgid "Turn on outlines ability to bevel"
-msgstr ""
-
-#: operations/workshop/styles.c:427
-msgid "Outline Bevel blend mode"
-msgstr ""
-
-#: operations/workshop/styles.c:428
-msgid "Blend mode of the outline bevel"
-msgstr ""
-
-#: operations/workshop/styles.c:435
-msgid "Outline Bevel depth"
-msgstr ""
-
-#: operations/workshop/styles.c:436
-msgid "Emboss depth for the outline bevel"
-msgstr ""
-
-#: operations/workshop/styles.c:441
-msgid "Outline Bevel elevation"
-msgstr ""
-
-#: operations/workshop/styles.c:442
-msgid "Emboss elevation for the outline bevel"
-msgstr ""
-
-#: operations/workshop/styles.c:448
-msgid "Outline Bevel azimuth"
-msgstr ""
-
-#: operations/workshop/styles.c:449
-msgid "Emboss azimuth for the outline bevel"
-msgstr ""
-
-#: operations/workshop/styles.c:456
-msgid "Outline Bevel radius"
-msgstr ""
-
-#: operations/workshop/styles.c:457
-msgid "Internal gaussian blur to inflate the outline bevel"
-msgstr ""
-
-#: operations/workshop/styles.c:465
-msgid "Enable image upload on Outline (requires advanced effects)"
-msgstr ""
-
-#: operations/workshop/styles.c:470
-msgid "Outline image file overlay"
-msgstr ""
-
-#: operations/workshop/styles.c:471
-#, fuzzy
-#| msgid "Source image file path (png, jpg, raw, svg, bmp, tif, ...)"
-msgid ""
-"Upload an image file from your computer to be in the outline area. Allows "
-"(png, jpg, raw, svg, bmp, tif, ...)"
-msgstr "Kaynak görüntü dosyası yolu (png, jpg, raw, svg, bmp, tif, ...)"
-
-#: operations/workshop/styles.c:476
-#, fuzzy
-#| msgid "Fade opacity"
-msgid "Outline image opacity"
-msgstr "Matlığı soldur"
-
-#: operations/workshop/styles.c:477
-#, fuzzy
-#| msgid "White point adjustment"
-msgid "Outline image opacity adjustment"
-msgstr "Beyaz nokta ayarı"
-
-#: operations/workshop/styles.c:482
-msgid "Levels low output lighting for Outline Bevel"
-msgstr ""
-
-#: operations/workshop/styles.c:483
-msgid "Levels low output as a light adjustment for the outline bevel"
-msgstr ""
-
-#: operations/workshop/styles.c:490
-msgid "Levels high output lighting for Outline Bevel"
-msgstr ""
-
-#: operations/workshop/styles.c:491
-msgid "Levels high output as a light adjustment for the outline bevel"
-msgstr ""
-
-#: operations/workshop/styles.c:499
-msgid "Outline Dark Bevel/ignore image mode"
-msgstr ""
-
-#: operations/workshop/styles.c:500
-msgid ""
-"This instructs the outline bevel to ignore image details if there is an "
-"image file overlay below it. It also allows outline bevel to work better "
-"when the user selects darker colors."
-msgstr ""
-
-#: operations/workshop/styles.c:1243
-#, fuzzy
-#| msgid "Style"
-msgid "GEGL Styles"
-msgstr "Biçim"
-
-#: operations/workshop/styles.c:1246
-msgid ""
-"An engine to style text and add popular effects to alpha channel images. "
-"Effects include outline, bevel, shadow, and inner glow all in one place."
-msgstr ""
-
-#: operations/workshop/styles.c:1249
-msgid "Text Styling..."
-msgstr ""
-
-#, fuzzy
-#~| msgid "Iterations"
-#~ msgid "iterations"
-#~ msgstr "Yinelemeler"
-
-#, fuzzy
-#~| msgid "Levels"
-#~ msgid "levels"
-#~ msgstr "Düzeyler"
-
-#, fuzzy
-#~| msgid "Center X"
-#~ msgid "center bias"
-#~ msgstr "X Merkezi"
-
-#~ msgid "Soft Light"
-#~ msgstr "Yumuşak Işık"
-
-#~ msgid "Detailed options"
-#~ msgstr "Ayrıntılı seçenekler"
-
-#~ msgid "Light Elevation"
-#~ msgstr "Işık Yükselme"
-
-#~ msgid ""
-#~ "Scalar threshold level (overridden if an auxiliary input buffer is "
-#~ "provided.)."
-#~ msgstr ""
-#~ "Skalar eşik düzeyi (eğer yardımcı girdi arabelleği sağlanırsa geçersiz "
-#~ "kılınır)."
