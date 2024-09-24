@@ -701,7 +701,7 @@ gegl_op_constructor (GType                  type,
 #undef property_path
 
   g_object_set_data_full (obj, "chant-data", obj, gegl_op_destroy_notify);
-  properties ++; /* evil hack to silence gcc */
+  if (properties) {}; /* silence compiler warnings */
   return obj;
 }
 
