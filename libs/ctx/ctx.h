@@ -14172,6 +14172,8 @@ ctx_fragment_image_rgba8_RGBA8_nearest_copy (CtxRasterizer *rasterizer,
 #else
   CtxBuffer *buffer = g->texture.buffer;
 #endif
+  //if (!buffer) // XXX : this should happen in setup
+  //  return;
   uint32_t *dst = (uint32_t*)out;
   int bwidth  = buffer->width;
   int bheight = buffer->height;
@@ -16283,13 +16285,16 @@ static CtxFragment ctx_rasterizer_get_fragment_RGBA8 (CtxRasterizer *rasterizer)
 #else
          CtxBuffer *buffer = g->texture.buffer;
 #endif
+
+
+        if (!buffer || !buffer->format)
+          return ctx_fragment_none_RGBA8;
+
 #if CTX_FRAGMENT_SPECIALIZE
 	 int image_smoothing = gstate->image_smoothing;
 	 if (buffer->width == 1 || buffer->height == 1)
 	   image_smoothing = 0;
 #endif
-        if (!buffer || !buffer->format)
-          return ctx_fragment_none_RGBA8;
   
 	if (!ctx_sane_transform(&gstate->source_fill.transform))
           return ctx_fragment_none_RGBA8;
@@ -20653,7 +20658,12 @@ CTX_SIMD_SUFFIX (ctx_composite_fill_rect) (CtxRasterizer *rasterizer,
      ((int)(y1_fm < 0.01f) | (y1_fm > 0.99f)))
   {
     /* best-case scenario axis aligned rectangle */
-    ctx_composite_fill_rect_aligned (rasterizer, (int)x0, (int)y0, (int)(x1-1), (int)(y1-1), 255);
+    int ix0 = (int)x0;
+    int iy0 = (int)y0;
+    int ix1 = (int)x1-1;
+    int iy1 = (int)y1-1;
+    if ((ix1 >= ix0) & (iy1 >= iy0))
+      ctx_composite_fill_rect_aligned (rasterizer, ix0, iy0, ix1, iy1, 255);
     return;
   }
 
@@ -23172,12 +23182,13 @@ ctx_rasterizer_set_texture (CtxRasterizer *rasterizer,
                             float y)
 {
   int is_stroke = (rasterizer->state->source != 0);
-  CtxSource *source = is_stroke && (rasterizer->state->gstate.source_stroke.type != CTX_SOURCE_INHERIT_FILL)?
+  CtxSource *source = is_stroke?
                         &rasterizer->state->gstate.source_stroke:
                         &rasterizer->state->gstate.source_fill;
-  rasterizer->state->source = 0;
+  rasterizer->state->source = is_stroke ? 2 : 0;
 
-  source->type = CTX_SOURCE_COLOR;
+
+  source->type = CTX_SOURCE_NONE;
   source->texture.buffer = NULL;
   int no = ctx_rasterizer_find_texture (rasterizer, eid);
   if (no < 0 || no >= CTX_MAX_TEXTURES) { no = 0; }
@@ -23189,10 +23200,13 @@ ctx_rasterizer_set_texture (CtxRasterizer *rasterizer,
   {
     rasterizer->texture_source->texture[no].frame = rasterizer->texture_source->frame;
   }
-  source->type = CTX_SOURCE_TEXTURE;
   source->texture.buffer = &rasterizer->texture_source->texture[no];
-  ctx_matrix_identity (&source->set_transform);
-  ctx_matrix_translate (&source->set_transform, x, y);
+  if (source->texture.buffer)
+  {
+    source->type = CTX_SOURCE_TEXTURE;
+    ctx_matrix_identity (&source->set_transform);
+    ctx_matrix_translate (&source->set_transform, x, y);
+  }
 }
 
 static void
@@ -23204,6 +23218,7 @@ ctx_rasterizer_define_texture (CtxRasterizer *rasterizer,
                                char unsigned *data,
 			       int            steal_data)
 {
+
   _ctx_texture_lock (); // we're using the same texture_source from all threads, keeping allocaitons down
                         // need synchronizing (it could be better to do a pre-pass)
   ctx_texture_init (rasterizer->texture_source,
@@ -24118,7 +24133,11 @@ foo:
       rasterizer->preserve = 0;
     }
   if (gstate->source_stroke.type != CTX_SOURCE_INHERIT_FILL)
+  {
     gstate->source_fill = source_backup;
+    rasterizer->comp_op = NULL;
+    rasterizer->fragment = NULL;
+  }
 }
 
 #if CTX_1BIT_CLIP
@@ -48432,6 +48451,8 @@ ctx_cb_render_frame (Ctx *ctx)
 #define CTX_MB()  do{ ; } while(0)
 #endif
 
+#if CTX_PICO | CTX_THREADS
+
 #if CTX_PICO
 void *core1_arg = NULL;
 static void
@@ -48480,6 +48501,7 @@ ctx_cb_render_thread (CtxCbBackend *cb_backend)
   if (cb_backend->config.renderer_stop)
      cb_backend->config.renderer_stop (ctx, cb_backend->backend.user_data);
 }
+#endif
 
 static void
 ctx_cb_end_frame (Ctx *ctx)
@@ -73923,7 +73945,7 @@ int ctx_tinyvg_fd_draw (Ctx *ctx, int fd, int flags)
 #define CTX_MAX_FLOATS           16
 #define CTX_MAX_SELECTOR_LENGTH  64
 #define CTX_MAX_CSS_STRINGLEN    512
-#define CTX_MAX_CSS_RULELEN      32   // XXX doesnt have overflow protection
+#define CTX_MAX_CSS_RULELEN      32 
 #define CTX_MAX_CSS_RULES        128
 
 /* other important maximums */
@@ -73931,10 +73953,10 @@ int ctx_tinyvg_fd_draw (Ctx *ctx, int fd, int flags)
 #define CTX_XML_INBUF_SIZE       1024
 #else
 
-#define CTX_MAX_FLOATS           3
+#define CTX_MAX_FLOATS           8
 #define CTX_MAX_SELECTOR_LENGTH  64
 #define CTX_MAX_CSS_STRINGLEN    256
-#define CTX_MAX_CSS_RULELEN      32   // XXX doesnt have overflow protection
+#define CTX_MAX_CSS_RULELEN      32
 #define CTX_MAX_CSS_RULES        64
 
 /* other important maximums */
@@ -74912,7 +74934,7 @@ xmltok_get (CssXml *t, char **data, int *pos)
 
   init_statetable ();
   ctx_string_clear (t->curdata);
-  while (1)
+  while (t->state != s_error && t->state != s_eof)
     {
       if (!t->c_held)
         {
@@ -74969,7 +74991,7 @@ xmltok_get (CssXml *t, char **data, int *pos)
           return t_dtd;
         }
       s = &state_table[t->state][0];
-      while (s->state)
+      while (s->state && s->state != s_error && s->state != s_eof)
         {
           if (s->return_type != t_none)
             {
@@ -75005,6 +75027,8 @@ xmltok_get (CssXml *t, char **data, int *pos)
     }
   if (pos)
     *pos = t->inbufpos;
+  //if (t->state == s_error)
+  //  return t_eof;
   return t_eof;
 }
 
@@ -75379,16 +75403,16 @@ static void ctx_parse_style_id (Css          *mrg,
             case '.':
               {
                 int i = 0;
-                for (i = 0; node->classes_hash[i]; i++);
+                for (i = 0; i < CTX_STYLE_MAX_CLASSES && node->classes_hash[i]; i++);
                 node->classes_hash[i] = ctx_strhash (&temp[1]);
               }
               break;
             case ':':
               {
                 int i = 0;
-                for (i = 0; node->pseudo[i]; i++);
+                for (i = 0; i < CTX_STYLE_MAX_PSEUDO && node->pseudo[i]; i++);
                 node->pseudo[i] = mrg_intern_string (&temp[1]);
-                for (i = 0; node->pseudo_hash[i]; i++);
+                for (i = 0; i < CTX_STYLE_MAX_PSEUDO && node->pseudo_hash[i]; i++);
                 node->pseudo_hash[i] = ctx_strhash (&temp[1]);
               }
               break;
@@ -75404,11 +75428,13 @@ static void ctx_parse_style_id (Css          *mrg,
         }
         if (*p == 0)
           return;
-        temp[temp_l++] = *p;  // XXX: added to make reported fallthrough
+	if (temp_l + 1 < sizeof(temp))
+          temp[temp_l++] = *p;  // XXX: added to make reported fallthrough
         temp[temp_l]=0;       //      not be reported - butexplicit
         break;
       default:
-        temp[temp_l++] = *p;
+	if (temp_l + 1 < sizeof(temp))
+          temp[temp_l++] = *p;
         temp[temp_l]=0;
     }
   }
@@ -75856,12 +75882,14 @@ static void _ctx_stylesheet_add (CtxCssParseState *ps, Css *mrg, const char *css
             return;
           case '@':
             ps->state = IN_ARULE;
-            ps->rule[ps->rule_no][ps->rule_l[ps->rule_no]++] = *p;
+	    if (ps->rule_l[ps->rule_no]+1 < CTX_MAX_CSS_RULELEN)
+              ps->rule[ps->rule_no][ps->rule_l[ps->rule_no]++] = *p;
             ps->rule[ps->rule_no][ps->rule_l[ps->rule_no]] = 0;
             break;
           default:
             ps->state = IN_RULE;
-            ps->rule[ps->rule_no][ps->rule_l[ps->rule_no]++] = *p;
+	    if (ps->rule_l[ps->rule_no]+1 < CTX_MAX_CSS_RULELEN)
+              ps->rule[ps->rule_no][ps->rule_l[ps->rule_no]++] = *p;
             ps->rule[ps->rule_no][ps->rule_l[ps->rule_no]] = 0;
             break;
         }
@@ -75892,7 +75920,8 @@ static void _ctx_stylesheet_add (CtxCssParseState *ps, Css *mrg, const char *css
             return;
           default:
             ps->state = IN_ARULE;
-            ps->rule[ps->rule_no][ps->rule_l[ps->rule_no]++] = *p;
+            if (ps->rule_l[ps->rule_no]+ 1 < CTX_MAX_CSS_RULELEN)
+              ps->rule[ps->rule_no][ps->rule_l[ps->rule_no]++] = *p;
             ps->rule[ps->rule_no][ps->rule_l[ps->rule_no]] = 0;
             break;
         }
@@ -75954,7 +75983,8 @@ static void _ctx_stylesheet_add (CtxCssParseState *ps, Css *mrg, const char *css
             break;
           default:
             ps->state = IN_IMPORT;
-            ps->val[ps->val_l++] = *p;
+	    if (ps->val_l + 1 < CTX_MAX_CSS_STRINGLEN)
+              ps->val[ps->val_l++] = *p;
             ps->val[ps->val_l] = 0;
             break;
 
@@ -75970,12 +76000,14 @@ static void _ctx_stylesheet_add (CtxCssParseState *ps, Css *mrg, const char *css
           case '\n':
           case '\r':
           case '\t':
-            ps->rule[ps->rule_no][ps->rule_l[ps->rule_no]++] = ' ';
+	    if (ps->rule_l[ps->rule_no]+1 < CTX_MAX_CSS_RULELEN)
+              ps->rule[ps->rule_no][ps->rule_l[ps->rule_no]++] = ' ';
             ps->rule[ps->rule_no][ps->rule_l[ps->rule_no]] = 0;
             break;
           case ',':
             ps->state = NEUTRAL;
-            ps->rule_no++;
+	    if (ps->rule_no + 1 < CTX_MAX_CSS_RULES)
+              ps->rule_no++;
             break;
           case ';':
           case '}':
@@ -75983,7 +76015,8 @@ static void _ctx_stylesheet_add (CtxCssParseState *ps, Css *mrg, const char *css
             return;
           default:
             ps->state = IN_RULE;
-            ps->rule[ps->rule_no][ps->rule_l[ps->rule_no]++] = *p;
+	    if (ps->rule_l[ps->rule_no]+1 < CTX_MAX_CSS_RULELEN)
+              ps->rule[ps->rule_no][ps->rule_l[ps->rule_no]++] = *p;
             ps->rule[ps->rule_no][ps->rule_l[ps->rule_no]] = 0;
             break;
         }
@@ -76059,7 +76092,8 @@ static void _ctx_stylesheet_add (CtxCssParseState *ps, Css *mrg, const char *css
             break;
           default:
             ps->state = IN_VAL;
-            ps->val[ps->val_l++] = *p;
+	    if (ps->val_l + 1 < CTX_MAX_CSS_STRINGLEN)
+              ps->val[ps->val_l++] = *p;
             ps->val[ps->val_l] = 0;
             break;
 
@@ -76166,6 +76200,7 @@ static inline int _ctx_nth_match (const char *selector, int child_no)
 
 int _ctx_child_no (Css *mrg)
 {
+  if (mrg->state_no <= 0) return 0;
   return mrg->states[mrg->state_no-1].children;
 }
 
@@ -76181,10 +76216,10 @@ static inline int match_nodes (Css *mrg, CtxStyleNode *sel_node, CtxStyleNode *s
       sel_node->id != subject->id)
     return 0;
 
-  for (j = 0; sel_node->classes_hash[j]; j++)
+  for (j = 0; j < CTX_STYLE_MAX_CLASSES && sel_node->classes_hash[j]; j++)
   {
     int found = 0;
-    for (k = 0; subject->classes_hash[k] && !found; k++)
+    for (k = 0; k < CTX_STYLE_MAX_CLASSES && subject->classes_hash[k] && !found; k++)
     {
       if (sel_node->classes_hash[j] == subject->classes_hash[k])
         found = 1;
@@ -76192,7 +76227,7 @@ static inline int match_nodes (Css *mrg, CtxStyleNode *sel_node, CtxStyleNode *s
     if (!found)
       return 0;
   }
-  for (j = 0; sel_node->pseudo[j]; j++)
+  for (j = 0; j < CTX_STYLE_MAX_PSEUDO && sel_node->pseudo[j]; j++)
   {
     if (ctx_strhash (sel_node->pseudo[j]) == SQZ_first_child)
     {
@@ -76208,7 +76243,7 @@ static inline int match_nodes (Css *mrg, CtxStyleNode *sel_node, CtxStyleNode *s
     {
       int found = 0;
 
-      for (k = 0; subject->pseudo[k] && !found; k++)
+      for (k = 0; k < CTX_STYLE_MAX_PSEUDO && subject->pseudo[k] && !found; k++)
       {
         if (sel_node->pseudo_hash[j] == subject->pseudo_hash[k])
           found = 1;
@@ -77294,7 +77329,8 @@ static void css_parse_properties (Css *mrg, const char *style,
           case '\r':
             break;
           default:
-            name[name_l++]=*p;
+            if (name_l < CTX_MAX_CSS_STRINGLEN - 1)
+              name[name_l++]=*p;
             name[name_l]=0;
             state = MRG_CSS_PROPERTY_PARSER_STATE_IN_NAME;
             break;
@@ -77319,7 +77355,8 @@ static void css_parse_properties (Css *mrg, const char *style,
             break;
 #endif
           default:
-            name[name_l++]=*p;
+            if (name_l < CTX_MAX_CSS_STRINGLEN - 1)
+              name[name_l++]=*p;
             name[name_l]=0;
             break;
         }
@@ -77343,7 +77380,8 @@ static void css_parse_properties (Css *mrg, const char *style,
           case '\t':
             break;
           default:
-            string[string_l++]=*p;
+            if (string_l < CTX_MAX_CSS_STRINGLEN - 1)
+              string[string_l++]=*p;
             string[string_l]=0;
             state = MRG_CSS_PROPERTY_PARSER_STATE_IN_VAL;
             break;
@@ -77365,7 +77403,8 @@ static void css_parse_properties (Css *mrg, const char *style,
             string[0] = 0;
             break;
           default:
-            string[string_l++]=*p;
+            if (string_l < CTX_MAX_CSS_STRINGLEN - 1)
+              string[string_l++]=*p;
             string[string_l]=0;
             break;
         }
@@ -78033,11 +78072,10 @@ void css_start_with_style (Css        *mrg,
   mrg->states[mrg->state_no].children++;
   if (mrg->state_no+1 >= CTX_MAX_STATES)
     return;
-  mrg->state_no++; // XXX bounds check!
+  mrg->state_no++; 
   mrg->state = &mrg->states[mrg->state_no];
   *mrg->state = mrg->states[mrg->state_no-1];
   mrg->states[mrg->state_no].children = 0;
-
   mrg->state->style_id = style_id ? strdup (style_id) : NULL;
 
   ctx_parse_style_id (mrg, mrg->state->style_id, &mrg->state->style_node);
@@ -78166,15 +78204,15 @@ static void mrg_path_fill_stroke (Css *mrg, ItkCssDef **defs)
     if (id)
     {
       id ++;
+      if (*id && id[strlen(id)-1]==')')
+        id[strlen(id)-1]=0;
+      if (*id && id[strlen(id)-1]=='\'')
+        id[strlen(id)-1]=0;
+      if (*id && id[strlen(id)-1]=='"')
+        id[strlen(id)-1]=0;
+      CtxString *str = css_svg_add_def (defs, ctx_strhash(id));
+      ctx_parse (ctx, str->str);
     }
-    if (id[strlen(id)-1]==')')
-      id[strlen(id)-1]=0;
-    if (id[strlen(id)-1]=='\'')
-      id[strlen(id)-1]=0;
-    if (id[strlen(id)-1]=='"')
-      id[strlen(id)-1]=0;
-    CtxString *str = css_svg_add_def (defs, ctx_strhash(id));
-    ctx_parse (ctx, str->str);
 
     if (has_stroke)
       ctx_preserve (ctx);
@@ -78206,15 +78244,15 @@ static void mrg_path_fill_stroke (Css *mrg, ItkCssDef **defs)
       if (id)
       {
         id ++;
+        if (*id && id[strlen(id)-1]==')')
+          id[strlen(id)-1]=0;
+        if (*id && id[strlen(id)-1]=='\'')
+          id[strlen(id)-1]=0;
+        if (*id && id[strlen(id)-1]=='"')
+          id[strlen(id)-1]=0;
+        CtxString *str = css_svg_add_def (defs, ctx_strhash(id));
+        ctx_parse (ctx, str->str);
       }
-      if (id[strlen(id)-1]==')')
-        id[strlen(id)-1]=0;
-      if (id[strlen(id)-1]=='\'')
-        id[strlen(id)-1]=0;
-      if (id[strlen(id)-1]=='"')
-        id[strlen(id)-1]=0;
-      CtxString *str = css_svg_add_def (defs, ctx_strhash(id));
-      ctx_parse (ctx, str->str);
     }
     else
     {
@@ -79710,7 +79748,7 @@ int css_print (Css *mrg, const char *string)
   mrg->y = ceil (mrg->y / em) * em;
 #endif
 
-  if (mrg->text_edited)
+  if (mrg->text_edited && mrg->edited_str)
     ctx_string_append_str (mrg->edited_str, string);
 
   if (style->display == CTX_DISPLAY_NONE)
@@ -80282,8 +80320,8 @@ void _mrg_layout_post (Css *mrg, CtxFloatRectangle *ret_rect)
   if (style->float_)
   {
     CtxFloatData *float_data = &mrg->float_data[mrg->floats];
-    // XXX protect against overflow
-    mrg->floats++;
+    if (mrg->floats + 1 < CTX_MAX_FLOATS)
+      mrg->floats++;
 
     float_data->type = style->float_;
     float_data->x = 
@@ -80607,6 +80645,8 @@ mrg_parse_transform (Css *mrg, CtxMatrix *matrix, const char *str_in)
 
   const char *str = str_in;
 
+  //int panic = 500;
+
   do {
 
   if (!strncmp (str, "matrix", 5))
@@ -80624,7 +80664,13 @@ mrg_parse_transform (Css *mrg, CtxMatrix *matrix, const char *str_in)
       switch (*s)
       {
         case '+':case '-':case '.':case '0':case '1':case '2':case '3':case '4':case '5':case '6':case '7': case '8': case '9':
+        {
+		char *olds = s;
         number[numbers] = strtod (s, &s);
+	if (s == olds) return 0;
+	//panic--;
+	//if (panic < 0) return 0;
+        }
         s--;
         numbers++;
       }
@@ -80652,7 +80698,10 @@ mrg_parse_transform (Css *mrg, CtxMatrix *matrix, const char *str_in)
       switch (*s)
       {
         case '+':case '-':case '.':case '0':case '1':case '2':case '3':case '4':case '5':case '6':case '7': case '8': case '9':
+        {char *olds=s;
         number[numbers] = strtod (s, &s);
+	if (s == olds) return 0;
+        }
         s--;
 	if (numbers<11)
           numbers++;
@@ -80678,8 +80727,12 @@ mrg_parse_transform (Css *mrg, CtxMatrix *matrix, const char *str_in)
       switch (*s)
       {
         case '+':case '-':case '.':case '0':case '1':case '2':case '3':case '4':case '5':case '6':case '7': case '8': case '9':
-        number[numbers] = strtod (s, &s);
-        s--;
+         {
+	   char *olds = s;
+           number[numbers] = strtod (s, &s);
+	   if (s == olds) return 0;
+           s--;
+	}
 	if (numbers < 11)
         numbers++;
       }
@@ -80701,10 +80754,13 @@ mrg_parse_transform (Css *mrg, CtxMatrix *matrix, const char *str_in)
       switch (*s)
       {
         case '+':case '-':case '.':case '0':case '1':case '2':case '3':case '4':case '5':case '6':case '7': case '8': case '9':
+        {
+	char *prevs = s;
         number[numbers] = strtod (s, &s);
-        s--;
+	if (prevs == s) return 0;
 	if (numbers < 11)
           numbers++;
+        }
       }
     }
     if (numbers == 3)
@@ -80728,7 +80784,7 @@ mrg_parse_transform (Css *mrg, CtxMatrix *matrix, const char *str_in)
         while (*str == ' ')str++;
     }
   }
-  while (strchr (str, '('));
+  while (str && strchr (str, '('));
   return 1;
 }
 
@@ -81571,7 +81627,7 @@ void css_xml_render (Css *mrg,
   xmltok = xmltok_buf_new (html_);
 
   ctx_save (mrg->ctx);
-  while (type != t_eof)
+  while (type != t_eof && type != t_error)
   {
     char *data = NULL;
     type = xmltok_get (xmltok, &data, &pos);
@@ -81825,7 +81881,7 @@ void css_xml_render (Css *mrg,
   //css_start (mrg, "fjo", NULL);
   //ctx_stylesheet_add (mrg, style_sheets->str, uri_base, CTX_STYLE_XML, NULL);
 
-  while (type != t_eof)
+  while (type != t_eof && type != t_error)
   {
     char *data = NULL;
     type = xmltok_get (xmltok, &data, &pos);
