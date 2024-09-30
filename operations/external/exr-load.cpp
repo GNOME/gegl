@@ -229,7 +229,7 @@ fix_saturation (GeglBuffer       *buf,
   GeglRectangle rect;
   gint pxsize;
 
-  g_object_get (buf, "px-size", &pxsize, NULL);
+  g_object_get (buf, "px-size", &pxsize, (void *) NULL);
 
   for (y=0; y<3; y++)
     row[y] = (gfloat*) g_malloc0 (pxsize * gegl_buffer_get_width (buf));
@@ -326,7 +326,7 @@ reconstruct_chroma (GeglBuffer *buf,
   gint i;
   GeglRectangle rect;
   gint pxsize;
-  g_object_get (buf, "px-size", &pxsize, NULL);
+  g_object_get (buf, "px-size", &pxsize, (void *) NULL);
 
   pixels = (gfloat*) g_malloc0 (MAX(gegl_buffer_get_width (buf), gegl_buffer_get_height (buf))*pxsize);
   tmp = (gfloat*) g_malloc0 (MAX(gegl_buffer_get_width (buf), gegl_buffer_get_height (buf))*2*sizeof(gfloat));
@@ -366,7 +366,7 @@ convert_yca_to_rgba (GeglBuffer *buf,
   gint row, i, dx = has_alpha ? 4 : 3;
   GeglRectangle rect;
   gint pxsize;
-  g_object_get (buf, "px-size", &pxsize, NULL);
+  g_object_get (buf, "px-size", &pxsize, (void *) NULL);
 
   pixels = (gchar*) g_malloc0 (gegl_buffer_get_width (buf) * pxsize);
 
@@ -461,7 +461,7 @@ import_exr (GeglBuffer  *gegl_buffer,
       Box2i dw = file.header().dataWindow();
       gint pxsize;
 
-      g_object_get (gegl_buffer, "px-size", &pxsize, NULL);
+      g_object_get (gegl_buffer, "px-size", &pxsize, (void *) NULL);
 
 
       char *pixels = (char*) g_malloc0 (gegl_buffer_get_width (gegl_buffer) * pxsize);
