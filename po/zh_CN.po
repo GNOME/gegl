@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl-master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-08-24 01:03+0000\n"
-"PO-Revision-Date: 2024-08-24 09:42+0800\n"
+"POT-Creation-Date: 2024-09-30 15:41+0000\n"
+"PO-Revision-Date: 2024-10-01 08:40+0800\n"
 "Last-Translator: lumingzh <lumingzh@qq.com>\n"
 "Language-Team: Chinese (China) <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
@@ -352,40 +352,40 @@ msgstr "永不"
 msgid "Always"
 msgstr "总是"
 
-#: gegl/gegl-init.c:355
+#: gegl/gegl-init.c:358
 msgid "Where GEGL stores its swap"
 msgstr "GEGL 存储其交换区的位置"
 
-#: gegl/gegl-init.c:360
+#: gegl/gegl-init.c:363
 msgid "Compression algorithm used for data stored in the swap"
 msgstr "用于交换区中数据存储的压缩算法"
 
-#: gegl/gegl-init.c:365
+#: gegl/gegl-init.c:368
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr "多少内存（近似值）用于缓存图像"
 
-#: gegl/gegl-init.c:370
+#: gegl/gegl-init.c:373
 msgid "Default size of tiles in GeglBuffers"
 msgstr "GeglBuffers 中默认平铺大小"
 
-#: gegl/gegl-init.c:375
+#: gegl/gegl-init.c:378
 msgid "The count of pixels to compute simultaneously"
 msgstr "同时计算的像素数量"
 
-#: gegl/gegl-init.c:380
+#: gegl/gegl-init.c:383
 msgid ""
 "The quality of rendering, a value between 0.0 (fast) and 1.0 (reference)"
 msgstr "渲染质量， 0.0（快速）和 1.0（参考）之间的一个值"
 
-#: gegl/gegl-init.c:385
+#: gegl/gegl-init.c:388
 msgid "The number of concurrent processing threads to use"
 msgstr "使用并行处理线程的数量"
 
-#: gegl/gegl-init.c:390
+#: gegl/gegl-init.c:393
 msgid "Disable OpenCL"
 msgstr "禁用 OpenCL"
 
-#: gegl/gegl-init.c:402
+#: gegl/gegl-init.c:405
 msgid "Show GEGL Options"
 msgstr "显示 GEGL 选项"
 
@@ -2464,12 +2464,12 @@ msgid "Compute gradient magnitude and/or direction by central differences"
 msgstr "使用中心差分计算渐变量级和/或方向"
 
 #: operations/common/inner-glow.c:92
-msgid "Median fix for non-effected pixels on edges"
+msgid "Median fix for non-affected pixels on edges"
 msgstr "用于边缘上未受影响像素的中值修复"
 
 #: operations/common/inner-glow.c:94
 msgid ""
-"Median Blur covers uneffected pixels. Making this slider too high will make "
+"Median Blur covers unaffected pixels. Making this slider too high will make "
 "it outline-like. So only slide it as high as you need to cover thin shape "
 "corners."
 msgstr ""
