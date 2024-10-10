@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl-master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-09-30 15:41+0000\n"
-"PO-Revision-Date: 2024-10-01 08:40+0800\n"
+"POT-Creation-Date: 2024-10-10 19:34+0000\n"
+"PO-Revision-Date: 2024-10-11 07:35+0800\n"
 "Last-Translator: lumingzh <lumingzh@qq.com>\n"
 "Language-Team: Chinese (China) <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
@@ -23,7 +23,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Gtranslator 46.1\n"
+"X-Generator: Gtranslator 47.0\n"
 
 #: bin/gegl.c:179
 #, c-format
@@ -445,18 +445,25 @@ msgid "Output pad for generated image buffer."
 msgstr "用于生成的图像缓冲区的输出平板。"
 
 #: gegl/operation/gegl-operation-composer3.c:86
+#: gegl/operation/gegl-operation-filter.c:96
 msgid "Input pad, for image buffer input."
 msgstr "用于图像缓冲区输入的输入平板。"
 
 #: gegl/operation/gegl-operation-composer3.c:95
 #: gegl/operation/gegl-operation-composer.c:94
+#: operations/common-gpl3+/displace.c:191
 #: operations/transform/border-align.c:157
 msgid "Auxiliary image buffer input pad."
 msgstr "辅助图像缓冲区输入平板。"
 
 #: gegl/operation/gegl-operation-composer3.c:104
+#: operations/common-gpl3+/displace.c:200
 msgid "Second auxiliary image buffer input pad."
 msgstr "第二辅助图像缓冲区输入平板。"
+
+#: gegl/operation/gegl-operation-filter.c:95
+msgid "Input"
+msgstr "输入"
 
 #: operations/common/absolute.c:72
 msgid "Absolute"
