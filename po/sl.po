@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-09-30 15:41+0000\n"
-"PO-Revision-Date: 2024-09-30 22:20+0200\n"
+"POT-Creation-Date: 2024-10-10 19:34+0000\n"
+"PO-Revision-Date: 2024-10-10 21:54+0200\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language: sl_SI\n"
@@ -446,18 +446,25 @@ msgid "Output pad for generated image buffer."
 msgstr "Izhodna beležka za ustvarjeni medpomnilnik slike."
 
 #: gegl/operation/gegl-operation-composer3.c:86
+#: gegl/operation/gegl-operation-filter.c:96
 msgid "Input pad, for image buffer input."
 msgstr "Vhodni prostor, za vhod medpomnilnika slik."
 
 #: gegl/operation/gegl-operation-composer3.c:95
 #: gegl/operation/gegl-operation-composer.c:94
+#: operations/common-gpl3+/displace.c:191
 #: operations/transform/border-align.c:157
 msgid "Auxiliary image buffer input pad."
 msgstr "Pomožni vhodni slikovni medpomnilniški prostor."
 
 #: gegl/operation/gegl-operation-composer3.c:104
+#: operations/common-gpl3+/displace.c:200
 msgid "Second auxiliary image buffer input pad."
 msgstr "Drugi pomožni vhodni slikovni medpomnilniški prostor."
+
+#: gegl/operation/gegl-operation-filter.c:95
+msgid "Input"
+msgstr "Vhod"
 
 #: operations/common/absolute.c:72
 msgid "Absolute"
