@@ -19,6 +19,7 @@
 #include "config.h"
 
 #include <glib-object.h>
+#include <glib/gi18n-lib.h>
 #include <string.h>
 
 #include "gegl.h"
@@ -91,8 +92,8 @@ attach (GeglOperation *self)
   g_param_spec_sink (pspec);
 
   pspec = g_param_spec_object ("input",
-                               "Input",
-                               "Input pad, for image buffer input.",
+                               _("Input"),
+                               _("Input pad, for image buffer input."),
                                GEGL_TYPE_BUFFER,
                                G_PARAM_READWRITE |
                                GEGL_PARAM_PAD_INPUT);

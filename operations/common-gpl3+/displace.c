@@ -188,7 +188,7 @@ attach (GeglOperation *self)
 
   pspec = g_param_spec_object ("aux",
                                "Aux",
-                               "Auxiliary image buffer input pad.",
+                               _("Auxiliary image buffer input pad."),
                                GEGL_TYPE_BUFFER,
                                G_PARAM_READWRITE |
                                GEGL_PARAM_PAD_INPUT);
@@ -197,7 +197,7 @@ attach (GeglOperation *self)
 
   pspec = g_param_spec_object ("aux2",
                                "Aux2",
-                               "Second auxiliary image buffer input pad.",
+                               _("Second auxiliary image buffer input pad."),
                                GEGL_TYPE_BUFFER,
                                G_PARAM_READWRITE |
                                GEGL_PARAM_PAD_INPUT);

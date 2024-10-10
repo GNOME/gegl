@@ -12,6 +12,7 @@ gegl/gegl-serialize.c
 gegl/module/geglmodule.c
 gegl/operation/gegl-operation-composer3.c
 gegl/operation/gegl-operation-composer.c
+gegl/operation/gegl-operation-filter.c
 operations/common/absolute.c
 operations/common/alien-map.c
 operations/common/alpha-clip.c
