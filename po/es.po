@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl.master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-09-30 15:41+0000\n"
-"PO-Revision-Date: 2024-10-06 00:13+0200\n"
+"POT-Creation-Date: 2024-10-10 19:34+0000\n"
+"PO-Revision-Date: 2024-10-15 14:23+0200\n"
 "Last-Translator: Rodrigo Lledó Milanca <rodhos92@gmail.com>\n"
 "Language-Team: Spanish - Spain <gnome-es-list@gnome.org>\n"
 "Language: es_ES\n"
@@ -451,18 +451,25 @@ msgid "Output pad for generated image buffer."
 msgstr "Relleno de salida para el búfer de imagen generado."
 
 #: gegl/operation/gegl-operation-composer3.c:86
+#: gegl/operation/gegl-operation-filter.c:96
 msgid "Input pad, for image buffer input."
 msgstr "Relleno de entrada, para la entrada del búfer de la imagen."
 
 #: gegl/operation/gegl-operation-composer3.c:95
 #: gegl/operation/gegl-operation-composer.c:94
+#: operations/common-gpl3+/displace.c:191
 #: operations/transform/border-align.c:157
 msgid "Auxiliary image buffer input pad."
 msgstr "Relleno de entrada del búfer auxiliar de la imagen."
 
 #: gegl/operation/gegl-operation-composer3.c:104
+#: operations/common-gpl3+/displace.c:200
 msgid "Second auxiliary image buffer input pad."
 msgstr "Relleno de entrada del búfer auxiliar secundario de la imagen."
+
+#: gegl/operation/gegl-operation-filter.c:95
+msgid "Input"
+msgstr "Entrada"
 
 #: operations/common/absolute.c:72
 msgid "Absolute"
