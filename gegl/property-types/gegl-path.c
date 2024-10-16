@@ -1350,7 +1350,7 @@ gegl_path_list_append (GeglPathList *head,
   head = gegl_path_list_append_item (head, type, &iter, NULL);
 
   iter->d.type       = type;
-  for (pair_no=0;pair_no<(info->n_items+2)/2;pair_no++)
+  for (pair_no=0;pair_no<(info->n_items+1)/2;pair_no++)
     {
       iter->d.point[pair_no].x = va_arg (var_args, gdouble);
       iter->d.point[pair_no].y = va_arg (var_args, gdouble);
