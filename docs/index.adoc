@@ -11,7 +11,7 @@ image::images/GEGL.png[GEGL]
 framework, providing floating point processing and non-destructive image
 processing capabilities to
 link:http://www.gimp.org/[GNU Image Manipulation Program] and other
-projects (link:http://www.imgflo.org/[imgflo],
+projects (link:https://github.com/imgflo/imgflo/[imgflo],
 link:https://wiki.gnome.org/Apps/Photos[GNOME Photos],
 link:https://github.com/the-grid/iconographer[iconographer], ...)
 
