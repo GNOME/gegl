@@ -179,9 +179,6 @@ lflags_common = []
 
 cflags_common += '-DHAVE_CONFIG_H'
 
-if buildtype == 'debugoptimized' or buildtype == 'release'
-  cflags_common += '-Ofast'
-endif
 
 if buildtype == 'debugoptimized' or buildtype == 'debug'
   cflags_common += '-DGEGL_ENABLE_DEBUG'
@@ -219,7 +216,9 @@ if os_win32 and cc.get_id() == 'clang'
   cflags_common += '-fansi-escape-codes'
 endif
 
-cflags_common += cc.get_supported_arguments(['-ftree-vectorize'])
+if buildtype == 'debugoptimized' or buildtype == 'release'
+  cflags_common += cc.get_supported_arguments(['-ftree-vectorize'])
+endif
 
 if host_cpu_family == 'x86_64'
   x86_64_v2_flags = cc.get_supported_arguments(['-march=x86-64','-msse2', '-msse2','-msse4.1','-msse4.2','-mpopcnt','-mssse3'])
