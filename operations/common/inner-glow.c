@@ -26,11 +26,6 @@
 
 #ifdef GEGL_PROPERTIES
 
-#define IGGUIDE \
-"id=1 dst-atop aux=[ ref=1 color value=#ffffff ] crop aux=[ ref=1 ]  xor srgb=true aux=[ ref=1 ] color-overlay value=#000000 "\
- /* This is a GEGL Graph. It replaces color with transparency and transparency with color. */
-
-
 enum_start (gegl_innerglow_grow_shape)
   enum_value (GEGL_INNERGLOW_GROW_SHAPE_SQUARE,  "squareig",  N_("Square"))
   enum_value (GEGL_INNERGLOW_GROW_SHAPE_CIRCLE,  "circleig",  N_("Circle"))
@@ -105,63 +100,57 @@ property_double  (cover, _("Median fix for non-affected pixels on edges"), 60)
 static void attach (GeglOperation *operation)
 {
   GeglNode *gegl = operation->node;
-  GeglNode *input, *it, *shadow, *hiddencolor, *color, *atop, *median, *in, *crop,  *output;
-  GeglColor *hidden_color = gegl_color_new ("#00ffffAA");
- /* Inner Glow's GEGL Graph will break without this hidden color */
+  GeglNode *input, *color, *translate, *out, *median, *medianfix, *opacity, *gaussian,  *output;
 
   input    = gegl_node_get_input_proxy (gegl, "input");
   output   = gegl_node_get_output_proxy (gegl, "output");
 
-
-  it    = gegl_node_new_child (gegl,
-                                  "operation", "gegl:gegl", "string", IGGUIDE,
-                                  NULL);
- /* Inner Glow's GEGL Graph will break without this hidden GEGL graph.*/
-
-  in    = gegl_node_new_child (gegl,
-                                  "operation", "gegl:src-in",
+ gaussian    = gegl_node_new_child (gegl,
+                                  "operation", "gegl:gaussian-blur", "abyss-policy", 0, "clip-extent", FALSE,  
                                   NULL);
 
-  shadow    = gegl_node_new_child (gegl,
-                                  "operation", "gegl:dropshadow",
+ opacity    = gegl_node_new_child (gegl,
+                                  "operation", "gegl:opacity", 
                                   NULL);
 
-  hiddencolor    = gegl_node_new_child (gegl,
-                                  "operation", "gegl:color-overlay",
-                                   "value", hidden_color, NULL);
- /* Inner Glow's GEGL Graph will break without this hidden color */
+ translate    = gegl_node_new_child (gegl,
+                                  "operation", "gegl:translate",
+                                  NULL);
 
-  color    = gegl_node_new_child (gegl,
+ median     = gegl_node_new_child (gegl, "operation", "gegl:median-blur",
+                                         "radius",       1,
+                                         "alpha-percentile", 0.0,
+                                         NULL);
+
+ color    = gegl_node_new_child (gegl,
                                   "operation", "gegl:color-overlay",
                                   NULL);
 
-  atop    = gegl_node_new_child (gegl,
-                                  "operation", "gegl:src-atop",
-                                  NULL);
 
-  median     = gegl_node_new_child (gegl, "operation", "gegl:median-blur",
+ medianfix     = gegl_node_new_child (gegl, "operation", "gegl:median-blur",
                                          "radius",       1,
                                          "abyss-policy",     GEGL_ABYSS_NONE,
                                          NULL);
 
-  crop    = gegl_node_new_child (gegl,
-                                  "operation", "gegl:crop",
+ out    = gegl_node_new_child (gegl,
+                                  "operation", "gegl:src-out",
                                   NULL);
  /* This is meant so inner glow to reach pixels in tight corners */
 
-gegl_operation_meta_redirect (operation, "grow_radius", shadow, "grow-radius");
-gegl_operation_meta_redirect (operation, "radius", shadow, "radius");
-gegl_operation_meta_redirect (operation, "opacity", shadow, "opacity");
-gegl_operation_meta_redirect (operation, "grow_shape", shadow, "grow-shape");
+gegl_operation_meta_redirect (operation, "grow_radius", median, "radius");
+gegl_operation_meta_redirect (operation, "radius", gaussian, "std-dev-x");
+gegl_operation_meta_redirect (operation, "radius", gaussian, "std-dev-y");
+gegl_operation_meta_redirect (operation, "opacity", opacity, "value");
+gegl_operation_meta_redirect (operation, "grow_shape", median, "neighborhood");
 gegl_operation_meta_redirect (operation, "value", color, "value");
-gegl_operation_meta_redirect (operation, "x", shadow, "x");
-gegl_operation_meta_redirect (operation, "y", shadow, "y");
-gegl_operation_meta_redirect (operation, "cover", median, "alpha-percentile");
+gegl_operation_meta_redirect (operation, "x", translate, "x");
+gegl_operation_meta_redirect (operation, "y", translate, "y");
+gegl_operation_meta_redirect (operation, "cover", medianfix, "alpha-percentile");
 
 
- gegl_node_link_many (input, it,  shadow, hiddencolor, atop, in, median, color, crop, output, NULL);
- gegl_node_connect (in, "aux", input, "output");
- gegl_node_connect (crop, "aux", input, "output");
+ gegl_node_link_many (input, median, gaussian, translate, out, color, opacity, medianfix, output, NULL);
+ gegl_node_connect (out, "aux", input, "output");
+
 
 }
 
