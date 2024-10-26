@@ -16,8 +16,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-09-10 10:39+0000\n"
-"PO-Revision-Date: 2024-09-16 23:02+0200\n"
+"POT-Creation-Date: 2024-10-17 18:11+0000\n"
+"PO-Revision-Date: 2024-10-20 20:50+0200\n"
 "Last-Translator: Jürgen Benvenuti <gastornis@posteo.org>\n"
 "Language-Team: Deutsch <gnome-de@gnome.org>\n"
 "Language: de\n"
@@ -409,7 +409,7 @@ msgstr "GEGL-Optionen anzeigen"
 #: gegl/gegl-serialize.c:227 gegl/gegl-serialize.c:231
 #, c-format
 msgid "%s does not have a pad called %s"
-msgstr ""
+msgstr "%s enthält kein Pad mit dem Namen %s"
 
 #: gegl/gegl-serialize.c:323
 #, c-format
@@ -463,18 +463,25 @@ msgid "Output pad for generated image buffer."
 msgstr "Ausgabe-Pad des erzeugten Bildpuffers."
 
 #: gegl/operation/gegl-operation-composer3.c:86
+#: gegl/operation/gegl-operation-filter.c:96
 msgid "Input pad, for image buffer input."
 msgstr "Eingabe-Pad der Bildpuffer-Eingabe."
 
 #: gegl/operation/gegl-operation-composer3.c:95
 #: gegl/operation/gegl-operation-composer.c:94
+#: operations/common-gpl3+/displace.c:191
 #: operations/transform/border-align.c:157
 msgid "Auxiliary image buffer input pad."
 msgstr "Zusätzliches Eingabe-Pad des Bildpuffers."
 
 #: gegl/operation/gegl-operation-composer3.c:104
+#: operations/common-gpl3+/displace.c:200
 msgid "Second auxiliary image buffer input pad."
 msgstr "Zweites zusätzliches Eingabe-Pad des Bildpuffers."
+
+#: gegl/operation/gegl-operation-filter.c:95
+msgid "Input"
+msgstr "Eingang"
 
 #: operations/common/absolute.c:72
 msgid "Absolute"
@@ -2562,12 +2569,12 @@ msgstr ""
 "Ausmaß und/oder Richtung des Verlaufs durch zentrale Unterschiede berechnen"
 
 #: operations/common/inner-glow.c:92
-msgid "Median fix for non-effected pixels on edges"
+msgid "Median fix for non-affected pixels on edges"
 msgstr "Median-Korrektur für nicht-betroffene Pixel an Kanten"
 
 #: operations/common/inner-glow.c:94
 msgid ""
-"Median Blur covers uneffected pixels. Making this slider too high will make "
+"Median Blur covers unaffected pixels. Making this slider too high will make "
 "it outline-like. So only slide it as high as you need to cover thin shape "
 "corners."
 msgstr ""
@@ -4666,7 +4673,7 @@ msgstr "Farbrichtlinie"
 
 #: operations/common/styles.c:50
 msgid "Change the blend mode of the color overlay"
-msgstr ""
+msgstr "Überlagerungsmodus der Farbüberlagerung ändern"
 
 #: operations/common/styles.c:57
 msgid "No Color"
@@ -4882,7 +4889,7 @@ msgstr ""
 
 #: operations/common/styles.c:283
 msgid "Dark Bevel/ignore image mode"
-msgstr ""
+msgstr "Dunkle Abschrägung / Bildmodus ignorieren"
 
 #: operations/common/styles.c:284
 msgid ""
@@ -4891,6 +4898,11 @@ msgid ""
 "darker colors. The effect is noticeable on bump bevel but barely effects "
 "chamfer bevel"
 msgstr ""
+"Bei dieser Einstellung werden bei der Abschrägung Bilddetails ignoriert, "
+"wenn sich darunter eine überlagerte Bilddatei befindet. Außerdem kann die "
+"Abschrägung besser funktionieren, wenn der Benutzer dunklere Farben "
+"auswählt. Der Effekt ist bei einer prägenden Abschrägung spürbar, hat aber "
+"kaum Auswirkungen auf eine Fasen-Abschrägung"
 
 #. This operation is extremely important for bevels with image file overlays
 #. Inner Glow GUI options begin here
@@ -4912,7 +4924,7 @@ msgstr "Überlagern"
 
 #: operations/common/styles.c:308
 msgid "Screen"
-msgstr ""
+msgstr "Negativ Multiplizieren"
 
 #: operations/common/styles.c:314
 msgid "Plus"
@@ -4928,7 +4940,7 @@ msgstr "Unschärferadius des inneren Glühens"
 
 #: operations/common/styles.c:329
 msgid "Blur control of the inner glow"
-msgstr ""
+msgstr "Steuerung der Unschärfe des inneren Glühens"
 
 #: operations/common/styles.c:333
 msgid "Inner Glow's grow radius"
@@ -4987,29 +4999,31 @@ msgstr ""
 "werden soll. Erlaubt (png, jpg, raw, svg, bmp, tif, …)"
 
 #: operations/common/styles.c:374
-#, fuzzy
-#| msgid "Path of video file to load"
 msgid "Opacity of image file overlay"
-msgstr "Pfad der zu ladenden Videodatei"
+msgstr "Deckkraft der Bilddatei-Überlagerung"
 
 #: operations/common/styles.c:377
 msgid "Opacity of the image file overlay that was uploaded. "
-msgstr ""
+msgstr "Deckkraft der Überlagerung der hochgeladenen Bilddatei. "
 
 #: operations/common/styles.c:388
 msgid ""
 "Saturation adjustment of the uploaded image file or whatever is on canvas"
 msgstr ""
+"Anpassung der Sättigung der hochgeladenen Bilddatei oder der Zeichenfläche "
+"auf der Leinwand"
 
 #: operations/common/styles.c:393
 msgid ""
 "Lightness adjustment of the uploaded image file or whatever is on canvas"
 msgstr ""
+"Anpassung der Helligkeit der hochgeladenen Bilddatei oder der Zeichenfläche "
+"auf der Leinwand"
 
 #. Outline special options in GUI begin here
 #: operations/common/styles.c:398
 msgid "Enable advanced options on Outline (requires outline)"
-msgstr ""
+msgstr "Erweiterte Einstellungen für Umriss aktivieren (erfordert Umriss)"
 
 #: operations/common/styles.c:399
 msgid "Turn on advanced outline abilities"
@@ -5021,7 +5035,7 @@ msgstr "Umrissabschrägung aktiveren (erfordert erweiterte Einstellungen)"
 
 #: operations/common/styles.c:405
 msgid "Turn on outlines ability to bevel"
-msgstr ""
+msgstr "Umrissfunktionen für Abschrägung einschalten"
 
 #: operations/common/styles.c:426
 msgid "Outline Bevel blend mode"
@@ -5033,35 +5047,35 @@ msgstr "Überlagerungsmodus für die Umrissabschrägung"
 
 #: operations/common/styles.c:434
 msgid "Outline Bevel depth"
-msgstr ""
+msgstr "Umrissabschrägung-Tiefe"
 
 #: operations/common/styles.c:435
 msgid "Emboss depth for the outline bevel"
-msgstr ""
+msgstr "Prägungstiefe der Umrissabschrägung"
 
 #: operations/common/styles.c:440
 msgid "Outline Bevel elevation"
-msgstr ""
+msgstr "Umrissabschrägung-Erhebung"
 
 #: operations/common/styles.c:441
 msgid "Emboss elevation for the outline bevel"
-msgstr ""
+msgstr "Prägungserhebung der Umrissabschrägung"
 
 #: operations/common/styles.c:447
 msgid "Outline Bevel azimuth"
-msgstr ""
+msgstr "Umrissabschrägung-Azimuth"
 
 #: operations/common/styles.c:448
 msgid "Emboss azimuth for the outline bevel"
-msgstr ""
+msgstr "Prägung-Azimuth der Umrissabschrägung"
 
 #: operations/common/styles.c:455
 msgid "Outline Bevel radius"
-msgstr ""
+msgstr "Umrissabschrägung-Radius"
 
 #: operations/common/styles.c:456
 msgid "Internal gaussian blur to inflate the outline bevel"
-msgstr ""
+msgstr "Interner Gauß’scher Weichzeichner zum Aufblasen der Umrissabschrägung"
 
 #: operations/common/styles.c:464
 msgid "Enable image upload on Outline (requires advanced options)"
@@ -5122,15 +5136,19 @@ msgstr ""
 msgid "GEGL Styles"
 msgstr "GEGL-Stile"
 
+# Engine wird auch als Begriff in GIMP verwendet, um GEGL zu beschreiben - ts
 #: operations/common/styles.c:1252
 msgid ""
 "An engine to style text and add popular effects to alpha channel images. "
 "Effects include outline, bevel, shadow, and inner glow all in one place."
 msgstr ""
+"Eine Engine zur Textgestaltung und zum Hinzufügen beliebter Effekte zu "
+"Alphakanalbildern. Zu den Effekten gehören Umriss, Abschrägung, Schatten und "
+"inneres Glühen – alles an einem Ort."
 
 #: operations/common/styles.c:1255
 msgid "Text Styling..."
-msgstr ""
+msgstr "Textgestaltung …"
 
 #: operations/common/svg-huerotate.c:27 operations/common/svg-matrix.c:27
 #: operations/common/svg-saturate.c:25
@@ -5176,24 +5194,21 @@ msgstr "SVG Farbmatrix-Operation svg_saturate"
 
 #: operations/common/threshold.c:28
 msgid "Lowest value to be included."
-msgstr ""
+msgstr "Niedrigster einzubeziehender Wert."
 
 #: operations/common/threshold.c:33
 msgid "Highest value to be included as white."
-msgstr ""
+msgstr "Niedrigster einzubeziehender Wert als Weiß."
 
+# Ich denke, das »(low) and high« ist ein Fehler im Original - ts
 #: operations/common/threshold.c:169
-#, fuzzy
-#| msgid ""
-#| "Thresholds the image to white/black based on either the global value set "
-#| "in the value property, or per pixel from the aux input."
 msgid ""
 "Thresholds the image to white/black based on either the global values set in "
 "the value (low) and high properties, or per pixel from the aux input."
 msgstr ""
 "Überführt das Bild nach schwarz/weiß mit einem Schwellwert, der entweder auf "
-"dem globalen Wert in der Wert-Eigenschaft festgelegt ist, oder pro Pixel von "
-"der Hilfseingabe."
+"den globalen Werten in der Wert-Eigenschaft (niedrig und hoch) festgelegt "
+"ist, oder pro Pixel von der Hilfseingabe."
 
 #: operations/common/tile.c:24
 msgid "Horizontal offset"
