@@ -131,6 +131,11 @@ gegl_buffer_cl_iterator_add_2 (GeglBufferClIterator  *iterator,
       else
         i->conv[self] = gegl_cl_color_supported (buffer_format, format);
 
+      if (i->conv[self] != GEGL_CL_COLOR_NOT_SUPPORTED)
+        GEGL_NOTE (GEGL_DEBUG_OPENCL, "The OpenCL color conversion system is"
+                                      " outdated. This operation is dependent"
+                                      " on OpenCL for color conversion.");
+
       gegl_cl_color_babl (buffer_format, &i->buf_cl_format_size[self]);
       gegl_cl_color_babl (format,        &i->op_cl_format_size [self]);
 
