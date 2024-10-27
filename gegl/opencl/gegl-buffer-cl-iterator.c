@@ -259,7 +259,7 @@ dealloc_iterator(GeglBufferClIterators *i)
   g_slice_free (GeglBufferClIterators, i);
 }
 
-#define OPENCL_USE_CACHE 1
+#define OPENCL_USE_CACHE 0
 
 gboolean
 gegl_buffer_cl_iterator_next (GeglBufferClIterator *iterator, gboolean *err)
@@ -335,7 +335,7 @@ gegl_buffer_cl_iterator_next (GeglBufferClIterator *iterator, gboolean *err)
                       g_free(data);
                     }
                   else
-#ifdef OPENCL_USE_CACHE
+#if OPENCL_USE_CACHE
                     {
                       gegl_buffer_cl_cache_new (i->buffer[no], &i->roi[no], i->tex_buf[no]);
                       /* don't release this texture */
