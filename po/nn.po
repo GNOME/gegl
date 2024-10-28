@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-08-05 18:10+0000\n"
-"PO-Revision-Date: 2024-08-26 14:40+0200\n"
+"POT-Creation-Date: 2024-08-26 12:42+0000\n"
+"PO-Revision-Date: 2024-09-30 14:49+0200\n"
 "Last-Translator: Kolbjørn Stuestøl <kolbjoern@stuestoel.no>\n"
 "Language-Team: Norwegian Nynorsk <l10n-no@lister.huftis.org>\n"
 "Language: nn\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.4.4\n"
+"X-Generator: Poedit 3.5\n"
 
 #: bin/gegl.c:179
 #, c-format
@@ -350,41 +350,41 @@ msgstr "Aldri"
 msgid "Always"
 msgstr "Alltid"
 
-#: gegl/gegl-init.c:225
+#: gegl/gegl-init.c:358
 msgid "Where GEGL stores its swap"
 msgstr "Kvar GEGL lagrar vekselminnet sitt"
 
-#: gegl/gegl-init.c:230
+#: gegl/gegl-init.c:363
 msgid "Compression algorithm used for data stored in the swap"
 msgstr "Komprimeringsalgoritme brukt for data lagra i vekselminnet"
 
-#: gegl/gegl-init.c:235
+#: gegl/gegl-init.c:368
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr "Kor mye minne du (omtrent) skal bruka for å bufra bilete"
 
-#: gegl/gegl-init.c:240
+#: gegl/gegl-init.c:373
 msgid "Default size of tiles in GeglBuffers"
 msgstr "Standardstorleik på fliser i GeglBuffers"
 
-#: gegl/gegl-init.c:245
+#: gegl/gegl-init.c:378
 msgid "The count of pixels to compute simultaneously"
 msgstr "Talet på pikslar som skal reknast ut samstundes"
 
-#: gegl/gegl-init.c:250
+#: gegl/gegl-init.c:383
 msgid ""
 "The quality of rendering, a value between 0.0 (fast) and 1.0 (reference)"
 msgstr ""
 "Kvaliteten på gjengjevinga, ein verdi mellom 0,0 (rask) og 1,0 (referanse)"
 
-#: gegl/gegl-init.c:255
+#: gegl/gegl-init.c:388
 msgid "The number of concurrent processing threads to use"
 msgstr "Talet på handsamingstrådar som skal brukast samstundes"
 
-#: gegl/gegl-init.c:260
+#: gegl/gegl-init.c:393
 msgid "Disable OpenCL"
 msgstr "Slå av OpenCL"
 
-#: gegl/gegl-init.c:272
+#: gegl/gegl-init.c:405
 msgid "Show GEGL Options"
 msgstr "Vis GEGL-innstillingar"
 
@@ -1924,7 +1924,7 @@ msgid ""
 "Amount of edge preservation. This quantity is inversely proportional to the "
 "range standard deviation of the blur kernel."
 msgstr ""
-"Mengde kantkonservering. Denne mengda er omvendt proporsjonal med "
+"Mengd kantkonservering. Denne mengda er omvendt proporsjonal med "
 "standardavviket til sløringskjerna."
 
 #: operations/common/domain-transform.c:528
@@ -2072,11 +2072,11 @@ msgstr ""
 "Behald negative verdiar i resultatet. Når denne er av, vert absolutte "
 "verdiar i resultatet brukte."
 
-#: operations/common/edge-sobel.c:404
+#: operations/common/edge-sobel.c:397
 msgid "Sobel Edge Detection"
 msgstr "Sobel kantfinning"
 
-#: operations/common/edge-sobel.c:408
+#: operations/common/edge-sobel.c:401
 msgid "Specialized direction-dependent edge detection"
 msgstr "Spesialisert retningsavhengig kantfinning"
 
@@ -3239,7 +3239,7 @@ msgstr "Forhold"
 #: operations/common/mix.c:26
 msgid "Mixing ratio, read as amount of aux, 0=input 0.5=half 1.0=aux"
 msgstr ""
-"Blandingsforhold, avlese som mengde tillegg, 0=inngang 0,5=halv 1,0=tillegg"
+"Blandingsforhold, avlese som mengd av tillegg, 0=inngang 0,5=halv 1,0=tillegg"
 
 #: operations/common/mix.c:112
 msgid "Mix"
@@ -3840,11 +3840,11 @@ msgstr ""
 "Kontrollerer talet på gjentakingar. Lågare verdiar gjev mindre plastiske "
 "resultat"
 
-#: operations/common/noise-reduction.c:455
+#: operations/common/noise-reduction.c:461
 msgid "Noise Reduction"
 msgstr "Støyredusering"
 
-#: operations/common/noise-reduction.c:459
+#: operations/common/noise-reduction.c:465
 msgid "Anisotropic smoothing operation"
 msgstr "Anisotropisk utjamningsoperasjon"
 
@@ -4398,7 +4398,7 @@ msgstr "Klasestorleik"
 
 #: operations/common/slic.c:481
 msgid "Simple Linear Iterative Clustering"
-msgstr "Enkel lineær interaktiv klasing"
+msgstr "Enkel lineær gjentakande gruppering"
 
 #: operations/common/slic.c:484
 msgid "Superpixels based on k-means clustering"
@@ -4465,7 +4465,7 @@ msgstr "Kuleforma topp-vinkel, som ein brøkdel av samsynsvinkelen"
 #: operations/common/spherize.c:52 operations/common/unsharp-mask.c:31
 #: operations/common-gpl3+/edge.c:42
 msgid "Amount"
-msgstr "Mengde"
+msgstr "Mengd"
 
 #: operations/common/spherize.c:53
 msgid ""
@@ -4955,7 +4955,7 @@ msgstr "Slå på fasettkonturen (krev avanserte innstillingar)"
 
 #: operations/common/styles.c:405
 msgid "Turn on outlines ability to bevel"
-msgstr ""
+msgstr "Slå på høve til å laga omriss for fasett"
 
 #: operations/common/styles.c:426
 msgid "Outline Bevel blend mode"
@@ -4999,11 +4999,11 @@ msgstr "Intern gaussisk sløring for å flata ut omrissfasetten"
 
 #: operations/common/styles.c:464
 msgid "Enable image upload on Outline (requires advanced options)"
-msgstr ""
+msgstr "Slå på opplasting av bilete på omriss (krev avanserte innstillingar)"
 
 #: operations/common/styles.c:469
 msgid "Outline image file overlay"
-msgstr ""
+msgstr "Overlegg for omrissfil"
 
 #: operations/common/styles.c:470
 msgid ""
@@ -5220,7 +5220,7 @@ msgstr "Gamma"
 
 #: operations/common/vignette.c:50
 msgid "Falloff linearity"
-msgstr ""
+msgstr "Minskande linearitet"
 
 #: operations/common/vignette.c:54
 msgid "Proportion"
@@ -5315,7 +5315,7 @@ msgstr "flag"
 
 #: operations/common/watershed-transform.c:31
 msgid "Pointer to flag value for unlabelled pixels"
-msgstr "Peikar for å flagga verdi for umerka pikslar"
+msgstr "Peikar for å flagga verdi for umerkte pikslar"
 
 #: operations/common/watershed-transform.c:489
 msgid "Watershed Transform"
@@ -5350,8 +5350,8 @@ msgid ""
 "This blur is used for the wavelet decomposition filter, each pixel is "
 "computed from another by the HAT transform"
 msgstr ""
-"Denne dløringa vert brukt av wavelet-dekomponeringsfilteret der kvar piksel "
-"vert rekna ut i ein annan i ein HAT-transformasjon"
+"Denne sløringa vert brukt av wavelet-separeringsfilteret der kvar piksel "
+"vert rekna ut frå ein annan i ein HAT-transformasjon"
 
 #: operations/common/weighted-blend.c:176
 msgid "Weighted Blend"
@@ -6042,11 +6042,11 @@ msgstr "Dekkevneterskel"
 msgid "The limit above which colors remain opaque."
 msgstr "Grensa for når fargen over skal verta opak."
 
-#: operations/common-gpl3+/color-to-alpha.c:285
+#: operations/common-gpl3+/color-to-alpha.c:283
 msgid "Color to Alpha"
 msgstr "Farge til alfa"
 
-#: operations/common-gpl3+/color-to-alpha.c:291
+#: operations/common-gpl3+/color-to-alpha.c:289
 msgid "Convert a specified color to transparency, works best with white."
 msgstr "Konverter ein bestemt farge til gjennomsikt. Fungerer best med kvitt."
 
@@ -7314,7 +7314,7 @@ msgstr "Skift"
 
 #: operations/common-gpl3+/shift.c:27
 msgid "Maximum amount to shift"
-msgstr "Maksimal mengde som skal skiftast"
+msgstr "Maksimal mengd som skal skiftast"
 
 #: operations/common-gpl3+/shift.c:31
 msgid "Shift direction"
@@ -10251,7 +10251,7 @@ msgstr ""
 
 #: operations/workshop/generated/subtractive.c:110
 msgid "Image blending operation 'subtractive' (<tt>c = cA+cB-1.0</tt>)"
-msgstr "Biletblandisngsoperasjon 'subtraktiv' (<tt>c = cA+cB-1.0</tt>)"
+msgstr "Biletblandingsoperasjon «subtraktiv» (<tt>c = cA+cB-1.0</tt>)"
 
 #: operations/workshop/gradient-map.c:26
 msgid "Stop 1"
