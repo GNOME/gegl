@@ -13457,8 +13457,8 @@ void ctx_sha1_free (CtxSHA1 *sha1);
 int ctx_sha1_process(CtxSHA1 *sha1, const unsigned char * msg, unsigned long len);
 int ctx_sha1_done(CtxSHA1 * sha1, unsigned char *out);
 
-void _ctx_texture_lock (void);
-void _ctx_texture_unlock (void);
+static void _ctx_texture_lock (void);
+static void _ctx_texture_unlock (void);
 uint8_t *ctx_define_texture_pixel_data (const CtxEntry *entry);
 uint32_t ctx_define_texture_pixel_data_length (const CtxEntry *entry);
 void ctx_buffer_pixels_free (void *pixels, void *userdata);
@@ -13674,6 +13674,9 @@ int ctx_pixel_format_components     (CtxPixelFormat format);
 void ctx_init (int *argc, char ***argv); // is a no-op but could launch
                                          // terminal
 
+void ctx_svg_arc_to (Ctx *ctx, float rx, float ry, 
+                     float rotation,  int large, int sweep,
+                     float x1, float y1);
 
 /**
  * ctx_clear_bindings:
@@ -34852,7 +34855,7 @@ ctx_drawlist_add_single (CtxDrawlist *drawlist, const CtxEntry *entry)
 }
 
 
-int
+static inline int
 ctx_add_single (Ctx *ctx, void *entry)
 {
   return ctx_drawlist_add_single (&ctx->drawlist, (CtxEntry *) entry);
@@ -39862,28 +39865,28 @@ static mtx_t _ctx_events_mtx;
 #endif
 
 
-void _ctx_events_lock (void)
+static inline void _ctx_events_lock (void)
 {
 #if CTX_THREADS
   mtx_lock (&_ctx_events_mtx);
 #endif
 }
 
-void _ctx_events_unlock (void)
+static inline void _ctx_events_unlock (void)
 {
 #if CTX_THREADS
   mtx_unlock (&_ctx_events_mtx);
 #endif
 }
 
-void _ctx_texture_lock (void)
+static void _ctx_texture_lock (void)
 {
 #if CTX_THREADS
   mtx_lock (&_ctx_texture_mtx);
 #endif
 }
 
-void _ctx_texture_unlock (void)
+static void _ctx_texture_unlock (void)
 {
 #if CTX_THREADS
   mtx_unlock (&_ctx_texture_mtx);
@@ -40162,21 +40165,22 @@ static Ctx *ctx_new_ui (int width, int height, const char *backend)
 }
 #endif
 #else
-void _ctx_texture_unlock (void)
+static void _ctx_texture_unlock (void)
 {
 }
-void _ctx_texture_lock (void)
+static void _ctx_texture_lock (void)
 {
 }
 
 #endif
+#if CTX_EVENTS
 void _ctx_resized (Ctx *ctx, int width, int height, long time);
-
 static int _ctx_delayed_resize(Ctx *ctx, void *d)
 {
   _ctx_resized (ctx, ctx->width, ctx->height, 0);
   return 0;
 }
+#endif
 
 void ctx_set_size (Ctx *ctx, int width, int height)
 {
@@ -42310,7 +42314,7 @@ int ctx_input_pending (Ctx *ctx, int timeout)
   return retval;
 }
 
-int ctx_clients_handle_events (Ctx *ctx);
+static int ctx_clients_handle_events (Ctx *ctx);
 void ctx_handle_events (Ctx *ctx)
 {
 #if CTX_VT
@@ -44349,6 +44353,8 @@ static inline int ctx_clamp (int val, int min, int max)
   return val;
 }
 
+#if CTX_EVENTS
+
 static void
 ctx_parser_response (CtxParser *parser, char *buf, int len)
 {
@@ -44408,6 +44414,7 @@ ctx_parser_key_press (CtxEvent *event, void *data1, void *data2)
   snprintf (buf, sizeof(buf)-1, "%s\n", event->string);
   ctx_parser_response ((CtxParser*)data1, buf, strlen (buf));
 }
+#endif
 
 static void ctx_parser_dispatch_command (CtxParser *parser)
 {
@@ -44977,6 +44984,7 @@ static void ctx_parser_dispatch_command (CtxParser *parser)
         ctx_close_path (ctx);
         break;
       case CTX_END_FRAME:
+      #if CTX_EVENTS
         if (parser->config.flags & CTX_FLAG_FORWARD_EVENTS)
         {
           ctx_rectangle (ctx, 0, 0, ctx_width(ctx), ctx_height(ctx));
@@ -44988,12 +44996,15 @@ static void ctx_parser_dispatch_command (CtxParser *parser)
           ctx_listen (ctx, CTX_KEY_UP, ctx_parser_key_up, parser, NULL);
           ctx_reset_path (ctx);
         }
+      #endif
         if (parser->config.end_frame)
           { 
             parser->config.end_frame (parser->ctx, parser->config.user_data);
           }
+      #if CTX_EVENTS
         if (parser->config.flags & CTX_FLAG_FORWARD_EVENTS)
           ctx_handle_events (ctx);
+      #endif
         break;
       case CTX_START_FRAME:
         if (parser->config.start_frame)
@@ -45314,6 +45325,7 @@ static inline void ctx_parser_feed_byte (CtxParser *parser, char byte)
         }
         return;
     }
+    #if CTX_EVENTS
       case CTX_PARSER_ESCAPE:
         if (parser->escape_first_char == 0)
         {
@@ -45357,7 +45369,7 @@ static inline void ctx_parser_feed_byte (CtxParser *parser, char byte)
           parser->state = CTX_PARSER_NEUTRAL;
         }
         break;
-
+#endif
       case CTX_PARSER_NEUTRAL:
         switch (byte)
           {
@@ -49501,8 +49513,8 @@ ctx_cb_render_thread (CtxCbBackend *cb_backend)
 }
 #endif
 
-#if CTX_PARSER
-void ctx_draw_pointer (Ctx *ctx, float x, float y, CtxCursor cursor)
+#if CTX_PARSER & CTX_EVENTS
+static void ctx_draw_pointer (Ctx *ctx, float x, float y, CtxCursor cursor)
 {
 #define CURSOR_POST " rgba 0 0 0 0.5 z preserve fill rgba 1 1 1 0.5 lineWidth 2 stroke"
     const char *drawing = "M 0 0 L 30 40 L 10 50 z" CURSOR_POST;
@@ -49623,7 +49635,7 @@ ctx_cb_end_frame (Ctx *ctx)
     prev_time = cur_time;
   }
 
-#if CTX_PARSER
+#if CTX_PARSER & CTX_EVENTS
   if (cb_backend->config.flags & CTX_FLAG_POINTER)
     ctx_draw_pointer (ctx, ctx_pointer_x(ctx), ctx_pointer_y(ctx), ctx->cursor);
 #endif
@@ -49708,6 +49720,7 @@ static void ctx_cb_destroy (void *data)
   free (data);
 }
 
+#if CTX_EVENTS
 static void ctx_cb_consume_events (Ctx *ctx)
 {
   CtxCbBackend *backend_cb = (CtxCbBackend*)ctx->backend;
@@ -49737,6 +49750,7 @@ static void ctx_cb_consume_events (Ctx *ctx)
   }
 #endif
 }
+#endif
 
 #define get_user_data(name) \
         (cb->config.name##_user_data?\
@@ -49782,7 +49796,9 @@ Ctx *ctx_new_cb (int width, int height, CtxCbConfig *config)
      cb_backend->config.flags |= CTX_FLAG_SHOW_FPS;
   cb_backend->ctx = ctx;
 
+#if CTX_EVENTS
   backend->consume_events = ctx_cb_consume_events;
+#endif
   if (config->windowtitle)
     backend->set_windowtitle = ctx_cb_windowtitle;
 
@@ -71848,7 +71864,8 @@ CtxList *ctx_clients (Ctx *ctx)
 
 #endif /* CTX_VT */
 
-int ctx_clients_handle_events (Ctx *ctx)
+#if CTX_EVENTS
+static int ctx_clients_handle_events (Ctx *ctx)
 {
   //int n_clients = ctx_list_length (clients);
 #if CTX_VT
@@ -71939,6 +71956,7 @@ done:
 #endif
   return 0;
 }
+#endif
 
 void ctx_client_rev_inc (CtxClient *client)
 {

@@ -5,7 +5,7 @@
 
 #define CTX_PARSER               1
 #define CTX_FORMATTER            0
-#define CTX_EVENTS               1
+#define CTX_EVENTS               0
 #define CTX_BITPACK_PACKER       0 // turned of due to asan report
 #define CTX_GRADIENT_CACHE       1
 #define CTX_ENABLE_CMYK          1
