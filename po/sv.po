@@ -9,9 +9,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gimp/issues\n"
-"POT-Creation-Date: 2024-10-10 17:23+0200\n"
-"PO-Revision-Date: 2024-10-10 17:23+0200\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
+"POT-Creation-Date: 2024-10-25 13:47+0000\n"
+"PO-Revision-Date: 2024-10-29 23:02+0100\n"
 "Last-Translator: Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -2387,7 +2387,7 @@ msgstr "Rutnätsrenderare"
 
 #: operations/common/high-pass.c:24
 msgid "Std. Dev."
-msgstr "Std. avv."
+msgstr "Standardavvikelse"
 
 #: operations/common/high-pass.c:31
 msgid "Contrast of high-pass"
@@ -3812,7 +3812,7 @@ msgstr "Slumpmässighet (%)"
 #: operations/common/noise-hurl.c:34 operations/common/noise-pick.c:35
 #: operations/common-gpl3+/noise-slur.c:37
 msgid "Repeat"
-msgstr "Repetering"
+msgstr "Upprepning"
 
 #: operations/common/noise-hurl.c:245
 msgid "Randomly Shuffle Pixels"
