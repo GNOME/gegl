@@ -4,6 +4,7 @@
 #include <babl/babl.h>
 
 #define CTX_PARSER               1
+#define CTX_PTY                  0
 #define CTX_FORMATTER            0
 #define CTX_EVENTS               0
 #define CTX_BITPACK_PACKER       0 // turned of due to asan report
