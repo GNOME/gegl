@@ -111,7 +111,7 @@ main (int    argc,
   gegl     = gegl_node_new ();
   combiner = gegl_node_new_child (gegl,
                                   "operation", "gegl:exp-combine",
-                                  NULL);
+                                  nullptr);
 
   for (cursor = ARG_PATH_0; cursor < unsigned(argc); ++cursor)
     {
@@ -135,13 +135,13 @@ main (int    argc,
         }
 
       g_ascii_dtostr (ev_string, G_N_ELEMENTS (ev_string), ev_val);
-      all_evs = g_strconcat (all_evs, " ", ev_string, NULL);
+      all_evs = g_strconcat (all_evs, " ", ev_string, nullptr);
 
       /* Construct and link the input image into the combiner */
       img = gegl_node_new_child (gegl,
                                  "operation", "gegl:load",
                                  "path",      input_path,
-                                  NULL);
+                                  nullptr);
 
       /* Create the exposure pad name */
       err = snprintf (combiner_pad,
@@ -160,7 +160,7 @@ main (int    argc,
     }
 
   g_return_val_if_fail (all_evs[0] == ' ', EXIT_FAILURE);
-  gegl_node_set (combiner, "exposures", all_evs + 1, NULL);
+  gegl_node_set (combiner, "exposures", all_evs + 1, nullptr);
 
 
   /* We should not have skipped past the last element of the arguments */
@@ -168,9 +168,9 @@ main (int    argc,
   sink     = gegl_node_new_child (gegl,
                                   "operation", "gegl:save",
                                   "path", argv[ARG_OUTPUT],
-                                   NULL);
+                                   nullptr);
 
-  gegl_node_link_many (combiner, sink, NULL);
+  gegl_node_link_many (combiner, sink, nullptr);
   gegl_node_process (sink);
   return (EXIT_SUCCESS);
 }
