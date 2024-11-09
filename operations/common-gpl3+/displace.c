@@ -187,8 +187,8 @@ attach (GeglOperation *self)
   g_param_spec_sink (pspec);
 
   pspec = g_param_spec_object ("aux",
-                               "Aux",
-                               _("Auxiliary image buffer input pad."),
+                               _("Horizontal/Radial"),
+                               _("Horizontal or radial per pixel input"),
                                GEGL_TYPE_BUFFER,
                                G_PARAM_READWRITE |
                                GEGL_PARAM_PAD_INPUT);
@@ -196,8 +196,8 @@ attach (GeglOperation *self)
   g_param_spec_sink (pspec);
 
   pspec = g_param_spec_object ("aux2",
-                               "Aux2",
-                               _("Second auxiliary image buffer input pad."),
+                               _("Vertical/Angular"),
+                               _("Vertical or angular per pixel input"),
                                GEGL_TYPE_BUFFER,
                                G_PARAM_READWRITE |
                                GEGL_PARAM_PAD_INPUT);
