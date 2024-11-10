@@ -245,12 +245,9 @@ add_project_link_arguments(lflags_common, language: [ 'c', 'cpp' ])
 
 if os_osx
   add_languages('objc')
-  osx_ldflags = ['-Wl,-framework,Foundation', '-Wl,-framework,AppKit', '-ObjC']
+  osx_ldflags = ['-Wl,-framework,Foundation', '-Wl,-framework,AppKit']
   add_project_link_arguments(osx_ldflags, language : ['objc', 'c'])
-endif
-
-if os_osx
-  add_project_arguments('-ObjC', language : 'c')
+  add_project_arguments('-xobjective-c', language : 'c')
 endif
 
 ################################################################################
