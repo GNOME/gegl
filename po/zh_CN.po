@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl-master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-10-10 19:34+0000\n"
-"PO-Revision-Date: 2024-10-11 07:35+0800\n"
+"POT-Creation-Date: 2024-11-09 18:48+0000\n"
+"PO-Revision-Date: 2024-11-11 18:24+0800\n"
 "Last-Translator: lumingzh <lumingzh@qq.com>\n"
 "Language-Team: Chinese (China) <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
@@ -451,13 +451,11 @@ msgstr "用于图像缓冲区输入的输入平板。"
 
 #: gegl/operation/gegl-operation-composer3.c:95
 #: gegl/operation/gegl-operation-composer.c:94
-#: operations/common-gpl3+/displace.c:191
 #: operations/transform/border-align.c:157
 msgid "Auxiliary image buffer input pad."
 msgstr "辅助图像缓冲区输入平板。"
 
 #: gegl/operation/gegl-operation-composer3.c:104
-#: operations/common-gpl3+/displace.c:200
 msgid "Second auxiliary image buffer input pad."
 msgstr "第二辅助图像缓冲区输入平板。"
 
@@ -794,7 +792,7 @@ msgstr "斜面…"
 
 #: operations/common/bilateral-filter.c:26
 #: operations/common/domain-transform.c:29 operations/common/dropshadow.c:46
-#: operations/common/inner-glow.c:65 operations/common-cxx/focus-blur.c:45
+#: operations/common/inner-glow.c:60 operations/common-cxx/focus-blur.c:45
 #: operations/common-cxx/lens-blur.cc:25
 #: operations/common-gpl3+/gaussian-blur-selective.c:29
 #: operations/workshop/bilateral-filter-fast.c:43
@@ -1114,7 +1112,7 @@ msgstr "渲染棋盘图案"
 
 #: operations/common/color.c:24 operations/common/color.c:87
 #: operations/common/color-overlay.c:26 operations/common/dropshadow.c:67
-#: operations/common/grid.c:64 operations/common/inner-glow.c:87
+#: operations/common/grid.c:64 operations/common/inner-glow.c:82
 #: operations/common/long-shadow.c:83 operations/common/rectangle.c:48
 #: operations/common/vignette.c:36 operations/common-gpl3+/color-to-alpha.c:29
 #: operations/common-gpl3+/supernova.c:60
@@ -1192,7 +1190,7 @@ msgid ""
 "lightness untouched."
 msgstr "拉伸色彩浓度以覆盖最大的可能范围，保持色相和亮度不变。"
 
-#: operations/common/color-overlay.c:27 operations/common/inner-glow.c:88
+#: operations/common/color-overlay.c:27 operations/common/inner-glow.c:83
 msgid "The color to paint over the input"
 msgstr "覆盖输入要绘制的颜色"
 
@@ -1906,28 +1904,28 @@ msgid ""
 msgstr ""
 "通过区域变换递归方法实现的边缘保留平滑滤镜。与双向滤镜相似，但计算更快。"
 
-#: operations/common/dropshadow.c:27 operations/common/inner-glow.c:35
+#: operations/common/dropshadow.c:27 operations/common/inner-glow.c:30
 #: operations/common/median-blur.c:27 operations/common/pixelize.c:28
 #: operations/common/styles.c:96 operations/common/vignette.c:26
 #: operations/common-cxx/focus-blur.c:35
 msgid "Square"
 msgstr "方形"
 
-#: operations/common/dropshadow.c:28 operations/common/inner-glow.c:36
+#: operations/common/dropshadow.c:28 operations/common/inner-glow.c:31
 #: operations/common/median-blur.c:28 operations/common/newsprint.c:26
 #: operations/common/styles.c:97 operations/common/vignette.c:25
 #: operations/common-cxx/focus-blur.c:34
 msgid "Circle"
 msgstr "圆形"
 
-#: operations/common/dropshadow.c:29 operations/common/inner-glow.c:37
+#: operations/common/dropshadow.c:29 operations/common/inner-glow.c:32
 #: operations/common/median-blur.c:29 operations/common/newsprint.c:27
 #: operations/common/pixelize.c:26 operations/common/styles.c:98
 #: operations/common/vignette.c:27 operations/common-cxx/focus-blur.c:36
 msgid "Diamond"
 msgstr "菱形"
 
-#: operations/common/dropshadow.c:32 operations/common/inner-glow.c:47
+#: operations/common/dropshadow.c:32 operations/common/inner-glow.c:42
 #: operations/common/layer.c:36 operations/common/rectangle.c:26
 #: operations/common-gpl3+/plasma.c:40
 #: operations/common-gpl3+/polar-coordinates.c:52
@@ -1940,12 +1938,12 @@ msgstr "菱形"
 msgid "X"
 msgstr "X"
 
-#: operations/common/dropshadow.c:33 operations/common/inner-glow.c:48
+#: operations/common/dropshadow.c:33 operations/common/inner-glow.c:43
 #: operations/common/styles.c:145
 msgid "Horizontal shadow offset"
 msgstr "水平阴影偏移"
 
-#: operations/common/dropshadow.c:39 operations/common/inner-glow.c:55
+#: operations/common/dropshadow.c:39 operations/common/inner-glow.c:50
 #: operations/common/layer.c:41 operations/common/rectangle.c:31
 #: operations/common-gpl3+/plasma.c:47
 #: operations/common-gpl3+/polar-coordinates.c:59
@@ -1958,24 +1956,24 @@ msgstr "水平阴影偏移"
 msgid "Y"
 msgstr "Y"
 
-#: operations/common/dropshadow.c:40 operations/common/inner-glow.c:56
+#: operations/common/dropshadow.c:40 operations/common/inner-glow.c:51
 #: operations/common/styles.c:154
 msgid "Vertical shadow offset"
 msgstr "竖直阴影偏移"
 
-#: operations/common/dropshadow.c:53 operations/common/inner-glow.c:41
+#: operations/common/dropshadow.c:53 operations/common/inner-glow.c:36
 msgid "Grow shape"
 msgstr "增长形状"
 
-#: operations/common/dropshadow.c:56 operations/common/inner-glow.c:44
+#: operations/common/dropshadow.c:56 operations/common/inner-glow.c:39
 msgid "The shape to expand or contract the shadow in"
 msgstr "扩张或收缩包含阴影的形状"
 
-#: operations/common/dropshadow.c:58 operations/common/inner-glow.c:73
+#: operations/common/dropshadow.c:58 operations/common/inner-glow.c:68
 msgid "Grow radius"
 msgstr "增长半径"
 
-#: operations/common/dropshadow.c:65 operations/common/inner-glow.c:80
+#: operations/common/dropshadow.c:65 operations/common/inner-glow.c:75
 msgid ""
 "The distance to expand the shadow before blurring; a negative value will "
 "contract the shadow instead"
@@ -1989,7 +1987,7 @@ msgstr "阴影的颜色（默认为“黑色”）"
 #. It does make sense to sometimes have opacities > 1 (see GEGL logo
 #. * for example)
 #.
-#: operations/common/dropshadow.c:74 operations/common/inner-glow.c:82
+#: operations/common/dropshadow.c:74 operations/common/inner-glow.c:77
 #: operations/common/layer.c:33 operations/common/opacity.c:25
 #: operations/common/opacity.c:289 operations/external/vector-fill.c:29
 #: operations/external/vector-stroke.c:34
@@ -2470,11 +2468,11 @@ msgstr "图像渐变"
 msgid "Compute gradient magnitude and/or direction by central differences"
 msgstr "使用中心差分计算渐变量级和/或方向"
 
-#: operations/common/inner-glow.c:92
+#: operations/common/inner-glow.c:87
 msgid "Median fix for non-affected pixels on edges"
 msgstr "用于边缘上未受影响像素的中值修复"
 
-#: operations/common/inner-glow.c:94
+#: operations/common/inner-glow.c:89
 msgid ""
 "Median Blur covers unaffected pixels. Making this slider too high will make "
 "it outline-like. So only slide it as high as you need to cover thin shape "
@@ -2483,11 +2481,11 @@ msgstr ""
 "中值模糊会覆盖未受影响的像素。将该滑块拉的太高会使其形成类似轮廓的效果。所以"
 "仅将其拉到您需要的程度来覆盖细小形状角落。"
 
-#: operations/common/inner-glow.c:179
+#: operations/common/inner-glow.c:168
 msgid "Inner Glow"
 msgstr "内发光"
 
-#: operations/common/inner-glow.c:181
+#: operations/common/inner-glow.c:170
 msgid ""
 "GEGL does an inner shadow glow effect; for more interesting use different "
 "blend mode than the default, Replace."
@@ -2495,7 +2493,7 @@ msgstr ""
 "GEGL 生成内部阴影发光效果；要获得更多有趣效果可以试用不同的混合模式代替默认模"
 "式。"
 
-#: operations/common/inner-glow.c:183
+#: operations/common/inner-glow.c:172
 msgid "Inner Glow..."
 msgstr "内发光…"
 
@@ -6131,6 +6129,22 @@ msgstr "置换中心的 X 坐标"
 #: operations/common-gpl3+/displace.c:89
 msgid "Y coordinate of the displacement center"
 msgstr "置换中心的 Y 坐标"
+
+#: operations/common-gpl3+/displace.c:190
+msgid "Horizontal/Radial"
+msgstr "水平/径向"
+
+#: operations/common-gpl3+/displace.c:191
+msgid "Horizontal or radial per pixel input"
+msgstr "水平或径向每像素输入"
+
+#: operations/common-gpl3+/displace.c:199
+msgid "Vertical/Angular"
+msgstr "竖直/角度"
+
+#: operations/common-gpl3+/displace.c:200
+msgid "Vertical or angular per pixel input"
+msgstr "竖直或有角度的每像素输入"
 
 #: operations/common-gpl3+/displace.c:479
 msgid "Displace"
