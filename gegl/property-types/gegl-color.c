@@ -511,7 +511,9 @@ gegl_color_get_hsva (GeglColor  *self,
   gfloat      hsva[4];
 
   g_return_if_fail (GEGL_IS_COLOR (self));
+#if BABL_MINOR_VERSION > 1 || (BABL_MINOR_VERSION == 1 && BABL_MICRO_VERSION >= 107)
   g_return_if_fail (space == NULL || babl_space_is_rgb (babl_format_get_space (format)));
+#endif
 
   gegl_color_get_pixel (self, format, hsva);
 
@@ -550,7 +552,9 @@ gegl_color_get_hsla (GeglColor  *self,
   gfloat      hsla[4];
 
   g_return_if_fail (GEGL_IS_COLOR (self));
+#if BABL_MINOR_VERSION > 1 || (BABL_MINOR_VERSION == 1 && BABL_MICRO_VERSION >= 107)
   g_return_if_fail (space == NULL || babl_space_is_rgb (babl_format_get_space (format)));
+#endif
 
   gegl_color_get_pixel (self, format, hsla);
 
