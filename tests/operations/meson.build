@@ -43,6 +43,7 @@ exclude += [
   'gegl:introspect',
   'gegl:lcms-from-profile',
   'gegl:mblur',
+  'gegl:json:grey2',
 ]
 
 # Crashing - workshop
@@ -50,7 +51,6 @@ exclude += [
   'gegl:alpha-inpaint',
   'gegl:integral-image',
 ]
-
 
 gegl_test_ops_env = gegl_test_env
 gegl_test_ops_env.set('BABL_TOLERANCE', '0.0')

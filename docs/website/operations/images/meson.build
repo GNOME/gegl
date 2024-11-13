@@ -63,6 +63,7 @@ exclude += [
   'gegl:introspect',
   'gegl:lcms-from-profile',
   'gegl:mblur',
+  'gegl:json:grey2',
 ]
 # Crashing - workshop
 exclude += [
