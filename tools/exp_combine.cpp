@@ -21,9 +21,7 @@ enum
   NUM_ARGS
 };
 
-
-static const
-gchar *COMBINER_INPUT_PREFIX = "exposure-";
+#define  COMBINER_INPUT_PREFIX  "exposure-"
 
 
 static void
@@ -119,7 +117,7 @@ main (int    argc,
       gchar        ev_string[G_ASCII_DTOSTR_BUF_SIZE + 1];
       gfloat       ev_val;
 
-      gchar        combiner_pad[strlen (COMBINER_INPUT_PREFIX) +
+      gchar        combiner_pad[32 +
                                 G_ASCII_DTOSTR_BUF_SIZE + 1];
       gint         err;
 
