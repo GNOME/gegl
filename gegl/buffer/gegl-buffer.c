@@ -342,9 +342,8 @@ gegl_buffer_leaks (void)
            leaked_buffer != NULL;
            leaked_buffer = leaked_buffer->next)
         {
-          GeglBuffer *buffer = GEGL_BUFFER (leaked_buffer->data);
-
 #ifdef HAVE_EXECINFO_H
+          GeglBuffer *buffer = GEGL_BUFFER (leaked_buffer->data);
           g_printerr ("\n"
                      "Leaked buffer allocation stack trace:\n");
           backtrace_symbols_fd (buffer->alloc_stack_trace, buffer->alloc_stack_size, fileno (stderr));

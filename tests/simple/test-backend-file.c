@@ -419,7 +419,6 @@ test_buffer_change_extent (void)
   else \
     { \
       printf ("" #test_name " ... FAIL\n"); \
-      tests_failed++; \
     } \
   tests_run++; \
 }
@@ -428,7 +427,6 @@ int main(int argc, char **argv)
 {
   gint tests_run    = 0;
   gint tests_passed = 0;
-  gint tests_failed = 0;
 
   gegl_init(0, NULL);
   g_object_set(G_OBJECT(gegl_config()),
