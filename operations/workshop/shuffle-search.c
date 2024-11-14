@@ -29,14 +29,14 @@
 #ifdef GEGL_PROPERTIES
 
 property_int  (iterations, _("Iterations"), 3)
-               description("How many times to run optimization")
+               description(_("How many times to run optimization"))
                value_range (0, 64)
 #if DEV_MODE==0
                ui_meta("visible", "0")
 #endif
 
 property_int  (chance, _("Chance"), 100)
-               description("Chance of doing optimization")
+               description(_("Chance of doing optimization"))
                value_range (1, 100)
 #if DEV_MODE==0
                ui_meta("visible", "0")
@@ -50,7 +50,7 @@ property_int  (levels, _("Levels"), 3)
                value_range (2, 255)
 
 
-property_int  (center_bias, "Center bias", 18)
+property_int  (center_bias, _("Center bias"), 18)
                value_range (0, 1024)
 #if DEV_MODE==0
                ui_meta("visible", "0")
