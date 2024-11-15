@@ -32,7 +32,7 @@
 
 #include "gegl-op.h"
 
-#define INVERT_GAMMA "'"
+#define INVERT_GAMMA "~"
 #include "invert-common.h"
 
 static void
