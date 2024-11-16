@@ -610,6 +610,14 @@ error:
 }
 #endif
 
+static void prepare (GeglOperation *operation)
+{
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
+  gegl_operation_set_format (operation, "input", babl_format_with_space ("R~G~B~A float", space));
+  gegl_operation_set_format (operation, "output", babl_format_with_space ("RGBA float", space));
+}
+
+
 static void
 gegl_op_class_init (GeglOpClass *klass)
 {
@@ -641,6 +649,7 @@ gegl_op_class_init (GeglOpClass *klass)
   operation_class = GEGL_OPERATION_CLASS (klass);
   point_filter_class = GEGL_OPERATION_POINT_FILTER_CLASS (klass);
 
+  operation_class->prepare = prepare;
   point_filter_class->process = process;
   operation_class->threaded = TRUE;
 #if 0
