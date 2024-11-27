@@ -336,7 +336,6 @@ gegl_dot_node_to_png (GeglNode    *node,
 {
   gchar      *dot_string   = NULL;
   gchar      *dot_filename = NULL;
-  gchar      *dot_cmd      = NULL;
 
   /* Get dot string */
   dot_string = gegl_to_dot (node);
@@ -345,9 +344,12 @@ gegl_dot_node_to_png (GeglNode    *node,
   dot_filename = g_build_filename (g_get_tmp_dir (), "gegl-dot.dot", NULL);
   g_file_set_contents (dot_filename, dot_string, -1, NULL);
 
-  /* Create a png from it */
-  dot_cmd = g_strdup_printf ("dot -o %s -Tpng %s", png_path, dot_filename);
-  if (system (dot_cmd) == -1)
+  gchar *argv[]={"dot", "-o", (gchar*)png_path, dot_filename, NULL};
+
+  if (!g_spawn_sync (NULL, argv, NULL, G_SPAWN_SEARCH_PATH,
+                     NULL, NULL, NULL, NULL, NULL, NULL))
     g_warning ("Error executing GraphViz dot program");
-  g_free (dot_cmd);
+
+  g_free (dot_filename);
+  g_free (dot_string);
 }
