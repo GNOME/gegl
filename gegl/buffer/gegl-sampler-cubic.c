@@ -151,8 +151,8 @@ gegl_sampler_cubic_interpolate (      GeglSampler     *self,
 {
   GeglSamplerCubic *cubic      = (GeglSamplerCubic*)(self);
   gint              components = self->interpolate_components;
-  gfloat            cubic_b    = cubic->b;
-  gfloat            cubic_c    = cubic->c;
+  const gfloat      cubic_b    = cubic->b;
+  const gfloat      cubic_c    = cubic->c;
   gfloat           *sampler_bptr;
   gfloat            factor_i[4];
   gint              c;
@@ -297,17 +297,19 @@ cubicKernel (const gfloat x,
              const gfloat b,
              const gfloat c)
 {
-  const gfloat x2 = x*x;
   const gfloat ax = int_fabsf (x);
+  const gfloat x2 = ax * ax;
+  const gfloat x3 = x2 * ax;
 
-  if (x2 <= (gfloat) 1.f) return ( (gfloat) ((12-9*b-6*c)/6) * ax +
-                                  (gfloat) ((-18+12*b+6*c)/6) ) * x2 +
-                                  (gfloat) ((6-2*b)/6);
+  if (ax > 2.f)
+    return 0.f;
 
-  if (x2 < (gfloat) 4.f) return ( (gfloat) ((-b-6*c)/6) * ax +
-                                 (gfloat) ((6*b+30*c)/6) ) * x2 +
-                                 (gfloat) ((-12*b-48*c)/6) * ax +
-                                 (gfloat) ((8*b+24*c)/6);
-
-  return (gfloat) 0.f;
+  if (ax < 1.f)
+    return ((12.f - 9.f * b - 6.f * c)   * x3 +
+            (-18.f + 12.f * b + 6.f * c) * x2 +
+            (6.f - 2.f * b))*(1.f/6.f);
+  return ((-b - 6.f * c)        * x3 +
+          (6.f * b + 30.f * c)   * x2 +
+          (-12.f * b - 48.f * c) * ax +
+          (8.f * b + 24.f * c))*(1.f/6.f);
 }
