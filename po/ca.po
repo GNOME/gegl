@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-10-10 19:34+0000\n"
-"PO-Revision-Date: 2024-10-12 10:52+0200\n"
+"POT-Creation-Date: 2024-11-09 18:48+0000\n"
+"PO-Revision-Date: 2024-12-08 10:52+0200\n"
 "Last-Translator: Jordi Mas i Hernàndez <jmas@softcatala.org>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "Language: ca\n"
@@ -454,13 +454,11 @@ msgstr "Panell d'entrada, per a introduir la memòria intermèdia de la imatge."
 
 #: gegl/operation/gegl-operation-composer3.c:95
 #: gegl/operation/gegl-operation-composer.c:94
-#: operations/common-gpl3+/displace.c:191
 #: operations/transform/border-align.c:157
 msgid "Auxiliary image buffer input pad."
 msgstr "Panell d'entrada de la memòria intermèdia de la imatge auxiliar."
 
 #: gegl/operation/gegl-operation-composer3.c:104
-#: operations/common-gpl3+/displace.c:200
 msgid "Second auxiliary image buffer input pad."
 msgstr ""
 "Panell d'entrada de la memòria intermèdia de la segona imatge auxiliar."
@@ -802,8 +800,8 @@ msgid ""
 msgstr ""
 "Dos efectes bisellats en un sol lloc, Xamfrà -que simula la il·luminació de "
 "vores 3D xamfranades, i relleu - el segon fa un efecte d'inflació 3D "
-"mitjançant un relleu que cobreix un difuminat. Ambdós bisells es beneficien"
-" de formes definides alfa plenes de color."
+"mitjançant un relleu que cobreix un difuminat. Ambdós bisells es beneficien "
+"de formes definides alfa plenes de color."
 
 #: operations/common/bevel.c:313
 msgid "Bevel..."
@@ -811,7 +809,7 @@ msgstr "Bevel..."
 
 #: operations/common/bilateral-filter.c:26
 #: operations/common/domain-transform.c:29 operations/common/dropshadow.c:46
-#: operations/common/inner-glow.c:65 operations/common-cxx/focus-blur.c:45
+#: operations/common/inner-glow.c:60 operations/common-cxx/focus-blur.c:45
 #: operations/common-cxx/lens-blur.cc:25
 #: operations/common-gpl3+/gaussian-blur-selective.c:29
 #: operations/workshop/bilateral-filter-fast.c:43
@@ -1151,7 +1149,7 @@ msgstr "Renderitza un patró del tipus tauler d'escacs"
 
 #: operations/common/color.c:24 operations/common/color.c:87
 #: operations/common/color-overlay.c:26 operations/common/dropshadow.c:67
-#: operations/common/grid.c:64 operations/common/inner-glow.c:87
+#: operations/common/grid.c:64 operations/common/inner-glow.c:82
 #: operations/common/long-shadow.c:83 operations/common/rectangle.c:48
 #: operations/common/vignette.c:36 operations/common-gpl3+/color-to-alpha.c:29
 #: operations/common-gpl3+/supernova.c:60
@@ -1235,7 +1233,7 @@ msgstr ""
 "Estirament del croma del color per a cobrir-ne la franja el màxim possible, "
 "mantenint el to i la lluminositat sense tocar."
 
-#: operations/common/color-overlay.c:27 operations/common/inner-glow.c:88
+#: operations/common/color-overlay.c:27 operations/common/inner-glow.c:83
 msgid "The color to paint over the input"
 msgstr "El color del dibuix sobre l'entrada"
 
@@ -1971,28 +1969,28 @@ msgstr ""
 "recursiva de transformació del domini. Similar a un filtre bilateral, però "
 "més ràpid de calcular."
 
-#: operations/common/dropshadow.c:27 operations/common/inner-glow.c:35
+#: operations/common/dropshadow.c:27 operations/common/inner-glow.c:30
 #: operations/common/median-blur.c:27 operations/common/pixelize.c:28
 #: operations/common/styles.c:96 operations/common/vignette.c:26
 #: operations/common-cxx/focus-blur.c:35
 msgid "Square"
 msgstr "Quadrat"
 
-#: operations/common/dropshadow.c:28 operations/common/inner-glow.c:36
+#: operations/common/dropshadow.c:28 operations/common/inner-glow.c:31
 #: operations/common/median-blur.c:28 operations/common/newsprint.c:26
 #: operations/common/styles.c:97 operations/common/vignette.c:25
 #: operations/common-cxx/focus-blur.c:34
 msgid "Circle"
 msgstr "Cercle"
 
-#: operations/common/dropshadow.c:29 operations/common/inner-glow.c:37
+#: operations/common/dropshadow.c:29 operations/common/inner-glow.c:32
 #: operations/common/median-blur.c:29 operations/common/newsprint.c:27
 #: operations/common/pixelize.c:26 operations/common/styles.c:98
 #: operations/common/vignette.c:27 operations/common-cxx/focus-blur.c:36
 msgid "Diamond"
 msgstr "Diamant"
 
-#: operations/common/dropshadow.c:32 operations/common/inner-glow.c:47
+#: operations/common/dropshadow.c:32 operations/common/inner-glow.c:42
 #: operations/common/layer.c:36 operations/common/rectangle.c:26
 #: operations/common-gpl3+/plasma.c:40
 #: operations/common-gpl3+/polar-coordinates.c:52
@@ -2005,12 +2003,12 @@ msgstr "Diamant"
 msgid "X"
 msgstr "X"
 
-#: operations/common/dropshadow.c:33 operations/common/inner-glow.c:48
+#: operations/common/dropshadow.c:33 operations/common/inner-glow.c:43
 #: operations/common/styles.c:145
 msgid "Horizontal shadow offset"
 msgstr "Desplaçament horitzontal de l'ombra"
 
-#: operations/common/dropshadow.c:39 operations/common/inner-glow.c:55
+#: operations/common/dropshadow.c:39 operations/common/inner-glow.c:50
 #: operations/common/layer.c:41 operations/common/rectangle.c:31
 #: operations/common-gpl3+/plasma.c:47
 #: operations/common-gpl3+/polar-coordinates.c:59
@@ -2023,24 +2021,24 @@ msgstr "Desplaçament horitzontal de l'ombra"
 msgid "Y"
 msgstr "Y"
 
-#: operations/common/dropshadow.c:40 operations/common/inner-glow.c:56
+#: operations/common/dropshadow.c:40 operations/common/inner-glow.c:51
 #: operations/common/styles.c:154
 msgid "Vertical shadow offset"
 msgstr "Desplaçament vertical de l'ombra"
 
-#: operations/common/dropshadow.c:53 operations/common/inner-glow.c:41
+#: operations/common/dropshadow.c:53 operations/common/inner-glow.c:36
 msgid "Grow shape"
 msgstr "Engrandeix la forma"
 
-#: operations/common/dropshadow.c:56 operations/common/inner-glow.c:44
+#: operations/common/dropshadow.c:56 operations/common/inner-glow.c:39
 msgid "The shape to expand or contract the shadow in"
 msgstr "La forma per a expandir o contraure l'ombra de dins"
 
-#: operations/common/dropshadow.c:58 operations/common/inner-glow.c:73
+#: operations/common/dropshadow.c:58 operations/common/inner-glow.c:68
 msgid "Grow radius"
 msgstr "Engrandeix el radi"
 
-#: operations/common/dropshadow.c:65 operations/common/inner-glow.c:80
+#: operations/common/dropshadow.c:65 operations/common/inner-glow.c:75
 msgid ""
 "The distance to expand the shadow before blurring; a negative value will "
 "contract the shadow instead"
@@ -2055,7 +2053,7 @@ msgstr "El color de l'ombra (per defecte és «negre»)"
 
 #. It does make sense to sometimes have opacities > 1 (see GEGL logo
 #. * for example)
-#: operations/common/dropshadow.c:74 operations/common/inner-glow.c:82
+#: operations/common/dropshadow.c:74 operations/common/inner-glow.c:77
 #: operations/common/layer.c:33 operations/common/opacity.c:25
 #: operations/common/opacity.c:289 operations/external/vector-fill.c:29
 #: operations/external/vector-stroke.c:34
@@ -2557,11 +2555,11 @@ msgid "Compute gradient magnitude and/or direction by central differences"
 msgstr ""
 "Calcula la magnitud del degradat i/o la direcció de les diferències centrals"
 
-#: operations/common/inner-glow.c:92
+#: operations/common/inner-glow.c:87
 msgid "Median fix for non-affected pixels on edges"
 msgstr "Correcció de la mediana per als píxels no afectats a les vores"
 
-#: operations/common/inner-glow.c:94
+#: operations/common/inner-glow.c:89
 msgid ""
 "Median Blur covers unaffected pixels. Making this slider too high will make "
 "it outline-like. So only slide it as high as you need to cover thin shape "
@@ -2571,11 +2569,11 @@ msgstr ""
 "lliscant és massa alt, es convertirà en un esbós. Així que només llisca-ho "
 "tan alt com necessitis per cobrir cantonades de forma fina."
 
-#: operations/common/inner-glow.c:179
+#: operations/common/inner-glow.c:168
 msgid "Inner Glow"
 msgstr "Lluentor interior"
 
-#: operations/common/inner-glow.c:181
+#: operations/common/inner-glow.c:170
 msgid ""
 "GEGL does an inner shadow glow effect; for more interesting use different "
 "blend mode than the default, Replace."
@@ -2584,7 +2582,7 @@ msgstr ""
 "interessant, utilitzeu un mode de barreja diferent del predeterminat. "
 "Reemplaça."
 
-#: operations/common/inner-glow.c:183
+#: operations/common/inner-glow.c:172
 msgid "Inner Glow..."
 msgstr "Lluentor interior..."
 
@@ -6389,6 +6387,22 @@ msgstr "Coordenada X del desplaçament del centre"
 #: operations/common-gpl3+/displace.c:89
 msgid "Y coordinate of the displacement center"
 msgstr "Coordenada Y del desplaçament del centre"
+
+#: operations/common-gpl3+/displace.c:190
+msgid "Horizontal/Radial"
+msgstr "Horitzontal/Radial"
+
+#: operations/common-gpl3+/displace.c:191
+msgid "Horizontal or radial per pixel input"
+msgstr "Entrada horitzontal o radial per píxel"
+
+#: operations/common-gpl3+/displace.c:199
+msgid "Vertical/Angular"
+msgstr "Vertical/Angular"
+
+#: operations/common-gpl3+/displace.c:200
+msgid "Vertical or angular per pixel input"
+msgstr "Entrada vertical o angular per píxel"
 
 #: operations/common-gpl3+/displace.c:479
 msgid "Displace"
@@ -10538,4 +10552,3 @@ msgid ""
 msgstr ""
 "Barreja els píxels i quantifica amb els veïns per optimitzar el tramat, "
 "barrejant els píxels veïns."
-
