@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-08-26 12:42+0000\n"
-"PO-Revision-Date: 2024-09-30 14:49+0200\n"
+"POT-Creation-Date: 2024-11-09 18:48+0000\n"
+"PO-Revision-Date: 2024-12-20 17:36+0100\n"
 "Last-Translator: Kolbjørn Stuestøl <kolbjoern@stuestoel.no>\n"
 "Language-Team: Norwegian Nynorsk <l10n-no@lister.huftis.org>\n"
 "Language: nn\n"
@@ -444,6 +444,7 @@ msgid "Output pad for generated image buffer."
 msgstr "Utdatablokk for generert biletbuffer."
 
 #: gegl/operation/gegl-operation-composer3.c:86
+#: gegl/operation/gegl-operation-filter.c:96
 msgid "Input pad, for image buffer input."
 msgstr "Inndatablokk, for inndata biletbuffer."
 
@@ -456,6 +457,10 @@ msgstr "Inndatablokk for ekstra biletbuffer."
 #: gegl/operation/gegl-operation-composer3.c:104
 msgid "Second auxiliary image buffer input pad."
 msgstr "Den andre inndatablokka for ekstra biletbuffer."
+
+#: gegl/operation/gegl-operation-filter.c:95
+msgid "Input"
+msgstr ""
 
 #: operations/common/absolute.c:72
 msgid "Absolute"
@@ -795,7 +800,7 @@ msgstr "Fasett …"
 
 #: operations/common/bilateral-filter.c:26
 #: operations/common/domain-transform.c:29 operations/common/dropshadow.c:46
-#: operations/common/inner-glow.c:65 operations/common-cxx/focus-blur.c:45
+#: operations/common/inner-glow.c:60 operations/common-cxx/focus-blur.c:45
 #: operations/common-cxx/lens-blur.cc:25
 #: operations/common-gpl3+/gaussian-blur-selective.c:29
 #: operations/workshop/bilateral-filter-fast.c:43
@@ -1127,7 +1132,7 @@ msgstr "Lagar eit sjakkbrettmønster"
 
 #: operations/common/color.c:24 operations/common/color.c:87
 #: operations/common/color-overlay.c:26 operations/common/dropshadow.c:67
-#: operations/common/grid.c:64 operations/common/inner-glow.c:87
+#: operations/common/grid.c:64 operations/common/inner-glow.c:82
 #: operations/common/long-shadow.c:83 operations/common/rectangle.c:48
 #: operations/common/vignette.c:36 operations/common-gpl3+/color-to-alpha.c:29
 #: operations/common-gpl3+/supernova.c:60
@@ -1210,7 +1215,7 @@ msgstr ""
 "Strekkjer fargekromaen over størst mogleg område, men held kulør og "
 "lysstyrke uendra."
 
-#: operations/common/color-overlay.c:27 operations/common/inner-glow.c:88
+#: operations/common/color-overlay.c:27 operations/common/inner-glow.c:83
 msgid "The color to paint over the input"
 msgstr "Fargen som skal brukast over inndataa"
 
@@ -1940,28 +1945,28 @@ msgstr ""
 "rekursiv teknikk. Liknar på eit bilateralt filter, men med raskare "
 "utrekningar."
 
-#: operations/common/dropshadow.c:27 operations/common/inner-glow.c:35
+#: operations/common/dropshadow.c:27 operations/common/inner-glow.c:30
 #: operations/common/median-blur.c:27 operations/common/pixelize.c:28
 #: operations/common/styles.c:96 operations/common/vignette.c:26
 #: operations/common-cxx/focus-blur.c:35
 msgid "Square"
 msgstr "Kvadrat"
 
-#: operations/common/dropshadow.c:28 operations/common/inner-glow.c:36
+#: operations/common/dropshadow.c:28 operations/common/inner-glow.c:31
 #: operations/common/median-blur.c:28 operations/common/newsprint.c:26
 #: operations/common/styles.c:97 operations/common/vignette.c:25
 #: operations/common-cxx/focus-blur.c:34
 msgid "Circle"
 msgstr "Sirkel"
 
-#: operations/common/dropshadow.c:29 operations/common/inner-glow.c:37
+#: operations/common/dropshadow.c:29 operations/common/inner-glow.c:32
 #: operations/common/median-blur.c:29 operations/common/newsprint.c:27
 #: operations/common/pixelize.c:26 operations/common/styles.c:98
 #: operations/common/vignette.c:27 operations/common-cxx/focus-blur.c:36
 msgid "Diamond"
 msgstr "Rombe"
 
-#: operations/common/dropshadow.c:32 operations/common/inner-glow.c:47
+#: operations/common/dropshadow.c:32 operations/common/inner-glow.c:42
 #: operations/common/layer.c:36 operations/common/rectangle.c:26
 #: operations/common-gpl3+/plasma.c:40
 #: operations/common-gpl3+/polar-coordinates.c:52
@@ -1974,12 +1979,12 @@ msgstr "Rombe"
 msgid "X"
 msgstr "X"
 
-#: operations/common/dropshadow.c:33 operations/common/inner-glow.c:48
+#: operations/common/dropshadow.c:33 operations/common/inner-glow.c:43
 #: operations/common/styles.c:145
 msgid "Horizontal shadow offset"
 msgstr "Vassrett forskyving av skuggen"
 
-#: operations/common/dropshadow.c:39 operations/common/inner-glow.c:55
+#: operations/common/dropshadow.c:39 operations/common/inner-glow.c:50
 #: operations/common/layer.c:41 operations/common/rectangle.c:31
 #: operations/common-gpl3+/plasma.c:47
 #: operations/common-gpl3+/polar-coordinates.c:59
@@ -1992,24 +1997,24 @@ msgstr "Vassrett forskyving av skuggen"
 msgid "Y"
 msgstr "Y"
 
-#: operations/common/dropshadow.c:40 operations/common/inner-glow.c:56
+#: operations/common/dropshadow.c:40 operations/common/inner-glow.c:51
 #: operations/common/styles.c:154
 msgid "Vertical shadow offset"
 msgstr "Loddrett forskyving av skuggen"
 
-#: operations/common/dropshadow.c:53 operations/common/inner-glow.c:41
+#: operations/common/dropshadow.c:53 operations/common/inner-glow.c:36
 msgid "Grow shape"
 msgstr "Auk forma"
 
-#: operations/common/dropshadow.c:56 operations/common/inner-glow.c:44
+#: operations/common/dropshadow.c:56 operations/common/inner-glow.c:39
 msgid "The shape to expand or contract the shadow in"
 msgstr "Forma som skuggen skal utvidast eller trekkjast saman i"
 
-#: operations/common/dropshadow.c:58 operations/common/inner-glow.c:73
+#: operations/common/dropshadow.c:58 operations/common/inner-glow.c:68
 msgid "Grow radius"
 msgstr "Aukingsradius"
 
-#: operations/common/dropshadow.c:65 operations/common/inner-glow.c:80
+#: operations/common/dropshadow.c:65 operations/common/inner-glow.c:75
 msgid ""
 "The distance to expand the shadow before blurring; a negative value will "
 "contract the shadow instead"
@@ -2025,7 +2030,7 @@ msgstr "Skuggefarge (standard er svart)"
 #. It does make sense to sometimes have opacities > 1 (see GEGL logo
 #. * for example)
 #.
-#: operations/common/dropshadow.c:74 operations/common/inner-glow.c:82
+#: operations/common/dropshadow.c:74 operations/common/inner-glow.c:77
 #: operations/common/layer.c:33 operations/common/opacity.c:25
 #: operations/common/opacity.c:289 operations/external/vector-fill.c:29
 #: operations/external/vector-stroke.c:34
@@ -2521,25 +2526,25 @@ msgstr ""
 "Rekn ut storleikar på fargeovergangar og/eller retning ved sentrale "
 "ulikskapar"
 
-#: operations/common/inner-glow.c:92
-msgid "Median fix for non-effected pixels on edges"
-msgstr "Medianfiksering for ikkje-påverka pikslar på kantane"
+#: operations/common/inner-glow.c:87
+msgid "Median fix for non-affected pixels on edges"
+msgstr "Medianfiksing for ikkje-påverka pikslar på kantane"
 
-#: operations/common/inner-glow.c:94
+#: operations/common/inner-glow.c:89
 msgid ""
-"Median Blur covers uneffected pixels. Making this slider too high will make "
+"Median Blur covers unaffected pixels. Making this slider too high will make "
 "it outline-like. So only slide it as high as you need to cover thin shape "
 "corners."
 msgstr ""
 "Mediansløring dekkjer pikslar som ikkje er påverka. Vert denne glidebrytaren "
-"sett for høgt, vil gjera effekten meir konturaktig. Så berre set han så høgt "
-"at tynne hjørne vert dekka."
+"sett for høgt, vert effekten meir konturaktig. Så berre set han så høgt at "
+"tynne hjørne vert dekka."
 
-#: operations/common/inner-glow.c:179
+#: operations/common/inner-glow.c:168
 msgid "Inner Glow"
 msgstr "Indre glød"
 
-#: operations/common/inner-glow.c:181
+#: operations/common/inner-glow.c:170
 msgid ""
 "GEGL does an inner shadow glow effect; for more interesting use different "
 "blend mode than the default, Replace."
@@ -2547,7 +2552,7 @@ msgstr ""
 "GEGL har ein indre skuggeglødeffekt. Er du interessert, kan du også prøva "
 "annan blandingsmodus enn standard «Byt ut»."
 
-#: operations/common/inner-glow.c:183
+#: operations/common/inner-glow.c:172
 msgid "Inner Glow..."
 msgstr "Indre glød …"
 
@@ -6301,6 +6306,22 @@ msgstr "X-koordinat for forskyvingssenteret"
 #: operations/common-gpl3+/displace.c:89
 msgid "Y coordinate of the displacement center"
 msgstr "Y-koordinat for forskyvingssenteret"
+
+#: operations/common-gpl3+/displace.c:190
+msgid "Horizontal/Radial"
+msgstr "Vassrett / radial"
+
+#: operations/common-gpl3+/displace.c:191
+msgid "Horizontal or radial per pixel input"
+msgstr "Vassrett eller radial pikselinngang"
+
+#: operations/common-gpl3+/displace.c:199
+msgid "Vertical/Angular"
+msgstr "Loddrett / vinkla"
+
+#: operations/common-gpl3+/displace.c:200
+msgid "Vertical or angular per pixel input"
+msgstr "Loddrett eller radial pikselinngang"
 
 #: operations/common-gpl3+/displace.c:479
 msgid "Displace"
