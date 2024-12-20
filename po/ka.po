@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-03-21 15:12+0000\n"
-"PO-Revision-Date: 2024-03-22 00:43+0100\n"
+"POT-Creation-Date: 2024-11-09 18:48+0000\n"
+"PO-Revision-Date: 2024-12-20 05:34+0100\n"
 "Last-Translator: Ekaterine Papava <papava.e@gtu.ge>\n"
 "Language-Team: Georgian <(nothing)>\n"
 "Language: ka\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.3.2\n"
+"X-Generator: Poedit 3.5\n"
 
 #: bin/gegl.c:179
 #, c-format
@@ -192,7 +192,7 @@ msgstr "ქვესეტი"
 
 #: gegl/buffer/gegl-buffer-enums.c:118
 msgid "Superset"
-msgstr ""
+msgstr "ზესიმრავლე"
 
 #: gegl/gegl-enums.c:34
 msgid "Floyd-Steinberg"
@@ -303,40 +303,40 @@ msgstr "არასდროს"
 msgid "Always"
 msgstr "ყოველთვის"
 
-#: gegl/gegl-init.c:225
+#: gegl/gegl-init.c:358
 msgid "Where GEGL stores its swap"
 msgstr ""
 
-#: gegl/gegl-init.c:230
+#: gegl/gegl-init.c:363
 msgid "Compression algorithm used for data stored in the swap"
 msgstr ""
 
-#: gegl/gegl-init.c:235
+#: gegl/gegl-init.c:368
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr ""
 
-#: gegl/gegl-init.c:240
+#: gegl/gegl-init.c:373
 msgid "Default size of tiles in GeglBuffers"
 msgstr ""
 
-#: gegl/gegl-init.c:245
+#: gegl/gegl-init.c:378
 msgid "The count of pixels to compute simultaneously"
 msgstr ""
 
-#: gegl/gegl-init.c:250
+#: gegl/gegl-init.c:383
 msgid ""
 "The quality of rendering, a value between 0.0 (fast) and 1.0 (reference)"
 msgstr ""
 
-#: gegl/gegl-init.c:255
+#: gegl/gegl-init.c:388
 msgid "The number of concurrent processing threads to use"
 msgstr ""
 
-#: gegl/gegl-init.c:260
+#: gegl/gegl-init.c:393
 msgid "Disable OpenCL"
 msgstr "OpenCL-ის გამორთვა"
 
-#: gegl/gegl-init.c:272
+#: gegl/gegl-init.c:405
 msgid "Show GEGL Options"
 msgstr "GEGL-ის პარამეტრების ჩვენება"
 
@@ -396,6 +396,7 @@ msgid "Output pad for generated image buffer."
 msgstr ""
 
 #: gegl/operation/gegl-operation-composer3.c:86
+#: gegl/operation/gegl-operation-filter.c:96
 msgid "Input pad, for image buffer input."
 msgstr ""
 
@@ -408,6 +409,10 @@ msgstr ""
 #: gegl/operation/gegl-operation-composer3.c:104
 msgid "Second auxiliary image buffer input pad."
 msgstr ""
+
+#: gegl/operation/gegl-operation-filter.c:95
+msgid "Input"
+msgstr "შეტანის ფაილი"
 
 #: operations/common/absolute.c:72
 msgid "Absolute"
@@ -610,23 +615,23 @@ msgstr ""
 msgid "None (for use with GIMPs blending options)"
 msgstr ""
 
-#: operations/common/bevel.c:61 operations/workshop/styles.c:203
-#: operations/workshop/styles.c:419
+#: operations/common/bevel.c:61 operations/common/styles.c:202
+#: operations/common/styles.c:310 operations/common/styles.c:418
 msgid "Hard Light"
 msgstr "მაგარი სინათლე"
 
-#: operations/common/bevel.c:63 operations/workshop/styles.c:60
-#: operations/workshop/styles.c:199 operations/workshop/styles.c:415
+#: operations/common/bevel.c:63 operations/common/styles.c:59
+#: operations/common/styles.c:198 operations/common/styles.c:414
 msgid "Multiply"
 msgstr "გამრავლება"
 
-#: operations/common/bevel.c:65 operations/workshop/styles.c:207
-#: operations/workshop/styles.c:313 operations/workshop/styles.c:423
+#: operations/common/bevel.c:65 operations/common/styles.c:206
+#: operations/common/styles.c:312 operations/common/styles.c:422
 msgid "Color Dodge"
 msgstr "ფერის გაღიავება"
 
-#: operations/common/bevel.c:67 operations/workshop/styles.c:205
-#: operations/workshop/styles.c:421
+#: operations/common/bevel.c:67 operations/common/styles.c:204
+#: operations/common/styles.c:420
 msgid "Darken"
 msgstr "გამუქება"
 
@@ -634,14 +639,15 @@ msgstr "გამუქება"
 msgid "Lighten"
 msgstr "გაღიავება"
 
-#: operations/common/bevel.c:71 operations/workshop/external/paint-select.cc:30
-#: operations/workshop/styles.c:201 operations/workshop/styles.c:417
+#: operations/common/bevel.c:71 operations/common/styles.c:200
+#: operations/common/styles.c:416
+#: operations/workshop/external/paint-select.cc:30
 msgid "Add"
 msgstr "_დამატება"
 
 #: operations/common/bevel.c:74 operations/common-gpl3+/sinus.c:67
 msgid "Blend Mode"
-msgstr ""
+msgstr "შერევის რეჟიმი"
 
 #: operations/common/bevel.c:77
 msgid ""
@@ -732,7 +738,7 @@ msgstr ""
 
 #: operations/common/bilateral-filter.c:26
 #: operations/common/domain-transform.c:29 operations/common/dropshadow.c:46
-#: operations/common/inner-glow.c:69 operations/common-cxx/focus-blur.c:45
+#: operations/common/inner-glow.c:60 operations/common-cxx/focus-blur.c:45
 #: operations/common-cxx/lens-blur.cc:25
 #: operations/common-gpl3+/gaussian-blur-selective.c:29
 #: operations/workshop/bilateral-filter-fast.c:43
@@ -1046,7 +1052,7 @@ msgstr ""
 
 #: operations/common/color.c:24 operations/common/color.c:87
 #: operations/common/color-overlay.c:26 operations/common/dropshadow.c:67
-#: operations/common/grid.c:64 operations/common/inner-glow.c:91
+#: operations/common/grid.c:64 operations/common/inner-glow.c:82
 #: operations/common/long-shadow.c:83 operations/common/rectangle.c:48
 #: operations/common/vignette.c:36 operations/common-gpl3+/color-to-alpha.c:29
 #: operations/common-gpl3+/supernova.c:60
@@ -1080,10 +1086,9 @@ msgstr "ბადის ზომა"
 #: operations/common/color-assimilation-grid.c:31
 #: operations/common/color-rotate.c:84 operations/common/fattal02.c:39
 #: operations/common/mantiuk06.c:33 operations/common/noise-hsv.c:34
-#: operations/common/saturation.c:404
+#: operations/common/saturation.c:404 operations/common/styles.c:387
 #: operations/external/lcms-from-profile.c:35
 #: operations/workshop/selective-hue-saturation.c:38
-#: operations/workshop/styles.c:388
 msgid "Saturation"
 msgstr "გაჯერებულობა"
 
@@ -1123,7 +1128,7 @@ msgid ""
 "lightness untouched."
 msgstr ""
 
-#: operations/common/color-overlay.c:27 operations/common/inner-glow.c:92
+#: operations/common/color-overlay.c:27 operations/common/inner-glow.c:83
 msgid "The color to paint over the input"
 msgstr ""
 
@@ -1634,7 +1639,7 @@ msgstr "(5,5)"
 
 #: operations/common/convolution-matrix.c:51
 msgid "Divisor"
-msgstr ""
+msgstr "გამყოფი"
 
 #: operations/common/convolution-matrix.c:55
 #: operations/common-gpl3+/bayer-matrix.c:63
@@ -1830,28 +1835,28 @@ msgid ""
 "recursive technique. Similar to a bilateral filter, but faster to compute."
 msgstr ""
 
-#: operations/common/dropshadow.c:27 operations/common/inner-glow.c:39
+#: operations/common/dropshadow.c:27 operations/common/inner-glow.c:30
 #: operations/common/median-blur.c:27 operations/common/pixelize.c:28
-#: operations/common/vignette.c:26 operations/common-cxx/focus-blur.c:35
-#: operations/workshop/styles.c:97
+#: operations/common/styles.c:96 operations/common/vignette.c:26
+#: operations/common-cxx/focus-blur.c:35
 msgid "Square"
 msgstr "კვადრატი"
 
-#: operations/common/dropshadow.c:28 operations/common/inner-glow.c:40
+#: operations/common/dropshadow.c:28 operations/common/inner-glow.c:31
 #: operations/common/median-blur.c:28 operations/common/newsprint.c:26
-#: operations/common/vignette.c:25 operations/common-cxx/focus-blur.c:34
-#: operations/workshop/styles.c:98
+#: operations/common/styles.c:97 operations/common/vignette.c:25
+#: operations/common-cxx/focus-blur.c:34
 msgid "Circle"
 msgstr "წრე"
 
-#: operations/common/dropshadow.c:29 operations/common/inner-glow.c:41
+#: operations/common/dropshadow.c:29 operations/common/inner-glow.c:32
 #: operations/common/median-blur.c:29 operations/common/newsprint.c:27
-#: operations/common/pixelize.c:26 operations/common/vignette.c:27
-#: operations/common-cxx/focus-blur.c:36 operations/workshop/styles.c:99
+#: operations/common/pixelize.c:26 operations/common/styles.c:98
+#: operations/common/vignette.c:27 operations/common-cxx/focus-blur.c:36
 msgid "Diamond"
 msgstr "პრიზმა"
 
-#: operations/common/dropshadow.c:32 operations/common/inner-glow.c:51
+#: operations/common/dropshadow.c:32 operations/common/inner-glow.c:42
 #: operations/common/layer.c:36 operations/common/rectangle.c:26
 #: operations/common-gpl3+/plasma.c:40
 #: operations/common-gpl3+/polar-coordinates.c:52
@@ -1864,12 +1869,12 @@ msgstr "პრიზმა"
 msgid "X"
 msgstr "X"
 
-#: operations/common/dropshadow.c:33 operations/common/inner-glow.c:52
-#: operations/workshop/styles.c:146
+#: operations/common/dropshadow.c:33 operations/common/inner-glow.c:43
+#: operations/common/styles.c:145
 msgid "Horizontal shadow offset"
 msgstr ""
 
-#: operations/common/dropshadow.c:39 operations/common/inner-glow.c:59
+#: operations/common/dropshadow.c:39 operations/common/inner-glow.c:50
 #: operations/common/layer.c:41 operations/common/rectangle.c:31
 #: operations/common-gpl3+/plasma.c:47
 #: operations/common-gpl3+/polar-coordinates.c:59
@@ -1882,38 +1887,38 @@ msgstr ""
 msgid "Y"
 msgstr "Y"
 
-#: operations/common/dropshadow.c:40 operations/common/inner-glow.c:60
-#: operations/workshop/styles.c:155
+#: operations/common/dropshadow.c:40 operations/common/inner-glow.c:51
+#: operations/common/styles.c:154
 msgid "Vertical shadow offset"
 msgstr ""
 
-#: operations/common/dropshadow.c:53 operations/common/inner-glow.c:45
+#: operations/common/dropshadow.c:53 operations/common/inner-glow.c:36
 msgid "Grow shape"
 msgstr "ფორმის გაზრდა"
 
-#: operations/common/dropshadow.c:56 operations/common/inner-glow.c:48
+#: operations/common/dropshadow.c:56 operations/common/inner-glow.c:39
 msgid "The shape to expand or contract the shadow in"
 msgstr ""
 
-#: operations/common/dropshadow.c:58 operations/common/inner-glow.c:77
+#: operations/common/dropshadow.c:58 operations/common/inner-glow.c:68
 msgid "Grow radius"
 msgstr "რადუსის გაზრდა"
 
-#: operations/common/dropshadow.c:65 operations/common/inner-glow.c:84
+#: operations/common/dropshadow.c:65 operations/common/inner-glow.c:75
 msgid ""
 "The distance to expand the shadow before blurring; a negative value will "
 "contract the shadow instead"
 msgstr ""
 
 #. TRANSLATORS: the string 'black' should not be translated
-#: operations/common/dropshadow.c:69 operations/workshop/styles.c:165
+#: operations/common/dropshadow.c:69
 msgid "The shadow's color (defaults to 'black')"
 msgstr ""
 
 #. It does make sense to sometimes have opacities > 1 (see GEGL logo
 #. * for example)
 #.
-#: operations/common/dropshadow.c:74 operations/common/inner-glow.c:86
+#: operations/common/dropshadow.c:74 operations/common/inner-glow.c:77
 #: operations/common/layer.c:33 operations/common/opacity.c:25
 #: operations/common/opacity.c:289 operations/external/vector-fill.c:29
 #: operations/external/vector-stroke.c:34
@@ -1958,11 +1963,11 @@ msgid ""
 "is used instead."
 msgstr ""
 
-#: operations/common/edge-sobel.c:404
+#: operations/common/edge-sobel.c:397
 msgid "Sobel Edge Detection"
 msgstr ""
 
-#: operations/common/edge-sobel.c:408
+#: operations/common/edge-sobel.c:401
 msgid "Specialized direction-dependent edge detection"
 msgstr ""
 
@@ -2273,8 +2278,8 @@ msgid "Chroma adjustment"
 msgstr ""
 
 #: operations/common/hue-chroma.c:33 operations/common/noise-cie-lch.c:29
+#: operations/common/styles.c:392
 #: operations/workshop/selective-hue-saturation.c:42
-#: operations/workshop/styles.c:393
 msgid "Lightness"
 msgstr "სიკა_შკაშე"
 
@@ -2387,28 +2392,28 @@ msgstr "სურათის გრადიენტი"
 msgid "Compute gradient magnitude and/or direction by central differences"
 msgstr ""
 
-#: operations/common/inner-glow.c:96
-msgid "Median fix for non-effected pixels on edges"
+#: operations/common/inner-glow.c:87
+msgid "Median fix for non-affected pixels on edges"
 msgstr ""
 
-#: operations/common/inner-glow.c:98
+#: operations/common/inner-glow.c:89
 msgid ""
-"Median Blur covers uneffected pixels. Making this slider too high will make "
-"it outline-like. So only slide it has high as you need to cover thin shape "
-"corners.'"
+"Median Blur covers unaffected pixels. Making this slider too high will make "
+"it outline-like. So only slide it as high as you need to cover thin shape "
+"corners."
 msgstr ""
 
-#: operations/common/inner-glow.c:178
+#: operations/common/inner-glow.c:168
 msgid "Inner Glow"
 msgstr ""
 
-#: operations/common/inner-glow.c:180
+#: operations/common/inner-glow.c:170
 msgid ""
 "GEGL does an inner shadow glow effect; for more interesting use different "
 "blend mode than the default, Replace."
 msgstr ""
 
-#: operations/common/inner-glow.c:182
+#: operations/common/inner-glow.c:172
 msgid "Inner Glow..."
 msgstr ""
 
@@ -3303,7 +3308,7 @@ msgstr ""
 
 #: operations/common/newsprint.c:29
 msgid "Crossing Lines"
-msgstr ""
+msgstr "კვეთადი ხაზები"
 
 #: operations/common/newsprint.c:33
 msgid "White on Black"
@@ -3644,11 +3649,11 @@ msgid ""
 "Controls the number of iterations; lower values give less plastic results"
 msgstr ""
 
-#: operations/common/noise-reduction.c:455
+#: operations/common/noise-reduction.c:461
 msgid "Noise Reduction"
 msgstr "ხმაურის შემცირება"
 
-#: operations/common/noise-reduction.c:459
+#: operations/common/noise-reduction.c:465
 msgid "Anisotropic smoothing operation"
 msgstr ""
 
@@ -3839,7 +3844,7 @@ msgstr ""
 
 #: operations/common/pack.c:181
 msgid "Pack"
-msgstr ""
+msgstr "შეფუთვა"
 
 #: operations/common/pack.c:183
 msgid ""
@@ -4319,6 +4324,493 @@ msgid ""
 "Contrast Autostretch in that it works in HSV space, and preserves hue."
 msgstr ""
 
+#: operations/common/styles.c:29
+msgid "Color, Outline and Shadow"
+msgstr ""
+
+#: operations/common/styles.c:30
+msgid "Bevel and Inner Glow"
+msgstr ""
+
+#: operations/common/styles.c:31
+msgid "Image upload and Outline Bevel"
+msgstr ""
+
+#. List of all GUI options
+#. GUI Change list in GUI
+#: operations/common/styles.c:38
+msgid "Part of filter to be displayed"
+msgstr "საჩვენებელი ფილტრის ნაწილი"
+
+#: operations/common/styles.c:41
+msgid "Display a different part of the GUI"
+msgstr ""
+
+#. Color Overlays GUI options begin here
+#: operations/common/styles.c:45
+msgid "Color overlay"
+msgstr "ფერის განლაგება"
+
+#: operations/common/styles.c:47
+msgid "Color overlay setting"
+msgstr "ფერის განლაგების პარამეტრი"
+
+#: operations/common/styles.c:49
+msgid "Color policy"
+msgstr "ფერების პოლიტიკა"
+
+#: operations/common/styles.c:50
+msgid "Change the blend mode of the color overlay"
+msgstr ""
+
+#: operations/common/styles.c:57
+msgid "No Color"
+msgstr "ფერის გარეშე"
+
+#: operations/common/styles.c:61
+msgid "Solid Color"
+msgstr "მყარი ფერი"
+
+#. Outline's normal GUI options begin here
+#: operations/common/styles.c:67
+msgid "Enable Outline"
+msgstr ""
+
+#: operations/common/styles.c:68
+msgid "Disable or enable the outline"
+msgstr ""
+
+#: operations/common/styles.c:71
+msgid "Outline opacity"
+msgstr "კონტურის გაუმჭვირვალობა"
+
+#: operations/common/styles.c:74
+msgid "Opacity of the outline"
+msgstr "კონტურის გაუმჭვირვალობა"
+
+#: operations/common/styles.c:78
+msgid "Outline X"
+msgstr ""
+
+#: operations/common/styles.c:79
+msgid "Horizontal outline offset"
+msgstr "ჰორიზონტალური კონტურის წანაცვლება"
+
+#: operations/common/styles.c:86
+msgid "Outline Y"
+msgstr ""
+
+#: operations/common/styles.c:87
+msgid "Vertical outline offset"
+msgstr "ვერტიკალური კონტურის წანაცვლება"
+
+#: operations/common/styles.c:101
+msgid "Outline grow shape"
+msgstr "კონტურის ზრდის ფორმა"
+
+#: operations/common/styles.c:104
+msgid "The shape to expand or contract the outline in"
+msgstr ""
+
+#: operations/common/styles.c:108
+msgid "Outline blur radius"
+msgstr "კონტურის ბუნდოვნების რადიუსი"
+
+#: operations/common/styles.c:114
+msgid "A mild blur for the outline"
+msgstr ""
+
+#: operations/common/styles.c:118
+msgid "Outline grow radius"
+msgstr "კონტურის ზრდის რადიუსი"
+
+#: operations/common/styles.c:125
+msgid "The distance to expand the outline"
+msgstr ""
+
+#. Shadow's GUI options begin here
+#: operations/common/styles.c:130
+msgid "Outline’s color"
+msgstr ""
+
+#: operations/common/styles.c:131
+msgid "Color of the outline (defaults to 'black') "
+msgstr ""
+
+#: operations/common/styles.c:136
+msgid "Shadow/Glow opacity"
+msgstr "ჩრდილის/ელვარების გაუმჭვირვალობა"
+
+#: operations/common/styles.c:140
+msgid "Shadow opacity which will also enable or disable the shadow glow effect"
+msgstr ""
+
+#: operations/common/styles.c:144
+msgid "Shadow/Glow X"
+msgstr "ჩრდილის/ელვარების X"
+
+#: operations/common/styles.c:150
+msgid "Horizontal axis of the shadow glow"
+msgstr ""
+
+#: operations/common/styles.c:153
+msgid "Shadow/Glow Y"
+msgstr "ჩრდილის/ელვარების Y"
+
+#: operations/common/styles.c:159
+msgid "Vertical axis of the shadow glow"
+msgstr ""
+
+#: operations/common/styles.c:162
+msgid "Shadow/Glow’s color"
+msgstr "ჩრდილის/ელვარების ფერი"
+
+#. TRANSLATORS: the string 'black' should not be translated
+#: operations/common/styles.c:164
+msgid "The shadow’s color (defaults to 'black')"
+msgstr ""
+
+#: operations/common/styles.c:167
+msgid "Shadow/Glow grow radius"
+msgstr "ჩრდილის/ელვარების ზრდის რადიუსი"
+
+#: operations/common/styles.c:174
+msgid "The distance to expand the shadow before blurring."
+msgstr ""
+
+#: operations/common/styles.c:177
+msgid "Shadow/Glow blur radius"
+msgstr "ჩრდილის/ელვარების ბუნდოვნების რადიუსი"
+
+#: operations/common/styles.c:183
+msgid "The shadow’s blur range"
+msgstr ""
+
+#. Bevel's GUI options begin here
+#. This is the Bevel's ENUM List listed in the GUI
+#. This is the ENUM list for bevel's emboss blend modes
+#: operations/common/styles.c:191
+msgid "Enable Bevel"
+msgstr "დახრილობის ჩართვა"
+
+#: operations/common/styles.c:192
+msgid "Whether to add a bevel effect"
+msgstr ""
+
+#: operations/common/styles.c:209
+msgid "Bevel blend mode"
+msgstr ""
+
+#: operations/common/styles.c:210
+msgid "Blend mode of the bevel"
+msgstr ""
+
+#: operations/common/styles.c:218
+msgid "Chamfer Bevel"
+msgstr "დაქანებული კუთხის ნაზოლი"
+
+#: operations/common/styles.c:220
+msgid "Bump Bevel"
+msgstr "დახრილობის აწევა"
+
+#: operations/common/styles.c:223
+msgid "Select Bevel"
+msgstr "აირჩიეთ დახრილობა"
+
+#: operations/common/styles.c:226
+msgid "Type of bevel "
+msgstr ""
+
+#: operations/common/styles.c:232
+msgid "Bevel depth"
+msgstr "დახრილობის სიღრმე"
+
+#: operations/common/styles.c:233
+msgid "Emboss depth for the bevel"
+msgstr ""
+
+#: operations/common/styles.c:239
+msgid "Bevel elevation"
+msgstr "დახრილობის სიმაღლე"
+
+#: operations/common/styles.c:240
+msgid "Emboss elevation of the bevel"
+msgstr ""
+
+#: operations/common/styles.c:247
+msgid "Bevel azimuth"
+msgstr "დახრილობის აზიმუტი"
+
+#: operations/common/styles.c:248
+msgid "Emboss azimuth of the bevel"
+msgstr ""
+
+#: operations/common/styles.c:255
+msgid "Bevel radius (bump only)"
+msgstr ""
+
+#: operations/common/styles.c:259
+msgid ""
+"Internal gaussian blur to inflate the bump bevel. This option does not work "
+"on chamfer"
+msgstr ""
+
+#: operations/common/styles.c:265
+msgid "Levels low output lighting for Bevel"
+msgstr ""
+
+#: operations/common/styles.c:266
+msgid "Levels low output as a light adjustment for the bevel"
+msgstr ""
+
+#: operations/common/styles.c:274
+msgid "Levels high output lighting for Bevel"
+msgstr ""
+
+#: operations/common/styles.c:275
+msgid "Levels high output as a light adjustment for the bevel"
+msgstr ""
+
+#: operations/common/styles.c:283
+msgid "Dark Bevel/ignore image mode"
+msgstr ""
+
+#: operations/common/styles.c:284
+msgid ""
+"This instructs the bevel to ignore image details if there is an image file "
+"overlay below it. It also allows bevel to work better when the user selects "
+"darker colors. The effect is noticeable on bump bevel but barely effects "
+"chamfer bevel"
+msgstr ""
+
+#. This operation is extremely important for bevels with image file overlays
+#. Inner Glow GUI options begin here
+#: operations/common/styles.c:294
+msgid "Enable Inner Glow"
+msgstr ""
+
+#: operations/common/styles.c:295
+msgid "Whether to add the inner glow effect"
+msgstr ""
+
+#: operations/common/styles.c:304
+msgid "Normal"
+msgstr "ჩვეულებრივი"
+
+#: operations/common/styles.c:306
+msgid "Overlay"
+msgstr "დადება"
+
+#: operations/common/styles.c:308
+msgid "Screen"
+msgstr "ეკრანი"
+
+#: operations/common/styles.c:314
+msgid "Plus"
+msgstr "პლუსი"
+
+#: operations/common/styles.c:317
+msgid "Blend mode of Inner Glow"
+msgstr ""
+
+#: operations/common/styles.c:323
+msgid "Inner Glow's blur radius"
+msgstr "შიდა ელვარების ბუნდოვნების რადიუსი"
+
+#: operations/common/styles.c:329
+msgid "Blur control of the inner glow"
+msgstr ""
+
+#: operations/common/styles.c:333
+msgid "Inner Glow's grow radius"
+msgstr "შიდა ელვარების ზრდის რადიუსი"
+
+#: operations/common/styles.c:340
+msgid "The distance to expand the inner glow before blurring"
+msgstr ""
+
+#: operations/common/styles.c:344
+msgid "Inner Glow's opacity"
+msgstr ""
+
+#: operations/common/styles.c:347
+msgid "Opacity of the inner glow"
+msgstr ""
+
+#: operations/common/styles.c:351
+msgid "Inner Glow's color"
+msgstr ""
+
+#: operations/common/styles.c:352
+msgid "The color of the inner glow"
+msgstr ""
+
+#: operations/common/styles.c:356
+msgid "Inner Glow's unmodified pixel fix"
+msgstr ""
+
+#: operations/common/styles.c:358
+msgid "Cover pixels that inner glow might miss"
+msgstr ""
+
+#. Without this Inner Glow would miss many pixels around alpha defined shapes edges'
+#. Image file overlay GUI options begin here
+#: operations/common/styles.c:365
+msgid "Enable image upload"
+msgstr ""
+
+#: operations/common/styles.c:366 operations/common/styles.c:465
+msgid "Whether to enable or disable the image file upload."
+msgstr ""
+
+#: operations/common/styles.c:369
+msgid "Image file overlay"
+msgstr ""
+
+#: operations/common/styles.c:370
+msgid ""
+"Upload an image file from your computer to be in the fill area. Allows (png, "
+"jpg, raw, svg, bmp, tif, ...)"
+msgstr ""
+
+#: operations/common/styles.c:374
+msgid "Opacity of image file overlay"
+msgstr ""
+
+#: operations/common/styles.c:377
+msgid "Opacity of the image file overlay that was uploaded. "
+msgstr ""
+
+#: operations/common/styles.c:388
+msgid ""
+"Saturation adjustment of the uploaded image file or whatever is on canvas"
+msgstr ""
+
+#: operations/common/styles.c:393
+msgid ""
+"Lightness adjustment of the uploaded image file or whatever is on canvas"
+msgstr ""
+
+#. Outline special options in GUI begin here
+#: operations/common/styles.c:398
+msgid "Enable advanced options on Outline (requires outline)"
+msgstr ""
+
+#: operations/common/styles.c:399
+msgid "Turn on advanced outline abilities"
+msgstr ""
+
+#: operations/common/styles.c:404
+msgid "Enable Outline Bevel (requires advanced options)"
+msgstr ""
+
+#: operations/common/styles.c:405
+msgid "Turn on outlines ability to bevel"
+msgstr ""
+
+#: operations/common/styles.c:426
+msgid "Outline Bevel blend mode"
+msgstr ""
+
+#: operations/common/styles.c:427
+msgid "Blend mode of the outline bevel"
+msgstr ""
+
+#: operations/common/styles.c:434
+msgid "Outline Bevel depth"
+msgstr ""
+
+#: operations/common/styles.c:435
+msgid "Emboss depth for the outline bevel"
+msgstr ""
+
+#: operations/common/styles.c:440
+msgid "Outline Bevel elevation"
+msgstr ""
+
+#: operations/common/styles.c:441
+msgid "Emboss elevation for the outline bevel"
+msgstr ""
+
+#: operations/common/styles.c:447
+msgid "Outline Bevel azimuth"
+msgstr ""
+
+#: operations/common/styles.c:448
+msgid "Emboss azimuth for the outline bevel"
+msgstr ""
+
+#: operations/common/styles.c:455
+msgid "Outline Bevel radius"
+msgstr ""
+
+#: operations/common/styles.c:456
+msgid "Internal gaussian blur to inflate the outline bevel"
+msgstr ""
+
+#: operations/common/styles.c:464
+msgid "Enable image upload on Outline (requires advanced options)"
+msgstr ""
+
+#: operations/common/styles.c:469
+msgid "Outline image file overlay"
+msgstr ""
+
+#: operations/common/styles.c:470
+msgid ""
+"Upload an image file from your computer to be in the outline area. Allows "
+"(png, jpg, raw, svg, bmp, tif, ...)"
+msgstr ""
+
+#: operations/common/styles.c:475
+msgid "Outline image opacity"
+msgstr "კონტურის გამოსახულების გაუმჭვირვალობა"
+
+#: operations/common/styles.c:476
+msgid "Outline image opacity adjustment"
+msgstr ""
+
+#: operations/common/styles.c:481
+msgid "Levels low output lighting for Outline Bevel"
+msgstr ""
+
+#: operations/common/styles.c:482
+msgid "Levels low output as a light adjustment for the outline bevel"
+msgstr ""
+
+#: operations/common/styles.c:489
+msgid "Levels high output lighting for Outline Bevel"
+msgstr ""
+
+#: operations/common/styles.c:490
+msgid "Levels high output as a light adjustment for the outline bevel"
+msgstr ""
+
+#: operations/common/styles.c:498
+msgid "Outline Dark Bevel/ignore image mode"
+msgstr ""
+
+#: operations/common/styles.c:499
+msgid ""
+"This instructs the outline bevel to ignore image details if there is an "
+"image file overlay below it. It also allows outline bevel to work better "
+"when the user selects darker colors."
+msgstr ""
+
+#: operations/common/styles.c:1249
+msgid "GEGL Styles"
+msgstr "GEGL სტილები"
+
+#: operations/common/styles.c:1252
+msgid ""
+"An engine to style text and add popular effects to alpha channel images. "
+"Effects include outline, bevel, shadow, and inner glow all in one place."
+msgstr ""
+
+#: operations/common/styles.c:1255
+msgid "Text Styling..."
+msgstr ""
+
 #: operations/common/svg-huerotate.c:27 operations/common/svg-matrix.c:27
 #: operations/common/svg-saturate.c:25
 msgid "Values"
@@ -4366,7 +4858,7 @@ msgid "Lowest value to be included."
 msgstr ""
 
 #: operations/common/threshold.c:33
-msgid "Highest value to be include as white."
+msgid "Highest value to be included as white."
 msgstr ""
 
 #: operations/common/threshold.c:169
@@ -5250,11 +5742,11 @@ msgstr "გაუმჭვირვალობის ზღვარი"
 msgid "The limit above which colors remain opaque."
 msgstr ""
 
-#: operations/common-gpl3+/color-to-alpha.c:285
+#: operations/common-gpl3+/color-to-alpha.c:283
 msgid "Color to Alpha"
 msgstr "ფერიდან ალფასკენ"
 
-#: operations/common-gpl3+/color-to-alpha.c:291
+#: operations/common-gpl3+/color-to-alpha.c:289
 msgid "Convert a specified color to transparency, works best with white."
 msgstr ""
 
@@ -5506,6 +5998,22 @@ msgstr ""
 
 #: operations/common-gpl3+/displace.c:89
 msgid "Y coordinate of the displacement center"
+msgstr ""
+
+#: operations/common-gpl3+/displace.c:190
+msgid "Horizontal/Radial"
+msgstr "ჰორიზონტალური/რადიალური"
+
+#: operations/common-gpl3+/displace.c:191
+msgid "Horizontal or radial per pixel input"
+msgstr ""
+
+#: operations/common-gpl3+/displace.c:199
+msgid "Vertical/Angular"
+msgstr "ვერტიკალური/კუთხოვანი"
+
+#: operations/common-gpl3+/displace.c:200
+msgid "Vertical or angular per pixel input"
 msgstr ""
 
 #: operations/common-gpl3+/displace.c:479
@@ -6269,31 +6777,31 @@ msgstr "ინტენსივობის რეჟიმი"
 msgid "Use pixel luminance values"
 msgstr ""
 
-#: operations/common-gpl3+/oilify.c:587
+#: operations/common-gpl3+/oilify.c:612
 msgid "Mask radius buffer"
 msgstr ""
 
-#: operations/common-gpl3+/oilify.c:588
+#: operations/common-gpl3+/oilify.c:613
 msgid ""
 "Per pixel buffer for modulating the mask radius, expecting a scaling factor "
 "in range 0.0-1.0"
 msgstr ""
 
-#: operations/common-gpl3+/oilify.c:591
+#: operations/common-gpl3+/oilify.c:616
 msgid "Exponent buffer"
 msgstr ""
 
-#: operations/common-gpl3+/oilify.c:592
+#: operations/common-gpl3+/oilify.c:617
 msgid ""
 "Per pixel buffer for modulating the exponent parameter, expecting a scaling "
 "factor in range 0.0-1.0"
 msgstr ""
 
-#: operations/common-gpl3+/oilify.c:603
+#: operations/common-gpl3+/oilify.c:628
 msgid "Oilify"
 msgstr "ზეთის საღებავი"
 
-#: operations/common-gpl3+/oilify.c:607
+#: operations/common-gpl3+/oilify.c:632
 msgid "Emulate an oil painting"
 msgstr ""
 
@@ -6617,7 +7125,7 @@ msgstr ""
 
 #: operations/common-gpl3+/spiral.c:72
 msgid "Counter-clockwise"
-msgstr ""
+msgstr "საათის ისრის საწინააღმდეგოდ"
 
 #: operations/common-gpl3+/spiral.c:78
 msgid "Spiral swirl direction"
@@ -7024,7 +7532,7 @@ msgstr ""
 
 #: operations/common-gpl3+/whirl-pinch.c:293
 msgid "Whirl Pinch"
-msgstr ""
+msgstr "დაგრეხა შეკუმშვა"
 
 #: operations/common-gpl3+/whirl-pinch.c:299
 msgid "Distort an image by whirling and pinching"
@@ -7131,7 +7639,7 @@ msgstr ""
 
 #: operations/core/cast-space.c:25
 msgid "Name"
-msgstr ""
+msgstr "სახელი"
 
 #: operations/core/cast-space.c:26 operations/core/convert-space.c:26
 msgid "One of: sRGB, Adobish, Rec2020, ProPhoto, Apple, ACEScg, ACES2065-1"
@@ -7308,11 +7816,11 @@ msgstr ""
 msgid "audio"
 msgstr "აუდიო"
 
-#: operations/external/ff-load.c:868
+#: operations/external/ff-load.c:876
 msgid "FFmpeg Frame Loader"
 msgstr ""
 
-#: operations/external/ff-load.c:870
+#: operations/external/ff-load.c:878
 msgid "FFmpeg video frame importer."
 msgstr ""
 
@@ -7323,7 +7831,7 @@ msgstr ""
 
 #: operations/external/ff-save.c:33
 msgid "Audio codec"
-msgstr ""
+msgstr "აუდიო კოდეკი"
 
 #: operations/external/ff-save.c:34
 msgid ""
@@ -7451,11 +7959,11 @@ msgstr ""
 msgid "me-subpel-quality"
 msgstr ""
 
-#: operations/external/ff-save.c:1218
+#: operations/external/ff-save.c:1243
 msgid "FFmpeg Frame Saver"
 msgstr ""
 
-#: operations/external/ff-save.c:1220
+#: operations/external/ff-save.c:1245
 msgid "FFmpeg video output sink"
 msgstr ""
 
@@ -7662,7 +8170,7 @@ msgstr ""
 
 #: operations/external/matting-levin.c:25
 msgid "Epsilon"
-msgstr ""
+msgstr "ეფსილონი"
 
 #: operations/external/matting-levin.c:26
 msgid "Log of the error weighting"
@@ -7835,13 +8343,11 @@ msgstr ""
 
 #: operations/external/path.c:54 operations/external/vector-fill.c:40
 #: operations/external/vector-stroke.c:41
-#: operations/workshop/external/ctx-script.c:26
 msgid "Vector"
 msgstr "ვექტორი"
 
 #: operations/external/path.c:55 operations/external/vector-fill.c:41
 #: operations/external/vector-stroke.c:42
-#: operations/workshop/external/ctx-script.c:27
 msgid "A GeglVector representing the path of the stroke"
 msgstr ""
 
@@ -8191,7 +8697,7 @@ msgid "use floating point"
 msgstr ""
 
 #: operations/external/tiff-save.c:31
-msgid "floating point -1 means auto, 0 means integer 1 meant float."
+msgid "floating point -1 means auto, 0 means integer, 1 means float."
 msgstr ""
 
 #: operations/external/tiff-save.c:825
@@ -8773,7 +9279,7 @@ msgstr ""
 
 #: operations/workshop/bilateral-filter-fast.c:39
 msgid "Smoothness"
-msgstr ""
+msgstr "სიგლუვე"
 
 #: operations/workshop/bilateral-filter-fast.c:40
 msgid "Level of smoothness"
@@ -8837,7 +9343,7 @@ msgstr ""
 msgid "Connected Components"
 msgstr ""
 
-#: operations/workshop/connected-components.c:290
+#: operations/workshop/connected-components.c:292
 msgid ""
 "Fills each connected region of the input, separated from the rest of the "
 "input by a given color, with a unique color."
@@ -8880,14 +9386,6 @@ msgstr ""
 
 #: operations/workshop/ditto.c:119
 msgid "Test op to do a 1:1 map of input to output, while sampling"
-msgstr ""
-
-#: operations/workshop/external/ctx-script.c:126
-msgid "Ctx script"
-msgstr "Ctx სკრიპტი"
-
-#: operations/workshop/external/ctx-script.c:128
-msgid "Renders a ctx vector graphics"
 msgstr ""
 
 #: operations/workshop/external/gluas.c:29
@@ -9253,7 +9751,7 @@ msgstr ""
 msgid "Voronoi Diagram"
 msgstr ""
 
-#: operations/workshop/external/voronoi-diagram.cc:531
+#: operations/workshop/external/voronoi-diagram.cc:533
 msgid "Paints each non-seed pixel with the color of the nearest seed pixel."
 msgstr ""
 
@@ -9423,489 +9921,11 @@ msgid ""
 "shuffling neighboring pixels."
 msgstr ""
 
-#: operations/workshop/styles.c:30
-msgid "Color, Outline and Shadow"
-msgstr ""
-
-#: operations/workshop/styles.c:31
-msgid "Bevel and Inner Glow"
-msgstr ""
-
-#: operations/workshop/styles.c:32
-msgid "Image upload and Outline Bevel"
-msgstr ""
-
-#. List of all GUI options
-#. GUI Change list in GUI
-#: operations/workshop/styles.c:39
-msgid "Part of filter to be displayed"
-msgstr "საჩვენებელი ფილტრის ნაწილი"
-
-#: operations/workshop/styles.c:42
-msgid "Display a different part of the GUI"
-msgstr ""
-
-#. Color Overlays GUI options begin here
-#: operations/workshop/styles.c:46
-msgid "Color overlay"
-msgstr "ფერის განლაგება"
-
-#: operations/workshop/styles.c:48
-msgid "Color overlay setting"
-msgstr "ფერის განლაგების პარამეტრი"
-
-#: operations/workshop/styles.c:50
-msgid "Color policy"
-msgstr "ფერების პოლიტიკა"
-
-#: operations/workshop/styles.c:51
-msgid "Change the blend mode of the color overlay"
-msgstr ""
-
-#: operations/workshop/styles.c:58
-msgid "No Color"
-msgstr "ფერის გარეშე"
-
-#: operations/workshop/styles.c:62
-msgid "Solid Color"
-msgstr "მყარი ფერი"
-
-#. Outline's normal GUI options begin here
-#: operations/workshop/styles.c:68
-msgid "Enable Outline"
-msgstr ""
-
-#: operations/workshop/styles.c:69
-msgid "Disable or enable the outline"
-msgstr ""
-
-#: operations/workshop/styles.c:72
-msgid "Outline opacity"
-msgstr "კონტურის გაუმჭვირვალობა"
-
-#: operations/workshop/styles.c:75
-msgid "Opacity of the outline"
-msgstr "კონტურის გაუმჭვირვალობა"
-
-#: operations/workshop/styles.c:79
-msgid "Outline X"
-msgstr ""
-
-#: operations/workshop/styles.c:80
-msgid "Horizontal outline offset"
-msgstr "ჰორიზონტალური კონტურის წანაცვლება"
-
-#: operations/workshop/styles.c:87
-msgid "Outline Y"
-msgstr ""
-
-#: operations/workshop/styles.c:88
-msgid "Vertical outline offset"
-msgstr "ვერტიკალური კონტურის წანაცვლება"
-
-#: operations/workshop/styles.c:102
-msgid "Outline grow shape"
-msgstr "კონტურის ზრდის ფორმა"
-
-#: operations/workshop/styles.c:105
-msgid "The shape to expand or contract the outline in"
-msgstr ""
-
-#: operations/workshop/styles.c:109
-msgid "Outline blur radius"
-msgstr "კონტურის ბუნდოვნების რადიუსი"
-
-#: operations/workshop/styles.c:115
-msgid "A mild blur for the outline"
-msgstr ""
-
-#: operations/workshop/styles.c:119
-msgid "Outline grow radius"
-msgstr "კონტურის ზრდის რადიუსი"
-
-#: operations/workshop/styles.c:126
-msgid "The distance to expand the outline"
-msgstr ""
-
-#. Shadow's GUI options begin here
-#: operations/workshop/styles.c:131
-msgid "Outline color’s"
-msgstr ""
-
-#: operations/workshop/styles.c:132
-msgid "Color of the outline (defaults to 'black') "
-msgstr ""
-
-#: operations/workshop/styles.c:137
-msgid "Shadow/Glow opacity"
-msgstr "ჩრდილის/ელვარების გაუმჭვირვალობა"
-
-#: operations/workshop/styles.c:141
-msgid "Shadow opacity which will also enable or disable the shadow glow effect"
-msgstr ""
-
-#: operations/workshop/styles.c:145
-msgid "Shadow/Glow X"
-msgstr "ჩრდილის/ელვარების X"
-
-#: operations/workshop/styles.c:151
-msgid "Horizontal axis of the shadow glow"
-msgstr ""
-
-#: operations/workshop/styles.c:154
-msgid "Shadow/Glow Y"
-msgstr "ჩრდილის/ელვარების Y"
-
-#: operations/workshop/styles.c:160
-msgid "Vertical axis of the shadow glow"
-msgstr ""
-
-#: operations/workshop/styles.c:163
-msgid "Shadow/Glow’s color"
-msgstr "ჩრდილის/ელვარების ფერი"
-
-#: operations/workshop/styles.c:168
-msgid "Shadow/Glow grow radius"
-msgstr "ჩრდილის/ელვარების ზრდის რადიუსი"
-
-#: operations/workshop/styles.c:175
-msgid "The distance to expand the shadow before blurring."
-msgstr ""
-
-#: operations/workshop/styles.c:178
-msgid "Shadow/Glow blur radius"
-msgstr "ჩრდილის/ელვარების ბუნდოვნების რადიუსი"
-
-#: operations/workshop/styles.c:184
-msgid "The shadow’s blur range"
-msgstr ""
-
-#. Bevel's GUI options begin here
-#. This is the Bevel's ENUM List listed in the GUI
-#. This is the ENUM list for bevel's emboss blend modes
-#: operations/workshop/styles.c:192
-msgid "Enable Bevel"
-msgstr "დახრილობის ჩართვა"
-
-#: operations/workshop/styles.c:193
-msgid "Whether to add a bevel effect"
-msgstr ""
-
-#: operations/workshop/styles.c:210
-msgid "Bevel blend mode"
-msgstr ""
-
-#: operations/workshop/styles.c:211
-msgid "Blend mode of the bevel"
-msgstr ""
-
-#: operations/workshop/styles.c:219
-msgid "Chamfer Bevel"
-msgstr "დაქანებული კუთხის ნაზოლი"
-
-#: operations/workshop/styles.c:221
-msgid "Bump Bevel"
-msgstr "დახრილობის აწევა"
-
-#: operations/workshop/styles.c:224
-msgid "Select Bevel"
-msgstr "აირჩიეთ დახრილობა"
-
-#: operations/workshop/styles.c:227
-msgid "Type of bevel "
-msgstr ""
-
-#: operations/workshop/styles.c:233
-msgid "Bevel depth"
-msgstr "დახრილობის სიღრმე"
-
-#: operations/workshop/styles.c:234
-msgid "Emboss depth for the bevel"
-msgstr ""
-
-#: operations/workshop/styles.c:240
-msgid "Bevel elevation"
-msgstr "დახრილობის სიმაღლე"
-
-#: operations/workshop/styles.c:241
-msgid "Emboss elevation of the bevel"
-msgstr ""
-
-#: operations/workshop/styles.c:248
-#| msgid "Azimuth"
-msgid "Bevel azimuth"
-msgstr "დახრილობის აზიმუტი"
-
-#: operations/workshop/styles.c:249
-msgid "Emboss azimuth of the bevel"
-msgstr ""
-
-#: operations/workshop/styles.c:256
-msgid "Bevel radius (bump only)"
-msgstr ""
-
-#: operations/workshop/styles.c:260
-msgid ""
-"Internal gaussian blur to inflate the bump bevel. This option does not work "
-"on chamfer"
-msgstr ""
-
-#: operations/workshop/styles.c:266
-msgid "Levels low output lighting for Bevel"
-msgstr ""
-
-#: operations/workshop/styles.c:267 operations/workshop/styles.c:483
-msgid "Levels low output as a light adjustment for the bevel"
-msgstr ""
-
-#: operations/workshop/styles.c:275
-msgid "Levels high output lighting for Bevel"
-msgstr ""
-
-#: operations/workshop/styles.c:276
-msgid "Levels high output as a light adjustment for the bevel"
-msgstr ""
-
-#: operations/workshop/styles.c:284
-msgid "Dark Bevel/ignore image mode"
-msgstr ""
-
-#: operations/workshop/styles.c:285
-msgid ""
-"This instructs the bevel to ignore image details if there is an image file "
-"overlay below it. It also allows bevel to work better when the user selects "
-"darker colors. The effect is noticeable on bump bevel but barely effects "
-"chamfer bevel"
-msgstr ""
-
-#. This operation is extremely important for bevels with image file overlays
-#. Inner Glow GUI options begin here
-#: operations/workshop/styles.c:295
-msgid "Enable Inner Glow"
-msgstr ""
-
-#: operations/workshop/styles.c:296
-msgid "Whether to add the inner glow effect"
-msgstr ""
-
-#: operations/workshop/styles.c:305
-msgid "Normal"
-msgstr "ჩვეულებრივი"
-
-#: operations/workshop/styles.c:307
-msgid "Overlay"
-msgstr "დადება"
-
-#: operations/workshop/styles.c:309
-msgid "Screen"
-msgstr "ეკრანი"
-
-#: operations/workshop/styles.c:311
-msgid "Hardlight"
-msgstr "მაგარი სინათლე"
-
-#: operations/workshop/styles.c:315
-msgid "Plus"
-msgstr "პლუსი"
-
-#: operations/workshop/styles.c:318
-msgid "Blend mode of Inner Glow"
-msgstr ""
-
-#: operations/workshop/styles.c:324
-msgid "Inner Glow's blur radius"
-msgstr "შიდა ელვარების ბუნდოვნების რადიუსი"
-
-#: operations/workshop/styles.c:330
-msgid "Blur control of the inner glow"
-msgstr ""
-
-#: operations/workshop/styles.c:334
-msgid "Inner Glow's grow radius"
-msgstr "შიდა ელვარების ზრდის რადიუსი"
-
-#: operations/workshop/styles.c:341
-msgid "The distance to expand the inner glow before blurring"
-msgstr ""
-
-#: operations/workshop/styles.c:345
-msgid "Inner Glow's opacity"
-msgstr ""
-
-#: operations/workshop/styles.c:348
-msgid "Opacity of the inner glow"
-msgstr ""
-
-#: operations/workshop/styles.c:352
-msgid "Inner Glow's color"
-msgstr ""
-
-#: operations/workshop/styles.c:353
-msgid "The color of the inner glow"
-msgstr ""
-
-#: operations/workshop/styles.c:357
-msgid "Inner Glow's unmodified pixel fix"
-msgstr ""
-
-#: operations/workshop/styles.c:359
-msgid "Cover pixels that inner glow might miss"
-msgstr ""
-
-#. Without this Inner Glow would miss many pixels around alpha defined shapes edges'
-#. Image file overlay GUI options begin here
-#: operations/workshop/styles.c:366
-msgid "Enable image upload"
-msgstr ""
-
-#: operations/workshop/styles.c:367 operations/workshop/styles.c:466
-msgid "Whether to enable or disable the image file upload."
-msgstr ""
-
-#: operations/workshop/styles.c:370
-msgid "Image file overlay"
-msgstr ""
-
-#: operations/workshop/styles.c:371
-msgid ""
-"Upload an image file from your computer to be in the fill area. Allows (png, "
-"jpg, raw, svg, bmp, tif, ...)"
-msgstr ""
-
-#: operations/workshop/styles.c:375
-msgid "Opacity of image file overlay"
-msgstr ""
-
-#: operations/workshop/styles.c:378
-msgid "Opacity of the image file overlay that was uploaded. "
-msgstr ""
-
-#: operations/workshop/styles.c:389
-msgid ""
-"Saturation adjustment of the uploaded image file or whatever is on canvas"
-msgstr ""
-
-#: operations/workshop/styles.c:394
-msgid ""
-"Lightness adjustment of the uploaded image file or whatever is on canvas"
-msgstr ""
-
-#. Outline special options in GUI begin here
-#: operations/workshop/styles.c:399
-msgid "Enable advanced options on Outline (requires outline)"
-msgstr ""
-
-#: operations/workshop/styles.c:400
-msgid "Turn on advanced outline abilities"
-msgstr ""
-
-#: operations/workshop/styles.c:405
-msgid "Enable Outline Bevel (requires advanced options)"
-msgstr ""
-
-#: operations/workshop/styles.c:406
-msgid "Turn on outlines ability to bevel"
-msgstr ""
-
-#: operations/workshop/styles.c:427
-msgid "Outline Bevel blend mode"
-msgstr ""
-
-#: operations/workshop/styles.c:428
-msgid "Blend mode of the outline bevel"
-msgstr ""
-
-#: operations/workshop/styles.c:435
-msgid "Outline Bevel depth"
-msgstr ""
-
-#: operations/workshop/styles.c:436
-msgid "Emboss depth for the outline bevel"
-msgstr ""
-
-#: operations/workshop/styles.c:441
-msgid "Outline Bevel elevation"
-msgstr ""
-
-#: operations/workshop/styles.c:442
-msgid "Emboss elevation for the outline bevel"
-msgstr ""
-
-#: operations/workshop/styles.c:448
-msgid "Outline Bevel azimuth"
-msgstr ""
-
-#: operations/workshop/styles.c:449
-msgid "Emboss azimuth for the outline bevel"
-msgstr ""
-
-#: operations/workshop/styles.c:456
-msgid "Outline Bevel radius"
-msgstr ""
-
-#: operations/workshop/styles.c:457
-msgid "Internal gaussian blur to inflate the outline bevel"
-msgstr ""
-
-#: operations/workshop/styles.c:465
-msgid "Enable image upload on Outline (requires advance effects)"
-msgstr ""
-
-#: operations/workshop/styles.c:470
-msgid "Outline image file overlay"
-msgstr ""
-
-#: operations/workshop/styles.c:471
-msgid ""
-"Upload an image file from your computer to be in the outline area. Allows "
-"(png, jpg, raw, svg, bmp, tif, ..."
-msgstr ""
-
-#: operations/workshop/styles.c:476
-msgid "Outline image opacity"
-msgstr "კონტურის გამოსახულების გაუმჭვირვალობა"
-
-#: operations/workshop/styles.c:477
-msgid "Outline image opacity adjustment"
-msgstr ""
-
-#: operations/workshop/styles.c:482
-msgid "Levels low output lighting for Outline Bevel"
-msgstr ""
-
-#: operations/workshop/styles.c:490
-msgid "Levels high output lighting for Outline Bevel"
-msgstr ""
-
-#: operations/workshop/styles.c:491
-msgid "Levels high output as a light adjustment for the outline bevel"
-msgstr ""
-
-#: operations/workshop/styles.c:499
-msgid "Outline Dark Bevel/ignore image mode"
-msgstr ""
-
-#: operations/workshop/styles.c:500
-msgid ""
-"This instructs the outline bevel to ignore image details if there is an "
-"image file overlay below it. It also allows outline bevel to work better "
-"when the user selects darker colors."
-msgstr ""
-
-#: operations/workshop/styles.c:1248
-#| msgid "Style"
-msgid "GEGL Styles"
-msgstr "GEGL სტილები"
-
-#: operations/workshop/styles.c:1251
-msgid ""
-"An engine to style text and add popular effects to alpha channel images. "
-"Effects include outline, bevel, shadow, and inner glow all in one place."
-msgstr ""
-
-#: operations/workshop/styles.c:1254
-msgid "Text Styling..."
-msgstr ""
+#~ msgid "Ctx script"
+#~ msgstr "Ctx სკრიპტი"
+
+#~ msgid "Hardlight"
+#~ msgstr "მაგარი სინათლე"
 
 #~ msgid "Light Elevation"
 #~ msgstr "სინათლის სიმაღლე"
