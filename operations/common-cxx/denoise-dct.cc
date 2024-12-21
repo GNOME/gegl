@@ -441,11 +441,17 @@ operation_process (GeglOperation        *operation,
                    gint                  level)
 {
   GeglOperationClass  *operation_class;
+  gint                 min_size;
+  GeglProperties      *o = GEGL_PROPERTIES (operation);
+
+  min_size = o->patch_size == GEGL_DENOISE_DCT_8X8 ? 16 : 32;
 
   const GeglRectangle *in_rect =
     gegl_operation_source_get_bounding_box (operation, "input");
 
-  if (in_rect && gegl_rectangle_is_infinite_plane (in_rect))
+  if (in_rect && (gegl_rectangle_is_infinite_plane (in_rect) ||
+                  in_rect->width < min_size ||
+                  in_rect->height < min_size))
     {
       gpointer in = gegl_operation_context_get_object (context, "input");
       gegl_operation_context_take_object (context, "output",
