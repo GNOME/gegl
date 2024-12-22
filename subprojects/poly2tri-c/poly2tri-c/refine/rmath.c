@@ -49,13 +49,6 @@ p2tr_math_length_sq2 (const P2trVector2 *pt1,
 }
 
 static inline gdouble
-p2tr_matrix_det2 (gdouble a00, gdouble a01,
-                  gdouble a10, gdouble a11)
-{
-    return a00 * a11 - a10 * a01;
-}
-
-static inline gdouble
 p2tr_matrix_det3 (gdouble a00, gdouble a01, gdouble a02,
                   gdouble a10, gdouble a11, gdouble a12,
                   gdouble a20, gdouble a21, gdouble a22)

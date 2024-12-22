@@ -101,9 +101,6 @@ static void        mantiuk06_matrix_subtract                  (const guint      
 static void        mantiuk06_matrix_multiply_const            (const guint                      n,
                                                                gfloat       *const              a,
                                                                const gfloat                     val);
-static void        mantiuk06_matrix_divide                    (const guint                      n,
-                                                               const gfloat *const              a,
-                                                               gfloat *const                    b);
 static gfloat      mantiuk06_matrix_dot_product               (const guint                      n,
                                                                const gfloat *const              a,
                                                                const gfloat *const              b);
@@ -405,18 +402,6 @@ mantiuk06_matrix_multiply_const (const guint         n,
   _OMP (omp parallel for schedule(static))
   for (i = 0; i < n; i++)
     a[i] *= val;
-}
-
-/* b = a[i] / b[i] */
-static inline void
-mantiuk06_matrix_divide (const guint         n,
-                         const gfloat *const a,
-                         gfloat       *const b)
-{
-  guint i;
-  _OMP (omp parallel for schedule(static))
-  for (i = 0; i < n; i++)
-      b[i] = a[i] / b[i];
 }
 
 

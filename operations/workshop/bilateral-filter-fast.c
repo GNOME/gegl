@@ -65,6 +65,7 @@ bilateral_filter (GeglBuffer          *src,
                   gint                 s_sigma,
                   gfloat               r_sigma);
 
+#if 0
 static gboolean
 bilateral_cl_process (GeglOperation       *operation,
                       GeglBuffer          *input,
@@ -72,6 +73,7 @@ bilateral_cl_process (GeglOperation       *operation,
                       const GeglRectangle *result,
                       gint                 s_sigma,
                       gfloat               r_sigma);
+#endif
 
 #include <stdio.h>
 
@@ -436,6 +438,7 @@ error:
   return TRUE;
 }
 
+#if 0
 static gboolean
 bilateral_cl_process (GeglOperation       *operation,
                       GeglBuffer          *input,
@@ -478,6 +481,7 @@ bilateral_cl_process (GeglOperation       *operation,
 
   return !err;
 }
+#endif
 
 static void
 gegl_op_class_init (GeglOpClass *klass)

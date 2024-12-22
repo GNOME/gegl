@@ -113,28 +113,6 @@ is_opaque_island (const GeglRectangle *search_area,
   return TRUE;
 }
 
-/* This function checks whether a pixel is opaque, is not an island and
- * also is an edge pixel */
-static inline gboolean
-is_valid_edge (const GeglRectangle *search_area,
-               GeglBuffer          *buffer,
-               const Babl          *format,
-               gdouble              threshold,
-               const GeglScPoint   *pt)
-{
-  gint i;
-  GeglScPoint temp;
-
-  if (! is_opaque (search_area, buffer, format, threshold, pt))
-    return FALSE;
-
-  for (i = 0; i < GEGL_SC_DIRECTION_COUNT; ++i)
-    if (is_opaque (search_area, buffer, format, threshold, gegl_sc_point_move (pt, i, &temp)))
-      return FALSE;
-
-  return TRUE;
-}
-
 /**
  * This function takes an opaque edge pixel which MUST NOT BE AN ISLAND
  * and returns the next edge pixel, going clock-wise around the outline
