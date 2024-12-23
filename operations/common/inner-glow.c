@@ -41,16 +41,14 @@ property_enum   (grow_shape, _("Grow shape"),
 
 property_double (x, _("X"), 0.0)
   description   (_("Horizontal shadow offset"))
-  ui_range      (-15.0, 15.0)
-  value_range   (-15.0, 15.0)
+  ui_range      (-30.0, 30.0)
   ui_steps      (1, 2)
   ui_meta       ("unit", "pixel-distance")
   ui_meta       ("axis", "x")
 
 property_double (y, _("Y"), 0.0)
   description   (_("Vertical shadow offset"))
-  ui_range      (-15.0, 15.0)
-  value_range   (-15.0, 15.0)
+  ui_range      (-30.0, 30.0)
   ui_steps      (1, 2)
   ui_meta       ("unit", "pixel-distance")
   ui_meta       ("axis", "y")
