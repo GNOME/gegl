@@ -1619,7 +1619,9 @@ mantiuk06_operation_process (GeglOperation        *operation,
   const GeglRectangle *in_rect =
     gegl_operation_source_get_bounding_box (operation, "input");
 
-  if (in_rect && gegl_rectangle_is_infinite_plane (in_rect))
+  if (in_rect && (gegl_rectangle_is_infinite_plane (in_rect) ||
+                  in_rect->width < PYRAMID_MIN_PIXELS ||
+                  in_rect->height < PYRAMID_MIN_PIXELS))
     {
       gpointer in = gegl_operation_context_get_object (context, "input");
       gegl_operation_context_take_object (context, "output",
