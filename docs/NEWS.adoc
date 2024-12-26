@@ -1,3 +1,30 @@
+GEGL-0.4.52 2024-12-26
+----------------------
+
+Core:
+~~~~~
+
+Fix regression cubic interpolation - it was quadratic rather than cubic,
+
+this improves all uses of cubic interpolation.
+
+Ops:
+~~~~
+
+ - invert-gamma: operate on perceptual encoding.
+ - newsprint: do processing with perceptual encoding.
+ - denoise-dct, mantiuk06: pass-through for too small input buffers.
+ - inner-glow: adjust parameters, crop result
+ - styles: use gegl:load rather than gegl:layer
+
+Contributors to this release, including translators:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Alan Mortensen, Anders Jonsson, Ekaterine Papava, Hugo Carvalho, Jordi Mas,
+Juliano de Souza Camargo, Kolbjørn Stuestøl, Lukas Oberhuber, Luming Zh, Marco
+Ciampa, Martin, Sam L, Thomas Manni, Yuri Chornoivan, lillolollo, Øyvind Kolås.
+
+
 GEGL-0.4.50 2024-11-03
 ----------------------
 
