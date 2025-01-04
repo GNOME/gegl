@@ -6,13 +6,13 @@
 # Iñaki Larrañaga Murgoitio <dooteo@zundan.com>, 2013, 2018.
 # Edurne Labaka <elabaka@uzei.com>, 2015.
 # Asier Sarasua Garmendia <asiersarasua@ni.eus>, 2018, 2019, 2020, 2021, 2022, 2023.
-# Asier Sarasua Garmendia <asiersarasua@ni.eus>, 2024.
+# Asier Sarasua Garmendia <asiersarasua@ni.eus>, 2024, 2025.
 #
 msgid ""
 msgstr "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-03-30 00:50+0000\n"
-"PO-Revision-Date: 2024-03-30 10:00+0100\n"
+"POT-Creation-Date: 2024-11-09 18:48+0000\n"
+"PO-Revision-Date: 2025-01-04 10:00+0100\n"
 "Last-Translator: Asier Sarasua Garmendia <asiersarasua@ni.eus>\n"
 "Language-Team: Basque <librezale@librezale.eus>\n"
 "Language: eu\n"
@@ -183,7 +183,7 @@ msgstr "Bridatu"
 
 #: gegl/buffer/gegl-buffer-enums.c:34
 msgid "Loop"
-msgstr "Begiztak"
+msgstr "Begizta"
 
 #: gegl/buffer/gegl-buffer-enums.c:35 operations/common/gaussian-blur.c:32
 #: operations/common/gblur-1d.c:34
@@ -337,50 +337,50 @@ msgstr "gehitu alfa"
 #: gegl/gegl-enums.c:152 operations/common/gaussian-blur.c:24
 #: operations/common/gblur-1d.c:39
 msgid "Auto"
-msgstr "Automatikoa"
+msgstr "Auto"
 
 #: gegl/gegl-enums.c:153
 msgid "Never"
-msgstr "Inoiz ez"
+msgstr "Inoiz ere ez"
 
 #: gegl/gegl-enums.c:154
 msgid "Always"
 msgstr "Beti"
 
-#: gegl/gegl-init.c:225
+#: gegl/gegl-init.c:358
 msgid "Where GEGL stores its swap"
 msgstr "GEGL-ek trukatzeko datuak gordetzen dituen lekua"
 
-#: gegl/gegl-init.c:230
+#: gegl/gegl-init.c:363
 msgid "Compression algorithm used for data stored in the swap"
 msgstr "Trukatze-fitxategian gordetako datuekin erabilitako konpresio-algoritmoa"
 
-#: gegl/gegl-init.c:235
+#: gegl/gegl-init.c:368
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr "Irudien cache gisa erabiliko den memoria kopurua (gutxi gorabehera)"
 
-#: gegl/gegl-init.c:240
+#: gegl/gegl-init.c:373
 msgid "Default size of tiles in GeglBuffers"
 msgstr "Lehenetsitako lauzen tamaina GeglBuffer-etan"
 
-#: gegl/gegl-init.c:245
+#: gegl/gegl-init.c:378
 msgid "The count of pixels to compute simultaneously"
 msgstr "Aldi berean kalkulatuko diren pixel kopurua"
 
-#: gegl/gegl-init.c:250
+#: gegl/gegl-init.c:383
 msgid ""
 "The quality of rendering, a value between 0.0 (fast) and 1.0 (reference)"
 msgstr "Errendatzearen kalitatea, 0.0 (azkarra) eta 1.0 (erreferentziazkoa) bitarteko balio bat"
 
-#: gegl/gegl-init.c:255
+#: gegl/gegl-init.c:388
 msgid "The number of concurrent processing threads to use"
 msgstr "Aldi berean erabiliko diren prozesu-hari kopurua"
 
-#: gegl/gegl-init.c:260
+#: gegl/gegl-init.c:393
 msgid "Disable OpenCL"
 msgstr "Desgaitu OpenCL"
 
-#: gegl/gegl-init.c:272
+#: gegl/gegl-init.c:405
 msgid "Show GEGL Options"
 msgstr "Erakutsi GEGL aukerak"
 
@@ -440,6 +440,7 @@ msgid "Output pad for generated image buffer."
 msgstr "Irteerako betegarria sortutako irudi-bufferrerako."
 
 #: gegl/operation/gegl-operation-composer3.c:86
+#: gegl/operation/gegl-operation-filter.c:96
 msgid "Input pad, for image buffer input."
 msgstr "Sarrerako betegarria irudi-buferraren sarrerarako."
 
@@ -452,6 +453,10 @@ msgstr "Irudi-buffer laguntzailearen sarrerako betegarria."
 #: gegl/operation/gegl-operation-composer3.c:104
 msgid "Second auxiliary image buffer input pad."
 msgstr "Irudi-buffer bigarren laguntzailearen sarrerako betegarria."
+
+#: gegl/operation/gegl-operation-filter.c:95
+msgid "Input"
+msgstr "Sarrera"
 
 #: operations/common/absolute.c:72
 msgid "Absolute"
@@ -654,23 +659,23 @@ msgstr "Erabiliko den alaka-familia"
 msgid "None (for use with GIMPs blending options)"
 msgstr "Bat ere ez (GIMPen nahaste-aukerekin erabiltzeko)"
 
-#: operations/common/bevel.c:61 operations/workshop/styles.c:203
-#: operations/workshop/styles.c:311 operations/workshop/styles.c:419
+#: operations/common/bevel.c:61 operations/common/styles.c:202
+#: operations/common/styles.c:310 operations/common/styles.c:418
 msgid "Hard Light"
 msgstr "Argi bizia"
 
-#: operations/common/bevel.c:63 operations/workshop/styles.c:60
-#: operations/workshop/styles.c:199 operations/workshop/styles.c:415
+#: operations/common/bevel.c:63 operations/common/styles.c:59
+#: operations/common/styles.c:198 operations/common/styles.c:414
 msgid "Multiply"
 msgstr "Biderkatu"
 
-#: operations/common/bevel.c:65 operations/workshop/styles.c:207
-#: operations/workshop/styles.c:313 operations/workshop/styles.c:423
+#: operations/common/bevel.c:65 operations/common/styles.c:206
+#: operations/common/styles.c:312 operations/common/styles.c:422
 msgid "Color Dodge"
 msgstr "Zuritu"
 
-#: operations/common/bevel.c:67 operations/workshop/styles.c:205
-#: operations/workshop/styles.c:421
+#: operations/common/bevel.c:67 operations/common/styles.c:204
+#: operations/common/styles.c:420
 msgid "Darken"
 msgstr "Ilundu"
 
@@ -678,8 +683,9 @@ msgstr "Ilundu"
 msgid "Lighten"
 msgstr "Argitu"
 
-#: operations/common/bevel.c:71 operations/workshop/external/paint-select.cc:30
-#: operations/workshop/styles.c:201 operations/workshop/styles.c:417
+#: operations/common/bevel.c:71 operations/common/styles.c:200
+#: operations/common/styles.c:416
+#: operations/workshop/external/paint-select.cc:30
 msgid "Add"
 msgstr "Gehitu"
 
@@ -776,7 +782,7 @@ msgstr "Alaka..."
 
 #: operations/common/bilateral-filter.c:26
 #: operations/common/domain-transform.c:29 operations/common/dropshadow.c:46
-#: operations/common/inner-glow.c:69 operations/common-cxx/focus-blur.c:45
+#: operations/common/inner-glow.c:60 operations/common-cxx/focus-blur.c:45
 #: operations/common-cxx/lens-blur.cc:25
 #: operations/common-gpl3+/gaussian-blur-selective.c:29
 #: operations/workshop/bilateral-filter-fast.c:43
@@ -1090,7 +1096,7 @@ msgstr "Errendatu xake-taulako eredu bat"
 
 #: operations/common/color.c:24 operations/common/color.c:87
 #: operations/common/color-overlay.c:26 operations/common/dropshadow.c:67
-#: operations/common/grid.c:64 operations/common/inner-glow.c:91
+#: operations/common/grid.c:64 operations/common/inner-glow.c:82
 #: operations/common/long-shadow.c:83 operations/common/rectangle.c:48
 #: operations/common/vignette.c:36 operations/common-gpl3+/color-to-alpha.c:29
 #: operations/common-gpl3+/supernova.c:60
@@ -1124,10 +1130,9 @@ msgstr "Sareta-tamaina"
 #: operations/common/color-assimilation-grid.c:31
 #: operations/common/color-rotate.c:84 operations/common/fattal02.c:39
 #: operations/common/mantiuk06.c:33 operations/common/noise-hsv.c:34
-#: operations/common/saturation.c:404
+#: operations/common/saturation.c:404 operations/common/styles.c:387
 #: operations/external/lcms-from-profile.c:35
 #: operations/workshop/selective-hue-saturation.c:38
-#: operations/workshop/styles.c:388
 msgid "Saturation"
 msgstr "Saturazioa"
 
@@ -1167,7 +1172,7 @@ msgid ""
 "lightness untouched."
 msgstr "Tiratu kolore-chroma gehieneko barruti posiblea hartzeko, ñabardura eta argitasuna ukitu gabe utzita."
 
-#: operations/common/color-overlay.c:27 operations/common/inner-glow.c:92
+#: operations/common/color-overlay.c:27 operations/common/inner-glow.c:83
 msgid "The color to paint over the input"
 msgstr "Sareraren gainean margotuko den kolorea"
 
@@ -1230,7 +1235,7 @@ msgstr "Aldatu erlojuaren noranzkora"
 
 #: operations/common/color-rotate.c:43 operations/common/color-rotate.c:56
 msgid "From"
-msgstr "Nondik:"
+msgstr "Nondik"
 
 #: operations/common/color-rotate.c:44
 msgid "Start angle of the source color range"
@@ -1238,7 +1243,7 @@ msgstr "Iturburuko kolore-barrutiaren hasierako angelua"
 
 #: operations/common/color-rotate.c:48 operations/common/color-rotate.c:61
 msgid "To"
-msgstr "Nora:"
+msgstr "Nora"
 
 #: operations/common/color-rotate.c:49
 msgid "End angle of the source color range"
@@ -1772,7 +1777,7 @@ msgstr "Titulua irteeraren leihoari emateko"
 
 #: operations/common/display.c:142
 msgid "Display"
-msgstr "Bistaratu"
+msgstr "Bistaratzea"
 
 #: operations/common/display.c:144
 msgid "Display the input buffer in a window."
@@ -1875,28 +1880,28 @@ msgid ""
 "recursive technique. Similar to a bilateral filter, but faster to compute."
 msgstr "Ertzak mantentzen dituen leuntze iragazkia, domeinuaren eraldaketaren teknika errekurtsiboa erabilita garatu dena. Aldebiko iragazki baten antzekoa, baina kalkulatzeko azkarragoa."
 
-#: operations/common/dropshadow.c:27 operations/common/inner-glow.c:39
+#: operations/common/dropshadow.c:27 operations/common/inner-glow.c:30
 #: operations/common/median-blur.c:27 operations/common/pixelize.c:28
-#: operations/common/vignette.c:26 operations/common-cxx/focus-blur.c:35
-#: operations/workshop/styles.c:97
+#: operations/common/styles.c:96 operations/common/vignette.c:26
+#: operations/common-cxx/focus-blur.c:35
 msgid "Square"
 msgstr "Karratua"
 
-#: operations/common/dropshadow.c:28 operations/common/inner-glow.c:40
+#: operations/common/dropshadow.c:28 operations/common/inner-glow.c:31
 #: operations/common/median-blur.c:28 operations/common/newsprint.c:26
-#: operations/common/vignette.c:25 operations/common-cxx/focus-blur.c:34
-#: operations/workshop/styles.c:98
+#: operations/common/styles.c:97 operations/common/vignette.c:25
+#: operations/common-cxx/focus-blur.c:34
 msgid "Circle"
 msgstr "Zirkulua"
 
-#: operations/common/dropshadow.c:29 operations/common/inner-glow.c:41
+#: operations/common/dropshadow.c:29 operations/common/inner-glow.c:32
 #: operations/common/median-blur.c:29 operations/common/newsprint.c:27
-#: operations/common/pixelize.c:26 operations/common/vignette.c:27
-#: operations/common-cxx/focus-blur.c:36 operations/workshop/styles.c:99
+#: operations/common/pixelize.c:26 operations/common/styles.c:98
+#: operations/common/vignette.c:27 operations/common-cxx/focus-blur.c:36
 msgid "Diamond"
 msgstr "Diamantea"
 
-#: operations/common/dropshadow.c:32 operations/common/inner-glow.c:51
+#: operations/common/dropshadow.c:32 operations/common/inner-glow.c:42
 #: operations/common/layer.c:36 operations/common/rectangle.c:26
 #: operations/common-gpl3+/plasma.c:40
 #: operations/common-gpl3+/polar-coordinates.c:52
@@ -1909,12 +1914,12 @@ msgstr "Diamantea"
 msgid "X"
 msgstr "X"
 
-#: operations/common/dropshadow.c:33 operations/common/inner-glow.c:52
-#: operations/workshop/styles.c:146
+#: operations/common/dropshadow.c:33 operations/common/inner-glow.c:43
+#: operations/common/styles.c:145
 msgid "Horizontal shadow offset"
 msgstr "Itzalaren desplazamendu horizontala"
 
-#: operations/common/dropshadow.c:39 operations/common/inner-glow.c:59
+#: operations/common/dropshadow.c:39 operations/common/inner-glow.c:50
 #: operations/common/layer.c:41 operations/common/rectangle.c:31
 #: operations/common-gpl3+/plasma.c:47
 #: operations/common-gpl3+/polar-coordinates.c:59
@@ -1925,26 +1930,26 @@ msgstr "Itzalaren desplazamendu horizontala"
 #: operations/transform/shear.c:29 operations/transform/translate.c:31
 #: operations/workshop/external/spyrograph.c:57
 msgid "Y"
-msgstr "Y"
+msgstr "B"
 
-#: operations/common/dropshadow.c:40 operations/common/inner-glow.c:60
-#: operations/workshop/styles.c:155
+#: operations/common/dropshadow.c:40 operations/common/inner-glow.c:51
+#: operations/common/styles.c:154
 msgid "Vertical shadow offset"
 msgstr "Itzalaren desplazamendu bertikala"
 
-#: operations/common/dropshadow.c:53 operations/common/inner-glow.c:45
+#: operations/common/dropshadow.c:53 operations/common/inner-glow.c:36
 msgid "Grow shape"
 msgstr "Handitu forma"
 
-#: operations/common/dropshadow.c:56 operations/common/inner-glow.c:48
+#: operations/common/dropshadow.c:56 operations/common/inner-glow.c:39
 msgid "The shape to expand or contract the shadow in"
 msgstr "Itzala zein formarekin zabaldu edo uzkurtuko den"
 
-#: operations/common/dropshadow.c:58 operations/common/inner-glow.c:77
+#: operations/common/dropshadow.c:58 operations/common/inner-glow.c:68
 msgid "Grow radius"
 msgstr "Handitu erradioa"
 
-#: operations/common/dropshadow.c:65 operations/common/inner-glow.c:84
+#: operations/common/dropshadow.c:65 operations/common/inner-glow.c:75
 msgid ""
 "The distance to expand the shadow before blurring; a negative value will "
 "contract the shadow instead"
@@ -1958,7 +1963,7 @@ msgstr "Itzalaren kolorea (lehenetsia: 'beltza')"
 #. It does make sense to sometimes have opacities > 1 (see GEGL logo
 #. * for example)
 #.
-#: operations/common/dropshadow.c:74 operations/common/inner-glow.c:86
+#: operations/common/dropshadow.c:74 operations/common/inner-glow.c:77
 #: operations/common/layer.c:33 operations/common/opacity.c:25
 #: operations/common/opacity.c:289 operations/external/vector-fill.c:29
 #: operations/external/vector-stroke.c:34
@@ -2003,11 +2008,11 @@ msgid ""
 "is used instead."
 msgstr "Mantendu balio negatiboak emaitzan; desaktibatuta dagoenean, emaitzaren balio absolutua erabiliko da."
 
-#: operations/common/edge-sobel.c:404
+#: operations/common/edge-sobel.c:397
 msgid "Sobel Edge Detection"
 msgstr "Sobel motako ertz-detekzioa"
 
-#: operations/common/edge-sobel.c:408
+#: operations/common/edge-sobel.c:401
 msgid "Specialized direction-dependent edge detection"
 msgstr "Noranzkoaren mendeko ertz-detekzio berezia"
 
@@ -2318,8 +2323,8 @@ msgid "Chroma adjustment"
 msgstr "Chroma-doikuntza"
 
 #: operations/common/hue-chroma.c:33 operations/common/noise-cie-lch.c:29
+#: operations/common/styles.c:392
 #: operations/workshop/selective-hue-saturation.c:42
-#: operations/workshop/styles.c:393
 msgid "Lightness"
 msgstr "Argitasuna"
 
@@ -2410,7 +2415,7 @@ msgstr "Magnitudea"
 #: operations/common-gpl3+/texturize-canvas.c:38
 #: operations/common-gpl3+/wind.c:50
 msgid "Direction"
-msgstr "Noranzkoa"
+msgstr "Norabidea"
 
 #: operations/common/image-gradient.c:29 operations/common-gpl3+/wind.c:40
 msgid "Both"
@@ -2432,28 +2437,28 @@ msgstr "Irudi-gradientea"
 msgid "Compute gradient magnitude and/or direction by central differences"
 msgstr "Kalkulatu gradientearen magnitudea eta/edo norabidea diferentzia zentralaren bidez"
 
-#: operations/common/inner-glow.c:96
-msgid "Median fix for non-effected pixels on edges"
+#: operations/common/inner-glow.c:87
+msgid "Median fix for non-affected pixels on edges"
 msgstr "Medianaren konponketa ertzetan aldatu ez diren pixeletarako"
 
-#: operations/common/inner-glow.c:98
+#: operations/common/inner-glow.c:89
 msgid ""
-"Median Blur covers uneffected pixels. Making this slider too high will make "
+"Median Blur covers unaffected pixels. Making this slider too high will make "
 "it outline-like. So only slide it as high as you need to cover thin shape "
 "corners."
 msgstr "Mediana-lausotzeak aldatu ez diren pixelak estaltzen ditu. Graduatzaile hau altuegi badago, eskemaren antza izango du. Beraz, aldatu ertzeko izkina meheak estaltzeko adina soilik."
 
-#: operations/common/inner-glow.c:178
+#: operations/common/inner-glow.c:168
 msgid "Inner Glow"
 msgstr "Barneko dirdira"
 
-#: operations/common/inner-glow.c:180
+#: operations/common/inner-glow.c:170
 msgid ""
 "GEGL does an inner shadow glow effect; for more interesting use different "
 "blend mode than the default, Replace."
 msgstr "GEGLek barneko itzalaren dirdir-efektua sortzen du; balio lehenetsia baino interesgarriagoa den nahaste-modurako erabili 'Ordeztu'."
 
-#: operations/common/inner-glow.c:182
+#: operations/common/inner-glow.c:172
 msgid "Inner Glow..."
 msgstr "Barneko dirdira..."
 
@@ -2667,7 +2672,7 @@ msgstr "Zooma"
 #: operations/common/little-planet.c:40
 #: operations/common/panorama-projection.c:40
 msgid "Zoom level"
-msgstr "Zoom-maila"
+msgstr "Zoomaren maila"
 
 #: operations/common/little-planet.c:44
 #: operations/common/panorama-projection.c:44
@@ -2725,7 +2730,7 @@ msgstr "Albokoen batez besteko gausstarraren desbideratze estandarra, kontraste 
 
 #: operations/common/local-threshold.c:32 operations/common-gpl3+/mosaic.c:87
 msgid "Antialiasing"
-msgstr "Antialiasinga"
+msgstr "Antialiasing-a"
 
 #: operations/common/local-threshold.c:33
 msgid ""
@@ -2797,7 +2802,7 @@ msgstr "Itzala minus irudia"
 
 #: operations/common/long-shadow.c:44 operations/common-gpl3+/wind.c:45
 msgid "Style"
-msgstr "Formatua"
+msgstr "Estiloa"
 
 #: operations/common/long-shadow.c:47
 msgid "Shadow style"
@@ -3340,7 +3345,7 @@ msgstr "Foma Fomabrom Variant III"
 
 #: operations/common/newsprint.c:25
 msgid "Line"
-msgstr "Marra"
+msgstr "Lerroa"
 
 #: operations/common/newsprint.c:28
 msgid "PSSquare (or Euclidian) dot"
@@ -3689,11 +3694,11 @@ msgid ""
 "Controls the number of iterations; lower values give less plastic results"
 msgstr "Iterazio kopurua kontrolatzen du; balio baxuagoek emaitza zurrunagoak ematen dituzte"
 
-#: operations/common/noise-reduction.c:455
+#: operations/common/noise-reduction.c:461
 msgid "Noise Reduction"
 msgstr "Zarata-murrizketa"
 
-#: operations/common/noise-reduction.c:459
+#: operations/common/noise-reduction.c:465
 msgid "Anisotropic smoothing operation"
 msgstr "Leuntze anisotropikoko eragiketa"
 
@@ -4364,6 +4369,493 @@ msgid ""
 "Contrast Autostretch in that it works in HSV space, and preserves hue."
 msgstr "Bufferreko osagaiak eskalatzen ditu 0.0-1.0 barrutian egon daitezen. Eskuragarri dagoen kontrastearen erabilera pobrea egiten duten irudiak hobetzen ditu (kontraste gutxiko irudiak, irudi oso ilunak, edo irudi oso argiak). Bertsio hau ez da kontrastearen tiratze automatikoaren berdina, honek HSV espazioan egiten baitu an eta ñabardura gordetzen baitu."
 
+#: operations/common/styles.c:29
+msgid "Color, Outline and Shadow"
+msgstr "Kolorea, eskema eta itzala"
+
+#: operations/common/styles.c:30
+msgid "Bevel and Inner Glow"
+msgstr "Alaka eta barneko dirdira"
+
+#: operations/common/styles.c:31
+msgid "Image upload and Outline Bevel"
+msgstr "Irudia kargatzea eta eskema-alaka"
+
+#. List of all GUI options
+#. GUI Change list in GUI
+#: operations/common/styles.c:38
+msgid "Part of filter to be displayed"
+msgstr "Bistaratuko den iragazki-zatia"
+
+#: operations/common/styles.c:41
+msgid "Display a different part of the GUI"
+msgstr "Bistaratu erabiltzaile-interfazearen beste zati bat"
+
+#. Color Overlays GUI options begin here
+#: operations/common/styles.c:45
+msgid "Color overlay"
+msgstr "Kolore-gainjartzea"
+
+#: operations/common/styles.c:47
+msgid "Color overlay setting"
+msgstr "Kolore-gainjartzearen ezarpenak"
+
+#: operations/common/styles.c:49
+msgid "Color policy"
+msgstr "Kolore-politika"
+
+#: operations/common/styles.c:50
+msgid "Change the blend mode of the color overlay"
+msgstr "Aldatu kolore-gainjartzearen nahaste-modua"
+
+#: operations/common/styles.c:57
+msgid "No Color"
+msgstr "Kolorerik ez"
+
+#: operations/common/styles.c:61
+msgid "Solid Color"
+msgstr "Kolore solidoa"
+
+#. Outline's normal GUI options begin here
+#: operations/common/styles.c:67
+msgid "Enable Outline"
+msgstr "Gaitu eskema"
+
+#: operations/common/styles.c:68
+msgid "Disable or enable the outline"
+msgstr "Desgaitu edo gaitu eskema"
+
+#: operations/common/styles.c:71
+msgid "Outline opacity"
+msgstr "Eskemaren opakutasuna"
+
+#: operations/common/styles.c:74
+msgid "Opacity of the outline"
+msgstr "Eskemaren opakutasuna"
+
+#: operations/common/styles.c:78
+msgid "Outline X"
+msgstr "Eskema X"
+
+#: operations/common/styles.c:79
+msgid "Horizontal outline offset"
+msgstr "Eskemaren desplazamendu horizontala"
+
+#: operations/common/styles.c:86
+msgid "Outline Y"
+msgstr "Eskema Y"
+
+#: operations/common/styles.c:87
+msgid "Vertical outline offset"
+msgstr "Eskemaren desplazamendu bertikala"
+
+#: operations/common/styles.c:101
+msgid "Outline grow shape"
+msgstr "Eskema hedatzeko forma"
+
+#: operations/common/styles.c:104
+msgid "The shape to expand or contract the outline in"
+msgstr "Eskema hedatzeko edo uzkurtzeko erabiliko den forma"
+
+#: operations/common/styles.c:108
+msgid "Outline blur radius"
+msgstr "Eskemaren lausotze-erradioa"
+
+#: operations/common/styles.c:114
+msgid "A mild blur for the outline"
+msgstr "Lausotze leuna eskemarako"
+
+#: operations/common/styles.c:118
+msgid "Outline grow radius"
+msgstr "Eskema hedatzeko erradioa"
+
+#: operations/common/styles.c:125
+msgid "The distance to expand the outline"
+msgstr "Eskema hedatuko den distantzia"
+
+#. Shadow's GUI options begin here
+#: operations/common/styles.c:130
+msgid "Outline’s color"
+msgstr "Eskemaren kolorea"
+
+#: operations/common/styles.c:131
+msgid "Color of the outline (defaults to 'black') "
+msgstr "Eskemaren kolorea (lehenetsia beltza da) "
+
+#: operations/common/styles.c:136
+msgid "Shadow/Glow opacity"
+msgstr "Itzalaren/Dirdiraren opakutasuna"
+
+#: operations/common/styles.c:140
+msgid "Shadow opacity which will also enable or disable the shadow glow effect"
+msgstr "Itzalen opakutasuna, itzalaren dirdira-efektua ere gaitu edo desgaituko du"
+
+#: operations/common/styles.c:144
+msgid "Shadow/Glow X"
+msgstr "Itzala/Dirdira X"
+
+#: operations/common/styles.c:150
+msgid "Horizontal axis of the shadow glow"
+msgstr "Itzalaren dirdiraren ardatz horizontala"
+
+#: operations/common/styles.c:153
+msgid "Shadow/Glow Y"
+msgstr "Itzala/Dirdira Y"
+
+#: operations/common/styles.c:159
+msgid "Vertical axis of the shadow glow"
+msgstr "Itzalaren dirdiraren ardatz bertikala"
+
+#: operations/common/styles.c:162
+msgid "Shadow/Glow’s color"
+msgstr "Itzalaren/Dirdiraren kolorea"
+
+#. TRANSLATORS: the string 'black' should not be translated
+#: operations/common/styles.c:164
+msgid "The shadow’s color (defaults to 'black')"
+msgstr "Itzalaren kolorea (lehenetsia beltza da)"
+
+#: operations/common/styles.c:167
+msgid "Shadow/Glow grow radius"
+msgstr "Itzalaren/Dirdiraren hedatze-erradioa"
+
+#: operations/common/styles.c:174
+msgid "The distance to expand the shadow before blurring."
+msgstr "Itzala lausotu baino lehen hedatuko den distantzia."
+
+#: operations/common/styles.c:177
+msgid "Shadow/Glow blur radius"
+msgstr "Itzalaren/Dirdiraren lausotze-erradioa"
+
+#: operations/common/styles.c:183
+msgid "The shadow’s blur range"
+msgstr "Itzalaren lausotze-barrutia"
+
+#. Bevel's GUI options begin here
+#. This is the Bevel's ENUM List listed in the GUI
+#. This is the ENUM list for bevel's emboss blend modes
+#: operations/common/styles.c:191
+msgid "Enable Bevel"
+msgstr "Gaitu alaka"
+
+#: operations/common/styles.c:192
+msgid "Whether to add a bevel effect"
+msgstr "Alaka-efektua gehituko den ala ez"
+
+#: operations/common/styles.c:209
+msgid "Bevel blend mode"
+msgstr "Alakaren nahaste-modua"
+
+#: operations/common/styles.c:210
+msgid "Blend mode of the bevel"
+msgstr "Alakaren nahaste-modua"
+
+#: operations/common/styles.c:218
+msgid "Chamfer Bevel"
+msgstr "Alaka normala"
+
+#: operations/common/styles.c:220
+msgid "Bump Bevel"
+msgstr "Erliebe-alaka"
+
+#: operations/common/styles.c:223
+msgid "Select Bevel"
+msgstr "Hautatu alaka"
+
+#: operations/common/styles.c:226
+msgid "Type of bevel "
+msgstr "Alaka mota "
+
+#: operations/common/styles.c:232
+msgid "Bevel depth"
+msgstr "Alakaren sakonera"
+
+#: operations/common/styles.c:233
+msgid "Emboss depth for the bevel"
+msgstr "Alakaren bozeltze-sakonera"
+
+#: operations/common/styles.c:239
+msgid "Bevel elevation"
+msgstr "Alakaren altuera"
+
+#: operations/common/styles.c:240
+msgid "Emboss elevation of the bevel"
+msgstr "Alakaren bozeltze-altuera"
+
+#: operations/common/styles.c:247
+msgid "Bevel azimuth"
+msgstr "Alakaren azimuta"
+
+#: operations/common/styles.c:248
+msgid "Emboss azimuth of the bevel"
+msgstr "Alakaren bozeltze-azimuta"
+
+#: operations/common/styles.c:255
+msgid "Bevel radius (bump only)"
+msgstr "Alakaren erradioa (erliebea soilik)"
+
+#: operations/common/styles.c:259
+msgid ""
+"Internal gaussian blur to inflate the bump bevel. This option does not work "
+"on chamfer"
+msgstr "Erliebe-alaka puzteko barneko lausotze gausstarra. Aukera honek ez du funtzionatzen alaka normalean"
+
+#: operations/common/styles.c:265
+msgid "Levels low output lighting for Bevel"
+msgstr "Irteera baxuko argiztatzea berdintzen du alakarako"
+
+#: operations/common/styles.c:266
+msgid "Levels low output as a light adjustment for the bevel"
+msgstr "Irteera baxua berdintzen du alakaren argi-doikuntzarako"
+
+#: operations/common/styles.c:274
+msgid "Levels high output lighting for Bevel"
+msgstr "Irteera altuko argiztatzea berdintzen du alakarako"
+
+#: operations/common/styles.c:275
+msgid "Levels high output as a light adjustment for the bevel"
+msgstr "Irteera altua berdintzen du alakaren argi-doikuntzarako"
+
+#: operations/common/styles.c:283
+msgid "Dark Bevel/ignore image mode"
+msgstr "Alaka iluna/ezikusi irudi-modua"
+
+#: operations/common/styles.c:284
+msgid ""
+"This instructs the bevel to ignore image details if there is an image file "
+"overlay below it. It also allows bevel to work better when the user selects "
+"darker colors. The effect is noticeable on bump bevel but barely effects "
+"chamfer bevel"
+msgstr "Honen bidez, alakak irudiaren xehetasunei ez ikusiarena egingo die azpian irudi-fitxategi baten gainjartzea badago. Erabiltzaileak kolore ilunagoak hauatzean alakak hobeto funtzionatzea ahalbidetzen du. Efektu hau nabarmena da erliebe-alakan, baina ia ez du eraginik alaka normalean"
+
+#. This operation is extremely important for bevels with image file overlays
+#. Inner Glow GUI options begin here
+#: operations/common/styles.c:294
+msgid "Enable Inner Glow"
+msgstr "Gaitu barneko dirdira"
+
+#: operations/common/styles.c:295
+msgid "Whether to add the inner glow effect"
+msgstr "Barneko dirdiraren efektua gehituko den ala ez"
+
+#: operations/common/styles.c:304
+msgid "Normal"
+msgstr "Arrunta"
+
+#: operations/common/styles.c:306
+msgid "Overlay"
+msgstr "Gainjartzea"
+
+#: operations/common/styles.c:308
+msgid "Screen"
+msgstr "Pantaila"
+
+#: operations/common/styles.c:314
+msgid "Plus"
+msgstr "Plus"
+
+#: operations/common/styles.c:317
+msgid "Blend mode of Inner Glow"
+msgstr "Barneko dirdiraren nahaste-modua"
+
+#: operations/common/styles.c:323
+msgid "Inner Glow's blur radius"
+msgstr "Barneko dirdiraren lausotze-erradioa"
+
+#: operations/common/styles.c:329
+msgid "Blur control of the inner glow"
+msgstr "Barneko dirdiraren lausotze-kontrola"
+
+#: operations/common/styles.c:333
+msgid "Inner Glow's grow radius"
+msgstr "Barneko dirdiraren hedatze-erradioa"
+
+#: operations/common/styles.c:340
+msgid "The distance to expand the inner glow before blurring"
+msgstr "Barneko dirdira lausotu baino lehen hedatuko den distantzia"
+
+#: operations/common/styles.c:344
+msgid "Inner Glow's opacity"
+msgstr "Barneko dirdiraren opakutasuna"
+
+#: operations/common/styles.c:347
+msgid "Opacity of the inner glow"
+msgstr "Barneko dirdiraren opakutasuna"
+
+#: operations/common/styles.c:351
+msgid "Inner Glow's color"
+msgstr "Barneko dirdiraren kolorea"
+
+#: operations/common/styles.c:352
+msgid "The color of the inner glow"
+msgstr "Barneko dirdiraren kolorea"
+
+#: operations/common/styles.c:356
+msgid "Inner Glow's unmodified pixel fix"
+msgstr "Barneko dirdiraren aldatu gabeko pixelen konpontzea"
+
+#: operations/common/styles.c:358
+msgid "Cover pixels that inner glow might miss"
+msgstr "Barneko dirdirak aldatzen ez dituen pixelak estaltzen ditu"
+
+#. Without this Inner Glow would miss many pixels around alpha defined shapes edges'
+#. Image file overlay GUI options begin here
+#: operations/common/styles.c:365
+msgid "Enable image upload"
+msgstr "Gaitu irudia kargatzea"
+
+#: operations/common/styles.c:366 operations/common/styles.c:465
+msgid "Whether to enable or disable the image file upload."
+msgstr "Irudi-fitxategia kargatzea gaitu edo desgaituko den."
+
+#: operations/common/styles.c:369
+msgid "Image file overlay"
+msgstr "Irudi-fitxategiaren gainjartzea"
+
+#: operations/common/styles.c:370
+msgid ""
+"Upload an image file from your computer to be in the fill area. Allows (png, "
+"jpg, raw, svg, bmp, tif, ...)"
+msgstr "Kargatu irudi-fitxategi bat ordenagailutik betegarri-arean sartzeko. Honakoak onartzen dira: png, jpg, raw, svg, bmp, tif..."
+
+#: operations/common/styles.c:374
+msgid "Opacity of image file overlay"
+msgstr "Irudi-fitxategiaren gainjartzearen opakutasuna"
+
+#: operations/common/styles.c:377
+msgid "Opacity of the image file overlay that was uploaded. "
+msgstr "Kargatu den irudi-fitxategiaren gainjartzearen opakutasuna. "
+
+#: operations/common/styles.c:388
+msgid ""
+"Saturation adjustment of the uploaded image file or whatever is on canvas"
+msgstr "Kargatutako irudi-fitxategiaren edo oihalean dagoen edozerren saturazio-doikuntza"
+
+#: operations/common/styles.c:393
+msgid ""
+"Lightness adjustment of the uploaded image file or whatever is on canvas"
+msgstr "Kargatutako irudi-fitxategiaren edo oihalean dagoen edozerren argiztapen-doikuntza"
+
+#. Outline special options in GUI begin here
+#: operations/common/styles.c:398
+msgid "Enable advanced options on Outline (requires outline)"
+msgstr "Gaitu aukera aurreratuak eskeman (eskema behar da)"
+
+#: operations/common/styles.c:399
+msgid "Turn on advanced outline abilities"
+msgstr "Aktibatu eskema-gaitasun aurreratuak"
+
+#: operations/common/styles.c:404
+msgid "Enable Outline Bevel (requires advanced options)"
+msgstr "Gaitu eskema-alaka (aukera aurreratuak behar dira)"
+
+#: operations/common/styles.c:405
+msgid "Turn on outlines ability to bevel"
+msgstr "Aktibatu eskemak alakatzeko gaitasuna"
+
+#: operations/common/styles.c:426
+msgid "Outline Bevel blend mode"
+msgstr "Eskema-alakaren nahaste-modua"
+
+#: operations/common/styles.c:427
+msgid "Blend mode of the outline bevel"
+msgstr "Eskema-alakaren nahaste-modua"
+
+#: operations/common/styles.c:434
+msgid "Outline Bevel depth"
+msgstr "Eskema-alakaren sakonera"
+
+#: operations/common/styles.c:435
+msgid "Emboss depth for the outline bevel"
+msgstr "Eskema-alakaren bozeltze-sakonera"
+
+#: operations/common/styles.c:440
+msgid "Outline Bevel elevation"
+msgstr "Eskema-alakaren altuera"
+
+#: operations/common/styles.c:441
+msgid "Emboss elevation for the outline bevel"
+msgstr "Eskema-alakaren bozeltze-altuera"
+
+#: operations/common/styles.c:447
+msgid "Outline Bevel azimuth"
+msgstr "Eskema-alakaren azimuta"
+
+#: operations/common/styles.c:448
+msgid "Emboss azimuth for the outline bevel"
+msgstr "Eskema-alakaren bozeltze-azimuta"
+
+#: operations/common/styles.c:455
+msgid "Outline Bevel radius"
+msgstr "Eskema-alakaren erradioa"
+
+#: operations/common/styles.c:456
+msgid "Internal gaussian blur to inflate the outline bevel"
+msgstr "Eskemaren alaka puzteko barneko lausotze gaustarra"
+
+#: operations/common/styles.c:464
+msgid "Enable image upload on Outline (requires advanced options)"
+msgstr "Gaitu eskema-irudia kargatzea (aukera aurreratuak behar dira)"
+
+#: operations/common/styles.c:469
+msgid "Outline image file overlay"
+msgstr "Eskeman irudi-fitxategia gainjartzea"
+
+#: operations/common/styles.c:470
+msgid ""
+"Upload an image file from your computer to be in the outline area. Allows "
+"(png, jpg, raw, svg, bmp, tif, ...)"
+msgstr "Kargatu irudi-fitxategi bat ordenagailutik eskema-arean sartzeko. Honakoak onartzen dira: png, jpg, raw, svg, bmp, tif..."
+
+#: operations/common/styles.c:475
+msgid "Outline image opacity"
+msgstr "Eskema-irudiaren opakutasuna"
+
+#: operations/common/styles.c:476
+msgid "Outline image opacity adjustment"
+msgstr "Eskema-irudiaren opakutasunaren doikuntza"
+
+#: operations/common/styles.c:481
+msgid "Levels low output lighting for Outline Bevel"
+msgstr "Irteera baxuko argiztatzea berdintzen du eskema-alakarako"
+
+#: operations/common/styles.c:482
+msgid "Levels low output as a light adjustment for the outline bevel"
+msgstr "Irteera baxua berdintzen du eskema-alakaren argi-doikuntzarako"
+
+#: operations/common/styles.c:489
+msgid "Levels high output lighting for Outline Bevel"
+msgstr "Irteera altuko argiztatzea berdintzen du eskema-alakarako"
+
+#: operations/common/styles.c:490
+msgid "Levels high output as a light adjustment for the outline bevel"
+msgstr "Irteera altua berdintzen du eskema-alakaren argi-doikuntzarako"
+
+#: operations/common/styles.c:498
+msgid "Outline Dark Bevel/ignore image mode"
+msgstr "Eskemaren alaka iluna/ezikusi irudi-modua"
+
+#: operations/common/styles.c:499
+msgid ""
+"This instructs the outline bevel to ignore image details if there is an "
+"image file overlay below it. It also allows outline bevel to work better "
+"when the user selects darker colors."
+msgstr "Honek eskema-alakari esaten dio irudiaren xehetasunei ez ikusiarena egiteko irudi-fitxategi baten gainjartzea badago azpian. Eskema-alakak hobeto funtzionatzen du erabiltzaileak kolore ilunagoak aukeratzen baditu."
+
+#: operations/common/styles.c:1249
+msgid "GEGL Styles"
+msgstr "GEGL estiloak"
+
+#: operations/common/styles.c:1252
+msgid ""
+"An engine to style text and add popular effects to alpha channel images. "
+"Effects include outline, bevel, shadow, and inner glow all in one place."
+msgstr "Testuari estiloa emateko eta alfa kanaleko irudiei efektu ezagunak gehitzeko motor bat. Efektuak honakoak dira: alaka, itzala eta barneko dirdira."
+
+#: operations/common/styles.c:1255
+msgid "Text Styling..."
+msgstr "Testu-estiloa..."
+
 #: operations/common/svg-huerotate.c:27 operations/common/svg-matrix.c:27
 #: operations/common/svg-saturate.c:25
 msgid "Values"
@@ -4654,7 +5146,7 @@ msgstr "Atalasearen azpitik"
 #: operations/common-cxx/distance-transform.cc:35
 #: operations/workshop/external/voronoi-diagram.cc:24
 msgid "Metric"
-msgstr "Metrikoa"
+msgstr "Metrika"
 
 #: operations/common-cxx/distance-transform.cc:37
 #: operations/workshop/external/voronoi-diagram.cc:27
@@ -5295,11 +5787,11 @@ msgstr "Opakutasun-atalasea"
 msgid "The limit above which colors remain opaque."
 msgstr "Koloreak opaku izango dira muga horretatik gora."
 
-#: operations/common-gpl3+/color-to-alpha.c:285
+#: operations/common-gpl3+/color-to-alpha.c:283
 msgid "Color to Alpha"
 msgstr "Kolorea alfara"
 
-#: operations/common-gpl3+/color-to-alpha.c:291
+#: operations/common-gpl3+/color-to-alpha.c:289
 msgid "Convert a specified color to transparency, works best with white."
 msgstr "Bihurtu kolore bat gardentasunera, hobeto funtzionatzen du zuriarekin."
 
@@ -5552,6 +6044,22 @@ msgstr "Desplazamenduaren zentroaren X koordenatua"
 #: operations/common-gpl3+/displace.c:89
 msgid "Y coordinate of the displacement center"
 msgstr "Desplazamenduaren zentroaren Y koordenatua"
+
+#: operations/common-gpl3+/displace.c:190
+msgid "Horizontal/Radial"
+msgstr "Horizontala/Erradiala"
+
+#: operations/common-gpl3+/displace.c:191
+msgid "Horizontal or radial per pixel input"
+msgstr "Horizontala edo erradiala pixel-sarreraren arabera"
+
+#: operations/common-gpl3+/displace.c:199
+msgid "Vertical/Angular"
+msgstr "Bertikala/Angeluarra"
+
+#: operations/common-gpl3+/displace.c:200
+msgid "Vertical or angular per pixel input"
+msgstr "Bertikala edo angeluarra pixel-sarreraren arabera"
 
 #: operations/common-gpl3+/displace.c:479
 msgid "Displace"
@@ -5893,7 +6401,7 @@ msgstr "Lausotu alboko pixelak, baina kontraste gutxiko areatan soilik"
 
 #: operations/common-gpl3+/illusion.c:28
 msgid "Type 1"
-msgstr "Mota 1"
+msgstr "1 mota"
 
 #: operations/common-gpl3+/illusion.c:29
 msgid "Type 2"
@@ -6314,31 +6822,31 @@ msgstr "Intentsitatearen modua"
 msgid "Use pixel luminance values"
 msgstr "Erabili pixelen luminantziaren balioak"
 
-#: operations/common-gpl3+/oilify.c:587
+#: operations/common-gpl3+/oilify.c:612
 msgid "Mask radius buffer"
 msgstr "Maskara-erradioaren bufferra"
 
-#: operations/common-gpl3+/oilify.c:588
+#: operations/common-gpl3+/oilify.c:613
 msgid ""
 "Per pixel buffer for modulating the mask radius, expecting a scaling factor "
 "in range 0.0-1.0"
 msgstr "Pixelez pixeleko bufferra maskara-erradioa modulatzeko, 0.0-1.0 barrutiko eskalatze-faktorea espero du"
 
-#: operations/common-gpl3+/oilify.c:591
+#: operations/common-gpl3+/oilify.c:616
 msgid "Exponent buffer"
 msgstr "Buffer berretzailea"
 
-#: operations/common-gpl3+/oilify.c:592
+#: operations/common-gpl3+/oilify.c:617
 msgid ""
 "Per pixel buffer for modulating the exponent parameter, expecting a scaling "
 "factor in range 0.0-1.0"
 msgstr "Pixelez pixeleko bufferra berretzaile-parametroa modulatzeko, 0.0-1.0 barrutiko eskalatze-faktorea espero du"
 
-#: operations/common-gpl3+/oilify.c:603
+#: operations/common-gpl3+/oilify.c:628
 msgid "Oilify"
 msgstr "Olioz pintatu"
 
-#: operations/common-gpl3+/oilify.c:607
+#: operations/common-gpl3+/oilify.c:632
 msgid "Emulate an oil painting"
 msgstr "Emulatu olioz pintatzea"
 
@@ -6549,7 +7057,7 @@ msgstr "Argitu itzalak eta ilundu distirak"
 
 #: operations/common-gpl3+/shift.c:26 operations/common-gpl3+/shift.c:144
 msgid "Shift"
-msgstr "Desplazatu"
+msgstr "Shift"
 
 #: operations/common-gpl3+/shift.c:27
 msgid "Maximum amount to shift"
@@ -6789,7 +7297,7 @@ msgstr "Atzeko planoa"
 
 #: operations/common-gpl3+/tile-paper.c:36
 msgid "Ignore"
-msgstr "Ezikusi egin"
+msgstr "Ez ikusi egin"
 
 #: operations/common-gpl3+/tile-paper.c:37
 msgid "Force"
@@ -6810,7 +7318,7 @@ msgstr "Mugimendu-tasa"
 
 #: operations/common-gpl3+/tile-paper.c:60
 msgid "Wrap around"
-msgstr "Egokitu inguruan"
+msgstr "Egokitu"
 
 #: operations/common-gpl3+/tile-paper.c:61
 msgid "Wrap the fractional tiles"
@@ -7085,11 +7593,11 @@ msgstr "Leherketa"
 
 #: operations/common-gpl3+/wind.c:33
 msgid "Left"
-msgstr "Ezkerrean"
+msgstr "Ezkerrera"
 
 #: operations/common-gpl3+/wind.c:34
 msgid "Right"
-msgstr "Eskuinean"
+msgstr "Eskuinera"
 
 #: operations/common-gpl3+/wind.c:35
 msgid "Top"
@@ -7101,11 +7609,11 @@ msgstr "Behean"
 
 #: operations/common-gpl3+/wind.c:41
 msgid "Leading"
-msgstr "Aurretik"
+msgstr "Aurrekoa"
 
 #: operations/common-gpl3+/wind.c:42
 msgid "Trailing"
-msgstr "Atzetik"
+msgstr "Atzekoa"
 
 #: operations/common-gpl3+/wind.c:48
 msgid "Style of effect"
@@ -7194,7 +7702,7 @@ msgstr "const * Babl espazio baten erakuslea"
 #: operations/external/pdf-load.c:24 operations/external/v4l.c:26
 #: operations/workshop/external/v4l2.c:24
 msgid "Path"
-msgstr "Bidea"
+msgstr "Bide-izena"
 
 #: operations/core/cast-space.c:30 operations/core/convert-space.c:30
 msgid "File system path to ICC matrix profile to load"
@@ -7353,11 +7861,11 @@ msgstr "audio-kodeka"
 msgid "audio"
 msgstr "audioa"
 
-#: operations/external/ff-load.c:868
+#: operations/external/ff-load.c:876
 msgid "FFmpeg Frame Loader"
 msgstr "FFmpeg fotograma-kargatzailea"
 
-#: operations/external/ff-load.c:870
+#: operations/external/ff-load.c:878
 msgid "FFmpeg video frame importer."
 msgstr "FFmpeg bideo-fotogramen inportatzailea."
 
@@ -7496,11 +8004,11 @@ msgstr "i-quant-offset"
 msgid "me-subpel-quality"
 msgstr "me-subpel-quality"
 
-#: operations/external/ff-save.c:1218
+#: operations/external/ff-save.c:1243
 msgid "FFmpeg Frame Saver"
 msgstr "FFmpeg fotograma-gordetzailea"
 
-#: operations/external/ff-save.c:1220
+#: operations/external/ff-save.c:1245
 msgid "FFmpeg video output sink"
 msgstr "FFmpeg bideo-irteeraren kolektorea"
 
@@ -7749,7 +8257,7 @@ msgstr "Erabiltzaileak hornitutako hiru tonuko mapa eta sarrerako iruditik abiat
 
 #: operations/external/npd.c:23
 msgid "Model"
-msgstr "Eredua"
+msgstr "Modeloa"
 
 #: operations/external/npd.c:24
 msgid "Model - basic element we operate on"
@@ -7880,13 +8388,11 @@ msgstr "Erabiliko den betegarriaren opakutasuna"
 
 #: operations/external/path.c:54 operations/external/vector-fill.c:40
 #: operations/external/vector-stroke.c:41
-#: operations/workshop/external/ctx-script.c:26
 msgid "Vector"
 msgstr "Bektorea"
 
 #: operations/external/path.c:55 operations/external/vector-fill.c:41
 #: operations/external/vector-stroke.c:42
-#: operations/workshop/external/ctx-script.c:27
 msgid "A GeglVector representing the path of the stroke"
 msgstr "Trazuaren bidea adierazten duen Gegl bektorea"
 
@@ -7908,7 +8414,7 @@ msgstr "kargatuko den fitxategiaren URIa"
 
 #: operations/external/pdf-load.c:30
 msgid "Page"
-msgstr "Orria"
+msgstr "Orrialdea"
 
 #: operations/external/pdf-load.c:31
 msgid "Page to render"
@@ -8209,7 +8715,7 @@ msgstr "Bistaratu testu kate bat 'pango' eta 'cairo' erabiliz."
 
 #: operations/external/tiff-load.c:34
 msgid "Directory"
-msgstr "DIrektorioa"
+msgstr "Direktorioa"
 
 #: operations/external/tiff-load.c:35
 msgid "Image file directory (subfile)"
@@ -8882,7 +9388,7 @@ msgstr "Normalizatu irteera barrutira [oinarria,oinarria + urratsa]"
 msgid "Connected Components"
 msgstr "Konektatutako osagaiak"
 
-#: operations/workshop/connected-components.c:290
+#: operations/workshop/connected-components.c:292
 msgid ""
 "Fills each connected region of the input, separated from the rest of the "
 "input by a given color, with a unique color."
@@ -8927,17 +9433,9 @@ msgstr "Berdina"
 msgid "Test op to do a 1:1 map of input to output, while sampling"
 msgstr "Probako eragiketa lagintzean sarreraren 1:1 mapa irteeran sortzeko"
 
-#: operations/workshop/external/ctx-script.c:126
-msgid "Ctx script"
-msgstr "Ctx scripta"
-
-#: operations/workshop/external/ctx-script.c:128
-msgid "Renders a ctx vector graphics"
-msgstr "Ctx grafiko bektorial bat errendatzen du"
-
 #: operations/workshop/external/gluas.c:29
 msgid "Script"
-msgstr "Script-a"
+msgstr "Skript-a"
 
 #: operations/workshop/external/gluas.c:30
 msgid "The lua script containing the implementation of this operation."
@@ -9043,7 +9541,7 @@ msgstr "Kalkulatu fokuaren b balioa"
 
 #: operations/workshop/external/lens-correct.c:41
 msgid "Center"
-msgstr "Zentroan"
+msgstr "Erdian"
 
 #: operations/workshop/external/lens-correct.c:42
 msgid "If you want center"
@@ -9168,7 +9666,7 @@ msgstr "Amaierako Y koordenatua"
 
 #: operations/workshop/external/line-profile.c:44
 msgid "Min"
-msgstr "Gutx."
+msgstr "Min"
 
 #: operations/workshop/external/line-profile.c:46
 msgid "Value at bottom"
@@ -9298,7 +9796,7 @@ msgstr "Irudiaren ertzak ere ereingo diren ala ez"
 msgid "Voronoi Diagram"
 msgstr "Voronoi diagrama"
 
-#: operations/workshop/external/voronoi-diagram.cc:531
+#: operations/workshop/external/voronoi-diagram.cc:533
 msgid "Paints each non-seed pixel with the color of the nearest seed pixel."
 msgstr "Hazirik gabeko pixel bakoitza hazidun pixel hurbilenaren kolorearekin margotzen du."
 
@@ -9468,492 +9966,11 @@ msgid ""
 "shuffling neighboring pixels."
 msgstr "Pixelak ausaz aukeratzen ditu eta aldamenekoen koantizazioa erabiltzen du bilbatzea optimizatzeko."
 
-#: operations/workshop/styles.c:30
-msgid "Color, Outline and Shadow"
-msgstr "Kolorea, eskema eta itzala"
-
-#: operations/workshop/styles.c:31
-msgid "Bevel and Inner Glow"
-msgstr "Alaka eta barneko dirdira"
-
-#: operations/workshop/styles.c:32
-msgid "Image upload and Outline Bevel"
-msgstr "Irudia kargatzea eta eskema-alaka"
-
-#. List of all GUI options
-#. GUI Change list in GUI
-#: operations/workshop/styles.c:39
-msgid "Part of filter to be displayed"
-msgstr "Bistaratuko den iragazki-zatia"
-
-#: operations/workshop/styles.c:42
-msgid "Display a different part of the GUI"
-msgstr "Bistaratu erabiltzaile-interfazearen beste zati bat"
-
-#. Color Overlays GUI options begin here
-#: operations/workshop/styles.c:46
-msgid "Color overlay"
-msgstr "Kolore-gainjartzea"
-
-#: operations/workshop/styles.c:48
-msgid "Color overlay setting"
-msgstr "Kolore-gainjartzearen ezarpenak"
-
-#: operations/workshop/styles.c:50
-msgid "Color policy"
-msgstr "Kolore-politika"
-
-#: operations/workshop/styles.c:51
-msgid "Change the blend mode of the color overlay"
-msgstr "Aldatu kolore-gainjartzearen nahaste-modua"
-
-#: operations/workshop/styles.c:58
-msgid "No Color"
-msgstr "Kolorerik ez"
-
-#: operations/workshop/styles.c:62
-msgid "Solid Color"
-msgstr "Kolore solidoa"
-
-#. Outline's normal GUI options begin here
-#: operations/workshop/styles.c:68
-msgid "Enable Outline"
-msgstr "Gaitu eskema"
-
-#: operations/workshop/styles.c:69
-msgid "Disable or enable the outline"
-msgstr "Desgaitu edo gaitu eskema"
-
-#: operations/workshop/styles.c:72
-msgid "Outline opacity"
-msgstr "Eskemaren opakutasuna"
-
-#: operations/workshop/styles.c:75
-msgid "Opacity of the outline"
-msgstr "Eskemaren opakutasuna"
-
-#: operations/workshop/styles.c:79
-msgid "Outline X"
-msgstr "Eskema X"
-
-#: operations/workshop/styles.c:80
-msgid "Horizontal outline offset"
-msgstr "Eskemaren desplazamendu horizontala"
-
-#: operations/workshop/styles.c:87
-msgid "Outline Y"
-msgstr "Eskema Y"
-
-#: operations/workshop/styles.c:88
-msgid "Vertical outline offset"
-msgstr "Eskemaren desplazamendu bertikala"
-
-#: operations/workshop/styles.c:102
-msgid "Outline grow shape"
-msgstr "Eskema hedatzeko forma"
-
-#: operations/workshop/styles.c:105
-msgid "The shape to expand or contract the outline in"
-msgstr "Eskema hedatzeko edo uzkurtzeko erabiliko den forma"
-
-#: operations/workshop/styles.c:109
-msgid "Outline blur radius"
-msgstr "Eskemaren lausotze-erradioa"
-
-#: operations/workshop/styles.c:115
-msgid "A mild blur for the outline"
-msgstr "Lausotze leuna eskemarako"
-
-#: operations/workshop/styles.c:119
-msgid "Outline grow radius"
-msgstr "Eskema hedatzeko erradioa"
-
-#: operations/workshop/styles.c:126
-msgid "The distance to expand the outline"
-msgstr "Eskema hedatuko den distantzia"
-
-#. Shadow's GUI options begin here
-#: operations/workshop/styles.c:131
-msgid "Outline’s color"
-msgstr "Eskemaren kolorea"
-
-#: operations/workshop/styles.c:132
-msgid "Color of the outline (defaults to 'black') "
-msgstr "Eskemaren kolorea (lehenetsia beltza da) "
-
-#: operations/workshop/styles.c:137
-msgid "Shadow/Glow opacity"
-msgstr "Itzalaren/Dirdiraren opakutasuna"
-
-#: operations/workshop/styles.c:141
-msgid "Shadow opacity which will also enable or disable the shadow glow effect"
-msgstr "Itzalen opakutasuna, itzalaren dirdira-efektua ere gaitu edo desgaituko du"
-
-#: operations/workshop/styles.c:145
-msgid "Shadow/Glow X"
-msgstr "Itzala/Dirdira X"
-
-#: operations/workshop/styles.c:151
-msgid "Horizontal axis of the shadow glow"
-msgstr "Itzalaren dirdiraren ardatz horizontala"
-
-#: operations/workshop/styles.c:154
-msgid "Shadow/Glow Y"
-msgstr "Itzala/Dirdira Y"
-
-#: operations/workshop/styles.c:160
-msgid "Vertical axis of the shadow glow"
-msgstr "Itzalaren dirdiraren ardatz bertikala"
-
-#: operations/workshop/styles.c:163
-msgid "Shadow/Glow’s color"
-msgstr "Itzalaren/Dirdiraren kolorea"
-
-#. TRANSLATORS: the string 'black' should not be translated
-#: operations/workshop/styles.c:165
-msgid "The shadow’s color (defaults to 'black')"
-msgstr "Itzalaren kolorea (lehenetsia beltza da)"
-
-#: operations/workshop/styles.c:168
-msgid "Shadow/Glow grow radius"
-msgstr "Itzalaren/Dirdiraren hedatze-erradioa"
-
-#: operations/workshop/styles.c:175
-msgid "The distance to expand the shadow before blurring."
-msgstr "Itzala lausotu baino lehen hedatuko den distantzia."
-
-#: operations/workshop/styles.c:178
-msgid "Shadow/Glow blur radius"
-msgstr "Itzalaren/Dirdiraren lausotze-erradioa"
-
-#: operations/workshop/styles.c:184
-msgid "The shadow’s blur range"
-msgstr "Itzalaren lausotze-barrutia"
-
-#. Bevel's GUI options begin here
-#. This is the Bevel's ENUM List listed in the GUI
-#. This is the ENUM list for bevel's emboss blend modes
-#: operations/workshop/styles.c:192
-msgid "Enable Bevel"
-msgstr "Gaitu alaka"
-
-#: operations/workshop/styles.c:193
-msgid "Whether to add a bevel effect"
-msgstr "Alaka-efektua gehituko den ala ez"
-
-#: operations/workshop/styles.c:210
-msgid "Bevel blend mode"
-msgstr "Alakaren nahaste-modua"
-
-#: operations/workshop/styles.c:211
-msgid "Blend mode of the bevel"
-msgstr "Alakaren nahaste-modua"
-
-#: operations/workshop/styles.c:219
-msgid "Chamfer Bevel"
-msgstr "Alaka normala"
-
-#: operations/workshop/styles.c:221
-msgid "Bump Bevel"
-msgstr "Erliebe-alaka"
-
-#: operations/workshop/styles.c:224
-msgid "Select Bevel"
-msgstr "Hautatu alaka"
-
-#: operations/workshop/styles.c:227
-msgid "Type of bevel "
-msgstr "Alaka mota "
-
-#: operations/workshop/styles.c:233
-msgid "Bevel depth"
-msgstr "Alakaren sakonera"
-
-#: operations/workshop/styles.c:234
-msgid "Emboss depth for the bevel"
-msgstr "Alakaren bozeltze-sakonera"
-
-#: operations/workshop/styles.c:240
-msgid "Bevel elevation"
-msgstr "Alakaren altuera"
-
-#: operations/workshop/styles.c:241
-msgid "Emboss elevation of the bevel"
-msgstr "Alakaren bozeltze-altuera"
-
-#: operations/workshop/styles.c:248
-msgid "Bevel azimuth"
-msgstr "Alakaren azimuta"
-
-#: operations/workshop/styles.c:249
-msgid "Emboss azimuth of the bevel"
-msgstr "Alakaren bozeltze-azimuta"
-
-#: operations/workshop/styles.c:256
-msgid "Bevel radius (bump only)"
-msgstr "Alakaren erradioa (erliebea soilik)"
-
-#: operations/workshop/styles.c:260
-msgid ""
-"Internal gaussian blur to inflate the bump bevel. This option does not work "
-"on chamfer"
-msgstr "Erliebe-alaka puzteko barneko lausotze gausstarra. Aukera honek ez du funtzionatzen alaka normalean"
-
-#: operations/workshop/styles.c:266
-msgid "Levels low output lighting for Bevel"
-msgstr "Irteera baxuko argiztatzea berdintzen du alakarako"
-
-#: operations/workshop/styles.c:267
-msgid "Levels low output as a light adjustment for the bevel"
-msgstr "Irteera baxua berdintzen du alakaren argi-doikuntzarako"
-
-#: operations/workshop/styles.c:275
-msgid "Levels high output lighting for Bevel"
-msgstr "Irteera altuko argiztatzea berdintzen du alakarako"
-
-#: operations/workshop/styles.c:276
-msgid "Levels high output as a light adjustment for the bevel"
-msgstr "Irteera altua berdintzen du alakaren argi-doikuntzarako"
-
-#: operations/workshop/styles.c:284
-msgid "Dark Bevel/ignore image mode"
-msgstr "Alaka iluna/ezikusi irudi-modua"
-
-#: operations/workshop/styles.c:285
-msgid ""
-"This instructs the bevel to ignore image details if there is an image file "
-"overlay below it. It also allows bevel to work better when the user selects "
-"darker colors. The effect is noticeable on bump bevel but barely effects "
-"chamfer bevel"
-msgstr "Honen bidez, alakak irudiaren xehetasunei ez ikusiarena egingo die azpian irudi-fitxategi baten gainjartzea badago. Erabiltzaileak kolore ilunagoak hauatzean alakak hobeto funtzionatzea ahalbidetzen du. Efektu hau nabarmena da erliebe-alakan, baina ia ez du eraginik alaka normalean"
-
-#. This operation is extremely important for bevels with image file overlays
-#. Inner Glow GUI options begin here
-#: operations/workshop/styles.c:295
-msgid "Enable Inner Glow"
-msgstr "Gaitu barneko dirdira"
-
-#: operations/workshop/styles.c:296
-msgid "Whether to add the inner glow effect"
-msgstr "Barneko dirdiraren efektua gehituko den ala ez"
-
-#: operations/workshop/styles.c:305
-msgid "Normal"
-msgstr "Normala"
-
-#: operations/workshop/styles.c:307
-msgid "Overlay"
-msgstr "Gainjartzea"
-
-#: operations/workshop/styles.c:309
-msgid "Screen"
-msgstr "Pantaila"
-
-#: operations/workshop/styles.c:315
-msgid "Plus"
-msgstr "Plus"
-
-#: operations/workshop/styles.c:318
-msgid "Blend mode of Inner Glow"
-msgstr "Barneko dirdiraren nahaste-modua"
-
-#: operations/workshop/styles.c:324
-msgid "Inner Glow's blur radius"
-msgstr "Barneko dirdiraren lausotze-erradioa"
-
-#: operations/workshop/styles.c:330
-msgid "Blur control of the inner glow"
-msgstr "Barneko dirdiraren lausotze-kontrola"
-
-#: operations/workshop/styles.c:334
-msgid "Inner Glow's grow radius"
-msgstr "Barneko dirdiraren hedatze-erradioa"
-
-#: operations/workshop/styles.c:341
-msgid "The distance to expand the inner glow before blurring"
-msgstr "Barneko dirdira lausotu baino lehen hedatuko den distantzia"
-
-#: operations/workshop/styles.c:345
-msgid "Inner Glow's opacity"
-msgstr "Barneko dirdiraren opakutasuna"
-
-#: operations/workshop/styles.c:348
-msgid "Opacity of the inner glow"
-msgstr "Barneko dirdiraren opakutasuna"
-
-#: operations/workshop/styles.c:352
-msgid "Inner Glow's color"
-msgstr "Barneko dirdiraren kolorea"
-
-#: operations/workshop/styles.c:353
-msgid "The color of the inner glow"
-msgstr "Barneko dirdiraren kolorea"
-
-#: operations/workshop/styles.c:357
-msgid "Inner Glow's unmodified pixel fix"
-msgstr "Barneko dirdiraren aldatu gabeko pixelen konpontzea"
-
-#: operations/workshop/styles.c:359
-msgid "Cover pixels that inner glow might miss"
-msgstr "Barneko dirdirak aldatzen ez dituen pixelak estaltzen ditu"
-
-#. Without this Inner Glow would miss many pixels around alpha defined shapes edges'
-#. Image file overlay GUI options begin here
-#: operations/workshop/styles.c:366
-msgid "Enable image upload"
-msgstr "Gaitu irudia kargatzea"
-
-#: operations/workshop/styles.c:367 operations/workshop/styles.c:466
-msgid "Whether to enable or disable the image file upload."
-msgstr "Irudi-fitxategia kargatzea gaitu edo desgaituko den."
-
-#: operations/workshop/styles.c:370
-msgid "Image file overlay"
-msgstr "Irudi-fitxategiaren gainjartzea"
-
-#: operations/workshop/styles.c:371
-msgid ""
-"Upload an image file from your computer to be in the fill area. Allows (png, "
-"jpg, raw, svg, bmp, tif, ...)"
-msgstr "Kargatu irudi-fitxategi bat ordenagailutik betegarri-arean sartzeko. Honakoak onartzen dira: png, jpg, raw, svg, bmp, tif..."
-
-#: operations/workshop/styles.c:375
-msgid "Opacity of image file overlay"
-msgstr "Irudi-fitxategiaren gainjartzearen opakutasuna"
-
-#: operations/workshop/styles.c:378
-msgid "Opacity of the image file overlay that was uploaded. "
-msgstr "Kargatu den irudi-fitxategiaren gainjartzearen opakutasuna. "
-
-#: operations/workshop/styles.c:389
-msgid ""
-"Saturation adjustment of the uploaded image file or whatever is on canvas"
-msgstr "Kargatutako irudi-fitxategiaren edo oihalean dagoen edozerren saturazio-doikuntza"
-
-#: operations/workshop/styles.c:394
-msgid ""
-"Lightness adjustment of the uploaded image file or whatever is on canvas"
-msgstr "Kargatutako irudi-fitxategiaren edo oihalean dagoen edozerren argiztapen-doikuntza"
-
-#. Outline special options in GUI begin here
-#: operations/workshop/styles.c:399
-msgid "Enable advanced options on Outline (requires outline)"
-msgstr "Gaitu aukera aurreratuak eskeman (eskema behar da)"
-
-#: operations/workshop/styles.c:400
-msgid "Turn on advanced outline abilities"
-msgstr "Aktibatu eskema-gaitasun aurreratuak"
-
-#: operations/workshop/styles.c:405
-msgid "Enable Outline Bevel (requires advanced options)"
-msgstr "Gaitu eskema-alaka (aukera aurreratuak behar dira)"
-
-#: operations/workshop/styles.c:406
-msgid "Turn on outlines ability to bevel"
-msgstr "Aktibatu eskemak alakatzeko gaitasuna"
-
-#: operations/workshop/styles.c:427
-msgid "Outline Bevel blend mode"
-msgstr "Eskema-alakaren nahaste-modua"
-
-#: operations/workshop/styles.c:428
-msgid "Blend mode of the outline bevel"
-msgstr "Eskema-alakaren nahaste-modua"
-
-#: operations/workshop/styles.c:435
-msgid "Outline Bevel depth"
-msgstr "Eskema-alakaren sakonera"
-
-#: operations/workshop/styles.c:436
-msgid "Emboss depth for the outline bevel"
-msgstr "Eskema-alakaren bozeltze-sakonera"
-
-#: operations/workshop/styles.c:441
-msgid "Outline Bevel elevation"
-msgstr "Eskema-alakaren altuera"
-
-#: operations/workshop/styles.c:442
-msgid "Emboss elevation for the outline bevel"
-msgstr "Eskema-alakaren bozeltze-altuera"
-
-#: operations/workshop/styles.c:448
-msgid "Outline Bevel azimuth"
-msgstr "Eskema-alakaren azimuta"
-
-#: operations/workshop/styles.c:449
-msgid "Emboss azimuth for the outline bevel"
-msgstr "Eskema-alakaren bozeltze-azimuta"
-
-#: operations/workshop/styles.c:456
-msgid "Outline Bevel radius"
-msgstr "Eskema-alakaren erradioa"
-
-#: operations/workshop/styles.c:457
-msgid "Internal gaussian blur to inflate the outline bevel"
-msgstr "Eskemaren alaka puzteko barneko lausotze gaustarra"
-
-#: operations/workshop/styles.c:465
-msgid "Enable image upload on Outline (requires advanced options)"
-msgstr "Gaitu eskema-irudia kargatzea (aukera aurreratuak behar dira)"
-
-#: operations/workshop/styles.c:470
-msgid "Outline image file overlay"
-msgstr "Eskeman irudi-fitxategia gainjartzea"
-
-#: operations/workshop/styles.c:471
-msgid ""
-"Upload an image file from your computer to be in the outline area. Allows "
-"(png, jpg, raw, svg, bmp, tif, ...)"
-msgstr "Kargatu irudi-fitxategi bat ordenagailutik eskema-arean sartzeko. Honakoak onartzen dira: png, jpg, raw, svg, bmp, tif..."
-
-#: operations/workshop/styles.c:476
-msgid "Outline image opacity"
-msgstr "Eskema-irudiaren opakutasuna"
-
-#: operations/workshop/styles.c:477
-msgid "Outline image opacity adjustment"
-msgstr "Eskema-irudiaren opakutasunaren doikuntza"
-
-#: operations/workshop/styles.c:482
-msgid "Levels low output lighting for Outline Bevel"
-msgstr "Irteera baxuko argiztatzea berdintzen du eskema-alakarako"
-
-#: operations/workshop/styles.c:483
-msgid "Levels low output as a light adjustment for the outline bevel"
-msgstr "Irteera baxua berdintzen du eskema-alakaren argi-doikuntzarako"
-
-#: operations/workshop/styles.c:490
-msgid "Levels high output lighting for Outline Bevel"
-msgstr "Irteera altuko argiztatzea berdintzen du eskema-alakarako"
-
-#: operations/workshop/styles.c:491
-msgid "Levels high output as a light adjustment for the outline bevel"
-msgstr "Irteera altua berdintzen du eskema-alakaren argi-doikuntzarako"
-
-#: operations/workshop/styles.c:499
-msgid "Outline Dark Bevel/ignore image mode"
-msgstr "Eskemaren alaka iluna/ezikusi irudi-modua"
-
-#: operations/workshop/styles.c:500
-msgid ""
-"This instructs the outline bevel to ignore image details if there is an "
-"image file overlay below it. It also allows outline bevel to work better "
-"when the user selects darker colors."
-msgstr "Honek eskema-alakari esaten dio irudiaren xehetasunei ez ikusiarena egiteko irudi-fitxategi baten gainjartzea badago azpian. Eskema-alakak hobeto funtzionatzen du erabiltzaileak kolore ilunagoak aukeratzen baditu."
-
-#: operations/workshop/styles.c:1243
-msgid "GEGL Styles"
-msgstr "GEGL estiloak"
-
-#: operations/workshop/styles.c:1246
-msgid ""
-"An engine to style text and add popular effects to alpha channel images. "
-"Effects include outline, bevel, shadow, and inner glow all in one place."
-msgstr "Testuari estiloa emateko eta alfa kanaleko irudiei efektu ezagunak gehitzeko motor bat. Efektuak honakoak dira: alaka, itzala eta barneko dirdira."
-
-#: operations/workshop/styles.c:1249
-msgid "Text Styling..."
-msgstr "Testu-estiloa..."
+#~ msgid "Ctx script"
+#~ msgstr "Ctx scripta"
+
+#~ msgid "Renders a ctx vector graphics"
+#~ msgstr "Ctx grafiko bektorial bat errendatzen du"
 
 #~ msgid "Soft Light"
 #~ msgstr "Argi leuna"
