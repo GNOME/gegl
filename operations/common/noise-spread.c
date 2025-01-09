@@ -141,6 +141,30 @@ process (GeglOperation       *operation,
   return TRUE;
 }
 
+static gboolean
+operation_process (GeglOperation        *operation,
+                   GeglOperationContext *context,
+                   const gchar          *output_prop,
+                   const GeglRectangle  *result,
+                   gint                  level)
+{
+  GeglProperties      *o = GEGL_PROPERTIES (operation);
+  GeglOperationClass  *operation_class;
+
+  operation_class = GEGL_OPERATION_CLASS (gegl_op_parent_class);
+
+  if (! o->amount_x && ! o->amount_y)
+    {
+      gpointer in = gegl_operation_context_get_object (context, "input");
+      gegl_operation_context_take_object (context, "output",
+                                          g_object_ref (G_OBJECT (in)));
+      return TRUE;
+    }
+
+  return operation_class->process (operation, context, output_prop, result,
+                                   gegl_operation_context_get_level (context));
+}
+
 static void
 gegl_op_class_init (GeglOpClass *klass)
 {
@@ -151,6 +175,7 @@ gegl_op_class_init (GeglOpClass *klass)
   filter_class    = GEGL_OPERATION_FILTER_CLASS (klass);
 
   operation_class->prepare = prepare;
+  operation_class->process = operation_process;
   filter_class->process    = process;
 
   gegl_operation_class_set_keys (operation_class,
