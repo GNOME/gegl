@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl.master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-10-10 19:34+0000\n"
-"PO-Revision-Date: 2024-10-15 14:23+0200\n"
+"POT-Creation-Date: 2024-11-09 18:48+0000\n"
+"PO-Revision-Date: 2025-01-14 14:42+0100\n"
 "Last-Translator: Rodrigo Lledó Milanca <rodhos92@gmail.com>\n"
 "Language-Team: Spanish - Spain <gnome-es-list@gnome.org>\n"
 "Language: es_ES\n"
@@ -22,12 +22,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.5\n"
+"X-Generator: Poedit 3.4.2\n"
 
 #: bin/gegl.c:179
 #, c-format
 msgid "Unable to read file: %s"
-msgstr "No se pudo leer del archivo: %s"
+msgstr "No se pudo leer el archivo: %s"
 
 #: bin/gegl.c:227
 msgid "Invalid graph, abort.\n"
@@ -457,13 +457,11 @@ msgstr "Relleno de entrada, para la entrada del búfer de la imagen."
 
 #: gegl/operation/gegl-operation-composer3.c:95
 #: gegl/operation/gegl-operation-composer.c:94
-#: operations/common-gpl3+/displace.c:191
 #: operations/transform/border-align.c:157
 msgid "Auxiliary image buffer input pad."
 msgstr "Relleno de entrada del búfer auxiliar de la imagen."
 
 #: gegl/operation/gegl-operation-composer3.c:104
-#: operations/common-gpl3+/displace.c:200
 msgid "Second auxiliary image buffer input pad."
 msgstr "Relleno de entrada del búfer auxiliar secundario de la imagen."
 
@@ -813,7 +811,7 @@ msgstr "Bisel…"
 
 #: operations/common/bilateral-filter.c:26
 #: operations/common/domain-transform.c:29 operations/common/dropshadow.c:46
-#: operations/common/inner-glow.c:65 operations/common-cxx/focus-blur.c:45
+#: operations/common/inner-glow.c:60 operations/common-cxx/focus-blur.c:45
 #: operations/common-cxx/lens-blur.cc:25
 #: operations/common-gpl3+/gaussian-blur-selective.c:29
 #: operations/workshop/bilateral-filter-fast.c:43
@@ -1149,7 +1147,7 @@ msgstr "Renderizar un patrón de tablero de ajedrez"
 
 #: operations/common/color.c:24 operations/common/color.c:87
 #: operations/common/color-overlay.c:26 operations/common/dropshadow.c:67
-#: operations/common/grid.c:64 operations/common/inner-glow.c:87
+#: operations/common/grid.c:64 operations/common/inner-glow.c:82
 #: operations/common/long-shadow.c:83 operations/common/rectangle.c:48
 #: operations/common/vignette.c:36 operations/common-gpl3+/color-to-alpha.c:29
 #: operations/common-gpl3+/supernova.c:60
@@ -1234,7 +1232,7 @@ msgstr ""
 "Estirar el croma de color para cubrir el máximo rango posible, manteniendo "
 "el tono y luminosidad sin tocar."
 
-#: operations/common/color-overlay.c:27 operations/common/inner-glow.c:88
+#: operations/common/color-overlay.c:27 operations/common/inner-glow.c:83
 msgid "The color to paint over the input"
 msgstr "El color para pintar sobre la entrada"
 
@@ -1969,28 +1967,28 @@ msgstr ""
 "recursiva de transformación de dominio. Similar a un filtro bilateral, pero "
 "más rápido de calcular."
 
-#: operations/common/dropshadow.c:27 operations/common/inner-glow.c:35
+#: operations/common/dropshadow.c:27 operations/common/inner-glow.c:30
 #: operations/common/median-blur.c:27 operations/common/pixelize.c:28
 #: operations/common/styles.c:96 operations/common/vignette.c:26
 #: operations/common-cxx/focus-blur.c:35
 msgid "Square"
 msgstr "Cuadrado"
 
-#: operations/common/dropshadow.c:28 operations/common/inner-glow.c:36
+#: operations/common/dropshadow.c:28 operations/common/inner-glow.c:31
 #: operations/common/median-blur.c:28 operations/common/newsprint.c:26
 #: operations/common/styles.c:97 operations/common/vignette.c:25
 #: operations/common-cxx/focus-blur.c:34
 msgid "Circle"
 msgstr "Círculo"
 
-#: operations/common/dropshadow.c:29 operations/common/inner-glow.c:37
+#: operations/common/dropshadow.c:29 operations/common/inner-glow.c:32
 #: operations/common/median-blur.c:29 operations/common/newsprint.c:27
 #: operations/common/pixelize.c:26 operations/common/styles.c:98
 #: operations/common/vignette.c:27 operations/common-cxx/focus-blur.c:36
 msgid "Diamond"
 msgstr "Diamante"
 
-#: operations/common/dropshadow.c:32 operations/common/inner-glow.c:47
+#: operations/common/dropshadow.c:32 operations/common/inner-glow.c:42
 #: operations/common/layer.c:36 operations/common/rectangle.c:26
 #: operations/common-gpl3+/plasma.c:40
 #: operations/common-gpl3+/polar-coordinates.c:52
@@ -2003,12 +2001,12 @@ msgstr "Diamante"
 msgid "X"
 msgstr "X"
 
-#: operations/common/dropshadow.c:33 operations/common/inner-glow.c:48
+#: operations/common/dropshadow.c:33 operations/common/inner-glow.c:43
 #: operations/common/styles.c:145
 msgid "Horizontal shadow offset"
 msgstr "Desplazamiento horizontal de la sombra"
 
-#: operations/common/dropshadow.c:39 operations/common/inner-glow.c:55
+#: operations/common/dropshadow.c:39 operations/common/inner-glow.c:50
 #: operations/common/layer.c:41 operations/common/rectangle.c:31
 #: operations/common-gpl3+/plasma.c:47
 #: operations/common-gpl3+/polar-coordinates.c:59
@@ -2021,24 +2019,24 @@ msgstr "Desplazamiento horizontal de la sombra"
 msgid "Y"
 msgstr "Y"
 
-#: operations/common/dropshadow.c:40 operations/common/inner-glow.c:56
+#: operations/common/dropshadow.c:40 operations/common/inner-glow.c:51
 #: operations/common/styles.c:154
 msgid "Vertical shadow offset"
 msgstr "Desplazamiento vertical de la sombra"
 
-#: operations/common/dropshadow.c:53 operations/common/inner-glow.c:41
+#: operations/common/dropshadow.c:53 operations/common/inner-glow.c:36
 msgid "Grow shape"
 msgstr "Expandir la forma"
 
-#: operations/common/dropshadow.c:56 operations/common/inner-glow.c:44
+#: operations/common/dropshadow.c:56 operations/common/inner-glow.c:39
 msgid "The shape to expand or contract the shadow in"
 msgstr "La forma dentro de la que expandir o contraer la sombra"
 
-#: operations/common/dropshadow.c:58 operations/common/inner-glow.c:73
+#: operations/common/dropshadow.c:58 operations/common/inner-glow.c:68
 msgid "Grow radius"
 msgstr "Aumentar el radio"
 
-#: operations/common/dropshadow.c:65 operations/common/inner-glow.c:80
+#: operations/common/dropshadow.c:65 operations/common/inner-glow.c:75
 msgid ""
 "The distance to expand the shadow before blurring; a negative value will "
 "contract the shadow instead"
@@ -2054,7 +2052,7 @@ msgstr "El color de la sombra (el predeterminado es «negro»)"
 #. It does make sense to sometimes have opacities > 1 (see GEGL logo
 #. * for example)
 #.
-#: operations/common/dropshadow.c:74 operations/common/inner-glow.c:82
+#: operations/common/dropshadow.c:74 operations/common/inner-glow.c:77
 #: operations/common/layer.c:33 operations/common/opacity.c:25
 #: operations/common/opacity.c:289 operations/external/vector-fill.c:29
 #: operations/external/vector-stroke.c:34
@@ -2560,11 +2558,11 @@ msgstr ""
 "Calcular la magnitud y/o dirección del gradiente mediante las diferencias "
 "centrales"
 
-#: operations/common/inner-glow.c:92
+#: operations/common/inner-glow.c:87
 msgid "Median fix for non-affected pixels on edges"
 msgstr "Corrección de la mediana para los píxeles no afectados en los bordes"
 
-#: operations/common/inner-glow.c:94
+#: operations/common/inner-glow.c:89
 msgid ""
 "Median Blur covers unaffected pixels. Making this slider too high will make "
 "it outline-like. So only slide it as high as you need to cover thin shape "
@@ -2574,11 +2572,11 @@ msgstr ""
 "demasiado a la derecha hará que parezca un contorno. Así que deslícelo solo "
 "lo que necesite para cubrir las esquinas delgadas."
 
-#: operations/common/inner-glow.c:179
+#: operations/common/inner-glow.c:168
 msgid "Inner Glow"
 msgstr "Brillo interior"
 
-#: operations/common/inner-glow.c:181
+#: operations/common/inner-glow.c:170
 msgid ""
 "GEGL does an inner shadow glow effect; for more interesting use different "
 "blend mode than the default, Replace."
@@ -2587,7 +2585,7 @@ msgstr ""
 "interesante, utilice un modo de mezcla diferente al predeterminado, "
 "Reemplazar."
 
-#: operations/common/inner-glow.c:183
+#: operations/common/inner-glow.c:172
 msgid "Inner Glow..."
 msgstr "Brillo interior…"
 
@@ -6404,6 +6402,22 @@ msgstr "Coordenada X del centro de desplazamiento"
 #: operations/common-gpl3+/displace.c:89
 msgid "Y coordinate of the displacement center"
 msgstr "Coordenada Y del centro de desplazamiento"
+
+#: operations/common-gpl3+/displace.c:190
+msgid "Horizontal/Radial"
+msgstr "Horizontal/Radial"
+
+#: operations/common-gpl3+/displace.c:191
+msgid "Horizontal or radial per pixel input"
+msgstr "Entrada por píxel horizontal o radial"
+
+#: operations/common-gpl3+/displace.c:199
+msgid "Vertical/Angular"
+msgstr "Vertical/Angular"
+
+#: operations/common-gpl3+/displace.c:200
+msgid "Vertical or angular per pixel input"
+msgstr "Entrada por píxel vertical o angular"
 
 #: operations/common-gpl3+/displace.c:479
 msgid "Displace"
@@ -11434,9 +11448,6 @@ msgstr ""
 
 #~ msgid "Even/Odd"
 #~ msgstr "Par o impar"
-
-#~ msgid "Horizontal/Vertical"
-#~ msgstr "Horizontal/Vertical"
 
 #~ msgid "Performs deinterlace on the image"
 #~ msgstr "Efectúa un desentrelazado de la imagen"
