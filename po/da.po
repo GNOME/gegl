@@ -18,7 +18,7 @@ msgstr ""
 "Project-Id-Version: gegl gegl-0-2\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
 "POT-Creation-Date: 2024-11-09 18:48+0000\n"
-"PO-Revision-Date: 2024-12-01 16:13+0100\n"
+"PO-Revision-Date: 2025-01-21 18:53+0100\n"
 "Last-Translator: Alan Mortensen <alanmortensen.am@gmail.com>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "Language: da\n"
@@ -2205,7 +2205,7 @@ msgstr "Gradienttærskel for mindskelse af detaljeforbedring"
 # Det danske wikipedia-opslag har også Tone mapping
 #: operations/common/fattal02.c:1361
 msgid "Fattal et al. 2002 Tone Mapping"
-msgstr "Fattal m.fl. 2002 Tone Mapping"
+msgstr "Fattal m.fl. 2002 Tonekortlægning"
 
 #: operations/common/fattal02.c:1365
 msgid ""
@@ -2218,8 +2218,8 @@ msgstr ""
 "Tilpasser et billede, som kan have et stort dynamisk område, til visning med "
 "et lille dynamisk område. Denne operation dæmper størrelsen af lokale "
 "billedgradienter og giver lysstyrke i området 0–1. Denne tilgang, kaldet "
-"“tone mapping”, blev oprindeligt præsenteret af Fattal, Lischinski og Werman "
-"ved konferencen SIGGRAPH 2002: Gradient Domain High Dynamic Range "
+"tonekortlægning, blev oprindeligt præsenteret af Fattal, Lischinski og "
+"Werman ved konferencen SIGGRAPH 2002: Gradient Domain High Dynamic Range "
 "Compression (http://www.cs.huji.ac.il/~danix/hdr/)."
 
 #: operations/common/gaussian-blur.c:25 operations/common/gblur-1d.c:40
@@ -3040,7 +3040,7 @@ msgstr "Niveau af vægt på detaljer i billedets farveovergange"
 
 #: operations/common/mantiuk06.c:1655
 msgid "Mantiuk 2006 Tone Mapping"
-msgstr "Mantiuk 2006 Tone Mapping"
+msgstr "Mantiuk 2006 Tonekortlægning"
 
 #: operations/common/mantiuk06.c:1659
 msgid ""
@@ -4327,7 +4327,7 @@ msgstr "Tilpasning til lysvariation i billedet"
 
 #: operations/common/reinhard05.c:317
 msgid "Reinhard 2005 Tone Mapping"
-msgstr "Reinhard 2005 Tone Mapping"
+msgstr "Reinhard 2005 Tonekortlægning"
 
 #: operations/common/reinhard05.c:322
 msgid ""
