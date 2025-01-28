@@ -18,6 +18,7 @@
 
 #include "config.h"
 #include <glib/gi18n-lib.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 #ifdef G_OS_WIN32

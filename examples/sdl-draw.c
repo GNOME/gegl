@@ -1,6 +1,7 @@
 
 #include <gegl.h>
 #include <SDL.h>
+#include <stdio.h>
 #include <math.h>
 
 typedef struct

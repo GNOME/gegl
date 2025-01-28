@@ -35,6 +35,7 @@ property_string (window_title, _("Window title"), "window_title")
 
 #include "gegl-op.h"
 #include <SDL.h>
+#include <stdio.h>
 
 typedef struct {
   SDL_Window   *window;

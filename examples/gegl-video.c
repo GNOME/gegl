@@ -23,6 +23,7 @@
 #include <gegl-audio-fragment.h>
 #include <glib/gprintf.h>
 #include <gexiv2/gexiv2.h>
+#include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>

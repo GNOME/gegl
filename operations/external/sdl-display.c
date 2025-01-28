@@ -34,6 +34,7 @@ property_string (icon_title, _("Icon title"), "icon_title")
 
 #include "gegl-op.h"
 #include <SDL.h>
+#include <stdio.h>
 
 typedef struct {
   SDL_Surface *screen;
