@@ -3,7 +3,7 @@
 # This file is distributed under the same license as the gegl package.
 # Pedro Albuquerque <palbuquerque73@gmail.com>, 2015.
 # Tiago Santos <tiagofsantos81@sapo.pt>, 2014-2017.
-# Hugo Carvalho <hugokarvalho@hotmail.com>, 2021-2024.
+# Hugo Carvalho <hugokarvalho@hotmail.com>, 2021-2025.
 # Sara Campos <lalocas@protonmail.com>, 2021, 2022, 2025.
 # Lara Viegas <viegaslara07@gmail.com>, 2024.
 #
@@ -11,9 +11,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Gegl-master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2025-01-27 08:18+0000\n"
-"PO-Revision-Date: 2025-01-28 20:35+0000\n"
-"Last-Translator: Sara Campos <lalocas@protonmail.com>\n"
+"POT-Creation-Date: 2025-01-28 21:52+0000\n"
+"PO-Revision-Date: 2025-01-31 00:55+0000\n"
+"Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>\n"
 "Language-Team: Português <https://l10n.gnome.org/teams/pt/>\n"
 "Language: pt\n"
 "MIME-Version: 1.0\n"
