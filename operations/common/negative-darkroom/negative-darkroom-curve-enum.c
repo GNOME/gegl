@@ -1,4 +1,8 @@
 enum_start(neg_curve)
+	enum_value (NEG_KODAK_ULTRA, "kodakultra", N_("Kodak Professional Ultra Endura"))
+	enum_value (NEG_KODAK_PORTRA, "kodakportra", N_("Kodak Professional Portra Endura"))
+	enum_value (NEG_KODAK_SUPRA, "kodaksupra", N_("Kodak Professional Supra Endura"))
+	enum_value (NEG_KODAK_EKTACHROME, "kodakektachrome3", N_("Kodak Ektachrome Radiance III"))
 	enum_value (NEG_FUJI, "fujicrystal", N_("Fujicolor Crystal Archive Digital Pearl Paper"))
 	enum_value (NEG_ILFOBROM1, "ilfobrom1", N_("Ilford Ilfobrom Galerie FB 1"))
 	enum_value (NEG_ILFOBROM2, "ilfobrom2", N_("Ilford Ilfobrom Galerie FB 2"))
