@@ -124,7 +124,7 @@ property_double (illumZ, _("Z multiplier"), 0.829)
 #define GEGL_OP_NAME     negative_darkroom
 #define GEGL_OP_C_SOURCE negative-darkroom.c
 
-#define EPSILON 0.00001
+#define EPSILON 0.00001f
 
 #include "gegl-op.h"
 
@@ -246,23 +246,23 @@ process (GeglOperation       *operation,
 	gfloat *aux  = aux_buf;
 	gfloat *out  = out_buf;
 
-	gfloat Dfogc = 0;
-	gfloat Dfogm = 0;
-	gfloat Dfogy = 0;
+	gfloat Dfogc = 0.f;
+	gfloat Dfogm = 0.f;
+	gfloat Dfogy = 0.f;
 
-	gfloat rcomp = 0;
-	gfloat gcomp = 0;
-	gfloat bcomp = 0;
+	gfloat rcomp = 0.f;
+	gfloat gcomp = 0.f;
+	gfloat bcomp = 0.f;
 
-	gfloat r = 0;
-	gfloat g = 0;
-	gfloat b = 0;
+	gfloat r = 0.f;
+	gfloat g = 0.f;
+	gfloat b = 0.f;
 
-	gfloat x = 0;
-	gfloat y = 0;
-	gfloat z = 0;
+	gfloat x = 0.f;
+	gfloat y = 0.f;
+	gfloat z = 0.f;
 
-	gfloat exp = pow(2, o->exposure);
+	gfloat exp = powf(2.f, o->exposure);
 
 
 	// Calculate base+fog
@@ -283,21 +283,21 @@ process (GeglOperation       *operation,
 	gfloat rMid = curve_lerp(curves[o->curve].ry,
 				 curves[o->curve].rx,
 				 curves[o->curve].rn,
-				 Dmaxc / 2);
+				 Dmaxc / 2.f);
 	gfloat gMid = curve_lerp(curves[o->curve].gy,
 				 curves[o->curve].gx,
 				 curves[o->curve].gn,
-				 Dmaxm / 2);
+				 Dmaxm / 2.f);
 	gfloat bMid = curve_lerp(curves[o->curve].by,
 				 curves[o->curve].bx,
 				 curves[o->curve].bn,
-				 Dmaxy / 2);
+				 Dmaxy / 2.f);
 
 	if (!aux)
 	{
-		rcomp = pow(2, (-o->expC) / 30);
-		gcomp = pow(2, (-o->expM) / 30);
-		bcomp = pow(2, (-o->expY) / 30);
+		rcomp = powf(2.f, (-o->expC) / 30.f);
+		gcomp = powf(2.f, (-o->expM) / 30.f);
+		bcomp = powf(2.f, (-o->expY) / 30.f);
 	}
 
 	for (glong i = 0; i < n_pixels; i++)
@@ -307,25 +307,25 @@ process (GeglOperation       *operation,
 		// Calculate exposure compensation from global+filter+dodge
 		if (aux)
 		{
-			rcomp = pow(2, ((-o->expC) / 30) -
-					(2 * o->dodge * (aux[0] - 0.5)));
-			gcomp = pow(2, ((-o->expM) / 30) -
-					(2 * o->dodge * (aux[1] - 0.5)));
-			bcomp = pow(2, ((-o->expY) / 30) -
-					(2 * o->dodge * (aux[2] - 0.5)));
+			rcomp = powf(2.f, ((-o->expC) / 30.f) -
+					(2.f * o->dodge * (aux[0] - 0.5f)));
+			gcomp = powf(2.f, ((-o->expM) / 30.f) -
+					(2.f * o->dodge * (aux[1] - 0.5f)));
+			bcomp = pow(2.f, ((-o->expY) / 30.f) -
+					(2.f * o->dodge * (aux[2] - 0.5f)));
 			aux  += 3;
 		}
 
 		// Convert to CIERGB primaries for color filter balance
-		x =    0.41847*in[0] -   0.15866*in[1] - 0.082835*in[2];
-		y =  -0.091169*in[0] +   0.25243*in[1] + 0.015708*in[2];
-		z = 0.00092090*in[0] - 0.0025498*in[1] +  0.17860*in[2];
+		x =    0.41847f*in[0] -   0.15866f*in[1] - 0.082835f*in[2];
+		y =  -0.091169f*in[0] +   0.25243f*in[1] + 0.015708f*in[2];
+		z = 0.00092090f*in[0] - 0.0025498f*in[1] +  0.17860f*in[2];
 		/*printf("Input CIERGB intensity %f %f %f\n", x, y, z);*/
 
 		// Apply preflash
-		x += o->flashC / 100;
-		y += o->flashM / 100;
-		z += o->flashY / 100;
+		x += o->flashC / 100.f;
+		y += o->flashM / 100.f;
+		z += o->flashY / 100.f;
 		/*printf("Preflashed intensity %f %f %f\n", x, y, z);*/
 
 		// Apply color filters and exposure
@@ -347,15 +347,15 @@ process (GeglOperation       *operation,
 			   z * curves[o->curve].bsens.Z);
 
 		// Scale the emulsion response
-		r *= 5000;
-		g *= 5000;
-		b *= 5000;
+		r *= 5000.f;
+		g *= 5000.f;
+		b *= 5000.f;
 		/*printf("Linear RGB intensity %f %f %f\n", r, g, b);*/
 
 		// Logarithmize the input
-		r = log10(r);
-		g = log10(g);
-		b = log10(b);
+		r = log10f(r);
+		g = log10f(g);
+		b = log10f(b);
 		/*printf("Logarithmic RGB intensity %f %f %f\n", r, g, b);*/
 
 		// Adjust contrast
@@ -399,15 +399,15 @@ process (GeglOperation       *operation,
 
 		// Simulate dye density with exponentiation to get
 		// the CIEXYZ tramsmittance back
-		out[0] = (1 / pow(10, r * curves[o->curve].cdens.X)) *
-			 (1 / pow(10, g * curves[o->curve].mdens.X)) *
-			 (1 / pow(10, b * curves[o->curve].ydens.X)) * o->illumX;
-		out[1] = (1 / pow(10, r * curves[o->curve].cdens.Y)) *
-			 (1 / pow(10, g * curves[o->curve].mdens.Y)) *
-			 (1 / pow(10, b * curves[o->curve].ydens.Y));
-		out[2] = (1 / pow(10, r * curves[o->curve].cdens.Z)) *
-			 (1 / pow(10, g * curves[o->curve].mdens.Z)) *
-			 (1 / pow(10, b * curves[o->curve].ydens.Z)) * o->illumZ;
+		out[0] = (1 / powf(10.f, r * curves[o->curve].cdens.X)) *
+			 (1 / powf(10.f, g * curves[o->curve].mdens.X)) *
+			 (1 / powf(10.f, b * curves[o->curve].ydens.X)) * o->illumX;
+		out[1] = (1 / powf(10.f, r * curves[o->curve].cdens.Y)) *
+			 (1 / powf(10.f, g * curves[o->curve].mdens.Y)) *
+			 (1 / powf(10.f, b * curves[o->curve].ydens.Y));
+		out[2] = (1 / powf(10.f, r * curves[o->curve].cdens.Z)) *
+			 (1 / powf(10.f, g * curves[o->curve].mdens.Z)) *
+			 (1 / powf(10.f, b * curves[o->curve].ydens.Z)) * o->illumZ;
 		/*printf("XYZ output %f %f %f\n", out[0], out[1], out[2]);*/
 
 		in   += 3;
