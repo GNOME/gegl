@@ -1,17 +1,17 @@
 # Swedish translation for gegl.
-# Copyright © 2012, 2016-2024 Free Software Foundation, Inc.
+# Copyright © 2012, 2016-2025 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gegl package.
 # Daniel Nylander <po@danielnylander.se>, 2012.
 # Sebastian Rasmussen <sebras@gmail.com>, 2016, 2017, 2018.
-# Anders Jonsson <anders.jonsson@norsjovallen.se>, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024.
+# Anders Jonsson <anders.jonsson@norsjovallen.se>, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025.
 # Luna Jernberg <droidbittin@gmail.com>, 2021.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-11-16 01:31+0000\n"
-"PO-Revision-Date: 2024-12-04 00:49+0100\n"
+"POT-Creation-Date: 2025-02-07 22:06+0000\n"
+"PO-Revision-Date: 2025-02-07 23:49+0100\n"
 "Last-Translator: Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -804,7 +804,7 @@ msgstr "Avfasning…"
 
 #: operations/common/bilateral-filter.c:26
 #: operations/common/domain-transform.c:29 operations/common/dropshadow.c:46
-#: operations/common/inner-glow.c:60 operations/common-cxx/focus-blur.c:45
+#: operations/common/inner-glow.c:58 operations/common-cxx/focus-blur.c:45
 #: operations/common-cxx/lens-blur.cc:25
 #: operations/common-gpl3+/gaussian-blur-selective.c:29
 #: operations/workshop/bilateral-filter-fast.c:43
@@ -1138,7 +1138,7 @@ msgstr "Rendera ett schackbrädesmönster"
 
 #: operations/common/color.c:24 operations/common/color.c:87
 #: operations/common/color-overlay.c:26 operations/common/dropshadow.c:67
-#: operations/common/grid.c:64 operations/common/inner-glow.c:82
+#: operations/common/grid.c:64 operations/common/inner-glow.c:80
 #: operations/common/long-shadow.c:83 operations/common/rectangle.c:48
 #: operations/common/vignette.c:36 operations/common-gpl3+/color-to-alpha.c:29
 #: operations/common-gpl3+/supernova.c:60
@@ -1221,7 +1221,7 @@ msgstr ""
 "Sträcker färgkrominans till att täcka det största möjliga intervallet och "
 "bibehåller nyans och ljushet oförändrade."
 
-#: operations/common/color-overlay.c:27 operations/common/inner-glow.c:83
+#: operations/common/color-overlay.c:27 operations/common/inner-glow.c:81
 msgid "The color to paint over the input"
 msgstr "Färgen för att måla över indata"
 
@@ -1991,7 +1991,7 @@ msgstr "X"
 msgid "Horizontal shadow offset"
 msgstr "Horisontell skuggposition"
 
-#: operations/common/dropshadow.c:39 operations/common/inner-glow.c:50
+#: operations/common/dropshadow.c:39 operations/common/inner-glow.c:49
 #: operations/common/layer.c:41 operations/common/rectangle.c:31
 #: operations/common-gpl3+/plasma.c:47
 #: operations/common-gpl3+/polar-coordinates.c:59
@@ -2004,7 +2004,7 @@ msgstr "Horisontell skuggposition"
 msgid "Y"
 msgstr "Y"
 
-#: operations/common/dropshadow.c:40 operations/common/inner-glow.c:51
+#: operations/common/dropshadow.c:40 operations/common/inner-glow.c:50
 #: operations/common/styles.c:154
 msgid "Vertical shadow offset"
 msgstr "Vertikal skuggposition"
@@ -2017,11 +2017,11 @@ msgstr "Tillväxtform"
 msgid "The shape to expand or contract the shadow in"
 msgstr "Formen att expandera eller dra ihop skuggan i"
 
-#: operations/common/dropshadow.c:58 operations/common/inner-glow.c:68
+#: operations/common/dropshadow.c:58 operations/common/inner-glow.c:66
 msgid "Grow radius"
 msgstr "Tillväxtradie"
 
-#: operations/common/dropshadow.c:65 operations/common/inner-glow.c:75
+#: operations/common/dropshadow.c:65 operations/common/inner-glow.c:73
 msgid ""
 "The distance to expand the shadow before blurring; a negative value will "
 "contract the shadow instead"
@@ -2037,7 +2037,7 @@ msgstr "Skuggans färg (standardvärdet är ”black”)"
 #. It does make sense to sometimes have opacities > 1 (see GEGL logo
 #. * for example)
 #.
-#: operations/common/dropshadow.c:74 operations/common/inner-glow.c:77
+#: operations/common/dropshadow.c:74 operations/common/inner-glow.c:75
 #: operations/common/layer.c:33 operations/common/opacity.c:25
 #: operations/common/opacity.c:289 operations/external/vector-fill.c:29
 #: operations/external/vector-stroke.c:34
@@ -2283,7 +2283,7 @@ msgstr "1D-gaussisk oskärpa"
 #: operations/common/icc-save.c:25 operations/common/magick-load.c:26
 #: operations/common/open-buffer.c:25 operations/common/save.c:26
 #: operations/core/load.c:29 operations/external/exr-save.cc:24
-#: operations/external/ff-load.c:29 operations/external/ff-save.c:29
+#: operations/external/ff-load.c:30 operations/external/ff-save.c:30
 #: operations/external/gif-load.c:34 operations/external/jp2-load.c:25
 #: operations/external/jpg-load.c:24 operations/external/jpg-save.c:25
 #: operations/external/npy-save.c:31 operations/external/png-load.c:32
@@ -2530,11 +2530,11 @@ msgstr "Bildgradient"
 msgid "Compute gradient magnitude and/or direction by central differences"
 msgstr "Beräkna gradientmagnitud och/eller riktning genom centrumskillnader"
 
-#: operations/common/inner-glow.c:87
+#: operations/common/inner-glow.c:85
 msgid "Median fix for non-affected pixels on edges"
 msgstr "Medianfix för ej påverkade bildpunkter på kanter"
 
-#: operations/common/inner-glow.c:89
+#: operations/common/inner-glow.c:87
 msgid ""
 "Median Blur covers unaffected pixels. Making this slider too high will make "
 "it outline-like. So only slide it as high as you need to cover thin shape "
@@ -2544,11 +2544,11 @@ msgstr ""
 "för högt kommer göra det konturliknande. Så skjut det bara så högt som du "
 "behöver för att täcka tunna figurhörn."
 
-#: operations/common/inner-glow.c:168
+#: operations/common/inner-glow.c:171
 msgid "Inner Glow"
 msgstr "Inre glöd"
 
-#: operations/common/inner-glow.c:170
+#: operations/common/inner-glow.c:173
 msgid ""
 "GEGL does an inner shadow glow effect; for more interesting use different "
 "blend mode than the default, Replace."
@@ -2556,7 +2556,7 @@ msgstr ""
 "GEGL använder en inre skugglödseffekt; för intressantare effekter kan du "
 "använda ett annat toningsläge än standardvärdet Ersätt."
 
-#: operations/common/inner-glow.c:172
+#: operations/common/inner-glow.c:175
 msgid "Inner Glow..."
 msgstr "Inre glöd…"
 
@@ -2995,11 +2995,11 @@ msgstr "Detaljer"
 msgid "Level of emphasis on image gradient details"
 msgstr "Nivån av betoning av detaljer för bildgradient"
 
-#: operations/common/mantiuk06.c:1655
+#: operations/common/mantiuk06.c:1642
 msgid "Mantiuk 2006 Tone Mapping"
 msgstr "Mantiuk 2006-tonmappning"
 
-#: operations/common/mantiuk06.c:1659
+#: operations/common/mantiuk06.c:1646
 msgid ""
 "Adapt an image, which may have a high dynamic range, for presentation using "
 "a low dynamic range. This operator constrains contrasts across multiple "
@@ -3346,11 +3346,21 @@ msgstr "Klipp bas + dimma"
 msgid "Clip base + fog to have a pure white output value"
 msgstr "Klipp bas + dimma för att få ett rent vitt utdatavärde"
 
-#: operations/common/negative-darkroom.c:52
-msgid "Density boost"
-msgstr "Densitetsförhöjning"
+#: operations/common/negative-darkroom.c:51
+msgid "Add base and fog"
+msgstr "Lägg till bas och dimma"
 
-#: operations/common/negative-darkroom.c:53
+#: operations/common/negative-darkroom.c:52
+msgid "Artificially reintroduce base and fog."
+msgstr "Återintroducera artificiellt bas och dimma."
+
+#: operations/common/negative-darkroom.c:57
+msgid "Cyan density boost"
+msgstr "Cyandensitetsförhöjning"
+
+#: operations/common/negative-darkroom.c:58
+#: operations/common/negative-darkroom.c:63
+#: operations/common/negative-darkroom.c:68
 msgid ""
 "Boost paper density to take advantage of increased dynamic range of a "
 "monitor compared to a photographic paper"
@@ -3358,131 +3368,173 @@ msgstr ""
 "Förhöj pappersdensitet för att dra fördel av ökat dynamiskt intervall för en "
 "monitor jämfört med fotopapper"
 
-#: operations/common/negative-darkroom.c:57
+#: operations/common/negative-darkroom.c:62
+msgid "Density boost"
+msgstr "Densitetsförhöjning"
+
+#: operations/common/negative-darkroom.c:67
+msgid "Yellow density boost"
+msgstr "Gul densitetsförhöjning"
+
+#: operations/common/negative-darkroom.c:72
+msgid "Contrast boost R"
+msgstr "Kontrastförhöjning R"
+
+#: operations/common/negative-darkroom.c:73
+msgid ""
+"Increase red contrast for papers with fixed contrast (usually color papers)"
+msgstr "Öka röd kontrast för papper med fast kontrast (vanligtvis färgpapper)"
+
+#: operations/common/negative-darkroom.c:77
 msgid "Contrast boost"
 msgstr "Kontrastförhöjning"
 
-#: operations/common/negative-darkroom.c:58
+#: operations/common/negative-darkroom.c:78
 msgid "Increase contrast for papers with fixed contrast (usually color papers)"
 msgstr "Öka kontrast för papper med fast kontrast (vanligtvis färgpapper)"
 
-#: operations/common/negative-darkroom.c:63
+#: operations/common/negative-darkroom.c:82
+msgid "Contrast boost B"
+msgstr "Kontrastförhöjning B"
+
+#: operations/common/negative-darkroom.c:83
+msgid ""
+"Increase blue contrast for papers with fixed contrast (usually color papers)"
+msgstr "Öka blå kontrast för papper med fast kontrast (vanligtvis färgpapper)"
+
+#: operations/common/negative-darkroom.c:88
 msgid "Dodge/burn multiplier"
 msgstr "Skugga/efterbelys-multiplicerare"
 
-#: operations/common/negative-darkroom.c:64
+#: operations/common/negative-darkroom.c:89
 msgid "The f-stop of dodge/burn for pure white/black auxiliary input"
 msgstr "F-tal för skugga/efterbelys för ren vit/svart tillsatsindata"
 
-#: operations/common/negative-darkroom.c:68
+#: operations/common/negative-darkroom.c:93
 msgid "Enable preflashing"
 msgstr "Aktivera förblixt"
 
-#: operations/common/negative-darkroom.c:69
+#: operations/common/negative-darkroom.c:94
 msgid "Show preflash controls"
 msgstr "Visa förblixttkontroller"
 
-#: operations/common/negative-darkroom.c:71
+#: operations/common/negative-darkroom.c:96
 msgid "Red preflash"
 msgstr "Röd förblixt"
 
-#: operations/common/negative-darkroom.c:72
+#: operations/common/negative-darkroom.c:97
 msgid "Preflash the negative with red light to reduce contrast of the print"
 msgstr ""
 "Förblixta negativet med rött ljus för att reducera utskriftens kontrast"
 
-#: operations/common/negative-darkroom.c:76
+#: operations/common/negative-darkroom.c:101
 msgid "Green preflash"
 msgstr "Grön förblixt"
 
-#: operations/common/negative-darkroom.c:77
+#: operations/common/negative-darkroom.c:102
 msgid "Preflash the negative with green light to reduce contrast of the print"
 msgstr ""
 "Förblixta negativet med grönt ljus för att reducera utskriftens kontrast"
 
-#: operations/common/negative-darkroom.c:81
+#: operations/common/negative-darkroom.c:106
 msgid "Blue preflash"
 msgstr "Blå förblixt"
 
-#: operations/common/negative-darkroom.c:82
+#: operations/common/negative-darkroom.c:107
 msgid "Preflash the negative with blue light to reduce contrast of the print"
 msgstr ""
 "Förblixta negativet med blått ljus för att reducera utskriftens kontrast"
 
-#: operations/common/negative-darkroom.c:86
+#: operations/common/negative-darkroom.c:111
 msgid "Illuminant adjustment"
 msgstr "Belysningsjustering"
 
 # Visa tristimulusvärdena (strängarna nedan)
-#: operations/common/negative-darkroom.c:87
+#: operations/common/negative-darkroom.c:112
 msgid "Show illuminant controls"
 msgstr "Visa belysningskontroller"
 
-#: operations/common/negative-darkroom.c:88
+#: operations/common/negative-darkroom.c:113
 msgid "X multiplier"
 msgstr "X-multiplicerare"
 
-#: operations/common/negative-darkroom.c:89
+#: operations/common/negative-darkroom.c:114
 msgid "Adjust the X tristimulus value for output"
 msgstr "Justera X-tristimulusvärdet för utdata"
 
-#: operations/common/negative-darkroom.c:92
+#: operations/common/negative-darkroom.c:117
 msgid "Z multiplier"
 msgstr "Z-multiplicerare"
 
-#: operations/common/negative-darkroom.c:93
+#: operations/common/negative-darkroom.c:118
 msgid "Adjust the Z tristimulus value for output"
 msgstr "Justera Z-tristimulusvärdet för utdata"
 
-#: operations/common/negative-darkroom.c:386
+#: operations/common/negative-darkroom.c:437
 msgid "Negative Darkroom"
 msgstr "Negativmörkrum"
 
-#: operations/common/negative-darkroom.c:389
-msgid "Simulate a negative film enlargement in an analog darkroom."
-msgstr "Simulera en förstoring av negativfilm i ett analogt mörkrum."
+#: operations/common/negative-darkroom.c:440
+msgid "Simulate a film enlargement in an analog darkroom."
+msgstr "Simulera en förstoring av film i ett analogt mörkrum."
 
 #: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:2
+msgid "Kodak Professional Ultra Endura"
+msgstr "Kodak Professional Ultra Endura"
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:3
+msgid "Kodak Professional Portra Endura"
+msgstr "Kodak Professional Portra Endura"
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:4
+msgid "Kodak Professional Supra Endura"
+msgstr "Kodak Professional Supra Endura"
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:5
+msgid "Kodak Ektachrome Radiance III"
+msgstr "Kodak Ektachrome Radiance III"
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:6
 msgid "Fujicolor Crystal Archive Digital Pearl Paper"
 msgstr "Fujicolor Crystal Archive Digital Pearl Paper"
 
-#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:3
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:7
 msgid "Ilford Ilfobrom Galerie FB 1"
 msgstr "Ilford Ilfobrom Galerie FB 1"
 
-#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:4
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:8
 msgid "Ilford Ilfobrom Galerie FB 2"
 msgstr "Ilford Ilfobrom Galerie FB 2"
 
-#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:5
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:9
 msgid "Ilford Ilfobrom Galerie FB 3"
 msgstr "Ilford Ilfobrom Galerie FB 3"
 
-#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:6
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:10
 msgid "Ilford Ilfobrom Galerie FB 4"
 msgstr "Ilford Ilfobrom Galerie FB 4"
 
-#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:7
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:11
 msgid "Ilford Multigrade IV RC Deluxe"
 msgstr "Ilford Multigrade IV RC Deluxe"
 
-#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:8
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:12
 msgid "Foma Fomabrom C"
 msgstr "Foma Fomabrom C"
 
-#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:9
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:13
 msgid "Foma Fomabrom N"
 msgstr "Foma Fomabrom N"
 
-#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:10
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:14
 msgid "Foma Fomabrom Sp"
 msgstr "Foma Fomabrom Sp"
 
-#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:11
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:15
 msgid "Foma Fomabrom S"
 msgstr "Foma Fomabrom S"
 
-#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:12
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:16
 msgid "Foma Fomabrom Variant III"
 msgstr "Foma Fomabrom Variant III"
 
@@ -3921,11 +3973,11 @@ msgstr "Mängd horisontell spridning"
 msgid "Vertical spread amount"
 msgstr "Mängd vertikal spridning"
 
-#: operations/common/noise-spread.c:158
+#: operations/common/noise-spread.c:183
 msgid "Noise Spread"
 msgstr "Brusspridning"
 
-#: operations/common/noise-spread.c:162
+#: operations/common/noise-spread.c:187
 msgid "Move pixels around randomly"
 msgstr "Flytta runt bildpunkter slumpmässigt"
 
@@ -5056,11 +5108,11 @@ msgstr ""
 "bildfilsöverlagring under den. Det tillåter också konturavfasning att "
 "fungera bättre när användaren väljer mörkare färger."
 
-#: operations/common/styles.c:1249
+#: operations/common/styles.c:1247
 msgid "GEGL Styles"
 msgstr "GEGL-stilar"
 
-#: operations/common/styles.c:1252
+#: operations/common/styles.c:1250
 msgid ""
 "An engine to style text and add popular effects to alpha channel images. "
 "Effects include outline, bevel, shadow, and inner glow all in one place."
@@ -5069,7 +5121,7 @@ msgstr ""
 "alfakanalbilder. Effekterna inkluderar kontur, avfasning, skugga, och inre "
 "glöd på ett och samma ställe."
 
-#: operations/common/styles.c:1255
+#: operations/common/styles.c:1253
 msgid "Text Styling..."
 msgstr "Textstil…"
 
@@ -5541,11 +5593,11 @@ msgstr "Storlek på lappar att använda för brusreducering"
 msgid "Noise standard deviation"
 msgstr "Standardavvikelse för brus"
 
-#: operations/common-cxx/denoise-dct.cc:480
+#: operations/common-cxx/denoise-dct.cc:486
 msgid "Denoise DCT"
 msgstr "Brusreducera (DCT)"
 
-#: operations/common-cxx/denoise-dct.cc:482
+#: operations/common-cxx/denoise-dct.cc:488
 msgid "Denoising algorithm using a per-patch DCT thresholding"
 msgstr "Brusreduceringsalgoritm som använder DCT-tröskelvärde per lapp"
 
@@ -8133,207 +8185,207 @@ msgstr "sökväg för fil att skriva till."
 msgid "tile size to use."
 msgstr "plattstorlek att använda."
 
-#: operations/external/ff-load.c:30
+#: operations/external/ff-load.c:31
 msgid "Path of video file to load"
 msgstr "Sökväg för fil att läsa in"
 
-#: operations/external/ff-load.c:32
+#: operations/external/ff-load.c:33
 msgid "Frame number"
 msgstr "Bildrutenummer"
 
-#: operations/external/ff-load.c:36 operations/external/gif-load.c:38
+#: operations/external/ff-load.c:37 operations/external/gif-load.c:38
 msgid "frames"
 msgstr "bilder"
 
-#: operations/external/ff-load.c:37
+#: operations/external/ff-load.c:38
 msgid ""
 "Number of frames in video, updates at least when first frame has been "
 "decoded."
 msgstr ""
 "Antal bilder i video, uppdateras åtminstone när första bilden har avkodats."
 
-#: operations/external/ff-load.c:41
+#: operations/external/ff-load.c:42
 msgid "audio_sample_rate"
 msgstr "ljudsamplingshastighet"
 
-#: operations/external/ff-load.c:42
+#: operations/external/ff-load.c:43
 msgid "audio_channels"
 msgstr "ljudkanaler"
 
-#: operations/external/ff-load.c:44
+#: operations/external/ff-load.c:45
 msgid "frame-rate"
 msgstr "bildhastighet"
 
-#: operations/external/ff-load.c:45
+#: operations/external/ff-load.c:46
 msgid "Frames per second, permits computing time vs frame"
 msgstr "Antal bilder per sekund, tillåter beräkningstid per bild"
 
-#: operations/external/ff-load.c:49
+#: operations/external/ff-load.c:50
 msgid "video-codec"
 msgstr "video-kodek"
 
-#: operations/external/ff-load.c:50
+#: operations/external/ff-load.c:51
 msgid "audio-codec"
 msgstr "ljudkodek"
 
-#: operations/external/ff-load.c:52 operations/external/ff-save.c:32
+#: operations/external/ff-load.c:53 operations/external/ff-save.c:33
 msgid "audio"
 msgstr "ljud"
 
-#: operations/external/ff-load.c:876
+#: operations/external/ff-load.c:877
 msgid "FFmpeg Frame Loader"
 msgstr "FFmpegs bildläsare"
 
-#: operations/external/ff-load.c:878
+#: operations/external/ff-load.c:879
 msgid "FFmpeg video frame importer."
 msgstr "FFmpegs videobildsimportör."
 
-#: operations/external/ff-save.c:30 operations/external/png-save.c:27
+#: operations/external/ff-save.c:31 operations/external/png-save.c:27
 #: operations/external/ppm-save.c:26 operations/external/rgbe-save.c:27
 msgid "Target path and filename, use '-' for stdout."
 msgstr "Målsökväg och filnamn, använd ”-” för standard ut."
 
-#: operations/external/ff-save.c:33
+#: operations/external/ff-save.c:34
 msgid "Audio codec"
 msgstr "Ljudkodek"
 
-#: operations/external/ff-save.c:34
+#: operations/external/ff-save.c:35
 msgid ""
 "Audio codec to use, or auto to use a good default based on container format."
 msgstr ""
 "Ljudkodek som ska användas, eller auto för att använda ett bra standardvärde "
 "beroende på behållarformat."
 
-#: operations/external/ff-save.c:35
+#: operations/external/ff-save.c:36
 msgid "audio sample rate"
 msgstr "samplingshastighet för ljud"
 
-#: operations/external/ff-save.c:36
+#: operations/external/ff-save.c:37
 msgid "-1 means autodetect on first audio fragment"
 msgstr "-1 innebär autodetektering från det första ljudfragmentet"
 
-#: operations/external/ff-save.c:38
+#: operations/external/ff-save.c:39
 msgid "audio bitrate in kb/s"
 msgstr "bithastighet i kb/s för ljud"
 
-#: operations/external/ff-save.c:39 operations/external/ff-save.c:47
+#: operations/external/ff-save.c:40 operations/external/ff-save.c:48
 msgid "Target encoded video bitrate in kb/s"
 msgstr "Målbithastighet för kodad video i kb/s"
 
-#: operations/external/ff-save.c:41
+#: operations/external/ff-save.c:42
 msgid "Frames/second"
 msgstr "Bilder/sekund"
 
-#: operations/external/ff-save.c:44
+#: operations/external/ff-save.c:45
 msgid "Video codec"
 msgstr "Videokodek"
 
-#: operations/external/ff-save.c:45
+#: operations/external/ff-save.c:46
 msgid ""
 "Video codec to use, or auto to use a good default based on container format."
 msgstr ""
 "Videokodek som ska användas, eller auto för att använda ett bra "
 "standardvärde baserat på behållarformat."
 
-#: operations/external/ff-save.c:46
+#: operations/external/ff-save.c:47
 msgid "video bitrate in kb/s"
 msgstr "bithastighet i kb/s för video"
 
-#: operations/external/ff-save.c:48
+#: operations/external/ff-save.c:49
 msgid "Video bufsize"
 msgstr "Buffertstorlek för video"
 
-#: operations/external/ff-save.c:50
+#: operations/external/ff-save.c:51
 msgid "Container format"
 msgstr "Behållarformat"
 
-#: operations/external/ff-save.c:51
+#: operations/external/ff-save.c:52
 msgid "Container format to use, or auto to autodetect based on file extension."
 msgstr ""
 "Behållarformat att använda, eller auto för att autodetektera det baserat på "
 "filändelse."
 
-#: operations/external/ff-save.c:54
+#: operations/external/ff-save.c:55
 msgid "global quality"
 msgstr "global kvalitet"
 
-#: operations/external/ff-save.c:57
+#: operations/external/ff-save.c:58
 msgid "noise reduction"
 msgstr "brusreducering"
 
-#: operations/external/ff-save.c:58
+#: operations/external/ff-save.c:59
 msgid "scenechange threshold"
 msgstr "tröskelvärde för scenbyte"
 
-#: operations/external/ff-save.c:59
+#: operations/external/ff-save.c:60
 msgid "video bitrate min"
 msgstr "minsta bithastighet för video"
 
-#: operations/external/ff-save.c:60
+#: operations/external/ff-save.c:61
 msgid "video bitrate max"
 msgstr "högsta bithastighet för video"
 
-#: operations/external/ff-save.c:61
+#: operations/external/ff-save.c:62
 msgid "video bitrate tolerance"
 msgstr "tolerans för bithastighet för video"
 
-#: operations/external/ff-save.c:64
+#: operations/external/ff-save.c:65
 msgid "keyint-min"
 msgstr "keyint-min"
 
-#: operations/external/ff-save.c:65
+#: operations/external/ff-save.c:66
 msgid "trellis"
 msgstr "trellis"
 
-#: operations/external/ff-save.c:66
+#: operations/external/ff-save.c:67
 msgid "qmin"
 msgstr "qmin"
 
-#: operations/external/ff-save.c:67
+#: operations/external/ff-save.c:68
 msgid "qmax"
 msgstr "qmax"
 
-#: operations/external/ff-save.c:68
+#: operations/external/ff-save.c:69
 msgid "max_qdiff"
 msgstr "max_qdiff"
 
-#: operations/external/ff-save.c:69
+#: operations/external/ff-save.c:70
 msgid "me_range"
 msgstr "me_range"
 
-#: operations/external/ff-save.c:70
+#: operations/external/ff-save.c:71
 msgid "max_b_frames"
 msgstr "max_b_frames"
 
-#: operations/external/ff-save.c:71
+#: operations/external/ff-save.c:72
 msgid "gop-size"
 msgstr "gop-storlek"
 
-#: operations/external/ff-save.c:72
+#: operations/external/ff-save.c:73
 msgid "qcompress"
 msgstr "qcompress"
 
-#: operations/external/ff-save.c:73
+#: operations/external/ff-save.c:74
 msgid "qblur"
 msgstr "qblur"
 
-#: operations/external/ff-save.c:74
+#: operations/external/ff-save.c:75
 msgid "i-quant-factor"
 msgstr "i-quant-faktor"
 
-#: operations/external/ff-save.c:75
+#: operations/external/ff-save.c:76
 msgid "i-quant-offset"
 msgstr "i-quant-position"
 
-#: operations/external/ff-save.c:76
+#: operations/external/ff-save.c:77
 msgid "me-subpel-quality"
 msgstr "me-subpel-kvalitet"
 
-#: operations/external/ff-save.c:1243
+#: operations/external/ff-save.c:1244
 msgid "FFmpeg Frame Saver"
 msgstr "FFmpegs bildsparare"
 
-#: operations/external/ff-save.c:1245
+#: operations/external/ff-save.c:1246
 msgid "FFmpeg video output sink"
 msgstr "FFmpeg utdatautgång för video"
 
@@ -8924,11 +8976,11 @@ msgstr "Lagra i GdkPixbuf"
 msgid "Store image in a GdkPixbuf."
 msgstr "Lagra bild i en GdkPixbuf."
 
-#: operations/external/sdl2-display.c:196
+#: operations/external/sdl2-display.c:197
 msgid "SDL2 Display"
 msgstr "SDL2-visning"
 
-#: operations/external/sdl2-display.c:199
+#: operations/external/sdl2-display.c:200
 msgid ""
 "Displays the input buffer in an SDL2 window (restricted to one display op/"
 "process, due to SDL2 implementation issues)."
@@ -8944,11 +8996,11 @@ msgstr "Ikontitel"
 msgid "Icon to be used for output window"
 msgstr "Ikon som ska användas för utdatafönstret"
 
-#: operations/external/sdl-display.c:168
+#: operations/external/sdl-display.c:169
 msgid "SDL Display"
 msgstr "SDL-visning"
 
-#: operations/external/sdl-display.c:171
+#: operations/external/sdl-display.c:172
 msgid ""
 "Displays the input buffer in an SDL window (restricted to one display op/"
 "process, due to SDL implementation issues)."
@@ -9760,11 +9812,11 @@ msgstr "Utjämning"
 msgid "Level of smoothness"
 msgstr "Nivåer av utmjukning"
 
-#: operations/workshop/bilateral-filter-fast.c:501
+#: operations/workshop/bilateral-filter-fast.c:505
 msgid "Bilateral Box Filter"
 msgstr "Bilateralt boxfilter"
 
-#: operations/workshop/bilateral-filter-fast.c:506
+#: operations/workshop/bilateral-filter-fast.c:510
 msgid ""
 "A fast approximation of bilateral filter, using a box-filter instead of a "
 "gaussian blur."
@@ -10360,9 +10412,9 @@ msgid ""
 msgstr ""
 "Råbildsläsare, som omsluter dcraw med rör, tillhandahåller det råa bayer-"
 "rutnätet som gråskala, om filformatet är .rawbayer kommer det att använda "
-"denna läsare i stället för den normala dcraw-läsaren, om filformatet är ."
-"rawbayerS kommer det att växla de returnerade 16bits-talen (pnm-läsaren är "
-"uppenbarligen felaktig)"
+"denna läsare i stället för den normala dcraw-läsaren, om filformatet "
+"är .rawbayerS kommer det att växla de returnerade 16bits-talen (pnm-läsaren "
+"är uppenbarligen felaktig)"
 
 #: operations/workshop/segment-kmeans.c:27
 #: operations/workshop/segment-kmeans.c:28
