@@ -1,3 +1,23 @@
+GEGL-0.4.54 2025-02-09
+----------------------
+
+Ops:
+~~~~
+
+ - bump_map: fix typo in property nick
+ - noise_spread: better performance with no-op values
+ - negative_darkroom: more presets, better performance
+ - styles: fix regression of opacirt sliders
+
+Contributors to this release, including translators:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Alan Mortensen, Alexander Shopov, Anders Jonsson, Asier Sarasua Garmendia,
+Bartłomiej Piotrowski, Hugo Carvalho, Jehan, JonnyRobbie, Martin, Nathan
+Follens, Nils Philippsen, Rodrigo Lledó, Sam L, Thomas Manni, Yuri Chornoivan
+& Øyvind Kolås 
+
+
 GEGL-0.4.52 2024-12-26
 ----------------------
 
