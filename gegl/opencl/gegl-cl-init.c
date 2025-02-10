@@ -134,24 +134,28 @@ gboolean _gegl_cl_is_accelerated;
 
 typedef struct
 {
-  gboolean         is_loaded;
-  gboolean         have_opengl;
-  gboolean         hard_disable;
-  gboolean         enable_profiling;
-  cl_context       ctx;
-  cl_platform_id   platform;
-  cl_device_id     device;
-  cl_command_queue cq;
-  cl_bool          image_support;
-  size_t           iter_height;
-  size_t           iter_width;
-  cl_ulong         max_mem_alloc;
-  cl_ulong         local_mem_size;
+  gboolean            is_loaded;
+  gboolean            have_opengl;
+  gboolean            hard_disable;
+  gboolean            enable_profiling;
+  gboolean            platform_v3;
+  gboolean            compiler_v3;
+  cl_context          ctx;
+  cl_platform_id      platform;
+  cl_device_id        device;
+  cl_command_queue    cq;
+  cl_bool             image_support;
+  size_t              iter_height;
+  size_t              iter_width;
+  cl_ulong            max_mem_alloc;
+  cl_ulong            local_mem_size;
+  cl_device_fp_config fp_config;
 
-  char platform_name   [1024];
-  char platform_version[1024];
+  char platform_name   [250];
+  char platform_version[250];
   char platform_ext    [1024];
-  char device_name     [1024];
+  char device_name     [250];
+  char device_version  [250];
 }
 GeglClState;
 
@@ -626,10 +630,35 @@ gegl_cl_init_load_device_info (cl_platform_id   platform,
   gegl_clGetPlatformInfo (platform, CL_PLATFORM_EXTENSIONS, sizeof(cl_state.platform_ext),     cl_state.platform_ext,     NULL);
 
   gegl_clGetDeviceInfo (device, CL_DEVICE_NAME, sizeof(cl_state.device_name), cl_state.device_name, NULL);
+  gegl_clGetDeviceInfo (device, CL_DEVICE_VERSION, sizeof(cl_state.device_version), cl_state.device_version, NULL);
 
   gegl_clGetDeviceInfo (device, CL_DEVICE_IMAGE_SUPPORT,      sizeof(cl_bool),  &cl_state.image_support,    NULL);
   gegl_clGetDeviceInfo (device, CL_DEVICE_MAX_MEM_ALLOC_SIZE, sizeof(cl_ulong), &cl_state.max_mem_alloc,    NULL);
   gegl_clGetDeviceInfo (device, CL_DEVICE_LOCAL_MEM_SIZE,     sizeof(cl_ulong), &cl_state.local_mem_size,   NULL);
+  gegl_clGetDeviceInfo (device, CL_DEVICE_SINGLE_FP_CONFIG,   sizeof(cl_device_fp_config), &cl_state.fp_config, NULL);
+
+  cl_state.platform_v3 = (strstr(cl_state.platform_version, "OpenCL 3.0") != NULL);
+  cl_state.compiler_v3 = FALSE;
+  if (cl_state.platform_v3)
+    {
+      size_t          ret_size;
+      guint           num_items;
+      cl_name_version cl_c_versions[10];
+
+      gegl_clGetDeviceInfo (device, CL_DEVICE_OPENCL_C_ALL_VERSIONS,
+                            sizeof(cl_c_versions), cl_c_versions, &ret_size);
+      num_items = ret_size / sizeof(cl_name_version);
+
+      for (int i = 0; i < num_items; i++)
+        {
+          if (CL_VERSION_MAJOR (cl_c_versions[i].version) == 3 &&
+              CL_VERSION_MINOR (cl_c_versions[i].version) == 0)
+            {
+              cl_state.compiler_v3 = TRUE;
+              break;
+            }
+        }
+    }
 
   cl_state.iter_width  = 4096;
   cl_state.iter_height = 4096;
@@ -648,6 +677,13 @@ gegl_cl_init_load_device_info (cl_platform_id   platform,
   GEGL_NOTE (GEGL_DEBUG_OPENCL, "Version: %s",             cl_state.platform_version);
   GEGL_NOTE (GEGL_DEBUG_OPENCL, "Extensions: %s",          cl_state.platform_ext);
   GEGL_NOTE (GEGL_DEBUG_OPENCL, "Default Device Name: %s", cl_state.device_name);
+  GEGL_NOTE (GEGL_DEBUG_OPENCL, "Default Device Version: %s", cl_state.device_version);
+  if (cl_state.platform_v3 && cl_state.compiler_v3)
+    GEGL_NOTE (GEGL_DEBUG_OPENCL, "Default Device OpenCL C supports 3.0");
+  else if (cl_state.platform_v3)
+    GEGL_NOTE (GEGL_DEBUG_OPENCL, "Default Device supports 3.0 but OpenCL C does not");
+  if ((cl_state.fp_config & CL_FP_CORRECTLY_ROUNDED_DIVIDE_SQRT) == 0)
+    GEGL_NOTE (GEGL_DEBUG_OPENCL, "Device doesn't support -cl-fp32-correctly-rounded-divide-sqrt");
   GEGL_NOTE (GEGL_DEBUG_OPENCL, "Max Alloc: %lu bytes",    (unsigned long)cl_state.max_mem_alloc);
   GEGL_NOTE (GEGL_DEBUG_OPENCL, "Local Mem: %lu bytes",    (unsigned long)cl_state.local_mem_size);
   GEGL_NOTE (GEGL_DEBUG_OPENCL, "Iteration size: (%lu, %lu)",
@@ -806,6 +842,20 @@ gegl_cl_init_common (cl_device_type          requested_device_type,
 
 #undef CL_LOAD_FUNCTION
 
+/* There is one known op where there is 1 pixel difference between the
+ * OpenCL version and the regular version, when we do not set
+ * -cl-opt-disable. This happens for the snn_mean test. We should check the
+ * speed difference caused by setting this and possibly discuss if this small
+ * difference is acceptable.
+ */
+static const char *command_lines[] =
+{
+  "-cl-std=CL3.0 -cl-opt-disable -cl-fp32-correctly-rounded-divide-sqrt",
+  "-cl-std=CL3.0 -cl-opt-disable",
+  "-cl-std=CL1.2 -cl-opt-disable -cl-fp32-correctly-rounded-divide-sqrt",
+  "-cl-std=CL1.2 -cl-opt-disable",
+};
+
 /* XXX: same program_source with different kernel_name[], context or device
  *      will retrieve the same key
  */
@@ -825,6 +875,7 @@ gegl_cl_compile_and_build (const char *program_source, const char *kernel_name[]
       const char *sources[] = {random_cl_source, program_source};
 
       gint    i;
+      gint    cmd = 0;
       char   *msg;
       size_t  s = 0;
       cl_int  build_errcode;
@@ -838,11 +889,14 @@ gegl_cl_compile_and_build (const char *program_source, const char *kernel_name[]
                                                          lengths, &errcode);
       CL_CHECK_ONLY (errcode);
 
-      if (strstr(cl_state.platform_version, "OpenCL 3.0"))
-        build_errcode = gegl_clBuildProgram(cl_data->program, 0, NULL, "-cl-std=CL3.0 -cl-opt-disable -cl-fp32-correctly-rounded-divide-sqrt", NULL, NULL);
-      else
-        build_errcode = gegl_clBuildProgram(cl_data->program, 0, NULL, "-cl-std=CL1.2 -cl-opt-disable -cl-fp32-correctly-rounded-divide-sqrt", NULL, NULL);
+      /* Using -cl-fp32-correctly-rounded-divide-sqrt requires flag to be set */
+      if ((cl_state.fp_config & CL_FP_CORRECTLY_ROUNDED_DIVIDE_SQRT) == 0)
+        cmd = 1;
 
+      if (! cl_state.compiler_v3)
+        cmd += 2;
+
+      build_errcode = gegl_clBuildProgram(cl_data->program, 0, NULL, command_lines[cmd], NULL, NULL);
       errcode = gegl_clGetProgramBuildInfo (cl_data->program,
                                             gegl_cl_get_device (),
                                             CL_PROGRAM_BUILD_LOG,
