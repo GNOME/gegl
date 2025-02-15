@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Gegl-master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2025-01-28 21:52+0000\n"
-"PO-Revision-Date: 2025-01-31 00:55+0000\n"
+"POT-Creation-Date: 2025-02-07 22:06+0000\n"
+"PO-Revision-Date: 2025-02-15 14:45+0000\n"
 "Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>\n"
 "Language-Team: Português <https://l10n.gnome.org/teams/pt/>\n"
 "Language: pt\n"
@@ -2308,7 +2308,7 @@ msgstr "Desfocagem gaussiana 1D"
 #: operations/common/icc-save.c:25 operations/common/magick-load.c:26
 #: operations/common/open-buffer.c:25 operations/common/save.c:26
 #: operations/core/load.c:29 operations/external/exr-save.cc:24
-#: operations/external/ff-load.c:29 operations/external/ff-save.c:29
+#: operations/external/ff-load.c:30 operations/external/ff-save.c:30
 #: operations/external/gif-load.c:34 operations/external/jp2-load.c:25
 #: operations/external/jpg-load.c:24 operations/external/jpg-save.c:25
 #: operations/external/npy-save.c:31 operations/external/png-load.c:32
@@ -3388,11 +3388,22 @@ msgstr "Clip base + nevoeiro"
 msgid "Clip base + fog to have a pure white output value"
 msgstr "Clip base + nevoeiro para ter um valor de saída de branco puro"
 
-#: operations/common/negative-darkroom.c:52
-msgid "Density boost"
-msgstr "Reforçar densidade"
+# Averiguar onde aparece isto no GIMP
+#: operations/common/negative-darkroom.c:51
+msgid "Add base and fog"
+msgstr "Adicionar base e nevoeiro"
 
-#: operations/common/negative-darkroom.c:53
+#: operations/common/negative-darkroom.c:52
+msgid "Artificially reintroduce base and fog."
+msgstr "Reintroduzir artificialmente a base e o nevoeiro."
+
+#: operations/common/negative-darkroom.c:57
+msgid "Cyan density boost"
+msgstr "Reforçar a densidade do ciano"
+
+#: operations/common/negative-darkroom.c:58
+#: operations/common/negative-darkroom.c:63
+#: operations/common/negative-darkroom.c:68
 msgid ""
 "Boost paper density to take advantage of increased dynamic range of a "
 "monitor compared to a photographic paper"
@@ -3400,139 +3411,185 @@ msgstr ""
 "Aumentar a densidade do papel para tirar partido da maior gama dinâmica de "
 "um monitor em comparação com um papel fotográfico"
 
-#: operations/common/negative-darkroom.c:57
+#: operations/common/negative-darkroom.c:62
+msgid "Density boost"
+msgstr "Reforçar densidade"
+
+#: operations/common/negative-darkroom.c:67
+msgid "Yellow density boost"
+msgstr "Reforçar a densidade do amarelo"
+
+#: operations/common/negative-darkroom.c:72
+msgid "Contrast boost R"
+msgstr "Reforçar contraste R"
+
+#: operations/common/negative-darkroom.c:73
+msgid ""
+"Increase red contrast for papers with fixed contrast (usually color papers)"
+msgstr ""
+"Aumentar o contraste do vermelho para papéis com contraste fixo (geralmente "
+"papéis a cores)"
+
+#: operations/common/negative-darkroom.c:77
 msgid "Contrast boost"
 msgstr "Reforçar contraste"
 
-#: operations/common/negative-darkroom.c:58
+#: operations/common/negative-darkroom.c:78
 msgid "Increase contrast for papers with fixed contrast (usually color papers)"
 msgstr ""
 "Aumentar o contraste para papéis com contraste fixo (geralmente papéis a "
 "cores)"
 
-#: operations/common/negative-darkroom.c:63
+#: operations/common/negative-darkroom.c:82
+msgid "Contrast boost B"
+msgstr "Reforçar contraste B"
+
+#: operations/common/negative-darkroom.c:83
+msgid ""
+"Increase blue contrast for papers with fixed contrast (usually color papers)"
+msgstr ""
+"Aumentar o contraste do azul para papéis com contraste fixo (geralmente "
+"papéis a cores)"
+
+#: operations/common/negative-darkroom.c:88
 msgid "Dodge/burn multiplier"
 msgstr "Multiplicador de subexposição / sobreexposição"
 
-#: operations/common/negative-darkroom.c:64
+#: operations/common/negative-darkroom.c:89
 msgid "The f-stop of dodge/burn for pure white/black auxiliary input"
 msgstr ""
 "O número f (f-stop) de subexposição / sobreexposição para entrada auxiliar "
 "de branco / preto puro"
 
-#: operations/common/negative-darkroom.c:68
+#: operations/common/negative-darkroom.c:93
 msgid "Enable preflashing"
 msgstr "Ativar pré-flash"
 
-#: operations/common/negative-darkroom.c:69
+#: operations/common/negative-darkroom.c:94
 msgid "Show preflash controls"
 msgstr "Mostrar controlos pré-flash"
 
-#: operations/common/negative-darkroom.c:71
+#: operations/common/negative-darkroom.c:96
 msgid "Red preflash"
 msgstr "Pré-flash vermelho"
 
-#: operations/common/negative-darkroom.c:72
+#: operations/common/negative-darkroom.c:97
 msgid "Preflash the negative with red light to reduce contrast of the print"
 msgstr ""
 "Fazer um pré-flash do negativo com luz vermelha para reduzir o contraste da "
 "impressão"
 
-#: operations/common/negative-darkroom.c:76
+#: operations/common/negative-darkroom.c:101
 msgid "Green preflash"
 msgstr "Pré-flash verde"
 
-#: operations/common/negative-darkroom.c:77
+#: operations/common/negative-darkroom.c:102
 msgid "Preflash the negative with green light to reduce contrast of the print"
 msgstr ""
 "Fazer um pré-flash do negativo com luz verde para reduzir o contraste da "
 "impressão"
 
-#: operations/common/negative-darkroom.c:81
+#: operations/common/negative-darkroom.c:106
 msgid "Blue preflash"
 msgstr "Pré-flash azul"
 
-#: operations/common/negative-darkroom.c:82
+#: operations/common/negative-darkroom.c:107
 msgid "Preflash the negative with blue light to reduce contrast of the print"
 msgstr ""
 "Fazer um pré-flash do negativo com luz azul para reduzir o contraste da "
 "impressão"
 
-#: operations/common/negative-darkroom.c:86
+#: operations/common/negative-darkroom.c:111
 msgid "Illuminant adjustment"
 msgstr "Ajustar iluminante"
 
-#: operations/common/negative-darkroom.c:87
+#: operations/common/negative-darkroom.c:112
 msgid "Show illuminant controls"
 msgstr "Mostrar controlos iluminantes"
 
-#: operations/common/negative-darkroom.c:88
+#: operations/common/negative-darkroom.c:113
 msgid "X multiplier"
 msgstr "Multiplicador X"
 
-#: operations/common/negative-darkroom.c:89
+#: operations/common/negative-darkroom.c:114
 msgid "Adjust the X tristimulus value for output"
 msgstr "Ajustar o valor do tristimulus X para a saída"
 
-#: operations/common/negative-darkroom.c:92
+#: operations/common/negative-darkroom.c:117
 msgid "Z multiplier"
 msgstr "Multiplicador Z"
 
-#: operations/common/negative-darkroom.c:93
+#: operations/common/negative-darkroom.c:118
 msgid "Adjust the Z tristimulus value for output"
 msgstr "Ajustar o valor do tristimulus Z para a saída"
 
-#: operations/common/negative-darkroom.c:386
+#: operations/common/negative-darkroom.c:437
 msgid "Negative Darkroom"
 msgstr "Câmara escura de negativos"
 
-#: operations/common/negative-darkroom.c:389
-msgid "Simulate a negative film enlargement in an analog darkroom."
+#: operations/common/negative-darkroom.c:440
+msgid "Simulate a film enlargement in an analog darkroom."
 msgstr ""
 "Simula uma ampliação de película fotográfica numa sala escura de revelação "
 "de fotografia analógica."
 
 #: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:2
+msgid "Kodak Professional Ultra Endura"
+msgstr "Kodak Professional Ultra Endura"
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:3
+msgid "Kodak Professional Portra Endura"
+msgstr "Kodak Professional Portra Endura"
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:4
+msgid "Kodak Professional Supra Endura"
+msgstr "Kodak Professional Supra Endura"
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:5
+msgid "Kodak Ektachrome Radiance III"
+msgstr "Kodak Ektachrome Radiance III"
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:6
 msgid "Fujicolor Crystal Archive Digital Pearl Paper"
 msgstr "Fujicolor Crystal Archive Digital Pearl Paper"
 
-#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:3
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:7
 msgid "Ilford Ilfobrom Galerie FB 1"
 msgstr "Ilford Ilfobrom Galerie FB 1"
 
-#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:4
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:8
 msgid "Ilford Ilfobrom Galerie FB 2"
 msgstr "Ilford Ilfobrom Galerie FB 2"
 
-#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:5
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:9
 msgid "Ilford Ilfobrom Galerie FB 3"
 msgstr "Ilford Ilfobrom Galerie FB 3"
 
-#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:6
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:10
 msgid "Ilford Ilfobrom Galerie FB 4"
 msgstr "Ilford Ilfobrom Galerie FB 4"
 
-#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:7
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:11
 msgid "Ilford Multigrade IV RC Deluxe"
 msgstr "Ilford Multigrade IV RC Deluxe"
 
-#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:8
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:12
 msgid "Foma Fomabrom C"
 msgstr "Foma Fomabrom C"
 
-#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:9
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:13
 msgid "Foma Fomabrom N"
 msgstr "Foma Fomabrom N"
 
-#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:10
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:14
 msgid "Foma Fomabrom Sp"
 msgstr "Foma Fomabrom Sp"
 
-#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:11
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:15
 msgid "Foma Fomabrom S"
 msgstr "Foma Fomabrom S"
 
-#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:12
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:16
 msgid "Foma Fomabrom Variant III"
 msgstr "Foma Fomabrom Variant III"
 
@@ -8205,19 +8262,19 @@ msgstr "caminho do ficheiro no qual gravar."
 msgid "tile size to use."
 msgstr "tamanho do mosaico a utilizar."
 
-#: operations/external/ff-load.c:30
+#: operations/external/ff-load.c:31
 msgid "Path of video file to load"
 msgstr "Caminho do ficheiro de vídeo a carregar"
 
-#: operations/external/ff-load.c:32
+#: operations/external/ff-load.c:33
 msgid "Frame number"
 msgstr "Número do fotograma"
 
-#: operations/external/ff-load.c:36 operations/external/gif-load.c:38
+#: operations/external/ff-load.c:37 operations/external/gif-load.c:38
 msgid "frames"
 msgstr "fotogramas"
 
-#: operations/external/ff-load.c:37
+#: operations/external/ff-load.c:38
 msgid ""
 "Number of frames in video, updates at least when first frame has been "
 "decoded."
@@ -8225,188 +8282,188 @@ msgstr ""
 "Número de fotogramas no vídeo, atualizado pelo menos quando o primeiro "
 "fotograma tiver sido descodificado."
 
-#: operations/external/ff-load.c:41
+#: operations/external/ff-load.c:42
 msgid "audio_sample_rate"
 msgstr "taxa_amostragem_áudio"
 
-#: operations/external/ff-load.c:42
+#: operations/external/ff-load.c:43
 msgid "audio_channels"
 msgstr "canais_áudio"
 
-#: operations/external/ff-load.c:44
+#: operations/external/ff-load.c:45
 msgid "frame-rate"
 msgstr "taxa de fotogramas"
 
-#: operations/external/ff-load.c:45
+#: operations/external/ff-load.c:46
 msgid "Frames per second, permits computing time vs frame"
 msgstr "Fotogramas por segundo, permite calcular o tempo versus fotograma"
 
-#: operations/external/ff-load.c:49
+#: operations/external/ff-load.c:50
 msgid "video-codec"
 msgstr "codec de vídeo"
 
-#: operations/external/ff-load.c:50
+#: operations/external/ff-load.c:51
 msgid "audio-codec"
 msgstr "codec de áudio"
 
-#: operations/external/ff-load.c:52 operations/external/ff-save.c:32
+#: operations/external/ff-load.c:53 operations/external/ff-save.c:33
 msgid "audio"
 msgstr "áudio"
 
-#: operations/external/ff-load.c:876
+#: operations/external/ff-load.c:877
 msgid "FFmpeg Frame Loader"
 msgstr "Carregador de fotogramas ffmpeg"
 
-#: operations/external/ff-load.c:878
+#: operations/external/ff-load.c:879
 msgid "FFmpeg video frame importer."
 msgstr "Importador de fotogramas de vídeo ffmpeg."
 
-#: operations/external/ff-save.c:30 operations/external/png-save.c:27
+#: operations/external/ff-save.c:31 operations/external/png-save.c:27
 #: operations/external/ppm-save.c:26 operations/external/rgbe-save.c:27
 msgid "Target path and filename, use '-' for stdout."
 msgstr "Caminho de destino e nome do ficheiro, utilizar \"-\" para stdout."
 
-#: operations/external/ff-save.c:33
+#: operations/external/ff-save.c:34
 msgid "Audio codec"
 msgstr "Codec de áudio"
 
-#: operations/external/ff-save.c:34
+#: operations/external/ff-save.c:35
 msgid ""
 "Audio codec to use, or auto to use a good default based on container format."
 msgstr ""
 "Codec de áudio a utilizar ou automático para utilizar uma boa predefinição "
 "baseada no formato do contentor."
 
-#: operations/external/ff-save.c:35
+#: operations/external/ff-save.c:36
 msgid "audio sample rate"
 msgstr "taxa de amostragem áudio"
 
-#: operations/external/ff-save.c:36
+#: operations/external/ff-save.c:37
 msgid "-1 means autodetect on first audio fragment"
 msgstr "-1 significa deteção automática no primeiro fragmento de áudio"
 
-#: operations/external/ff-save.c:38
+#: operations/external/ff-save.c:39
 msgid "audio bitrate in kb/s"
 msgstr "taxa de bits do áudio em kb/s"
 
-#: operations/external/ff-save.c:39 operations/external/ff-save.c:47
+#: operations/external/ff-save.c:40 operations/external/ff-save.c:48
 msgid "Target encoded video bitrate in kb/s"
 msgstr "Taxa de bits do vídeo alvo codificado em kb/s"
 
-#: operations/external/ff-save.c:41
+#: operations/external/ff-save.c:42
 msgid "Frames/second"
 msgstr "Fotogramas / segundo"
 
-#: operations/external/ff-save.c:44
+#: operations/external/ff-save.c:45
 msgid "Video codec"
 msgstr "Codec de vídeo"
 
-#: operations/external/ff-save.c:45
+#: operations/external/ff-save.c:46
 msgid ""
 "Video codec to use, or auto to use a good default based on container format."
 msgstr ""
 "Codec de vídeo a utilizar ou automático para utilizar uma boa predefinição "
 "baseada no formato do contentor."
 
-#: operations/external/ff-save.c:46
+#: operations/external/ff-save.c:47
 msgid "video bitrate in kb/s"
 msgstr "taxa de bits do vídeo em kb/s"
 
-#: operations/external/ff-save.c:48
+#: operations/external/ff-save.c:49
 msgid "Video bufsize"
 msgstr "Tamanho de buffer de vídeo"
 
-#: operations/external/ff-save.c:50
+#: operations/external/ff-save.c:51
 msgid "Container format"
 msgstr "Formato do contentor"
 
-#: operations/external/ff-save.c:51
+#: operations/external/ff-save.c:52
 msgid "Container format to use, or auto to autodetect based on file extension."
 msgstr ""
 "Formato do contentor a utilizar ou automático para deteção baseada na "
 "extensão do ficheiro."
 
-#: operations/external/ff-save.c:54
+#: operations/external/ff-save.c:55
 msgid "global quality"
 msgstr "qualidade global"
 
-#: operations/external/ff-save.c:57
+#: operations/external/ff-save.c:58
 msgid "noise reduction"
 msgstr "redução de ruído"
 
-#: operations/external/ff-save.c:58
+#: operations/external/ff-save.c:59
 msgid "scenechange threshold"
 msgstr "limiar de alteração de cena"
 
-#: operations/external/ff-save.c:59
+#: operations/external/ff-save.c:60
 msgid "video bitrate min"
 msgstr "taxa de bits vídeo mínima"
 
-#: operations/external/ff-save.c:60
+#: operations/external/ff-save.c:61
 msgid "video bitrate max"
 msgstr "taxa de bits vídeo máxima"
 
-#: operations/external/ff-save.c:61
+#: operations/external/ff-save.c:62
 msgid "video bitrate tolerance"
 msgstr "limiar da taxa de bits de vídeo"
 
-#: operations/external/ff-save.c:64
+#: operations/external/ff-save.c:65
 msgid "keyint-min"
 msgstr "keyint-min"
 
-#: operations/external/ff-save.c:65
+#: operations/external/ff-save.c:66
 msgid "trellis"
 msgstr "trellis"
 
-#: operations/external/ff-save.c:66
+#: operations/external/ff-save.c:67
 msgid "qmin"
 msgstr "qmin"
 
-#: operations/external/ff-save.c:67
+#: operations/external/ff-save.c:68
 msgid "qmax"
 msgstr "qmax"
 
-#: operations/external/ff-save.c:68
+#: operations/external/ff-save.c:69
 msgid "max_qdiff"
 msgstr "max_qdiff"
 
-#: operations/external/ff-save.c:69
+#: operations/external/ff-save.c:70
 msgid "me_range"
 msgstr "me_range"
 
-#: operations/external/ff-save.c:70
+#: operations/external/ff-save.c:71
 msgid "max_b_frames"
 msgstr "max_b_frames"
 
-#: operations/external/ff-save.c:71
+#: operations/external/ff-save.c:72
 msgid "gop-size"
 msgstr "gop-size"
 
-#: operations/external/ff-save.c:72
+#: operations/external/ff-save.c:73
 msgid "qcompress"
 msgstr "qcompress"
 
-#: operations/external/ff-save.c:73
+#: operations/external/ff-save.c:74
 msgid "qblur"
 msgstr "qblur"
 
-#: operations/external/ff-save.c:74
+#: operations/external/ff-save.c:75
 msgid "i-quant-factor"
 msgstr "i-quant-factor"
 
-#: operations/external/ff-save.c:75
+#: operations/external/ff-save.c:76
 msgid "i-quant-offset"
 msgstr "i-quant-offset"
 
-#: operations/external/ff-save.c:76
+#: operations/external/ff-save.c:77
 msgid "me-subpel-quality"
 msgstr "me-subpel-quality"
 
-#: operations/external/ff-save.c:1243
+#: operations/external/ff-save.c:1244
 msgid "FFmpeg Frame Saver"
 msgstr "Gravador de fotograma FFmpeg"
 
-#: operations/external/ff-save.c:1245
+#: operations/external/ff-save.c:1246
 msgid "FFmpeg video output sink"
 msgstr "Depósito de saída de vídeo FFmpeg"
 
@@ -9010,11 +9067,11 @@ msgstr "Armazenar num GdkPixbuf"
 msgid "Store image in a GdkPixbuf."
 msgstr "Armazena a imagem num GdkPixbuf."
 
-#: operations/external/sdl2-display.c:196
+#: operations/external/sdl2-display.c:197
 msgid "SDL2 Display"
 msgstr "Janela SDL2"
 
-#: operations/external/sdl2-display.c:199
+#: operations/external/sdl2-display.c:200
 msgid ""
 "Displays the input buffer in an SDL2 window (restricted to one display op/"
 "process, due to SDL2 implementation issues)."
@@ -9030,11 +9087,11 @@ msgstr "Título do ícone"
 msgid "Icon to be used for output window"
 msgstr "Ícone a utilizar para a janela de saída"
 
-#: operations/external/sdl-display.c:168
+#: operations/external/sdl-display.c:169
 msgid "SDL Display"
 msgstr "Janela SDL"
 
-#: operations/external/sdl-display.c:171
+#: operations/external/sdl-display.c:172
 msgid ""
 "Displays the input buffer in an SDL window (restricted to one display op/"
 "process, due to SDL implementation issues)."
