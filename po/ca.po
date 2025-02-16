@@ -4,13 +4,13 @@
 #
 # Softcatala <gimp a llistes.softcatala.org>, 2000-2013.
 # Albert F. <lakonfrariadelavila@gmail.com>, 2012, 2014.
-# Jordi Mas i Hernàndez <jmas@softcatala.org>, 2015-2024
+# Jordi Mas i Hernàndez <jmas@softcatala.org>, 2015-2025
 msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
 "POT-Creation-Date: 2024-11-09 18:48+0000\n"
-"PO-Revision-Date: 2024-12-08 10:52+0200\n"
+"PO-Revision-Date: 2025-02-16 10:52+0200\n"
 "Last-Translator: Jordi Mas i Hernàndez <jmas@softcatala.org>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "Language: ca\n"
@@ -94,19 +94,19 @@ msgstr ""
 "\n"
 "     -s scale, --scale scale   escala les dimensions de la sortida per a aquest factor.\n"
 "\n"
-"     -x           dona com a resultat l'xml que s'ha llegit\n"
+"     -X           dona com a resultat l'xml que s'ha llegit\n"
 "\n"
 "     -v, --verbose   mostra diagnòstics mentre s'executa\n"
 "\n"
 "Tots els paràmetres precedits de -- es consideren operacions per encadenar\n"
 "una petita composició en comptes d'utilitzar un fitxer xml, això permet provar\n"
 "fàcilment els filtres. Després d'encadenar una nova operació de propietats, es poden\n"
-"establir amb propietat=parells de valors com a arguments subsegüents.\n"
+"establir amb parells propietat=valor com a arguments subsegüents.\n"
 
 #: bin/gegl-options.c:86
 #, c-format
 msgid "ERROR: '%s' option expected argument\n"
-msgstr "ERROR: l'operació «%s» esperava un argument\n"
+msgstr "ERROR: l'opció «%s» esperava un argument\n"
 
 #: bin/gegl-options.c:125
 msgid "Display on screen"
@@ -234,11 +234,11 @@ msgstr "LoHalo"
 
 #: gegl/buffer/gegl-buffer-enums.c:117
 msgid "Subset"
-msgstr "Sub conjunt"
+msgstr "Subconjunt"
 
 #: gegl/buffer/gegl-buffer-enums.c:118
 msgid "Superset"
-msgstr "Super conjunt"
+msgstr "Superconjunt"
 
 #: gegl/gegl-enums.c:34
 msgid "Floyd-Steinberg"
@@ -936,7 +936,7 @@ msgstr "Quantitat d'augment de la brillantor"
 
 #: operations/common/brightness-contrast.c:165
 msgid "Brightness Contrast"
-msgstr "Contrast del brill"
+msgstr "Contrast de la brillantor"
 
 #: operations/common/brightness-contrast.c:170
 #, no-c-format
@@ -1039,7 +1039,7 @@ msgstr "Millora les ombres"
 #: operations/common/c2g.c:49
 msgid "When enabled details in shadows are boosted at the expense of noise"
 msgstr ""
-"Quan s'habilita els detalls a les ombres s'acceleren a expenses del soroll"
+"Quan s'habiliten els detalls a les ombres s'acceleren a expenses del soroll"
 
 #: operations/common/c2g.c:461
 msgid ""
@@ -1623,11 +1623,11 @@ msgstr "Utilitzeu la sortida lineal en lloc de la gamma corregida"
 
 #: operations/common/component-extract.c:260
 msgid "Extract Component"
-msgstr "Component de l'extracte"
+msgstr "Extreu component"
 
 #: operations/common/component-extract.c:264
 msgid "Extract a color model component"
-msgstr "Extracte un component de model de color"
+msgstr "Extreu un component de model de color"
 
 #: operations/common/contrast-curve.c:25
 msgid "Sample points"
@@ -1815,7 +1815,7 @@ msgstr "Memòria intermèdia"
 msgid ""
 "An already existing GeglBuffer to write incoming buffer data to, or NULL."
 msgstr ""
-"Una ja existent memòria intermèdia Gegl per a escriure dades de memòria "
+"Una memòria intermèdia Gegl ja existent per a escriure dades de memòria "
 "intermèdia entrants, o NULL."
 
 #: operations/common/copy-buffer.c:153
@@ -4536,7 +4536,7 @@ msgstr ""
 
 #: operations/common/spherize.c:320
 msgid "Spherize"
-msgstr "Esfèric"
+msgstr "Dona forma esfèrica"
 
 #: operations/common/spherize.c:324
 msgid "Wrap image around a spherical cap"
@@ -4563,7 +4563,7 @@ msgid ""
 "When enabled also enhances shadow regions - when disabled a more natural "
 "result is yielded"
 msgstr ""
-"Quan s'habilita també milloren les regions d'ombra- quan es desactiva es "
+"Quan s'habilita també milloren les regions d'ombra, quan es desactiva es "
 "mostra un resultat més natural"
 
 #: operations/common/stress.c:267 operations/common/stress.c:275
