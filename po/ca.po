@@ -1294,7 +1294,7 @@ msgstr "Sentit horari"
 
 #: operations/common/color-rotate.c:41 operations/common/color-rotate.c:54
 msgid "Switch to clockwise"
-msgstr "Canvia al sentit antihorari"
+msgstr "Canvia al sentit horari"
 
 #: operations/common/color-rotate.c:43 operations/common/color-rotate.c:56
 msgid "From"
@@ -2341,7 +2341,7 @@ msgstr "canonada"
 
 #: operations/common/gegl.c:69
 msgid "[op [property=value] [property=value]] [[op] [property=value]"
-msgstr "[op [atribut=valor] [atribut=valor]] [[op] [atribut=valor]"
+msgstr "[op [propietat=valor] [propietat=valor]] [[op] [propietat=valor]"
 
 #: operations/common/gegl.c:72
 msgid "Eeeeeek"
@@ -4644,7 +4644,7 @@ msgid ""
 "When set operate on gamma corrected values instead of linear RGB - acting "
 "like the old normalize filter in GIMP"
 msgstr ""
-"Quan es configura s'opera en una gamma corregida de valors en comtes de RGB "
+"Quan es configura s'opera en una gamma corregida de valors en comptes de RGB "
 "lineal - actuant com filtre vell de normalitzat de GIMP"
 
 #: operations/common/stretch-contrast.c:582
@@ -5819,7 +5819,7 @@ msgstr ""
 
 #: operations/common-gpl3+/bayer-matrix.c:25
 msgid "Subdivisions"
-msgstr "Subdivisió"
+msgstr "Subdivisions"
 
 #: operations/common-gpl3+/bayer-matrix.c:26
 msgid "Number of subdivisions"
@@ -6025,7 +6025,7 @@ msgstr ""
 #. Red channel
 #: operations/common-gpl3+/channel-mixer.c:33
 msgid "Red in Red channel"
-msgstr "Canal vermell en el vermell"
+msgstr "Vermell en el canal vermell"
 
 #: operations/common-gpl3+/channel-mixer.c:34
 msgid "Set the red amount for the red channel"
@@ -6033,7 +6033,7 @@ msgstr "Estableix la quantitat de vermell per al canal vermell"
 
 #: operations/common-gpl3+/channel-mixer.c:37
 msgid "Green in Red channel"
-msgstr "Canal verd i vermell"
+msgstr "Verd en el canal vermell"
 
 #: operations/common-gpl3+/channel-mixer.c:38
 msgid "Set the green amount for the red channel"
@@ -6041,7 +6041,7 @@ msgstr "Estableix la quantitat de verd per al canal vermell"
 
 #: operations/common-gpl3+/channel-mixer.c:41
 msgid "Blue in Red channel"
-msgstr "Canal blau i vermell"
+msgstr "Blau en el canal vermell"
 
 #: operations/common-gpl3+/channel-mixer.c:42
 msgid "Set the blue amount for the red channel"
@@ -6050,7 +6050,7 @@ msgstr "Estableix la quantitat de blau per al canal vermell"
 #. Green channel
 #: operations/common-gpl3+/channel-mixer.c:46
 msgid "Red in Green channel"
-msgstr "Canal vermell i verd"
+msgstr "Vermell en el canal verd"
 
 #: operations/common-gpl3+/channel-mixer.c:47
 msgid "Set the red amount for the green channel"
@@ -6058,7 +6058,7 @@ msgstr "Estableix la quantitat de vermell per al canal verd"
 
 #: operations/common-gpl3+/channel-mixer.c:50
 msgid "Green for Green channel"
-msgstr "Canal verd pel verd"
+msgstr "Verd en el canal verd"
 
 #: operations/common-gpl3+/channel-mixer.c:51
 msgid "Set the green amount for the green channel"
@@ -6066,7 +6066,7 @@ msgstr "Estableix la quantitat de verd per al canal verd"
 
 #: operations/common-gpl3+/channel-mixer.c:54
 msgid "Blue in Green channel"
-msgstr "Canal blau en verd"
+msgstr "Blau en el canal verd"
 
 #: operations/common-gpl3+/channel-mixer.c:55
 msgid "Set the blue amount for the green channel"
@@ -6075,7 +6075,7 @@ msgstr "Estableix la quantitat de blau per al canal verd"
 #. Blue channel
 #: operations/common-gpl3+/channel-mixer.c:59
 msgid "Red in Blue channel"
-msgstr "Canal vermell en blau"
+msgstr "Vermell en el canal blau"
 
 #: operations/common-gpl3+/channel-mixer.c:60
 msgid "Set the red amount for the blue channel"
@@ -6083,7 +6083,7 @@ msgstr "Estableix la quantitat de vermell per al canal blau"
 
 #: operations/common-gpl3+/channel-mixer.c:63
 msgid "Green in Blue channel"
-msgstr "Canal verd i blau"
+msgstr "Verd en el canal blau"
 
 #: operations/common-gpl3+/channel-mixer.c:64
 msgid "Set the green amount for the blue channel"
@@ -6091,7 +6091,7 @@ msgstr "Estableix la quantitat de verd per al canal blau"
 
 #: operations/common-gpl3+/channel-mixer.c:67
 msgid "Blue in Blue channel"
-msgstr "Canal blau en el blau"
+msgstr "Blau en el canal blau"
 
 #: operations/common-gpl3+/channel-mixer.c:68
 msgid "Set the blue amount for the blue channel"
@@ -9948,7 +9948,7 @@ msgstr "Radi de la regió dels píxels de la fila (la mida serà el radi*2+1)"
 
 #: operations/workshop/boxblur-1d.c:466
 msgid "1D Box Blur"
-msgstr "Difuminat enquadrat1D"
+msgstr "Difuminat enquadrat 1D"
 
 #: operations/workshop/boxblur-1d.c:467
 msgid "Blur resulting from averaging the colors of a row neighborhood."
@@ -10176,7 +10176,7 @@ msgstr "Centre Y de la lent"
 
 #: operations/workshop/external/lens-correct.c:51
 msgid "Scale of the image"
-msgstr "Ajusta la mida de la imatge"
+msgstr "Escala de la imatge"
 
 #: operations/workshop/external/lens-correct.c:54
 msgid "Autocorrect d values"
