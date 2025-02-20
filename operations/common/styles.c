@@ -1269,8 +1269,10 @@ GeglOperationMetaClass *operation_meta_class = GEGL_OPERATION_META_CLASS (klass)
     "reference-hash", "129945ed565h8500fca01b2ac",
     "description", _("An engine to style text and add popular effects to alpha channel images. Effects include outline, bevel, shadow, and inner glow all in one place."
                      ""),
-    "gimp:menu-path", "<Image>/Filters/Generic/",
+
+    "gimp:menu-path",  "<Image>/Filters/Generic/",
     "gimp:menu-label", _("Text Styling..."),
+    "gimp:help-id",    "gegl-styles",
     NULL);
 }
 
