@@ -309,10 +309,8 @@ GeglOperationMetaClass *operation_meta_class = GEGL_OPERATION_META_CLASS (klass)
     "title",       _("Bevel"),
     "reference-hash", "30519510290293373928c",
     "description", _("Two bevel effects in one place, Chamfer - which simulates lighting of chamfered 3D-edges, and Bump - the second make a 3D inflation effect by an emboss covering a blur. Both bevels benefit from color filled alpha defined shapes."),
-
-    "gimp:menu-path",  "<Image>/Filters/Light and Shadow",
+    "gimp:menu-path", "<Image>/Filters/Light and Shadow",
     "gimp:menu-label", _("Bevel..."),
-    "gimp:help-id",    "gegl-bevel",
     NULL);
 }
 

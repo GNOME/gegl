@@ -179,9 +179,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",       _("Local Threshold"),
     "description",
     _("Applies a threshold using the local neighborhood."),
-
     "gimp:menu-path", "<Image>/Colors",
-    "gimp:help-id",   "gegl-local-threshold",
     NULL);
 }
 
