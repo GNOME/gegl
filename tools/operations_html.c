@@ -139,7 +139,7 @@ json_list_pads (GType type, GString *s, const gchar *opname)
     {
       g_string_append_printf (s, "%s\n", input_pads[i]);
     }
-    g_free (input_pads);
+    g_strfreev (input_pads);
   }
 
   if (output_pads && output_pads[0])
@@ -148,7 +148,7 @@ json_list_pads (GType type, GString *s, const gchar *opname)
     {
       g_string_append_printf (s, "%s\n", output_pads[i]);
     }
-    g_free (output_pads);
+    g_strfreev (output_pads);
   }
     g_string_append_printf (s, "<br/>");
 
