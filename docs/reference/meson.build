@@ -1,5 +1,5 @@
 
-glib_prefix = dependency('glib-2.0').get_pkgconfig_variable('prefix')
+glib_prefix = dependency('glib-2.0').get_variable(pkgconfig: 'prefix')
 glib_gtk_docdir = glib_prefix / 'share' / 'gtk-doc' / 'html'
 
 # GTK doc
