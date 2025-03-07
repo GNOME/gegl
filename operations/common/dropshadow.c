@@ -68,11 +68,12 @@ property_color  (color, _("Color"), "black")
     /* TRANSLATORS: the string 'black' should not be translated */
   description   (_("The shadow's color (defaults to 'black')"))
 
-/* It does make sense to sometimes have opacities > 1 (see GEGL logo
- * for example)
+/* We used to permit opacity values > 1.0, similar results can in many cases be
+ * achieved with grow_radius.
  */
 property_double (opacity, _("Opacity"), 0.5)
-  value_range   (0.0, 2.0)
+  value_range   (0.0, 1.0)
+  ui_range      (0.0, 1.0)
   ui_steps      (0.01, 0.10)
 
 #else
