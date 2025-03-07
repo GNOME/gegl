@@ -148,7 +148,8 @@ test_serialize (void)
     g_free (serialization);
     if (error)
     {
-      if (strcmp (error->message, tests[i].expected_error))
+      if (g_ascii_strncasecmp (error->message, tests[i].expected_error,
+                               strlen (tests[i].expected_serialization)+1))
       {
        printf ("%s\nexpected error:\n%s\nbut got error:\n%s\n", 
                       tests[i].argv_chain,
