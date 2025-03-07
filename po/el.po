@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-10-10 19:34+0000\n"
-"PO-Revision-Date: 2024-10-25 15:27+0300\n"
+"POT-Creation-Date: 2025-02-21 22:14+0000\n"
+"PO-Revision-Date: 2025-03-07 18:44+0200\n"
 "Last-Translator: Dimitris Spingos (Δημήτρης Σπίγγος) <dmtrs32@gmail.com>\n"
 "Language-Team: team@lists.gnome.gr\n"
 "Language: el\n"
@@ -451,13 +451,11 @@ msgstr "Χειριστήριο εισόδου, για την είσοδο ενδ
 
 #: gegl/operation/gegl-operation-composer3.c:95
 #: gegl/operation/gegl-operation-composer.c:94
-#: operations/common-gpl3+/displace.c:191
 #: operations/transform/border-align.c:157
 msgid "Auxiliary image buffer input pad."
 msgstr "Βοηθητικό χειριστήριο εισόδου ενδιάμεσου (buffer) εικόνας."
 
 #: gegl/operation/gegl-operation-composer3.c:104
-#: operations/common-gpl3+/displace.c:200
 msgid "Second auxiliary image buffer input pad."
 msgstr "Δεύτερο βοηθητικό χειριστήριο εισόδου ενδιάμεσου (buffer) εικόνας."
 
@@ -811,7 +809,7 @@ msgstr "Λοξότμηση..."
 
 #: operations/common/bilateral-filter.c:26
 #: operations/common/domain-transform.c:29 operations/common/dropshadow.c:46
-#: operations/common/inner-glow.c:65 operations/common-cxx/focus-blur.c:45
+#: operations/common/inner-glow.c:58 operations/common-cxx/focus-blur.c:45
 #: operations/common-cxx/lens-blur.cc:25
 #: operations/common-gpl3+/gaussian-blur-selective.c:29
 #: operations/workshop/bilateral-filter-fast.c:43
@@ -1152,7 +1150,7 @@ msgstr "Απόδοση μοτίβου σκακιέρας"
 
 #: operations/common/color.c:24 operations/common/color.c:87
 #: operations/common/color-overlay.c:26 operations/common/dropshadow.c:67
-#: operations/common/grid.c:64 operations/common/inner-glow.c:87
+#: operations/common/grid.c:64 operations/common/inner-glow.c:80
 #: operations/common/long-shadow.c:83 operations/common/rectangle.c:48
 #: operations/common/vignette.c:36 operations/common-gpl3+/color-to-alpha.c:29
 #: operations/common-gpl3+/supernova.c:60
@@ -1236,7 +1234,7 @@ msgstr ""
 "Επέκταση χρωματικότητας (chroma) του χρώματος για να καλύψει τη μέγιστη "
 "δυνατή περιοχή, κρατώντας ανέπαφες την απόχρωση και την φωτεινότητα."
 
-#: operations/common/color-overlay.c:27 operations/common/inner-glow.c:88
+#: operations/common/color-overlay.c:27 operations/common/inner-glow.c:81
 msgid "The color to paint over the input"
 msgstr "Το χρώμα βαφής της εισόδου"
 
@@ -1969,28 +1967,28 @@ msgstr ""
 "τεχνική μετασχηματισμού τομέα. Παρόμοιο με το αμφίπλευρο φίλτρο, αλλά πιο "
 "γρήγορο στον υπολογισμό."
 
-#: operations/common/dropshadow.c:27 operations/common/inner-glow.c:35
+#: operations/common/dropshadow.c:27 operations/common/inner-glow.c:30
 #: operations/common/median-blur.c:27 operations/common/pixelize.c:28
 #: operations/common/styles.c:96 operations/common/vignette.c:26
 #: operations/common-cxx/focus-blur.c:35
 msgid "Square"
 msgstr "Τετράγωνο"
 
-#: operations/common/dropshadow.c:28 operations/common/inner-glow.c:36
+#: operations/common/dropshadow.c:28 operations/common/inner-glow.c:31
 #: operations/common/median-blur.c:28 operations/common/newsprint.c:26
 #: operations/common/styles.c:97 operations/common/vignette.c:25
 #: operations/common-cxx/focus-blur.c:34
 msgid "Circle"
 msgstr "Κύκλος"
 
-#: operations/common/dropshadow.c:29 operations/common/inner-glow.c:37
+#: operations/common/dropshadow.c:29 operations/common/inner-glow.c:32
 #: operations/common/median-blur.c:29 operations/common/newsprint.c:27
 #: operations/common/pixelize.c:26 operations/common/styles.c:98
 #: operations/common/vignette.c:27 operations/common-cxx/focus-blur.c:36
 msgid "Diamond"
 msgstr "Ρόμβος"
 
-#: operations/common/dropshadow.c:32 operations/common/inner-glow.c:47
+#: operations/common/dropshadow.c:32 operations/common/inner-glow.c:42
 #: operations/common/layer.c:36 operations/common/rectangle.c:26
 #: operations/common-gpl3+/plasma.c:40
 #: operations/common-gpl3+/polar-coordinates.c:52
@@ -2003,12 +2001,12 @@ msgstr "Ρόμβος"
 msgid "X"
 msgstr "Χ"
 
-#: operations/common/dropshadow.c:33 operations/common/inner-glow.c:48
+#: operations/common/dropshadow.c:33 operations/common/inner-glow.c:43
 #: operations/common/styles.c:145
 msgid "Horizontal shadow offset"
 msgstr "Οριζόντια μετατόπιση σκιάς"
 
-#: operations/common/dropshadow.c:39 operations/common/inner-glow.c:55
+#: operations/common/dropshadow.c:39 operations/common/inner-glow.c:49
 #: operations/common/layer.c:41 operations/common/rectangle.c:31
 #: operations/common-gpl3+/plasma.c:47
 #: operations/common-gpl3+/polar-coordinates.c:59
@@ -2021,24 +2019,24 @@ msgstr "Οριζόντια μετατόπιση σκιάς"
 msgid "Y"
 msgstr "Υ"
 
-#: operations/common/dropshadow.c:40 operations/common/inner-glow.c:56
+#: operations/common/dropshadow.c:40 operations/common/inner-glow.c:50
 #: operations/common/styles.c:154
 msgid "Vertical shadow offset"
 msgstr "Κάθετη μετατόπιση σκιάς"
 
-#: operations/common/dropshadow.c:53 operations/common/inner-glow.c:41
+#: operations/common/dropshadow.c:53 operations/common/inner-glow.c:36
 msgid "Grow shape"
 msgstr "Επέκταση σχήματος"
 
-#: operations/common/dropshadow.c:56 operations/common/inner-glow.c:44
+#: operations/common/dropshadow.c:56 operations/common/inner-glow.c:39
 msgid "The shape to expand or contract the shadow in"
 msgstr "Το σχήμα για διαστολή ή συστολή της σκιάς"
 
-#: operations/common/dropshadow.c:58 operations/common/inner-glow.c:73
+#: operations/common/dropshadow.c:58 operations/common/inner-glow.c:66
 msgid "Grow radius"
 msgstr "Επέκταση ακτίνας"
 
-#: operations/common/dropshadow.c:65 operations/common/inner-glow.c:80
+#: operations/common/dropshadow.c:65 operations/common/inner-glow.c:73
 msgid ""
 "The distance to expand the shadow before blurring; a negative value will "
 "contract the shadow instead"
@@ -2054,7 +2052,7 @@ msgstr "Χρώμα της σκιάς (προεπιλογή σε 'μαύρο')"
 #. It does make sense to sometimes have opacities > 1 (see GEGL logo
 #. * for example)
 #.
-#: operations/common/dropshadow.c:74 operations/common/inner-glow.c:82
+#: operations/common/dropshadow.c:74 operations/common/inner-glow.c:75
 #: operations/common/layer.c:33 operations/common/opacity.c:25
 #: operations/common/opacity.c:289 operations/external/vector-fill.c:29
 #: operations/external/vector-stroke.c:34
@@ -2300,7 +2298,7 @@ msgstr "Θόλωση Γκάους 1Δ"
 #: operations/common/icc-save.c:25 operations/common/magick-load.c:26
 #: operations/common/open-buffer.c:25 operations/common/save.c:26
 #: operations/core/load.c:29 operations/external/exr-save.cc:24
-#: operations/external/ff-load.c:29 operations/external/ff-save.c:29
+#: operations/external/ff-load.c:30 operations/external/ff-save.c:30
 #: operations/external/gif-load.c:34 operations/external/jp2-load.c:25
 #: operations/external/jpg-load.c:24 operations/external/jpg-save.c:25
 #: operations/external/npy-save.c:31 operations/external/png-load.c:32
@@ -2551,11 +2549,11 @@ msgid "Compute gradient magnitude and/or direction by central differences"
 msgstr ""
 "Υπολογισμός μεγέθους διαβάθμισης και/ή κατεύθυνσης από κεντρικές διαφορές"
 
-#: operations/common/inner-glow.c:92
+#: operations/common/inner-glow.c:85
 msgid "Median fix for non-affected pixels on edges"
 msgstr "Διόρθωση διάμεσου για μη επηρεαζόμενα εικονοστοιχεία στις άκρες"
 
-#: operations/common/inner-glow.c:94
+#: operations/common/inner-glow.c:87
 msgid ""
 "Median Blur covers unaffected pixels. Making this slider too high will make "
 "it outline-like. So only slide it as high as you need to cover thin shape "
@@ -2566,11 +2564,11 @@ msgstr ""
 "σύρετέ το μόνο τόσο ψηλά όσο χρειάζεται για να καλύψετε τις γωνίες λεπτών "
 "σχημάτων."
 
-#: operations/common/inner-glow.c:179
+#: operations/common/inner-glow.c:171
 msgid "Inner Glow"
 msgstr "Εσωτερική λάμψη"
 
-#: operations/common/inner-glow.c:181
+#: operations/common/inner-glow.c:173
 msgid ""
 "GEGL does an inner shadow glow effect; for more interesting use different "
 "blend mode than the default, Replace."
@@ -2579,7 +2577,7 @@ msgstr ""
 "χρησιμοποιήστε διαφορετικό τρόπο ανάμειξης από τον προεπιλεγμένο, "
 "αντικαταστήστε."
 
-#: operations/common/inner-glow.c:183
+#: operations/common/inner-glow.c:175
 msgid "Inner Glow..."
 msgstr "Εσωτερική λάμψη..."
 
@@ -3021,11 +3019,11 @@ msgstr "Λεπτομέρεια"
 msgid "Level of emphasis on image gradient details"
 msgstr "Στάθμη έμφασης στις λεπτομέρειες διαβάθμισης εικόνας"
 
-#: operations/common/mantiuk06.c:1655
+#: operations/common/mantiuk06.c:1642
 msgid "Mantiuk 2006 Tone Mapping"
 msgstr "Απεικόνιση τόνου Μάντιουκ 2006"
 
-#: operations/common/mantiuk06.c:1659
+#: operations/common/mantiuk06.c:1646
 msgid ""
 "Adapt an image, which may have a high dynamic range, for presentation using "
 "a low dynamic range. This operator constrains contrasts across multiple "
@@ -3376,11 +3374,21 @@ msgstr "Περικοπή βάσης + ομίχλης"
 msgid "Clip base + fog to have a pure white output value"
 msgstr "Περικοπή βάσης + ομίχλης για να έχετε καθαρή λευκή τιμή εξόδου"
 
-#: operations/common/negative-darkroom.c:52
-msgid "Density boost"
-msgstr "Ενίσχυση πυκνότητας"
+#: operations/common/negative-darkroom.c:51
+msgid "Add base and fog"
+msgstr "Προσθήκη βάσης + ομίχλης"
 
-#: operations/common/negative-darkroom.c:53
+#: operations/common/negative-darkroom.c:52
+msgid "Artificially reintroduce base and fog."
+msgstr "Τεχνητή επαναφορά της βάσης και της ομίχλης."
+
+#: operations/common/negative-darkroom.c:57
+msgid "Cyan density boost"
+msgstr "Ενίσχυση της πυκνότητας κυανού χρώματος"
+
+#: operations/common/negative-darkroom.c:58
+#: operations/common/negative-darkroom.c:63
+#: operations/common/negative-darkroom.c:68
 msgid ""
 "Boost paper density to take advantage of increased dynamic range of a "
 "monitor compared to a photographic paper"
@@ -3388,136 +3396,182 @@ msgstr ""
 "Ενισχύστε την πυκνότητα χαρτιού για να επωφεληθείτε από το αυξημένο δυναμικό "
 "εύρος μιας οθόνης σε σύγκριση με ένα φωτογραφικό χαρτί"
 
-#: operations/common/negative-darkroom.c:57
+#: operations/common/negative-darkroom.c:62
+msgid "Density boost"
+msgstr "Ενίσχυση πυκνότητας"
+
+#: operations/common/negative-darkroom.c:67
+msgid "Yellow density boost"
+msgstr "Ενίσχυση πυκνότητας κίτρινου"
+
+#: operations/common/negative-darkroom.c:72
+msgid "Contrast boost R"
+msgstr "Ενίσχυση αντίθεσης R"
+
+#: operations/common/negative-darkroom.c:73
+msgid ""
+"Increase red contrast for papers with fixed contrast (usually color papers)"
+msgstr ""
+"Αύξηση της κόκκινης αντίθεσης για χαρτιά με σταθερή αντίθεση (συνήθως "
+"έγχρωμα χαρτιά)"
+
+#: operations/common/negative-darkroom.c:77
 msgid "Contrast boost"
 msgstr "Ενίσχυση αντίθεσης"
 
-#: operations/common/negative-darkroom.c:58
+#: operations/common/negative-darkroom.c:78
 msgid "Increase contrast for papers with fixed contrast (usually color papers)"
 msgstr ""
 "Αυξήστε την αντίθεση για χαρτιά με σταθερή αντίθεση (συνήθως έγχρωμα χαρτιά)"
 
-#: operations/common/negative-darkroom.c:63
+#: operations/common/negative-darkroom.c:82
+msgid "Contrast boost B"
+msgstr "Ενίσχυση αντίθεσης B"
+
+#: operations/common/negative-darkroom.c:83
+msgid ""
+"Increase blue contrast for papers with fixed contrast (usually color papers)"
+msgstr ""
+"Αύξηση της γαλάζιας αντίθεσης για χαρτιά με σταθερή αντίθεση (συνήθως "
+"έγχρωμα χαρτιά)"
+
+#: operations/common/negative-darkroom.c:88
 msgid "Dodge/burn multiplier"
 msgstr "Πολλαπλασιαστής ξανοίγματος/σκοτεινιάσματος"
 
-#: operations/common/negative-darkroom.c:64
+#: operations/common/negative-darkroom.c:89
 msgid "The f-stop of dodge/burn for pure white/black auxiliary input"
 msgstr ""
 "Το f-stop του ξανοίγματος/σκοτεινιάσματος για καθαρή λευκή/μαύρη βοηθητική "
 "είσοδο"
 
-#: operations/common/negative-darkroom.c:68
+#: operations/common/negative-darkroom.c:93
 msgid "Enable preflashing"
 msgstr "Ενεργοποίηση προαναλαμπής (προ-φλας)"
 
-#: operations/common/negative-darkroom.c:69
+#: operations/common/negative-darkroom.c:94
 msgid "Show preflash controls"
 msgstr "Εμφάνιση στοιχείων ελέγχου προαναλαμπής (προ-φλας)"
 
-#: operations/common/negative-darkroom.c:71
+#: operations/common/negative-darkroom.c:96
 msgid "Red preflash"
 msgstr "Κόκκινη προαναλαμπή"
 
-#: operations/common/negative-darkroom.c:72
+#: operations/common/negative-darkroom.c:97
 msgid "Preflash the negative with red light to reduce contrast of the print"
 msgstr ""
 "Προαναλαμπή του αρνητικού με κόκκινο φως για μείωση της αντίθεσης της "
 "εκτύπωσης"
 
-#: operations/common/negative-darkroom.c:76
+#: operations/common/negative-darkroom.c:101
 msgid "Green preflash"
 msgstr "Πράσινη προαναλαμπή"
 
-#: operations/common/negative-darkroom.c:77
+#: operations/common/negative-darkroom.c:102
 msgid "Preflash the negative with green light to reduce contrast of the print"
 msgstr ""
 "Προαναλαμπή του αρνητικού με πράσινο φως για μείωση της αντίθεσης της "
 "εκτύπωσης"
 
-#: operations/common/negative-darkroom.c:81
+#: operations/common/negative-darkroom.c:106
 msgid "Blue preflash"
 msgstr "Γαλάζια προαναλαμπή"
 
-#: operations/common/negative-darkroom.c:82
+#: operations/common/negative-darkroom.c:107
 msgid "Preflash the negative with blue light to reduce contrast of the print"
 msgstr ""
 "Προαναλαμπή του αρνητικού με γαλάζιο φως για μείωση της αντίθεσης της "
 "εκτύπωσης"
 
-#: operations/common/negative-darkroom.c:86
+#: operations/common/negative-darkroom.c:111
 msgid "Illuminant adjustment"
 msgstr "Ρύθμιση φωτιστικού"
 
-#: operations/common/negative-darkroom.c:87
+#: operations/common/negative-darkroom.c:112
 msgid "Show illuminant controls"
 msgstr "Εμφάνιση στοιχείων ελέγχου φωτιστικού"
 
-#: operations/common/negative-darkroom.c:88
+#: operations/common/negative-darkroom.c:113
 msgid "X multiplier"
 msgstr "Πολλαπλασιαστής Χ"
 
-#: operations/common/negative-darkroom.c:89
+#: operations/common/negative-darkroom.c:114
 msgid "Adjust the X tristimulus value for output"
 msgstr "Ρυθμίστε την τριχρωματική τιμή X για έξοδο"
 
-#: operations/common/negative-darkroom.c:92
+#: operations/common/negative-darkroom.c:117
 msgid "Z multiplier"
 msgstr "Πολλαπλασιαστής Ζ"
 
-#: operations/common/negative-darkroom.c:93
+#: operations/common/negative-darkroom.c:118
 msgid "Adjust the Z tristimulus value for output"
 msgstr "Ρυθμίστε την τριχρωματική τιμή Ζ για έξοδο"
 
-#: operations/common/negative-darkroom.c:386
+#: operations/common/negative-darkroom.c:437
 msgid "Negative Darkroom"
 msgstr "Αρνητικό σκοτεινό δωμάτιο"
 
-#: operations/common/negative-darkroom.c:389
-msgid "Simulate a negative film enlargement in an analog darkroom."
-msgstr "Προσομοίωση αρνητικής μεγέθυνσης φιλμ σε αναλογικό σκοτεινό δωμάτιο."
+#: operations/common/negative-darkroom.c:440
+msgid "Simulate a film enlargement in an analog darkroom."
+msgstr "Προσομοίωση μεγέθυνσης φιλμ σε αναλογικό σκοτεινό θάλαμο."
 
 #: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:2
+msgid "Kodak Professional Ultra Endura"
+msgstr "Kodak Professional Ultra Endura"
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:3
+msgid "Kodak Professional Portra Endura"
+msgstr "Kodak Professional Portra Endura"
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:4
+msgid "Kodak Professional Supra Endura"
+msgstr "Kodak Professional Supra Endura"
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:5
+msgid "Kodak Ektachrome Radiance III"
+msgstr "Kodak Ektachrome Radiance III"
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:6
 msgid "Fujicolor Crystal Archive Digital Pearl Paper"
 msgstr "Χαρτί Fujicolor Crystal Archive Digital Pearl"
 
-#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:3
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:7
 msgid "Ilford Ilfobrom Galerie FB 1"
 msgstr "Ilford Ilfobrom Galerie FB 1"
 
-#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:4
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:8
 msgid "Ilford Ilfobrom Galerie FB 2"
 msgstr "Ilford Ilfobrom Galerie FB 2"
 
-#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:5
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:9
 msgid "Ilford Ilfobrom Galerie FB 3"
 msgstr "Ilford Ilfobrom Galerie FB 3"
 
-#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:6
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:10
 msgid "Ilford Ilfobrom Galerie FB 4"
 msgstr "Ilford Ilfobrom Galerie FB 4"
 
-#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:7
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:11
 msgid "Ilford Multigrade IV RC Deluxe"
 msgstr "Ilford Multigrade IV RC Deluxe"
 
-#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:8
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:12
 msgid "Foma Fomabrom C"
 msgstr "Foma Fomabrom C"
 
-#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:9
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:13
 msgid "Foma Fomabrom N"
 msgstr "Foma Fomabrom N"
 
-#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:10
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:14
 msgid "Foma Fomabrom Sp"
 msgstr "Foma Fomabrom Sp"
 
-#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:11
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:15
 msgid "Foma Fomabrom S"
 msgstr "Foma Fomabrom S"
 
-#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:12
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:16
 msgid "Foma Fomabrom Variant III"
 msgstr "Παραλλαγή ΙΙΙ της Foma Fomabrom"
 
@@ -3752,11 +3806,11 @@ msgstr ""
 "για υφή, ο τρόπος που αυτός υπολογίζεται τον κάνει ασθενή για αποκορεσμένα "
 "χρώματα και πιθανόν πιο έντονο όταν υπάρχει χρώμα."
 
-#: operations/common/newsprint.c:653
+#: operations/common/newsprint.c:662
 msgid "Newsprint"
 msgstr "Δημοσιογραφική εκτύπωση"
 
-#: operations/common/newsprint.c:658
+#: operations/common/newsprint.c:667
 msgid "Digital halftoning with optional modulations. "
 msgstr "Ψηφιακοί ενδιάμεσοι τόνοι με προαιρετικές διαμορφώσεις. "
 
@@ -3957,11 +4011,11 @@ msgstr "Οριζόντια ποσότητα εξάπλωσης"
 msgid "Vertical spread amount"
 msgstr "Κάθετη ποσότητα εξάπλωσης"
 
-#: operations/common/noise-spread.c:158
+#: operations/common/noise-spread.c:183
 msgid "Noise Spread"
 msgstr "Διασπορά θορύβου"
 
-#: operations/common/noise-spread.c:162
+#: operations/common/noise-spread.c:187
 msgid "Move pixels around randomly"
 msgstr "Μετακίνηση εικονοστοιχείων ολόγυρα στην τύχη"
 
@@ -5110,11 +5164,11 @@ msgstr ""
 "καλύτερη λειτουργία της λοξοτομής περιγράμματος όταν ο χρήστης επιλέγει πιο "
 "σκούρα χρώματα."
 
-#: operations/common/styles.c:1249
+#: operations/common/styles.c:1267
 msgid "GEGL Styles"
 msgstr "Τεχνοτροπίες GEGL"
 
-#: operations/common/styles.c:1252
+#: operations/common/styles.c:1270
 msgid ""
 "An engine to style text and add popular effects to alpha channel images. "
 "Effects include outline, bevel, shadow, and inner glow all in one place."
@@ -5123,7 +5177,7 @@ msgstr ""
 "εικόνες με κανάλι άλφα. Τα εφέ περιλαμβάνουν περίγραμμα, λοξοτομή, σκιά και "
 "εσωτερική λάμψη, όλα σε ένα μέρος."
 
-#: operations/common/styles.c:1255
+#: operations/common/styles.c:1273
 msgid "Text Styling..."
 msgstr "Διαμόρφωση κειμένου..."
 
@@ -5602,11 +5656,11 @@ msgstr "Μέγεθος επιδιορθώσεων που χρησιμοποιο�
 msgid "Noise standard deviation"
 msgstr "Τυπική απόκλιση θορύβου"
 
-#: operations/common-cxx/denoise-dct.cc:480
+#: operations/common-cxx/denoise-dct.cc:486
 msgid "Denoise DCT"
 msgstr "Αποθορυβοποίηση DCT"
 
-#: operations/common-cxx/denoise-dct.cc:482
+#: operations/common-cxx/denoise-dct.cc:488
 msgid "Denoising algorithm using a per-patch DCT thresholding"
 msgstr "Αλγόριθμος αποθορυβοποίησης με χρήση κατωφλίου DCT ανά επιδιόρθωση"
 
@@ -6375,6 +6429,22 @@ msgstr "Συντεταγμένη Χ του κέντρου μετατόπισης
 #: operations/common-gpl3+/displace.c:89
 msgid "Y coordinate of the displacement center"
 msgstr "Συντεταγμένη Υ του κέντρου μετατόπισης"
+
+#: operations/common-gpl3+/displace.c:190
+msgid "Horizontal/Radial"
+msgstr "Οριζόντια/ακτινικά"
+
+#: operations/common-gpl3+/displace.c:191
+msgid "Horizontal or radial per pixel input"
+msgstr "Οριζόντια ή ακτινική είσοδος ανά εικονοστοιχείο"
+
+#: operations/common-gpl3+/displace.c:199
+msgid "Vertical/Angular"
+msgstr "Κάθετη/Γωνιακή"
+
+#: operations/common-gpl3+/displace.c:200
+msgid "Vertical or angular per pixel input"
+msgstr "Κάθετη ή γωνιακή είσοδος ανά εικονοστοιχείο"
 
 #: operations/common-gpl3+/displace.c:479
 msgid "Displace"
@@ -8201,19 +8271,19 @@ msgstr "διαδρομή αρχείου για εγγραφή."
 msgid "tile size to use."
 msgstr "μέγεθος πλακιδίου προς χρήση."
 
-#: operations/external/ff-load.c:30
+#: operations/external/ff-load.c:31
 msgid "Path of video file to load"
 msgstr "Διαδρομή αρχείου βίντεο για φόρτωση"
 
-#: operations/external/ff-load.c:32
+#: operations/external/ff-load.c:33
 msgid "Frame number"
 msgstr "Αριθμός πλαισίου"
 
-#: operations/external/ff-load.c:36 operations/external/gif-load.c:38
+#: operations/external/ff-load.c:37 operations/external/gif-load.c:38
 msgid "frames"
 msgstr "πλαίσια"
 
-#: operations/external/ff-load.c:37
+#: operations/external/ff-load.c:38
 msgid ""
 "Number of frames in video, updates at least when first frame has been "
 "decoded."
@@ -8221,190 +8291,190 @@ msgstr ""
 "Ο αριθμός των πλαισίων στο βίντεο, ενημερώνεται τουλάχιστον όταν το πρώτο "
 "πλαίσιο έχει αποκωδικοποιηθεί."
 
-#: operations/external/ff-load.c:41
+#: operations/external/ff-load.c:42
 msgid "audio_sample_rate"
 msgstr "ρυθμός_δειγματοληψίας_ήχου"
 
-#: operations/external/ff-load.c:42
+#: operations/external/ff-load.c:43
 msgid "audio_channels"
 msgstr "κανάλια_ήχου"
 
-#: operations/external/ff-load.c:44
+#: operations/external/ff-load.c:45
 msgid "frame-rate"
 msgstr "ρυθμός-λήψεων"
 
-#: operations/external/ff-load.c:45
+#: operations/external/ff-load.c:46
 msgid "Frames per second, permits computing time vs frame"
 msgstr ""
 "Οι λήψεις ανά δευτερόλεπτο, επιτρέπουν τον υπολογισμό του χρόνου ως προς "
 "λήψεις"
 
-#: operations/external/ff-load.c:49
+#: operations/external/ff-load.c:50
 msgid "video-codec"
 msgstr "κωδικοποιητής-βίντεο"
 
-#: operations/external/ff-load.c:50
+#: operations/external/ff-load.c:51
 msgid "audio-codec"
 msgstr "κωδικοποιητής-ήχου"
 
-#: operations/external/ff-load.c:52 operations/external/ff-save.c:32
+#: operations/external/ff-load.c:53 operations/external/ff-save.c:33
 msgid "audio"
 msgstr "ήχος"
 
-#: operations/external/ff-load.c:876
+#: operations/external/ff-load.c:877
 msgid "FFmpeg Frame Loader"
 msgstr "Φόρτωση πλαισίου FFmpeg"
 
-#: operations/external/ff-load.c:878
+#: operations/external/ff-load.c:879
 msgid "FFmpeg video frame importer."
 msgstr "Εισαγωγή πλαισίου βίντεο FFmpeg."
 
-#: operations/external/ff-save.c:30 operations/external/png-save.c:27
+#: operations/external/ff-save.c:31 operations/external/png-save.c:27
 #: operations/external/ppm-save.c:26 operations/external/rgbe-save.c:27
 msgid "Target path and filename, use '-' for stdout."
 msgstr "Στόχος διαδρομής και ονόματος αρχείου, χρήση '-' για τυπική έξοδο."
 
-#: operations/external/ff-save.c:33
+#: operations/external/ff-save.c:34
 msgid "Audio codec"
 msgstr "Κωδικοποιητής ήχου"
 
-#: operations/external/ff-save.c:34
+#: operations/external/ff-save.c:35
 msgid ""
 "Audio codec to use, or auto to use a good default based on container format."
 msgstr ""
 "Κωδικοποιητής ήχου για χρήση, ή αυτόματα για χρήση μιας καλής προεπιλογής με "
 "βάση τη μορφή περιέκτη."
 
-#: operations/external/ff-save.c:35
+#: operations/external/ff-save.c:36
 msgid "audio sample rate"
 msgstr "ρυθμός δειγματοληψίας ήχου"
 
-#: operations/external/ff-save.c:36
+#: operations/external/ff-save.c:37
 msgid "-1 means autodetect on first audio fragment"
 msgstr "-1 σημαίνει αυτόματη αναγνώριση στο πρώτο τμήμα ήχου"
 
-#: operations/external/ff-save.c:38
+#: operations/external/ff-save.c:39
 msgid "audio bitrate in kb/s"
 msgstr "ρυθμός διαμεταγωγής ήχου σε kb/s"
 
-#: operations/external/ff-save.c:39 operations/external/ff-save.c:47
+#: operations/external/ff-save.c:40 operations/external/ff-save.c:48
 msgid "Target encoded video bitrate in kb/s"
 msgstr "Ρυθμός διαμεταγωγής κωδικοποιημένου βίντεο προορισμού σε kb/s"
 
-#: operations/external/ff-save.c:41
+#: operations/external/ff-save.c:42
 msgid "Frames/second"
 msgstr "Πλαίσια/δευτερόλεπτο"
 
-#: operations/external/ff-save.c:44
+#: operations/external/ff-save.c:45
 msgid "Video codec"
 msgstr "Κωδικοποιητής βίντεο"
 
-#: operations/external/ff-save.c:45
+#: operations/external/ff-save.c:46
 msgid ""
 "Video codec to use, or auto to use a good default based on container format."
 msgstr ""
 "Κωδικοποιητής βίντεο για χρήση, ή αυτόματα για χρήση μιας καλής προεπιλογής "
 "με βάση τη μορφή περιέκτη."
 
-#: operations/external/ff-save.c:46
+#: operations/external/ff-save.c:47
 msgid "video bitrate in kb/s"
 msgstr "ρυθμός διαμεταγωγής βίντεο σε kb/s"
 
-#: operations/external/ff-save.c:48
+#: operations/external/ff-save.c:49
 msgid "Video bufsize"
 msgstr "Μέγεθος ενδιάμεσης μνήμης βίντεο"
 
-#: operations/external/ff-save.c:50
+#: operations/external/ff-save.c:51
 msgid "Container format"
 msgstr "Μορφή περιέκτη"
 
-#: operations/external/ff-save.c:51
+#: operations/external/ff-save.c:52
 msgid "Container format to use, or auto to autodetect based on file extension."
 msgstr ""
 "Η μορφή περιέκτη προς χρήση, ή αυτόματα για αυτόματη αναγνώριση με βάση την "
 "επέκταση αρχείου."
 
-#: operations/external/ff-save.c:54
+#: operations/external/ff-save.c:55
 msgid "global quality"
 msgstr "γενική ποιότητα"
 
-#: operations/external/ff-save.c:57
+#: operations/external/ff-save.c:58
 msgid "noise reduction"
 msgstr "μείωση θορύβου"
 
-#: operations/external/ff-save.c:58
+#: operations/external/ff-save.c:59
 msgid "scenechange threshold"
 msgstr "κατώφλι αλλαγής σκηνής"
 
-#: operations/external/ff-save.c:59
+#: operations/external/ff-save.c:60
 msgid "video bitrate min"
 msgstr "ελάχιστος ρυθμός διαμεταγωγής βίντεο"
 
-#: operations/external/ff-save.c:60
+#: operations/external/ff-save.c:61
 msgid "video bitrate max"
 msgstr "μέγιστος ρυθμός διαμεταγωγής βίντεο"
 
-#: operations/external/ff-save.c:61
+#: operations/external/ff-save.c:62
 msgid "video bitrate tolerance"
 msgstr "ανοχή ρυθμού διαμεταγωγής βίντεο"
 
-#: operations/external/ff-save.c:64
+#: operations/external/ff-save.c:65
 msgid "keyint-min"
 msgstr "ελάχιστο διάστημα πλαισίου-κλειδιού (keyint-min)"
 
-#: operations/external/ff-save.c:65
+#: operations/external/ff-save.c:66
 msgid "trellis"
 msgstr "trellis"
 
-#: operations/external/ff-save.c:66
+#: operations/external/ff-save.c:67
 msgid "qmin"
 msgstr "ελάχιστος κβαντιστής (qmin)"
 
-#: operations/external/ff-save.c:67
+#: operations/external/ff-save.c:68
 msgid "qmax"
 msgstr "μέγιστος κβαντιστής (qmax)"
 
-#: operations/external/ff-save.c:68
+#: operations/external/ff-save.c:69
 msgid "max_qdiff"
 msgstr "μέγιστη διαφορά κβαντιστή (max_qdiff)"
 
-#: operations/external/ff-save.c:69
+#: operations/external/ff-save.c:70
 msgid "me_range"
 msgstr "εύρος εκτίμησης κίνησης (me_range)"
 
-#: operations/external/ff-save.c:70
+#: operations/external/ff-save.c:71
 msgid "max_b_frames"
 msgstr "μέγιστα πλαίσια b (max_b_frames)"
 
-#: operations/external/ff-save.c:71
+#: operations/external/ff-save.c:72
 msgid "gop-size"
 msgstr "μέγεθος ομάδας εικόνων (gop-size)"
 
-#: operations/external/ff-save.c:72
+#: operations/external/ff-save.c:73
 msgid "qcompress"
 msgstr "συμπίεση κβαντιστή (qcompress)"
 
-#: operations/external/ff-save.c:73
+#: operations/external/ff-save.c:74
 msgid "qblur"
 msgstr "θόλωση κβαντιστή (qblur)"
 
-#: operations/external/ff-save.c:74
+#: operations/external/ff-save.c:75
 msgid "i-quant-factor"
 msgstr "παράγοντας κβαντισμού i (i-quant-factor)"
 
-#: operations/external/ff-save.c:75
+#: operations/external/ff-save.c:76
 msgid "i-quant-offset"
 msgstr "μετατόπιση κβαντισμού i (i-quant-offset)"
 
-#: operations/external/ff-save.c:76
+#: operations/external/ff-save.c:77
 msgid "me-subpel-quality"
 msgstr "ποιότητα εικονοστοιχείων εκτίμησης κίνησης (me-subpel-quality)"
 
-#: operations/external/ff-save.c:1243
+#: operations/external/ff-save.c:1244
 msgid "FFmpeg Frame Saver"
 msgstr "Αποθηκευτής πλαισίου FFmpeg"
 
-#: operations/external/ff-save.c:1245
+#: operations/external/ff-save.c:1246
 msgid "FFmpeg video output sink"
 msgstr "Δέκτης εξόδου βίντεο FFmpeg"
 
@@ -9002,11 +9072,11 @@ msgstr "Αποθήκευση σε GdkPixbuf"
 msgid "Store image in a GdkPixbuf."
 msgstr "Αποθήκευση εικόνας σε GdkPixbuf."
 
-#: operations/external/sdl2-display.c:196
+#: operations/external/sdl2-display.c:197
 msgid "SDL2 Display"
 msgstr "Εμφάνιση SDL2"
 
-#: operations/external/sdl2-display.c:199
+#: operations/external/sdl2-display.c:200
 msgid ""
 "Displays the input buffer in an SDL2 window (restricted to one display op/"
 "process, due to SDL2 implementation issues)."
@@ -9022,11 +9092,11 @@ msgstr "Τίτλος εικονιδίου"
 msgid "Icon to be used for output window"
 msgstr "Χρησιμοποιούμενο εικονίδιο για παράθυρο εξόδου"
 
-#: operations/external/sdl-display.c:168
+#: operations/external/sdl-display.c:169
 msgid "SDL Display"
 msgstr "Εμφάνιση SDL"
 
-#: operations/external/sdl-display.c:171
+#: operations/external/sdl-display.c:172
 msgid ""
 "Displays the input buffer in an SDL window (restricted to one display op/"
 "process, due to SDL implementation issues)."
@@ -9849,11 +9919,11 @@ msgstr "Ομαλότητα"
 msgid "Level of smoothness"
 msgstr "Επίπεδο ομαλότητας"
 
-#: operations/workshop/bilateral-filter-fast.c:501
+#: operations/workshop/bilateral-filter-fast.c:505
 msgid "Bilateral Box Filter"
 msgstr "Αμφίπλευρο φίλτρο πλαισίου"
 
-#: operations/workshop/bilateral-filter-fast.c:506
+#: operations/workshop/bilateral-filter-fast.c:510
 msgid ""
 "A fast approximation of bilateral filter, using a box-filter instead of a "
 "gaussian blur."
@@ -11468,9 +11538,6 @@ msgstr ""
 
 #~ msgid "Even/Odd"
 #~ msgstr "Ζυγός/μονός"
-
-#~ msgid "Horizontal/Vertical"
-#~ msgstr "Οριζόντια/κάθετα"
 
 #~ msgid "Performs deinterlace on the image"
 #~ msgstr "Εκτέλεση απόπλεξης στην εικόνα"
