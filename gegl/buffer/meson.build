@@ -26,7 +26,6 @@ gegl_sources += files(
   'gegl-buffer-config.c',
   'gegl-buffer-enums.c',
   'gegl-buffer-iterator.c',
-  'gegl-buffer-iterator2.c',
   'gegl-buffer-linear.c',
   'gegl-buffer-load.c',
   'gegl-buffer-matrix2.c',
