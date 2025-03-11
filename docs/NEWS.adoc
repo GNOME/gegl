@@ -1,3 +1,32 @@
+GEGL-0.4.56 2025-03-16
+----------------------
+
+Ops:
+~~~~
+
+ - drop-shadow: restrict opacity range to 0.0-1.0
+ - ctx-script: crash fix
+
+Core:
+~~~~~
+
+ctx has been syncrhonized with upstream.
+
+Buffer:
+~~~~~
+
+Remnants of old iterator-api has been removed.
+
+
+Contributors to this release, including translators:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Alan Mortensen, Bruce Cowan, Ekaterine Papava, Hugo Carvalho,
+Jacob Boerema, Jehan, Jordi Mas, Luming Zh, Nathan Follens,
+Rodrigo Lledó, dimspingos and Øyvind Kolås
+
+
+
 GEGL-0.4.54 2025-02-09
 ----------------------
 
