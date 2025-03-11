@@ -28,6 +28,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <sys/stat.h>
 
 int frame_start = 0;
 int frame_end   = 0;
@@ -153,6 +154,16 @@ main (gint    argc,
 
   gegl_init (&argc, &argv);
   parse_args (argc, argv);
+
+  {
+    struct stat buffer;
+
+    if (stat (argv[1], &buffer) != 0 || buffer.st_size == 0)
+    {
+      g_print ("Failed to open %s\n", video_path);
+      return 1;
+    }
+  }
 
   gegl_decode = gegl_node_new ();
 

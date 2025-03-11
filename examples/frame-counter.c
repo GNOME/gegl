@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <sys/stat.h>
 
 const char *output_path = "frame-counter.ogv";
 const char *video_codec = NULL;
@@ -113,5 +114,12 @@ main (gint    argc,
     g_object_unref (gegl);
   }
   gegl_exit ();
+
+  {
+    struct stat buffer;
+
+    if (stat (output_path, &buffer) != 0 || buffer.st_size == 0)
+      return 1;
+  }
   return 0;
 }
