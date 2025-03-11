@@ -245,9 +245,6 @@ prepare (GeglOperation *operation)
 
 }
 
-#include <stdio.h>
-
-
 static gboolean
 process (GeglOperation       *operation,
          GeglBuffer          *input,
@@ -310,7 +307,11 @@ static void
 dispose (GObject *object)
 {
   GeglProperties  *o = GEGL_PROPERTIES (object);
-  state_destroy (o->user_data);
+  if (o->user_data)
+  {
+    state_destroy (o->user_data);
+    o->user_data = NULL;
+  }
   G_OBJECT_CLASS (gegl_op_parent_class)->dispose (object);
 }
 
@@ -340,7 +341,6 @@ gegl_op_class_init (GeglOpClass *klass)
   operation_class->get_bounding_box = get_bounding_box;
   operation_class->prepare = prepare;
   object_class->dispose    = dispose;
-
   gegl_operation_class_set_keys (operation_class,
     "name",        "gegl:ctx-script",
     "title",       "Ctx script",
