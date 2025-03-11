@@ -12,7 +12,7 @@ geglInclude = include_directories(
 )
 
 gegl_cflags = [
-  '-DLIBDIR="@0@"'.format(get_option('prefix') / get_option('libdir')),
+  '-DLIBDIR="@0@"'.format(get_option('libdir')),
   '-DG_LOG_DOMAIN="@0@"'.format('GEGL'),
   '-DGEGL_LOCALEDIR="@0@"'.format(get_option('localedir')),
   '-DGEGL_PREFIX="@0@"'.format(get_option('prefix')),
@@ -49,6 +49,7 @@ gegl_headers = files(
   'gegl-op.h',
   'gegl-math.h',
   'gegl-plugin.h',
+  'gegl-reloc.h',
 )
 
 gegl_sources = files(
@@ -69,6 +70,7 @@ gegl_sources = files(
   'gegl-metadatahash.c',
   'gegl-parallel.c',
   'gegl-random.c',
+  'gegl-reloc.c',
   'gegl-serialize.c',
   'gegl-stats.c',
   'gegl-utils.c',

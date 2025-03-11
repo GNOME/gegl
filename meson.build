@@ -269,6 +269,23 @@ w3m               = find_program('w3m',
 ################################################################################
 # Required Dependencies
 
+if get_option('relocatable-bundle') == 'yes'
+  relocatable_bundle = true
+elif get_option('relocatable-bundle') == 'no'
+  relocatable_bundle = false
+else # == 'platform-default'
+  # By default, assume building for Windows or macOS everything to be on
+  # the same prefix and can be relocated.
+  # On other platforms, build-time paths are meaningful.
+  if os_win32 or os_osx
+      relocatable_bundle = true
+  else
+      relocatable_bundle = false
+  endif
+endif
+config.set('ENABLE_RELOCATABLE_RESOURCES', relocatable_bundle)
+
+
 config.set('HAVE_UNISTD_H',    cc.has_header('unistd.h'))
 config.set('HAVE_EXECINFO_H',  cc.has_header('execinfo.h'))
 config.set('HAVE_FSYNC',       cc.has_function('fsync'))

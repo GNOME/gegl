@@ -87,6 +87,7 @@ guint gegl_debug_flags = 0;
 #include "gegl-random-private.h"
 #include "gegl-parallel-private.h"
 #include "gegl-cpuaccel.h"
+#include "gegl-reloc.h"
 
 static gboolean  gegl_post_parse_hook (GOptionContext *context,
                                        GOptionGroup   *group,
@@ -236,7 +237,7 @@ gegl_init_get_prefix (void)
 #endif
 
   if (prefix == NULL)
-    prefix = g_strdup (GEGL_PREFIX);
+    prefix = _gegl_reloc_find_prefix (GEGL_PREFIX);
 
   return prefix;
 }
@@ -643,9 +644,10 @@ gegl_get_default_module_paths(void)
     g_free(prefix);
   }
 #else
-  module_path = g_build_filename (LIBDIR, GEGL_LIBRARY, NULL);
+  module_path = g_build_filename (gegl_init_get_prefix(), LIBDIR, GEGL_LIBRARY, NULL);
 #endif
   list = g_slist_append (list, module_path);
+  printf("MODULE PATH: %s\n", module_path);
 
   /* User data dir
    * ~/.local/share/gegl-x.y/plug-ins */
