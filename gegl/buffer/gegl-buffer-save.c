@@ -347,7 +347,6 @@ gegl_buffer_save (GeglBuffer          *buffer,
   /* save each tile */
   {
     GList *iter;
-    gint   i = 0;
     for (iter = info->tiles; iter; iter = iter->next)
       {
         GeglBufferTile *entry = iter->data;
@@ -369,7 +368,6 @@ gegl_buffer_save (GeglBuffer          *buffer,
             info->offset += ret;
         }
         gegl_tile_unref (tile);
-        i++;
       }
   }
   save_info_destroy (info);
