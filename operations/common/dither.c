@@ -240,7 +240,7 @@ process_row_bayer (GeglBufferIterator *gi,
           gdouble value_clamped;
           gdouble quantized;
 
-          bayer         = bayer_matrix_8x8 [((roi->y + y) % 8) * 8 + ((roi->x + x) % 8)];
+          bayer         = bayer_matrix_8x8 [((roi->y + y) & 7) * 8 + (( (roi->x) + x) & 7)];
           bayer         = ((bayer - 32) * 65536.0 / 65.0) / channel_levels [ch];
           value         = data_in [pixel + ch] + bayer;
           value_clamped = CLAMP (value, 0.0, 65535.0);
@@ -275,7 +275,7 @@ process_row_blue_noise (GeglBufferIterator *gi,
           gdouble value_clamped;
           gdouble quantized;
 
-          noise         = blue_noise_data_u8[ch * covariant][((roi->y + y) % 256) * 256 + ((roi->x + x) % 256)];
+          noise         = blue_noise_data_u8[ch * covariant][((roi->y + y) & 255) * 256 + ((roi->x + x) & 255)];
           noise         = 1.00 * ((noise - 128) * 65536.0 / 257.0) / channel_levels [ch];
           value         = data_in [pixel + ch] + noise;
           value_clamped = CLAMP (value, 0.0, 65535.0);
