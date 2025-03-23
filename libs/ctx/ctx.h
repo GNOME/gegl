@@ -49459,7 +49459,7 @@ static void
 ctx_cb_reset_caches (Ctx *ctx)
 {
   CtxCbBackend *backend_cb = (CtxCbBackend*)ctx->backend;
-  for (int i = 0; i < 32; i++)
+  for (int i = 0; i < CTX_HASH_ROWS * CTX_HASH_COLS; i++)
     backend_cb->hashes[i]=1;
 }
 
