@@ -1,3 +1,15 @@
+GEGL-0.4.58 2025-03-23
+----------------------
+
+Ops:
+~~~~
+ - dither: fixed crash when applied to pixels with negative pixel coordinates.
+
+Contributors to this release, including translator:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Kolbjørn Stuestøl and Øyvind Kolås.
+
 GEGL-0.4.56 2025-03-16
 ----------------------
 
