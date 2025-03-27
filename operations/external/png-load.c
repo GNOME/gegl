@@ -587,6 +587,7 @@ get_bounding_box (GeglOperation *operation)
     {
       width = 0;
       height = 0;
+      format = babl_format ("R'G'B'A u8");
     }
 
   gegl_operation_set_format (operation, "output", format);
