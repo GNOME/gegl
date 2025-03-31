@@ -56,7 +56,7 @@ gegl_convert_space_prepare (GeglOperation *operation)
     {
       const char *error = NULL;
       const Babl *s = babl_space_from_icc (icc_data, (gint)icc_length,
-                                 BABL_ICC_INTENT_RELATIVE_COLORIMETRIC,
+                                 BABL_ICC_INTENT_DEFAULT,
                                  &error);
       if (s) space = s;
       g_free (icc_data);

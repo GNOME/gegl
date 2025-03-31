@@ -43,7 +43,7 @@ gegl_icc_load_prepare (GeglOperation *operation)
   {
     const char *error = NULL;
     const Babl *space = babl_space_from_icc ((char*)icc_data, (int)icc_length,
-                             BABL_ICC_INTENT_RELATIVE_COLORIMETRIC,
+                             BABL_ICC_INTENT_DEFAULT,
                              &error);
     if (space)
     {
