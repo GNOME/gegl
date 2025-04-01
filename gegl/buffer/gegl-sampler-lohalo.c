@@ -998,11 +998,7 @@ gegl_sampler_lohalo_get (      GeglSampler*    restrict  self,
     /*
      * Ship out the result:
      */
-#if BABL_MINOR_VERSION>1 || (BABL_MINOR_VERSION==1 && BABL_MICRO_VERSION >= 90)
     self->fish_process (self->fish, (void*)newval, (void*)output, 1, NULL);
-#else
-    babl_process (self->fish, (void*)newval, (void*)output, 1);
-#endif
     return;
   }
 }

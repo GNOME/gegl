@@ -267,9 +267,7 @@ gegl_sampler_prepare (GeglSampler *self)
   if (!self->fish)
   {
     self->fish = babl_fish (self->interpolate_format, self->format);
-#if BABL_MINOR_VERSION>1 || (BABL_MINOR_VERSION==1 && BABL_MICRO_VERSION >= 90)
     self->fish_process = babl_fish_get_process (self->fish);
-#endif
   }
 
   /*

@@ -90,9 +90,7 @@ struct _GeglSampler
   gint                       interpolate_components;
 
   GeglSamplerLevel           level[GEGL_SAMPLER_MIPMAP_LEVELS];
-#if BABL_MINOR_VERSION>1 || (BABL_MINOR_VERSION==1 && BABL_MICRO_VERSION >= 90)
   BablFishProcess            fish_process;
-#endif
 };
 
 struct _GeglSamplerClass

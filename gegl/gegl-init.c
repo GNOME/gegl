@@ -298,13 +298,11 @@ gboolean gegl_is_main_thread (void)
   return g_thread_self () == main_thread;
 }
 
-#if BABL_MINOR_VERSION>1 || (BABL_MINOR_VERSION==1 && BABL_MICRO_VERSION >= 90)
 static gboolean gegl_idle_gc (gpointer user_data)
 {
   babl_gc ();
   return TRUE;
 }
-#endif
 
 void _gegl_init_buffer (int x86_64_version);
 
@@ -336,9 +334,7 @@ gegl_init (gint    *argc,
 
   g_option_context_free (context);
 
-#if BABL_MINOR_VERSION>1 || (BABL_MINOR_VERSION==1 && BABL_MICRO_VERSION >= 97)
   g_timeout_add_seconds (10, gegl_idle_gc, NULL);
-#endif
 }
 
 static gchar    *cmd_gegl_swap             = NULL;
