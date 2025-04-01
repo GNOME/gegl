@@ -44,7 +44,7 @@ project_source_root = meson.current_source_dir()
 #
 # Core - required
 dep_ver = {
-  'babl'            : '>=0.1.113',
+  'babl'            : '>=0.1.112',
   'glib'            : '>=2.44.0',
   'json-glib'       : '>=1.0.0',
   'poly2tri-c'      : '>=0.0.0',

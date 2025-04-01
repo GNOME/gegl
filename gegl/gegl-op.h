@@ -1001,4 +1001,8 @@ gegl_op_init_properties (GeglOp *self)
   self->properties = g_slice_new0 (GeglProperties);
 }
 
+#ifndef BABL_ICC_INTENT_DEFAULT
+#define BABL_ICC_INTENT_DEFAULT  (BABL_ICC_INTENT_RELATIVE_COLORIMETRIC)
+#endif
+
 G_END_DECLS
