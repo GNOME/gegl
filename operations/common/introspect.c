@@ -39,12 +39,14 @@ gchar *gegl_to_dot                       (GeglNode       *node);
 static void
 gegl_introspect_load_cache (GeglProperties *op_introspect)
 {
-  gchar      *dot_string   = NULL;
-  gchar      *png_filename = NULL;
-  gchar      *dot_filename = NULL;
-  gchar      *dot_cmd      = NULL;
-  gchar      *dot;
-  gint        fd;
+  gchar  *argv[6]      = {"dot", "-o", NULL, "-Tpng", NULL, NULL};
+  GError *error        = NULL;
+  gchar  *dot_string   = NULL;
+  gchar  *png_filename = NULL;
+  gchar  *dot_filename = NULL;
+  gchar  *dot_cmd      = NULL;
+  gchar  *dot;
+  gint    fd;
 
   dot = g_find_program_in_path ("dot");
 
@@ -70,10 +72,13 @@ gegl_introspect_load_cache (GeglProperties *op_introspect)
   close (fd);
 
   /* Process the .dot to a .png */
-  dot_cmd = g_strdup_printf ("%s -o %s -Tpng %s", dot, png_filename, dot_filename);
-  if (system (dot_cmd) != 0)
+  argv[2] = png_filename;
+  argv[4] = dot_filename;
+  if (! g_spawn_sync (NULL, argv, NULL, G_SPAWN_SEARCH_PATH,
+                      NULL, NULL, NULL, NULL, NULL, &error))
     {
-      g_warning ("Error executing GraphViz dot program");
+      g_warning ("Error executing GraphViz dot program: %s", error->message);
+      g_clear_error (&error);
     }
   else
     {
