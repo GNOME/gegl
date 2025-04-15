@@ -352,11 +352,11 @@ gegl_exr_save_process (GeglOperation       *operation,
    * can set the origin.
    */
   void *pixels
-    = g_malloc (rect->width * rect->height * n_components * bits_per_component/8);
+    = g_malloc (rect->width * rect->height * n_components * (int)(bits_per_component/8));
   if (pixels == 0)
     {
-      g_warning ("exr-save: could allocate %d*%d*%d pixels.",
-        rect->width, rect->height, n_components);
+      g_warning ("exr-save: could not allocate %d*%d*%d*%d pixels.",
+        rect->width, rect->height, n_components, (int)(bits_per_component/8));
       return FALSE;
     }
 
