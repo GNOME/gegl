@@ -13,8 +13,10 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with GEGL; if not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright 2023 Øyvind Kolås <pippin@gimp.org>
- * 2022-2024 Sam Lester (Official Bevel - a new bevel filter candidate for Gimp 3 that combines my bevel algorithms - featuring the algorithm of my  bevel, custom bevel, 
+ * Copyright 2023 2025 Øyvind Kolås <pippin@gimp.org>
+ * 2022-2024 Sam Lester (Official Bevel - a new bevel filter candidate for Gimp
+ * 3 that combines my bevel algorithms - featuring the algorithm of my  bevel,
+ * custom bevel, 
    and sharp bevel all in one filter) 
 
 Bump Bevel Graph inspired by my plugin Custom Bevel from 2022
@@ -96,10 +98,9 @@ property_double (elevation, _("Elevation"), 25.0)
   ui_steps      (0.01, 0.50)
 
 
-/*The only issue  with this filter is that emboss depth= above 15 does nothing on chamfer bevel , but works great on bump bevel.
-so I made an extra node just for it that only updates emboss depth=, as a result depth and sharpness' are co-existing properties
-
-I am fully aware 'depth' and 'detail' are just words used to describe the same thing. */
+/*An issue with this filter is that emboss depth= above 15 does nothing on chamfer bevel , but works great on bump bevel.
+so I made an extra node just for it that only updates emboss depth=, as a result depth and sharpness' are co-existing properties.
+*/
 
 property_int (depth, _("Depth"), 40)
     description (_("Emboss depth - Brings out depth and detail of the bump bevel."))
@@ -152,64 +153,62 @@ static void attach (GeglOperation *operation)
   state->input    = gegl_node_get_input_proxy (gegl, "input");
   state->output   = gegl_node_get_output_proxy (gegl, "output");
 
-state->blur = gegl_node_new_child (gegl,
+  state->blur = gegl_node_new_child (gegl,
                                   "operation", "gegl:gaussian-blur", "clip-extent", FALSE,   "abyss-policy", 0,                
                                   NULL);
 
-state->emb   = gegl_node_new_child (gegl,
+  state->emb   = gegl_node_new_child (gegl,
                                   "operation", "gegl:emboss",
                                   NULL);
 
-state->emb2   = gegl_node_new_child (gegl,
+  state->emb2   = gegl_node_new_child (gegl,
                                   "operation", "gegl:emboss", "depth", 15,
                                   NULL);
 
-state->opacity   = gegl_node_new_child (gegl,
+  state->opacity   = gegl_node_new_child (gegl,
                                   "operation", "gegl:opacity", "value", 0.8,
                                   NULL);
 
-state->replaceontop   = gegl_node_new_child (gegl, /*This blend mode is replace + alpha lock*/
+  state->replaceontop   = gegl_node_new_child (gegl, /*This blend mode is replace + alpha lock*/
                                   "operation", "gegl:src-in",
                                   NULL);
                                 
-state->nop   = gegl_node_new_child (gegl,
+  state->nop   = gegl_node_new_child (gegl,
                                   "operation", "gegl:nop",
                                   NULL);
 
-state->nop2   = gegl_node_new_child (gegl,
+  state->nop2   = gegl_node_new_child (gegl,
                                   "operation", "gegl:nop",
                                   NULL);
 
-state->dt   = gegl_node_new_child (gegl,
+  state->dt   = gegl_node_new_child (gegl,
                                   "operation", "gegl:distance-transform", "metric", 2,
                                   NULL);
 
-state->median   = gegl_node_new_child (gegl,
+  state->median   = gegl_node_new_child (gegl,
                                   "operation", "gegl:median-blur", "radius", 1, "alpha-percentile", 80.0,
                                   NULL);
 
                                     #define EMBEDDEDGRAPH \
 " opacity value=1.7 median-blur abyss-policy=none radius=0 id=0 dst-out aux=[ ref=0  component-extract component=alpha   levels in-low=0.15  color-to-alpha opacity-threshold=0.4  ]  median-blur abyss-policy=none radius=0 "\
                               
-state->thresholdalpha   = gegl_node_new_child (gegl,
+  state->thresholdalpha   = gegl_node_new_child (gegl,
                                   "operation", "gegl:gegl", "string", EMBEDDEDGRAPH,
                                   NULL);
 
                                     #define EMBEDDEDGRAPH2 \
 " opacity value=2.2 median-blur abyss-policy=none radius=0 "\
 
-state->fixbump   = gegl_node_new_child (gegl,
+  state->fixbump   = gegl_node_new_child (gegl,
                                   "operation", "gegl:gegl", "string", EMBEDDEDGRAPH2, /* I prefer using median-blur radius=0 over gegl:alpha-clip*/
                                   NULL);
 
                                     #define EMBEDDEDGRAPH3 \
 " id=1 src-atop aux=[ ref=1 bilateral-filter blur-radius=4 edge-preservation=6 mean-curvature-blur iterations=1 ] "  /* This hidden graph smooths the bevel */
 
-state->smoothchamfer   = gegl_node_new_child (gegl,
+  state->smoothchamfer   = gegl_node_new_child (gegl,
                                   "operation", "gegl:gegl", "string", EMBEDDEDGRAPH3, 
                                   NULL);
-
-
 
   state->blend      = gegl_node_new_child (gegl, "operation", "gegl:hard-light", /* This blend mode can be anything, but in default its hardlight */
                                            NULL);
@@ -221,16 +220,14 @@ state->smoothchamfer   = gegl_node_new_child (gegl,
   gegl_operation_meta_redirect (operation, "elevation", state->emb2, "elevation");
   gegl_operation_meta_redirect (operation, "azimuth", state->emb2, "azimuth");
   gegl_operation_meta_redirect (operation, "metric", state->dt, "metric");
-
 }
 
 static void update_graph (GeglOperation *operation)
 {
   GeglProperties *o = GEGL_PROPERTIES (operation);
   State *state = o->user_data;
-  if (!state) return;    /*I learned a new way to switch blend modes thanks to Pippin. Color dodge works good
-                           on some colors but lousy on most. Color Dodge does an amazing effect on orange and purple. The plugin variation
-                           of this filter will have grain merge (gimp:layer-mode layer-mode=grain-merge) that sadly is excluded from GEGL.*/
+  if (!state)
+    return;
 
   const char *blend_op = "gegl:nop";
   switch (o->blendmode) {
@@ -240,50 +237,38 @@ static void update_graph (GeglOperation *operation)
     case CHAMFER_BLEND_COLORDODGE: blend_op = "gegl:color-dodge"; break; 
     case CHAMFER_BLEND_DARKEN:     blend_op = "gegl:darken"; break;
     case CHAMFER_BLEND_LIGHTEN:    blend_op = "gegl:lighten"; break;
-    case CHAMFER_BLEND_ADD:    blend_op = "gegl:add"; break;
-  if (o->blendmode == CHAMFER_BLEND_COLORDODGE) gegl_node_set (state->blend, "srgb", TRUE, NULL);
-
-
+    case CHAMFER_BLEND_ADD:        blend_op = "gegl:add"; break;
   }
   gegl_node_set (state->blend, "operation", blend_op, NULL);
 
   if (o->type == GEGL_BEVEL_CHAMFER)
-    gegl_node_set (state->emb2, "depth", (int)(o->depth / 100.0 * 15), NULL);
+  {
+    int level = o->depth / 100.0 * 15;
+    if (level == 0)
+      level = 1;
+    gegl_node_set (state->emb2, "depth", level, NULL);
+
+    gegl_node_link_many (state->input, state->median, state->nop, state->replaceontop, state->smoothchamfer, state->output, NULL);
+    gegl_node_connect (state->replaceontop, "aux", state->blend, "output");
+    gegl_node_link_many (state->nop, state->nop2, state->blend, NULL);
+    gegl_node_connect (state->blend, "aux", state->opacity, "output");
+    gegl_node_link_many (state->nop2, state->dt, state->emb2, state->opacity, NULL);
+  }
   else
+  {
     gegl_node_set (state->emb, "depth", o->depth, NULL);
 
-  if (o->blendmode > CHAMFER_BLEND_GIMPBLEND)
-  {
-switch (o->type) {
-        break;
-            case GEGL_BEVEL_CHAMFER: /*Same as below*/
-            gegl_node_link_many (state->input, state->median, state->nop, state->replaceontop, state->smoothchamfer, state->output, NULL);
-            gegl_node_connect (state->replaceontop, "aux", state->blend, "output");
-            gegl_node_link_many (state->nop, state->nop2, state->blend, NULL);
-            gegl_node_connect (state->blend, "aux", state->opacity, "output");
-            gegl_node_link_many (state->nop2, state->dt, state->emb2, state->opacity, NULL);
-        break;
-            case GEGL_BEVEL_BUMP:  /*Bump on any blend mode but Gimp blend (gegl:src)*/
-            gegl_node_link_many (state->input, state->median, state->blur, state->nop, state->blend, state->thresholdalpha, state->output, NULL);
-            gegl_node_link_many (state->nop, state->emb,  NULL);
-            gegl_node_connect (state->blend, "aux", state->emb, "output");           
+    if (o->blendmode > CHAMFER_BLEND_GIMPBLEND)
+    {
+      gegl_node_link_many (state->input, state->median, state->blur, state->nop, state->blend, state->thresholdalpha, state->output, NULL);
+      gegl_node_link_many (state->nop, state->emb,  NULL);
+      gegl_node_connect (state->blend, "aux", state->emb, "output");
     }
-}
-
-else 
-
-switch (o->type) {
-        break;
-            case GEGL_BEVEL_CHAMFER: /*Same as above*/
-            gegl_node_link_many (state->input, state->median, state->nop, state->replaceontop, state->smoothchamfer, state->output, NULL);
-            gegl_node_connect (state->replaceontop, "aux", state->blend, "output");
-            gegl_node_link_many (state->nop, state->nop2, state->blend, NULL);
-            gegl_node_connect (state->blend, "aux", state->opacity, "output");
-            gegl_node_link_many (state->nop2, state->dt, state->emb2, state->opacity, NULL);
-        break;
-            case GEGL_BEVEL_BUMP:  /*Bump on Gimp blend (gegl:src). Its suppose to puff out*/
-            gegl_node_link_many (state->input, state->median, state->blur, state->emb, state->fixbump,  state->output, NULL);     
-}
+    else
+    {
+      gegl_node_link_many (state->input, state->median, state->blur, state->emb, state->fixbump, state->output, NULL);
+    }
+  }
 }
 
 static void
@@ -298,7 +283,7 @@ static void
 gegl_op_class_init (GeglOpClass *klass)
 {
   GeglOperationClass *operation_class;
-GeglOperationMetaClass *operation_meta_class = GEGL_OPERATION_META_CLASS (klass);
+  GeglOperationMetaClass *operation_meta_class = GEGL_OPERATION_META_CLASS (klass);
   operation_class = GEGL_OPERATION_CLASS (klass);
   G_OBJECT_CLASS(klass)->dispose = dispose;
   operation_class->attach = attach;
