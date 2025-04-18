@@ -79,13 +79,12 @@ website_listing_deps = []
 standalone_content_deps = []
 
 # Documentation build environment
-doc_env = [
-  'GEGL_SWAP=' + project_build_root / 'RAM',
-  'GEGL_PATH=' + gegl_operations_build_dir,
-  'BABL_TOLERANCE=0.0',
-]
+doc_env=environment()
+doc_env.set('GEGL_SWAP', project_build_root / 'RAM')
+doc_env.set('GEGL_PATH', gegl_operations_build_dir)
+doc_env.set('BABL_TOLERANCE', '0.0')
 if is_variable('babl_path')
-  doc_env += 'BABL_PATH=' + babl_path
+  doc_env.set('BABL_PATH', babl_path)
 endif
 
 # website include files

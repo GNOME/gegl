@@ -2,7 +2,7 @@ project('gegl',
   'c', 'cpp',
   license: 'GPL3+',
   version: '0.4.59',
-  meson_version: '>=0.55.0',
+  meson_version: '>=0.57.0',
   default_options: [
     'c_std=gnu11',
     'cpp_std=gnu++14',
@@ -252,8 +252,6 @@ endif
 
 ################################################################################
 # Build Utilities
-
-env               = find_program('env', required: false)
 
 asciidoc          = find_program('asciidoc',
                      required: false, native: true)
@@ -511,7 +509,7 @@ if get_option('docs') == 'auto'
   if meson.is_cross_build()
     build_docs = false
     message('configure with -Ddocs=true to cross-build docs')
-  elif not asciidoc.found() or not env.found()
+  elif not asciidoc.found()
     build_docs = false
   endif
 elif get_option('docs') == 'false'

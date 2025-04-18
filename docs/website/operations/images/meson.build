@@ -86,12 +86,9 @@ doc_ops_img_cmd = [
 # generate operation image examples
 doc_operations_img = custom_target(
   'doc-operations-img',
+  env: doc_env,
   output: 'gegl-oilify.png',
-  command: [
-    env,
-    doc_env,
-    doc_ops_img_cmd,
-    ],
+  command: [doc_ops_img_cmd],
   console: true,
   depends: gegl_operations,
   build_by_default: true,
