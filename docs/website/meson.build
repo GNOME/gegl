@@ -15,15 +15,12 @@ endforeach
 
 # generate website
 # website - class hierarchy reference
-if env.found() and can_run_host_binaries
+if can_run_host_binaries
   custom_target(
     'class_hierarchy_html',
+    env: doc_env,
     output: 'class-hierarchy.html',
-    command: [
-      env,
-      doc_env,
-      introspect,
-    ],
+    command: [introspect],
     depends: gegl_operations,
     capture: true,
     build_by_default : true,
