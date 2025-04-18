@@ -1,19 +1,19 @@
-/* ctx-0.1.3 */
-/* 
- * ctx.h is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3 of the License, or (at your option) any later version.
+/* ctx-0.1.5 */
+/*
+ * Copyright (c) 2012, 2015, 2019, 2020, 2021, 2022, 2023, 2024, 2025
+ * Øyvind Kolps <pippin@gimp.org> with contributors.
  *
- * ctx.h is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with ctx; if not, see <https://www.gnu.org/licenses/>.
- *
- * 2012, 2015, 2019, 2020, 2021, 2022, 2023, 2024, 2025 Øyvind Kolås <pippin@gimp.org>
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
  * ctx is a 2D vector graphics protocol, and interactive application
  * development environment for microcontrollers, framebuffers and
@@ -1383,6 +1383,11 @@ void ctx_deferred_rel_move_to (Ctx *ctx, const char *name, float x, float y);
  */
 void ctx_deferred_rectangle   (Ctx *ctx, const char *name, float x, float y,
                                                            float width, float height);
+
+void ctx_deferred_round_rectangle   (Ctx *ctx, const char *name, float x, float y,
+                                                           float width, float height,
+                                                           float radius);
+
 
 /**
  * ctx_resolve:
@@ -3604,10 +3609,10 @@ int       ctx_get_render_threads   (Ctx *ctx);
 #endif
 
 #ifndef CTX_VERSION_STRING
-#define CTX_VERSION_STRING "0.1.3"
+#define CTX_VERSION_STRING "0.1.5"
 #define CTX_VERSION_MAJOR 0
 #define CTX_VERSION_MINOR 1
-#define CTX_VERSION_MICRO 3
+#define CTX_VERSION_MICRO 5
 #endif
 #ifndef __CTX_H__
 #define __CTX_H__
@@ -8957,7 +8962,7 @@ typedef struct _Sqz      Sqz;      /* handle representing a squozed string  */
 /* create a new string that is the concatenation of a and b
  */
 Sqz         *sqz_utf8             (const char *str);
-static const char  *sqz_decode           (Sqz *squozed, char *temp);
+//static const char  *sqz_decode           (Sqz *squozed, char *temp);
 
 
 int          sqz_length           (Sqz *squozed);
@@ -9065,8 +9070,8 @@ const char  *squoze32_utf5_decode (uint32_t    id,   char *dest);
 #endif
 
 #if SQUOZE_IMPLEMENTATION_32_UTF8
-static uint32_t     squoze32_utf8        (const char *utf8, size_t len);
-static const char  *squoze32_utf8_decode (uint32_t    id,   char *dest);
+//static uint32_t     squoze32_utf8        (const char *utf8, size_t len);
+//static const char  *squoze32_utf8_decode (uint32_t    id,   char *dest);
 #endif
 
 #if SQUOZE_IMPLEMENTATION_52_UTF5
@@ -14811,8 +14816,6 @@ ctx_drawlist_compact (CtxDrawlist *drawlist);
 #if CTX_COMPOSITE
 
 #define CTX_REFERENCE 0
-
-
 
 
 inline static void
@@ -35049,21 +35052,7 @@ ctx_base642bin (const char    *ascii,
                 int           *length,
                 unsigned char *bin);
 
-/* atty - audio interface and driver for terminals
- * Copyright (C) 2020 Øyvind Kolås <pippin@gimp.org>
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library. If not, see <http://www.gnu.org/licenses/>. 
+/* Copyright (C) 2020 Øyvind Kolås <pippin@gimp.org>
  */
 
 static const char *base64_map="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
@@ -39007,7 +38996,6 @@ void ctx_rgba8_stroke (Ctx *ctx, uint8_t r, uint8_t g, uint8_t b, uint8_t a)
   ctx_rgba_stroke (ctx, r/255.0f, g/255.0f, b/255.0f, a/255.0f);
 }
 
-
 #endif 
 
 #if CTX_BABL
@@ -39089,7 +39077,11 @@ void ctx_rasterizer_colorspace_icc (CtxState            *state,
 
    if (!space)
    {
-     space = babl_space_from_icc ((char*)icc_data, icc_length, BABL_ICC_INTENT_RELATIVE_COLORIMETRIC, &error);
+#ifndef BABL_ICC_INTENT_DEFAULT
+#define BABL_ICC_INTENT_DEFAULT (BABL_ICC_INTENT_RELATIVE_COLORIMETRIC)
+#endif
+
+     space = babl_space_from_icc ((char*)icc_data, icc_length, BABL_ICC_INTENT_DEFAULT, &error);
    }
    if (space)
    {
@@ -39586,7 +39578,8 @@ void ctx_drain_fd (int fd)
   tv.tv_usec = 100;
   while (select(fd+1, &rfds, NULL, NULL, &tv)>0)
   {
-    read (fd, buf, sizeof(buf));
+    if (read (fd, buf, sizeof(buf))<=0)
+      break;
     tv.tv_sec = 1;
     tv.tv_usec = 100;
     FD_ZERO(&rfds);
@@ -39601,16 +39594,17 @@ void ctx_terminal_dim (int in_fd, int out_fd, int *width, int *height, int rc)
   ctx_term_raw(in_fd);
 //ctx_drain_fd(in_fd);
 
-
   if (rc)
   {
-    write (out_fd, "\033[18t", 5);
+    if (write (out_fd, "\033[18t", 5) <=0)
+      return;
     if (width) *width = 9;
     if (height) *height = 7;
   }
   else
   {
-    write (out_fd, "\033[14t", 5);
+    if (write (out_fd, "\033[14t", 5) <= 0)
+      return;
     if (width) *width = 400;
     if (height) *height = 300;
   }
@@ -40577,10 +40571,11 @@ int ctx_fd_supports_ctx_protocol (int outfd, int infd)
   ctx_term_raw(infd);
 #endif
 #if CTX_RAW_KB_EVENTS
-  ctx_drain_fd (infd);
+  //ctx_drain_fd (infd);
 #endif
   char req[]="\033[?200$p";
-  write(outfd, req, sizeof(req)-1);
+  if (write(outfd, req, sizeof(req)-1)!=sizeof(req)-1)
+    return 0;
   fsync(outfd);
   int length = 0;
   struct timeval tv = {0,0};
@@ -40628,10 +40623,11 @@ int ctx_fd_ctx_version (int outfd, int infd)
   ctx_term_raw(infd);
 #endif
 #if CTX_RAW_KB_EVENTS
-  ctx_drain_fd (infd);
+  //ctx_drain_fd (infd);
 #endif
   char req[]="\033[>0q";
-  write(outfd, req, sizeof(req)-1);
+  if (write(outfd, req, sizeof(req)-1) != sizeof(req)-1)
+    return 0;
   fsync(outfd);
   int length = 0;
   struct timeval tv = {0,0};
@@ -49019,7 +49015,10 @@ static void ctx_net_write_compressed (int fd, const char *frame, int frame_len,
 
        if (literal_len)
        {
-         write (fd, literal, literal_len);
+         if (write (fd, literal, literal_len) != literal_len)
+         {
+           //fprintf (stderr, "eek short write\n");
+         }
          literal_len = 0;
        }
 
@@ -49027,7 +49026,10 @@ static void ctx_net_write_compressed (int fd, const char *frame, int frame_len,
        int opos = 1;
        opos += ctx_unichar_to_utf8 (matchpos+1, &buf[opos]);
        opos += ctx_unichar_to_utf8 (matchlen, &buf[opos]);
-       write (fd, buf, opos);
+
+       if (write (fd, buf, opos))
+       {
+       }
        p--;
        p+= (matchlen-pre_match);
      }
@@ -49036,7 +49038,9 @@ static void ctx_net_write_compressed (int fd, const char *frame, int frame_len,
        literal[literal_len++] = *p;
        if (literal_len >= CTX_MAX_LITERAL-1)
        {
-         write (fd, literal, literal_len);
+         if (write (fd, literal, literal_len) != literal_len)
+         {
+         }
          literal_len = 0;
        }
      }
@@ -49046,13 +49050,17 @@ static void ctx_net_write_compressed (int fd, const char *frame, int frame_len,
        literal[literal_len++] = *p;
        if (literal_len >= CTX_MAX_LITERAL-1)
        {
-         write (fd, literal, literal_len);
+         if (write (fd, literal, literal_len) != literal_len)
+         {
+         }
          literal_len = 0;
        }
   }
   if (literal_len)
   {
-    write (fd, literal, literal_len);
+    if (write (fd, literal, literal_len) != literal_len)
+    {
+    }
   }
   ctx_free (prevdict);
   #undef CTX_MAX_LITERAL
@@ -52032,9 +52040,14 @@ static char *sdl_cb_get_clipboard (Ctx *ctx, void *user_data)
      ctx_free (sdl->clipboard);
   sdl->clipboard = NULL;
 #endif
-  sdl->clipboard_requested = 1;
-  while (sdl->clipboard_requested)
-          usleep (1000);
+  usleep (10 * 1000);
+    char *tmp = SDL_GetClipboardText ();
+    sdl->clipboard = ctx_strdup (tmp);
+    SDL_free (tmp);
+    sdl->clipboard_requested = 0;
+  //sdl->clipboard_requested = 1;
+  //while (sdl->clipboard_requested)
+  //        usleep (1000);
   return sdl->clipboard?(char*)sdl->clipboard:(char*)"";
 }
 
@@ -54280,6 +54293,16 @@ const char *ctx_get_font_name (Ctx *ctx, int no)
   return NULL;
 }
 
+#if CTX_RESOLVED_FONTS!=0
+static void _ctx_clear_resolved_fonts (void)
+{
+  for (int i = 0; i < CTX_RESOLVED_FONTS; i++)
+  {
+    ctx_resolved_fonts[i].sqstr = 0;
+  }
+}
+#endif
+
 
 static int _ctx_resolve_font (const char *name)
 {
@@ -54657,6 +54680,7 @@ void ctx_generate_font (const char  *path,
   _ctx_set_transformation (ctx, CTX_TRANSFORMATION_RELATIVE);
 
   const char *font_name = ctx_get_font_name (NULL, font_no);
+  fprintf (stderr, "font_name: %s\n", font_name);
   ctx_font (ctx, font_name);
 
   if (!strcmp (font_name, "Roboto"))
@@ -54888,6 +54912,9 @@ void ctx_generate_font (const char  *path,
 
 void  ctx_font_unload        (int font_no)
 {
+#if CTX_RESOLVED_FONTS!=0
+  _ctx_clear_resolved_fonts ();
+#endif
   if (font_no < 0 || font_no >= ctx_font_count)
     return;
 
@@ -54911,20 +54938,32 @@ int ctx_load_font_ctx_file (const char *name, const char *path);
 int ctx_load_font_file (Ctx *ctx, const char *name, const char *path)
 {
   int fno;
+#if CTX_RESOLVED_FONTS!=0
+  _ctx_clear_resolved_fonts ();
+#endif
+
   if ((fno=_ctx_resolve_font_exact (name))>=0)
   {
-    if (ctx_fonts[fno].path && !strcmp (ctx_fonts[fno].path, path))
+    if (path && ctx_fonts[fno].path && !strcmp (ctx_fonts[fno].path, path))
       return fno;
 
     ctx_wait_for_renderer (ctx);
-    if (access(path, R_OK) != F_OK)
+    if (path && access(path, R_OK) != F_OK)
       return -1;
     ctx_font_unload (fno);
+    if (!path)
+    {
+      return -1;
+    }
   }
   else
   {
     if (access(path, R_OK) != F_OK)
       return -1;
+  }
+  if (!path)
+  {
+    return -1;
   }
 
   int ret = -1;
@@ -54935,13 +54974,13 @@ int ctx_load_font_file (Ctx *ctx, const char *name, const char *path)
         (!strcmp (".OTF", path + strlen(path)-4)))
   {
     ret = ctx_load_font_hb (name, path, -2);
-    ctx_fonts[fno].path = ctx_strdup (path);
+    ctx_fonts[ret].path = ctx_strdup (path);
     return ret;
   }
 #endif
 #if CTX_FONT_ENGINE_CTX
     ret = ctx_load_font_ctx_file (name, path);
-    ctx_fonts[fno].path = ctx_strdup (path);
+    ctx_fonts[ret].path = ctx_strdup (path);
 #endif
 
   return ret;
@@ -54951,6 +54990,9 @@ int ctx_load_font_file (Ctx *ctx, const char *name, const char *path)
 int ctx_load_font (Ctx *ctx, const char *name, const char *data, unsigned int length)
 {
   if (!data || length < 4) return -1;
+#if CTX_RESOLVED_FONTS!=0
+  _ctx_clear_resolved_fonts ();
+#endif
 #if CTX_FONT_ENGINE_HARFBUZZ
   if (!strncmp (data, "OTTO", 4))
     return ctx_load_font_hb (name, data, length);
@@ -55847,7 +55889,9 @@ static void _ctx_fd_addstr (CtxFormatter *formatter, const char *str, int len)
     return;
   }
   if (len < 0) len = ctx_strlen (str);
-  write ((size_t)formatter->target, str, len);
+
+  if (write ((size_t)formatter->target, str, len) <=0)
+    return; //XXX: properly loop here?
 }
 
 
@@ -56736,7 +56780,8 @@ ctx_render_fd (Ctx *ctx, int fd, CtxFormatterFlag flags)
                      CTX_ITERATOR_EXPAND_BITPACK);
   while ( (command = ctx_iterator_next (&iterator) ) )
     { ctx_formatter_process (&formatter, command); }
-  write (fd, "\n", 1);
+  if (write (fd, "\n", 1) <= 0)
+    return;
 }
 
 char *
@@ -60178,6 +60223,16 @@ void ctx_deferred_rectangle   (Ctx *ctx, const char *name,
    ctx_rectangle (ctx, x, y, width, height);
 }
 
+void ctx_deferred_round_rectangle   (Ctx *ctx, const char *name,
+                                     float x, float y,
+                                     float width, float height,
+                                     float radius)
+{
+   CtxDeferredCommand *deferred = deferred_new (ctx, name);
+   deferred->is_rect = 1;
+   ctx_round_rectangle (ctx, x, y, width, height, radius);
+}
+
 static CtxList *ctx_deferred_commands (Ctx *ctx, const char *name, int *ret_count)
 {
   CtxList *matching = NULL;
@@ -60848,25 +60903,6 @@ static inline void vt_line_remove (VtLine *line, int pos)
 #endif
 #endif
 #if CTX_VT
-
-/* mrg - MicroRaptor Gui
- * Copyright (c) 2014 Øyvind Kolås <pippin@hodefoting.com>
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library. If not, see <http://www.gnu.org/licenses/>.
- */
-
-
 #ifndef _DEFAULT_SOURCE
 #define _DEFAULT_SOURCE
 #endif
@@ -61351,19 +61387,6 @@ void vt_audio (VT *vt, const char *command);
 
 /* atty - audio interface and driver for terminals
  * Copyright (C) 2020 Øyvind Kolås <pippin@gimp.org>
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library. If not, see <http://www.gnu.org/licenses/>. 
  */
 
 
@@ -65372,7 +65395,7 @@ int vt_special_glyph (Ctx *ctx, VT *vt, float x, float y, float cw, float ch, in
 /* DEC terminals/xterm family terminal with ANSI, utf8, vector graphics and
  * audio.
  *
- * Copyright (c) 2014, 2016, 2018, 2020 Øyvind Kolås <pippin@gimp.org>
+ * Copyright (c) 2014, 2016, 2018, 2020, 2024, 2025 Øyvind Kolås <pippin@gimp.org>
  *
  * Adhering to the standards with modern extensions.
  *
