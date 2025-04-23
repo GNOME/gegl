@@ -34,31 +34,38 @@ property_enum (fractal, _("Fractal type"),
 property_double (X1, _("X1"), -1.0)
   description   (_("X1 value, position"))
   value_range   (-50.0, 50.0)
+  ui_range      (-2.0, 2.0)
 
 property_double (X2, _("X2"), 0.50)
   description   (_("X2 value, position"))
   value_range   (-50.0, 50.0)
+  ui_range      (-2.0, 2.0)
 
 property_double (Y1, _("Y1"), -1.0)
   description   (_("Y1 value, position"))
   value_range   (-50.0, 50.0)
+  ui_range      (-2.0, 2.0)
 
 property_double (Y2, _("Y2"), 1.0)
   description   (_("Y2 value, position"))
   value_range   (-50.0, 50.0)
+  ui_range      (-2.0, 2.0)
 
 property_double (JX, _("JX"), 0.5)
   description (_("Julia seed X value, position"))
   value_range   (-50.0, 50.0)
+  ui_range      (-2.0, 2.0)
   ui_meta       ("visible", "fractal {julia}")
 
 property_double (JY, _("JY"), 0.5)
   description (_("Julia seed Y value, position"))
   value_range   (-50.0, 50.0)
+  ui_range      (-2.0, 2.0)
   ui_meta       ("visible", "$JX.visible")
 
 property_int    (depth, _("Depth"), 3)
   value_range   (1, 65536)
+  ui_range      (1, 50)
 
 property_double (bailout, _("Bailout length"), 10000.0)
   value_range   (0.0, G_MAXDOUBLE)
