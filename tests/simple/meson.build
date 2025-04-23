@@ -88,7 +88,7 @@ endforeach
 # exp combine test
 if gexiv2.found()
   test('exp_combine',
-    find_program('test-exp-combine.sh'),
+    find_program('test-exp-combine.py'),
     env: gegl_test_env,
     depends: [exp_combine, gegl_imgcmp],
     suite: 'simple',
