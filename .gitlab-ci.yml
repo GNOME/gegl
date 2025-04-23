@@ -17,7 +17,7 @@ stages:
     FDO_DISTRIBUTION_VERSION: '35'
     FDO_DISTRIBUTION_PACKAGES: >
       meson ninja-build gcc g++ git gettext glib2-devel libjpeg-turbo-devel
-      libpng-devel json-glib-devel lcms2-devel
+      libpng-devel json-glib-devel lcms2-devel libgexiv2-devel
     FDO_UPSTREAM_REPO: gnome/gegl
 
 fedora image:
@@ -38,6 +38,7 @@ fedora-x86_64:
             --default-library=both
             _build
     - ninja -C _build
+    - ninja test -C _build 
   artifacts:
     name: "gegl-${CI_JOB_NAME}-${CI_COMMIT_REF_NAME}"
     when: always
