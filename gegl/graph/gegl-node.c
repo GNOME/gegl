@@ -259,15 +259,15 @@ static void
 gegl_node_dispose (GObject *gobject)
 {
   GeglNode *self = GEGL_NODE (gobject);
-
+  self->inert = TRUE;
   if (self->priv->parent != NULL)
     {
       GeglNode *parent = self->priv->parent;
       self->priv->parent = NULL;
       gegl_node_remove_child (parent, self);
     }
-
   gegl_node_remove_children (self);
+  self->is_graph = FALSE;
   g_clear_object (&self->cache);
   g_clear_object (&self->priv->eval_manager);
 
@@ -1847,7 +1847,7 @@ gegl_node_get_producer (GeglNode     *node,
   GeglNode *ret;
   gpointer pad;
 
-  if (!GEGL_IS_NODE (node))
+  if (!GEGL_IS_NODE (node) || node->inert)
     return NULL;
 
   /* XXX: there should be public API to test if a node is

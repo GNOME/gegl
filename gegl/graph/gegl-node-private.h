@@ -90,7 +90,9 @@ struct _GeglNode
   GMutex          mutex;
 
   gint            passthrough;
-
+  gboolean        inert;  /* is set to TRUE in dispose() , to keep some
+			     traversals from entering nodes being deconstructed
+		           */
   /*< private >*/
   GeglNodePrivate *priv;
 };
