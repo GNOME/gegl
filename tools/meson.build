@@ -80,4 +80,4 @@ gen_loader = find_program('gen-loader.sh')
 gobj2dot   = find_program('gobj2dot.rb')
 
 
-meson.add_dist_script('dist-script.sh')
+meson.add_dist_script('dist-script.py')
