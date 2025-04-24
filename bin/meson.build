@@ -30,7 +30,7 @@ if mrg.found() and gexiv2.found() and lua.found()
   gegl_sources += custom_target('argvs-commands.inc',
     input : gegl_sources,
     output: 'argvs-commands.inc',
-    command: [argvs_extract, '@INPUT@'],
+    command: ['awk', '@INPUT@'],
     capture: true,
   )
 
