@@ -1,7 +1,7 @@
 project('gegl',
   'c', 'cpp',
   license: 'GPL3+',
-  version: '0.4.62',
+  version: '0.4.63',
   meson_version: '>=0.57.0',
   default_options: [
     'c_std=gnu11',
