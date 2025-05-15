@@ -202,7 +202,7 @@ endif
 
 # Generate native .pdb (CodeView) debug symbols (for DIA or DbgHelp debuggers and LLDB)
 pdb_support = cc.has_argument('-gcodeview') and cc.has_link_argument('-Wl,--pdb=')
-if os_win32 and pdb_support
+if os_win32 and pdb_support and cc.get_id() == 'clang'
   cflags_common += '-gcodeview'
   lflags_common += '-Wl,--pdb='
 endif
@@ -537,7 +537,7 @@ build_reference = get_option('gtk-doc') or build_gi_docgen
 # Install native debug data (.pdb) on Windows
 # Ideally meson should take care of it automatically.
 # See: https://github.com/mesonbuild/meson/issues/12977
-if os_win32 and pdb_support
+if os_win32 and pdb_support and cc.get_id() == 'clang'
   install_win_debug_script = find_program('./meson_install_win_debug.py')
   meson.add_install_script(install_win_debug_script)
 endif
