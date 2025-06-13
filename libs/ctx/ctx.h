@@ -1,4 +1,4 @@
-/* ctx-0.1.5 */
+/* ctx-0.1.6 */
 /*
  * Copyright (c) 2012, 2015, 2019, 2020, 2021, 2022, 2023, 2024, 2025
  * Øyvind Kolps <pippin@gimp.org> with contributors.
@@ -1739,6 +1739,7 @@ const char *ctx_get_font_name (Ctx *ctx, int no);
 
 int   ctx_load_font_file     (Ctx *ctx, const char *name, const char *path);
 int   ctx_load_font          (Ctx *ctx, const char *name, const char *data, unsigned int length);
+void  ctx_font_unload        (int font_no);
 
 float ctx_glyph_width   (Ctx *ctx, int glyph_id);
 
@@ -2041,7 +2042,7 @@ struct _CtxEvent {
   float   delta_y; /* y - prev_y, redundant - ..  */
 
 
-  unsigned int unicode; /* only valid for key-events, re-use as keycode? */
+  unsigned int scan; /* scan code of keyup/keydown events, not changing with layout  */
   const char *string;   /* as key can be "up" "down" "space" "backspace" "a" "b" "ø" etc .. */
                         /* this is also where the message is delivered for
                          * MESSAGE events
@@ -2257,6 +2258,7 @@ void      ctx_get_event_fds (Ctx *ctx, int *fd, int *count);
 
 
 int   ctx_pointer_is_down (Ctx *ctx, int no);
+int   ctx_touch_count (Ctx *ctx); // returns number of touch points / pointers down
 float ctx_pointer_x (Ctx *ctx);
 float ctx_pointer_y (Ctx *ctx);
 void  ctx_freeze (Ctx *ctx);
@@ -2310,6 +2312,10 @@ void  ctx_client_set_font_size (Ctx *ctx, int id, float font_size);
 float ctx_client_get_font_size (Ctx *ctx, int id);
 void  ctx_client_maximize      (Ctx *ctx, int id);
 void ctx_client_focus          (Ctx *ctx, int id);
+
+void ctx_clients_maximized_rect (Ctx *ctx, float x0, float y0, float width, float height);
+
+
 
 typedef struct _VT VT;
 void vt_feed_keystring    (VT *vt, CtxEvent *event, const char *str);
@@ -2525,6 +2531,7 @@ CtxCursor ctx_get_cursor           (Ctx *ctx);
 
 /* draw the ctx logo */
 void ctx_logo (Ctx *ctx, float x, float y, float dim);
+void ctx_logo_stroke (Ctx *ctx, float x, float y, float dim);
 
 /*** h2: parsing */
 
@@ -3609,10 +3616,10 @@ int       ctx_get_render_threads   (Ctx *ctx);
 #endif
 
 #ifndef CTX_VERSION_STRING
-#define CTX_VERSION_STRING "0.1.5"
+#define CTX_VERSION_STRING "0.1.6"
 #define CTX_VERSION_MAJOR 0
 #define CTX_VERSION_MINOR 1
-#define CTX_VERSION_MICRO 5
+#define CTX_VERSION_MICRO 6
 #endif
 #ifndef __CTX_H__
 #define __CTX_H__
@@ -4700,6 +4707,7 @@ struct _CtxString
 
 CtxString   *ctx_string_new_with_size  (const char *initial, int initial_size);
 CtxString   *ctx_string_new            (const char *initial);
+void        ctx_string_init            (CtxString *string, int initial_size);
 CtxString   *ctx_string_new_printf (const char *format, ...);
 char       *ctx_string_dissolve       (CtxString *string);
 void        ctx_string_free           (CtxString *string, int freealloc);
@@ -8277,8 +8285,8 @@ int css_xml_extent (Css *mrg, uint8_t *contents, float *width, float *height, fl
 #define SQZ_bidi_override 29328268u // "bidi-override"
 #define SQZ_black 271321868u // "black"
 #define SQZ_blend 316843154u // "blend"
-#define SQZ_blendMode 644815934u // "blendMode"
 #define SQZ_blending 3694082958u // "blending"
+#define SQZ_blendMode 644815934u // "blendMode"
 #define SQZ_blink 2515894180u // "blink"
 #define SQZ_block 2220858820u // "block"
 #define SQZ_blue 1702194373u // "blue"
@@ -8318,14 +8326,14 @@ int css_xml_extent (Css *mrg, uint8_t *contents, float *width, float *height, fl
 #define SQZ_clip 1885957319u // "clip"
 #define SQZ_closePath 3537486488u // "closePath"
 #define SQZ_cmyk 1803120071u // "cmyk"
-#define SQZ_cmykS 3263315852u // "cmykS"
-#define SQZ_cmykSpace 2366647638u // "cmykSpace"
 #define SQZ_cmyka 3355381580u // "cmyka"
 #define SQZ_cmykaS 3917993734u // "cmykaS"
-#define SQZ_col_resize 2272161114u // "col-resize"
+#define SQZ_cmykS 3263315852u // "cmykS"
+#define SQZ_cmykSpace 2366647638u // "cmykSpace"
 #define SQZ_colgroup 4270888898u // "colgroup"
 #define SQZ_color 4231809138u // "color"
 #define SQZ_colorSpace 4246256736u // "colorSpace"
+#define SQZ_col_resize 2272161114u // "col-resize"
 #define SQZ_compositingMode 3764262848u // "compositingMode"
 #define SQZ_conicGradient 1669326832u // "conicGradient"
 #define SQZ_context_menu 434478918u // "context-menu"
@@ -8360,17 +8368,17 @@ int css_xml_extent (Css *mrg, uint8_t *contents, float *width, float *height, fl
 #define SQZ_div 7760329u // "div"
 #define SQZ_dotted 1961166438u // "dotted"
 #define SQZ_drgb 1650946761u // "drgb"
-#define SQZ_drgbS 179784888u // "drgbS"
-#define SQZ_drgbSpace 1000873868u // "drgbSpace"
 #define SQZ_drgba 465014226u // "drgba"
 #define SQZ_drgbaS 2465325300u // "drgbaS"
+#define SQZ_drgbS 179784888u // "drgbS"
+#define SQZ_drgbSpace 1000873868u // "drgbSpace"
 #define SQZ_dt 29897u // "dt"
-#define SQZ_e_resize 3569673796u // "e-resize"
 #define SQZ_ellipse 3790670476u // "ellipse"
 #define SQZ_embed 3279610738u // "embed"
 #define SQZ_end 6581963u // "end"
 #define SQZ_endFrame 2645960260u // "endFrame"
 #define SQZ_endGroup 2864376370u // "endGroup"
+#define SQZ_e_resize 3569673796u // "e-resize"
 #define SQZ_euro 1869772235u // "euro"
 #define SQZ_evenOdd 3373267632u // "evenOdd"
 #define SQZ_evenodd 1852152574u // "evenodd"
@@ -8379,17 +8387,17 @@ int css_xml_extent (Css *mrg, uint8_t *contents, float *width, float *height, fl
 #define SQZ_feather 4162344430u // "feather"
 #define SQZ_file 1701603789u // "file"
 #define SQZ_fill 1819044301u // "fill"
+#define SQZ_fill_color 2350805940u // "fill-color"
 #define SQZ_fillRect 3070816944u // "fillRect"
 #define SQZ_fillRule 2262201016u // "fillRule"
-#define SQZ_fill_color 2350805940u // "fill-color"
 #define SQZ_fill_rule 1151472398u // "fill-rule"
 #define SQZ_first_child 439258010u // "first-child"
 #define SQZ_fixed 778407114u // "fixed"
 #define SQZ_float 2455282620u // "float"
 #define SQZ_flow_root 518738066u // "flow-root"
 #define SQZ_font 1953394637u // "font"
-#define SQZ_fontSize 2620910512u // "fontSize"
 #define SQZ_font_family 2798191102u // "font-family"
+#define SQZ_fontSize 2620910512u // "fontSize"
 #define SQZ_font_size 3477901146u // "font-size"
 #define SQZ_font_style 2628706306u // "font-style"
 #define SQZ_font_weight 1197895732u // "font-weight"
@@ -8404,9 +8412,9 @@ int css_xml_extent (Css *mrg, uint8_t *contents, float *width, float *height, fl
 #define SQZ_gradientTransform 1288938878u // "gradientTransform"
 #define SQZ_gradientUnits 2968072588u // "gradientUnits"
 #define SQZ_gray 2036429519u // "gray"
-#define SQZ_grayS 417614710u // "grayS"
 #define SQZ_graya 2560443068u // "graya"
 #define SQZ_grayaS 2408801086u // "grayaS"
+#define SQZ_grayS 417614710u // "grayS"
 #define SQZ_green 1517032782u // "green"
 #define SQZ_gt 29903u // "gt"
 #define SQZ_hanging 72134188u // "hanging"
@@ -8435,31 +8443,31 @@ int css_xml_extent (Css *mrg, uint8_t *contents, float *width, float *height, fl
 #define SQZ_justify 233888506u // "justify"
 #define SQZ_kerningPair 2079485344u // "kerningPair"
 #define SQZ_lab 6447577u // "lab"
-#define SQZ_labS 1398956505u // "labS"
 #define SQZ_laba 1633837529u // "laba"
 #define SQZ_labaS 4170772618u // "labaS"
+#define SQZ_labS 1398956505u // "labS"
 #define SQZ_laquo 64667100u // "laquo"
 #define SQZ_lch 6841305u // "lch"
-#define SQZ_lchS 1399350233u // "lchS"
 #define SQZ_lcha 1634231257u // "lcha"
 #define SQZ_lchaS 2598918966u // "lchaS"
+#define SQZ_lchS 1399350233u // "lchS"
 #define SQZ_left 1952867801u // "left"
 #define SQZ_letter_spacing 1326564462u // "letter-spacing"
 #define SQZ_li 27097u // "li"
 #define SQZ_lighten 2693650260u // "lighten"
 #define SQZ_lime 1701669337u // "lime"
 #define SQZ_line 1701734873u // "line"
+#define SQZ_linearGradient 905023680u // "linearGradient"
 #define SQZ_lineCap 3957741450u // "lineCap"
 #define SQZ_lineDash 2886130602u // "lineDash"
 #define SQZ_lineDashOffset 1904302200u // "lineDashOffset"
 #define SQZ_lineHeight 1698077880u // "lineHeight"
+#define SQZ_line_height 3733591786u // "line-height"
 #define SQZ_lineJoin 3891781172u // "lineJoin"
+#define SQZ_linethrough 34244248u // "linethrough"
 #define SQZ_lineTo 3077153258u // "lineTo"
 #define SQZ_lineWidth 3851910782u // "lineWidth"
-#define SQZ_line_height 3733591786u // "line-height"
 #define SQZ_line_width 1869007654u // "line-width"
-#define SQZ_linearGradient 905023680u // "linearGradient"
-#define SQZ_linethrough 34244248u // "linethrough"
 #define SQZ_link 1802398169u // "link"
 #define SQZ_list_item 2339943222u // "list-item"
 #define SQZ_lower 697158190u // "lower"
@@ -8474,8 +8482,8 @@ int css_xml_extent (Css *mrg, uint8_t *contents, float *width, float *height, fl
 #define SQZ_margin_top 625296560u // "margin-top"
 #define SQZ_maroon 3386542482u // "maroon"
 #define SQZ_max_height 129479668u // "max-height"
-#define SQZ_max_width 713333008u // "max-width"
 #define SQZ_maximize 4009606768u // "maximize"
+#define SQZ_max_width 713333008u // "max-width"
 #define SQZ_mdash 2043309408u // "mdash"
 #define SQZ_meta 1635018203u // "meta"
 #define SQZ_middle 2223770148u // "middle"
@@ -8487,7 +8495,6 @@ int css_xml_extent (Css *mrg, uint8_t *contents, float *width, float *height, fl
 #define SQZ_move 1702260699u // "move"
 #define SQZ_moveTo 3083476356u // "moveTo"
 #define SQZ_multiply 3976122014u // "multiply"
-#define SQZ_n_resize 202450980u // "n-resize"
 #define SQZ_navy 2037801437u // "navy"
 #define SQZ_nbsp 1886610141u // "nbsp"
 #define SQZ_ne_resize 2436514350u // "ne-resize"
@@ -8501,6 +8508,7 @@ int css_xml_extent (Css *mrg, uint8_t *contents, float *width, float *height, fl
 #define SQZ_normal 1883425054u // "normal"
 #define SQZ_not_allowed 224860282u // "not-allowed"
 #define SQZ_nowrap 3884678112u // "nowrap"
+#define SQZ_n_resize 202450980u // "n-resize"
 #define SQZ_ns_resize 1753032392u // "ns-resize"
 #define SQZ_nw_resize 3642132534u // "nw-resize"
 #define SQZ_oblique 2262696070u // "oblique"
@@ -8531,8 +8539,8 @@ int css_xml_extent (Css *mrg, uint8_t *contents, float *width, float *height, fl
 #define SQZ_pound 363756384u // "pound"
 #define SQZ_pre 6648545u // "pre"
 #define SQZ_pre_line 4122418998u // "pre-line"
-#define SQZ_pre_wrap 837003298u // "pre-wrap"
 #define SQZ_preserve 1666261276u // "preserve"
+#define SQZ_pre_wrap 837003298u // "pre-wrap"
 #define SQZ_print_symbols 669612738u // "print-symbols"
 #define SQZ_progress 2815872894u // "progress"
 #define SQZ_purple 3066163412u // "purple"
@@ -8549,23 +8557,23 @@ int css_xml_extent (Css *mrg, uint8_t *contents, float *width, float *height, fl
 #define SQZ_reg 6776293u // "reg"
 #define SQZ_rel 7103973u // "rel"
 #define SQZ_relArcTo 4253296276u // "relArcTo"
+#define SQZ_relative 979899102u // "relative"
 #define SQZ_relCurveTo 2548821600u // "relCurveTo"
 #define SQZ_relHorLineTo 3243288302u // "relHorLineTo"
 #define SQZ_relLineTo 1630005260u // "relLineTo"
 #define SQZ_relMoveTo 429673596u // "relMoveTo"
 #define SQZ_relQuadTo 2362773920u // "relQuadTo"
-#define SQZ_relSmoothTo 1725151068u // "relSmoothTo"
 #define SQZ_relSmoothqTo 2960208730u // "relSmoothqTo"
+#define SQZ_relSmoothTo 1725151068u // "relSmoothTo"
 #define SQZ_relVerLineTo 1112835164u // "relVerLineTo"
-#define SQZ_relative 979899102u // "relative"
 #define SQZ_resetPath 2864022032u // "resetPath"
 #define SQZ_restore 1405984258u // "restore"
 #define SQZ_reverse 2464792996u // "reverse"
 #define SQZ_rgb 6449125u // "rgb"
-#define SQZ_rgbS 1398958053u // "rgbS"
-#define SQZ_rgbSpace 1625332122u // "rgbSpace"
 #define SQZ_rgba 1633839077u // "rgba"
 #define SQZ_rgbaS 4158357036u // "rgbaS"
+#define SQZ_rgbS 1398958053u // "rgbS"
+#define SQZ_rgbSpace 1625332122u // "rgbSpace"
 #define SQZ_right 1751820526u // "right"
 #define SQZ_rotate 1488065704u // "rotate"
 #define SQZ_round 3173447652u // "round"
@@ -8574,13 +8582,12 @@ int css_xml_extent (Css *mrg, uint8_t *contents, float *width, float *height, fl
 #define SQZ_rtl 7107813u // "rtl"
 #define SQZ_rx 30949u // "rx"
 #define SQZ_ry 31205u // "ry"
-#define SQZ_s_resize 125328402u // "s-resize"
 #define SQZ_save 1702257127u // "save"
 #define SQZ_scale 2647970994u // "scale"
 #define SQZ_screen 3670530854u // "screen"
 #define SQZ_scroll 3099410214u // "scroll"
-#define SQZ_se_resize 315956726u // "se-resize"
 #define SQZ_sect 1952671207u // "sect"
+#define SQZ_se_resize 315956726u // "se-resize"
 #define SQZ_setFontSize 231476456u // "setFontSize"
 #define SQZ_setLineCap 174619460u // "setLineCap"
 #define SQZ_setLineJoin 4048631422u // "setLineJoin"
@@ -8602,6 +8609,7 @@ int css_xml_extent (Css *mrg, uint8_t *contents, float *width, float *height, fl
 #define SQZ_spreadMethod 3574032566u // "spreadMethod"
 #define SQZ_square 239664392u // "square"
 #define SQZ_src 6517479u // "src"
+#define SQZ_s_resize 125328402u // "s-resize"
 #define SQZ_start 4080984002u // "start"
 #define SQZ_startFrame 2128007688u // "startFrame"
 #define SQZ_startGroup 4085444064u // "startGroup"
@@ -8610,13 +8618,13 @@ int css_xml_extent (Css *mrg, uint8_t *contents, float *width, float *height, fl
 #define SQZ_stop_color 1175890462u // "stop-color"
 #define SQZ_stop_opacity 250359768u // "stop-opacity"
 #define SQZ_stroke 1444212908u // "stroke"
-#define SQZ_strokePos 888669104u // "strokePos"
-#define SQZ_strokeRect 1131907664u // "strokeRect"
-#define SQZ_strokeSource 2685374474u // "strokeSource"
 #define SQZ_stroke_color 1804158464u // "stroke-color"
 #define SQZ_stroke_linecap 535668102u // "stroke-linecap"
 #define SQZ_stroke_linejoin 1888005366u // "stroke-linejoin"
 #define SQZ_stroke_miterlimit 1499817720u // "stroke-miterlimit"
+#define SQZ_strokePos 888669104u // "strokePos"
+#define SQZ_strokeRect 1131907664u // "strokeRect"
+#define SQZ_strokeSource 2685374474u // "strokeSource"
 #define SQZ_stroke_width 2655701078u // "stroke-width"
 #define SQZ_style 3511288852u // "style"
 #define SQZ_sub 6452711u // "sub"
@@ -8627,18 +8635,18 @@ int css_xml_extent (Css *mrg, uint8_t *contents, float *width, float *height, fl
 #define SQZ_svg 6780647u // "svg"
 #define SQZ_sw_resize 2121684268u // "sw-resize"
 #define SQZ_syntax_highlight 1534043236u // "syntax-highlight"
-#define SQZ_tab_size 945510526u // "tab-size"
 #define SQZ_table 2705307032u // "table"
+#define SQZ_tab_size 945510526u // "tab-size"
 #define SQZ_tbody 3472781808u // "tbody"
 #define SQZ_td 25833u // "td"
 #define SQZ_teal 1818322409u // "teal"
 #define SQZ_text 1954047465u // "text"
 #define SQZ_textAlign 3594701278u // "textAlign"
-#define SQZ_textBaseline 1453773018u // "textBaseline"
-#define SQZ_textDirection 1179776176u // "textDirection"
 #define SQZ_text_align 519203916u // "text-align"
 #define SQZ_text_anchor 2618811808u // "text-anchor"
+#define SQZ_textBaseline 1453773018u // "textBaseline"
 #define SQZ_text_decoration 2191990606u // "text-decoration"
+#define SQZ_textDirection 1179776176u // "textDirection"
 #define SQZ_text_indent 1164860048u // "text-indent"
 #define SQZ_text_stroke 3855125514u // "text-stroke"
 #define SQZ_text_stroke_color 357760164u // "text-stroke-color"
@@ -8669,7 +8677,6 @@ int css_xml_extent (Css *mrg, uint8_t *contents, float *width, float *height, fl
 #define SQZ_viewbox 816983354u // "viewbox"
 #define SQZ_visibility 4182119682u // "visibility"
 #define SQZ_visible 2712656970u // "visible"
-#define SQZ_w_resize 505786646u // "w-resize"
 #define SQZ_white 518020662u // "white"
 #define SQZ_white_space 2063040106u // "white-space"
 #define SQZ_width 3799171678u // "width"
@@ -8677,6 +8684,7 @@ int css_xml_extent (Css *mrg, uint8_t *contents, float *width, float *height, fl
 #define SQZ_word_spacing 2779764612u // "word-spacing"
 #define SQZ_wrapLeft 3331521568u // "wrapLeft"
 #define SQZ_wrapRight 1810250152u // "wrapRight"
+#define SQZ_w_resize 505786646u // "w-resize"
 #define SQZ_x 241u // "x"
 #define SQZ_x1 12785u // "x1"
 #define SQZ_x2 13041u // "x2"
@@ -14255,9 +14263,11 @@ void ctx_consume_events (Ctx *ctx);
 void _ctx_bindings_key_press (CtxEvent *event, void *data1, void *data2);
 Ctx *ctx_new_ui (int width, int height, const char *backend);
 EvSource *ctx_evsource_mice_new (void);
+EvSource *ctx_evsource_tpad_new (void);
 EvSource *ctx_evsource_kb_term_new (void);
 EvSource *ctx_evsource_kb_raw_new (void);
 EvSource *ctx_evsource_linux_ts_new (void);
+EvSource *ctx_evsource_linux_tpad_new (void);
 void ctx_nct_consume_events (Ctx *ctx);
 
 typedef struct _CtxTermGlyph CtxTermGlyph;
@@ -14342,6 +14352,17 @@ typedef enum {
   CTX_FONT_TYPE_HB   = 4
 } CtxFontType;
 void ctx_cmyk_to_rgb (float c, float m, float y, float k, float *r, float *g, float *b);
+
+
+CtxFont *_ctx_font_from_no(int no);
+
+void ctx_generate_font (const char  *path,
+                        FILE        *out,
+                        const char  *name,
+                        const char  *license,
+                        const char  *utf8_glyphs,
+                        int          binary);
+
 
 #ifndef CTX_DRAWLIST_H
 #define CTX_DRAWLIST_H
@@ -15605,7 +15626,7 @@ ctx_fragment_image_rgb8_RGBA8_nearest (CtxRasterizer *rasterizer,
 
   for (i= 0; i < count; i ++)
   {
-    float z_recip = (zi!=0) * (1.0f/zi);
+    float z_recip = (zi>0) * (1.0f/zi);
     int u = (int)(xi * z_recip);
     int v = (int)(yi * z_recip);
     if ( u  <= 0 || v  <= 0 || u+1 >= bwidth-1 || v+1 >= bheight-1)
@@ -15622,11 +15643,12 @@ ctx_fragment_image_rgb8_RGBA8_nearest (CtxRasterizer *rasterizer,
 
   while (i < count)
   {
-    float z_recip = (zi!=0) * (1.0f/zi);
+    float z_recip = (zi>0) * (1.0f/zi);
     int u = (int)(xi * z_recip);
     int v = (int)(yi * z_recip);
-    for (unsigned int c = 0; c < 3; c++)
-      rgba[c] = data[(bwidth *v +u)*3+c];
+    if ((u >= 0) & (v >=0) & (u < bwidth) & (v<bheight))
+      for (unsigned int c = 0; c < 3; c++)
+        rgba[c] = data[(bwidth *v +u)*3+c];
     rgba[3] = global_alpha_u8;
     ctx_RGBA8_associate_alpha (rgba);
     xi += xi_delta;
@@ -16191,18 +16213,18 @@ ctx_fragment_image_rgba8_RGBA8_nearest_generic (CtxRasterizer *rasterizer,
           case CTX_EXTEND_NONE:
                   {
 
-    int32_t u1 = xi + xi_delta* (count-1);
-    int32_t v1 = yi + yi_delta* (count-1);
-    int32_t z1 = zi + zi_delta* (count-1);
+    int32_t u1 = xi + xi_delta * (count-1);
+    int32_t v1 = yi + yi_delta * (count-1);
+    int32_t z1 = zi + zi_delta * (count-1);
     uint32_t *edst = ((uint32_t*)out)+(count-1);
     for (; i < count; )
     {
-      float z_recip = (z1!=0) * (1.0f/z1);
+      float z_recip = (z1>0) * (1.0f/z1);
 
-      if (((u1*z_recip) <0) |
-          ((v1*z_recip) <0) |
-          ((u1*z_recip) >= (bwidth) - 1) |
-          ((v1*z_recip) >= (bheight) - 1))
+      if (((int)(u1*z_recip) < 0) |
+          ((int)(v1*z_recip) < 0) |
+          ((int)(u1*z_recip) >= (bwidth)) |
+          ((int)(v1*z_recip) >= (bheight)))
       {
         *edst-- = 0;
         count --;
@@ -16215,10 +16237,10 @@ ctx_fragment_image_rgba8_RGBA8_nearest_generic (CtxRasterizer *rasterizer,
 
   for (i= 0; i < count; i ++)
   {
-    float z_recip = (zi!=0) * (1.0f/zi);
+    float z_recip = (zi>0) * (1.0f/zi);
     int u = (int)(xi * z_recip);
     int v = (int)(yi * z_recip);
-    if ( (u <= 0) | (v  <= 0) | (u+1 >= bwidth-1) | (v+1 >= bheight-1))
+    if ( (u <= 0) | (v  <= 0) | (u >= bwidth-1) | (v >= bheight-1))
     {
       *((uint32_t*)(rgba))= 0;
     }
@@ -16233,9 +16255,10 @@ ctx_fragment_image_rgba8_RGBA8_nearest_generic (CtxRasterizer *rasterizer,
   if (global_alpha_u8!=255)
   while (i < count)
   {
-    float z_recip = (zi!=0) * (1.0f/zi);
+    float z_recip = (zi>0) * (1.0f/zi);
     int u = (int)(xi * z_recip);
     int v = (int)(yi * z_recip);
+    if ( (u >= 0) & (v  >= 0) & (u <  bwidth) & (v < bheight))
     ((uint32_t*)(&rgba[0]))[0] =
       ctx_RGBA8_mul_alpha_u32 (data[bwidth *v +u], global_alpha_u8);
     xi += xi_delta;
@@ -16247,9 +16270,10 @@ ctx_fragment_image_rgba8_RGBA8_nearest_generic (CtxRasterizer *rasterizer,
   else
   while (i < count)
   {
-    float z_recip = (zi!=0) * (1.0f/zi);
+    float z_recip = (zi>0) * (1.0f/zi);
     int u = (int)(xi * z_recip);
     int v = (int)(yi * z_recip);
+    if ( (u >= 0) & (v  >= 0) & (u <  bwidth) & (v < bheight))
     ((uint32_t*)(&rgba[0]))[0] = data[bwidth *v +u];
     xi += xi_delta;
     yi += yi_delta;
@@ -16263,7 +16287,7 @@ ctx_fragment_image_rgba8_RGBA8_nearest_generic (CtxRasterizer *rasterizer,
     if (global_alpha_u8!=255)
     while (i < count)
     {
-      float z_recip = (zi!=0) * (1.0f/zi);
+      float z_recip = (zi>0) * (1.0f/zi);
       int u = (int)(xi * z_recip);
       int v = (int)(yi * z_recip);
       _ctx_coords_restrict (extend, &u, &v, bwidth, bheight);
@@ -16278,7 +16302,7 @@ ctx_fragment_image_rgba8_RGBA8_nearest_generic (CtxRasterizer *rasterizer,
     else
     while (i < count)
     {
-      float z_recip = (zi!=0) * (1.0f/zi);
+      float z_recip = (zi>0) * (1.0f/zi);
       int u = (int)(xi * z_recip);
       int v = (int)(yi * z_recip);
       _ctx_coords_restrict (extend, &u, &v, bwidth, bheight);
@@ -16599,6 +16623,7 @@ ctx_fragment_image_rgba8_RGBA8_bi_scale (CtxRasterizer *rasterizer,
       uint32_t s1_ga = 0, s1_rb = 0;
       int du = (xi >> 8) & 0xff;
 
+      _ctx_coords_restrict (extend, &u, NULL, bwidth, bheight);
       src0 = data + u;
       src1 = ndata + u;
       ctx_lerp_RGBA8_split (src0[0],src1[0], dv, &s1_ga, &s1_rb);
@@ -16947,7 +16972,7 @@ ctx_fragment_image_rgba8_RGBA8_bi_generic (CtxRasterizer *rasterizer,
 
   for (i= 0; i < count; i ++)
   {
-    float z_recip = (zi!=0) * (1.0f/zi);
+    float z_recip = (zi>0) * (1.0f/zi);
     int u = (int)(xi * z_recip);
     int v = (int)(yi * z_recip);
     if ((u <= 0) | (v <= 0) | (u+1 >= bwidth-1) | (v+1 >= bheight-1))
@@ -16971,7 +16996,7 @@ ctx_fragment_image_rgba8_RGBA8_bi_generic (CtxRasterizer *rasterizer,
   if (global_alpha_u8==255)
   while (i < count)
   {
-    float zr = (zi!=0)*(1.0f/zi) * 256;
+    float zr = (zi>0)*(1.0f/zi) * 256;
     int du = (int)(xi * zr);
     int u = du >> 8;
     int dv = (int)(yi * zr);
@@ -17007,7 +17032,7 @@ ctx_fragment_image_rgba8_RGBA8_bi_generic (CtxRasterizer *rasterizer,
   else
   while (i < count)
   {
-    float zr = (zi!=0)*(1.0f/zi) * 256;
+    float zr = (zi>0)*(1.0f/zi) * 256;
     int du = (int)(xi * zr);
     int u = du >> 8;
     int dv = (int)(yi * zr);
@@ -17703,10 +17728,6 @@ ctx_fragment_linear_gradient_RGBA8 (CtxRasterizer *rasterizer, float x, float y,
 static void
 ctx_fragment_none_RGBA8 (CtxRasterizer *rasterizer, float x, float y, float z, void *out, int count, float dx, float dy, float dz)
 {
-  uint8_t *rgba_out = (uint8_t *) out;
-  uint32_t blank = 0;
-  for (int i = 0; i < count; i++)
-    memcpy (rgba_out + count * 4, &blank, 4);
 }
 
 static void
@@ -17804,16 +17825,6 @@ ctx_fragment_conic_gradient_RGBAF (CtxRasterizer *rasterizer, float x, float y, 
 #endif
 
 static void
-ctx_fragment_none_RGBAF (CtxRasterizer *rasterizer, float x, float y, float z, void *out, int count, float dx, float dy, float dz)
-{
-  float *rgba = (float *) out;
-  for (int i = 0; i < count * 4; i++)
-  {
-    rgba[i] = 0.0f;
-  }
-}
-
-static void
 ctx_fragment_color_RGBAF (CtxRasterizer *rasterizer, float x, float y, float z, void *out, int count, float dx, float dy, float dz)
 {
   float *rgba = (float *) out;
@@ -17860,14 +17871,14 @@ static CtxFragment ctx_rasterizer_get_fragment_RGBAF (CtxRasterizer *rasterizer)
     {
       case CTX_SOURCE_TEXTURE:         return ctx_fragment_image_RGBAF;
       case CTX_SOURCE_COLOR:           return ctx_fragment_color_RGBAF;
-      case CTX_SOURCE_NONE:            return ctx_fragment_none_RGBAF;
+      case CTX_SOURCE_NONE:            return ctx_fragment_none_RGBA8;
 #if CTX_GRADIENTS
       case CTX_SOURCE_LINEAR_GRADIENT: return ctx_fragment_linear_gradient_RGBAF;
       case CTX_SOURCE_RADIAL_GRADIENT: return ctx_fragment_radial_gradient_RGBAF;
       case CTX_SOURCE_CONIC_GRADIENT: return ctx_fragment_conic_gradient_RGBAF;
 #endif
     }
-  return ctx_fragment_none_RGBAF;
+  return ctx_fragment_none_RGBA8;
 }
 #endif
 
@@ -17893,14 +17904,18 @@ ctx_matrix_no_skew_or_rotate (CtxMatrix *matrix)
 static inline float
 ctx_matrix_determinant (const CtxMatrix *m);
 
-static int ctx_sane_transform(CtxMatrix *transform)
+static int ctx_valid_transform(CtxMatrix *transform)
 {
-  if ((int)(ctx_fabsf (transform->m[0][0]) < 0.0001f) |
-      (int)(ctx_fabsf (transform->m[1][1]) < 0.0001f) |
-      (int)(ctx_fabsf (transform->m[2][2]) < 0.0001f))
-          return 0;
+  float limit = 32000;
+  if ((int)(ctx_fabsf (transform->m[0][0]) < (1.0/limit)) |
+      (int)(ctx_fabsf (transform->m[1][1]) < (1.0/limit)) |
+      (int)(ctx_fabsf (transform->m[2][2]) < (1.0/limit)))
+         return 0;
+  for (int i = 0; i < 3; i++)
+    for (int j = 0; j < 3; j++)
+      if (isnan (transform->m[i][j]))
+	 return 0;
   return 1;
-  //return (ctx_fabsf(ctx_matrix_determinant (&gstate->transform)) >= 0.0001f);
 }
 
 static CtxFragment ctx_rasterizer_get_fragment_RGBA8 (CtxRasterizer *rasterizer)
@@ -17927,7 +17942,7 @@ static CtxFragment ctx_rasterizer_get_fragment_RGBA8 (CtxRasterizer *rasterizer)
            image_smoothing = 0;
 #endif
   
-        if (!ctx_sane_transform(&gstate->source_fill.transform))
+        if (!ctx_valid_transform(&gstate->source_fill.transform))
           return ctx_fragment_none_RGBA8;
 
 
@@ -18046,9 +18061,11 @@ static CtxFragment ctx_rasterizer_get_fragment_RGBA8 (CtxRasterizer *rasterizer)
                                ctx_fragment_image_rgba8_RGBA8_bi_scale:
                                ctx_fragment_image_rgba8_RGBA8_bi_scale_with_alpha;
                       }
+#if 0
                       return gstate->global_alpha_u8==255?
                         ctx_fragment_image_rgba8_RGBA8_bi_affine:
                         ctx_fragment_image_rgba8_RGBA8_bi_affine_with_alpha;
+#endif
                     }
                       return ctx_fragment_image_rgba8_RGBA8_bi_generic;
                   }
@@ -19962,14 +19979,6 @@ ctx_fragment_radial_gradient_GRAYAF (CtxRasterizer *rasterizer, float x, float y
 #endif
 
 static void
-ctx_fragment_none_GRAYAF (CtxRasterizer *rasterizer, float x, float y, float z, void *out, int count, float dx, float dy, float dz)
-{
-  float *ga = (float*)out;
-  for (int i = 0; i < count * 2; i++)
-    ga[i] = 0.0f;
-}
-
-static void
 ctx_fragment_color_GRAYAF (CtxRasterizer *rasterizer, float x, float y, float z, void *out, int count, float dx, float dy, float dz)
 {
   CtxSource *g = &rasterizer->state->gstate.source_fill;
@@ -20016,13 +20025,13 @@ static CtxFragment ctx_rasterizer_get_fragment_GRAYAF (CtxRasterizer *rasterizer
     {
       case CTX_SOURCE_TEXTURE:           return ctx_fragment_image_GRAYAF;
       case CTX_SOURCE_COLOR:           return ctx_fragment_color_GRAYAF;
-      case CTX_SOURCE_NONE:            return ctx_fragment_none_GRAYAF;
+      case CTX_SOURCE_NONE:            return ctx_fragment_none_RGBA8;
 #if CTX_GRADIENTS
       case CTX_SOURCE_LINEAR_GRADIENT: return ctx_fragment_linear_gradient_GRAYAF;
       case CTX_SOURCE_RADIAL_GRADIENT: return ctx_fragment_radial_gradient_GRAYAF;
 #endif
     }
-  return ctx_fragment_none_GRAYAF;
+  return ctx_fragment_none_RGBA8;
 }
 
 ctx_float_porter_duff(GRAYAF, 2,color,   rasterizer->fragment, rasterizer->state->gstate.blend_mode)
@@ -20235,7 +20244,7 @@ ctx_fragment_other_CMYKAF (CtxRasterizer *rasterizer, float x, float y, float z,
         ctx_fragment_color_RGBAF (rasterizer, x, y, z, rgba, count, dx, dy, dz);
         break;
       case CTX_SOURCE_NONE:
-        ctx_fragment_none_RGBAF (rasterizer, x, y, z, rgba, count, dx, dy, dz);
+        ctx_fragment_none_RGBA8 (rasterizer, x, y, z, rgba, count, dx, dy, dz);
         break;
 #if CTX_GRADIENTS
       case CTX_SOURCE_CONIC_GRADIENT:
@@ -24847,6 +24856,7 @@ ctx_rasterizer_define_texture (CtxRasterizer *rasterizer,
 
   int is_stroke = (rasterizer->state->source != 0);
   ctx_rasterizer_set_texture (rasterizer, eid, 0.0f, 0.0f);
+  _ctx_texture_unlock ();
 #if CTX_ENABLE_CM
   CtxSource *source = is_stroke?
                         &rasterizer->state->gstate.source_stroke:
@@ -24860,7 +24870,6 @@ ctx_rasterizer_define_texture (CtxRasterizer *rasterizer,
 #else
   if (is_stroke){};
 #endif
-  _ctx_texture_unlock ();
 }
 
 
@@ -36233,7 +36242,7 @@ _ctx_device_to_user (CtxState *state, float *x, float *y)
   _ctx_matrix_apply_transform (&m, x, y);
 }
 
-void
+static void
 _ctx_device_to_user_distance (CtxState *state, float *x, float *y)
 {
   CtxMatrix m = state->gstate.transform;
@@ -40934,6 +40943,7 @@ void ctx_set_size (Ctx *ctx, int width, int height)
   {
     ctx->width = width;
     ctx->height = height;
+    ctx->dirty ++;
     switch (ctx_backend_type (ctx))
     {
       case CTX_BACKEND_CTX:
@@ -41768,12 +41778,19 @@ _ctx_emit_cb_item (Ctx *ctx, CtxItem *item, CtxEvent *event, CtxEventType type, 
       transformed_event.start_y = ty;
     }
 
-
-    tx = transformed_event.delta_x;
-    ty = transformed_event.delta_y;
-    _ctx_matrix_apply_transform (&item->inv_matrix, &tx, &ty);
-    transformed_event.delta_x = tx;
-    transformed_event.delta_y = ty;
+    if ((type & CTX_DRAG_PRESS) ||
+        (type & CTX_DRAG_MOTION) ||
+        (type & CTX_MOTION))
+    {
+      float x0 = 0.0f;
+      float y0 = 0.0f;
+      tx = transformed_event.delta_x;
+      ty = transformed_event.delta_y;
+      _ctx_matrix_apply_transform (&item->inv_matrix, &tx, &ty);
+      _ctx_matrix_apply_transform (&item->inv_matrix, &x0, &y0);
+      transformed_event.delta_x = tx-x0;
+      transformed_event.delta_y = ty-y0;
+    }
   }
 
   transformed_event.state = ctx->events.modifier_state;
@@ -42626,6 +42643,16 @@ static const char *keymap_get_unshifted (const char *key)
   return key;
 }
 
+static int ctx_do_keymap = 1;
+
+void ctx_set_keymap (const char *keymap)
+{
+  if (keymap)
+    ctx_do_keymap = 1;
+  else
+    ctx_do_keymap = 0;
+}
+
 CTX_EXPORT int
 ctx_key_press (Ctx *ctx, unsigned int keyval,
                const char *string, uint32_t time)
@@ -42648,6 +42675,7 @@ ctx_key_press (Ctx *ctx, unsigned int keyval,
   {
           // code duplication.. perhaps always do this?
     {
+#if 1
        if (ctx->events.modifier_state & CTX_MODIFIER_STATE_SHIFT)
        {
           if(
@@ -42661,7 +42689,8 @@ ctx_key_press (Ctx *ctx, unsigned int keyval,
           }
           else 
           {
-            string = keymap_get_shifted (string);
+            if (ctx_do_keymap)
+              string = keymap_get_shifted (string);
           }
        }
        else
@@ -42669,9 +42698,11 @@ ctx_key_press (Ctx *ctx, unsigned int keyval,
           if (!(ctx->events.modifier_state & CTX_MODIFIER_STATE_ALT||
                 ctx->events.modifier_state & CTX_MODIFIER_STATE_CONTROL))
           {
-            string = keymap_get_unshifted (string);
+            if (ctx_do_keymap)
+              string = keymap_get_unshifted (string);
           }
        }
+#endif
 
        if ((ctx->events.modifier_state & CTX_MODIFIER_STATE_ALT))
        {
@@ -42711,6 +42742,8 @@ ctx_key_press (Ctx *ctx, unsigned int keyval,
     return ctx_pointer_press (ctx, x, y, b, 0);
   else if (!ctx_strcmp (event_type, "pr"))
     return ctx_pointer_release (ctx, x, y, b, 0);
+  else if (!ctx_strcmp (event_type, "sc"))
+    return ctx_scrolled (ctx, x, y, b, 0);
   //else if (!ctx_strcmp (event_type, "keydown"))
   //  return ctx_key_down (ctx, keyval, string + 8, time);
   //else if (!ctx_strcmp (event_type, "keyup"))
@@ -42726,7 +42759,7 @@ ctx_key_press (Ctx *ctx, unsigned int keyval,
     int i;
     event.ctx = ctx;
     event.type = CTX_KEY_PRESS;
-    event.unicode = keyval; 
+    event.scan = keyval; 
 #ifdef EMSCRIPTEN
     if (string)
       event.string = strdup(string);
@@ -42773,13 +42806,13 @@ ctx_key_press (Ctx *ctx, unsigned int keyval,
 }
 
 CTX_EXPORT int
-ctx_key_down (Ctx *ctx, unsigned int keyval,
+ctx_key_down (Ctx *ctx, unsigned int scan,
               const char *string, uint32_t time)
 {
   CtxItem *item = _ctx_detect (ctx, 0, 0, CTX_KEY_DOWN);
   CtxEvent event = {0,};
   if (!string)
-    string = ctx_keycode_to_keyname (0, keyval);
+    string = ctx_keycode_to_keyname (0, scan);
 
   if (!ctx_strcmp (string, "shift"))
   {
@@ -42801,7 +42834,7 @@ ctx_key_down (Ctx *ctx, unsigned int keyval,
     int i;
     event.ctx     = ctx;
     event.type    = CTX_KEY_DOWN;
-    event.unicode = keyval; 
+    event.scan    = scan; 
     event.string  = ctx_strdup(string);
     event.stop_propagate = 0;
     event.time    = time;
@@ -42825,13 +42858,13 @@ ctx_key_down (Ctx *ctx, unsigned int keyval,
 }
 
 CTX_EXPORT int
-ctx_key_up (Ctx *ctx, unsigned int keyval,
+ctx_key_up (Ctx *ctx, unsigned int scan,
             const char *string, uint32_t time)
 {
   CtxItem *item = _ctx_detect (ctx, 0, 0, CTX_KEY_UP);
   CtxEvent event = {0,};
   if (!string)
-    string = ctx_keycode_to_keyname (0, keyval);
+    string = ctx_keycode_to_keyname (0, scan);
 
   if (!ctx_strcmp (string, "shift"))
   {
@@ -42853,7 +42886,7 @@ ctx_key_up (Ctx *ctx, unsigned int keyval,
     int i;
     event.ctx = ctx;
     event.type = CTX_KEY_UP;
-    event.unicode = keyval; 
+    event.scan = scan; 
     event.string = ctx_strdup(string);
     event.stop_propagate = 0;
     event.time = time;
@@ -42908,6 +42941,15 @@ int ctx_pointer_is_down (Ctx *ctx, int no)
 {
   if (no < 0 || no > CTX_MAX_DEVICES) return 0;
   return ctx->events.pointer_down[no];
+}
+
+int ctx_touch_count (Ctx *ctx)
+{
+  int count = 0;
+  for (int i = 0; i < CTX_MAX_DEVICES; i++)
+    if (ctx->events.pointer_down[i])
+      count++;
+  return count;
 }
 
 void _ctx_debug_overlays (Ctx *ctx)
@@ -43285,6 +43327,7 @@ static void mice_set_coord (EvSource *ev_source, double x, double y)
   mrg_mice_this->x = x;
   mrg_mice_this->y = y;
 }
+
 
 EvSource *ctx_evsource_mice_new (void)
 {
@@ -43861,93 +43904,96 @@ typedef struct CtxRawKey{
   int code;
   const char *name;
   const char *shifted;
+  int scan;
 } CtxRawKey;
 
 
 static const CtxRawKey raw_key_map[]=
 {
-   {KEY_F1, "F1","F1"},
-   {KEY_F2, "F2","F2"},
-   {KEY_F3, "F3","F3"},
-   {KEY_F4, "F4","F4"},
-   {KEY_F5, "F5","F5"},
-   {KEY_F6, "F6","F6"},
-   {KEY_F7, "F7","F7"},
-   {KEY_F8, "F8","F8"},
-   {KEY_F9, "F9","F9"},
-   {KEY_F10, "F10","F10"},
-   {KEY_ESC, "escape","escape"},
-   {KEY_SPACE, "space","space"},
-   {KEY_ENTER, "return","return"},
-   {KEY_LEFT, "left","left"},
-   {KEY_RIGHT, "right","right"},
-   {KEY_UP, "up","up"},
-   {KEY_DOWN, "down","down"},
-   {KEY_HOME, "home","home"},
-   {KEY_END, "end","end"},
-   {KEY_PAGEUP, "page-up","page-up"},
-   {KEY_PAGEDOWN, "page-down","page-down"},
-   {KEY_INSERT, "insert","insert"},
-   {KEY_DELETE, "delete","delete"},
-   {KEY_LEFTCTRL, "control","control"},
-   {KEY_RIGHTCTRL, "control","control"},
-   {KEY_LEFTSHIFT, "shift","shift"},
-   {KEY_RIGHTSHIFT, "shift","shift"},
-   {KEY_LEFTALT, "alt","alt"},
-   {KEY_RIGHTALT, "alt","alt"},
-   {KEY_MINUS, "-","_"},
-   {KEY_EQUAL, "=","+"},
-   {KEY_BACKSPACE, "backspace","backspace"},
-   {KEY_TAB, "tab","tab"},
-   {KEY_GRAVE, "`","~"},
-   {KEY_BACKSLASH, "\\","|"},
-   {KEY_SLASH, "/","?"},
-   {KEY_1, "1","!"},
-   {KEY_2, "2","@"},
-   {KEY_3, "3","#"},
-   {KEY_4, "4","$"},
-   {KEY_5, "5","%"},
-   {KEY_6, "6","^"},
-   {KEY_7, "7","&"},
-   {KEY_8, "8","*"},
-   {KEY_9, "9","("},
-   {KEY_0, "0",")"},
+   {KEY_F1, "F1","F1", 112},
+   {KEY_F2, "F2","F2", 113},
+   {KEY_F3, "F3","F3", 114},
+   {KEY_F4, "F4","F4", 115},
+   {KEY_F5, "F5","F5", 116},
+   {KEY_F6, "F6","F6", 117},
+   {KEY_F7, "F7","F7", 118},
+   {KEY_F8, "F8","F8", 119},
+   {KEY_F9, "F9","F9", 120},
+   {KEY_F10, "F10","F10", 121},
 
-   {KEY_Q, "q","Q"},
-   {KEY_W, "w","W"},
-   {KEY_E, "e","E"},
-   {KEY_R, "r","R"},
-   {KEY_T, "t","T"},
-   {KEY_Y, "y","Y"},
-   {KEY_U, "u","U"},
-   {KEY_I, "i","I"},
-   {KEY_O, "o","O"},
-   {KEY_P, "p","P"},
-   {KEY_A, "a","A"},
-   {KEY_S, "s","S"},
-   {KEY_D, "d","D"},
-   {KEY_F, "f","F"},
-   {KEY_G, "g","G"},
-   {KEY_H, "h","H"},
-   {KEY_J, "j","J"},
-   {KEY_K, "k","K"},
-   {KEY_L, "l","L"},
-   {KEY_Z, "z","Z"},
-   {KEY_X, "x","X"},
-   {KEY_C, "c","C"},
-   {KEY_V, "v","V"},
-   {KEY_B, "b","B"},
-   {KEY_N, "n","N"},
-   {KEY_M, "m","M"},
-   {KEY_SEMICOLON, ";",":"},
-   {KEY_APOSTROPHE, "'", "\""},
-   {KEY_EQUAL, "=", "+"},
-   {KEY_MINUS, "-", "_"},
-   {KEY_COMMA, ",", "<"},
-   {KEY_DOT, ".", ">"},
-   {KEY_SLASH, "/", "?"},
-   {KEY_LEFTBRACE, "[", "{"},
-   {KEY_RIGHTBRACE, "]", "}"}
+
+   {KEY_ESC, "escape","escape", 27},
+   {KEY_SPACE, "space","space", 32},
+   {KEY_ENTER, "return","return", 13},
+   {KEY_LEFT, "left","left", 37},
+   {KEY_RIGHT, "right","right", 39},
+   {KEY_UP, "up","up", 38},
+   {KEY_DOWN, "down","down", 40},
+   {KEY_HOME, "home","home", 36},
+   {KEY_END, "end","end", 35},
+   {KEY_PAGEUP, "page-up","page-up", 33},
+   {KEY_PAGEDOWN, "page-down","page-down", 34},
+   {KEY_INSERT, "insert","insert", 45},
+   {KEY_DELETE, "delete","delete", 46},
+   {KEY_LEFTCTRL, "control","control", 17},
+   {KEY_RIGHTCTRL, "control","control", 17},
+   {KEY_LEFTSHIFT, "shift","shift", 16},
+   {KEY_RIGHTSHIFT, "shift","shift", 16},
+   {KEY_LEFTALT, "alt","alt", 18},
+   {KEY_RIGHTALT, "alt","alt", 18},
+   {KEY_MINUS, "-","_", 173},
+   {KEY_EQUAL, "=","+", 61},
+   {KEY_BACKSPACE, "backspace","backspace", 8},
+   {KEY_TAB, "tab","tab", 9},
+   {KEY_GRAVE, "`","~", 192},
+   {KEY_BACKSLASH, "\\","|", 220},
+   {KEY_SLASH, "/","?", 173},
+   {KEY_1, "1","!", '1'},
+   {KEY_2, "2","@", '2'},
+   {KEY_3, "3","#", '3'},
+   {KEY_4, "4","$", '4'},
+   {KEY_5, "5","%", '5'},
+   {KEY_6, "6","^", '6'},
+   {KEY_7, "7","&", '7'},
+   {KEY_8, "8","*", '8'},
+   {KEY_9, "9","(", '9'},
+   {KEY_0, "0",")", '0'},
+
+   {KEY_Q, "q","Q", 'Q'},
+   {KEY_W, "w","W", 'W'},
+   {KEY_E, "e","E", 'E'},
+   {KEY_R, "r","R", 'R'},
+   {KEY_T, "t","T", 'T'},
+   {KEY_Y, "y","Y", 'Y'},
+   {KEY_U, "u","U", 'U'},
+   {KEY_I, "i","I", 'I'},
+   {KEY_O, "o","O", 'O'},
+   {KEY_P, "p","P", 'P'},
+   {KEY_A, "a","A", 'A'},
+   {KEY_S, "s","S", 'S'},
+   {KEY_D, "d","D", 'D'},
+   {KEY_F, "f","F", 'F'},
+   {KEY_G, "g","G", 'G'},
+   {KEY_H, "h","H", 'H'},
+   {KEY_J, "j","J", 'J'},
+   {KEY_K, "k","K", 'K'},
+   {KEY_L, "l","L", 'L'},
+   {KEY_Z, "z","Z", 'Z'},
+   {KEY_X, "x","X", 'X'},
+   {KEY_C, "c","C", 'C'},
+   {KEY_V, "v","V", 'V'},
+   {KEY_B, "b","B",'B'},
+   {KEY_N, "n","N",'N'},
+   {KEY_M, "m","M",'M'},
+   {KEY_SEMICOLON, ";",":", 59},
+   {KEY_APOSTROPHE, "'", "\"", 222},
+   {KEY_EQUAL, "=", "+", 61},
+   {KEY_MINUS, "-", "_", 189},
+   {KEY_COMMA, ",", "<", 188},
+   {KEY_DOT, ".", ">", 190},
+   {KEY_SLASH, "/", "?", 191},
+   {KEY_LEFTBRACE, "[", "{", 219},
+   {KEY_RIGHTBRACE, "]", "}", 221}
 };
 
 
@@ -43971,16 +44017,16 @@ static char *ctx_evsource_kb_raw_get_event (void)
           switch (ev.value)
           {
             case 0: /* up */
-              ctx_key_up (ctx, 0, name, 0);
+              ctx_key_up (ctx, raw_key_map[i].scan, name, 0);
               break;
             case 1: /* down */
-              ctx_key_down (ctx, 0, name, 0);
+              ctx_key_down (ctx, raw_key_map[i].scan, name, 0);
               /*FALLTHROUGH*/
             case 2: /* repeat */
               if (strcmp(name,"shift") &&
                   strcmp(name,"control") &&
                   strcmp(name,"alt"))
-              ctx_key_press (ctx, 0, name, 0);
+              ctx_key_press (ctx, raw_key_map[i].scan, name, 0);
               break;
           }
           return NULL;
@@ -44018,6 +44064,11 @@ static void ctx_evsource_linux_ts_destroy (int sign);
 static int ctx_evsource_linux_ts_get_fd (void);
 
 
+static int ctx_evsource_linux_tpad_has_event (void);
+static char *ctx_evsource_linux_tpad_get_event (void);
+static void ctx_evsource_linux_tpad_destroy (int sign);
+static int ctx_evsource_linux_tpad_get_fd (void);
+
 /* kept out of struct to be reachable by atexit */
 static EvSource ctx_ev_src_linux_ts = {
   NULL,
@@ -44026,6 +44077,15 @@ static EvSource ctx_ev_src_linux_ts = {
   (void*)ctx_evsource_linux_ts_destroy,
   (void*)ctx_evsource_linux_ts_get_fd,
   NULL
+};
+
+static EvSource ctx_ev_src_linux_tpad = {
+  NULL,
+  (void*)ctx_evsource_linux_tpad_has_event,
+  (void*)ctx_evsource_linux_tpad_get_event,
+  (void*)ctx_evsource_linux_tpad_destroy,
+  (void*)ctx_evsource_linux_tpad_get_fd,
+  mice_set_coord
 };
 
 #if 0
@@ -44068,6 +44128,7 @@ static void real_ctx_evsource_linux_ts_destroy (int sign)
 #include <linux/input.h>
 
 static int ctx_ts_fd = -1;
+static int ctx_tpad_fd = -1;
 static void ctx_evsource_linux_ts_destroy (int sign)
 {
 #if 0
@@ -44076,6 +44137,16 @@ static void ctx_evsource_linux_ts_destroy (int sign)
   if (ctx_ts_fd)
     close (ctx_ts_fd);
   ctx_ts_fd = 0;
+}
+
+static void ctx_evsource_linux_tpad_destroy (int sign)
+{
+#if 0
+  real_ctx_evsource_linux_ts_destroy (-11);
+#endif
+  if (ctx_tpad_fd)
+    close (ctx_tpad_fd);
+  ctx_tpad_fd = 0;
 }
 
 static struct input_absinfo ctx_linux_ts_abs_x;
@@ -44145,6 +44216,60 @@ static int ctx_linux_ts_open (void)
   return -1;
 }
 
+static int ctx_linux_tpad_open (void)
+{
+  char path[64]="";
+  int fd = -1;
+  for (int i = 0; i < 10; i++)
+  {
+    sprintf (path, "/dev/input/event%i", i);
+    fd = open(path, O_RDONLY | O_CLOEXEC );
+    unsigned long evbits = 0;
+    size_t nabs  = ABS_MAX/8+1;
+    unsigned char absbits[nabs];
+    unsigned long propbits = 0;
+    if (fd != -1)
+    {
+      if (ioctl (fd, EVIOCGBIT(EV_ABS, sizeof(absbits)), &absbits) != -1)
+      if (ioctl (fd, EVIOCGPROP(sizeof (unsigned long)), &propbits) != -1)
+      if (ioctl (fd, EVIOCGBIT(0, sizeof (unsigned long)), &evbits) != -1)
+      {
+        if ((evbits & (1<<EV_ABS)))
+        {
+          int touch = 0;
+          size_t nchar = KEY_MAX/8+1;
+          unsigned char bits[nchar];
+#define CHECK_BIT(bits,bitno)   bits[(bitno)/8] & (1 << ((bitno) & 7));
+          if (ioctl (fd, EVIOCGBIT(EV_KEY, sizeof (bits)), &bits)>=0)
+            touch = CHECK_BIT(bits, BTN_TOUCH);
+          int pointer = propbits & (1<<INPUT_PROP_POINTER);
+          //int x_axis         = CHECK_BIT(absbits, ABS_X);
+          //int y_axis         = CHECK_BIT(absbits, ABS_Y);
+          int slot           = CHECK_BIT(absbits,ABS_MT_SLOT);
+          int x_axis_mt      = CHECK_BIT(absbits,ABS_MT_POSITION_X);
+          int y_axis_mt      = CHECK_BIT(absbits,ABS_MT_POSITION_Y);
+          int mt_tracking_id = CHECK_BIT(absbits,ABS_MT_TRACKING_ID);
+#undef CHECK_BIT
+
+          if (touch){};
+
+          if (  (pointer) && 
+              (x_axis_mt && y_axis_mt && mt_tracking_id && slot))
+          { // multi-touch, protocol-B
+            ioctl(fd, EVIOCGABS(ABS_MT_POSITION_X), &ctx_linux_ts_abs_x);
+            ioctl(fd, EVIOCGABS(ABS_MT_POSITION_Y), &ctx_linux_ts_abs_y);
+            ts_is_mt = 1;
+            return fd;
+          }
+        }
+      }
+      close (fd);
+    }
+  }
+  return -1;
+}
+
+
 static int ctx_evsource_linux_ts_init ()
 {
    ctx_ts_fd = ctx_linux_ts_open ();
@@ -44170,6 +44295,32 @@ static int ctx_evsource_linux_ts_init ()
 
   return 0;
 }
+
+static int ctx_evsource_linux_tpad_init ()
+{
+   ctx_tpad_fd = ctx_linux_tpad_open ();
+
+   if( -1 == ctx_tpad_fd )
+   {
+     ctx_tpad_fd = 0;
+     return -1;
+   }
+
+   char name[ 32 ];
+   if( -1 == ioctl( ctx_tpad_fd, EVIOCGNAME( sizeof( name )), name ))
+   {
+     ctx_tpad_fd = 0;
+     return -1;
+   }
+
+   if( -1 == ioctl( ctx_tpad_fd, EVIOCGRAB, (void*)1 ))
+   {
+     ctx_tpad_fd = 0;
+     return -1;
+   }
+
+  return 0;
+}
 static int ctx_evsource_linux_ts_has_event (void)
 {
   struct timeval tv;
@@ -44180,6 +44331,18 @@ static int ctx_evsource_linux_ts_has_event (void)
   FD_SET(ctx_ts_fd, &rfds);
   tv.tv_sec = 0; tv.tv_usec = 0;
   retval = select (ctx_ts_fd+1, &rfds, NULL, NULL, &tv);
+  return retval == 1;
+}
+static int ctx_evsource_linux_tpad_has_event (void)
+{
+  struct timeval tv;
+  int retval;
+
+  fd_set rfds;
+  FD_ZERO (&rfds);
+  FD_SET(ctx_tpad_fd, &rfds);
+  tv.tv_sec = 0; tv.tv_usec = 0;
+  retval = select (ctx_tpad_fd+1, &rfds, NULL, NULL, &tv);
   return retval == 1;
 }
 
@@ -44206,7 +44369,7 @@ static char *ctx_evsource_linux_ts_get_event (void)
   struct input_event ev;
   static int down_count = 0;
   memset (&ev, 0, sizeof (ev));
-  Ctx *ctx = (void*)ctx_ev_src_mice.priv;
+  Ctx *ctx = (void*)ctx_ev_src_linux_ts.priv;
   if (-1==read(ctx_ts_fd, &ev, sizeof(ev)))
   {
     return NULL;
@@ -44298,10 +44461,152 @@ static char *ctx_evsource_linux_ts_get_event (void)
   return NULL;
 }
 
+static char *ctx_evsource_linux_tpad_get_event (void)
+{
+  struct input_event ev;
+  static int down_count = 0;
+  static float tpad_x = 0;
+  static float tpad_y = 0;
+
+  float tpad_acceleration = 1.2f; // TODO : make it tunable
+  static float pad_width = 1024; //  TODO : same
+  static float pad_height = 600;
+
+  memset (&ev, 0, sizeof (ev));
+  Ctx *ctx = (void*)ctx_ev_src_linux_tpad.priv;
+  if (-1==read(ctx_tpad_fd, &ev, sizeof(ev)))
+  {
+    return NULL;
+  }
+
+  {
+    if (ev.type == EV_KEY)
+    {
+     if ((ev.code == BTN_LEFT || ev.code == BTN_TOUCH))
+     {
+        int prev_down_count = down_count;
+
+        switch (ev.value)
+        {
+            case 0: /* up */
+              down_count--;
+	      if (ev.code == BTN_LEFT)
+              ctx_pointer_release (ctx, tpad_x, tpad_y, 0, 0);
+              break;
+            case 1: /* down */
+              down_count++;
+	      if (ev.code == BTN_LEFT)
+              ctx_pointer_press (ctx, tpad_x, tpad_y, 0, 0);
+              break;
+        }
+        if ( (prev_down_count!=0) != (down_count!=0))
+        {
+           if (down_count)
+             ctx_mt[0].id = 23;
+           else
+             ctx_mt[0].id = -1;
+        }
+     }
+    }
+    else if (ev.type == EV_ABS)
+    {
+      switch (ev.code)
+      {
+        case ABS_X: ctx_mt[0].x = (ev.value - ctx_linux_ts_abs_x.minimum) * pad_width / (ctx_linux_ts_abs_x.maximum- ctx_linux_ts_abs_x.minimum + 1);
+        break;
+        case ABS_Y: ctx_mt[0].y = (ev.value - ctx_linux_ts_abs_y.minimum) * pad_height / (ctx_linux_ts_abs_y.maximum- ctx_linux_ts_abs_y.minimum + 1);
+        break;
+      }
+    }
+  }
+
+  static float start_drag_x = 0;
+  static float start_drag_y = 0;
+  static float prev_drag_x = -1;
+  static float prev_drag_y = -1;
+  static uint64_t press_time = 0;
+
+  if (ev.type == EV_SYN && ev.code == SYN_REPORT)
+  { 
+    for (int i = 0; i < (ts_is_mt?CTX_MAX_DEVICES:1); i++)
+    {
+      if ((ctx_mt[i].id != ctx_mt[i].reported_id) ||
+          (ctx_mt[i].id >= 0 && (
+             ctx_mt[i].x != ctx_mt[i].reported_x ||
+            ctx_mt[i].y != ctx_mt[i].reported_y)))
+      {
+       if (ctx_mt[i].id == -1)
+       {
+          // RELEASE
+          if (ctx_ticks () - press_time < 200 * 1000 && 
+			   (hypotf (start_drag_x - ctx_mt[i].x,
+				   start_drag_y - ctx_mt[i].y) < pad_height / 14))
+	  {
+            ctx_pointer_press (ctx, tpad_x, tpad_y, 0, 0);
+            ctx_pointer_release (ctx, tpad_x, tpad_y, 0, 0);
+	  }
+       }
+       else if (ctx_mt[i].id != ctx_mt[i].reported_id)
+       {
+          // PRESS
+          press_time = ctx_ticks (); 
+          prev_drag_x = start_drag_x = ctx_mt[i].x;
+          prev_drag_y = start_drag_y = ctx_mt[i].y;
+       }
+       else
+       {
+	 float delta_x = ctx_mt[i].x - prev_drag_x;
+	 float delta_y = ctx_mt[i].y - prev_drag_y;
+	 if (prev_drag_x == -1) delta_x = 0;
+	 if (prev_drag_y == -1) delta_y = 0;
+
+
+	 if (delta_x < 0)
+	   delta_x = - powf(-delta_x, tpad_acceleration);
+	 else
+	   delta_x = powf(delta_x, tpad_acceleration);
+
+	 if (delta_y < 0)
+	   delta_y = - powf(-delta_y, tpad_acceleration);
+	 else
+	   delta_y = powf(delta_y, tpad_acceleration);
+
+	 tpad_x += delta_x;
+	 tpad_y += delta_y;
+	 if (tpad_x < 0)
+	   tpad_x = 0;
+	 if (tpad_y < 0)
+           tpad_y = 0;
+	 if (tpad_x > ctx_width (ctx))
+	   tpad_x = ctx_width (ctx);
+	 if (tpad_y > ctx_height (ctx))
+           tpad_y = ctx_height (ctx);
+         ctx_pointer_motion (ctx, tpad_x, tpad_y, 0, 0);
+         prev_drag_x = ctx_mt[i].x;
+         prev_drag_y = ctx_mt[i].y;
+       }
+
+
+       ctx_mt[i].reported_id = ctx_mt[i].id;
+       ctx_mt[i].reported_x  = ctx_mt[i].x;
+       ctx_mt[i].reported_y  = ctx_mt[i].y;
+      }
+    }
+  }
+  return NULL;
+}
+
+
 static int ctx_evsource_linux_ts_get_fd (void)
 {
   if (ctx_ts_fd >= 0)
     return ctx_ts_fd;
+  return 0;
+}
+static int ctx_evsource_linux_tpad_get_fd (void)
+{
+  if (ctx_tpad_fd >= 0)
+    return ctx_tpad_fd;
   return 0;
 }
 
@@ -44312,6 +44617,17 @@ EvSource *ctx_evsource_linux_ts_new (void)
   if (ctx_evsource_linux_ts_init() == 0)
   {
     return &ctx_ev_src_linux_ts;
+  }
+  return NULL;
+}
+
+EvSource *ctx_evsource_linux_tpad_new (void)
+{
+  for (int i = 0; i < CTX_MAX_DEVICES; i++) ctx_mt[i].id=ctx_mt[i].reported_id=-1;
+
+  if (ctx_evsource_linux_tpad_init() == 0)
+  {
+    return &ctx_ev_src_linux_tpad;
   }
   return NULL;
 }
@@ -45126,7 +45442,7 @@ static void
 ctx_parser_key_down (CtxEvent *event, void *data1, void *data2)
 {
   char buf[128];
-  snprintf (buf, sizeof(buf)-1, "keydown %s\n", event->string);
+  snprintf (buf, sizeof(buf)-1, "keydown %i %i\n", event->scan, event->state);
   ctx_parser_response ((CtxParser*)data1, buf, strlen (buf));
 }
 
@@ -45134,7 +45450,7 @@ static void
 ctx_parser_key_up (CtxEvent *event, void *data1, void *data2)
 {
   char buf[128];
-  snprintf (buf, sizeof(buf)-1, "keyup %s\n", event->string);
+  snprintf (buf, sizeof(buf)-1, "keyup %i %i\n", event->scan, event->state);
   ctx_parser_response ((CtxParser*)data1, buf, strlen (buf));
 }
 
@@ -47556,14 +47872,12 @@ ctx_hasher_process (Ctx *ctx, const CtxCommand *command)
           float width = ctx_glyph_width (rasterizer->backend.ctx, c->u32.a0);
           float height = ctx_get_font_size (rasterizer->backend.ctx);
 
-          float tx = rasterizer->x;
-          float ty = rasterizer->y;
+          float tx = rasterizer->x - width;
+          float ty = rasterizer->y - height * 2;
           float tx2 = rasterizer->x + width;
           float ty2 = rasterizer->y + height * 2;
           CtxIntRectangle shape_rect;
           ctx_device_corners_to_user_rect (rasterizer->state, tx,ty,tx2,ty2, &shape_rect);
-
-          shape_rect.y-=shape_rect.height/2;
 
 
         {
@@ -49084,8 +49398,8 @@ static void ctx_net_end_frame (Ctx *ctx)
     //int wait_time = time + 100; // this make us aim for 10fps...
                                 // we do this to avoid overwhelming uarts
     //int wait_time = time + 50; // this make us aim for 20fps
-    //int wait_time = time + 25; // this make us aim for 40fps
-    int wait_time = time + 33; // this make us aim for 30fps
+    int wait_time = time + 25; // this make us aim for 40fps
+    //int wait_time = time + 33; // this make us aim for 30fps
     do {
        ctx_consume_events (net->backend.ctx);
        time = ctx_ms(ctx);
@@ -49247,13 +49561,11 @@ static void ctx_net_consume_events (Ctx *ctx)
       }
       else if (!strcmp (event_type, "keyup"))
       {
-        char buf[4]={ (char)x, 0 };
-        ctx_key_up (ctx, (int)x, buf, 0);
+        ctx_key_up (ctx, (int)x, NULL, 0);
       }
       else if (!strcmp (event_type, "keydown"))
       {
-        char buf[4]={ (char)x, 0 };
-        ctx_key_down (ctx, (int)x, buf, 0);
+        ctx_key_down (ctx, (int)x, NULL, 0);
       }
       else
       {
@@ -49302,6 +49614,22 @@ Ctx *ctx_new_net (int width, int height, int flags, const char *hostip, int port
     ctx_free (net);
     return NULL;
   }
+
+
+  // make compression opt in for net backend
+  // the problem is really in the parser side not having decompressor
+  // 
+  if (getenv ("CTX_COMPRESS"))
+  {
+    int val = atoi (getenv ("CTX_COMPRESS"));
+    if (val != 1)
+      flags &= ~CTX_FLAG_COMPRESS;
+    else
+      flags |= CTX_FLAG_COMPRESS;
+  }
+  else
+      flags &= ~CTX_FLAG_COMPRESS;
+
 
   net->flags = flags;
   if (width <= 0 || height <= 0)
@@ -49424,7 +49752,7 @@ static int cb_jobs_in_flight (Ctx *ctx)
   return sum;
 }
 
-void cb_clear_jobs (Ctx *ctx)
+static void cb_clear_jobs (Ctx *ctx)
 {
   CtxCbBackend *cb = (CtxCbBackend*)ctx->backend;
   for (int i = 0; i < cb->n_jobs; i++)
@@ -50153,7 +50481,7 @@ ctx_cb_render_thread (CtxCbBackend *cb_backend)
         cb_backend->config.renderer_idle (ctx, cb_backend->config.renderer_idle_user_data?
                                                cb_backend->config.renderer_idle_user_data:
                                                cb_backend->config.user_data);
-      usleep (500);
+      usleep (50 * 100);
       mtx_lock (&cb_backend->mtx);
       if (ctx_cb_kill)
         break;
@@ -50208,6 +50536,8 @@ ctx_cb_render_thread (CtxCbBackend *cb_backend)
 #if CTX_PARSER & CTX_EVENTS
 static void ctx_draw_pointer (Ctx *ctx, float x, float y, CtxCursor cursor)
 {
+    if (x == 0.0f && y == 0.0f)
+      return;
 #define CURSOR_POST " rgba 0 0 0 0.5 z preserve fill rgba 1 1 1 0.5 lineWidth 2 stroke"
     const char *drawing = "M 0 0 L 30 40 L 10 50 z" CURSOR_POST;
     ctx_save(ctx);
@@ -50416,7 +50746,7 @@ ctx_cb_end_frame (Ctx *ctx)
     int64_t cur_time = ctx_ticks () / 1000;
     if (prev_time)
     {
-      char buf[22];
+      static char buf[22]="";
       float  ms = ((cur_time-prev_time));
       float fps = 1000.0f/ms;
       static float dfps = 0.0f;
@@ -50427,9 +50757,14 @@ ctx_cb_end_frame (Ctx *ctx)
         else
           dfps = dfps * 0.3f + fps * 0.7f;
       }
-      sprintf (buf, "%2.1ffps", (double)dfps);
-
-      if (cb_backend->config.windowtitle)
+      static int frames = 0;
+      frames ++;
+      if (frames > 4)
+      {
+        sprintf (buf, "%2.1ffps", (double)dfps);
+	frames = 0;
+      }
+      if (cb_backend->config.windowtitle && 0)
       {
 #if CTX_EVENTS
         ctx_windowtitle (ctx, buf);
@@ -50522,6 +50857,16 @@ void ctx_cb_destroy (void *data)
   {
     ctx_free (cb_backend->scratch);
   }
+  for (int i = 0; i < 2; i++)
+  {
+    if (cb_backend->rctx[i])
+    {
+      ctx_destroy (cb_backend->rctx[i]);
+      cb_backend->rctx[i] = NULL;
+    }
+  }
+
+
   free (data);
 }
 
@@ -50624,12 +50969,22 @@ ctx_cb_process (Ctx *ctx, const CtxCommand *command)
 
 }
 
+static int is_running_under_valgrind (void)
+{
+  char *p = getenv ("LD_PRELOAD");
+  if (p == NULL)
+    return 0;
+  return (strstr (p, "/valgrind/") ||
+          strstr (p, "/vgpreload"));
+}
+
 Ctx *ctx_new_cb (int width, int height, CtxCbConfig *config)
 {
   Ctx          *ctx        = ctx_new_drawlist (width, height);
   CtxBackend   *backend    = (CtxBackend*)ctx_calloc (1, sizeof (CtxCbBackend));
   CtxCbBackend *cb_backend = (CtxCbBackend*)backend;
-
+  if (is_running_under_valgrind ())
+    config->flags &= ~CTX_FLAG_RENDER_THREAD;
   backend->start_frame = ctx_cb_start_frame;
   backend->end_frame   = ctx_cb_end_frame;
   backend->reset_caches = ctx_cb_reset_caches;
@@ -50731,18 +51086,16 @@ Ctx *ctx_new_cb (int width, int height, CtxCbConfig *config)
 
 
 #endif
-    usleep (1000 * 20);
 
     if (cb_backend->config.renderer_init)
     {
-       usleep (20 * 1000);
        int n = 250;
        mtx_lock (&cb_backend->mtx);
        while (cb_backend->rendering == -1 && n-- > 0){
           mtx_unlock (&cb_backend->mtx);
 #if CTX_EVENTS
           int start = ctx_ms (ctx);
-          while (ctx_ms (ctx) - start < 20) {};
+          while (ctx_ms (ctx) - start < 100) {};
 #else
           usleep(20 * 1000);
 #endif
@@ -51546,6 +51899,10 @@ Ctx *ctx_new_fb_cb (int width, int height, int flags)
   if (!mice)
     mice = ctx_evsource_mice_new ();
 #endif
+
+  if (!mice)
+    mice = ctx_evsource_linux_tpad_new ();
+
   if (mice)
   {
     cb->evsource[cb->evsource_count++] = mice;
@@ -51687,12 +52044,19 @@ static void sdl_cb_consume_events (Ctx *ctx, void *user_data)
         SDL_CaptureMouse (SDL_FALSE);
         ctx_pointer_release (ctx, event.button.x, event.button.y, event.button.button, 0);
         break;
-#if 0
+#if 1
       case SDL_MOUSEWHEEL:
+#if SDL_VERSION_ATLEAST(2, 26, 0)
         if (event.wheel.y < 0)
           ctx_scrolled (ctx, event.wheel.mouseX, event.wheel.mouseY, CTX_SCROLL_DIRECTION_UP, 0);
         else if (event.wheel.y > 0)
           ctx_scrolled (ctx, event.wheel.mouseX, event.wheel.mouseY, CTX_SCROLL_DIRECTION_DOWN, 0);
+#else
+        if (event.wheel.y < 0)
+          ctx_scrolled (ctx, ctx_pointer_x(ctx), ctx_pointer_y(ctx), CTX_SCROLL_DIRECTION_UP, 0);
+        else if (event.wheel.y > 0)
+          ctx_scrolled (ctx, ctx_pointer_x(ctx), ctx_pointer_y(ctx), CTX_SCROLL_DIRECTION_DOWN, 0);
+#endif
         break;
 #endif
       case SDL_MOUSEMOTION:
@@ -51708,15 +52072,8 @@ static void sdl_cb_consume_events (Ctx *ctx, void *user_data)
         break;
       case SDL_FINGERDOWN:
         {
-        static int fdowns = 0;
-        fdowns ++;
-        if (fdowns > 1) // the very first finger down from SDL seems to be
-                        // mirrored as mouse events, later ones not - at
-                        // least under wayland
-        {
           ctx_pointer_press (ctx, event.tfinger.x * sdl->width, event.tfinger.y * sdl->height, 
           (event.tfinger.fingerId%10) + 4, 0);
-        }
         }
         break;
       case SDL_FINGERUP:
@@ -51739,7 +52096,7 @@ static void sdl_cb_consume_events (Ctx *ctx, void *user_data)
             const char *name = event.text.text;
             int keycode = 0;
             if (!strcmp (name, " ") ) { name = "space"; }
-            if (name[0] && name[1] == 0)
+            if(0)if (name[0] && name[1] == 0)
             {
               keycode = name[0];
               keycode = toupper (keycode);
@@ -51845,21 +52202,7 @@ static void sdl_cb_renderer_idle (Ctx *ctx, void *user_data)
 
   if (ctx_width(ctx) != sdl->width ||
       ctx_height(ctx) != sdl->height)
-  {
-    CtxCbBackend *cb = (CtxCbBackend*)ctx_get_backend (ctx);
-    SDL_DestroyTexture (sdl->texture);
-    sdl->texture = SDL_CreateTexture (sdl->backend, SDL_PIXELFORMAT_ABGR8888,
-                          SDL_TEXTUREACCESS_STREAMING, sdl->width, sdl->height);
-    ctx_set_size (ctx, sdl->width, sdl->height);
-    ctx_reset_caches (ctx);
-    if (sdl->fb)
-    {
-      ctx_free (sdl->fb);
-      sdl->fb = (uint8_t*)ctx_calloc (4, sdl->width * sdl->height);
-      cb->config.fb = sdl->fb;
-      cb->config.buffer_size = sdl->width * sdl->height * 2;
-    }
-  }
+    ctx_queue_draw (ctx);
 
   if (sdl->fullscreen != sdl->prev_fullscreen)
   {
@@ -51961,6 +52304,25 @@ static int sdl_cb_frame_done (Ctx *ctx, void *user_data, int x, int y, int width
     }
   }
 
+
+  if (ctx_width(ctx) != sdl->width ||
+      ctx_height(ctx) != sdl->height)
+  {
+    CtxCbBackend *cb = (CtxCbBackend*)ctx_get_backend (ctx);
+    SDL_DestroyTexture (sdl->texture);
+    sdl->texture = SDL_CreateTexture (sdl->backend, SDL_PIXELFORMAT_ABGR8888,
+                          SDL_TEXTUREACCESS_STREAMING, sdl->width, sdl->height);
+    ctx_set_size (ctx, sdl->width, sdl->height);
+    ctx_reset_caches (ctx);
+    if (sdl->fb)
+    {
+      ctx_free (sdl->fb);
+      sdl->fb = (uint8_t*)ctx_calloc (4, sdl->width * sdl->height);
+      cb->config.fb = sdl->fb;
+      cb->config.buffer_size = sdl->width * sdl->height * 2;
+    }
+  }
+
   return 0;
 }
 
@@ -52017,6 +52379,11 @@ static void sdl_cb_renderer_stop (Ctx *ctx, void *user_data)
   if (sdl->title)
     ctx_free (sdl->title);
   sdl->title = NULL;
+  if (sdl->fb)
+  {
+    ctx_free (sdl->fb);
+    sdl->fb = NULL;
+  }
   ctx_free (sdl);
 }
 
@@ -52071,6 +52438,7 @@ void sdl_cb_windowtitle (Ctx *ctx, void *user_data, const char *utf8)
     sdl->title = ctx_strdup (utf8);
   }
 }
+void ctx_set_keymap (const char *keymap);
 
 Ctx *ctx_new_sdl_cb (int width, int height, int flags)
 {
@@ -52113,6 +52481,7 @@ Ctx *ctx_new_sdl_cb (int width, int height, int flags)
     return NULL;
   sdl->ctx = ctx;
   _ctx_events_init (ctx);
+  ctx_set_keymap (NULL);
   return sdl->ctx;
 }
 
@@ -52158,6 +52527,7 @@ Ctx *ctx_new_sdl_cb_fb (int width, int height, int flags)
     return NULL;
   sdl->ctx = ctx;
   _ctx_events_init (ctx);
+  ctx_set_keymap (NULL);
   return sdl->ctx;
 }
 
@@ -52202,6 +52572,7 @@ Ctx *ctx_new_sdl_cb_fb_full (int width, int height, int flags)
     return NULL;
   sdl->ctx = ctx;
   _ctx_events_init (ctx);
+  ctx_set_keymap (NULL);
   return sdl->ctx;
 }
 
@@ -53535,7 +53906,7 @@ CtxFont *ctx_font_get_available (void)
       fprintf (stderr, "ctx-err: too many fonts\n");
       return NULL;
     }
-
+#if CTX_ONE_FONT_ENGINE==0
   for (int i = 0; i < ctx_font_count; i++)
   {
     if (ctx_fonts[i].type == CTX_FONT_TYPE_NONE)
@@ -53545,7 +53916,7 @@ CtxFont *ctx_font_get_available (void)
     }
   }
   ctx_fonts[ctx_font_count].font_no = ctx_font_count;
-
+#endif
   ctx_font_count++;
   return &ctx_fonts[ctx_font_count-1];
 }
@@ -53555,8 +53926,10 @@ static inline int
 _ctx_text_substitute_ligatures (Ctx *ctx, CtxFont *font,
                                 uint32_t *unichar, uint32_t next_unichar, uint32_t next_next_unichar)
 {
+#if CTX_ONE_FONT_ENGINE==0
   if (font->monospaced || (!font->has_fligs))
     return 0;
+#endif
   if (*unichar == 'f')
     switch (next_unichar)
     {
@@ -53635,6 +54008,14 @@ ctx_glyph_kern (Ctx *ctx, int glyphA, int unicharB)
 #endif
 }
 
+int ctx_glyph_ctx (CtxFont *font, Ctx *ctx, int glyph_id, int stroke);
+int ctx_glyph_lookup_ctx (CtxFont *font, Ctx*ctx, uint32_t unichar);
+float ctx_glyph_width_ctx (CtxFont *font, Ctx *ctx, int id); // you get to id from unichar with glyph_lookup
+
+#if CTX_ONE_FONT_ENGINE
+static const char *ctx_font_get_name_ctx (CtxFont *font);
+#endif
+
 int
 _ctx_glyph (Ctx *ctx, int glyph_id, int stroke)
 {
@@ -53674,7 +54055,7 @@ ctx_glyph_lookup (Ctx *ctx, uint32_t unichar)
 {
   CtxFont *font = &ctx_fonts[ctx->state.gstate.font];
 #if CTX_ONE_FONT_ENGINE
-  return ctx_glyph_lookup_ctx2 (font, ctx, unichar);
+  return ctx_glyph_lookup_ctx (font, ctx, unichar);
 #else
   return font->engine->glyph_lookup (font, ctx, unichar);
 #endif
@@ -53820,6 +54201,9 @@ _ctx_shape (Ctx         *ctx,
   }
   else
 #endif
+
+#if CTX_ONE_FONT_ENGINE==0
+
   if (font->type == CTX_FONT_TYPE_CTX)
   {
     ctx_shape_ctx (ctx, font, string, &x_advance, &glyphs, &glyph_count);
@@ -53828,6 +54212,9 @@ _ctx_shape (Ctx         *ctx,
   {
     _ctx_shape_generic (ctx, font, string, &x_advance, &glyphs, &glyph_count);
   }
+#else
+    ctx_shape_ctx (ctx, font, string, &x_advance, &glyphs, &glyph_count);
+#endif
 
 #define CTX_CACHE_SHAPE_MAX_STRLEN   8
 
@@ -54253,7 +54640,11 @@ ctx_font_extents (Ctx *ctx,
 
 static const char *ctx_font_get_name (CtxFont *font)
 {
-  if (!font || !font->engine) return "-";
+  if (!font
+#if CTX_ONE_FONT_ENGINE==0
+		   || !font->engine
+#endif
+		   ) return "-";
 #if CTX_ONE_FONT_ENGINE
   return ctx_font_get_name_ctx (font);
 #else
@@ -54261,7 +54652,8 @@ static const char *ctx_font_get_name (CtxFont *font)
 #endif
 }
 
-static int _ctx_resolve_font_exact (const char *name)
+int _ctx_resolve_font_exact (const char *name);
+int _ctx_resolve_font_exact (const char *name)
 {
   int ret = -1;
 #if CTX_RESOLVED_FONTS!=0
@@ -54394,6 +54786,7 @@ static int _ctx_resolve_font (const char *name)
       const char *font_name = ctx_font_get_name (&ctx_fonts[i]);
       if ((font_name[0]==name[0] &&
           font_name[1]==name[1] &&
+	  namelen < (int)strlen (font_name) &&
           font_name[namelen] == name[namelen])
           || (namelen == 0 && ctx_strstr (font_name, subname)))
         ret = i;
@@ -54539,7 +54932,10 @@ void ctx_font_setup (Ctx *ctx)
 #endif
 }
 
-static float
+float
+ctx_glyph_kern_inferred (CtxFont *font, Ctx *ctx, uint32_t unicharA, uint32_t unicharB);
+
+float
 ctx_glyph_kern_inferred (CtxFont *font, Ctx *ctx, uint32_t unicharA, uint32_t unicharB)
 {
   int      a_glyphs=0;
@@ -54680,7 +55076,6 @@ void ctx_generate_font (const char  *path,
   _ctx_set_transformation (ctx, CTX_TRANSFORMATION_RELATIVE);
 
   const char *font_name = ctx_get_font_name (NULL, font_no);
-  fprintf (stderr, "font_name: %s\n", font_name);
   ctx_font (ctx, font_name);
 
   if (!strcmp (font_name, "Roboto"))
@@ -54912,6 +55307,7 @@ void ctx_generate_font (const char  *path,
 
 void  ctx_font_unload        (int font_no)
 {
+#if CTX_ONE_FONT_ENGINE==0
 #if CTX_RESOLVED_FONTS!=0
   _ctx_clear_resolved_fonts ();
 #endif
@@ -54930,6 +55326,7 @@ void  ctx_font_unload        (int font_no)
   if (ctx_fonts[font_no].path)
     ctx_free (ctx_fonts[font_no].path);
   ctx_fonts[font_no].path = NULL;
+#endif
 }
 
 
@@ -54958,7 +55355,7 @@ int ctx_load_font_file (Ctx *ctx, const char *name, const char *path)
   }
   else
   {
-    if (access(path, R_OK) != F_OK)
+    if (path && access(path, R_OK) != F_OK)
       return -1;
   }
   if (!path)
@@ -55016,6 +55413,7 @@ static inline int ctx_font_get_length (CtxFont *font)
    return font->ctx.data->data.u32[1];
 }
 
+#if 0
 static int ctx_glyph_find (Ctx *ctx, CtxFont *font, uint32_t unichar)
 {
   int length = ctx_font_get_length (font);
@@ -55027,6 +55425,7 @@ static int ctx_glyph_find (Ctx *ctx, CtxFont *font, uint32_t unichar)
     }
   return 0;
 }
+#endif
 
 static void
 ctx_font_get_vmetrics_ctx (CtxFont *font,
@@ -55054,7 +55453,7 @@ ctx_glyph_find_next (CtxFont *font, Ctx *ctx, int offset)
   return 0;
 }
 
-static int ctx_glyph_lookup_ctx (CtxFont *font, Ctx *ctx, uint32_t unichar)
+int ctx_glyph_lookup_ctx (CtxFont *font, Ctx *ctx, uint32_t unichar)
 {
 #if CTX_GLYPH_CACHE
   uint32_t hash = ((((size_t)(font) * 23) ^ unichar) * 17) %
@@ -55133,7 +55532,7 @@ ctx_glyph_kern_ctx (CtxFont *font, Ctx *ctx, uint32_t first_kern, uint32_t unich
   return 0.0f;
 }
 
-static float
+float
 ctx_glyph_width_ctx (CtxFont *font, Ctx *ctx, int id)
 {
   float font_size = 1.0f;
@@ -55247,7 +55646,7 @@ ctx_glyph_drawlist (CtxFont *font, Ctx *ctx, CtxDrawlist *drawlist, int id, int 
   return -1;
 }
 
-static int
+int
 ctx_glyph_ctx (CtxFont *font, Ctx *ctx, int glyph_id, int stroke)
 {
   CtxDrawlist drawlist;
@@ -55322,7 +55721,7 @@ ctx_load_font_ctx (const char *name, const void *data, int length)
   font->type = CTX_FONT_TYPE_CTX;
   font->engine = &ctx_font_engine_ctx;
 #endif
-  font->ctx.name = name?ctx_strdup (name):NULL;
+  font->ctx.name = name?ctx_strdup (name):NULL; // XXX: leaked on exit
   font->ctx.data = (CtxEntry *) data;
   //font->ctx.length = length / sizeof (CtxEntry);
   ctx_font_init_ctx (font);
@@ -55341,7 +55740,11 @@ ctx_load_font_ctx (const char *name, const void *data, int length)
                      ctx_glyph_lookup_ctx (font, NULL, 0xfb01)>=0 ||
                      ctx_glyph_lookup_ctx (font, NULL, 0xfb02)>=0 ||
                      ctx_glyph_lookup_ctx (font, NULL, 0xfb03));
+#if CTX_ONE_FONT_ENGINE==0
   return font->font_no;
+#else
+  return 1;
+#endif
 }
 CtxFont *_ctx_font_from_no(int no);
 
@@ -55450,7 +55853,7 @@ _ctx_shape_hb (Ctx         *ctx,
     (*glyphs)[i].index = glyph_info[i].codepoint;
     (*glyphs)[i].x     = (glyph_pos[i].x_offset + x_advance) * font->hb.scale;
     (*glyphs)[i].y     = glyph_pos[i].y_offset * font->hb.scale;;
-    x_advance += glyph_pos[i].x_advance * 1.02f; // XXX eeeeeek fudge!
+    x_advance += glyph_pos[i].x_advance * 1.024f; // XXX eeeeeek fudge!
   }
   x_advance *= font->hb.scale;
   hb_buffer_destroy (buf);
@@ -57206,6 +57609,7 @@ static void ctx_define_texture_full (Ctx *ctx,
   {
     CtxSHA1 *sha1 = ctx_sha1_new ();
     uint8_t *src = (uint8_t*)data;
+    if (src)
     for (int y = 0; y < height; y++)
     {
        ctx_sha1_process (sha1, src, dst_stride);
@@ -57243,7 +57647,7 @@ static void ctx_define_texture_full (Ctx *ctx,
     eid_len = 40;
   }
 
-  if (ret_eid)
+  if (ret_eid && (ret_eid != eid))
   {
     strcpy (ret_eid, eid);
     ret_eid[64]=0;
@@ -57325,7 +57729,7 @@ static void ctx_define_texture_full (Ctx *ctx,
         uint8_t *src = (uint8_t*)data;
         uint8_t *dst = &commands[pos+1].data.u8[0];
   #if 1
-        memcpy (dst, src, data_len);
+        if (src)memcpy (dst, src, data_len);
   #else
         for (int y = 0; y < height; y++)
         {
@@ -57729,7 +58133,7 @@ ctx_collect_events (CtxEvent *event, void *data, void *data2)
   copy = (CtxEvent*)ctx_malloc (sizeof (CtxEvent));
   *copy = *event;
   if (copy->string)
-    copy->string = ctx_strdup (event->string);
+    copy->string = ctx_strdup (event->string); // XXX : can be leaked
   ctx_list_append_full (&ctx->events.events, copy, ctx_event_free, NULL);
 }
 #endif
@@ -60157,6 +60561,39 @@ ctx_logo (Ctx *ctx, float x, float y, float dim)
      ctx_restore (ctx);
 }
 
+CTX_EXPORT  void
+ctx_logo_stroke (Ctx *ctx, float x, float y, float dim)
+{
+     ctx_save (ctx);
+     ctx_translate (ctx, x, y);
+     
+     ctx_scale (ctx, dim, dim);
+     ctx_translate (ctx, -0.5f, -0.5f);
+     ctx_reset_path (ctx);
+
+     ctx_move_to (ctx, 0.39772584f,0.91850721f);
+     ctx_rel_line_to (ctx, -0.0664159f, 0);
+     ctx_rel_curve_to (ctx, -0.15408489f,0, -0.27894675f,-0.12486192f, -0.27894675f,-0.2789468f);
+     ctx_rel_curve_to (ctx, 0,-0.15408489f, 0.12486186f,-0.27861466f, 0.27894675f,-0.27894675f);
+     ctx_rel_line_to (ctx, 0.18585599f,0.0000662f);
+     ctx_rel_curve_to (ctx, 0.0111839f,0.00017138f, 0.0158287f,0.001542f, 0.0263337f,0.0134822f);
+     ctx_rel_curve_to (ctx, 0.11733258f,0.14373102f, 0.3018009f,0.36870115f, 0.3942639f,0.49195316f);
+     ctx_rel_curve_to (ctx, 0.0185394f,0.0332794f, -0.0106225f,0.0505515f, -0.0228143f,0.0505207f);
+     ctx_close_path (ctx);
+
+     ctx_move_to(ctx,0.43956786f,0.90788066f);
+     ctx_rel_curve_to(ctx,0.0195929f,0.0102943f,0.0716181f,0.0218038f,0.10361884f,-0.0167646f);
+     ctx_line_to (ctx,0.93768705f,0.37887837f);
+     ctx_rel_curve_to (ctx,  0.019925f,-0.0342044f,-0.00963f,-0.0544608f,-0.0308834f,-0.0508084f);
+     ctx_rel_curve_to (ctx,-0.17965502f,0.0285588f,-0.35466092f,-0.055125f,-0.45096394f,-0.21253089f);
+     ctx_rel_curve_to (ctx, -0.0176003f,-0.02988716f, -0.0594422f,-0.01560777f,-0.0594422f,0.0139473f);
+     ctx_rel_curve_to (ctx, 0, 0.0591101f,0.003321f,0.49845135f,0.001991f, 0.70699722f);
+     ctx_rel_curve_to (ctx, 0.00039042f, 0.0283487f,0.0157362f,0.0529866f,0.0408456f,0.070733f);
+     ctx_close_path (ctx);
+     ctx_restore (ctx);
+}
+
+
 void
 ctx_clip_extents (Ctx *ctx, float *x0, float *y0,
                            float *x1, float *y1)
@@ -60652,6 +61089,24 @@ typedef uint32_t vt_style_t;
 typedef uint64_t vt_style_t;
 #endif
 
+typedef struct _CtxVtImage CtxVtImage;
+typedef struct _Image Image;
+struct _CtxVtImage
+{
+  CtxVtImage *next;
+
+  Image      *image;
+  int         col;
+  float       x; // 0.0 - 1.0 offset in cell
+  float       y;
+  int         rows;
+  int         cols;
+  int         subx;
+  int         suby;
+  int         subw;
+  int         subh;
+};
+
 struct _VtLine
 {
   CtxString string;
@@ -60681,16 +61136,7 @@ struct _VtLine
   int       wrapped;
 
   /*  XXX:  needs refactoring to a CtxList of links/images */
-  void     *images[4];
-  int       image_col[4];
-  float     image_X[4]; // 0.0 - 1.0 offset in cell
-  float     image_Y[4];
-  int       image_rows[4];
-  int       image_cols[4];
-  int       image_subx[4];
-  int       image_suby[4];
-  int       image_subw[4];
-  int       image_subh[4];
+  CtxVtImage *images;
 };
 
 
@@ -60736,6 +61182,7 @@ static inline void vt_line_clear_style (VtLine *string)
 VtLine *vt_line_new_with_size (const char *initial, int initial_size);
 VtLine *vt_line_new (const char *initial);
 
+void vt_line_clear_images (VtLine *line);
 static inline void        vt_line_free           (VtLine *line, int freealloc)
 {
   CtxString *string = (CtxString*)line;
@@ -60752,6 +61199,7 @@ static inline void        vt_line_free           (VtLine *line, int freealloc)
       { ctx_destroy ((Ctx*)line->ctx_copy); }
   }
 #endif
+  vt_line_clear_images (line);
 
   ctx_string_free (string, freealloc);
 }
@@ -60780,18 +61228,7 @@ static inline void        vt_line_set            (VtLine *line, const char *new_
   CtxString *string = (CtxString*)line;
   ctx_string_set (string, new_string);
 }
-static inline void        vt_line_clear          (VtLine *line)
-{
-  CtxString *string = (CtxString*)line;
-  ctx_string_clear (string);
-  vt_line_clear_style ((VtLine*)string);
-  if (line->ctx)
-    { ctx_destroy ((Ctx*)line->ctx); }
-  line->ctx = NULL;
-  if (line->ctx_copy)
-    { ctx_destroy ((Ctx*)line->ctx_copy); }
-  line->ctx_copy = NULL;
-}
+void        vt_line_clear          (VtLine *line);
 #if 0
 static inline void        vt_line_append_str     (VtLine *line, const char *str)
 {
@@ -60935,6 +61372,24 @@ VtLine *vt_line_new (const char *initial)
 {
   return vt_line_new_with_size (initial, 8);
 }
+void vt_line_clear_images (VtLine *line);
+
+void        vt_line_clear          (VtLine *line)
+{
+  CtxString *string = (CtxString*)line;
+  ctx_string_clear (string);
+  vt_line_clear_style ((VtLine*)string);
+  if (line->ctx)
+    { ctx_destroy ((Ctx*)line->ctx); }
+  
+  vt_line_clear_images (line);
+
+  line->ctx = NULL;
+  if (line->ctx_copy)
+    { ctx_destroy ((Ctx*)line->ctx_copy); }
+  line->ctx_copy = NULL;
+}
+
 #endif
 
 typedef struct VtPty
@@ -61044,6 +61499,7 @@ struct _VT
   CtxList   *saved_lines;
   int       in_alt_screen;
   int       had_alt_screen;
+  int       had_ctx_in_alt_screen;
   int       saved_line_count;
   char      *arg_copy;
   CtxList   *lines;
@@ -61098,7 +61554,6 @@ struct _VT
 
   int        ref_len;
   char       reference[16];
-  int        in_prev_match;
   CtxParser *ctxp;
   // text related data
   float      letter_spacing;
@@ -61311,22 +61766,22 @@ typedef enum VtMouseEvent
 
 void vt_mouse (VT *vt, CtxEvent *event, VtMouseEvent type, int button, int x, int y, int px_x, int px_y);
 
-static ssize_t vt_write (VT *vt, const void *buf, size_t count)
+static inline ssize_t vt_write (VT *vt, const void *buf, size_t count)
 {
   if (!vt->write) { return 0; }
   return vt->write (&vt->vtpty, buf, count);
 }
-static ssize_t vt_read (VT *vt, void *buf, size_t count)
+static inline ssize_t vt_read (VT *vt, void *buf, size_t count)
 {
   if (!vt->read) { return 0; }
   return vt->read (&vt->vtpty, buf, count);
 }
-static int vt_waitdata (VT *vt, int timeout)
+static inline int vt_waitdata (VT *vt, int timeout)
 {
   if (!vt->waitdata) { return 0; }
   return vt->waitdata (&vt->vtpty, timeout);
 }
-static void vt_resize (VT *vt, int cols, int rows, int px_width, int px_height)
+static inline void vt_resize (VT *vt, int cols, int rows, int px_width, int px_height)
 {
   if (vt && vt->resize)
     { vt->resize (&vt->vtpty, cols, rows, px_width, px_height); }
@@ -65513,7 +65968,10 @@ static inline void vt_line_free2 (VT *vt, VtLine *line)
   if (line->string.allocated_length > vt->cols * 1.6f)
     vt_line_free (line, 1);
   else
+  {
+    vt_line_clear (line);
     ctx_list_prepend (&vt->limbo, line);
+  }
 }
 
 static VtLine *vt_line_new2 (VT *vt)
@@ -65550,8 +66008,8 @@ typedef enum
   //STYLE_NONERASABLE     = 1 << 16  // needed for selective erase
 } TerminalStyle;
 
-typedef struct Image
-{
+
+struct _Image {
   int kitty_format;
   int width;
   int height;
@@ -65559,9 +66017,9 @@ typedef struct Image
   int eid_no;
   int size;
   uint8_t *data;
-} Image;
+};
 
-#define MAX_IMAGES 128
+#define MAX_IMAGES  (CTX_MAX_TEXTURES-2)
 
 static Image image_db[MAX_IMAGES]= {{0,},};
 
@@ -65579,6 +66037,16 @@ static Image *image_query (int id)
 static int image_eid_no = 0;
 
 static CtxList *ctx_vts;
+
+static void image_drop (Image *image)
+{
+  if (image->data)
+      ctx_free (image->data);
+  image->data = NULL;
+  image->id = -1;
+}
+
+
 static Image *image_add (int width,
                          int height,
                          int id,
@@ -65588,19 +66056,21 @@ static Image *image_add (int width,
 {
   // look for id if id is not 0
   Image *image;
+  //int no = 0;
   for (int i = 0; i < MAX_IMAGES; i++)
     {
       image = &image_db[i];
       if (image->data == NULL)
-        { break; }
+        { //no = 0;
+	  break; 
+        }
     }
   if (image->data)
     {
       // not a good eviction strategy
       image = &image_db[random() %MAX_IMAGES];
+      image_drop (image);
     }
-  if (image->data)
-    { ctx_free (image->data); }
   image->kitty_format = format;
   image->width  = width;
   image->height = height;
@@ -65608,6 +66078,7 @@ static Image *image_add (int width,
   image->size   = size;
   image->data   = data;
   image->eid_no = image_eid_no++;
+
   return image;
 }
 
@@ -65764,7 +66235,7 @@ static void vtcmd_clear (VT *vt, const char *sequence)
     for (int i = 0; i < vt->rows; i++)
     {
       VtLine *line = ctx_list_nth_data (vt->scrollback, i);
-      if (line && line->images[0])
+      if (line && line->images)
         images++;
     }
 
@@ -66353,7 +66824,6 @@ VT *vt_new_argv (char **argv, int width, int height, float font_size, float line
   vt_set_px_size (vt, width, height);
 
   vtcmd_reset_to_initial_state (vt, NULL);
-  //vt->ctx = ctx_new ();
   ctx_list_prepend (&ctx_vts, vt);
   return vt;
 }
@@ -66601,7 +67071,23 @@ void vt_set_term_size (VT *vt, int icols, int irows)
 {
   if (vt->rows == irows && vt->cols == icols)
     return;
-
+  if (vt->had_ctx_in_alt_screen && vt->lines)
+  {
+    CtxList *l = vt->lines;
+    while (l && l->next) l = l->next;
+    VtLine *line = l->data;
+    if (line->ctx)
+    {
+      fprintf (stderr, "setting size %i %i\n", vt->width, vt->height);
+      ctx_set_size (line->ctx, vt->width, vt->height);
+      ctx_set_size (line->ctx_copy, vt->width, vt->height);
+      vt_resize (vt, vt->cols, vt->rows, vt->width, vt->height);
+      if (vt->ctxp)
+        ctx_parser_destroy (vt->ctxp);
+      vt->ctxp = NULL;
+    }
+    return;
+  }
 #if CTX_PARSER
   if (vt->state == vt_state_ctx)
   {
@@ -68045,6 +68531,7 @@ qagain:
                       }
                     vt->in_alt_screen = 1;
                     vt->had_alt_screen = 1;
+                    vt->had_ctx_in_alt_screen = 0;
                     vt_line_feed (vt);
                     _vt_move_to (vt, 1, 1);
                     vt_carriage_return (vt);
@@ -68064,6 +68551,13 @@ qagain:
                     vtcmd_restore_cursor (vt, "");
                     vt->saved_lines = NULL;
                     vt->in_alt_screen = 0;
+                    if (vt->had_ctx_in_alt_screen)
+		    {
+                      vt->had_ctx_in_alt_screen = 0;
+                      CtxClient *client = vt->client;
+		      if (client)
+		        vt_set_px_size (client->vt, client->width, client->height);
+		    }
                   }
                 else
                   {
@@ -68091,6 +68585,8 @@ qagain:
                   {
                     vt->current_line->ctx = ctx_new (vt->width, vt->height, "drawlist");
                     vt->current_line->ctx_copy = ctx_new (vt->width, vt->height, "drawlist");
+                    if (vt->in_alt_screen)
+                      vt->had_ctx_in_alt_screen = 1;
                     ctx_set_texture_cache (vt->current_line->ctx_copy, vt->current_line->ctx);
                     _ctx_set_transformation (vt->current_line->ctx, 0);
                     _ctx_set_transformation (vt->current_line->ctx_copy, 0);
@@ -68996,6 +69492,8 @@ static void vt_line_feed (VT *vt)
   if (vt->cr_on_lf)
     { vt_carriage_return (vt); }
   vt_trimlines (vt, vt->rows);
+  if (vt->scroll != 0.0f)
+    vt->scroll+=1.0f;
   if (was_home)
     { vt_carriage_return (vt); }
 }
@@ -69181,31 +69679,54 @@ static void display_image (VT *vt, Image *image,
                            int subh
                           )
 {
-  int i = 0;
-  for (i = 0; vt->current_line->images[i] && i < 4; i++)
+  CtxVtImage *vt_image = vt->current_line->images;
+  for (; vt_image; vt_image = vt_image->next)
   {
-     if (vt->current_line->image_col[i] == vt->cursor_x)
+     if (vt_image->col == vt->cursor_x)
        break;
   }
-  //for (i = 0; vt->current_line->images[i] && i < 4; i++);
-  if (i >= 4) { i = 3; }
+  if (!vt_image)
+  {
+    vt_image = ctx_calloc (sizeof (CtxVtImage), 1);
+    vt_image->next = vt->current_line->images;
+    vt->current_line->images = vt_image;
+  }
+  else
+  {
+    if (vt_image->image)
+      image_drop (vt_image->image);
+    vt_image->image = NULL;
+  }
+
+
   /* this needs a struct and dynamic allocation */
-  vt->current_line->images[i] = image;
-  vt->current_line->image_col[i] = vt->cursor_x;
-  vt->current_line->image_X[i] = xoffset;
-  vt->current_line->image_Y[i] = yoffset;
-  vt->current_line->image_subx[i] = subx;
-  vt->current_line->image_suby[i] = suby;
-  vt->current_line->image_subw[i] = subw;
-  vt->current_line->image_subh[i] = subh;
-  vt->current_line->image_rows[i] = rows;
-  vt->current_line->image_cols[i] = cols;
+  vt_image->image = image;
+  vt_image->col = vt->cursor_x;
+  vt_image->x = xoffset;
+  vt_image->y = yoffset;
+  vt_image->subx = subx;
+  vt_image->suby = suby;
+  vt_image->subw = subw;
+  vt_image->subh = subh;
+  vt_image->rows = rows;
+  vt_image->cols = cols;
 }
 
 static int vt_gfx_pending=0;
 
 
 #if CTX_VT_GFX
+
+void ctx_vt_image_free (CtxVtImage *image)
+{
+  if (image->image)
+  {
+    image_drop (image->image);
+    image->image = NULL;
+  }
+  ctx_free (image);
+}
+
 void vt_gfx (VT *vt, const char *command)
 {
   const char *payload = NULL;
@@ -69438,11 +69959,12 @@ void vt_gfx (VT *vt, const char *command)
               for (CtxList *l = vt->lines; l; l = l->next, row --)
                 {
                   VtLine *line = l->data;
-                  for (int i = 0; i < 4; i ++)
+		  CtxVtImage *image;
+                  for (image = line->images; image; image = image->next)
                     {
                       int free_resource = 0;
                       int match = 0;
-                      if (line->images[i])
+                      //if (line->images[i])
                         switch (vt->gfx._delete)
                           {
                             case 'A':
@@ -69455,7 +69977,7 @@ void vt_gfx (VT *vt, const char *command)
                               free_resource = 1;
                               /* FALLTHROUGH */
                             case 'i': /* all images with specified id */
-                              if ( ( (Image *) (line->images[i]) )->id == vt->gfx.id)
+                              if ( image->image->id == vt->gfx.id)
                                 { match = 1; }
                               break;
                             case 'P':
@@ -69463,7 +69985,7 @@ void vt_gfx (VT *vt, const char *command)
                               /* FALLTHROUGH */
                             case 'p': /* all images intersecting cell
           specified with x and y */
-                              if (line->image_col[i] == vt->gfx.x &&
+                              if (image->col == vt->gfx.x &&
                                   row == vt->gfx.y)
                                 { match = 1; }
                               break;
@@ -69471,7 +69993,7 @@ void vt_gfx (VT *vt, const char *command)
                               free_resource = 1;
                               /* FALLTHROUGH */
                             case 'q': /* all images with specified cell (x), row(y) and z */
-                              if (line->image_col[i] == vt->gfx.x &&
+                              if (image->col == vt->gfx.x &&
                                   row == vt->gfx.y)
                                 { match = 1; }
                               break;
@@ -69486,7 +70008,7 @@ void vt_gfx (VT *vt, const char *command)
                               free_resource = 1;
                               /* FALLTHROUGH */
                             case 'x': /* all images with specified column (x) */
-                              if (line->image_col[i] == vt->gfx.x)
+                              if (image->col == vt->gfx.x)
                                 { match = 1; }
                               break;
                             case 'Z':
@@ -69497,7 +70019,25 @@ void vt_gfx (VT *vt, const char *command)
                           }
                       if (match)
                         {
-                          line->images[i] = NULL;
+			  CtxVtImage *timage;
+
+			  if (image == line->images)
+			  {
+                             timage = image->next;
+			     ctx_free (image);
+			     image = timage;
+			  }
+                          else
+                          for (timage = line->images; timage; timage = timage->next)
+			  {
+			     if (timage->next == image)
+			     {
+			        timage->next = image->next;
+				ctx_vt_image_free (image);
+				image = timage->next;
+				break;
+			     }
+			  }
                           if (free_resource)
                             {
                               // XXX : NYI
@@ -69617,38 +70157,22 @@ static void vt_sixels (VT *vt, const char *sixels)
   int repeat = 1;
   const char *p = sixels;
   int pal_no = 0;
-#if 0
-  for (; *p && *p != ';'; p++);
-  if (*p == ';') { p ++; }
-  printf ("%i:[%c]%i\n", __LINE__, *p, atoi (p) );
-  // should be 0
-  for (; *p && *p != ';'; p++);
-  if (*p == ';') { p ++; }
-  printf ("%i:[%c]%i\n", __LINE__, *p, atoi (p) );
-  // if 1 then transparency is enabled - otherwise use bg color
-  for (; *p && *p != 'q'; p++);
-#endif
-  //for (; *p && *p != '"'; p++);
+
   while (*p && *p != 'q') { p++; }
   if (*p == 'q') { p++; }
   if (*p == '"') { p++; }
-  //printf ("%i:[%c]%i\n", __LINE__, *p, atoi (p));
   for (; *p && *p != ';'; p++);
   if (*p == ';') { p ++; }
-  //printf ("%i:[%c]%i\n", __LINE__, *p, atoi (p));
   for (; *p && *p != ';'; p++);
   if (*p == ';') { p ++; }
   width = ctx_atoi (p);
   for (; *p && *p != ';'; p++);
   if (*p == ';') { p ++; }
   height = ctx_atoi (p);
-  if (width * height > 2048 * 2048)
-    return;
   if (width <= 0 || height <=0)
     {
       width = 0;
       height = 0;
-      // XXX  : a copy paste dry-run
       for (const char *t=p; *t; t++)
         {
           if (*t == '#')
@@ -69687,6 +70211,8 @@ static void vt_sixels (VT *vt, const char *sixels)
             {
               t++;
               repeat = ctx_atoi (t);
+	      if (repeat <= 0)
+		repeat = 1;
               while (*t && *t >= '0' && *t <= '9') { t++; }
               t--;
             }
@@ -69698,18 +70224,21 @@ static void vt_sixels (VT *vt, const char *sixels)
         }
       height = y;
     }
+  if (height > 4096 || width > 4096)
+    return;
   x = 0;
   y = 0;
   pixels = ctx_calloc (width * (height + 6), 4);
   image = image_add (width, height, 0,
                      32, width*height*4, pixels);
   uint8_t *dst = pixels;
+
   for (; *p; p++)
     {
       if (*p == '#')
         {
           p++;
-          pal_no = atoi (p);
+          pal_no = ctx_atoi (p);
           if (pal_no < 0 || pal_no > 255) { pal_no = 255; }
           while (*p && *p >= '0' && *p <= '9') { p++; }
           if (*p == ';')
@@ -69720,13 +70249,13 @@ static void vt_sixels (VT *vt, const char *sixels)
               // color_model , 2 is rgb
               for (; *p && *p != ';'; p++);
               if (*p == ';') { p ++; }
-              colors[pal_no][0] = atoi (p) * 255 / 100;
+              colors[pal_no][0] = ctx_atoi (p) * 255 / 100;
               for (; *p && *p != ';'; p++);
               if (*p == ';') { p ++; }
-              colors[pal_no][1] = atoi (p) * 255 / 100;
+              colors[pal_no][1] = ctx_atoi (p) * 255 / 100;
               for (; *p && *p != ';'; p++);
               if (*p == ';') { p ++; }
-              colors[pal_no][2] = atoi (p) * 255 / 100;
+              colors[pal_no][2] = ctx_atoi (p) * 255 / 100;
               while (*p && *p >= '0' && *p <= '9') { p++; }
               p--;
             }
@@ -69750,6 +70279,8 @@ static void vt_sixels (VT *vt, const char *sixels)
         {
           p++;
           repeat = ctx_atoi (p);
+	  if (repeat <= 0)
+	    repeat = 1;
           while (*p && *p >= '0' && *p <= '9') { p++; }
           p--;
         }
@@ -70172,15 +70703,19 @@ static void vt_state_osc (VT *vt, int byte)
             break;
           case 12: // text cursor color
             break;
+          case 112: // reset cursor color
+	    break;
           case 17: // highlight color
             break;
+	  case 117: // reset highlight color
+	    break;
           case 19: // ??
             break;
 
           case 10: // text fg
 #if 0
 #if 0
-    {"]11;",  0, , }, /* id: set foreground color */
+    {"]10;",  0, , }, /* id: set foreground color */
 #endif
             {
               /* request current foreground color, xterm does this to
@@ -70206,6 +70741,10 @@ static void vt_state_osc (VT *vt, int byte)
             }
 #endif
             break;
+          case 110: // reset text fg
+	    break;
+          case 111: // reset text bg
+	    break;
 #if 0
     {"]1337;key=value:base64data\b\",  0, vtcmd_erase_in_line, VT100}, /* args:keyvalue id: iterm2 graphics */ "
 #endif
@@ -71097,7 +71636,10 @@ void vt_feed_keystring (VT *vt, CtxEvent *event, const char *str)
       str+=6;
       goto mice; 
     }
-
+  else if (!strncmp (str, "sc ", 3))
+  {
+    return;
+  }
   else if (str[0]=='p' && str[1] != 0 && str[2] == ' ')
   {
 mice:{
@@ -72403,7 +72945,8 @@ void ctx_client_mouse_event (CtxEvent *event, void *data, void *data2)
   {
     case CTX_MOTION:
     case CTX_DRAG_MOTION:
-      if (event->device_no > 4)
+
+      if (!vt->in_alt_screen &&  device_no >= 4 && ctx_touch_count (event->ctx) > 1)
       {
         vt->select_start_col = 
         vt->select_end_col = vt->select_begin_col;
@@ -72413,15 +72956,14 @@ void ctx_client_mouse_event (CtxEvent *event, void *data, void *data2)
         return;
       }
 
-
       //if (event->device_no==1)
       {
         sprintf (buf, "pm %.0f %.0f %i", x, y, device_no);
-//      ctx_queue_draw (event->ctx);
+        ctx_queue_draw (event->ctx);
         ctx_client_lock (client);
         vt_feed_keystring (vt, event, buf);
         ctx_client_unlock (client);
-//      vt->rev++;
+        ctx_client_rev_inc (vt->client);
       }
       break;
     case CTX_TAP_AND_HOLD:
@@ -72580,12 +73122,24 @@ int ctx_vt_had_alt_screen (VT *vt)
   return vt?vt->had_alt_screen:0;
 }
 
+
+void vt_line_clear_images (VtLine *line)
+{
+  while (line->images)
+  {
+    CtxVtImage *image = line->images;
+    line->images = image->next;
+
+    ctx_vt_image_free (image);
+  }
+}
+
 static void mt_drag (CtxEvent *event, void *data, void *data2)
 {
   VT *vt = data;
 
-  vt->scroll += event->delta_y / vt->ch;
-
+  /* we scroll on motion events from both touch points, thus the /2.0f */
+  vt->scroll += (event->delta_y / (1.0f * vt->ch)) / 2.0f;
   if (vt->scroll < 0) { vt->scroll = 0.0; }
   if (vt->scroll > vt->scrollback_count) { vt->scroll = vt->scrollback_count; }
 
@@ -72696,6 +73250,14 @@ static void ctx_client_scroll_event (CtxEvent *event, void *c, void *u)
 {
   CtxClient *client = (CtxClient*)c;
   VT *vt = client->vt;
+  if (vt->in_alt_screen)
+  {
+    char buf[64];
+    sprintf (buf, "sc %.2f %.2f %i", event->x, event->y, event->scroll_direction == CTX_SCROLL_DIRECTION_DOWN);
+    vt_feed_keystring (vt, NULL, buf);
+    
+    return;
+  }
 
   int new_scroll = vt_get_scroll (vt);
 
@@ -72828,18 +73390,26 @@ void vt_draw (VT *vt, Ctx *ctx, double x0, double y0, int has_focus)
                      }
                    else if (r == vt->select_start_row)
                      {
-                       if (col >= vt->select_start_col) { in_selected_region = 1; }
+                       if (col >= vt->select_start_col) {
+			 in_selected_region = 1; 
+		       }
                        if (r == vt->select_end_row)
-                         {
-                           if (col > vt->select_end_col) { in_selected_region = 0; }
-                         }
+                       {
+                         if (col > vt->select_end_col)
+		         {
+		           in_selected_region = 0; 
+		         }
+                       }
                      }
                    else if (r == vt->select_end_row)
                      {
                        in_selected_region = 1;
-                       if (col > vt->select_end_col) { in_selected_region = 0; }
+                       if (col > vt->select_end_col) {
+			  in_selected_region = 0;
+		       }
                      }
                    }
+
                    if (vt->select_active == 0) in_selected_region = 0;
                    style = vt_line_get_style (line, col-1);
                    unichar = d?ctx_utf8_to_unichar (d) :' ';
@@ -72935,13 +73505,14 @@ void vt_draw (VT *vt, Ctx *ctx, double x0, double y0, int has_focus)
           {
             VtLine *line = l->data;
             {
-            for (int i = 0; i < 4; i++)
+	       CtxVtImage *vt_image;
+            for (vt_image = line->images; vt_image; vt_image = vt_image->next)
               {
-                Image *image = line->images[i];
+                Image *image = vt_image->image;
                 if (image)
                   {
-                    int u = (line->image_col[i]-1) * vt->cw + (line->image_X[i] * vt->cw);
-                    int v = y - vt->ch + (line->image_Y[i] * vt->ch);
+                    int u = (vt_image->col-1) * vt->cw + (vt_image->x * vt->cw);
+                    int v = y - vt->ch + (vt_image->y * vt->ch);
                 //  int rows = (image->height + (vt->ch-1) ) /vt->ch;
                 //
                 //
@@ -72961,6 +73532,7 @@ void vt_draw (VT *vt, Ctx *ctx, double x0, double y0, int has_focus)
 
                     //replace this texture_n with NULL to
                     // be content addressed - but bit slower
+		    //
                     ctx_define_texture (ctx, texture_n, image->width,
                                         image->height,
                                         0,
@@ -73051,10 +73623,10 @@ void vt_draw (VT *vt, Ctx *ctx, double x0, double y0, int has_focus)
         sprintf (buf, "%ix%i", vt->cols, vt->rows);
         ctx_rgba (ctx, 0,0,0,0.7f);
         float w = ctx_text_width (ctx, buf);
-        ctx_rectangle (ctx, vt->width - w - vt->cw, vt->height - vt->ch, vt->cw + w, vt->ch);
+        ctx_rectangle (ctx, 0, vt->height - vt->ch, vt->cw + w, vt->ch);
         ctx_fill (ctx);
         ctx_rgba (ctx, 1,1,1,0.7f);
-        ctx_move_to (ctx, vt->width - w, vt->height - 0.2f * vt->ch);
+        ctx_move_to (ctx, vt->cw, vt->height - 0.2f * vt->ch);
         ctx_text (ctx, buf);
       } 
     }
@@ -73067,6 +73639,9 @@ void vt_draw (VT *vt, Ctx *ctx, double x0, double y0, int has_focus)
       float tot_lines = vt->line_count + vt->scrollback_count;
       float offset = (tot_lines - disp_lines - vt->scroll) / tot_lines;
       float win_len = disp_lines / tot_lines;
+
+      if (win_len < 1.0)
+      {
 
 #if 0
       ctx_rectangle (ctx, (vt->cols *vt->cw), 0, 
@@ -73098,6 +73673,8 @@ void vt_draw (VT *vt, Ctx *ctx, double x0, double y0, int has_focus)
       else
         ctx_rgba (ctx, 1, 1, 1, .05);
       ctx_fill (ctx);
+
+      }
     }
 
 
@@ -73272,7 +73849,7 @@ void vt_mouse (VT *vt, CtxEvent *event, VtMouseEvent type, int button, int x, in
                  vt->select_end_col ++;
                  char *sel = vt_get_selection (vt);
                  int len = strlen(sel);
-                 if (sel[len-1]==' ')
+                 if (sel[len-1]==' ' || sel[len-1]=='\n' || sel[len-1]=='\r')
                    hit_space = 1;
                  ctx_free (sel);
                }
@@ -73755,17 +74332,31 @@ void ctx_client_shade_toggle (Ctx *ctx, int id);
 float ctx_client_min_y_pos (Ctx *ctx);
 float ctx_client_max_y_pos (Ctx *ctx);
 
+static float maximized_x0 = 0.0f;
+static float maximized_y0 = 0.0f;
+static float maximized_width = 1.0f;
+static float maximized_height = 1.0f;
+
+void ctx_clients_maximized_rect (Ctx *ctx, float x0, float y0, float width, float height)
+{
+  maximized_x0 = x0;
+  maximized_y0 = y0;
+  maximized_width = width;
+  maximized_height = height;
+}
+
 static void ctx_clients_ensure_layout (Ctx *ctx)
 {
   CtxList *clients = ctx_clients (ctx);
   int n_clients = ctx_list_length (clients);
+
   if (n_clients == 1)
   {
     CtxClient *client = (CtxClient*)clients->data;
     if (client->flags & CTX_CLIENT_MAXIMIZED)
     {
-      ctx_client_move (ctx, client->id, 0, 0);
-      ctx_client_resize (ctx, client->id, ctx_width (ctx), ctx_height(ctx));
+      ctx_client_move (ctx, client->id, maximized_x0 * ctx_width (ctx), maximized_y0 * ctx_height (ctx));
+      ctx_client_resize (ctx, client->id, maximized_width * ctx_width (ctx), maximized_height * ctx_height (ctx));
       if (ctx->events.active_tab == NULL)
         ctx->events.active_tab = client;
     }
@@ -73776,8 +74367,8 @@ static void ctx_clients_ensure_layout (Ctx *ctx)
     CtxClient *client = (CtxClient*)l->data;
     if (client->flags & CTX_CLIENT_MAXIMIZED)
     {
-      ctx_client_move (ctx, client->id, 0, 0);//ctx_client_min_y_pos (ctx));
-      ctx_client_resize (ctx, client->id, ctx_width (ctx), ctx_height(ctx));
+      ctx_client_move (ctx, client->id, maximized_x0 * ctx_width (ctx), maximized_y0 * ctx_height (ctx));
+      ctx_client_resize (ctx, client->id, maximized_width * ctx_width (ctx), maximized_height * ctx_height (ctx));
       if (ctx->events.active_tab == NULL)
         ctx->events.active_tab = client;
     }
