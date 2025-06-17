@@ -1,4 +1,7 @@
-#!/bin/bash -e
+#!/bin/sh
+
+set -e
+
 outdir_normal="${ABS_BUILDDIR}/output"
 outdir_opencl="${ABS_BUILDDIR}/output_cl"
 

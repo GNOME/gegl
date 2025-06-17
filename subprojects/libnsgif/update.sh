@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 UPSTREAM="https://source.netsurf-browser.org/libnsgif.git"
 LOCAL="temp"
