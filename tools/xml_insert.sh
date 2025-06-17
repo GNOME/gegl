@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 # Utility script to merge an xml snippet from one file into a document.
 #
@@ -68,8 +68,8 @@ func_mktempdir ()
       my_tmpdir=`mktemp -d "${my_template}-XXXXXXXX" 2>/dev/null`
 
       if test ! -d "$my_tmpdir"; then
-        # Failing that, at least try and use $RANDOM to avoid a race
-        my_tmpdir="${my_template}-${RANDOM-0}$$"
+        # Failing that, at least try and use the nanoseconds and PID to avoid a race
+        my_tmpdir="${my_template}-$(date -Ins | sed 's/.*[,.]\([0-9]*\).*/\1/')$$"
 
         save_mktempdir_umask=`umask`
         umask 0077
