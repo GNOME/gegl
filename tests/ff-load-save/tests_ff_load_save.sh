@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
 export GEGL_PATH="${ABS_TOP_BUILDDIR}/operations"
 
@@ -8,7 +8,7 @@ GeglVideo="${ABS_TOP_BUILDDIR}/examples/gegl-video"
 testcount=0
 
 test() {
-  ((testcount++))
+  testcount=$(expr $testcount + 1)
   if "$@" 1> /dev/null; then
     echo "ok ${testcount}"
   else
