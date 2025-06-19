@@ -20,7 +20,7 @@ subdir('poly2tri-c/render')
 
 
 libpoly2tri_c = static_library('poly2tri-c',
-  link_with: [ libp2tc, libp2tc_refine, libp2tc_render, ],
+  link_whole: [ libp2tc, libp2tc_refine, libp2tc_render, ],
 )
 
 
