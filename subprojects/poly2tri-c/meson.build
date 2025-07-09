@@ -10,7 +10,7 @@ project('poly2tri-c', 'c',
 )
 
 glib = dependency('glib-2.0')
-math = meson.get_compiler('c').find_library('m')
+math = meson.get_compiler('c').find_library('m', required: false)
 
 rootInclude = include_directories('.')
 
