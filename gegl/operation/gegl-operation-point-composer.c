@@ -31,7 +31,9 @@
 #include "gegl-buffer-private.h"
 #include "gegl-tile-storage.h"
 #include <sys/types.h>
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#endif
 #include <string.h>
 
 #include "opencl/gegl-cl.h"
