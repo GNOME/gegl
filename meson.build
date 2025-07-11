@@ -190,6 +190,7 @@ cflags_common += [
   '-Wpointer-arith',
   '-Wno-unused-parameter',
   '-Wno-cast-function-type',
+  '-Wno-implicit-function-declaration'
 ]
 cflags_c = [
   '-Wmissing-prototypes',
