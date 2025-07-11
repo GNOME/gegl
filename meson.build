@@ -199,23 +199,30 @@ cflags_c = [
 
 if os_win32
   cflags_common += '-D_FILE_OFFSET_BITS=64'
-endif
 
-# Generate native .pdb (CodeView) debug symbols (for DIA or DbgHelp debuggers and LLDB)
-pdb_support = cc.has_argument('-gcodeview') and cc.has_link_argument('-Wl,--pdb=')
-if os_win32 and pdb_support and cc.get_id() == 'clang'
-  cflags_common += '-gcodeview'
-  lflags_common += '-Wl,--pdb='
-endif
+  # Generate native .pdb (CodeView) debug symbols (for DIA or DbgHelp debuggers and LLDB)
+  pdb_support = cc.has_argument('-gcodeview') and cc.has_link_argument('-Wl,--pdb=')
+  if pdb_support and cc.get_id() == 'clang'
+    cflags_common += '-gcodeview'
+    lflags_common += '-Wl,--pdb='
+  endif
 
-if os_win32 and cc.get_id() == 'clang'
-  # Optimize DWARF symbols to Dr. Mingw
-  # https://github.com/jrfonseca/drmingw/issues/42
-  cflags_common += '-gdwarf-aranges'
-  # Workaround to get colored output
-  # https://github.com/msys2/MINGW-packages/issues/2988
-  cflags_common += '-fansi-escape-codes'
-endif
+  if cc.get_id() == 'clang'
+    # Optimize DWARF symbols to Dr. Mingw
+    # https://github.com/jrfonseca/drmingw/issues/42
+    cflags_common += '-gdwarf-aranges'
+    # Workaround to get colored output
+    # https://github.com/msys2/MINGW-packages/issues/2988
+    cflags_common += '-fansi-escape-codes'
+  endif
+
+  if cc.get_id() == 'clang-cl' or cc.get_id() == 'msvc'
+    #Needed otherwise MSVC get angry with the headers provided by UCRT
+    cflags_common += ['/D_USE_MATH_DEFINES']
+    #Supress recommendations about Microsoft-specific safe functions
+    cflags_common += ['/D_CRT_SECURE_NO_WARNINGS']
+  endif
+endif #if os_win32
 
 if buildtype == 'debugoptimized' or buildtype == 'release'
   cflags_common += cc.get_supported_arguments(['-ftree-vectorize'])
