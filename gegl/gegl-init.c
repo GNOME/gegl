@@ -36,6 +36,15 @@
 #ifdef G_OS_WIN32
 
 #include <windows.h>
+#ifndef S_IRUSR
+#define S_IRUSR _S_IREAD
+#endif
+#ifndef S_IWUSR
+#define S_IWUSR _S_IWRITE
+#endif
+#ifndef S_IXUSR
+#define S_IXUSR 0
+#endif
 
 static HMODULE hLibGeglModule = NULL;
 

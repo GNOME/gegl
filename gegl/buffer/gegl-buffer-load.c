@@ -27,6 +27,12 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+#if !defined(HAVE_UNISTD_H) && defined(_WIN64)
+#include <io.h>
+#define read _read
+#define close _close
+#define lseek _lseek
+#endif
 
 #include "gegl-buffer.h"
 #include "gegl-buffer-private.h"
@@ -36,8 +42,10 @@
 #include <glib/gprintf.h>
 #include <glib/gstdio.h>
 
-#ifdef G_OS_WIN32
+#ifdef _WIN64
 #define BINARY_FLAG O_BINARY
+#include <basetsd.h>
+typedef SSIZE_T ssize_t;
 #else
 #define BINARY_FLAG 0
 #endif

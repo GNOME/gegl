@@ -23,6 +23,14 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+#if !defined (HAVE_UNISTD_H) && defined(_WIN64)
+#include <io.h>
+#define read _read
+#define write _write
+#define close _close
+#define lseek _lseek
+#define ftruncate _chsize_s
+#endif
 #include <string.h>
 #include <errno.h>
 

@@ -31,6 +31,9 @@
 #include <glib.h>
 #include <gmodule.h>
 #include <string.h>
+#ifdef _WIN64
+#define strdup _strdup
+#endif
 #include <stdio.h>
 
 #include "gegl-cl.h"

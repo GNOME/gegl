@@ -22,6 +22,10 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+#if !defined (HAVE_UNISTD_H) && defined(_WIN64)
+#include <io.h>
+#define close _close
+#endif
 
 
 #ifdef GEGL_PROPERTIES

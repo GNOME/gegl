@@ -30,6 +30,15 @@
 #include <windows.h>
 #include <process.h>
 #define getpid() _getpid()
+#ifndef S_IRUSR
+#define S_IRUSR _S_IREAD
+#endif
+#ifndef S_IWUSR
+#define S_IWUSR _S_IWRITE
+#endif
+#ifndef S_IXUSR
+#define S_IXUSR 0
+#endif
 #else
 #include <signal.h>
 #endif
