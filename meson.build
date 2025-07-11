@@ -5,7 +5,7 @@ project('gegl',
   meson_version: '>=0.57.0',
   default_options: [
     'c_std=gnu11',
-    'cpp_std=gnu++14',
+    'cpp_std=c++14',
     'buildtype=debugoptimized',
   ],
 )
