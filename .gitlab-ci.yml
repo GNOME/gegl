@@ -1,3 +1,8 @@
+workflow:
+  auto_cancel:
+    on_new_commit: interruptible
+
+
 include:
   - project: 'Infrastructure/freedesktop-ci-templates'
     file: 'templates/fedora.yml'
@@ -8,6 +13,7 @@ stages:
   - build
 
 .fedora image:
+  interruptible: true
   variables:
     ###
     # IMPORTANT
