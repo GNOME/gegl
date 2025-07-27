@@ -43,7 +43,6 @@ docker-image:
 
 fedora-x86_64:
   extends: .fedora
-  needs: ["docker-image"]
   stage: build
   script:
     - meson --buildtype debug
