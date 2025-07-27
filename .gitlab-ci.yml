@@ -55,7 +55,7 @@ fedora-x86_64:
     when: always
     paths:
       - "_build/meson-logs"
-    expire_in: 1 week
+    expire_in: 8 days
 
 meson-health:
   extends: .fedora
