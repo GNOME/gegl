@@ -53,9 +53,9 @@ fedora-x86_64:
   artifacts:
     name: "gegl-${CI_JOB_NAME}-${CI_COMMIT_REF_NAME}"
     when: always
-    expire_in: 1 week
     paths:
       - "_build/meson-logs"
+    expire_in: 1 week
 
 meson-health:
   extends: .fedora
