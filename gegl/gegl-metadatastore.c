@@ -609,7 +609,7 @@ gegl_metadata_store_has_value (GeglMetadataStore *self, const gchar *name)
 static GParamSpec *
 gegl_metadata_store_value_pspec (GeglMetadataStore *self, const gchar *name)
 {
-  g_return_val_if_fail (GEGL_IS_METADATA_STORE (self), G_TYPE_INVALID);
+  g_return_val_if_fail (GEGL_IS_METADATA_STORE (self), NULL);
 
   return VMETHOD(self, pspec) (self, name);
 }
