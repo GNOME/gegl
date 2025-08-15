@@ -31,6 +31,13 @@ option('vapigen',
   value: 'auto',
   description: 'Vala .vapi generation - depends on introspection'
 )
+option('win-debugging',
+  type: 'combo',
+  choices: ['native', 'dwarf'],
+  value: 'native',
+  description: 'Build with native/CodeView debug symbols or with DWARF'
+)
+
 # Build settings
 option('parallel-tests',
   type: 'boolean',

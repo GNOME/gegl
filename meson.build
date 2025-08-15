@@ -197,20 +197,34 @@ cflags_c = [
   '-Wold-style-definition',
 ]
 
+
+# DEBUG SYMBOLS
+debugging_format = 'Disabled'
+if get_option('buildtype') == 'debug' or get_option('buildtype') == 'debugoptimized'
+  if not os_win32
+    # DWARF symbols for GCC and LLDB on Unix
+    debugging_format = 'Native'
+  elif os_win32 and get_option('win-debugging') == 'native' and cc.has_argument('-gcodeview') and cc.has_link_argument('-Wl,--pdb=') and cc.get_id() == 'clang'
+    # CodeView symbols for DIA or DbgHelp debuggers and LLDB on Windows
+    debugging_format = 'Native'
+    cflags_common += '-gcodeview'
+    lflags_common += '-Wl,--pdb='
+  else
+    # DWARF symbols for GCC and LLDB on Windows (fallback)
+    debugging_format = 'DWARF'
+    if cc.get_id() == 'clang'
+      # Optimize DWARF symbols to Dr. Mingw
+      # https://github.com/jrfonseca/drmingw/issues/42
+      cflags_common += '-gdwarf-aranges'
+    endif
+  endif
+endif
+
+
 if os_win32
   cflags_common += '-D_FILE_OFFSET_BITS=64'
 
-  # Generate native .pdb (CodeView) debug symbols (for DIA or DbgHelp debuggers and LLDB)
-  pdb_support = cc.has_argument('-gcodeview') and cc.has_link_argument('-Wl,--pdb=')
-  if pdb_support and cc.get_id() == 'clang'
-    cflags_common += '-gcodeview'
-    lflags_common += '-Wl,--pdb='
-  endif
-
   if cc.get_id() == 'clang'
-    # Optimize DWARF symbols to Dr. Mingw
-    # https://github.com/jrfonseca/drmingw/issues/42
-    cflags_common += '-gdwarf-aranges'
     # Workaround to get colored output
     # https://github.com/msys2/MINGW-packages/issues/2988
     cflags_common += '-fansi-escape-codes'
@@ -545,7 +559,7 @@ build_reference = get_option('gtk-doc') or build_gi_docgen
 # Install native debug data (.pdb) on Windows
 # Ideally meson should take care of it automatically.
 # See: https://github.com/mesonbuild/meson/issues/12977
-if os_win32 and pdb_support and cc.get_id() == 'clang'
+if debugging_format == 'Native'
   install_win_debug_script = find_program('./meson_install_win_debug.py')
   meson.add_install_script(install_win_debug_script)
 endif
@@ -665,9 +679,10 @@ summary(
 )
 summary(
   {
-    'Build workshop'    : get_option('workshop'),
-    'Introspection'     : g_ir.found(),
-    'Vala support'      : vapigen.found(),
+    'Build workshop'       : get_option('workshop'),
+    'Introspection'        : g_ir.found(),
+    'Vala support'         : vapigen.found(),
+    'Debug symbols format' : debugging_format,
   }, section: 'Optional features'
 )
 summary(
