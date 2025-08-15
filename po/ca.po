@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
 "POT-Creation-Date: 2025-02-16 18:03+0000\n"
-"PO-Revision-Date: 2025-02-17 10:52+0200\n"
+"PO-Revision-Date: 2025-08-15 10:52+0200\n"
 "Last-Translator: Jordi Mas i Hernàndez <jmas@softcatala.org>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "Language: ca\n"
@@ -781,7 +781,7 @@ msgstr ""
 
 #: operations/common/bevel.c:109
 msgid "Light Angle"
-msgstr "Angle clar"
+msgstr "Angle de la llum"
 
 #: operations/common/bevel.c:110
 msgid "Direction of a light source illuminating and shading the bevel."
@@ -1216,7 +1216,7 @@ msgid ""
 " produces the illusion that the grayscale grid cells themselves also have "
 "color."
 msgstr ""
-"Gireu l'escala de grisos de la imatge i hi superposeu una graella "
+"Convertiu la imatge a escala de grisos i hi superposeu una graella "
 "sobresaturada: a través de l'assimilació del color que passa pel sistema "
 "visual humà, per a algunes escales de la graella, això produeix la il·lusió "
 "que les cel·les de la graella d'escala de grisos també tenen color."
@@ -1537,11 +1537,11 @@ msgstr "Valor HSV"
 
 #: operations/common/component-extract.c:31
 msgid "HSL Saturation"
-msgstr "Saturació HSV"
+msgstr "Saturació HSL"
 
 #: operations/common/component-extract.c:32
 msgid "HSL Lightness"
-msgstr "Lluminositat HSV"
+msgstr "Lluminositat HSL"
 
 #: operations/common/component-extract.c:33
 msgid "CMYK Cyan"
@@ -2090,7 +2090,7 @@ msgstr "Detecta vores mitjançant un mètode de derivada gaussiana"
 
 #: operations/common/edge-sobel.c:31
 msgid "Keep Sign"
-msgstr "Mantén el senyal"
+msgstr "Mantén el signe"
 
 #: operations/common/edge-sobel.c:32
 msgid ""
@@ -2106,7 +2106,7 @@ msgstr "Detecció de vores Sobel"
 
 #: operations/common/edge-sobel.c:401
 msgid "Specialized direction-dependent edge detection"
-msgstr "Sistema especialitzat de detecció de vores basat en la direcció"
+msgstr "Detecció de vores especialitzada basat en la direcció"
 
 #: operations/common/exp-combine.c:25
 msgid "Exposure values"
@@ -2188,7 +2188,7 @@ msgstr "Soroll"
 
 #: operations/common/fattal02.c:44
 msgid "Gradient threshold for lowering detail enhancement"
-msgstr "Llindar del degradat per la reducció de la millora del detall"
+msgstr "Llindar del degradat per a la reducció de la millora del detall"
 
 #: operations/common/fattal02.c:1361
 msgid "Fattal et al. 2002 Tone Mapping"
@@ -2202,9 +2202,9 @@ msgid ""
 "approach was originally presented by Raanan Fattal, in the 2002 SIGGRAPH "
 "paper: Gradient Domain High Dynamic Range Compression."
 msgstr ""
-"Adapta una imatge que té una franja dinàmica alta, per a la presentació "
-"s'utilitza una franja dinàmica baixa. Aquest operador atenua les magnituds "
-"dels degradats de la imatge local, produint lluminositat dins de la franja "
+"Adapta una imatge que pot tenir un rang dinàmic alt, per a la presentació "
+"s'utilitza un rang dinàmic baix. Aquest operador atenua les magnituds "
+"dels degradats de la imatge local, produint lluminositat dins del rang "
 "0.0-1.0. Aquesta aproximació al mapatge de tons va ser presentat "
 "originalment per Raanan Fattal, en el document del 2002 SIGGRAPH: Gradient "
 "Domain High Dynamic Range Compression."
@@ -2439,12 +2439,12 @@ msgstr "Ajustament de crominància"
 #: operations/common/styles.c:392
 #: operations/workshop/selective-hue-saturation.c:42
 msgid "Lightness"
-msgstr "Claredat"
+msgstr "Lluminositat"
 
 #: operations/common/hue-chroma.c:34
 #: operations/workshop/selective-hue-saturation.c:43
 msgid "Lightness adjustment"
-msgstr "Ajustament de claredat"
+msgstr "Ajustament de la lluminositat"
 
 #: operations/common/hue-chroma.c:120
 msgid "Hue-Chroma"
@@ -2452,7 +2452,7 @@ msgstr "Crominància del to"
 
 #: operations/common/hue-chroma.c:124
 msgid "Adjust LCH Hue, Chroma, and Lightness"
-msgstr "Ajusta el to LCH, la crominància i la claredat"
+msgstr "Ajusta el to LCH, la crominància i la lluminositat"
 
 #: operations/common/icc-load.c:25 operations/external/gif-load.c:35
 #: operations/external/jp2-load.c:26 operations/external/jpg-load.c:25
@@ -2540,11 +2540,11 @@ msgstr "Ambdós"
 
 #: operations/common/image-gradient.c:32
 msgid "Output mode"
-msgstr "Mode sortida"
+msgstr "Mode de sortida"
 
 #: operations/common/image-gradient.c:35
 msgid "Output Mode"
-msgstr "Mode sortida"
+msgstr "Mode de sortida"
 
 #: operations/common/image-gradient.c:224
 msgid "Image Gradient"
@@ -2592,7 +2592,7 @@ msgstr "Node"
 
 #: operations/common/introspect.c:205
 msgid "GEGL graph visualizer."
-msgstr "Visualitzador de gràfiques GEGL."
+msgstr "Visualitzador de grafs GEGL."
 
 #: operations/common/invert-gamma.c:52
 msgid "Invert in Perceptual space"
@@ -2876,7 +2876,7 @@ msgstr ""
 
 #: operations/common/local-threshold.c:32 operations/common-gpl3+/mosaic.c:87
 msgid "Antialiasing"
-msgstr "Suavitzat"
+msgstr "Antialiàsing"
 
 #: operations/common/local-threshold.c:33
 msgid ""
@@ -3528,7 +3528,7 @@ msgstr "Cambra fosca negativa"
 #: operations/common/negative-darkroom.c:440
 msgid "Simulate a film enlargement in an analog darkroom."
 msgstr ""
-"Simula una ampliació de pel·lícula  en una cambra fosca analògica."
+"Simula una ampliació de pel·lícula en una cambra fosca analògica."
 
 #: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:2
 msgid "Kodak Professional Ultra Endura"
@@ -3783,7 +3783,7 @@ msgstr "Factor de sobremostrarge suavitzador"
 
 #: operations/common/newsprint.c:168
 msgid "Number of samples that are averaged for antialiasing the result."
-msgstr "Nombre de mostres per a la mitjana per a suavitzar el resultat."
+msgstr "Nombre de mostres de les quals es fa mitjana per a fer l'antialiàsing del resultat."
 
 #: operations/common/newsprint.c:170 operations/common-gpl3+/plasma.c:36
 msgid "Turbulence"
@@ -3875,7 +3875,7 @@ msgstr "Genera una textura cel·lular."
 
 #: operations/common/noise-cie-lch.c:25 operations/common/noise-hsv.c:27
 msgid "Dulling"
-msgstr "Assecat"
+msgstr "Fer opac"
 
 #: operations/common/noise-cie-lch.c:27 operations/common/noise-hsv.c:29
 msgid "A high value lowers the randomness of the noise"
@@ -5056,7 +5056,7 @@ msgstr "Ajust de saturació del fitxer d'imatge pujat o el que sigui al llenç"
 msgid ""
 "Lightness adjustment of the uploaded image file or whatever is on canvas"
 msgstr ""
-"Ajust de la claredat del fitxer d'imatge pujat o el que sigui al llenç"
+"Ajust de la lluminositat del fitxer d'imatge pujat o el que sigui al llenç"
 
 #. Outline special options in GUI begin here
 #: operations/common/styles.c:398
@@ -9470,7 +9470,7 @@ msgstr ""
 "Operació matemàtica de la gamma; realitza l'operació per píxel utilitzant la"
 " constant proporcionada en «valor» o el píxel corresponent de la memòria "
 "intermèdia en auxiliar com a operand. El resultat és l'avaluació de "
-"l'expressió, resultat =  (entrada >= 0.0f ? powf (entrada, valor)) : -powf "
+"l'expressió, resultat = (entrada >= 0.0f ? powf (entrada, valor)) : -powf "
 "(-entrada, valor))"
 
 #: operations/generated/hard-light.c:188
@@ -9547,7 +9547,7 @@ msgid "Porter Duff operation src (d = cA)"
 msgstr "Operació de Porter i Duff «src» (d = cA)"
 
 #: operations/generated/src-in.c:145
-msgid "Porter Duff compositing operation src-in (formula:   cA * aB)"
+msgid "Porter Duff compositing operation src-in (formula:  cA * aB)"
 msgstr "Operació de composició de Porter i Duff «src-in» (fórmula: cA * aB)"
 
 #: operations/generated/src-out.c:133
