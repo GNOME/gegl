@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
 "POT-Creation-Date: 2025-02-16 18:03+0000\n"
-"PO-Revision-Date: 2025-08-15 10:52+0200\n"
+"PO-Revision-Date: 2025-08-17 10:52+0200\n"
 "Last-Translator: Jordi Mas i Hernàndez <jmas@softcatala.org>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "Language: ca\n"
@@ -98,7 +98,7 @@ msgstr ""
 "\n"
 "     -v, --verbose   mostra diagnòstics mentre s'executa\n"
 "\n"
-"Tots els paràmetres precedits de -- es consideren operacions per encadenar\n"
+"Tots els paràmetres seguits de -- es consideren operacions per encadenar\n"
 "una petita composició en comptes d'utilitzar un fitxer xml, això permet provar\n"
 "fàcilment els filtres. Després d'encadenar una nova operació de propietats, es poden\n"
 "establir amb parells propietat=valor com a arguments subsegüents.\n"
@@ -946,7 +946,7 @@ msgid ""
 "constant offset to apply after contrast scaling."
 msgstr ""
 "Canvia el nivell de llum i contrast. Aquesta operació funciona amb llum "
-"lineal, «contrast» és un factor d'escala al voltant del 50 %% de color gris,"
+"lineal, «contrast» és un factor d'escala al voltant del 50 % de color gris,"
 " i «brillantor» és una constant de desplaçament que s'aplica després "
 "d'ajustar la mida el contrast."
 
@@ -1170,7 +1170,7 @@ msgid ""
 "to get smaller dimensions."
 msgstr ""
 "Genera una memòria intermèdia emplenada només amb el color especificat. "
-"Utilitzeu Gegl:escapça per a reduir-ne les dimensions."
+"Utilitzeu gegl:crop per a reduir-ne les dimensions."
 
 #: operations/common/color-assimilation-grid.c:25
 msgid "Grid size"
@@ -1513,7 +1513,7 @@ msgid ""
 msgstr ""
 "Deforma els colors d'una imatge entre els colors amb els factors de "
 "distorsió ponderada, els parells de colors negres són ignorats en la "
-"construcció de la cartografia."
+"construcció del mapatge."
 
 #: operations/common/component-extract.c:25
 msgid "RGB Red"
@@ -1902,7 +1902,7 @@ msgstr "Mètode de tramat"
 
 #: operations/common/dither.c:53
 msgid "The dithering method to use"
-msgstr "L'estratègia de disseminat que s'utilitzarà"
+msgstr "L'estratègia de tramat que s'utilitzarà"
 
 #: operations/common/dither.c:55 operations/common/matting-global.c:28
 #: operations/common/noise-cell.c:55 operations/common/noise-cie-lch.c:38
@@ -3042,10 +3042,10 @@ msgid ""
 "a low dynamic range. This operator constrains contrasts across multiple "
 "spatial frequencies, producing luminance within the range 0.0-1.0"
 msgstr ""
-"Adapta una imatge que pot tenir una franja dinàmica alta, per a una "
-"presentació que utilitza un interval dinàmic baix. Aquest operador limita "
+"Adapta una imatge que pot tenir un rang dinàmic alt, per a una "
+"presentació que utilitza un rang dinàmic baix. Aquest operador limita "
 "els contrastos a través de múltiples freqüències espacials, produint "
-"lluminositat dins de l'interval 0.0-1.0"
+"lluminositat dins del rang 0.0-1.0"
 
 #: operations/common/map-absolute.c:61
 msgid "Map Absolute"
@@ -4744,7 +4744,7 @@ msgstr "Opacitat del contorn"
 
 #: operations/common/styles.c:78
 msgid "Outline X"
-msgstr "Esquema X"
+msgstr "Contorn X"
 
 #: operations/common/styles.c:79
 msgid "Horizontal outline offset"
@@ -5101,7 +5101,7 @@ msgstr "Realça l'elevació per al bisell del contorn"
 
 #: operations/common/styles.c:447
 msgid "Outline Bevel azimuth"
-msgstr "Contorn bisell azimut"
+msgstr "Azimut del bisell del contorn"
 
 #: operations/common/styles.c:448
 msgid "Emboss azimuth for the outline bevel"
@@ -5360,7 +5360,7 @@ msgstr "Proximitat a les proporcions de la imatge"
 
 #: operations/common/vignette.c:58
 msgid "Squeeze"
-msgstr "Compressió"
+msgstr "Comprimeix"
 
 #: operations/common/vignette.c:59
 msgid ""
@@ -5666,7 +5666,7 @@ msgstr "Mida dels pedaços utilitzats per eliminar el soroll"
 
 #: operations/common-cxx/denoise-dct.cc:39
 msgid "Noise standard deviation"
-msgstr "Desviació estàndard del so"
+msgstr "Desviació estàndard del soroll"
 
 #: operations/common-cxx/denoise-dct.cc:486
 msgid "Denoise DCT"
@@ -5862,7 +5862,7 @@ msgstr "270°"
 #: operations/common-gpl3+/bayer-matrix.c:53
 #: operations/common-gpl3+/linear-sinusoid.c:96
 msgid "Pattern rotation angle"
-msgstr "Patró de l'angle de gir"
+msgstr "Angle de gir del patró"
 
 #: operations/common-gpl3+/bayer-matrix.c:55
 #: operations/transform/reflect.c:105
@@ -5996,7 +5996,7 @@ msgid ""
 msgstr ""
 "Aquest connector utilitza l'algorisme descrit per John Schlag, «Efectes "
 "ràpids de relleu a Raster Image Data» als Graphics GEMS IV (ISBN "
-"0-12-336155-9). Agafa una memòria intermèdia per a ser aplicat com un mapa "
+"0-12-336155-9). Agafa una memòria intermèdia per a ser aplicada com un mapa "
 "de relleu a una altra memòria intermèdia i produeix un efecte de relleu "
 "agradable."
 
@@ -6256,7 +6256,7 @@ msgstr "Desentrellaça"
 
 #: operations/common-gpl3+/deinterlace.c:316
 msgid "Fix images where every other row or column is missing"
-msgstr "Fixa les imatges on cada altra fila o columna s'ha perdut"
+msgstr "Corregeix les imatges on cada altra fila o columna s'ha perdut"
 
 #: operations/common-gpl3+/diffraction-patterns.c:30
 msgid "Light frequency (red)"
@@ -6276,7 +6276,7 @@ msgstr "Contorns vermells"
 
 #: operations/common-gpl3+/diffraction-patterns.c:42
 msgid "Number of contours (red)"
-msgstr "Nombre de colors (vermell)"
+msgstr "Nombre de contorns (vermell)"
 
 #: operations/common-gpl3+/diffraction-patterns.c:45
 msgid "Green contours"
@@ -6367,7 +6367,7 @@ msgstr "Polar"
 
 #: operations/common-gpl3+/displace.c:36
 msgid "Mode of displacement"
-msgstr "Mode desplaçament"
+msgstr "Mode de desplaçament"
 
 #: operations/common-gpl3+/displace.c:38 operations/external/npd.c:47
 #: operations/transform/transform-core.c:234 operations/workshop/ditto.c:27
@@ -7897,7 +7897,7 @@ msgid ""
 "Propagate certain values to neighboring pixels. Erode and dilate any color "
 "or opacity."
 msgstr ""
-"Propaga certs colors als píxels veïns. Erosiona i dilata qualsevol color o "
+"Propaga certs valors als píxels veïns. Erosiona i dilata qualsevol color o "
 "opacitat."
 
 #: operations/common-gpl3+/video-degradation.c:34
@@ -8105,7 +8105,7 @@ msgstr "Format d'entrada"
 
 #: operations/core/cast-format.c:26
 msgid "The babl format of the input"
-msgstr "Format babl de la sortida"
+msgstr "Format babl de l'entrada"
 
 #: operations/core/cast-format.c:27 operations/core/convert-format.c:27
 msgid "Output format"
@@ -8986,7 +8986,7 @@ msgstr "El 8 i el 16 són valors acceptats actualment."
 
 #: operations/external/png-save.c:418
 msgid "PNG File Saver"
-msgstr "Carregador d'imatges PNG"
+msgstr "Desador d'imatges PNG"
 
 #: operations/external/png-save.c:420
 msgid "PNG image saver, using libpng"
@@ -9026,7 +9026,7 @@ msgstr "s RGB"
 
 #: operations/external/raw-load.c:30
 msgid "Adobe RGB compatible"
-msgstr "Afegeix RGB compatible"
+msgstr "Compatible amb RGB d'Adobe"
 
 #: operations/external/raw-load.c:31
 msgid "Wide gamut RGB"
@@ -9153,7 +9153,7 @@ msgstr "Mida de la lletra tipogràfica en píxels."
 #. TRANSLATORS: the string 'black' should not be translated
 #: operations/external/text.c:39
 msgid "Color for the text (defaults to 'black')"
-msgstr "Color del text (per defecte és «blanc»)"
+msgstr "Color del text (per defecte és «negre»)"
 
 #: operations/external/text.c:41
 msgid "Wrap width"
