@@ -22,6 +22,7 @@
 #include <glib-object.h>
 
 #include "gegl.h"
+#include "gegl-debug.h"
 #include "gegl-operation-point-composer3.h"
 #include "gegl-operation-context.h"
 #include "gegl-types-internal.h"
@@ -31,7 +32,10 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <string.h>
+
+#include "opencl/gegl-cl.h"
 #include "gegl-buffer-cl-cache.h"
+#include "gegl-buffer-cl-iterator.h"
 
 typedef struct ThreadData
 {
@@ -156,6 +160,72 @@ static gboolean gegl_operation_point_composer3_process
 
 G_DEFINE_TYPE (GeglOperationPointComposer3, gegl_operation_point_composer3, GEGL_TYPE_OPERATION_COMPOSER3)
 
+static gboolean
+gegl_operation_point_composer3_cl_process (GeglOperation       *operation,
+                                           GeglBuffer          *input,
+                                           GeglBuffer          *aux,
+                                           GeglBuffer          *aux2,
+                                           GeglBuffer          *output,
+                                           const GeglRectangle *result,
+                                           gint                 level)
+{
+  GeglOperationClass               *operation_class       = GEGL_OPERATION_GET_CLASS (operation);
+  GeglOperationPointComposer3Class *point_composer3_class = GEGL_OPERATION_POINT_COMPOSER3_GET_CLASS (operation);
+  const Babl           *in_format  = NULL;
+  const Babl           *out_format = NULL;
+  GeglBufferClIterator *iter       = NULL;
+  gboolean err;
+
+  GEGL_NOTE (GEGL_DEBUG_OPENCL, "GEGL_OPERATION_POINT_COMPOSER3: %s", operation_class->name);
+
+  in_format  = gegl_operation_get_format (operation, "input");
+  out_format = gegl_operation_get_format (operation, "output");
+
+  iter = gegl_buffer_cl_iterator_new (output, result, out_format, GEGL_ACCESS_WRITE);
+  gegl_buffer_cl_iterator_add (iter, input, result, in_format, GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
+
+  if (aux)
+    {
+      const Babl *aux_format = gegl_operation_get_format (operation, "aux");
+      gegl_buffer_cl_iterator_add (iter, aux, result, aux_format, GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
+    }
+
+  if (aux2)
+    {
+      const Babl *aux2_format = gegl_operation_get_format (operation, "aux2");
+      gegl_buffer_cl_iterator_add (iter, aux2, result, aux2_format, GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
+    }
+
+  while (gegl_buffer_cl_iterator_next (iter, &err))
+    {
+      if (point_composer3_class->cl_process)
+        {
+          err = point_composer3_class->cl_process (operation,
+                                                   iter->tex[1],
+                                                   (aux)  ? iter->tex[2] : NULL,
+                                                   (aux2) ? iter->tex[3] : NULL,
+                                                   iter->tex[0],
+                                                   iter->size[0],
+                                                   &iter->roi[0],
+                                                   level);
+          if (err)
+            {
+              GEGL_NOTE (GEGL_DEBUG_OPENCL, "Error: %s", operation_class->name);
+              gegl_buffer_cl_iterator_stop (iter);
+              return FALSE;
+            }
+        }
+      else
+        {
+          g_warning ("OpenCL support enabled, but no way to execute");
+          gegl_buffer_cl_iterator_stop (iter);
+          return FALSE;
+        }
+    }
+
+  return TRUE;
+}
+
 static void prepare (GeglOperation *operation)
 {
   const Babl *space = gegl_operation_get_source_space (operation, "input");
@@ -219,6 +289,12 @@ gegl_operation_point_composer3_process (GeglOperation       *operation,
 
   if ((result->width > 0) && (result->height > 0))
     {
+      if (gegl_operation_use_opencl (operation) && point_composer3_class->cl_process)
+        {
+          if (gegl_operation_point_composer3_cl_process (operation, input, aux, aux2, output, result, level))
+              return TRUE;
+        }
+
       if (gegl_operation_use_threading (operation, result))
       {
         ThreadData data;

@@ -52,6 +52,15 @@ struct _GeglOperationPointComposer3Class
                         const GeglRectangle *roi,     /* rectangular region in output buffer */
                         gint                 level);
 
+  gboolean (* cl_process) (GeglOperation       *self,
+                           cl_mem               in_tex,
+                           cl_mem               aux_tex,
+                           cl_mem               aux2_tex,
+                           cl_mem               out_tex,
+                           size_t               global_worksize,
+                           const GeglRectangle *roi,
+                           gint                 level);
+
   gpointer           pad[4];
 };
 
