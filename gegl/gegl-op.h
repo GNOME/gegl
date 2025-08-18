@@ -856,7 +856,7 @@ gegl_op_class_intern_init (gpointer klass)
     }
 
 #define description(blurb) \
-    pspec->_blurb = g_strdup (blurb);
+    pspec->_blurb = g_markup_escape_text (blurb, -1);
 #define value_range(min,max) \
     vpspec->minimum = min; vpspec->maximum = max; \
     upspec->ui_minimum = min; upspec->ui_maximum = max;
