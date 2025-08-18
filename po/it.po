@@ -23,7 +23,7 @@ msgstr ""
 "Project-Id-Version:  GEGL_0_2_0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-08-19 00:56+0200\n"
-"PO-Revision-Date: 2025-08-19 01:13+0200\n"
+"PO-Revision-Date: 2025-08-19 01:18+0200\n"
 "Last-Translator: Marco Ciampa <ciampix@posteo.net>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -689,7 +689,7 @@ msgstr "Nessuna (da usare con le opzioni di fusione di GIMP)"
 #: ../operations/common/bevel.c:63 ../operations/common/styles.c:202
 #: ../operations/common/styles.c:310 ../operations/common/styles.c:418
 msgid "Hard Light"
-msgstr "Alteluci"
+msgstr "Luce intensa"
 
 #: ../operations/common/bevel.c:65 ../operations/common/styles.c:59
 #: ../operations/common/styles.c:198 ../operations/common/styles.c:414
