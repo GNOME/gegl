@@ -23,7 +23,7 @@ msgstr ""
 "Project-Id-Version:  GEGL_0_2_0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-08-19 00:56+0200\n"
-"PO-Revision-Date: 2025-08-19 01:08+0200\n"
+"PO-Revision-Date: 2025-08-19 01:13+0200\n"
 "Last-Translator: Marco Ciampa <ciampix@posteo.net>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -694,7 +694,7 @@ msgstr "Alteluci"
 #: ../operations/common/bevel.c:65 ../operations/common/styles.c:59
 #: ../operations/common/styles.c:198 ../operations/common/styles.c:414
 msgid "Multiply"
-msgstr "Moltiplicatore"
+msgstr "Moltiplica"
 
 #: ../operations/common/bevel.c:67 ../operations/common/styles.c:206
 #: ../operations/common/styles.c:312 ../operations/common/styles.c:422
@@ -704,7 +704,7 @@ msgstr "Scansa colore"
 #: ../operations/common/bevel.c:69 ../operations/common/styles.c:204
 #: ../operations/common/styles.c:420
 msgid "Darken"
-msgstr "Inscurisci"
+msgstr "Scurisci"
 
 #: ../operations/common/bevel.c:71
 msgid "Lighten"
