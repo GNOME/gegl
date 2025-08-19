@@ -23,7 +23,7 @@ msgstr ""
 "Project-Id-Version:  GEGL_0_2_0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-08-19 00:56+0200\n"
-"PO-Revision-Date: 2025-08-19 01:23+0200\n"
+"PO-Revision-Date: 2025-08-19 08:23+0200\n"
 "Last-Translator: Marco Ciampa <ciampix@posteo.net>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -5148,7 +5148,7 @@ msgstr "Profondità del rilievo della smussatura del contorno"
 
 #: ../operations/common/styles.c:440
 msgid "Outline Bevel elevation"
-msgstr "Elevazione smusso contorno "
+msgstr "Elevazione smusso contorno"
 
 #: ../operations/common/styles.c:441
 msgid "Emboss elevation for the outline bevel"
@@ -5188,11 +5188,11 @@ msgstr ""
 
 #: ../operations/common/styles.c:475
 msgid "Outline image opacity"
-msgstr "Contorna opacità immagine"
+msgstr "Opacità immagine contorno"
 
 #: ../operations/common/styles.c:476
 msgid "Outline image opacity adjustment"
-msgstr "Regolazione opacità contorno immagine"
+msgstr "Regolazione opacità dell'immagine del contorno"
 
 #: ../operations/common/styles.c:481
 msgid "Levels low output lighting for Outline Bevel"
@@ -7317,7 +7317,7 @@ msgstr "Buffer esponente"
 msgid ""
 "Per pixel buffer for modulating the exponent parameter, expecting a scaling "
 "factor in range 0.0-1.0"
-msgstr " stile svg"
+msgstr "Buffer per pixel per la modulazione del parametro esponente, prevedendo un fattore di scala compreso tra 0.0 e 1.0"
 
 #: ../operations/common-gpl3+/oilify.c:628
 msgid "Oilify"
