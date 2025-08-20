@@ -23,7 +23,7 @@ msgstr ""
 "Project-Id-Version:  GEGL_0_2_0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-08-19 00:56+0200\n"
-"PO-Revision-Date: 2025-08-19 08:23+0200\n"
+"PO-Revision-Date: 2025-08-20 09:19+0200\n"
 "Last-Translator: Marco Ciampa <ciampix@posteo.net>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -5618,7 +5618,7 @@ msgstr "Calcola una trasformazione di distanza"
 #: ../operations/common-cxx/focus-blur.c:30
 #: ../operations/common-cxx/lens-blur.cc:504
 msgid "Lens Blur"
-msgstr "Sfocatura lenti"
+msgstr "Sfocatura lente"
 
 #: ../operations/common-cxx/focus-blur.c:41
 msgid "Blur type"
@@ -5756,7 +5756,7 @@ msgstr "Usa i valori di maschera lineare"
 
 #: ../operations/common-cxx/lens-blur.cc:507
 msgid "Simulate out-of-focus lens blur"
-msgstr "Simula la sfocatura di lenti fuori fuoco"
+msgstr "Simula la sfocatura di una lente fuori fuoco"
 
 #: ../operations/common-cxx/piecewise-blend.cc:30
 msgid "Number of blend levels"
@@ -5853,7 +5853,7 @@ msgstr "Antialias usando l'algoritmo di estrapolazione bordi Scale3X"
 
 #: ../operations/common-gpl3+/apply-lens.c:36
 msgid "Lens refraction index"
-msgstr "Indice di rifrazione lenti"
+msgstr "Indice di rifrazione lente"
 
 #: ../operations/common-gpl3+/apply-lens.c:41
 msgid "Keep original surroundings"
@@ -5861,11 +5861,11 @@ msgstr "Mantiene i dintorni originali"
 
 #: ../operations/common-gpl3+/apply-lens.c:42
 msgid "Keep image unchanged, where not affected by the lens."
-msgstr "Mantiene l'immagine intatta ove non influenzata dalle lenti."
+msgstr "Mantiene l'immagine intatta ove non influenzata dalla lente."
 
 #: ../operations/common-gpl3+/apply-lens.c:301
 msgid "Apply Lens"
-msgstr "Applica lenti"
+msgstr "Applica lente"
 
 #: ../operations/common-gpl3+/apply-lens.c:306
 msgid ""
@@ -6934,11 +6934,11 @@ msgstr "Regola la luminosità negli angoli"
 
 #: ../operations/common-gpl3+/lens-distortion.c:497
 msgid "Lens Distortion"
-msgstr "Distorsione lenti"
+msgstr "Distorsione lente"
 
 #: ../operations/common-gpl3+/lens-distortion.c:504
 msgid "Corrects barrel or pincushion lens distortion."
-msgstr "Corregge la distorsione lenti a barile o a cuscino."
+msgstr "Corregge la distorsione lente a barile o a cuscino."
 
 #: ../operations/common-gpl3+/lens-flare.c:27
 msgid "X position"
@@ -6958,11 +6958,11 @@ msgstr "Coordinate Y del centro dei riflessi"
 
 #: ../operations/common-gpl3+/lens-flare.c:510
 msgid "Lens Flare"
-msgstr "Riflesso lenti"
+msgstr "Riflesso lente"
 
 #: ../operations/common-gpl3+/lens-flare.c:515
 msgid "Adds a lens flare effect."
-msgstr "Aggiungi in effetto lenti."
+msgstr "Aggiunge un effetto lente."
 
 #: ../operations/common-gpl3+/linear-sinusoid.c:25
 msgid "X Period"
@@ -10301,8 +10301,7 @@ msgstr "Modello alfa d"
 
 #: ../operations/workshop/external/lens-correct.c:487
 msgid "Copies image performing lens distortion correction."
-msgstr ""
-"Copia le immagini eseguendo una correzione ad una distorsione da lenti."
+msgstr "Copia l'immagine correggendo la distorsione da lente."
 
 #: ../operations/workshop/external/line-profile.c:25
 msgid "X0"
