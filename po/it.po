@@ -22,8 +22,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  GEGL_0_2_0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-19 00:56+0200\n"
-"PO-Revision-Date: 2025-08-20 09:19+0200\n"
+"POT-Creation-Date: 2025-09-02 21:18+0200\n"
+"PO-Revision-Date: 2025-09-02 21:18+0200\n"
 "Last-Translator: Marco Ciampa <ciampix@posteo.net>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -4997,7 +4997,12 @@ msgid ""
 "overlay below it. It also allows bevel to work better when the user selects "
 "darker colors. The effect is noticeable on bump bevel but barely effects "
 "chamfer bevel"
-msgstr "Ciò indica alla smussatura di ignorare i dettagli dell'immagine se sotto di essa è presente una sovrapposizione di file immagine. Consente inoltre alla smussatura di funzionare meglio quando l'utente seleziona colori più scuri. L'effetto è evidente sullo smusso a sbalzo, ma influisce a malapena sullo smusso a ciamfrino"
+msgstr ""
+"Ciò indica alla smussatura di ignorare i dettagli dell'immagine se sotto di "
+"essa è presente una sovrapposizione di file immagine. Consente inoltre alla "
+"smussatura di funzionare meglio quando l'utente seleziona colori più scuri. "
+"L'effetto è evidente sullo smusso a sbalzo, ma influisce a malapena sullo "
+"smusso a ciamfrino"
 
 #. This operation is extremely important for bevels with image file overlays
 #. Inner Glow GUI options begin here
@@ -5385,7 +5390,9 @@ msgstr "Forma vignetta"
 msgid ""
 "Defaults to 'black', you can use transparency here to erase portions of an "
 "image"
-msgstr "Valore predefinito 'black'; si può usare la trasparenza per cancellare porzioni dell'immagine"
+msgstr ""
+"Valore predefinito 'black'; si può usare la trasparenza per cancellare "
+"porzioni dell'immagine"
 
 #: ../operations/common/vignette.c:41
 msgid "How far out vignetting goes as portion of half image diagonal"
@@ -5857,7 +5864,7 @@ msgstr "Indice di rifrazione lente"
 
 #: ../operations/common-gpl3+/apply-lens.c:41
 msgid "Keep original surroundings"
-msgstr "Mantiene i dintorni originali"
+msgstr "Mantieni contorni originali"
 
 #: ../operations/common-gpl3+/apply-lens.c:42
 msgid "Keep image unchanged, where not affected by the lens."
@@ -7317,7 +7324,9 @@ msgstr "Buffer esponente"
 msgid ""
 "Per pixel buffer for modulating the exponent parameter, expecting a scaling "
 "factor in range 0.0-1.0"
-msgstr "Buffer per pixel per la modulazione del parametro esponente, prevedendo un fattore di scala compreso tra 0.0 e 1.0"
+msgstr ""
+"Buffer per pixel per la modulazione del parametro esponente, prevedendo un "
+"fattore di scala compreso tra 0.0 e 1.0"
 
 #: ../operations/common-gpl3+/oilify.c:628
 msgid "Oilify"
