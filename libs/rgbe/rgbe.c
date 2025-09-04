@@ -624,6 +624,7 @@ rgbe_read_new_rle (const rgbe_file *file,
 {
   const guint8 *data;
   guint16       linesize;
+  guint32       max_size;
   guint         i;
   guint         component;
   gfloat       *pixoffset[RGBE_NUM_RGBE] =
@@ -646,6 +647,14 @@ rgbe_read_new_rle (const rgbe_file *file,
   data     = (guint8 *)g_mapped_file_get_contents (file->file) + *cursor;
   g_return_val_if_fail (data[OFFSET_R] == 2 && data[OFFSET_G] == 2, FALSE);
   linesize = (data[OFFSET_B] << 8) | data[OFFSET_E];
+  max_size = file->header.x_axis.size * file->header.y_axis.size * RGBE_NUM_RGBE;
+
+  if (RGBE_NUM_RGBE * linesize > max_size)
+    {
+      g_warning ("Invalid linesize %u is larger than maximum %u\n",
+                 RGBE_NUM_RGBE * linesize, max_size);
+      return FALSE;
+    }
 
   data += RGBE_NUM_RGBE;
 
