@@ -349,7 +349,11 @@ decode_frame (GeglOperation *operation,
   if (frame < 2 || frame > prevframe + 64 || frame < prevframe )
   {
     int64_t seek_target = av_rescale_q (((frame) * AV_TIME_BASE * 1.0) / o->frame_rate
+#if LIBAVCODEC_VERSION_MAJOR < 60
 , AV_TIME_BASE_Q, p->video_stream->time_base) / p->video_ctx->ticks_per_frame;
+#else
+, AV_TIME_BASE_Q, p->video_stream->time_base) / (p->video_ctx->codec_descriptor->props & AV_CODEC_PROP_FIELDS ? 2 : 1);
+#endif
 
     if (av_seek_frame (p->video_fcontext, p->video_index, seek_target, (AVSEEK_FLAG_BACKWARD )) < 0)
       fprintf (stderr, "video seek error!\n");
@@ -403,7 +407,11 @@ decode_frame (GeglOperation *operation,
                   break;
                 }
               got_picture = 1;
+#if LIBAVUTIL_VERSION_MAJOR < 58
               if ((pkt.dts == pkt.pts) || (p->lavc_frame->key_frame!=0))
+#else
+              if ((pkt.dts == pkt.pts) || (p->lavc_frame->flags & AV_FRAME_FLAG_KEY))
+#endif
                 {
                   // cur_dts and first_dts are moved to libavformat/internal.h
                   /*
