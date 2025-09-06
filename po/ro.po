@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GEGL master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2024-06-20 15:58+0000\n"
-"PO-Revision-Date: 2024-07-26 23:39+0200\n"
+"POT-Creation-Date: 2025-09-02 19:20+0000\n"
+"PO-Revision-Date: 2025-09-03 13:13+0300\n"
 "Last-Translator: Cristian Secară <cristi AT secarica DOT ro>\n"
 "Language-Team: Gnome Romanian Team <gnomero-list@lists.sourceforge.net>\n"
 "Language: ro\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
 "20)) ? 1 : 2);\n"
-"X-Generator: Poedit 3.4.4\n"
+"X-Generator: Poedit 3.6\n"
 
 #: bin/gegl.c:179
 #, c-format
@@ -270,16 +270,12 @@ msgid "Arithmetic xor covariant"
 msgstr "Covariantă de XOR aritmetic"
 
 #: gegl/gegl-enums.c:42
-#, fuzzy
-#| msgid "Noise"
 msgid "Blue Noise"
-msgstr "Zgomot"
+msgstr ""
 
 #: gegl/gegl-enums.c:43
-#, fuzzy
-#| msgid "Random Covariant"
 msgid "Blue Noise Covariant"
-msgstr "Co-variantă aleatorie"
+msgstr ""
 
 #: gegl/gegl-enums.c:68
 msgid "Euclidean"
@@ -350,42 +346,42 @@ msgstr "Niciodată"
 msgid "Always"
 msgstr "Întotdeauna"
 
-#: gegl/gegl-init.c:225
+#: gegl/gegl-init.c:354
 msgid "Where GEGL stores its swap"
 msgstr "Locul unde își ține GEGL fișierul swap"
 
-#: gegl/gegl-init.c:230
+#: gegl/gegl-init.c:359
 msgid "Compression algorithm used for data stored in the swap"
 msgstr "Algoritmul de comprimare folosit de datele stocate în fișierul swap"
 
-#: gegl/gegl-init.c:235
+#: gegl/gegl-init.c:364
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr ""
 "Câtă memorie să fie folosită (aproximativ) pentru stocarea imagisticii în "
 "memoria cache"
 
-#: gegl/gegl-init.c:240
+#: gegl/gegl-init.c:369
 msgid "Default size of tiles in GeglBuffers"
 msgstr "Dimensiunea implicită a dalelor din GeglBuffers"
 
-#: gegl/gegl-init.c:245
+#: gegl/gegl-init.c:374
 msgid "The count of pixels to compute simultaneously"
 msgstr "Numărul de pixeli de calculat simultan"
 
-#: gegl/gegl-init.c:250
+#: gegl/gegl-init.c:379
 msgid ""
 "The quality of rendering, a value between 0.0 (fast) and 1.0 (reference)"
-msgstr "Calitatea randării, o valoare între 0,0 (rapidă) și 1,0 (referința)"
+msgstr "Calitatea randării, o valoare intre 0,0 (rapidă) si 1,0 (referința)"
 
-#: gegl/gegl-init.c:255
+#: gegl/gegl-init.c:384
 msgid "The number of concurrent processing threads to use"
 msgstr "Numărul de fire de procesare simultană de utilizat"
 
-#: gegl/gegl-init.c:260
+#: gegl/gegl-init.c:389
 msgid "Disable OpenCL"
 msgstr "Dezactivează OpenCL"
 
-#: gegl/gegl-init.c:272
+#: gegl/gegl-init.c:401
 msgid "Show GEGL Options"
 msgstr ""
 
@@ -445,6 +441,7 @@ msgid "Output pad for generated image buffer."
 msgstr ""
 
 #: gegl/operation/gegl-operation-composer3.c:86
+#: gegl/operation/gegl-operation-filter.c:96
 msgid "Input pad, for image buffer input."
 msgstr ""
 
@@ -456,6 +453,10 @@ msgstr ""
 
 #: gegl/operation/gegl-operation-composer3.c:104
 msgid "Second auxiliary image buffer input pad."
+msgstr ""
+
+#: gegl/operation/gegl-operation-filter.c:95
+msgid "Input"
 msgstr ""
 
 #: operations/common/absolute.c:72
@@ -636,95 +637,85 @@ msgstr ""
 "Valorile pixelilor mai mari decât această limită vor fi stabilite la aceasta"
 
 #: operations/common/alpha-clip.c:196
-#, fuzzy
-#| msgid "Color to Alpha"
 msgid "Clip Alpha"
-msgstr "Culoare la alfa"
+msgstr ""
 
 #: operations/common/alpha-clip.c:199
-#, fuzzy
-#| msgid "Keep RGB pixels values inside a specific range"
 msgid "Keep alpha values inside a specific range"
-msgstr "Păstrează valorile pixelilor RGB în interiorul unui interval specific"
-
-#: operations/common/bevel.c:47
-msgid "Chamfer"
 msgstr ""
 
 #: operations/common/bevel.c:49
+msgid "Chamfer"
+msgstr ""
+
+#: operations/common/bevel.c:51
 msgid "Bump"
 msgstr ""
 
-#: operations/common/bevel.c:52
+#: operations/common/bevel.c:54
 msgid "Bevel Type"
 msgstr ""
 
-#: operations/common/bevel.c:55
+#: operations/common/bevel.c:57
 msgid "The family of bevel to use"
 msgstr ""
 
-#: operations/common/bevel.c:59
+#: operations/common/bevel.c:61
 msgid "None (for use with GIMPs blending options)"
 msgstr ""
 
-#: operations/common/bevel.c:61 operations/common/styles.c:202
+#: operations/common/bevel.c:63 operations/common/styles.c:202
 #: operations/common/styles.c:310 operations/common/styles.c:418
-#, fuzzy
-#| msgid "Height"
 msgid "Hard Light"
-msgstr "Înălțime"
+msgstr ""
 
-#: operations/common/bevel.c:63 operations/common/styles.c:59
+#: operations/common/bevel.c:65 operations/common/styles.c:59
 #: operations/common/styles.c:198 operations/common/styles.c:414
 msgid "Multiply"
 msgstr ""
 
-#: operations/common/bevel.c:65 operations/common/styles.c:206
+#: operations/common/bevel.c:67 operations/common/styles.c:206
 #: operations/common/styles.c:312 operations/common/styles.c:422
-#, fuzzy
-#| msgid "Color model"
 msgid "Color Dodge"
-msgstr "Model de culoare"
+msgstr ""
 
-#: operations/common/bevel.c:67 operations/common/styles.c:204
+#: operations/common/bevel.c:69 operations/common/styles.c:204
 #: operations/common/styles.c:420
 msgid "Darken"
 msgstr ""
 
-#: operations/common/bevel.c:69
-#, fuzzy
-#| msgid "Brighten"
+#: operations/common/bevel.c:71
 msgid "Lighten"
-msgstr "Luminează"
+msgstr ""
 
-#: operations/common/bevel.c:71 operations/common/styles.c:200
+#: operations/common/bevel.c:73 operations/common/styles.c:200
 #: operations/common/styles.c:416
 #: operations/workshop/external/paint-select.cc:30
 msgid "Add"
 msgstr ""
 
-#: operations/common/bevel.c:74 operations/common-gpl3+/sinus.c:67
+#: operations/common/bevel.c:76 operations/common-gpl3+/sinus.c:67
 msgid "Blend Mode"
 msgstr ""
 
-#: operations/common/bevel.c:77
+#: operations/common/bevel.c:79
 msgid ""
 "What blending mode the bevel's emboss will be. Light Map is a special blend "
 "mode that allows users to extract the filters output as a light map which "
 "should be put on a layer above or be used with Gimp's blending options."
 msgstr ""
 
-#: operations/common/bevel.c:79
+#: operations/common/bevel.c:81
 msgid "Distance Map Setting"
 msgstr ""
 
-#: operations/common/bevel.c:81
+#: operations/common/bevel.c:83
 msgid ""
 "Distance Map is unique to chamfer bevel and has three settings that alter "
 "the structure of the chamfer."
 msgstr ""
 
-#: operations/common/bevel.c:84 operations/common/bloom.c:35
+#: operations/common/bevel.c:86 operations/common/bloom.c:35
 #: operations/common/box-blur.c:25 operations/common/c2g.c:28
 #: operations/common/edge-neon.c:47 operations/common/local-threshold.c:24
 #: operations/common/median-blur.c:42 operations/common/snn-mean.c:26
@@ -742,51 +733,46 @@ msgstr ""
 msgid "Radius"
 msgstr "Rază"
 
-#: operations/common/bevel.c:89
+#: operations/common/bevel.c:91
 msgid "Radius of softening for making bump of the shape."
 msgstr ""
 
-#: operations/common/bevel.c:92 operations/common-gpl3+/bump-map.c:56
+#: operations/common/bevel.c:94 operations/common-gpl3+/bump-map.c:56
 #: operations/common-gpl3+/emboss.c:40
 msgid "Elevation"
 msgstr ""
 
-#: operations/common/bevel.c:93
+#: operations/common/bevel.c:95
 msgid "Elevation angle of the Bevel."
 msgstr ""
 
-#. The only issue  with this filter is that emboss depth= above 15 does nothing on chamfer bevel , but works great on bump bevel.
-#. so I made an extra node just for it that only updates emboss depth=, as a result depth and sharpness' are co-existing properties
+#. An issue with this filter is that emboss depth= above 15 does nothing on chamfer bevel , but works great on bump bevel.
+#. so I made an extra node just for it that only updates emboss depth=, as a result depth and sharpness' are co-existing properties.
 #.
-#. I am fully aware 'depth' and 'detail' are just words used to describe the same thing.
-#: operations/common/bevel.c:104 operations/common-gpl3+/bump-map.c:59
+#: operations/common/bevel.c:105 operations/common-gpl3+/bump-map.c:59
 #: operations/common-gpl3+/emboss.c:45
-#: operations/common-gpl3+/fractal-trace.c:60
+#: operations/common-gpl3+/fractal-trace.c:66
 #: operations/common-gpl3+/texturize-canvas.c:44
 msgid "Depth"
 msgstr ""
 
-#: operations/common/bevel.c:105
+#: operations/common/bevel.c:106
 msgid "Emboss depth - Brings out depth and detail of the bump bevel."
 msgstr ""
 
-#: operations/common/bevel.c:109
-#, fuzzy
-#| msgid "Lightness"
-msgid "Light Angle"
-msgstr "Luminozitate"
-
 #: operations/common/bevel.c:110
+msgid "Light Angle"
+msgstr ""
+
+#: operations/common/bevel.c:111
 msgid "Direction of a light source illuminating and shading the bevel."
 msgstr ""
 
-#: operations/common/bevel.c:309
-#, fuzzy
-#| msgid "Black level"
+#: operations/common/bevel.c:294
 msgid "Bevel"
-msgstr "Nivel de negru"
+msgstr ""
 
-#: operations/common/bevel.c:311
+#: operations/common/bevel.c:296
 msgid ""
 "Two bevel effects in one place, Chamfer - which simulates lighting of "
 "chamfered 3D-edges, and Bump - the second make a 3D inflation effect by an "
@@ -794,13 +780,13 @@ msgid ""
 "shapes."
 msgstr ""
 
-#: operations/common/bevel.c:313
+#: operations/common/bevel.c:298
 msgid "Bevel..."
 msgstr ""
 
 #: operations/common/bilateral-filter.c:26
 #: operations/common/domain-transform.c:29 operations/common/dropshadow.c:46
-#: operations/common/inner-glow.c:65 operations/common-cxx/focus-blur.c:45
+#: operations/common/inner-glow.c:58 operations/common-cxx/focus-blur.c:45
 #: operations/common-cxx/lens-blur.cc:25
 #: operations/common-gpl3+/gaussian-blur-selective.c:29
 #: operations/workshop/bilateral-filter-fast.c:43
@@ -1124,7 +1110,7 @@ msgstr ""
 
 #: operations/common/color.c:24 operations/common/color.c:87
 #: operations/common/color-overlay.c:26 operations/common/dropshadow.c:67
-#: operations/common/grid.c:64 operations/common/inner-glow.c:87
+#: operations/common/grid.c:64 operations/common/inner-glow.c:80
 #: operations/common/long-shadow.c:83 operations/common/rectangle.c:48
 #: operations/common/vignette.c:36 operations/common-gpl3+/color-to-alpha.c:29
 #: operations/common-gpl3+/supernova.c:60
@@ -1202,7 +1188,7 @@ msgstr ""
 "Extinde crominanța culorii pentru a acoperi intervalul maxim posibil, "
 "păstrând nuanța și luminozitatea neatinse."
 
-#: operations/common/color-overlay.c:27 operations/common/inner-glow.c:88
+#: operations/common/color-overlay.c:27 operations/common/inner-glow.c:81
 msgid "The color to paint over the input"
 msgstr ""
 
@@ -1915,28 +1901,28 @@ msgid ""
 "recursive technique. Similar to a bilateral filter, but faster to compute."
 msgstr ""
 
-#: operations/common/dropshadow.c:27 operations/common/inner-glow.c:35
+#: operations/common/dropshadow.c:27 operations/common/inner-glow.c:30
 #: operations/common/median-blur.c:27 operations/common/pixelize.c:28
 #: operations/common/styles.c:96 operations/common/vignette.c:26
 #: operations/common-cxx/focus-blur.c:35
 msgid "Square"
 msgstr "Pătrat"
 
-#: operations/common/dropshadow.c:28 operations/common/inner-glow.c:36
+#: operations/common/dropshadow.c:28 operations/common/inner-glow.c:31
 #: operations/common/median-blur.c:28 operations/common/newsprint.c:26
 #: operations/common/styles.c:97 operations/common/vignette.c:25
 #: operations/common-cxx/focus-blur.c:34
 msgid "Circle"
 msgstr "Cerc"
 
-#: operations/common/dropshadow.c:29 operations/common/inner-glow.c:37
+#: operations/common/dropshadow.c:29 operations/common/inner-glow.c:32
 #: operations/common/median-blur.c:29 operations/common/newsprint.c:27
 #: operations/common/pixelize.c:26 operations/common/styles.c:98
 #: operations/common/vignette.c:27 operations/common-cxx/focus-blur.c:36
 msgid "Diamond"
 msgstr "Diamant"
 
-#: operations/common/dropshadow.c:32 operations/common/inner-glow.c:47
+#: operations/common/dropshadow.c:32 operations/common/inner-glow.c:42
 #: operations/common/layer.c:36 operations/common/rectangle.c:26
 #: operations/common-gpl3+/plasma.c:40
 #: operations/common-gpl3+/polar-coordinates.c:52
@@ -1949,12 +1935,12 @@ msgstr "Diamant"
 msgid "X"
 msgstr "X"
 
-#: operations/common/dropshadow.c:33 operations/common/inner-glow.c:48
+#: operations/common/dropshadow.c:33 operations/common/inner-glow.c:43
 #: operations/common/styles.c:145
 msgid "Horizontal shadow offset"
 msgstr "Decalaj de umbră orizontal"
 
-#: operations/common/dropshadow.c:39 operations/common/inner-glow.c:55
+#: operations/common/dropshadow.c:39 operations/common/inner-glow.c:49
 #: operations/common/layer.c:41 operations/common/rectangle.c:31
 #: operations/common-gpl3+/plasma.c:47
 #: operations/common-gpl3+/polar-coordinates.c:59
@@ -1967,24 +1953,24 @@ msgstr "Decalaj de umbră orizontal"
 msgid "Y"
 msgstr "Y"
 
-#: operations/common/dropshadow.c:40 operations/common/inner-glow.c:56
+#: operations/common/dropshadow.c:40 operations/common/inner-glow.c:50
 #: operations/common/styles.c:154
 msgid "Vertical shadow offset"
 msgstr "Decalaj de umbră vertical"
 
-#: operations/common/dropshadow.c:53 operations/common/inner-glow.c:41
+#: operations/common/dropshadow.c:53 operations/common/inner-glow.c:36
 msgid "Grow shape"
 msgstr ""
 
-#: operations/common/dropshadow.c:56 operations/common/inner-glow.c:44
+#: operations/common/dropshadow.c:56 operations/common/inner-glow.c:39
 msgid "The shape to expand or contract the shadow in"
 msgstr ""
 
-#: operations/common/dropshadow.c:58 operations/common/inner-glow.c:73
+#: operations/common/dropshadow.c:58 operations/common/inner-glow.c:66
 msgid "Grow radius"
 msgstr ""
 
-#: operations/common/dropshadow.c:65 operations/common/inner-glow.c:80
+#: operations/common/dropshadow.c:65 operations/common/inner-glow.c:73
 msgid ""
 "The distance to expand the shadow before blurring; a negative value will "
 "contract the shadow instead"
@@ -1995,21 +1981,21 @@ msgstr ""
 msgid "The shadow's color (defaults to 'black')"
 msgstr ""
 
-#. It does make sense to sometimes have opacities > 1 (see GEGL logo
-#. * for example)
+#. We used to permit opacity values > 1.0, similar results can in many cases be
+#. * achieved with grow_radius.
 #.
-#: operations/common/dropshadow.c:74 operations/common/inner-glow.c:82
+#: operations/common/dropshadow.c:74 operations/common/inner-glow.c:75
 #: operations/common/layer.c:33 operations/common/opacity.c:25
 #: operations/common/opacity.c:289 operations/external/vector-fill.c:29
 #: operations/external/vector-stroke.c:34
 msgid "Opacity"
 msgstr ""
 
-#: operations/common/dropshadow.c:184
+#: operations/common/dropshadow.c:185
 msgid "Dropshadow"
 msgstr ""
 
-#: operations/common/dropshadow.c:188
+#: operations/common/dropshadow.c:189
 msgid "Creates a dropshadow effect on the input buffer"
 msgstr ""
 
@@ -2043,11 +2029,11 @@ msgid ""
 "is used instead."
 msgstr ""
 
-#: operations/common/edge-sobel.c:404
+#: operations/common/edge-sobel.c:397
 msgid "Sobel Edge Detection"
 msgstr ""
 
-#: operations/common/edge-sobel.c:408
+#: operations/common/edge-sobel.c:401
 msgid "Specialized direction-dependent edge detection"
 msgstr ""
 
@@ -2183,7 +2169,7 @@ msgstr ""
 #: operations/common/gaussian-blur.c:57 operations/common/gblur-1d.c:60
 #: operations/common/map-absolute.c:26 operations/common/map-relative.c:30
 #: operations/common/median-blur.c:56 operations/common-gpl3+/displace.c:43
-#: operations/common-gpl3+/fractal-trace.c:67
+#: operations/common-gpl3+/fractal-trace.c:74
 #: operations/common-gpl3+/ripple.c:56 operations/transform/scale.c:102
 #: operations/workshop/external/voronoi-diagram.cc:38
 msgid "Abyss policy"
@@ -2239,7 +2225,7 @@ msgstr ""
 #: operations/common/icc-save.c:25 operations/common/magick-load.c:26
 #: operations/common/open-buffer.c:25 operations/common/save.c:26
 #: operations/core/load.c:29 operations/external/exr-save.cc:24
-#: operations/external/ff-load.c:29 operations/external/ff-save.c:29
+#: operations/external/ff-load.c:30 operations/external/ff-save.c:30
 #: operations/external/gif-load.c:34 operations/external/jp2-load.c:25
 #: operations/external/jpg-load.c:24 operations/external/jpg-save.c:25
 #: operations/external/npy-save.c:31 operations/external/png-load.c:32
@@ -2299,10 +2285,8 @@ msgid ""
 msgstr ""
 
 #: operations/common/grey.c:138
-#, fuzzy
-#| msgid "Maker"
 msgid "Make Gray"
-msgstr "Producător"
+msgstr ""
 
 #: operations/common/grey.c:142
 msgid "Turns the image grayscale"
@@ -2392,16 +2376,12 @@ msgid "Path of file to load"
 msgstr ""
 
 #: operations/common/icc-load.c:103
-#, fuzzy
-#| msgid "ICC profile saver"
 msgid "ICC File Loader"
-msgstr "Salvator de profil ICC"
+msgstr ""
 
 #: operations/common/icc-load.c:105
-#, fuzzy
-#| msgid "ICC profile saver"
 msgid "ICC profile loader."
-msgstr "Salvator de profil ICC"
+msgstr ""
 
 #: operations/common/icc-save.c:26
 msgid "Target path and filename"
@@ -2487,28 +2467,28 @@ msgstr ""
 "Calculează magnitudinea și/sau direcția degradeului folosind diferențele "
 "centrale"
 
-#: operations/common/inner-glow.c:92
-msgid "Median fix for non-effected pixels on edges"
+#: operations/common/inner-glow.c:85
+msgid "Median fix for non-affected pixels on edges"
 msgstr ""
 
-#: operations/common/inner-glow.c:94
+#: operations/common/inner-glow.c:87
 msgid ""
-"Median Blur covers uneffected pixels. Making this slider too high will make "
+"Median Blur covers unaffected pixels. Making this slider too high will make "
 "it outline-like. So only slide it as high as you need to cover thin shape "
 "corners."
 msgstr ""
 
-#: operations/common/inner-glow.c:179
+#: operations/common/inner-glow.c:171
 msgid "Inner Glow"
 msgstr ""
 
-#: operations/common/inner-glow.c:181
+#: operations/common/inner-glow.c:173
 msgid ""
 "GEGL does an inner shadow glow effect; for more interesting use different "
 "blend mode than the default, Replace."
 msgstr ""
 
-#: operations/common/inner-glow.c:183
+#: operations/common/inner-glow.c:175
 msgid "Inner Glow..."
 msgstr ""
 
@@ -2516,7 +2496,7 @@ msgstr ""
 msgid "Node"
 msgstr "Nod"
 
-#: operations/common/introspect.c:205
+#: operations/common/introspect.c:210
 msgid "GEGL graph visualizer."
 msgstr "Vizualizator grafic GEGL."
 
@@ -2641,20 +2621,20 @@ msgstr "X1"
 
 #: operations/common/linear-gradient.c:29
 #: operations/common/radial-gradient.c:26
-#: operations/common-gpl3+/fractal-trace.c:42
+#: operations/common-gpl3+/fractal-trace.c:44
 #: operations/workshop/external/line-profile.c:35
 msgid "Y1"
 msgstr "Y1"
 
 #: operations/common/linear-gradient.c:33
 #: operations/common/radial-gradient.c:27
-#: operations/common-gpl3+/fractal-trace.c:38
+#: operations/common-gpl3+/fractal-trace.c:39
 msgid "X2"
 msgstr "X2"
 
 #: operations/common/linear-gradient.c:37
 #: operations/common/radial-gradient.c:28
-#: operations/common-gpl3+/fractal-trace.c:46
+#: operations/common-gpl3+/fractal-trace.c:49
 msgid "Y2"
 msgstr "Y2"
 
@@ -2803,10 +2783,8 @@ msgid ""
 msgstr ""
 
 #: operations/common/local-threshold.c:43
-#, fuzzy
-#| msgid "Threshold"
 msgid "Threshold level"
-msgstr "Prag"
+msgstr ""
 
 #: operations/common/local-threshold.c:46 operations/common/threshold.c:30
 msgid "High"
@@ -2817,10 +2795,8 @@ msgid "Maximum values to include, above this gets set to 0."
 msgstr ""
 
 #: operations/common/local-threshold.c:179
-#, fuzzy
-#| msgid "Blue Threshold"
 msgid "Local Threshold"
-msgstr "Prag de albastru"
+msgstr ""
 
 #: operations/common/local-threshold.c:181
 msgid "Applies a threshold using the local neighborhood."
@@ -2938,11 +2914,11 @@ msgstr ""
 msgid "Level of emphasis on image gradient details"
 msgstr ""
 
-#: operations/common/mantiuk06.c:1655
+#: operations/common/mantiuk06.c:1642
 msgid "Mantiuk 2006 Tone Mapping"
 msgstr ""
 
-#: operations/common/mantiuk06.c:1659
+#: operations/common/mantiuk06.c:1646
 msgid ""
 "Adapt an image, which may have a high dynamic range, for presentation using "
 "a low dynamic range. This operator constrains contrasts across multiple "
@@ -3228,10 +3204,8 @@ msgid ""
 msgstr ""
 
 #: operations/common/negative-darkroom.c:25
-#, fuzzy
-#| msgid "The contrast curve."
 msgid "Characteristic curve"
-msgstr "Curba de contrast."
+msgstr ""
 
 #: operations/common/negative-darkroom.c:27
 msgid "Hardcoded characteristic curve and color data"
@@ -3273,147 +3247,189 @@ msgstr ""
 msgid "Clip base + fog to have a pure white output value"
 msgstr ""
 
-#: operations/common/negative-darkroom.c:52
-msgid "Density boost"
+#: operations/common/negative-darkroom.c:51
+msgid "Add base and fog"
 msgstr ""
 
-#: operations/common/negative-darkroom.c:53
+#: operations/common/negative-darkroom.c:52
+msgid "Artificially reintroduce base and fog."
+msgstr ""
+
+#: operations/common/negative-darkroom.c:57
+msgid "Cyan density boost"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:58
+#: operations/common/negative-darkroom.c:63
+#: operations/common/negative-darkroom.c:68
 msgid ""
 "Boost paper density to take advantage of increased dynamic range of a "
 "monitor compared to a photographic paper"
 msgstr ""
 
-#: operations/common/negative-darkroom.c:57
-#, fuzzy
-#| msgid "Contrast Curve"
-msgid "Contrast boost"
-msgstr "Curbă de contrast"
+#: operations/common/negative-darkroom.c:62
+msgid "Density boost"
+msgstr ""
 
-#: operations/common/negative-darkroom.c:58
+#: operations/common/negative-darkroom.c:67
+msgid "Yellow density boost"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:72
+msgid "Contrast boost R"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:73
+msgid ""
+"Increase red contrast for papers with fixed contrast (usually color papers)"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:77
+msgid "Contrast boost"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:78
 msgid "Increase contrast for papers with fixed contrast (usually color papers)"
 msgstr ""
 
-#: operations/common/negative-darkroom.c:63
-msgid "Dodge/burn multiplier"
-msgstr ""
-
-#: operations/common/negative-darkroom.c:64
-msgid "The f-stop of dodge/burn for pure white/black auxiliary input"
-msgstr ""
-
-#: operations/common/negative-darkroom.c:68
-msgid "Enable preflashing"
-msgstr ""
-
-#: operations/common/negative-darkroom.c:69
-msgid "Show preflash controls"
-msgstr ""
-
-#: operations/common/negative-darkroom.c:71
-#, fuzzy
-#| msgid "Red Threshold"
-msgid "Red preflash"
-msgstr "Prag de roșu"
-
-#: operations/common/negative-darkroom.c:72
-msgid "Preflash the negative with red light to reduce contrast of the print"
-msgstr ""
-
-#: operations/common/negative-darkroom.c:76
-#, fuzzy
-#| msgid "Green Threshold"
-msgid "Green preflash"
-msgstr "Prag de verde"
-
-#: operations/common/negative-darkroom.c:77
-msgid "Preflash the negative with green light to reduce contrast of the print"
-msgstr ""
-
-#: operations/common/negative-darkroom.c:81
-#, fuzzy
-#| msgid "Blue Threshold"
-msgid "Blue preflash"
-msgstr "Prag de albastru"
-
 #: operations/common/negative-darkroom.c:82
-msgid "Preflash the negative with blue light to reduce contrast of the print"
+msgid "Contrast boost B"
 msgstr ""
 
-#: operations/common/negative-darkroom.c:86
-#, fuzzy
-#| msgid "Hue adjustment"
-msgid "Illuminant adjustment"
-msgstr "Ajustează nuanța"
-
-#: operations/common/negative-darkroom.c:87
-msgid "Show illuminant controls"
+#: operations/common/negative-darkroom.c:83
+msgid ""
+"Increase blue contrast for papers with fixed contrast (usually color papers)"
 msgstr ""
 
 #: operations/common/negative-darkroom.c:88
-msgid "X multiplier"
+msgid "Dodge/burn multiplier"
 msgstr ""
 
 #: operations/common/negative-darkroom.c:89
-msgid "Adjust the X tristimulus value for output"
-msgstr ""
-
-#: operations/common/negative-darkroom.c:92
-msgid "Z multiplier"
+msgid "The f-stop of dodge/burn for pure white/black auxiliary input"
 msgstr ""
 
 #: operations/common/negative-darkroom.c:93
+msgid "Enable preflashing"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:94
+msgid "Show preflash controls"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:96
+msgid "Red preflash"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:97
+msgid "Preflash the negative with red light to reduce contrast of the print"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:101
+msgid "Green preflash"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:102
+msgid "Preflash the negative with green light to reduce contrast of the print"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:106
+msgid "Blue preflash"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:107
+msgid "Preflash the negative with blue light to reduce contrast of the print"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:111
+msgid "Illuminant adjustment"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:112
+msgid "Show illuminant controls"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:113
+msgid "X multiplier"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:114
+msgid "Adjust the X tristimulus value for output"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:117
+msgid "Z multiplier"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:118
 msgid "Adjust the Z tristimulus value for output"
 msgstr ""
 
-#: operations/common/negative-darkroom.c:386
+#: operations/common/negative-darkroom.c:437
 msgid "Negative Darkroom"
 msgstr ""
 
-#: operations/common/negative-darkroom.c:389
-msgid "Simulate a negative film enlargement in an analog darkroom."
+#: operations/common/negative-darkroom.c:440
+msgid "Simulate a film enlargement in an analog darkroom."
 msgstr ""
 
 #: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:2
-msgid "Fujicolor Crystal Archive Digital Pearl Paper"
+msgid "Kodak Professional Ultra Endura"
 msgstr ""
 
 #: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:3
-msgid "Ilford Ilfobrom Galerie FB 1"
+msgid "Kodak Professional Portra Endura"
 msgstr ""
 
 #: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:4
-msgid "Ilford Ilfobrom Galerie FB 2"
+msgid "Kodak Professional Supra Endura"
 msgstr ""
 
 #: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:5
-msgid "Ilford Ilfobrom Galerie FB 3"
+msgid "Kodak Ektachrome Radiance III"
 msgstr ""
 
 #: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:6
-msgid "Ilford Ilfobrom Galerie FB 4"
+msgid "Fujicolor Crystal Archive Digital Pearl Paper"
 msgstr ""
 
 #: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:7
-msgid "Ilford Multigrade IV RC Deluxe"
+msgid "Ilford Ilfobrom Galerie FB 1"
 msgstr ""
 
 #: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:8
-msgid "Foma Fomabrom C"
+msgid "Ilford Ilfobrom Galerie FB 2"
 msgstr ""
 
 #: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:9
-msgid "Foma Fomabrom N"
+msgid "Ilford Ilfobrom Galerie FB 3"
 msgstr ""
 
 #: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:10
-msgid "Foma Fomabrom Sp"
+msgid "Ilford Ilfobrom Galerie FB 4"
 msgstr ""
 
 #: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:11
-msgid "Foma Fomabrom S"
+msgid "Ilford Multigrade IV RC Deluxe"
 msgstr ""
 
 #: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:12
+msgid "Foma Fomabrom C"
+msgstr ""
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:13
+msgid "Foma Fomabrom N"
+msgstr ""
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:14
+msgid "Foma Fomabrom Sp"
+msgstr ""
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:15
+msgid "Foma Fomabrom S"
+msgstr ""
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:16
 msgid "Foma Fomabrom Variant III"
 msgstr ""
 
@@ -3641,11 +3657,11 @@ msgid ""
 "stronger where there is color."
 msgstr ""
 
-#: operations/common/newsprint.c:653
+#: operations/common/newsprint.c:662
 msgid "Newsprint"
 msgstr ""
 
-#: operations/common/newsprint.c:658
+#: operations/common/newsprint.c:667
 msgid "Digital halftoning with optional modulations. "
 msgstr ""
 
@@ -3656,15 +3672,15 @@ msgstr ""
 #: operations/common/noise-cell.c:40 operations/common/pixelize.c:31
 #: operations/common-cxx/focus-blur.c:70
 msgid "Shape"
-msgstr ""
+msgstr "Formă"
 
 #: operations/common/noise-cell.c:41
 msgid "Interpolate between Manhattan and Euclidean distance."
-msgstr ""
+msgstr "Interpolează între distanța Manhattan și cea euclidiană."
 
 #: operations/common/noise-cell.c:44
 msgid "Rank"
-msgstr ""
+msgstr "Rang"
 
 #: operations/common/noise-cell.c:45
 msgid "Select the n-th closest point"
@@ -3768,11 +3784,11 @@ msgid ""
 "Controls the number of iterations; lower values give less plastic results"
 msgstr ""
 
-#: operations/common/noise-reduction.c:455
+#: operations/common/noise-reduction.c:461
 msgid "Noise Reduction"
 msgstr "Reducere de zgomot"
 
-#: operations/common/noise-reduction.c:459
+#: operations/common/noise-reduction.c:465
 msgid "Anisotropic smoothing operation"
 msgstr ""
 
@@ -3842,11 +3858,11 @@ msgstr ""
 msgid "Vertical spread amount"
 msgstr ""
 
-#: operations/common/noise-spread.c:158
+#: operations/common/noise-spread.c:183
 msgid "Noise Spread"
 msgstr ""
 
-#: operations/common/noise-spread.c:162
+#: operations/common/noise-spread.c:187
 msgid "Move pixels around randomly"
 msgstr ""
 
@@ -4490,10 +4506,8 @@ msgstr ""
 #. List of all GUI options
 #. GUI Change list in GUI
 #: operations/common/styles.c:38
-#, fuzzy
-#| msgid "Path of file to save."
 msgid "Part of filter to be displayed"
-msgstr "Calea fișierului de salvat."
+msgstr ""
 
 #: operations/common/styles.c:41
 msgid "Display a different part of the GUI"
@@ -4501,38 +4515,28 @@ msgstr ""
 
 #. Color Overlays GUI options begin here
 #: operations/common/styles.c:45
-#, fuzzy
-#| msgid "Color model"
 msgid "Color overlay"
-msgstr "Model de culoare"
+msgstr ""
 
 #: operations/common/styles.c:47
-#, fuzzy
-#| msgid "Hue value for above gray settings"
 msgid "Color overlay setting"
-msgstr "Valoarea nuanței pentru setările de gri de deasupra"
+msgstr ""
 
 #: operations/common/styles.c:49
-#, fuzzy
-#| msgid "Color model"
 msgid "Color policy"
-msgstr "Model de culoare"
+msgstr ""
 
 #: operations/common/styles.c:50
 msgid "Change the blend mode of the color overlay"
 msgstr ""
 
 #: operations/common/styles.c:57
-#, fuzzy
-#| msgid "To Color"
 msgid "No Color"
-msgstr "La culoarea"
+msgstr ""
 
 #: operations/common/styles.c:61
-#, fuzzy
-#| msgid "To Color"
 msgid "Solid Color"
-msgstr "La culoarea"
+msgstr ""
 
 #. Outline's normal GUI options begin here
 #: operations/common/styles.c:67
@@ -4548,30 +4552,24 @@ msgid "Outline opacity"
 msgstr ""
 
 #: operations/common/styles.c:74
-#, fuzzy
-#| msgid "Opacity threshold"
 msgid "Opacity of the outline"
-msgstr "Prag de opacitate"
+msgstr ""
 
 #: operations/common/styles.c:78
 msgid "Outline X"
 msgstr ""
 
 #: operations/common/styles.c:79
-#, fuzzy
-#| msgid "Horizontal shadow offset"
 msgid "Horizontal outline offset"
-msgstr "Decalaj de umbră orizontal"
+msgstr ""
 
 #: operations/common/styles.c:86
 msgid "Outline Y"
 msgstr ""
 
 #: operations/common/styles.c:87
-#, fuzzy
-#| msgid "Vertical shadow offset"
 msgid "Vertical outline offset"
-msgstr "Decalaj de umbră vertical"
+msgstr ""
 
 #: operations/common/styles.c:101
 msgid "Outline grow shape"
@@ -4582,20 +4580,16 @@ msgid "The shape to expand or contract the outline in"
 msgstr ""
 
 #: operations/common/styles.c:108
-#, fuzzy
-#| msgid "Blur radius"
 msgid "Outline blur radius"
-msgstr "Rază de neclaritate"
+msgstr ""
 
 #: operations/common/styles.c:114
 msgid "A mild blur for the outline"
 msgstr ""
 
 #: operations/common/styles.c:118
-#, fuzzy
-#| msgid "Blur radius"
 msgid "Outline grow radius"
-msgstr "Rază de neclaritate"
+msgstr ""
 
 #: operations/common/styles.c:125
 msgid "The distance to expand the outline"
@@ -4607,10 +4601,8 @@ msgid "Outline’s color"
 msgstr ""
 
 #: operations/common/styles.c:131
-#, fuzzy
-#| msgid "The color to render (defaults to 'black')"
 msgid "Color of the outline (defaults to 'black') "
-msgstr "Culoarea de randat (implicit la 'black')"
+msgstr ""
 
 #: operations/common/styles.c:136
 msgid "Shadow/Glow opacity"
@@ -4621,28 +4613,20 @@ msgid "Shadow opacity which will also enable or disable the shadow glow effect"
 msgstr ""
 
 #: operations/common/styles.c:144
-#, fuzzy
-#| msgid "Shadows"
 msgid "Shadow/Glow X"
-msgstr "Umbre"
+msgstr ""
 
 #: operations/common/styles.c:150
-#, fuzzy
-#| msgid "Horizontal shadow offset"
 msgid "Horizontal axis of the shadow glow"
-msgstr "Decalaj de umbră orizontal"
+msgstr ""
 
 #: operations/common/styles.c:153
-#, fuzzy
-#| msgid "Shadows"
 msgid "Shadow/Glow Y"
-msgstr "Umbre"
+msgstr ""
 
 #: operations/common/styles.c:159
-#, fuzzy
-#| msgid "Vertical shadow offset"
 msgid "Vertical axis of the shadow glow"
-msgstr "Decalaj de umbră vertical"
+msgstr ""
 
 #: operations/common/styles.c:162
 msgid "Shadow/Glow’s color"
@@ -4650,10 +4634,8 @@ msgstr ""
 
 #. TRANSLATORS: the string 'black' should not be translated
 #: operations/common/styles.c:164
-#, fuzzy
-#| msgid "The color to render (defaults to 'black')"
 msgid "The shadow’s color (defaults to 'black')"
-msgstr "Culoarea de randat (implicit la 'black')"
+msgstr ""
 
 #: operations/common/styles.c:167
 msgid "Shadow/Glow grow radius"
@@ -4699,30 +4681,24 @@ msgid "Bump Bevel"
 msgstr ""
 
 #: operations/common/styles.c:223
-#, fuzzy
-#| msgid "Black level"
 msgid "Select Bevel"
-msgstr "Nivel de negru"
+msgstr ""
 
 #: operations/common/styles.c:226
 msgid "Type of bevel "
 msgstr ""
 
 #: operations/common/styles.c:232
-#, fuzzy
-#| msgid "Bitdepth"
 msgid "Bevel depth"
-msgstr "Adâncime de biți"
+msgstr ""
 
 #: operations/common/styles.c:233
 msgid "Emboss depth for the bevel"
 msgstr ""
 
 #: operations/common/styles.c:239
-#, fuzzy
-#| msgid "Edge preservation"
 msgid "Bevel elevation"
-msgstr "Conservare margine"
+msgstr ""
 
 #: operations/common/styles.c:240
 msgid "Emboss elevation of the bevel"
@@ -4809,10 +4785,8 @@ msgid "Inner Glow's blur radius"
 msgstr ""
 
 #: operations/common/styles.c:329
-#, fuzzy
-#| msgid "Blue threshold of the input color"
 msgid "Blur control of the inner glow"
-msgstr "Pragul de albastru a culorii de intrare"
+msgstr ""
 
 #: operations/common/styles.c:333
 msgid "Inner Glow's grow radius"
@@ -4835,10 +4809,8 @@ msgid "Inner Glow's color"
 msgstr ""
 
 #: operations/common/styles.c:352
-#, fuzzy
-#| msgid "The color to change."
 msgid "The color of the inner glow"
-msgstr "Culoarea de schimbat."
+msgstr ""
 
 #: operations/common/styles.c:356
 msgid "Inner Glow's unmodified pixel fix"
@@ -4863,12 +4835,10 @@ msgid "Image file overlay"
 msgstr ""
 
 #: operations/common/styles.c:370
-#, fuzzy
-#| msgid "Source image file path (png, jpg, raw, svg, bmp, tif, ...)"
 msgid ""
 "Upload an image file from your computer to be in the fill area. Allows (png, "
 "jpg, raw, svg, bmp, tif, ...)"
-msgstr "Calea fișierului imaginii sursă (png, jpg, raw, svg, bmp, tif, ...)"
+msgstr ""
 
 #: operations/common/styles.c:374
 msgid "Opacity of image file overlay"
@@ -4954,22 +4924,18 @@ msgid "Outline image file overlay"
 msgstr ""
 
 #: operations/common/styles.c:470
-#, fuzzy
-#| msgid "Source image file path (png, jpg, raw, svg, bmp, tif, ...)"
 msgid ""
 "Upload an image file from your computer to be in the outline area. Allows "
 "(png, jpg, raw, svg, bmp, tif, ...)"
-msgstr "Calea fișierului imaginii sursă (png, jpg, raw, svg, bmp, tif, ...)"
+msgstr ""
 
 #: operations/common/styles.c:475
 msgid "Outline image opacity"
 msgstr ""
 
 #: operations/common/styles.c:476
-#, fuzzy
-#| msgid "White point adjustment"
 msgid "Outline image opacity adjustment"
-msgstr "Ajustare punct de alb"
+msgstr ""
 
 #: operations/common/styles.c:481
 msgid "Levels low output lighting for Outline Bevel"
@@ -4998,17 +4964,17 @@ msgid ""
 "when the user selects darker colors."
 msgstr ""
 
-#: operations/common/styles.c:1249
+#: operations/common/styles.c:1267
 msgid "GEGL Styles"
 msgstr ""
 
-#: operations/common/styles.c:1252
+#: operations/common/styles.c:1270
 msgid ""
 "An engine to style text and add popular effects to alpha channel images. "
 "Effects include outline, bevel, shadow, and inner glow all in one place."
 msgstr ""
 
-#: operations/common/styles.c:1255
+#: operations/common/styles.c:1273
 msgid "Text Styling..."
 msgstr ""
 
@@ -5176,8 +5142,8 @@ msgid ""
 "inf:1, this is applied after proportion is taken into account, to directly "
 "use squeeze factor as proportions, set proportion to 0.0."
 msgstr ""
-"Raportul de aspect de folosit, -0.5 = 1:2, 0.0 = 1:1, 0.5 = 2:1, -1.0 = 1:"
-"inf 1.0 = inf:1; acesta se aplică după ce proporția este luată în "
+"Raportul de aspect de folosit, -0.5 = 1:2, 0.0 = 1:1, 0.5 = 2:1, -1.0 = "
+"1:inf 1.0 = inf:1; acesta se aplică după ce proporția este luată în "
 "considerare; pentru a utiliza direct factorul de strângere ca proporții, "
 "setați proporția la 0.0."
 
@@ -5299,16 +5265,12 @@ msgid "Write input data into an existing GEGL buffer destination surface."
 msgstr ""
 
 #: operations/common-cxx/distance-transform.cc:31
-#, fuzzy
-#| msgid "Red Threshold"
 msgid "Above threshold"
-msgstr "Prag de roșu"
+msgstr ""
 
 #: operations/common-cxx/distance-transform.cc:32
-#, fuzzy
-#| msgid "Blue Threshold"
 msgid "Below threshold"
-msgstr "Prag de albastru"
+msgstr ""
 
 #: operations/common-cxx/distance-transform.cc:35
 #: operations/workshop/external/voronoi-diagram.cc:24
@@ -5358,11 +5320,11 @@ msgstr ""
 
 #: operations/common-cxx/focus-blur.c:30 operations/common-cxx/lens-blur.cc:504
 msgid "Lens Blur"
-msgstr ""
+msgstr "Neclaritate de lentilă"
 
 #: operations/common-cxx/focus-blur.c:41
 msgid "Blur type"
-msgstr ""
+msgstr "Tip de neclaritate"
 
 #: operations/common-cxx/focus-blur.c:46
 msgid "Out-of-focus blur radius"
@@ -5407,17 +5369,17 @@ msgstr ""
 
 #: operations/common-cxx/focus-blur.c:99 operations/common-gpl3+/waves.c:46
 msgid "Aspect ratio"
-msgstr ""
+msgstr "Raport de aspect"
 
 #: operations/common-cxx/focus-blur.c:109
 #: operations/common-cxx/variable-blur.c:42
 msgid "Blur levels"
-msgstr ""
+msgstr "Niveluri de neclaritate"
 
 #: operations/common-cxx/focus-blur.c:110
 #: operations/common-cxx/variable-blur.c:43
 msgid "Number of blur levels"
-msgstr ""
+msgstr "Numărul de niveluri de neclaritate"
 
 #: operations/common-cxx/focus-blur.c:114
 #: operations/common-cxx/variable-blur.c:46
@@ -5432,20 +5394,20 @@ msgstr ""
 #: operations/common-cxx/focus-blur.c:122
 #: operations/common-cxx/variable-blur.c:53
 msgid "High quality"
-msgstr ""
+msgstr "Calitate superioară"
 
 #: operations/common-cxx/focus-blur.c:123
 #: operations/common-cxx/variable-blur.c:54
 msgid "Generate more accurate and consistent output (slower)"
-msgstr ""
+msgstr "Generează o ieșire mai precisă și mai consistentă (mai lent)"
 
 #: operations/common-cxx/focus-blur.c:317
 msgid "Focus Blur"
-msgstr ""
+msgstr "Neclaritate de focalizare"
 
 #: operations/common-cxx/focus-blur.c:320
 msgid "Blur the image around a focal point"
-msgstr ""
+msgstr "Estompează claritatea imaginii în jurul unui punct focal"
 
 #: operations/common-cxx/denoise-dct.cc:33
 msgid "Patch size"
@@ -5459,11 +5421,11 @@ msgstr ""
 msgid "Noise standard deviation"
 msgstr ""
 
-#: operations/common-cxx/denoise-dct.cc:480
+#: operations/common-cxx/denoise-dct.cc:486
 msgid "Denoise DCT"
 msgstr ""
 
-#: operations/common-cxx/denoise-dct.cc:482
+#: operations/common-cxx/denoise-dct.cc:488
 msgid "Denoising algorithm using a per-patch DCT thresholding"
 msgstr ""
 
@@ -5513,7 +5475,7 @@ msgstr ""
 
 #: operations/common-cxx/variable-blur.c:207
 msgid "Variable Blur"
-msgstr ""
+msgstr "Neclaritate variabilă"
 
 #: operations/common-cxx/variable-blur.c:210
 msgid "Blur the image by a varying amount using a mask"
@@ -5550,11 +5512,11 @@ msgstr ""
 #: operations/common-cxx/warp.cc:40 operations/external/path.c:40
 #: operations/workshop/external/spyrograph.c:85
 msgid "Hardness"
-msgstr ""
+msgstr "Duritate"
 
 #: operations/common-cxx/warp.cc:43
 msgid "Spacing"
-msgstr ""
+msgstr "Spațiere"
 
 #: operations/common-cxx/warp.cc:46
 msgid "Stroke"
@@ -5562,7 +5524,7 @@ msgstr ""
 
 #: operations/common-cxx/warp.cc:48
 msgid "Behavior"
-msgstr ""
+msgstr "Comportament"
 
 #: operations/common-cxx/warp.cc:51
 msgid "Behavior of the op"
@@ -5958,11 +5920,11 @@ msgstr "Prag de opacitate"
 msgid "The limit above which colors remain opaque."
 msgstr "Limita peste care culorile rămân opace."
 
-#: operations/common-gpl3+/color-to-alpha.c:285
+#: operations/common-gpl3+/color-to-alpha.c:283
 msgid "Color to Alpha"
 msgstr "Culoare la alfa"
 
-#: operations/common-gpl3+/color-to-alpha.c:291
+#: operations/common-gpl3+/color-to-alpha.c:289
 msgid "Convert a specified color to transparency, works best with white."
 msgstr ""
 "Convertește o culoare specifică la transparență, funcționează cel mai bine "
@@ -6216,6 +6178,22 @@ msgstr ""
 
 #: operations/common-gpl3+/displace.c:89
 msgid "Y coordinate of the displacement center"
+msgstr ""
+
+#: operations/common-gpl3+/displace.c:190
+msgid "Horizontal/Radial"
+msgstr ""
+
+#: operations/common-gpl3+/displace.c:191
+msgid "Horizontal or radial per pixel input"
+msgstr ""
+
+#: operations/common-gpl3+/displace.c:199
+msgid "Vertical/Angular"
+msgstr ""
+
+#: operations/common-gpl3+/displace.c:200
+msgid "Vertical or angular per pixel input"
 msgstr ""
 
 #: operations/common-gpl3+/displace.c:479
@@ -6492,51 +6470,51 @@ msgstr ""
 msgid "X1 value, position"
 msgstr ""
 
-#: operations/common-gpl3+/fractal-trace.c:39
+#: operations/common-gpl3+/fractal-trace.c:40
 msgid "X2 value, position"
 msgstr ""
 
-#: operations/common-gpl3+/fractal-trace.c:43
+#: operations/common-gpl3+/fractal-trace.c:45
 msgid "Y1 value, position"
 msgstr ""
 
-#: operations/common-gpl3+/fractal-trace.c:47
+#: operations/common-gpl3+/fractal-trace.c:50
 msgid "Y2 value, position"
 msgstr ""
 
-#: operations/common-gpl3+/fractal-trace.c:50
+#: operations/common-gpl3+/fractal-trace.c:54
 msgid "JX"
 msgstr ""
 
-#: operations/common-gpl3+/fractal-trace.c:51
+#: operations/common-gpl3+/fractal-trace.c:55
 msgid "Julia seed X value, position"
 msgstr ""
 
-#: operations/common-gpl3+/fractal-trace.c:55
+#: operations/common-gpl3+/fractal-trace.c:60
 msgid "JY"
 msgstr ""
 
-#: operations/common-gpl3+/fractal-trace.c:56
+#: operations/common-gpl3+/fractal-trace.c:61
 msgid "Julia seed Y value, position"
 msgstr ""
 
-#: operations/common-gpl3+/fractal-trace.c:63
+#: operations/common-gpl3+/fractal-trace.c:70
 msgid "Bailout length"
 msgstr ""
 
-#: operations/common-gpl3+/fractal-trace.c:69
+#: operations/common-gpl3+/fractal-trace.c:76
 msgid "How to deal with pixels outside of the input buffer"
 msgstr ""
 
-#: operations/common-gpl3+/fractal-trace.c:175
+#: operations/common-gpl3+/fractal-trace.c:182
 msgid "Unsupported fractal type"
 msgstr ""
 
-#: operations/common-gpl3+/fractal-trace.c:272
+#: operations/common-gpl3+/fractal-trace.c:279
 msgid "Fractal Trace"
 msgstr ""
 
-#: operations/common-gpl3+/fractal-trace.c:278
+#: operations/common-gpl3+/fractal-trace.c:285
 msgid "Transform the image with the fractals"
 msgstr ""
 
@@ -7976,200 +7954,200 @@ msgstr ""
 msgid "tile size to use."
 msgstr ""
 
-#: operations/external/ff-load.c:30
+#: operations/external/ff-load.c:31
 msgid "Path of video file to load"
 msgstr ""
 
-#: operations/external/ff-load.c:32
+#: operations/external/ff-load.c:33
 msgid "Frame number"
 msgstr ""
 
-#: operations/external/ff-load.c:36 operations/external/gif-load.c:38
+#: operations/external/ff-load.c:37 operations/external/gif-load.c:38
 msgid "frames"
 msgstr ""
 
-#: operations/external/ff-load.c:37
+#: operations/external/ff-load.c:38
 msgid ""
 "Number of frames in video, updates at least when first frame has been "
 "decoded."
 msgstr ""
 
-#: operations/external/ff-load.c:41
+#: operations/external/ff-load.c:42
 msgid "audio_sample_rate"
 msgstr ""
 
-#: operations/external/ff-load.c:42
+#: operations/external/ff-load.c:43
 msgid "audio_channels"
 msgstr ""
 
-#: operations/external/ff-load.c:44
+#: operations/external/ff-load.c:45
 msgid "frame-rate"
 msgstr ""
 
-#: operations/external/ff-load.c:45
+#: operations/external/ff-load.c:46
 msgid "Frames per second, permits computing time vs frame"
 msgstr ""
 
-#: operations/external/ff-load.c:49
+#: operations/external/ff-load.c:50
 msgid "video-codec"
 msgstr ""
 
-#: operations/external/ff-load.c:50
+#: operations/external/ff-load.c:51
 msgid "audio-codec"
 msgstr ""
 
-#: operations/external/ff-load.c:52 operations/external/ff-save.c:32
+#: operations/external/ff-load.c:53 operations/external/ff-save.c:33
 msgid "audio"
 msgstr ""
 
-#: operations/external/ff-load.c:876
+#: operations/external/ff-load.c:877
 msgid "FFmpeg Frame Loader"
 msgstr ""
 
-#: operations/external/ff-load.c:878
+#: operations/external/ff-load.c:879
 msgid "FFmpeg video frame importer."
 msgstr ""
 
-#: operations/external/ff-save.c:30 operations/external/png-save.c:27
+#: operations/external/ff-save.c:31 operations/external/png-save.c:27
 #: operations/external/ppm-save.c:26 operations/external/rgbe-save.c:27
 msgid "Target path and filename, use '-' for stdout."
 msgstr ""
 
-#: operations/external/ff-save.c:33
+#: operations/external/ff-save.c:34
 msgid "Audio codec"
 msgstr ""
 
-#: operations/external/ff-save.c:34
+#: operations/external/ff-save.c:35
 msgid ""
 "Audio codec to use, or auto to use a good default based on container format."
 msgstr ""
 
-#: operations/external/ff-save.c:35
+#: operations/external/ff-save.c:36
 msgid "audio sample rate"
 msgstr ""
 
-#: operations/external/ff-save.c:36
+#: operations/external/ff-save.c:37
 msgid "-1 means autodetect on first audio fragment"
 msgstr ""
 
-#: operations/external/ff-save.c:38
+#: operations/external/ff-save.c:39
 msgid "audio bitrate in kb/s"
 msgstr ""
 
-#: operations/external/ff-save.c:39 operations/external/ff-save.c:47
+#: operations/external/ff-save.c:40 operations/external/ff-save.c:48
 msgid "Target encoded video bitrate in kb/s"
 msgstr ""
 
-#: operations/external/ff-save.c:41
+#: operations/external/ff-save.c:42
 msgid "Frames/second"
 msgstr ""
 
-#: operations/external/ff-save.c:44
+#: operations/external/ff-save.c:45
 msgid "Video codec"
 msgstr ""
 
-#: operations/external/ff-save.c:45
+#: operations/external/ff-save.c:46
 msgid ""
 "Video codec to use, or auto to use a good default based on container format."
 msgstr ""
 
-#: operations/external/ff-save.c:46
+#: operations/external/ff-save.c:47
 msgid "video bitrate in kb/s"
 msgstr ""
 
-#: operations/external/ff-save.c:48
+#: operations/external/ff-save.c:49
 msgid "Video bufsize"
 msgstr ""
 
-#: operations/external/ff-save.c:50
+#: operations/external/ff-save.c:51
 msgid "Container format"
 msgstr ""
 
-#: operations/external/ff-save.c:51
+#: operations/external/ff-save.c:52
 msgid "Container format to use, or auto to autodetect based on file extension."
 msgstr ""
 
-#: operations/external/ff-save.c:54
+#: operations/external/ff-save.c:55
 msgid "global quality"
 msgstr "calitate globală"
 
-#: operations/external/ff-save.c:57
+#: operations/external/ff-save.c:58
 msgid "noise reduction"
 msgstr "reducere de zgomot"
 
-#: operations/external/ff-save.c:58
+#: operations/external/ff-save.c:59
 msgid "scenechange threshold"
 msgstr ""
 
-#: operations/external/ff-save.c:59
+#: operations/external/ff-save.c:60
 msgid "video bitrate min"
 msgstr ""
 
-#: operations/external/ff-save.c:60
+#: operations/external/ff-save.c:61
 msgid "video bitrate max"
 msgstr ""
 
-#: operations/external/ff-save.c:61
+#: operations/external/ff-save.c:62
 msgid "video bitrate tolerance"
 msgstr ""
 
-#: operations/external/ff-save.c:64
+#: operations/external/ff-save.c:65
 msgid "keyint-min"
 msgstr ""
 
-#: operations/external/ff-save.c:65
+#: operations/external/ff-save.c:66
 msgid "trellis"
 msgstr ""
 
-#: operations/external/ff-save.c:66
+#: operations/external/ff-save.c:67
 msgid "qmin"
 msgstr ""
 
-#: operations/external/ff-save.c:67
+#: operations/external/ff-save.c:68
 msgid "qmax"
 msgstr ""
 
-#: operations/external/ff-save.c:68
+#: operations/external/ff-save.c:69
 msgid "max_qdiff"
 msgstr ""
 
-#: operations/external/ff-save.c:69
+#: operations/external/ff-save.c:70
 msgid "me_range"
 msgstr ""
 
-#: operations/external/ff-save.c:70
+#: operations/external/ff-save.c:71
 msgid "max_b_frames"
 msgstr ""
 
-#: operations/external/ff-save.c:71
+#: operations/external/ff-save.c:72
 msgid "gop-size"
 msgstr ""
 
-#: operations/external/ff-save.c:72
+#: operations/external/ff-save.c:73
 msgid "qcompress"
 msgstr ""
 
-#: operations/external/ff-save.c:73
+#: operations/external/ff-save.c:74
 msgid "qblur"
 msgstr ""
 
-#: operations/external/ff-save.c:74
+#: operations/external/ff-save.c:75
 msgid "i-quant-factor"
 msgstr ""
 
-#: operations/external/ff-save.c:75
+#: operations/external/ff-save.c:76
 msgid "i-quant-offset"
 msgstr ""
 
-#: operations/external/ff-save.c:76
+#: operations/external/ff-save.c:77
 msgid "me-subpel-quality"
 msgstr ""
 
-#: operations/external/ff-save.c:1243
+#: operations/external/ff-save.c:1244
 msgid "FFmpeg Frame Saver"
 msgstr ""
 
-#: operations/external/ff-save.c:1245
+#: operations/external/ff-save.c:1246
 msgid "FFmpeg video output sink"
 msgstr ""
 
@@ -8274,11 +8252,11 @@ msgstr ""
 msgid "URI of file to load"
 msgstr ""
 
-#: operations/external/jpg-load.c:392
+#: operations/external/jpg-load.c:390
 msgid "JPEG File Loader"
 msgstr ""
 
-#: operations/external/jpg-load.c:394
+#: operations/external/jpg-load.c:392
 msgid "JPEG image loader using libjpeg"
 msgstr ""
 
@@ -8526,6 +8504,7 @@ msgstr ""
 #: operations/external/path.c:41 operations/workshop/external/spyrograph.c:86
 msgid "Hardness of the brush, 0.0 for a soft brush, 1.0 for a hard brush"
 msgstr ""
+"Duritatea penelului, 0,0 pentru un penel moale, 1,0 pentru un penel dur"
 
 #: operations/external/path.c:44
 msgid "Fill rule"
@@ -8636,11 +8615,11 @@ msgstr ""
 msgid "URI for file to load."
 msgstr ""
 
-#: operations/external/png-load.c:655
+#: operations/external/png-load.c:656
 msgid "PNG File Loader"
 msgstr ""
 
-#: operations/external/png-load.c:657
+#: operations/external/png-load.c:658
 msgid "PNG image loader."
 msgstr ""
 
@@ -8753,11 +8732,11 @@ msgstr ""
 msgid "Store image in a GdkPixbuf."
 msgstr ""
 
-#: operations/external/sdl2-display.c:196
+#: operations/external/sdl2-display.c:197
 msgid "SDL2 Display"
 msgstr ""
 
-#: operations/external/sdl2-display.c:199
+#: operations/external/sdl2-display.c:200
 msgid ""
 "Displays the input buffer in an SDL2 window (restricted to one display op/"
 "process, due to SDL2 implementation issues)."
@@ -8771,11 +8750,11 @@ msgstr ""
 msgid "Icon to be used for output window"
 msgstr ""
 
-#: operations/external/sdl-display.c:168
+#: operations/external/sdl-display.c:169
 msgid "SDL Display"
 msgstr ""
 
-#: operations/external/sdl-display.c:171
+#: operations/external/sdl-display.c:172
 msgid ""
 "Displays the input buffer in an SDL window (restricted to one display op/"
 "process, due to SDL implementation issues)."
@@ -9494,11 +9473,11 @@ msgstr ""
 msgid "Level of smoothness"
 msgstr ""
 
-#: operations/workshop/bilateral-filter-fast.c:501
+#: operations/workshop/bilateral-filter-fast.c:505
 msgid "Bilateral Box Filter"
 msgstr ""
 
-#: operations/workshop/bilateral-filter-fast.c:506
+#: operations/workshop/bilateral-filter-fast.c:510
 msgid ""
 "A fast approximation of bilateral filter, using a box-filter instead of a "
 "gaussian blur."
@@ -10109,16 +10088,12 @@ msgid "Selective adjust Hue, Saturation and Lightness"
 msgstr ""
 
 #: operations/workshop/shuffle-search.c:38
-#, fuzzy
-#| msgid "Color Enhance"
 msgid "Chance"
-msgstr "Îmbunătățește culoarea"
+msgstr ""
 
 #: operations/workshop/shuffle-search.c:45
-#, fuzzy
-#| msgid "X Phase"
 msgid "Phase"
-msgstr "Fază X"
+msgstr ""
 
 #: operations/workshop/shuffle-search.c:49
 msgid "Only used if no aux image is provided"
