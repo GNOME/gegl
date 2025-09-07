@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl-master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2025-02-07 22:06+0000\n"
-"PO-Revision-Date: 2025-02-10 18:52+0800\n"
+"POT-Creation-Date: 2025-09-06 21:34+0000\n"
+"PO-Revision-Date: 2025-09-07 08:26+0800\n"
 "Last-Translator: lumingzh <lumingzh@qq.com>\n"
 "Language-Team: Chinese (China) <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
@@ -23,7 +23,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Gtranslator 47.1\n"
+"X-Generator: Gtranslator 48.0\n"
 
 #: bin/gegl.c:179
 #, c-format
@@ -352,40 +352,40 @@ msgstr "永不"
 msgid "Always"
 msgstr "总是"
 
-#: gegl/gegl-init.c:358
+#: gegl/gegl-init.c:354
 msgid "Where GEGL stores its swap"
 msgstr "GEGL 存储其交换区的位置"
 
-#: gegl/gegl-init.c:363
+#: gegl/gegl-init.c:359
 msgid "Compression algorithm used for data stored in the swap"
 msgstr "用于交换区中数据存储的压缩算法"
 
-#: gegl/gegl-init.c:368
+#: gegl/gegl-init.c:364
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr "多少内存（近似值）用于缓存图像"
 
-#: gegl/gegl-init.c:373
+#: gegl/gegl-init.c:369
 msgid "Default size of tiles in GeglBuffers"
 msgstr "GeglBuffers 中默认平铺大小"
 
-#: gegl/gegl-init.c:378
+#: gegl/gegl-init.c:374
 msgid "The count of pixels to compute simultaneously"
 msgstr "同时计算的像素数量"
 
-#: gegl/gegl-init.c:383
+#: gegl/gegl-init.c:379
 msgid ""
 "The quality of rendering, a value between 0.0 (fast) and 1.0 (reference)"
 msgstr "渲染质量， 0.0（快速）和 1.0（参考）之间的一个值"
 
-#: gegl/gegl-init.c:388
+#: gegl/gegl-init.c:384
 msgid "The number of concurrent processing threads to use"
 msgstr "使用并行处理线程的数量"
 
-#: gegl/gegl-init.c:393
+#: gegl/gegl-init.c:389
 msgid "Disable OpenCL"
 msgstr "禁用 OpenCL"
 
-#: gegl/gegl-init.c:405
+#: gegl/gegl-init.c:401
 msgid "Show GEGL Options"
 msgstr "显示 GEGL 选项"
 
@@ -644,61 +644,61 @@ msgstr "裁减透明"
 msgid "Keep alpha values inside a specific range"
 msgstr "保持透明值在一个特定范围内"
 
-#: operations/common/bevel.c:47
+#: operations/common/bevel.c:49
 msgid "Chamfer"
 msgstr "倒角"
 
-#: operations/common/bevel.c:49
+#: operations/common/bevel.c:51
 msgid "Bump"
 msgstr "凹凸"
 
-#: operations/common/bevel.c:52
+#: operations/common/bevel.c:54
 msgid "Bevel Type"
 msgstr "斜面类型"
 
-#: operations/common/bevel.c:55
+#: operations/common/bevel.c:57
 msgid "The family of bevel to use"
 msgstr "要使用的斜面类型"
 
-#: operations/common/bevel.c:59
+#: operations/common/bevel.c:61
 msgid "None (for use with GIMPs blending options)"
 msgstr "无（用于 GIMP 混合选项）"
 
-#: operations/common/bevel.c:61 operations/common/styles.c:202
+#: operations/common/bevel.c:63 operations/common/styles.c:202
 #: operations/common/styles.c:310 operations/common/styles.c:418
 msgid "Hard Light"
 msgstr "硬光"
 
-#: operations/common/bevel.c:63 operations/common/styles.c:59
+#: operations/common/bevel.c:65 operations/common/styles.c:59
 #: operations/common/styles.c:198 operations/common/styles.c:414
 msgid "Multiply"
 msgstr "正片叠底"
 
-#: operations/common/bevel.c:65 operations/common/styles.c:206
+#: operations/common/bevel.c:67 operations/common/styles.c:206
 #: operations/common/styles.c:312 operations/common/styles.c:422
 msgid "Color Dodge"
 msgstr "颜色减淡"
 
-#: operations/common/bevel.c:67 operations/common/styles.c:204
+#: operations/common/bevel.c:69 operations/common/styles.c:204
 #: operations/common/styles.c:420
 msgid "Darken"
 msgstr "变暗"
 
-#: operations/common/bevel.c:69
+#: operations/common/bevel.c:71
 msgid "Lighten"
 msgstr "变亮"
 
-#: operations/common/bevel.c:71 operations/common/styles.c:200
+#: operations/common/bevel.c:73 operations/common/styles.c:200
 #: operations/common/styles.c:416
 #: operations/workshop/external/paint-select.cc:30
 msgid "Add"
 msgstr "添加"
 
-#: operations/common/bevel.c:74 operations/common-gpl3+/sinus.c:67
+#: operations/common/bevel.c:76 operations/common-gpl3+/sinus.c:67
 msgid "Blend Mode"
 msgstr "混合模式"
 
-#: operations/common/bevel.c:77
+#: operations/common/bevel.c:79
 msgid ""
 "What blending mode the bevel's emboss will be. Light Map is a special blend "
 "mode that allows users to extract the filters output as a light map which "
@@ -707,17 +707,17 @@ msgstr ""
 "倒角凸起将会成为的混合模式。光照映射是一种允许用户提取滤镜输出作为光照映射放"
 "置在图层上方或与 GIMP 混合选项配合使用的特殊混合模式。"
 
-#: operations/common/bevel.c:79
+#: operations/common/bevel.c:81
 msgid "Distance Map Setting"
 msgstr "距离映射设置"
 
-#: operations/common/bevel.c:81
+#: operations/common/bevel.c:83
 msgid ""
 "Distance Map is unique to chamfer bevel and has three settings that alter "
 "the structure of the chamfer."
 msgstr "距离映射对于倒角斜面是唯一的且具有三种改变倒角结构的设置。"
 
-#: operations/common/bevel.c:84 operations/common/bloom.c:35
+#: operations/common/bevel.c:86 operations/common/bloom.c:35
 #: operations/common/box-blur.c:25 operations/common/c2g.c:28
 #: operations/common/edge-neon.c:47 operations/common/local-threshold.c:24
 #: operations/common/median-blur.c:42 operations/common/snn-mean.c:26
@@ -735,47 +735,46 @@ msgstr "距离映射对于倒角斜面是唯一的且具有三种改变倒角结
 msgid "Radius"
 msgstr "半径"
 
-#: operations/common/bevel.c:89
+#: operations/common/bevel.c:91
 msgid "Radius of softening for making bump of the shape."
 msgstr "形成该形状凹凸的柔化半径。"
 
-#: operations/common/bevel.c:92 operations/common-gpl3+/bump-map.c:56
+#: operations/common/bevel.c:94 operations/common-gpl3+/bump-map.c:56
 #: operations/common-gpl3+/emboss.c:40
 msgid "Elevation"
 msgstr "海拔"
 
-#: operations/common/bevel.c:93
+#: operations/common/bevel.c:95
 msgid "Elevation angle of the Bevel."
 msgstr "斜面的高度角。"
 
-#. The only issue  with this filter is that emboss depth= above 15 does nothing on chamfer bevel , but works great on bump bevel.
-#. so I made an extra node just for it that only updates emboss depth=, as a result depth and sharpness' are co-existing properties
+#. An issue with this filter is that emboss depth= above 15 does nothing on chamfer bevel , but works great on bump bevel.
+#. so I made an extra node just for it that only updates emboss depth=, as a result depth and sharpness' are co-existing properties.
 #.
-#. I am fully aware 'depth' and 'detail' are just words used to describe the same thing.
-#: operations/common/bevel.c:104 operations/common-gpl3+/bump-map.c:59
+#: operations/common/bevel.c:105 operations/common-gpl3+/bump-map.c:59
 #: operations/common-gpl3+/emboss.c:45
-#: operations/common-gpl3+/fractal-trace.c:60
+#: operations/common-gpl3+/fractal-trace.c:66
 #: operations/common-gpl3+/texturize-canvas.c:44
 msgid "Depth"
 msgstr "深度"
 
-#: operations/common/bevel.c:105
+#: operations/common/bevel.c:106
 msgid "Emboss depth - Brings out depth and detail of the bump bevel."
 msgstr "凸起深度 - 显示凹凸斜面的深度和细节。"
 
-#: operations/common/bevel.c:109
+#: operations/common/bevel.c:110
 msgid "Light Angle"
 msgstr "光照角度"
 
-#: operations/common/bevel.c:110
+#: operations/common/bevel.c:111
 msgid "Direction of a light source illuminating and shading the bevel."
 msgstr "光源照明和着色斜面的方向。"
 
-#: operations/common/bevel.c:309
+#: operations/common/bevel.c:294
 msgid "Bevel"
 msgstr "斜面"
 
-#: operations/common/bevel.c:311
+#: operations/common/bevel.c:296
 msgid ""
 "Two bevel effects in one place, Chamfer - which simulates lighting of "
 "chamfered 3D-edges, and Bump - the second make a 3D inflation effect by an "
@@ -786,7 +785,7 @@ msgstr ""
 "一层模糊的凸起形成一种 3D 膨胀效果。两种斜面都得益于透明定义形状所填充的颜"
 "色。"
 
-#: operations/common/bevel.c:313
+#: operations/common/bevel.c:298
 msgid "Bevel..."
 msgstr "斜面…"
 
@@ -1838,11 +1837,11 @@ msgstr "透明通道的级别数"
 
 #: operations/common/dither.c:51
 msgid "Dithering method"
-msgstr "递色方式"
+msgstr "抖动方式"
 
 #: operations/common/dither.c:53
 msgid "The dithering method to use"
-msgstr "要使用的递色方式"
+msgstr "要使用的抖动方式"
 
 #: operations/common/dither.c:55 operations/common/matting-global.c:28
 #: operations/common/noise-cell.c:55 operations/common/noise-cie-lch.c:38
@@ -1862,7 +1861,7 @@ msgstr "随机种子"
 
 #: operations/common/dither.c:640
 msgid "Dither"
-msgstr "递色"
+msgstr "抖动"
 
 #: operations/common/dither.c:643
 msgid ""
@@ -1871,7 +1870,7 @@ msgid ""
 "counteract quantization induced banding."
 msgstr ""
 "通过减少每通道（颜色和透明）的级别数减少图像的颜色数量。为了抵消量化诱发的色"
-"带可以指定不同的递色方式。"
+"带可以指定不同的抖动方式。"
 
 #: operations/common/domain-transform.c:24 operations/external/jpg-save.c:28
 #: operations/external/webp-save.c:28
@@ -1984,8 +1983,8 @@ msgstr "在模糊前扩张阴影的距离；负值则会收缩阴影"
 msgid "The shadow's color (defaults to 'black')"
 msgstr "阴影的颜色（默认为“黑色”）"
 
-#. It does make sense to sometimes have opacities > 1 (see GEGL logo
-#. * for example)
+#. We used to permit opacity values > 1.0, similar results can in many cases be
+#. * achieved with grow_radius.
 #.
 #: operations/common/dropshadow.c:74 operations/common/inner-glow.c:75
 #: operations/common/layer.c:33 operations/common/opacity.c:25
@@ -1994,11 +1993,11 @@ msgstr "阴影的颜色（默认为“黑色”）"
 msgid "Opacity"
 msgstr "不透明度"
 
-#: operations/common/dropshadow.c:184
+#: operations/common/dropshadow.c:185
 msgid "Dropshadow"
 msgstr "投影"
 
-#: operations/common/dropshadow.c:188
+#: operations/common/dropshadow.c:189
 msgid "Creates a dropshadow effect on the input buffer"
 msgstr "在输入缓冲区上创建投影效果"
 
@@ -2169,7 +2168,7 @@ msgstr "高斯核心是如何离散化的"
 #: operations/common/gaussian-blur.c:57 operations/common/gblur-1d.c:60
 #: operations/common/map-absolute.c:26 operations/common/map-relative.c:30
 #: operations/common/median-blur.c:56 operations/common-gpl3+/displace.c:43
-#: operations/common-gpl3+/fractal-trace.c:67
+#: operations/common-gpl3+/fractal-trace.c:74
 #: operations/common-gpl3+/ripple.c:56 operations/transform/scale.c:102
 #: operations/workshop/external/voronoi-diagram.cc:38
 msgid "Abyss policy"
@@ -2501,7 +2500,7 @@ msgstr "内发光…"
 msgid "Node"
 msgstr "节点"
 
-#: operations/common/introspect.c:205
+#: operations/common/introspect.c:210
 msgid "GEGL graph visualizer."
 msgstr "GEGL 图形可视化工具。"
 
@@ -2622,20 +2621,20 @@ msgstr "X1"
 
 #: operations/common/linear-gradient.c:29
 #: operations/common/radial-gradient.c:26
-#: operations/common-gpl3+/fractal-trace.c:42
+#: operations/common-gpl3+/fractal-trace.c:44
 #: operations/workshop/external/line-profile.c:35
 msgid "Y1"
 msgstr "Y1"
 
 #: operations/common/linear-gradient.c:33
 #: operations/common/radial-gradient.c:27
-#: operations/common-gpl3+/fractal-trace.c:38
+#: operations/common-gpl3+/fractal-trace.c:39
 msgid "X2"
 msgstr "X2"
 
 #: operations/common/linear-gradient.c:37
 #: operations/common/radial-gradient.c:28
-#: operations/common-gpl3+/fractal-trace.c:46
+#: operations/common-gpl3+/fractal-trace.c:49
 msgid "Y2"
 msgstr "Y2"
 
@@ -4960,11 +4959,11 @@ msgstr ""
 "如果有图像文件叠加在轮廓斜面下方该选项将使斜面忽略图像细节。当用户选择较深颜"
 "色时它也可让轮廓倒角获得更好效果。"
 
-#: operations/common/styles.c:1247
+#: operations/common/styles.c:1267
 msgid "GEGL Styles"
 msgstr "GEGL 样式"
 
-#: operations/common/styles.c:1250
+#: operations/common/styles.c:1270
 msgid ""
 "An engine to style text and add popular effects to alpha channel images. "
 "Effects include outline, bevel, shadow, and inner glow all in one place."
@@ -4972,7 +4971,7 @@ msgstr ""
 "使文字风格化并对透明通道图像添加流行效果的引擎。包括轮廓、倒角、阴影和内发光"
 "等效果都在一个地方。"
 
-#: operations/common/styles.c:1253
+#: operations/common/styles.c:1273
 msgid "Text Styling..."
 msgstr "文本样式…"
 
@@ -6472,51 +6471,51 @@ msgstr "多重不同带有可配置颜色选项分形系统的渲染。"
 msgid "X1 value, position"
 msgstr "X1 值，位置"
 
-#: operations/common-gpl3+/fractal-trace.c:39
+#: operations/common-gpl3+/fractal-trace.c:40
 msgid "X2 value, position"
 msgstr "X2 值，位置"
 
-#: operations/common-gpl3+/fractal-trace.c:43
+#: operations/common-gpl3+/fractal-trace.c:45
 msgid "Y1 value, position"
 msgstr "Y1 值，位置"
 
-#: operations/common-gpl3+/fractal-trace.c:47
+#: operations/common-gpl3+/fractal-trace.c:50
 msgid "Y2 value, position"
 msgstr "Y2 值，位置"
 
-#: operations/common-gpl3+/fractal-trace.c:50
+#: operations/common-gpl3+/fractal-trace.c:54
 msgid "JX"
 msgstr "JX"
 
-#: operations/common-gpl3+/fractal-trace.c:51
+#: operations/common-gpl3+/fractal-trace.c:55
 msgid "Julia seed X value, position"
 msgstr "朱莉娅种子 X 值，位置"
 
-#: operations/common-gpl3+/fractal-trace.c:55
+#: operations/common-gpl3+/fractal-trace.c:60
 msgid "JY"
 msgstr "JY"
 
-#: operations/common-gpl3+/fractal-trace.c:56
+#: operations/common-gpl3+/fractal-trace.c:61
 msgid "Julia seed Y value, position"
 msgstr "朱莉娅种子 Y 值，位置"
 
-#: operations/common-gpl3+/fractal-trace.c:63
+#: operations/common-gpl3+/fractal-trace.c:70
 msgid "Bailout length"
 msgstr "应急长度"
 
-#: operations/common-gpl3+/fractal-trace.c:69
+#: operations/common-gpl3+/fractal-trace.c:76
 msgid "How to deal with pixels outside of the input buffer"
 msgstr "如何处理输入缓冲器以外的像素"
 
-#: operations/common-gpl3+/fractal-trace.c:175
+#: operations/common-gpl3+/fractal-trace.c:182
 msgid "Unsupported fractal type"
 msgstr "不支持的分形类型"
 
-#: operations/common-gpl3+/fractal-trace.c:272
+#: operations/common-gpl3+/fractal-trace.c:279
 msgid "Fractal Trace"
 msgstr "分形追踪"
 
-#: operations/common-gpl3+/fractal-trace.c:278
+#: operations/common-gpl3+/fractal-trace.c:285
 msgid "Transform the image with the fractals"
 msgstr "用分形变换图像"
 
@@ -8016,11 +8015,11 @@ msgstr "audio-codec"
 msgid "audio"
 msgstr "音频"
 
-#: operations/external/ff-load.c:877
+#: operations/external/ff-load.c:885
 msgid "FFmpeg Frame Loader"
 msgstr "FFmpeg 帧加载器"
 
-#: operations/external/ff-load.c:879
+#: operations/external/ff-load.c:887
 msgid "FFmpeg video frame importer."
 msgstr "FFmpeg 视频帧导入器。"
 
@@ -8268,11 +8267,11 @@ msgstr "使用 jasper 的 JPEG 2000 图像加载器。"
 msgid "URI of file to load"
 msgstr "要加载文件的网址"
 
-#: operations/external/jpg-load.c:392
+#: operations/external/jpg-load.c:390
 msgid "JPEG File Loader"
 msgstr "JPEG 文件加载器"
 
-#: operations/external/jpg-load.c:394
+#: operations/external/jpg-load.c:392
 msgid "JPEG image loader using libjpeg"
 msgstr "使用 libjpeg 的 JPEG 图像加载器"
 
@@ -8631,11 +8630,11 @@ msgstr "使用 <em>pixbuf</em> 中处于内存位置的 GdkPixbuf。"
 msgid "URI for file to load."
 msgstr "要加载文件的网址。"
 
-#: operations/external/png-load.c:655
+#: operations/external/png-load.c:656
 msgid "PNG File Loader"
 msgstr "PNG 文件加载器"
 
-#: operations/external/png-load.c:657
+#: operations/external/png-load.c:658
 msgid "PNG image loader."
 msgstr "PNG 图像加载器。"
 
@@ -10167,9 +10166,17 @@ msgstr "选择性色相-饱和度"
 msgid "Selective adjust Hue, Saturation and Lightness"
 msgstr "选择性调整色相、饱和度和亮度"
 
+#: operations/workshop/shuffle-search.c:32
+msgid "How many times to run optimization"
+msgstr "运行几次优化"
+
 #: operations/workshop/shuffle-search.c:38
 msgid "Chance"
 msgstr "机会"
+
+#: operations/workshop/shuffle-search.c:39
+msgid "Chance of doing optimization"
+msgstr "执行优化的机会"
 
 #: operations/workshop/shuffle-search.c:45
 msgid "Phase"
@@ -10179,15 +10186,19 @@ msgstr "阶段"
 msgid "Only used if no aux image is provided"
 msgstr "仅在未提供辅助图像时使用"
 
+#: operations/workshop/shuffle-search.c:53
+msgid "Center bias"
+msgstr "中心偏移"
+
 #: operations/workshop/shuffle-search.c:592
 msgid "Optimize Dither"
-msgstr "优化递色"
+msgstr "优化抖动"
 
 #: operations/workshop/shuffle-search.c:595
 msgid ""
 "Shuffles pixels, and quantization with neighbors to optimize dither, by "
 "shuffling neighboring pixels."
-msgstr "混合像素，通过混合邻近像素，并用邻近像素量化来优化递色。"
+msgstr "混合像素，通过混合邻近像素，并用邻近像素量化来优化抖动。"
 
 #~ msgid "Ctx script"
 #~ msgstr "Ctx 脚本"
