@@ -169,6 +169,59 @@ compute_hash_for_path (const gchar *path)
   return hash;
 }
 
+static gboolean
+test_with_hashes (const gchar        *name,
+                  const gchar        *output_path,
+                  GeglOperationClass *operation_class,
+                  gboolean            supported_op)
+{
+  const gchar *hash    = gegl_operation_class_get_key (operation_class, "reference-hash");
+  gboolean     success = TRUE;
+
+  if (hash != NULL)
+    {
+      const gchar *hashB = gegl_operation_class_get_key (operation_class, "reference-hashB");
+      const gchar *hashC = gegl_operation_class_get_key (operation_class, "reference-hashC");
+      gchar *gothash     = compute_hash_for_path (output_path);
+
+      if (g_str_equal (hash, gothash))
+        g_printf ("ok     %3i - %s\n", test_num, name);
+      else if (hashB && g_str_equal (hashB, gothash))
+        g_printf ("ok     %3i - %s (ref b)\n", test_num, name);
+      else if (hashC && g_str_equal (hashC, gothash))
+        g_printf ("ok     %3i - %s (ref c)\n", test_num, name);
+      else if (g_str_equal (hash, "unstable"))
+        g_printf ("not ok %3i - %s (unstable) # TODO reference is not reproducible\n", test_num, name);
+      else
+        {
+          success = FALSE;
+
+          g_printf ("not ok %3i - %s %s != %s\n", test_num, name, gothash, hash);
+          g_string_append_printf (failed_ops, "#  %s %s != %s\n", name, gothash, hash);
+        }
+
+      g_free (gothash);
+    }
+  else if (supported_op)
+    {
+      gchar *gothash = compute_hash_for_path (output_path);
+
+      if (g_str_equal (gothash, "9bbe341d798da4f7b181c903e6f442fd") ||
+          g_str_equal (gothash, "ffb9e86edb25bc92e8d4e68f59bbb04b"))
+        {
+          g_printf ("not ok %3i - %s (noop) # TODO hash is noop\n", test_num, name);
+        }
+      else
+        {
+          g_printf ("not ok %3i - %s (no ref) # TODO hash = %s\n", test_num, name, gothash);
+        }
+
+      g_free (gothash);
+    }
+
+  return success;
+}
+
 static void
 process_operations (GType type)
 {
@@ -204,7 +257,6 @@ process_operations (GType type)
       if (matches)
         {
           const gchar *chain        = NULL;
-          const gchar *hash         = NULL;
           const gchar *xml          = NULL;
           gchar       *output_path  = operation_to_path (name);
           gboolean     supported_op = FALSE;
@@ -255,46 +307,8 @@ process_operations (GType type)
               standard_output (name);
             }
 
-          hash  = gegl_operation_class_get_key (operation_class, "reference-hash");
-          if (hash != NULL)
-            {
-              const gchar *hashB = gegl_operation_class_get_key (operation_class, "reference-hashB");
-              const gchar *hashC = gegl_operation_class_get_key (operation_class, "reference-hashC");
-              gchar *gothash     = compute_hash_for_path (output_path);
-
-              if (g_str_equal (hash, gothash))
-                g_printf ("ok     %3i - %s\n", test_num, name);
-              else if (hashB && g_str_equal (hashB, gothash))
-                g_printf ("ok     %3i - %s (ref b)\n", test_num, name);
-              else if (hashC && g_str_equal (hashC, gothash))
-                g_printf ("ok     %3i - %s (ref c)\n", test_num, name);
-              else if (g_str_equal (hash, "unstable"))
-                g_printf ("not ok %3i - %s (unstable) # TODO reference is not reproducible\n", test_num, name);
-              else
-                {
-                  failed++;
-                  g_printf ("not ok %3i - %s %s != %s\n", test_num, name, gothash, hash);
-                  g_string_append_printf (failed_ops, "#  %s %s != %s\n", name, gothash, hash);
-                }
-
-              g_free (gothash);
-            }
-          else if (supported_op)
-            {
-              gchar *gothash     = compute_hash_for_path (output_path);
-
-              if (g_str_equal (gothash, "9bbe341d798da4f7b181c903e6f442fd") ||
-                  g_str_equal (gothash, "ffb9e86edb25bc92e8d4e68f59bbb04b"))
-                {
-                  g_printf ("not ok %3i - %s (noop) # TODO hash is noop\n", test_num, name);
-                }
-              else
-                {
-                  g_printf ("not ok %3i - %s (no ref) # TODO hash = %s\n", test_num, name, gothash);
-                }
-
-              g_free (gothash);
-            }
+          if (!test_with_hashes (name, output_path, operation_class, supported_op))
+            failed++;
 
           g_free (output_path);
         }
