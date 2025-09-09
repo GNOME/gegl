@@ -6,8 +6,8 @@
 msgid ""
 msgstr "Project-Id-Version: GEGL master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2025-02-07 22:06+0000\n"
-"PO-Revision-Date: 2025-02-08 11:06+0100\n"
+"POT-Creation-Date: 2025-09-07 11:53+0000\n"
+"PO-Revision-Date: 2025-09-08 15:26+0100\n"
 "Last-Translator: Dick Groskamp <dikgro@yahoo.co.uk>\n"
 "Language-Team: Dutch <gnome-nl-list@gnome.org>\n"
 "Language: nl\n"
@@ -342,40 +342,40 @@ msgstr "Nooit"
 msgid "Always"
 msgstr "Altijd"
 
-#: gegl/gegl-init.c:358
+#: gegl/gegl-init.c:354
 msgid "Where GEGL stores its swap"
 msgstr "Waar GEGL het wisselbestand plaatst"
 
-#: gegl/gegl-init.c:363
+#: gegl/gegl-init.c:359
 msgid "Compression algorithm used for data stored in the swap"
 msgstr "Compressiemethode voor data in het wisselbestand"
 
-#: gegl/gegl-init.c:368
+#: gegl/gegl-init.c:364
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr "Hoeveel geheugen gebruiken (ruwweg) om afbeeldingen te cachen"
 
-#: gegl/gegl-init.c:373
+#: gegl/gegl-init.c:369
 msgid "Default size of tiles in GeglBuffers"
 msgstr "Standaardgrootte van tegels in GeglBuffers"
 
-#: gegl/gegl-init.c:378
+#: gegl/gegl-init.c:374
 msgid "The count of pixels to compute simultaneously"
 msgstr "Aantal pixels om simultaan te verwerken"
 
-#: gegl/gegl-init.c:383
+#: gegl/gegl-init.c:379
 msgid ""
 "The quality of rendering, a value between 0.0 (fast) and 1.0 (reference)"
 msgstr "Renderkwaliteit, een waarde tussen 0,0 (snel) en 1,0 (referentie)"
 
-#: gegl/gegl-init.c:388
+#: gegl/gegl-init.c:384
 msgid "The number of concurrent processing threads to use"
 msgstr "Aantal te gebruiken threads"
 
-#: gegl/gegl-init.c:393
+#: gegl/gegl-init.c:389
 msgid "Disable OpenCL"
 msgstr "OpenCL uitschakelen"
 
-#: gegl/gegl-init.c:405
+#: gegl/gegl-init.c:401
 msgid "Show GEGL Options"
 msgstr "GEGL-opties tonen"
 
@@ -634,78 +634,78 @@ msgstr "Alfa knippen"
 msgid "Keep alpha values inside a specific range"
 msgstr "Behoud alfawaarden in een specifiek bereik"
 
-#: operations/common/bevel.c:47
+#: operations/common/bevel.c:49
 msgid "Chamfer"
 msgstr "Afschuining"
 
-#: operations/common/bevel.c:49
+#: operations/common/bevel.c:51
 msgid "Bump"
 msgstr "Bump"
 
-#: operations/common/bevel.c:52
+#: operations/common/bevel.c:54
 msgid "Bevel Type"
 msgstr "Type schuin rand"
 
-#: operations/common/bevel.c:55
+#: operations/common/bevel.c:57
 msgid "The family of bevel to use"
 msgstr "De te gebruiken familie van schuine rand"
 
-#: operations/common/bevel.c:59
+#: operations/common/bevel.c:61
 msgid "None (for use with GIMPs blending options)"
 msgstr "Geen (om te gebruiken met mengopties van GIMP)"
 
-#: operations/common/bevel.c:61 operations/common/styles.c:202
+#: operations/common/bevel.c:63 operations/common/styles.c:202
 #: operations/common/styles.c:310 operations/common/styles.c:418
 msgid "Hard Light"
 msgstr "Hard licht"
 
-#: operations/common/bevel.c:63 operations/common/styles.c:59
+#: operations/common/bevel.c:65 operations/common/styles.c:59
 #: operations/common/styles.c:198 operations/common/styles.c:414
 msgid "Multiply"
 msgstr "Vermenigvuldigen"
 
-#: operations/common/bevel.c:65 operations/common/styles.c:206
+#: operations/common/bevel.c:67 operations/common/styles.c:206
 #: operations/common/styles.c:312 operations/common/styles.c:422
 msgid "Color Dodge"
 msgstr "Kleur doordrukken"
 
-#: operations/common/bevel.c:67 operations/common/styles.c:204
+#: operations/common/bevel.c:69 operations/common/styles.c:204
 #: operations/common/styles.c:420
 msgid "Darken"
 msgstr "Donker maken"
 
-#: operations/common/bevel.c:69
+#: operations/common/bevel.c:71
 msgid "Lighten"
 msgstr "Lichter maken"
 
-#: operations/common/bevel.c:71 operations/common/styles.c:200
+#: operations/common/bevel.c:73 operations/common/styles.c:200
 #: operations/common/styles.c:416
 #: operations/workshop/external/paint-select.cc:30
 msgid "Add"
 msgstr "Toevoegen"
 
-#: operations/common/bevel.c:74 operations/common-gpl3+/sinus.c:67
+#: operations/common/bevel.c:76 operations/common-gpl3+/sinus.c:67
 msgid "Blend Mode"
 msgstr "Mengmodus"
 
-#: operations/common/bevel.c:77
+#: operations/common/bevel.c:79
 msgid ""
 "What blending mode the bevel's emboss will be. Light Map is a special blend "
 "mode that allows users to extract the filters output as a light map which "
 "should be put on a layer above or be used with Gimp's blending options."
 msgstr "Welke mengmodus het embossen van de schuine rand zal hebben. Lichtkaart is een speciale mengmodus die gebruikers in staat stelt om de uitvoer van filters uit te nemen als een lichtkaart die bovenop een laag zou moeten worden geplaatst of moet worden gebruikt met de mengopties van Gimp."
 
-#: operations/common/bevel.c:79
+#: operations/common/bevel.c:81
 msgid "Distance Map Setting"
 msgstr "Instelling afstandskaart"
 
-#: operations/common/bevel.c:81
+#: operations/common/bevel.c:83
 msgid ""
 "Distance Map is unique to chamfer bevel and has three settings that alter "
 "the structure of the chamfer."
 msgstr "Afstandskaart is uniek voor de schuine rand en heeft drie instellingen die de structuur van de schuine rand wijzigen."
 
-#: operations/common/bevel.c:84 operations/common/bloom.c:35
+#: operations/common/bevel.c:86 operations/common/bloom.c:35
 #: operations/common/box-blur.c:25 operations/common/c2g.c:28
 #: operations/common/edge-neon.c:47 operations/common/local-threshold.c:24
 #: operations/common/median-blur.c:42 operations/common/snn-mean.c:26
@@ -723,47 +723,46 @@ msgstr "Afstandskaart is uniek voor de schuine rand en heeft drie instellingen d
 msgid "Radius"
 msgstr "Straal"
 
-#: operations/common/bevel.c:89
+#: operations/common/bevel.c:91
 msgid "Radius of softening for making bump of the shape."
 msgstr "Straal voor het verzachten van het maken van de projectie van de vorm."
 
-#: operations/common/bevel.c:92 operations/common-gpl3+/bump-map.c:56
+#: operations/common/bevel.c:94 operations/common-gpl3+/bump-map.c:56
 #: operations/common-gpl3+/emboss.c:40
 msgid "Elevation"
 msgstr "Verhoging"
 
-#: operations/common/bevel.c:93
+#: operations/common/bevel.c:95
 msgid "Elevation angle of the Bevel."
 msgstr "Hoek voor de hoogte van de afschuining."
 
-#. The only issue  with this filter is that emboss depth= above 15 does nothing on chamfer bevel , but works great on bump bevel.
-#. so I made an extra node just for it that only updates emboss depth=, as a result depth and sharpness' are co-existing properties
+#. An issue with this filter is that emboss depth= above 15 does nothing on chamfer bevel , but works great on bump bevel.
+#. so I made an extra node just for it that only updates emboss depth=, as a result depth and sharpness' are co-existing properties.
 #.
-#. I am fully aware 'depth' and 'detail' are just words used to describe the same thing.
-#: operations/common/bevel.c:104 operations/common-gpl3+/bump-map.c:59
+#: operations/common/bevel.c:105 operations/common-gpl3+/bump-map.c:59
 #: operations/common-gpl3+/emboss.c:45
-#: operations/common-gpl3+/fractal-trace.c:60
+#: operations/common-gpl3+/fractal-trace.c:66
 #: operations/common-gpl3+/texturize-canvas.c:44
 msgid "Depth"
 msgstr "Diepte"
 
-#: operations/common/bevel.c:105
+#: operations/common/bevel.c:106
 msgid "Emboss depth - Brings out depth and detail of the bump bevel."
 msgstr "Diepte embossen - Brengt diepte en detail van de geprojecteerde schuine rand naar voren."
 
-#: operations/common/bevel.c:109
+#: operations/common/bevel.c:110
 msgid "Light Angle"
 msgstr "Hoek licht"
 
-#: operations/common/bevel.c:110
+#: operations/common/bevel.c:111
 msgid "Direction of a light source illuminating and shading the bevel."
 msgstr "Richting van een lichtbron die de schuine rand verlicht en voorziet van schaduw."
 
-#: operations/common/bevel.c:309
+#: operations/common/bevel.c:294
 msgid "Bevel"
 msgstr "Schuine rand"
 
-#: operations/common/bevel.c:311
+#: operations/common/bevel.c:296
 msgid ""
 "Two bevel effects in one place, Chamfer - which simulates lighting of "
 "chamfered 3D-edges, and Bump - the second make a 3D inflation effect by an "
@@ -771,7 +770,7 @@ msgid ""
 "shapes."
 msgstr "Twee effecten Schuine rand op een plaats, Afschuining - die belichting simuleert van afgeschuinde 3D-randen en Bump - de tweede maakt een 3D inflatie-effect door een embossing die de vervaging bedekt. Beide schuine randen hebben voordeel van met kleur gevulde alfa-gedefinieerde vormen."
 
-#: operations/common/bevel.c:313
+#: operations/common/bevel.c:298
 msgid "Bevel..."
 msgstr "Schuine rand…"
 
@@ -1964,8 +1963,8 @@ msgstr "De afstand om de schaduw uit te breiden voordat deze vervaagt; een negat
 msgid "The shadow's color (defaults to 'black')"
 msgstr "De kleur van de schaduw (standaard 'black')"
 
-#. It does make sense to sometimes have opacities > 1 (see GEGL logo
-#. * for example)
+#. We used to permit opacity values > 1.0, similar results can in many cases be
+#. * achieved with grow_radius.
 #.
 #: operations/common/dropshadow.c:74 operations/common/inner-glow.c:75
 #: operations/common/layer.c:33 operations/common/opacity.c:25
@@ -1974,11 +1973,11 @@ msgstr "De kleur van de schaduw (standaard 'black')"
 msgid "Opacity"
 msgstr "Ondoorzichtigheid"
 
-#: operations/common/dropshadow.c:184
+#: operations/common/dropshadow.c:185
 msgid "Dropshadow"
 msgstr "Slagschaduw"
 
-#: operations/common/dropshadow.c:188
+#: operations/common/dropshadow.c:189
 msgid "Creates a dropshadow effect on the input buffer"
 msgstr "Creëert een slagschaduw op de invoerbuffer"
 
@@ -2146,7 +2145,7 @@ msgstr "Hoe de Gaussiaanse matrix onderverdeeld wordt"
 #: operations/common/gaussian-blur.c:57 operations/common/gblur-1d.c:60
 #: operations/common/map-absolute.c:26 operations/common/map-relative.c:30
 #: operations/common/median-blur.c:56 operations/common-gpl3+/displace.c:43
-#: operations/common-gpl3+/fractal-trace.c:67
+#: operations/common-gpl3+/fractal-trace.c:74
 #: operations/common-gpl3+/ripple.c:56 operations/transform/scale.c:102
 #: operations/workshop/external/voronoi-diagram.cc:38
 msgid "Abyss policy"
@@ -2471,7 +2470,7 @@ msgstr "Binnenste gloed…"
 msgid "Node"
 msgstr "Knoop"
 
-#: operations/common/introspect.c:205
+#: operations/common/introspect.c:210
 msgid "GEGL graph visualizer."
 msgstr "GEGL-grafiekweergave."
 
@@ -2592,20 +2591,20 @@ msgstr "X1"
 
 #: operations/common/linear-gradient.c:29
 #: operations/common/radial-gradient.c:26
-#: operations/common-gpl3+/fractal-trace.c:42
+#: operations/common-gpl3+/fractal-trace.c:44
 #: operations/workshop/external/line-profile.c:35
 msgid "Y1"
 msgstr "Y1"
 
 #: operations/common/linear-gradient.c:33
 #: operations/common/radial-gradient.c:27
-#: operations/common-gpl3+/fractal-trace.c:38
+#: operations/common-gpl3+/fractal-trace.c:39
 msgid "X2"
 msgstr "X2"
 
 #: operations/common/linear-gradient.c:37
 #: operations/common/radial-gradient.c:28
-#: operations/common-gpl3+/fractal-trace.c:46
+#: operations/common-gpl3+/fractal-trace.c:49
 msgid "Y2"
 msgstr "Y2"
 
@@ -4906,17 +4905,17 @@ msgid ""
 "when the user selects darker colors."
 msgstr "Dit geeft de schuine rand van de omtrek de opdracht om details van de afbeelding te negeren als er een overleg van een afbeelding onder ligt. Het stelt de schuine rand van de omtrek ook in staat beter te werken als de gebruiker donkerder kleuren kiest."
 
-#: operations/common/styles.c:1247
+#: operations/common/styles.c:1267
 msgid "GEGL Styles"
 msgstr "Stijlen voor GEGL"
 
-#: operations/common/styles.c:1250
+#: operations/common/styles.c:1270
 msgid ""
 "An engine to style text and add popular effects to alpha channel images. "
 "Effects include outline, bevel, shadow, and inner glow all in one place."
 msgstr "Een programma om tekst op te maken en populaire effecten toe te voegen aan afbeelding van alfakanalen. Effecten omvatten omtrek, schuine rand, schaduw en binnenste gloed, allemaal op een plaats."
 
-#: operations/common/styles.c:1253
+#: operations/common/styles.c:1273
 msgid "Text Styling..."
 msgstr "Tekst opmaken…"
 
@@ -6401,52 +6400,52 @@ msgstr "Genereer verschillende fractaalsystemen, met configureerbare kleuropties
 msgid "X1 value, position"
 msgstr "X1 waarde, positie"
 
-#: operations/common-gpl3+/fractal-trace.c:39
+#: operations/common-gpl3+/fractal-trace.c:40
 msgid "X2 value, position"
 msgstr "X2 waarde, positie"
 
-#: operations/common-gpl3+/fractal-trace.c:43
+#: operations/common-gpl3+/fractal-trace.c:45
 msgid "Y1 value, position"
 msgstr "Y1 waarde, positie"
 
-#: operations/common-gpl3+/fractal-trace.c:47
+#: operations/common-gpl3+/fractal-trace.c:50
 msgid "Y2 value, position"
 msgstr "Y2 waarde, positie"
 
-#: operations/common-gpl3+/fractal-trace.c:50
+#: operations/common-gpl3+/fractal-trace.c:54
 msgid "JX"
 msgstr "JX"
 
-#: operations/common-gpl3+/fractal-trace.c:51
+#: operations/common-gpl3+/fractal-trace.c:55
 msgid "Julia seed X value, position"
 msgstr "Julia willekeurige X-waarde, positie"
 
-#: operations/common-gpl3+/fractal-trace.c:55
+#: operations/common-gpl3+/fractal-trace.c:60
 msgid "JY"
 msgstr "JY"
 
-#: operations/common-gpl3+/fractal-trace.c:56
+#: operations/common-gpl3+/fractal-trace.c:61
 msgid "Julia seed Y value, position"
 msgstr "Julia willekeurige Y-waarde, positie"
 
 # ok? -pm
-#: operations/common-gpl3+/fractal-trace.c:63
+#: operations/common-gpl3+/fractal-trace.c:70
 msgid "Bailout length"
 msgstr "Wegwerplengte"
 
-#: operations/common-gpl3+/fractal-trace.c:69
+#: operations/common-gpl3+/fractal-trace.c:76
 msgid "How to deal with pixels outside of the input buffer"
 msgstr "Wat te doen met pixels buiten de invoerbuffer"
 
-#: operations/common-gpl3+/fractal-trace.c:175
+#: operations/common-gpl3+/fractal-trace.c:182
 msgid "Unsupported fractal type"
 msgstr "Niet-ondersteund fractaaltype"
 
-#: operations/common-gpl3+/fractal-trace.c:272
+#: operations/common-gpl3+/fractal-trace.c:279
 msgid "Fractal Trace"
 msgstr "Fractaalsporen"
 
-#: operations/common-gpl3+/fractal-trace.c:278
+#: operations/common-gpl3+/fractal-trace.c:285
 msgid "Transform the image with the fractals"
 msgstr "Transformeer het beeld met de fractalen"
 
@@ -7933,11 +7932,11 @@ msgstr "audio-codec"
 msgid "audio"
 msgstr "audio"
 
-#: operations/external/ff-load.c:877
+#: operations/external/ff-load.c:885
 msgid "FFmpeg Frame Loader"
 msgstr "FFmpeg Frame Loader"
 
-#: operations/external/ff-load.c:879
+#: operations/external/ff-load.c:887
 msgid "FFmpeg video frame importer."
 msgstr "FFmpeg videoframe import."
 
@@ -8186,11 +8185,11 @@ msgstr "JPEG 2000 bestandslader gebruikmakend van jasper."
 msgid "URI of file to load"
 msgstr "URI van te laden bestand"
 
-#: operations/external/jpg-load.c:392
+#: operations/external/jpg-load.c:390
 msgid "JPEG File Loader"
 msgstr "JPEG bestandslader"
 
-#: operations/external/jpg-load.c:394
+#: operations/external/jpg-load.c:392
 msgid "JPEG image loader using libjpeg"
 msgstr "JPEG bestandslader gebruikmakend van libjpeg"
 
@@ -8545,11 +8544,11 @@ msgstr "Gebruik de GdkPixbuf op geheugenlocatie <em>pixbuf</em>."
 msgid "URI for file to load."
 msgstr "URI van te laden bestand."
 
-#: operations/external/png-load.c:655
+#: operations/external/png-load.c:656
 msgid "PNG File Loader"
 msgstr "PNG bestandslader"
 
-#: operations/external/png-load.c:657
+#: operations/external/png-load.c:658
 msgid "PNG image loader."
 msgstr "PNG bestandslader."
 
@@ -10018,9 +10017,17 @@ msgstr "Selectieve Tint/Verzadiging"
 msgid "Selective adjust Hue, Saturation and Lightness"
 msgstr "Tint, verzadiging en lichtheid selectief aanpassen"
 
+#: operations/workshop/shuffle-search.c:32
+msgid "How many times to run optimization"
+msgstr "Hoe vaak de optimalisatie moet wordne uitgevoerd"
+
 #: operations/workshop/shuffle-search.c:38
 msgid "Chance"
 msgstr "Kans"
+
+#: operations/workshop/shuffle-search.c:39
+msgid "Chance of doing optimization"
+msgstr "Kans voor het doen van optimalisatie"
 
 #: operations/workshop/shuffle-search.c:45
 msgid "Phase"
@@ -10029,6 +10036,10 @@ msgstr "Fase"
 #: operations/workshop/shuffle-search.c:49
 msgid "Only used if no aux image is provided"
 msgstr "Alleen gebruikt als er geen afbeelding aux is verschaft"
+
+#: operations/workshop/shuffle-search.c:53
+msgid "Center bias"
+msgstr "Afwijking centreren"
 
 #: operations/workshop/shuffle-search.c:592
 msgid "Optimize Dither"
