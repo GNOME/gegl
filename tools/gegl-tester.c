@@ -57,17 +57,13 @@ static const GOptionEntry options[] =
 
 /* convert operation name to output path */
 static gchar*
-operation_to_path (const gchar *op_name,
-                   gboolean     diff)
+operation_to_path (const gchar *op_name)
 {
   gchar *cleaned = g_strdup (op_name);
   gchar *filename, *output_path;
 
   g_strdelimit (cleaned, ":", '-');
-  if (diff)
-    filename = g_strconcat (cleaned, "-diff.png", NULL);
-  else
-    filename = g_strconcat (cleaned, ".png", NULL);
+  filename = g_strconcat (cleaned, ".png", NULL);
   output_path = g_build_path (G_DIR_SEPARATOR_S, output_dir, filename, NULL);
 
   g_free (cleaned);
@@ -85,7 +81,7 @@ standard_output (const gchar *op_name)
                                         "standard-input.png", NULL);
   gchar    *aux_path    = g_build_path (G_DIR_SEPARATOR_S, data_dir,
                                         "standard-aux.png", NULL);
-  gchar    *output_path = operation_to_path (op_name, FALSE);
+  gchar    *output_path = operation_to_path (op_name);
 
   composition = gegl_node_new ();
   operation = gegl_node_create_child (composition, op_name);
@@ -224,7 +220,7 @@ process_operations (GType type)
             }
           else if (output_all)
             {
-              gchar    *output_path = operation_to_path (name, FALSE);
+              gchar    *output_path = operation_to_path (name);
               GeglNode *output      =
                 gegl_node_new_child (composition,
                                      "operation", "gegl:png-save",
@@ -251,7 +247,7 @@ process_operations (GType type)
 
       if (matches && hash)
       {
-        gchar *output_path = operation_to_path (name, FALSE);
+        gchar *output_path = operation_to_path (name);
         gchar *gothash = compute_hash_for_path (output_path);
         if (g_str_equal (hash, gothash))
           g_printf ("ok     %3i - %s\n", test_num, name);
@@ -273,7 +269,7 @@ process_operations (GType type)
                !(g_type_is_a (operations[i], GEGL_TYPE_OPERATION_SINK) ||
                  g_type_is_a (operations[i], GEGL_TYPE_OPERATION_TEMPORAL)))
       {
-        gchar *output_path = operation_to_path (name, FALSE);
+        gchar *output_path = operation_to_path (name);
         gchar *gothash = compute_hash_for_path (output_path);
         if (g_str_equal (gothash, "9bbe341d798da4f7b181c903e6f442fd") ||
             g_str_equal (gothash, "ffb9e86edb25bc92e8d4e68f59bbb04b"))
