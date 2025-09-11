@@ -206,6 +206,7 @@ process_operations (GType type)
           const gchar *chain        = NULL;
           const gchar *hash         = NULL;
           const gchar *xml          = NULL;
+          gchar       *output_path  = operation_to_path (name);
           gboolean     supported_op = FALSE;
 
           supported_op = !(g_type_is_a (operations[i], GEGL_TYPE_OPERATION_SINK) ||
@@ -244,7 +245,6 @@ process_operations (GType type)
                   gegl_node_process (output);
 
                   g_object_unref (composition);
-                  g_free (output_path);
                 }
             }
           else if (output_all && supported_op)
@@ -260,7 +260,6 @@ process_operations (GType type)
             {
               const gchar *hashB = gegl_operation_class_get_key (operation_class, "reference-hashB");
               const gchar *hashC = gegl_operation_class_get_key (operation_class, "reference-hashC");
-              gchar *output_path = operation_to_path (name);
               gchar *gothash     = compute_hash_for_path (output_path);
 
               if (g_str_equal (hash, gothash))
@@ -279,11 +278,9 @@ process_operations (GType type)
                 }
 
               g_free (gothash);
-              g_free (output_path);
             }
           else if (supported_op)
             {
-              gchar *output_path = operation_to_path (name);
               gchar *gothash     = compute_hash_for_path (output_path);
 
               if (g_str_equal (gothash, "9bbe341d798da4f7b181c903e6f442fd") ||
@@ -297,8 +294,9 @@ process_operations (GType type)
                 }
 
               g_free (gothash);
-              g_free (output_path);
             }
+
+          g_free (output_path);
         }
       process_operations (operations[i]);
     }
