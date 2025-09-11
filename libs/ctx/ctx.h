@@ -3625,6 +3625,7 @@ uint32_t ctx_utf8_to_unichar (const char *input);
 int      ctx_unichar_to_utf8 (uint32_t  ch, uint8_t  *dest);
 const char *ctx_utf8_skip (const char *s, int utf8_length);
 
+float ctx_atof (const char *str);
 int ctx_has_focus (Ctx *ctx);
 
 int       ctx_get_major_version (void);
@@ -3645,7 +3646,6 @@ int       ctx_get_render_threads   (Ctx *ctx);
 }
 #endif
 #endif
-float ctx_atof (const char *str);
 
 #ifndef CTX_VERSION_STRING
 #define CTX_VERSION_STRING "0.1.11"
