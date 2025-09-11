@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2025-02-07 22:06+0000\n"
-"PO-Revision-Date: 2025-02-13 05:21+0100\n"
+"POT-Creation-Date: 2025-09-10 20:28+0000\n"
+"PO-Revision-Date: 2025-09-11 12:57+0200\n"
 "Last-Translator: Ekaterine Papava <papava.e@gtu.ge>\n"
 "Language-Team: Georgian <(nothing)>\n"
 "Language: ka\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.5\n"
+"X-Generator: Poedit 3.7\n"
 
 #: bin/gegl.c:179
 #, c-format
@@ -303,40 +303,40 @@ msgstr "არასდროს"
 msgid "Always"
 msgstr "ყოველთვის"
 
-#: gegl/gegl-init.c:358
+#: gegl/gegl-init.c:354
 msgid "Where GEGL stores its swap"
 msgstr ""
 
-#: gegl/gegl-init.c:363
+#: gegl/gegl-init.c:359
 msgid "Compression algorithm used for data stored in the swap"
 msgstr ""
 
-#: gegl/gegl-init.c:368
+#: gegl/gegl-init.c:364
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr ""
 
-#: gegl/gegl-init.c:373
+#: gegl/gegl-init.c:369
 msgid "Default size of tiles in GeglBuffers"
 msgstr ""
 
-#: gegl/gegl-init.c:378
+#: gegl/gegl-init.c:374
 msgid "The count of pixels to compute simultaneously"
 msgstr ""
 
-#: gegl/gegl-init.c:383
+#: gegl/gegl-init.c:379
 msgid ""
 "The quality of rendering, a value between 0.0 (fast) and 1.0 (reference)"
 msgstr ""
 
-#: gegl/gegl-init.c:388
+#: gegl/gegl-init.c:384
 msgid "The number of concurrent processing threads to use"
 msgstr ""
 
-#: gegl/gegl-init.c:393
+#: gegl/gegl-init.c:389
 msgid "Disable OpenCL"
 msgstr "OpenCL-ის გამორთვა"
 
-#: gegl/gegl-init.c:405
+#: gegl/gegl-init.c:401
 msgid "Show GEGL Options"
 msgstr "GEGL-ის პარამეტრების ჩვენება"
 
@@ -595,78 +595,78 @@ msgstr "ალფას ამოჭრა"
 msgid "Keep alpha values inside a specific range"
 msgstr ""
 
-#: operations/common/bevel.c:47
+#: operations/common/bevel.c:49
 msgid "Chamfer"
 msgstr "კუთხის ნაზოლი"
 
-#: operations/common/bevel.c:49
+#: operations/common/bevel.c:51
 msgid "Bump"
 msgstr "რელიეფი"
 
-#: operations/common/bevel.c:52
+#: operations/common/bevel.c:54
 msgid "Bevel Type"
 msgstr "მრუდის ტიპი"
 
-#: operations/common/bevel.c:55
+#: operations/common/bevel.c:57
 msgid "The family of bevel to use"
 msgstr ""
 
-#: operations/common/bevel.c:59
+#: operations/common/bevel.c:61
 msgid "None (for use with GIMPs blending options)"
 msgstr ""
 
-#: operations/common/bevel.c:61 operations/common/styles.c:202
+#: operations/common/bevel.c:63 operations/common/styles.c:202
 #: operations/common/styles.c:310 operations/common/styles.c:418
 msgid "Hard Light"
 msgstr "მაგარი სინათლე"
 
-#: operations/common/bevel.c:63 operations/common/styles.c:59
+#: operations/common/bevel.c:65 operations/common/styles.c:59
 #: operations/common/styles.c:198 operations/common/styles.c:414
 msgid "Multiply"
 msgstr "გამრავლება"
 
-#: operations/common/bevel.c:65 operations/common/styles.c:206
+#: operations/common/bevel.c:67 operations/common/styles.c:206
 #: operations/common/styles.c:312 operations/common/styles.c:422
 msgid "Color Dodge"
 msgstr "ფერის გაღიავება"
 
-#: operations/common/bevel.c:67 operations/common/styles.c:204
+#: operations/common/bevel.c:69 operations/common/styles.c:204
 #: operations/common/styles.c:420
 msgid "Darken"
 msgstr "გამუქება"
 
-#: operations/common/bevel.c:69
+#: operations/common/bevel.c:71
 msgid "Lighten"
 msgstr "გაღიავება"
 
-#: operations/common/bevel.c:71 operations/common/styles.c:200
+#: operations/common/bevel.c:73 operations/common/styles.c:200
 #: operations/common/styles.c:416
 #: operations/workshop/external/paint-select.cc:30
 msgid "Add"
 msgstr "_დამატება"
 
-#: operations/common/bevel.c:74 operations/common-gpl3+/sinus.c:67
+#: operations/common/bevel.c:76 operations/common-gpl3+/sinus.c:67
 msgid "Blend Mode"
 msgstr "შერევის რეჟიმი"
 
-#: operations/common/bevel.c:77
+#: operations/common/bevel.c:79
 msgid ""
 "What blending mode the bevel's emboss will be. Light Map is a special blend "
 "mode that allows users to extract the filters output as a light map which "
 "should be put on a layer above or be used with Gimp's blending options."
 msgstr ""
 
-#: operations/common/bevel.c:79
+#: operations/common/bevel.c:81
 msgid "Distance Map Setting"
 msgstr ""
 
-#: operations/common/bevel.c:81
+#: operations/common/bevel.c:83
 msgid ""
 "Distance Map is unique to chamfer bevel and has three settings that alter "
 "the structure of the chamfer."
 msgstr ""
 
-#: operations/common/bevel.c:84 operations/common/bloom.c:35
+#: operations/common/bevel.c:86 operations/common/bloom.c:35
 #: operations/common/box-blur.c:25 operations/common/c2g.c:28
 #: operations/common/edge-neon.c:47 operations/common/local-threshold.c:24
 #: operations/common/median-blur.c:42 operations/common/snn-mean.c:26
@@ -684,47 +684,46 @@ msgstr ""
 msgid "Radius"
 msgstr "რადიუსი"
 
-#: operations/common/bevel.c:89
+#: operations/common/bevel.c:91
 msgid "Radius of softening for making bump of the shape."
 msgstr ""
 
-#: operations/common/bevel.c:92 operations/common-gpl3+/bump-map.c:56
+#: operations/common/bevel.c:94 operations/common-gpl3+/bump-map.c:56
 #: operations/common-gpl3+/emboss.c:40
 msgid "Elevation"
 msgstr "სიმაღლე ზღვის დონიდან"
 
-#: operations/common/bevel.c:93
+#: operations/common/bevel.c:95
 msgid "Elevation angle of the Bevel."
 msgstr ""
 
-#. The only issue  with this filter is that emboss depth= above 15 does nothing on chamfer bevel , but works great on bump bevel.
-#. so I made an extra node just for it that only updates emboss depth=, as a result depth and sharpness' are co-existing properties
+#. An issue with this filter is that emboss depth= above 15 does nothing on chamfer bevel , but works great on bump bevel.
+#. so I made an extra node just for it that only updates emboss depth=, as a result depth and sharpness' are co-existing properties.
 #.
-#. I am fully aware 'depth' and 'detail' are just words used to describe the same thing.
-#: operations/common/bevel.c:104 operations/common-gpl3+/bump-map.c:59
+#: operations/common/bevel.c:105 operations/common-gpl3+/bump-map.c:59
 #: operations/common-gpl3+/emboss.c:45
-#: operations/common-gpl3+/fractal-trace.c:60
+#: operations/common-gpl3+/fractal-trace.c:66
 #: operations/common-gpl3+/texturize-canvas.c:44
 msgid "Depth"
 msgstr "სიღრმე"
 
-#: operations/common/bevel.c:105
+#: operations/common/bevel.c:106
 msgid "Emboss depth - Brings out depth and detail of the bump bevel."
 msgstr ""
 
-#: operations/common/bevel.c:109
+#: operations/common/bevel.c:110
 msgid "Light Angle"
 msgstr "სინათლის კუთხე"
 
-#: operations/common/bevel.c:110
+#: operations/common/bevel.c:111
 msgid "Direction of a light source illuminating and shading the bevel."
 msgstr ""
 
-#: operations/common/bevel.c:309
+#: operations/common/bevel.c:294
 msgid "Bevel"
 msgstr "მრუდი"
 
-#: operations/common/bevel.c:311
+#: operations/common/bevel.c:296
 msgid ""
 "Two bevel effects in one place, Chamfer - which simulates lighting of "
 "chamfered 3D-edges, and Bump - the second make a 3D inflation effect by an "
@@ -732,7 +731,7 @@ msgid ""
 "shapes."
 msgstr ""
 
-#: operations/common/bevel.c:313
+#: operations/common/bevel.c:298
 msgid "Bevel..."
 msgstr ""
 
@@ -1915,8 +1914,8 @@ msgstr ""
 msgid "The shadow's color (defaults to 'black')"
 msgstr ""
 
-#. It does make sense to sometimes have opacities > 1 (see GEGL logo
-#. * for example)
+#. We used to permit opacity values > 1.0, similar results can in many cases be
+#. * achieved with grow_radius.
 #.
 #: operations/common/dropshadow.c:74 operations/common/inner-glow.c:75
 #: operations/common/layer.c:33 operations/common/opacity.c:25
@@ -1925,11 +1924,11 @@ msgstr ""
 msgid "Opacity"
 msgstr "_გაუმჭვირვალობა"
 
-#: operations/common/dropshadow.c:184
+#: operations/common/dropshadow.c:185
 msgid "Dropshadow"
 msgstr ""
 
-#: operations/common/dropshadow.c:188
+#: operations/common/dropshadow.c:189
 msgid "Creates a dropshadow effect on the input buffer"
 msgstr ""
 
@@ -2097,7 +2096,7 @@ msgstr ""
 #: operations/common/gaussian-blur.c:57 operations/common/gblur-1d.c:60
 #: operations/common/map-absolute.c:26 operations/common/map-relative.c:30
 #: operations/common/median-blur.c:56 operations/common-gpl3+/displace.c:43
-#: operations/common-gpl3+/fractal-trace.c:67
+#: operations/common-gpl3+/fractal-trace.c:74
 #: operations/common-gpl3+/ripple.c:56 operations/transform/scale.c:102
 #: operations/workshop/external/voronoi-diagram.cc:38
 msgid "Abyss policy"
@@ -2421,7 +2420,7 @@ msgstr ""
 msgid "Node"
 msgstr "კვანძი"
 
-#: operations/common/introspect.c:205
+#: operations/common/introspect.c:210
 msgid "GEGL graph visualizer."
 msgstr ""
 
@@ -2542,20 +2541,20 @@ msgstr "X1"
 
 #: operations/common/linear-gradient.c:29
 #: operations/common/radial-gradient.c:26
-#: operations/common-gpl3+/fractal-trace.c:42
+#: operations/common-gpl3+/fractal-trace.c:44
 #: operations/workshop/external/line-profile.c:35
 msgid "Y1"
 msgstr "Y1"
 
 #: operations/common/linear-gradient.c:33
 #: operations/common/radial-gradient.c:27
-#: operations/common-gpl3+/fractal-trace.c:38
+#: operations/common-gpl3+/fractal-trace.c:39
 msgid "X2"
 msgstr "X2"
 
 #: operations/common/linear-gradient.c:37
 #: operations/common/radial-gradient.c:28
-#: operations/common-gpl3+/fractal-trace.c:46
+#: operations/common-gpl3+/fractal-trace.c:49
 msgid "Y2"
 msgstr "Y2"
 
@@ -3924,7 +3923,7 @@ msgstr ""
 
 #: operations/common/pixelize.c:35
 msgid "Block width"
-msgstr ""
+msgstr "ბლოკის სიგანე"
 
 #: operations/common/pixelize.c:36
 msgid "Width of blocks in pixels"
@@ -3932,7 +3931,7 @@ msgstr ""
 
 #: operations/common/pixelize.c:43
 msgid "Block height"
-msgstr ""
+msgstr "ბლოკის სიმაღლე"
 
 #: operations/common/pixelize.c:44
 msgid "Height of blocks in pixels"
@@ -4849,17 +4848,17 @@ msgid ""
 "when the user selects darker colors."
 msgstr ""
 
-#: operations/common/styles.c:1247
+#: operations/common/styles.c:1267
 msgid "GEGL Styles"
 msgstr "GEGL სტილები"
 
-#: operations/common/styles.c:1250
+#: operations/common/styles.c:1270
 msgid ""
 "An engine to style text and add popular effects to alpha channel images. "
 "Effects include outline, bevel, shadow, and inner glow all in one place."
 msgstr ""
 
-#: operations/common/styles.c:1253
+#: operations/common/styles.c:1273
 msgid "Text Styling..."
 msgstr ""
 
@@ -6090,7 +6089,7 @@ msgstr "გრადაცია"
 
 #: operations/common-gpl3+/edge.c:32
 msgid "Roberts"
-msgstr ""
+msgstr "რობერტსი"
 
 #: operations/common-gpl3+/edge.c:33
 msgid "Differential"
@@ -6342,51 +6341,51 @@ msgstr ""
 msgid "X1 value, position"
 msgstr ""
 
-#: operations/common-gpl3+/fractal-trace.c:39
+#: operations/common-gpl3+/fractal-trace.c:40
 msgid "X2 value, position"
 msgstr ""
 
-#: operations/common-gpl3+/fractal-trace.c:43
+#: operations/common-gpl3+/fractal-trace.c:45
 msgid "Y1 value, position"
 msgstr ""
 
-#: operations/common-gpl3+/fractal-trace.c:47
+#: operations/common-gpl3+/fractal-trace.c:50
 msgid "Y2 value, position"
 msgstr ""
 
-#: operations/common-gpl3+/fractal-trace.c:50
+#: operations/common-gpl3+/fractal-trace.c:54
 msgid "JX"
 msgstr "JX"
 
-#: operations/common-gpl3+/fractal-trace.c:51
+#: operations/common-gpl3+/fractal-trace.c:55
 msgid "Julia seed X value, position"
 msgstr ""
 
-#: operations/common-gpl3+/fractal-trace.c:55
+#: operations/common-gpl3+/fractal-trace.c:60
 msgid "JY"
 msgstr "JY"
 
-#: operations/common-gpl3+/fractal-trace.c:56
+#: operations/common-gpl3+/fractal-trace.c:61
 msgid "Julia seed Y value, position"
 msgstr ""
 
-#: operations/common-gpl3+/fractal-trace.c:63
+#: operations/common-gpl3+/fractal-trace.c:70
 msgid "Bailout length"
 msgstr ""
 
-#: operations/common-gpl3+/fractal-trace.c:69
+#: operations/common-gpl3+/fractal-trace.c:76
 msgid "How to deal with pixels outside of the input buffer"
 msgstr ""
 
-#: operations/common-gpl3+/fractal-trace.c:175
+#: operations/common-gpl3+/fractal-trace.c:182
 msgid "Unsupported fractal type"
 msgstr ""
 
-#: operations/common-gpl3+/fractal-trace.c:272
+#: operations/common-gpl3+/fractal-trace.c:279
 msgid "Fractal Trace"
 msgstr "ფრაქტალური კვალი"
 
-#: operations/common-gpl3+/fractal-trace.c:278
+#: operations/common-gpl3+/fractal-trace.c:285
 msgid "Transform the image with the fractals"
 msgstr ""
 
@@ -6704,7 +6703,7 @@ msgstr ""
 
 #: operations/common-gpl3+/mosaic.c:81
 msgid "Light direction"
-msgstr ""
+msgstr "სინათლის მიმართულება"
 
 #: operations/common-gpl3+/mosaic.c:82
 msgid "Direction of light-source (in degrees)"
@@ -7868,11 +7867,11 @@ msgstr ""
 msgid "audio"
 msgstr "აუდიო"
 
-#: operations/external/ff-load.c:877
+#: operations/external/ff-load.c:885
 msgid "FFmpeg Frame Loader"
 msgstr ""
 
-#: operations/external/ff-load.c:879
+#: operations/external/ff-load.c:887
 msgid "FFmpeg video frame importer."
 msgstr ""
 
@@ -8120,11 +8119,11 @@ msgstr ""
 msgid "URI of file to load"
 msgstr ""
 
-#: operations/external/jpg-load.c:392
+#: operations/external/jpg-load.c:390
 msgid "JPEG File Loader"
 msgstr ""
 
-#: operations/external/jpg-load.c:394
+#: operations/external/jpg-load.c:392
 msgid "JPEG image loader using libjpeg"
 msgstr ""
 
@@ -8191,7 +8190,7 @@ msgstr "შეფარდებით კოლორიმეტრული"
 
 #: operations/external/lcms-from-profile.c:37
 msgid "Absolute Colorimetric"
-msgstr ""
+msgstr "აბსოლუტური კოლორიმეტრული"
 
 #: operations/external/lcms-from-profile.c:41
 msgid "Rendering intent"
@@ -8479,11 +8478,11 @@ msgstr ""
 msgid "URI for file to load."
 msgstr ""
 
-#: operations/external/png-load.c:655
+#: operations/external/png-load.c:656
 msgid "PNG File Loader"
 msgstr ""
 
-#: operations/external/png-load.c:657
+#: operations/external/png-load.c:658
 msgid "PNG image loader."
 msgstr ""
 
@@ -9166,12 +9165,12 @@ msgstr ""
 #: operations/transform/scale-size.c:26
 #: operations/transform/scale-size-keepaspect.c:26
 msgid "Horizontal size"
-msgstr ""
+msgstr "ჰორიზონტალური ზომა"
 
 #: operations/transform/scale-size.c:31
 #: operations/transform/scale-size-keepaspect.c:31
 msgid "Vertical size"
-msgstr ""
+msgstr "ვერტიკალური ზომა"
 
 #: operations/transform/scale-size.c:82
 msgid "Scale size"
@@ -9951,9 +9950,17 @@ msgstr ""
 msgid "Selective adjust Hue, Saturation and Lightness"
 msgstr ""
 
+#: operations/workshop/shuffle-search.c:32
+msgid "How many times to run optimization"
+msgstr ""
+
 #: operations/workshop/shuffle-search.c:38
 msgid "Chance"
 msgstr "შანსი"
+
+#: operations/workshop/shuffle-search.c:39
+msgid "Chance of doing optimization"
+msgstr ""
 
 #: operations/workshop/shuffle-search.c:45
 msgid "Phase"
@@ -9962,6 +9969,10 @@ msgstr "ფაზა"
 #: operations/workshop/shuffle-search.c:49
 msgid "Only used if no aux image is provided"
 msgstr ""
+
+#: operations/workshop/shuffle-search.c:53
+msgid "Center bias"
+msgstr "ცენტრის მიკერძოება"
 
 #: operations/workshop/shuffle-search.c:592
 msgid "Optimize Dither"
