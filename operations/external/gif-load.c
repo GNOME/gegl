@@ -131,6 +131,9 @@ prepare (GeglOperation *operation)
         bitmap_get_buffer,
       };
       g_file_get_contents (o->path, (void*)&p->gif_data, &length, NULL);
+      if (!p->gif_data)
+        return;
+
       g_assert (p->gif_data != NULL);
 
       code = nsgif_create (&bitmap_callbacks,
@@ -165,8 +168,11 @@ get_bounding_box (GeglOperation *operation)
   GeglRectangle result = { 0, 0, 0, 0 };
   Priv *p = (Priv*) o->user_data;
 
-  result.width = p->info->width;
-  result.height = p->info->height;
+  if (p->info)
+  {
+    result.width = p->info->width;
+    result.height = p->info->height;
+  }
 
   return result;
 }
