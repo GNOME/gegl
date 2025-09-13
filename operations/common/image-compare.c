@@ -43,7 +43,7 @@ property_double (avg_diff_total, _("Average difference (total)"), 0.0)
 
 #include "gegl-op.h"
 
-#define ERROR_TOLERANCE 0.01
+#define ERROR_TOLERANCE 0.001
 #define SQR(x)          ((x) * (x))
 
 static void
