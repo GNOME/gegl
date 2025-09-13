@@ -196,6 +196,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",       _("Clip Alpha"),
     "categories",  "color",
     "reference-composition", composition,
+    "reference-hash", "4f82a070d379eab44c88d3c68ecadb22",
     "description", _("Keep alpha values inside a specific range"),
     NULL);
 }

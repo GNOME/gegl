@@ -121,7 +121,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name", "gegl:scale-size-keepaspect",
     "title", _("Scale size keep aspect"),
     "categories", "transform",
-    "reference-hash", "9d8a7fe1ff90704f7ebcfdd5dae7e9c2",
+    "reference-hash", "5b7f8cdadf7c27cd245193fb63657ad4",
     "reference-composition", composition,
     "description", _("Scales the buffer to a size, preserving aspect ratio"),
     NULL);

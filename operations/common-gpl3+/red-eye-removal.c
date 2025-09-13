@@ -170,8 +170,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",       _("Red Eye Removal"),
     "categories",  "enhance",
     "license",     "GPL3+",
-    "reference-hash", "30bed05acd7bde632fad8d40cf686075",
-    "reference-hashB", "8b0b4751b4a1ffac1ba4ff6d08e48a1a",
+    "reference-hash", "8b0b4751b4a1ffac1ba4ff6d08e48a1a",
     "description", _("Remove the red eye effect caused by camera flashes"),
     NULL);
 }

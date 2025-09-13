@@ -327,8 +327,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "categories",    "artistic",
     "license",       "GPL3+",
     "title",         _("Photocopy"),
-    "reference-hash", "d2f210ce9e61b81ebd58a5eb7dfe9dd7",
-    "reference-hashB", "53a9c82b6983adb663c5af8170a64b3d",
+    "reference-hash", "711b12475b7bdab15f9f29bdbf4379b5",
     "description", _("Simulate color distortion produced by a copy machine"),
     NULL);
 }

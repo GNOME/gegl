@@ -95,6 +95,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "title", _("Reset origin"),
     "categories", "transform",
     "reference-composition", composition,
+    "reference-hash", "2e11acd5a417e1e9c6894e9a8f974e14",
     "description", _("Translate top-left to 0,0."),
     NULL);
 }

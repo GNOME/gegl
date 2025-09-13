@@ -272,8 +272,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",        "gegl:wavelet-blur-1d",
     "categories",  "hidden:blur",
     "title",       _("1D Wavelet-blur"),
-    "reference-hash", "71ac3a58677d8efd8099fc761bdc5572",
-    "reference-hashB", "f7879e0dcf29fa78df7b2c400842ddce",
+    "reference-hash", "f7879e0dcf29fa78df7b2c400842ddce",
     "description", _("This blur is used for the wavelet decomposition filter, "
                      "each pixel is computed from another by the HAT transform"),
     NULL);

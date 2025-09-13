@@ -91,7 +91,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name", "gegl:rotate",
     "title", _("Rotate"),
     "categories", "transform",
-    "reference-hash", "577f8ff8bcdd46dc4835097a6afc914b",
+    "reference-hash", "6f9467eeee3fbe8286297c1470834123",
     "reference-composition", composition,
     "description", _("Rotate the buffer around the specified origin."),
     NULL);

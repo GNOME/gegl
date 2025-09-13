@@ -488,8 +488,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",        "gegl:watershed-transform",
     "title",       _("Watershed Transform"),
     "categories",  "hidden",
-    "reference-hash", "c5623beeef052a9b47acd178dd420864",
-    "reference-hashB", "983ef24a840ad8e46698ffd7cd11f5b8",
+    "reference-hash", "983ef24a840ad8e46698ffd7cd11f5b8",
     "description", _("Labels propagation by watershed transformation. "
                      "Output buffer will keep the input format. "
                      "Unlabelled pixels are marked with a given flag value "

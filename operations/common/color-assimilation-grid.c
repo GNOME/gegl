@@ -144,7 +144,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",           "gegl:color-assimilation-grid",
     "title",          _("Color Assimilation Grid"),
     "categories",     "illusions",
-    "reference-hash", "0a082eeef549e25bcd921f1e09e28b31",
+    "reference-hash", "19c0eab029aefaf6a3d0ac01d4932117",
     "description", _("Turn image grayscale and overlay an oversaturated grid - through color assimilation happening in the human visual system, for some grid scales this produces the illusion that the grayscale grid cells themselves also have color."),
     NULL);
 }

@@ -183,7 +183,7 @@ gegl_op_class_init (GeglOpClass *klass)
   "name"        , "svg:color-burn",
   "compat-name" , "gegl:color-burn",
   "title"       , "Color-burn",
-  "reference-hash" , "c1acf566ed23654c5c781aeb56340895",
+  "reference-hash" , "1236d7a59418bad7467db950479319b5",
   "description" ,
         _("SVG blend operation color-burn (<code>if cA * aB + cB * aA <= aA * aB: d = cA * (1 - aB) + cB * (1 - aA) otherwise: d = (cA == 0 ? 1 : (aA * (cA * aB + cB * aA - aA * aB) / cA) + cA * (1 - aB) + cB * (1 - aA))</code>)"),
         NULL);

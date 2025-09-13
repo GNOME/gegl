@@ -180,6 +180,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "description",
     _("Applies a threshold using the local neighborhood."),
     "gimp:menu-path", "<Image>/Colors",
+    "reference-hash", "c1d6634e7af011f13fb92a3aa807f682",
     NULL);
 }
 

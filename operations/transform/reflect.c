@@ -104,7 +104,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name", "gegl:reflect",
     "title", _("Reflect"),
     "categories", "transform",
-    "reference-hash", "2ae152431de90c897ce3ccfcb3093de9",
+    "reference-hash", "b1285a7dec2e9309f535efff7d74ebe6",
     "reference-composition", composition,
     "description", _("Reflect an image about a line, whose direction is "
                      "specified by the vector that is defined by the "

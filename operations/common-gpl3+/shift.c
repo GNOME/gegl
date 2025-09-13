@@ -144,8 +144,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",       _("Shift"),
     "categories",  "distort",
     "license",     "GPL3+",
-    "reference-hash", "da717d8c0cad7ed5a500d1f322821d89",
-    "reference-hashB", "39f4bbcb328f83641e8ada109c86c4c9",
+    "reference-hash", "39f4bbcb328f83641e8ada109c86c4c9",
     "description", _("Shift each row or column of pixels by a random amount"),
     NULL);
 }

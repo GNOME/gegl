@@ -461,7 +461,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",       _("Noise Reduction"),
     "name"       , "gegl:noise-reduction",
     "categories" , "enhance:noise-reduction",
-    "reference-hash", "bab5fb44889a08b093c77ca3a0a03f57",
+    "reference-hash", "7a09981f8d814359b4c5f52406b0b955",
     "description", _("Anisotropic smoothing operation"),
     NULL);
 }

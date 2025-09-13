@@ -169,7 +169,7 @@ gegl_op_class_init (GeglOpClass *klass)
   gegl_operation_class_set_keys (operation_class,
     "name",        "gegl:inner-glow",
     "title",       _("Inner Glow"),
-    "reference-hash", "1g3do6aaoo1100g0fjf25sb2ac",
+    "reference-hash", "8a1319fb8f04ae1bc086721abf25419a",
     "description", _("GEGL does an inner shadow glow effect; for more interesting use different blend mode than the default, Replace."),
     "gimp:menu-path", "<Image>/Filters/Light and Shadow/",
     "gimp:menu-label", _("Inner Glow..."),

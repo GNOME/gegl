@@ -527,7 +527,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",                 _("Little Planet"),
     "position-dependent",    "true",
     "categories" ,           "map",
-    "reference-hash",        "36f3d3efea251ded0d16c447c565922c",
+    "reference-hash",        "43e6da04bdcebdbb9270f3d798444d08",
     "reference-composition", composition,
     "description", _("Do a stereographic/little planet transform of an equirectangular image."),
     NULL);

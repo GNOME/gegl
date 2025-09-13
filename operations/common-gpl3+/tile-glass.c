@@ -234,8 +234,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "categories",         "artistic:map",
     "position-dependent", "true",
     "license",            "GPL3+",
-    "reference-hash",     "3a564b45ae023a0f7acf1146c81fe41d",
-    "reference-hashB",    "1cbbd91251831ec9f280536fa7a81cc2",
+    "reference-hash",     "1cbbd91251831ec9f280536fa7a81cc2",
     "description", _("Simulate distortion caused by rectangular glass tiles"),
     NULL);
 }

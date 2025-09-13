@@ -211,7 +211,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",              "gegl:tile-seamless",
     "title",             _("Make Seamlessly tileable"),
     "categories",        "tile",
-    "reference-hash",     "7d710478556cd8d7ee6b1d1dd2a822ed",
+    "reference-hash",     "14f3c3ee1410ece7272ee0ff9ffe7043",
     "position-dependent", "true",
     "description", _("Make the input buffer seamlessly tileable."
                      " The algorithm is not content-aware,"

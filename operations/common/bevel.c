@@ -292,7 +292,7 @@ gegl_op_class_init (GeglOpClass *klass)
   gegl_operation_class_set_keys (operation_class,
     "name",        "gegl:bevel",
     "title",       _("Bevel"),
-    "reference-hash", "30519510290293373928c",
+    "reference-hash", "44143870affcfdba0bbb8b7247ca14fb",
     "description", _("Two bevel effects in one place, Chamfer - which simulates lighting of chamfered 3D-edges, and Bump - the second make a 3D inflation effect by an emboss covering a blur. Both bevels benefit from color filled alpha defined shapes."),
     "gimp:menu-path", "<Image>/Filters/Light and Shadow",
     "gimp:menu-label", _("Bevel..."),

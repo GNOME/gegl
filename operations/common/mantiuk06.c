@@ -1641,7 +1641,7 @@ gegl_op_class_init (GeglOpClass *klass)
       "name",        "gegl:mantiuk06",
       "title",       _("Mantiuk 2006 Tone Mapping"),
       "categories" , "tonemapping",
-      "reference-hash", "5d2a23103400de39e6d287e75fc4617c",
+      "reference-hash", "6306e31be34f0573b283ae2122769b28",
       "description",
         _("Adapt an image, which may have a high dynamic range, for "
           "presentation using a low dynamic range. This operator constrains "

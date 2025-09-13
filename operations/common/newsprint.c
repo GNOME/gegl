@@ -662,7 +662,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",              _("Newsprint"),
     "categories" ,        "render",
     "position-dependent", "true",
-    "reference-hash",     "2792e6d5aec5c2f80e45aea3a610d1f6",
+    "reference-hash",     "46ab9d5332d109013cecdf3ea40faeb8",
     "reference-composition", composition,
     "description",        _("Digital halftoning with optional modulations. "),
     NULL);

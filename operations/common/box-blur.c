@@ -403,7 +403,7 @@ gegl_op_class_init (GeglOpClass *klass)
       "name",        "gegl:box-blur",
       "title",       _("Box Blur"),
       "categories",  "blur",
-      "reference-hash", "a1373d1ad34431271aeec3c289f6ca10",
+      "reference-hash", "0ab196cdfa3a6c6f4a1eb932a2fda708",
       "description", _("Blur resulting from averaging the colors of a square neighborhood."),
       NULL);
 }

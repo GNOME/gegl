@@ -259,7 +259,6 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",            "gegl:component-extract",
     "title",           _("Extract Component"),
     "reference-hash",  "9e9128c635e84fd177d733ba300d6ef5",
-    "reference-hashB", "1ad6d3caf43fd510eddb8b890103b5c9",
     "categories",  "color",
     "description", _("Extract a color model component"),
     NULL);

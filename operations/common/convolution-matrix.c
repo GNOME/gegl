@@ -629,8 +629,7 @@ gegl_op_class_init (GeglOpClass *klass)
   gegl_operation_class_set_keys (operation_class,
     "categories",  "generic",
     "name",        "gegl:convolution-matrix",
-    "reference-hash", "22d2d47a2da3d3e7cd402ea9fa1a3a25",
-    "reference-hashB", "4eddc0aaa970a59ee8a813627874cdf3",
+    "reference-hash", "4eddc0aaa970a59ee8a813627874cdf3",
     "title",       _("Convolution Matrix"),
     "description", _("Apply a generic 5x5 convolution matrix"),
     NULL);

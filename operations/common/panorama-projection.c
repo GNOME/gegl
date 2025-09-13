@@ -537,8 +537,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",                 _("Panorama Projection"),
     "categories" ,           "map",
     "position-dependent",    "true",
-    "reference-hash",        "3ab9831053ff0a9e32623ecc8a148e67",
-    "reference-hashB",       "cf1ca4a0ffba4ca6157768a34653935d",
+    "reference-hash",        "cf1ca4a0ffba4ca6157768a34653935d",
     "reference-composition", composition,
     "description", _("Do panorama viewer rendering mapping or its inverse for an equirectangular input image. (2:1 ratio containing 360x180 degree panorama)."),
     NULL);

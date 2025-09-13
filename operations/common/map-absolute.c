@@ -60,6 +60,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",              "gegl:map-absolute",
     "title",              _("Map Absolute"),
     "categories",        "map",
+    "reference-hash", "f1b3ab0f1e84ec5882f23aee0a0c68f6",
     "position-dependent", "true",
     "description", _("sample input with an auxiliary buffer that contain absolute source coordinates"),
     NULL);

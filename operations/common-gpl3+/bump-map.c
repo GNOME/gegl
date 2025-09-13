@@ -476,9 +476,8 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",          _("Bump Map"),
     "categories",     "light",
     "license",        "GPL3+",
-    "reference-hash", "a648c21313c6168be01aed469c27903b",
+    "reference-hash", "5f95e2faa1bfb47143777d1e5b22b53d",
     "reference-composition", composition,
-//    "reference-hash", "8d3700ec06e9cbba3cb2b4a9f3061a10",
     "description", _("This plug-in uses the algorithm described by John "
                      "Schlag, \"Fast Embossing Effects on Raster Image "
                      "Data\" in Graphics GEMS IV (ISBN 0-12-336155-9). "

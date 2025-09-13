@@ -137,8 +137,7 @@ gegl_op_class_init (GeglOpClass *klass)
       "compat-name", "gegl:grey",
       "title",       _("Make Gray"),
       "categories" , "grayscale:color",
-      "reference-hash", "c5623beeef052a9b47acd178dd420864",
-      "reference-hashB", "43ddd80572ab34095298ac7c36368b0c",
+      "reference-hash", "43ddd80572ab34095298ac7c36368b0c",
       "description", _("Turns the image grayscale"),
       NULL);
 }

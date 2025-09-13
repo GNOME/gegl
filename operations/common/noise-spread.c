@@ -182,8 +182,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",        "gegl:noise-spread",
     "title",       _("Noise Spread"),
     "categories",  "noise",
-    "reference-hash", "89c0d73afd19917ba1e7bad435ff63b4",
-    "reference-hashB", "c53483232973300e961be9819026f997",
+    "reference-hash", "c53483232973300e961be9819026f997",
     "description", _("Move pixels around randomly"),
     NULL);
 }
