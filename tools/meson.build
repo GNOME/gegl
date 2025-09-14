@@ -31,7 +31,7 @@ gegl_tester = executable(
   'gegl-tester',
   'gegl-tester.c',
   include_directories: [ rootInclude, geglInclude, ],
-  dependencies: [ tools_deps, ],
+  dependencies: [ gio, tools_deps, ],
   link_with: [ gegl_lib, ],
   c_args: [ tools_c_args ],
   install: false,

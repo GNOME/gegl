@@ -1,4 +1,4 @@
-
+subdir('ref-hash')
 subdir('images')
 subdir('operations')
 
