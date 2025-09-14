@@ -61,6 +61,7 @@ test(
   args: [
     '--data-directory', project_source_root / 'docs' / 'images',
     '--output-directory', meson.current_build_dir(),
+    '--hash-directory', meson.current_build_dir() / '..' / '..' / 'docs' / 'website' / 'ref-hash',
     '--all',
     '--exclusion-pattern', '|'.join(exclude),
   ],

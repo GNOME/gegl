@@ -79,6 +79,7 @@ doc_ops_img_cmd = [
   gegl_tester,
   '--data-directory', project_source_root / 'docs' / 'images',
   '--output-directory', '@OUTDIR@',
+  '--hash-directory', '@OUTDIR@' / '..' / '..' / 'ref-hash',
   '--all',
   '--exclusion-pattern', '|'.join(exclude),
 ]
