@@ -329,10 +329,10 @@ have_hash (const gchar *hash)
 
 
 static gboolean
-test_with_hashes (const gchar        *name,
-                  const gchar        *output_path,
-                  GeglOperationClass *operation_class,
-                  gboolean            supported_op)
+test_operation (const gchar        *name,
+                const gchar        *output_path,
+                GeglOperationClass *operation_class,
+                gboolean            supported_op)
 {
   const gchar *ref_hash = gegl_operation_class_get_key (operation_class, "reference-hash");
   gboolean     success = TRUE;
@@ -545,7 +545,7 @@ process_operations (GType type)
               standard_output (name);
             }
 
-          if (!test_with_hashes (name, output_path, operation_class, supported_op))
+          if (!test_operation (name, output_path, operation_class, supported_op))
             failed++;
 
           g_free (output_path);
