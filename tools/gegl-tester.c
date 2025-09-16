@@ -32,7 +32,7 @@ static GRegex   *exc_regex         = NULL;
 static gchar    *data_dir          = NULL;
 static gchar    *output_dir        = NULL;
 static gchar    *hash_dir          = NULL;
-static gchar    *hash_upstream     = "https://gegl.org/ref-hash/";
+static gchar    *hash_upstream     = "https://gegl.org/ref-hash";
 static gchar    *pattern           = "";
 static gchar    *exclusion_pattern = "a^"; /* doesn't match anything by default */
 static gboolean *output_all        = FALSE;
@@ -382,7 +382,7 @@ test_operation (const gchar        *name,
             if (boundsA.width  != boundsB.width ||
                 boundsA.height != boundsB.height)
             {
-              g_printf ("not ok %3i - %s %s != %s, even differ in size\n", test_num, name, gothash, ref_hash);
+              g_printf ("not ok %3i - %s != %s, even differ in size\n", test_num, name, gothash);
             }
             else
             {
@@ -407,12 +407,12 @@ test_operation (const gchar        *name,
               {
                 success = FALSE;
                 store_hash = TRUE;
-                g_printf ("not ok %3i - %s %s != %s - %.5f max diff is not accepted\n", test_num, name, gothash, ref_hash, max_diff);
-                g_string_append_printf (failed_ops, "#  %s %s != %s (%.5f max diff)\n", name, gothash, ref_hash, max_diff);
+                g_printf ("not ok %3i - %s %s max-diff:%.5f\n", test_num, name, gothash, max_diff);
+                g_string_append_printf (failed_ops, "#  %s %s (%.5f max diff)\n", name, gothash, max_diff);
               }
               else
               {
-                g_printf ("ok     %3i - %s %s != %s - but %.5f max diff is accepted wrong pixels:%i\n", test_num, name, gothash, ref_hash, max_diff, wrong_pixels);
+                g_printf ("ok     %3i - %s %s - max-diff:%.5f wrong pixels:%i\n", test_num, name, gothash, max_diff, wrong_pixels);
               }
             }
 
@@ -425,7 +425,7 @@ test_operation (const gchar        *name,
             success = FALSE;
             store_hash = TRUE;
 
-            g_printf ("not ok %3i - %s %s != %s\n", test_num, name, gothash, ref_hash);
+            g_printf ("not ok %3i - %s %s\n", test_num, name, gothash);
             g_string_append_printf (failed_ops, "#  %s %s != %s (missing image for ref_hash)\n", name, gothash, ref_hash);
           }
         }
