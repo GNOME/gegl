@@ -377,6 +377,7 @@ gegl_op_class_init (GeglOpClass *klass)
   gegl_operation_class_set_keys (operation_class,
     "name",        "gegl:recursive-transform",
     "title",       _("Recursive Transform"),
+    "reference-hash", "4fb51936e6cb594c1d79462280f21440",
     "categories",  "map",
     "description", _("Apply a transformation recursively."),
     NULL);
