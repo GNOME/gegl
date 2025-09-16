@@ -345,6 +345,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",        "gegl:piecewise-blend",
     "title",       _("Piecewise Blend"),
     "categories",  "compositors:blend",
+    "reference-hash", "f1b3ab0f1e84ec5882f23aee0a0c68f6",
     "description", _("Blend a chain of inputs using a mask"),
     NULL);
 }
