@@ -1,40 +1,25 @@
 #!/usr/bin/env python3
 import os
 import shutil
-import fnmatch
+import re
+import sys
+import json
 
-if not os.getenv("MESON_BUILD_ROOT"):
-  # On Windows, this script is run if meson option 'win-debugging' is set to 'native'
-  print("\033[31m(ERROR)\033[0m: Script called standalone. Please just build GEGL on Windows and this script will be called if needed.")
+if not os.path.isfile("build.ninja"):
+  print("\033[31m(ERROR)\033[0m: Script called standalone. This script should be only called from build systems.")
   sys.exit(1)
+
 
 # This .py script should not even exist
 # Ideally meson should take care of it automatically.
 # See: https://github.com/mesonbuild/meson/issues/12977
-for build_root, _, build_bins in os.walk(os.getenv("MESON_BUILD_ROOT")):
-  for file in build_bins:
-    if fnmatch.fnmatch(file, '*.dll') or fnmatch.fnmatch(file, '*.exe'):
-      build_bin = os.path.join(build_root, file)
-      installed_bin = None
-      for installed_root, _, installed_bins in os.walk(os.getenv("MESON_INSTALL_DESTDIR_PREFIX")):
-        if os.path.basename(build_bin) in installed_bins:
-          installed_bin = os.path.join(installed_root, os.path.basename(build_bin))
-          break
-      if installed_bin:
-        install_dir = os.path.dirname(installed_bin)
-        pdb_debug = os.path.splitext(build_bin)[0] + '.pdb'
+with open("meson-info/intro-installed.json", "r") as f:
+  build_installed = json.load(f)
+for build_bin, installed_bin in build_installed.items():
+  if build_bin.endswith((".dll", ".exe")):
+    pdb_debug = os.path.splitext(build_bin)[0] + ".pdb"
+    install_dir = os.path.dirname(installed_bin)
+    if os.path.isfile(pdb_debug):
+      if not os.getenv("MESON_INSTALL_DRY_RUN"):
         print(f"Installing {pdb_debug} to {install_dir}")
-
-        # Clang correctly puts the .pdb along the $installed_bin
-        if os.path.isfile(pdb_debug):
-          if not os.getenv("MESON_INSTALL_DRY_RUN"):
-            shutil.copy2(pdb_debug, install_dir)
-        
-        # GCC dumbly puts the .pdb in $MESON_BUILD_ROOT
-        else:
-          if not os.getenv("MESON_INSTALL_DRY_RUN"):
-            for gcc_root, _, gcc_files in os.walk(os.getenv("MESON_BUILD_ROOT")):
-              for gcc_file in gcc_files:
-                if fnmatch.fnmatch(gcc_file, os.path.basename(pdb_debug)):
-                  shutil.copy2(os.path.join(gcc_root, gcc_file), install_dir)
-                  break
+        shutil.copy2(pdb_debug, install_dir)
