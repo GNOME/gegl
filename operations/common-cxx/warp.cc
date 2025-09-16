@@ -985,6 +985,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "categories",         "transform",
     "title",              _("Warp"),
     "position-dependent", "true",
+    "reference-hash", "f1b3ab0f1e84ec5882f23aee0a0c68f6",
     "description", _("Compute a relative displacement mapping from a stroke"),
     NULL);
 }
