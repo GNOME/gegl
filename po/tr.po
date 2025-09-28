@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2025-09-23 00:27+0000\n"
-"PO-Revision-Date: 2025-09-22 15:32+0300\n"
+"POT-Creation-Date: 2025-09-24 16:36+0000\n"
+"PO-Revision-Date: 2025-09-24 22:05+0300\n"
 "Last-Translator: Sabri Ünal <yakushabb@gmail.com>\n"
 "Language-Team: Turkish <takim@gnome.org.tr>\n"
 "Language: tr\n"
@@ -2229,7 +2229,7 @@ msgstr "Gaussian çekirdeği nasıl ayrıştırılsın"
 #: operations/common-gpl3+/ripple.c:56 operations/transform/scale.c:102
 #: operations/workshop/external/voronoi-diagram.cc:38
 msgid "Abyss policy"
-msgstr "Uçurum politikası"
+msgstr "Uçurum ilkesi"
 
 #: operations/common/gaussian-blur.c:59 operations/common/gblur-1d.c:62
 #: operations/common/median-blur.c:58 operations/common-gpl3+/displace.c:46
@@ -2530,7 +2530,7 @@ msgstr "Merkezi farklara göre renk geçişi büyüklüğünü ve/veya yönünü
 
 #: operations/common/inner-glow.c:85
 msgid "Median fix for non-affected pixels on edges"
-msgstr "Kenarlardaki etkilenmeyen pikseller için medyan düzeltmesi"
+msgstr "Kenarlardaki etkilenmeyen pikseller için ortanca düzeltmesi"
 
 #: operations/common/inner-glow.c:87
 msgid ""
@@ -2538,9 +2538,9 @@ msgid ""
 "it outline-like. So only slide it as high as you need to cover thin shape "
 "corners."
 msgstr ""
-"Medyan Bulanıklığı etkilenmemiş pikselleri kapsar. Bu kaydırıcıyı çok yüksek "
-"yapmak onu anahata benzeştirir. Bu yüzden yalnızca ince şekil köşelerini "
-"kaplamak için gerektiğince kaydırın."
+"Ortanca Bulanıklığı etkilenmemiş pikselleri kapsar. Bu kaydırıcıyı çok "
+"yüksek yapmak onu anahata benzeştirir. Bu yüzden yalnızca ince şekil "
+"köşelerini kaplamak için gerektiğince kaydırın."
 
 #: operations/common/inner-glow.c:171
 msgid "Inner Glow"
@@ -3132,14 +3132,14 @@ msgstr "Kırpma ve nicelemeden kaçın (daha yavaş)"
 
 #: operations/common/median-blur.c:1003
 msgid "Median Blur"
-msgstr "Median Bulanıklığı"
+msgstr "Ortanca Bulanıklığı"
 
 #: operations/common/median-blur.c:1006
 msgid ""
 "Blur resulting from computing the median color in the neighborhood of each "
 "pixel."
 msgstr ""
-"Her beneğin çevresindeki orta rengi hesaplamaktan kaynaklanan bulanıklık."
+"Her pikselin komşusundaki orta rengi hesaplamaktan kaynaklanan bulanıklık."
 
 #: operations/common/mirrors.c:30
 msgid "Mirror rotation"
@@ -4122,9 +4122,10 @@ msgstr ""
 "görüntüsü için panorama görüntüleyici eşlemesi ya da bunun tersi işlemini "
 "gerçekleştir."
 
+# Karo ve Daire gibi diğer şekil adlarıyla birlikte ad olarak kullanılmış.
 #: operations/common/pixelize.c:27
 msgid "Round"
-msgstr "Yuvarlama"
+msgstr "Yuvarlak"
 
 #: operations/common/pixelize.c:33
 msgid "The shape of pixels"
@@ -9893,14 +9894,14 @@ msgstr ""
 
 #: operations/workshop/demosaic-bimedian.c:220
 msgid "Demosaic With Bimedian Interpolation"
-msgstr "Bimedian Aradeğerleme İle Birlikte Demosaic"
+msgstr "Çift Ortanca Ara Değerleme İle Mozaik Giderme"
 
 #: operations/workshop/demosaic-bimedian.c:223
 msgid ""
 "Performs a grayscale2color demosaicing of an image, using bimedian "
 "interpolation."
 msgstr ""
-"Görüntü üzerinde, bimedyan ara değerleme kullanarak gri-tonlamadan renge "
+"Görüntü üzerinde, çift ortanca ara değerleme kullanarak gri tonlamadan renge "
 "mozaik giderme işlemi gerçekleştirir"
 
 #: operations/workshop/demosaic-simple.c:152
