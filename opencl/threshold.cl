@@ -8,7 +8,7 @@ __kernel void gegl_threshold (__global const float2     *in,
   float2 in_v  = in [gid];
   float2 out_v;
 
-  if (aux == NULL)
+  if (! aux)
     {
       out_v.x  = (in_v.x >= value && in_v.x <= high)? 1.0 : 0.0;
       out_v.y  = in_v.y;
