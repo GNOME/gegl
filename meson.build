@@ -233,7 +233,7 @@ if os_win32
     cflags_common += '-fansi-escape-codes'
   endif
 
-  if cc.get_id() == 'clang-cl' or cc.get_id() == 'msvc'
+  if cc.get_argument_syntax() == 'msvc'
     #Needed otherwise MSVC get angry with the headers provided by UCRT
     cflags_common += ['/D_USE_MATH_DEFINES']
     #Supress recommendations about Microsoft-specific safe functions
