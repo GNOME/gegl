@@ -204,6 +204,9 @@ if get_option('buildtype') == 'debug' or get_option('buildtype') == 'debugoptimi
   if not os_win32
     # DWARF symbols for GCC and LLDB on Unix
     debugging_format = 'Native'
+  elif cc.get_argument_syntax() == 'msvc'
+    # CodeView symbols for DIA or DbgHelp debuggers and LLDB on Windows
+    debugging_format = 'Native'
   elif os_win32 and get_option('win-debugging') == 'native' and cc.has_argument('-gcodeview') and cc.has_link_argument('-Wl,--pdb=') and cc.get_id() == 'clang'
     # CodeView symbols for DIA or DbgHelp debuggers and LLDB on Windows
     debugging_format = 'Native'
@@ -559,7 +562,7 @@ build_reference = get_option('gtk-doc') or build_gi_docgen
 # Install native debug data (.pdb) on Windows
 # Ideally meson should take care of it automatically.
 # See: https://github.com/mesonbuild/meson/issues/12977
-if os_win32 and debugging_format == 'Native'
+if os_win32 and debugging_format == 'Native' and cc.get_argument_syntax() != 'msvc'
   install_win_debug_script = find_program('./meson_install_win_debug.py')
   meson.add_install_script(install_win_debug_script)
 endif
