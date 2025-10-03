@@ -268,11 +268,15 @@ static void
 gegl_tile_block_free_mem (GeglTileBlock *block)
 {
   guintptr block_size = block->size;
+#ifdef HAVE_MALLOC_TRIM
   gint     n_blocks;
+#endif
 
   gegl_free (block);
 
+#ifdef HAVE_MALLOC_TRIM
   n_blocks = g_atomic_int_add (&gegl_tile_n_blocks, -1) - 1;
+#endif
 
   g_atomic_pointer_add (&gegl_tile_alloc_total, -block_size);
 
