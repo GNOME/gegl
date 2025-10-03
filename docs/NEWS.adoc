@@ -1,3 +1,41 @@
+GEGL-0.4.62 2025-10-04
+----------------------
+
+Ops:
+----
+ - GeglOperationPointComposer3 (a base class) got support for OpenCL processsing.
+ - ff-load: support ffmpeg8
+ - gif-load: more robust error handling
+ - threshold: make opencl variant more portable
+ - mirrors: improve subregion damage
+
+Build:
+------
+ - reduce bashisms
+ - only generate pdb (codeview) symbols on win32 - fixing gcc build breakage
+ - ci updates
+ - optiona DWARF debug symbols on windows
+ - drop many half-vendored subprojects (babl, glib, json-glib,  libjpeg-turbo, libpng)
+
+Per op-testing:
+---------------
+ - code cleanups
+ - use downloadable reference images addressed by hash in addition to hash comparisons.
+
+Core:
+-----
+ - escape registerted operation blurbs with g_markup_escape_text
+ - fix of dllexport redeclarations warnings on windows
+
+Contributors to this release, including translators:
+----------------------------------------------------
+Alexander Alexandrov Shopov, Alexander Shopov, Alx Sa, Anders Jonsson, Asier
+Saratsua Garmendia, Bruno Lopes, Cristian Secară, Ekaterine Papava, Jacob
+Boerema, Jehan, Jordi Mas, Kolbjørn Stuestøl, Kristjan SCHMIDT, Marco Ciampa,
+Martin, Nathan Follens, Ondřej Míchal, Sabri Ünal, Yuri Chornoivan, lillolollo,
+luming zh, and Øyvind Kolås.
+
+
 GEGL-0.4.60 2025-05-08
 ----------------------
 
@@ -20,7 +58,7 @@ Core:
 
  - portability fixes for win32 for running graphviz from folders with spaces in path
  - depend on babl>=0.1.112 removing ifdefs keeping old variants working
- - Mark nodes as intert in ::dispose and check for this during traversals, this
+ - Mark nodes as inert in ::dispose and check for this during traversals, this
    fixes a crash when using a libc that has a non-clobbering free.
 
 Contributors to this release, including translators:
