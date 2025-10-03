@@ -18,8 +18,8 @@ include:
     # If you are hacking on them or need a them to rebuild, its enough
     # to change any part of the string of the image you want.
     ###
-    FDO_DISTRIBUTION_TAG: '2022-05-29.5'
-    FDO_DISTRIBUTION_VERSION: '37'
+    FDO_DISTRIBUTION_TAG: '2025-10-03.0'
+    FDO_DISTRIBUTION_VERSION: '42'
     FDO_DISTRIBUTION_PACKAGES: >
       meson ninja-build gcc g++ git gettext glib2-devel libjpeg-turbo-devel
       libpng-devel json-glib-devel lcms2-devel diffutils shellcheck devscripts
