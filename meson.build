@@ -56,12 +56,21 @@ dep_ver += {
   'vapigen'         : '>=0.20.0',
 }
 
+# GEGL binary - required
+dep_ver += {
+  'libpng'          : '>=1.6.0',
+}
+
 # GEGL binary - optional
 dep_ver += {
   'gexiv2'          : '>=0.14.0',
-  'libpng'          : '>=1.6.0',
   'luajit'          : '>=2.0.4',
   'mrg'             : '>=0.0.0',
+}
+
+# Operations - required
+dep_ver += {
+  'libjpeg'         : '>=1.0.0',
 }
 
 # Operations - optional
@@ -73,7 +82,6 @@ dep_ver += {
   'jasper'          : '>=1.900.1',
   'lcms'            : '>=2.8',
   'lensfun'         : '>=0.2.5',
-  'libjpeg'         : '>=1.0.0',
   'libraw'          : '>=0.15.4',
   'librsvg'         : '>=2.40.6',
   'libspiro'        : '>=0.5.0',

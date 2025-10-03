@@ -79,8 +79,3 @@ option('sdl1',          type: 'feature', value: 'disabled')
 option('sdl2',          type: 'feature', value: 'auto')
 option('umfpack',       type: 'feature', value: 'auto')
 option('webp',          type: 'feature', value: 'auto')
-
-# obsolete - no effect
-option('exiv2',         type: 'feature', value: 'disabled')
-option('libpng',        type: 'feature', value: 'disabled')
-option('libjpeg',       type: 'feature', value: 'disabled')
