@@ -244,8 +244,6 @@ if os_win32
   if cc.get_argument_syntax() == 'msvc'
     #Needed otherwise MSVC get angry with the headers provided by UCRT
     cflags_common += ['/D_USE_MATH_DEFINES']
-    #Supress recommendations about Microsoft-specific safe functions
-    cflags_common += ['/D_CRT_SECURE_NO_WARNINGS']
   endif
 endif #if os_win32
 
