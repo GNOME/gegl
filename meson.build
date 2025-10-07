@@ -48,6 +48,7 @@ dep_ver = {
   'glib'            : '>=2.44.0',
   'json-glib'       : '>=1.0.0',
   'poly2tri-c'      : '>=0.0.0',
+  'libnsgif'        : '>=1.0.0',
 }
 
 # Core - optional
@@ -350,7 +351,7 @@ poly2tri_c = dependency('poly2tri-c',
   required: false,
 )
 
-libnsgif = dependency('libnsgif',
+libnsgif = dependency('libnsgif',     version: dep_ver.get('libnsgif'),
   fallback: ['libnsgif', 'libnsgif'],
 )
 

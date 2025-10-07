@@ -1,6 +1,7 @@
 project('libnsgif',
   'c',
   meson_version: '>=0.57.0',
+  version: '1.0.0',
 )
 
 
