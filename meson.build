@@ -188,10 +188,6 @@ lflags_common = []
 cflags_common += '-DHAVE_CONFIG_H'
 
 
-if buildtype == 'debugoptimized' or buildtype == 'debug'
-  cflags_common += '-DGEGL_ENABLE_DEBUG'
-endif
-
 cflags_common += [
   '-Winit-self',
   '-Wmissing-declarations',
@@ -208,7 +204,9 @@ cflags_c = [
 
 # DEBUG SYMBOLS
 debugging_format = 'Disabled'
-if get_option('buildtype') == 'debug' or get_option('buildtype') == 'debugoptimized'
+if buildtype == 'debug' or buildtype == 'debugoptimized'
+  cflags_common += '-DGEGL_ENABLE_DEBUG'
+
   if not os_win32
     # DWARF symbols for GCC and LLDB on Unix
     debugging_format = 'Native'
