@@ -22,6 +22,7 @@
 #include <gegl.h>
 #include <gegl-plugin.h>
 #include <glib.h>
+#include <glib/gprintf.h>
 #include <gio/gio.h>
 
 //#define MAX_DIFFERENCE_THRESHOLD 0.5  // not visible
