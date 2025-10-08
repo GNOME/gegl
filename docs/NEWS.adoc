@@ -1,4 +1,4 @@
-GEGL-0.4.62 2025-10-04
+GEGL-0.4.64 2025-10-04
 ----------------------
 
 Ops:
@@ -36,7 +36,7 @@ Martin, Nathan Follens, Ondřej Míchal, Sabri Ünal, Yuri Chornoivan, lillololl
 luming zh, and Øyvind Kolås.
 
 
-GEGL-0.4.60 2025-05-08
+GEGL-0.4.62 2025-05-08
 ----------------------
 
 Ops:
