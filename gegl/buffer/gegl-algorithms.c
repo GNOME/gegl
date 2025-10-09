@@ -31,6 +31,18 @@
 
 #include <math.h>
 
+#ifdef G_OS_WIN32
+  /* one use 16kb of stack before an exception triggered warning on win32 */
+  #define GEGL_ALLOCA_THRESHOLD  (1024*8)
+#else
+/* otherwise we limit our threshold for doing stack allocations to 128kb
+ * which will allows 4 component 128x128 8bit per component tiles to be resized on
+ * the stack
+ */
+  #define GEGL_ALLOCA_THRESHOLD  (1024*128)
+#endif
+
+
 void
 GEGL_SIMD_SUFFIX(gegl_downscale_2x2) (const Babl *format,
                                       gint        src_width,
@@ -1153,7 +1165,7 @@ gegl_downscale_2x2_generic2 (const Babl *format,
   void *in_tmp;
   void *out_tmp;
 
-  if (src_height * in_tmp_rowstride + dst_height * out_tmp_rowstride < GEGL_ALLOCA_THRESHOLD)
+  if (src_height * in_tmp_rowstride + dst_height * out_tmp_rowstride <= GEGL_ALLOCA_THRESHOLD)
   {
     in_tmp = align_16 (alloca (src_height * in_tmp_rowstride + 16));
     out_tmp = align_16 (alloca (dst_height * out_tmp_rowstride + 16));
@@ -1252,7 +1264,7 @@ gegl_resample_boxfilter_generic2 (guchar       *dest_buf,
 
   guchar *in_tmp, *out_tmp;
 
-  if (src_rect->height * in_tmp_rowstride + dst_rect->height * out_tmp_rowstride < GEGL_ALLOCA_THRESHOLD)
+  if (src_rect->height * in_tmp_rowstride + dst_rect->height * out_tmp_rowstride <= GEGL_ALLOCA_THRESHOLD)
   {
     in_tmp = align_16 (alloca (src_rect->height * in_tmp_rowstride + 16));
     out_tmp = align_16 (alloca (dst_rect->height * out_tmp_rowstride + 16));
@@ -1368,7 +1380,7 @@ gegl_resample_bilinear_generic2 (guchar              *dest_buf,
 
   guchar *in_tmp, *out_tmp;
 
-  if (src_rect->height * in_tmp_rowstride + dst_rect->height * out_tmp_rowstride < GEGL_ALLOCA_THRESHOLD)
+  if (src_rect->height * in_tmp_rowstride + dst_rect->height * out_tmp_rowstride <= GEGL_ALLOCA_THRESHOLD)
   {
     in_tmp = align_16 (alloca (src_rect->height * in_tmp_rowstride + 16));
     out_tmp = align_16 (alloca (dst_rect->height * out_tmp_rowstride + 16));
