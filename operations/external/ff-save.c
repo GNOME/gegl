@@ -335,6 +335,8 @@ open_audio (GeglProperties *o, AVFormatContext * oc, AVStream * st)
   AVCodecContext *c;
   AVCodecParameters *cp;
   const AVCodec  *codec;
+  const enum AVSampleFormat *sample_fmts = NULL;
+  const int *supported_samplerates = NULL;
   int i;
 
   cp = st->codecpar;
@@ -348,16 +350,26 @@ open_audio (GeglProperties *o, AVFormatContext * oc, AVStream * st)
       return FALSE;
     }
   p->audio_ctx = c = avcodec_alloc_context3 (codec);
-  cp->format = codec->sample_fmts ? codec->sample_fmts[0] : AV_SAMPLE_FMT_FLTP;
-  if (codec->supported_samplerates)
+#if LIBAVCODEC_VERSION_MAJOR < 61
+  sample_fmts = codec->sample_fmts;
+#else
+  avcodec_get_supported_config(c, codec, AV_CODEC_CONFIG_SAMPLE_FORMAT, 0, (const void**)&sample_fmts, NULL);
+#endif
+  cp->format = sample_fmts ? sample_fmts[0] : AV_SAMPLE_FMT_FLTP;
+#if LIBAVCODEC_VERSION_MAJOR < 61
+  supported_samplerates = codec->supported_samplerates;
+#else
+  avcodec_get_supported_config(c, codec, AV_CODEC_CONFIG_SAMPLE_RATE, 0, (const void**)&supported_samplerates, NULL);
+#endif
+  if (supported_samplerates)
     {
-      for (i = 0; codec->supported_samplerates[i]; i++)
+      for (i = 0; supported_samplerates[i]; i++)
         {
-          if (codec->supported_samplerates[i] == cp->sample_rate)
+          if (supported_samplerates[i] == cp->sample_rate)
              break;
         }
-      if (!codec->supported_samplerates[i])
-        cp->sample_rate = codec->supported_samplerates[0];
+      if (!supported_samplerates[i])
+        cp->sample_rate = supported_samplerates[0];
     }
   if (avcodec_parameters_to_context (c, cp) < 0)
     {
@@ -669,6 +681,7 @@ open_video (GeglProperties *o, AVFormatContext * oc, AVStream * st)
 {
   Priv           *p = (Priv*)o->user_data;
   const AVCodec  *codec;
+  const enum AVPixelFormat* pix_fmts = NULL;
   AVCodecContext *c;
   AVCodecParameters *cp;
   AVDictionary *codec_options = {0};
@@ -685,13 +698,18 @@ open_video (GeglProperties *o, AVFormatContext * oc, AVStream * st)
       return FALSE;
     }
   p->video_ctx = c = avcodec_alloc_context3 (codec);
-  if (codec->pix_fmts)
+#if LIBAVCODEC_VERSION_MAJOR < 61
+  pix_fmts = codec->pix_fmts;
+#else
+  avcodec_get_supported_config(c, codec, AV_CODEC_CONFIG_PIX_FORMAT, 0, (const void**)&pix_fmts, NULL);
+#endif
+  if (pix_fmts)
     {
       int i = 0;
-      cp->format = codec->pix_fmts[0];
-      while (codec->pix_fmts[i] != -1)
+      cp->format = pix_fmts[0];
+      while (pix_fmts[i] != -1)
         {
-          if (codec->pix_fmts[i] ==  AV_PIX_FMT_RGB24)
+          if (pix_fmts[i] ==  AV_PIX_FMT_RGB24)
             {
               cp->format = AV_PIX_FMT_RGB24;
               break;
