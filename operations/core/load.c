@@ -31,7 +31,7 @@ property_file_path (path, _("File"), "")
 property_uri (uri, _("URI"), "")
     description (_("URI of file to load."))
 property_object (metadata, _("Metadata"), GEGL_TYPE_METADATA)
-    description (_("Object to supply image metadata"))
+    description (_("Object providing image metadata"))
 
 #else
 

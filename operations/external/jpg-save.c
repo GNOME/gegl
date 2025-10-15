@@ -42,7 +42,7 @@ property_boolean (grayscale, _("Grayscale"), FALSE)
   description (_("Create a grayscale (monochrome) image"))
 
 property_object(metadata, _("Metadata"), GEGL_TYPE_METADATA)
-  description (_("Object to supply image metadata"))
+  description (_("Object providing image metadata"))
 
 #else
 

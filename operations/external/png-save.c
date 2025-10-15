@@ -32,7 +32,7 @@ property_int (bitdepth, _("Bitdepth"), 16)
   description (_("8 and 16 are the currently accepted values."))
   value_range (8, 16)
 property_object(metadata, _("Metadata"), GEGL_TYPE_METADATA)
-  description (_("Object to supply image metadata"))
+  description (_("Object providing image metadata"))
 
 #else
 
