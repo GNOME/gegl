@@ -32,12 +32,12 @@ property_double (scale, _("Scale"), 10.0)
   value_range (0.0, G_MAXDOUBLE)
   ui_range    (0.0, 255.0)
 
-property_enum (x_component, _("X Component"),
+property_enum (x_component, _("X component"),
                GeglNormalMapComponent, gegl_normal_map_component,
                GEGL_NORMAL_MAP_COMPONENT_RED)
   description (_("The component used for the X coordinates"))
 
-property_enum (y_component, _("Y Component"),
+property_enum (y_component, _("Y component"),
                GeglNormalMapComponent, gegl_normal_map_component,
                GEGL_NORMAL_MAP_COMPONENT_GREEN)
   description (_("The component used for the Y coordinates"))
@@ -48,7 +48,7 @@ property_boolean (flip_x, _("Flip X"), FALSE)
 property_boolean (flip_y, _("Flip Y"), FALSE)
   description (_("Flip the Y coordinates"))
 
-property_boolean (full_z, _("Full Z Range"), FALSE)
+property_boolean (full_z, _("Full Z range"), FALSE)
   description (_("Use the full [0,1] range to encode the Z coordinates"))
 
 property_boolean (tileable, _("Tileable"), FALSE)

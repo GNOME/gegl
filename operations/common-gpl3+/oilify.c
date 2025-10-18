@@ -25,7 +25,7 @@
 
 #ifdef GEGL_PROPERTIES
 
-property_int    (mask_radius, _("Mask Radius"), 4)
+property_int    (mask_radius, _("Mask radius"), 4)
     description (_("Radius of circle around pixel, can also be scaled per "
                    "pixel by a buffer on the aux pad."))
     value_range (1, 100)
@@ -41,7 +41,7 @@ property_int (intensities, _("Number of intensities"), 128)
     description(_("Histogram size"))
     value_range (8, 256)
 
-property_boolean (use_inten, _("Intensity Mode"), TRUE)
+property_boolean (use_inten, _("Intensity mode"), TRUE)
     description(_("Use pixel luminance values"))
 
 #else

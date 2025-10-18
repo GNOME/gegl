@@ -46,7 +46,7 @@ property_double (threshold_lo, _("Threshold low"), 0.0001)
 property_double (threshold_hi, _("Threshold high"), 1.0)
   value_range (0.0, 1.0)
 
-property_int    (averaging, _("Grayscale Averaging"), 0)
+property_int    (averaging, _("Grayscale averaging"), 0)
     description (_("Number of computations for grayscale averaging"))
     value_range (0, 1000)
     ui_range    (0, 256)

@@ -469,7 +469,7 @@ gegl_op_class_init (GeglOpClass *klass)
   operation_class->opencl_support          = FALSE;
 
   composer_class->process                  = process;
-  composer_class->aux_label                = _("Height Map");
+  composer_class->aux_label                = _("Height map");
 
   gegl_operation_class_set_keys (operation_class,
     "name",           "gegl:bump-map",

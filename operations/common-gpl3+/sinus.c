@@ -28,14 +28,14 @@
 
 #ifdef GEGL_PROPERTIES
 
-property_double (x_scale, _("X Scale"), 15.0000)
+property_double (x_scale, _("Scale X"), 15.0000)
     description (_("Scale value for x axis"))
     value_range (0.0001, G_MAXDOUBLE)
     ui_range    (0.0001, 100.0000)
     ui_meta     ("unit", "pixel-distance")
     ui_meta     ("axis", "x")
 
-property_double (y_scale, _("Y Scale"), 15.0)
+property_double (y_scale, _("Scale Y"), 15.0)
     description (_("Scale value for y axis"))
     value_range (0.0001, G_MAXDOUBLE)
     ui_range    (0.0001, 100.0000)
@@ -64,7 +64,7 @@ enum_start (gegl_sinus_blend)
   enum_value (GEGL_SINUS_BLEND_SINUSOIDAL, "sinusoidal", N_("Sinusoidal"))
 enum_end (GeglSinusBlend)
 
-property_enum (blend_mode, _("Blend Mode"),
+property_enum (blend_mode, _("Blend mode"),
     GeglSinusBlend, gegl_sinus_blend,
     GEGL_SINUS_BLEND_SINUSOIDAL)
 

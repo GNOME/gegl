@@ -52,7 +52,7 @@ property_enum (direction, _("Direction"),
                GEGL_WIND_DIRECTION_LEFT)
   description (_("Direction of the effect"))
 
-property_enum (edge, _("Edge Affected"),
+property_enum (edge, _("Edge affected"),
                GeglWindEdge, gegl_wind_edge,
                GEGL_WIND_EDGE_LEADING)
   description (_("Edge behavior"))

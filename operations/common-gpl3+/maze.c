@@ -64,11 +64,11 @@ property_boolean (tileable, _("Tileable"), FALSE)
 
 property_seed (seed, _("Random seed"), rand)
 
-property_color  (fg_color, _("Foreground Color"), "black")
+property_color  (fg_color, _("Foreground color"), "black")
     description (_("The foreground color"))
     ui_meta     ("role", "color-primary")
 
-property_color  (bg_color, _("Background Color"), "white")
+property_color  (bg_color, _("Background color"), "white")
     description (_("The background color"))
     ui_meta     ("role", "color-secondary")
 

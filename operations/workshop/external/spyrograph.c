@@ -28,22 +28,22 @@ enum_start (gegl_curve_type)
   enum_value (GEGL_CURVE_TYPE_EPITROCHOID, "epitrochoid", N_("EPITROCHOID"))
 enum_end (GeglCurveType)
 
-property_enum (curve_type, _("Curve Type"),
+property_enum (curve_type, _("Curve type"),
                GeglCurveType, gegl_curve_type,
                GEGL_CURVE_TYPE_SPYROGRAPH)
   description (_("Curve type"))
 
-property_int   (fixed_gear_teeth, _("Fixed Gear Teeth"), 96)
+property_int   (fixed_gear_teeth, _("Fixed gear teeth"), 96)
    description (_("Number of teeth in fixed gear."))
    value_range (10, 180)
 
-property_int   (moving_gear_teeth, _("Moving Gear Teeth"), 36)
+property_int   (moving_gear_teeth, _("Moving gear teeth"), 36)
    description (_("Number of teeth in moving gear. Radius of moving gear,"
                   " relative to radius of fixed gear, is determined by the "
                   "proportion between the number of teeth in gears."))
    value_range (10, 100)
 
-property_double (hole_percent, _("Hole Percent"), 100.0)
+property_double (hole_percent, _("Hole percent"), 100.0)
   description (_("How far the hole is from the center of the moving gear. "
                  "100 means that the hole is at the gear's edge."))
   value_range (0.0, 100.0)

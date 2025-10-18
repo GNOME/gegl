@@ -49,7 +49,7 @@ property_boolean (enhance_shadows, _("Enhance Shadows"), FALSE)
     description(_("When enabled details in shadows are boosted at the expense of noise"))
 
 /*
-property_double (rgamma, _("Radial Gamma"), 0.0, 8.0, 2.0,
+property_double (rgamma, _("Radial gamma"), 0.0, 8.0, 2.0,
                 _("Gamma applied to radial distribution"))
 */
 #else

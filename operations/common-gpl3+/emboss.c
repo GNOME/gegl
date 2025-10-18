@@ -27,7 +27,7 @@ enum_start (gegl_emboss_type)
   enum_value (GEGL_EMBOSS_TYPE_BUMPMAP, "bumpmap", N_("Bumpmap (preserve original colors)"))
 enum_end (GeglEmbossType)
 
-property_enum (type, _("Emboss Type"),
+property_enum (type, _("Emboss type"),
                GeglEmbossType, gegl_emboss_type, GEGL_EMBOSS_TYPE_EMBOSS)
     description(_("Rendering type"))
 

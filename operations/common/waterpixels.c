@@ -46,7 +46,7 @@ property_double (smoothness, _("Gradient smoothness"), 1.0)
 
 property_int (regularization, _("Spatial regularization"), 0)
   value_range (0, 50)
-  description (_("trade-off between superpixel regularity and "
+  description (_("Trade-off between superpixel regularity and "
                  "adherence to object boundaries"))
 
 property_enum (fill, _("Superpixels color"),

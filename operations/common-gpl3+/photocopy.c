@@ -23,16 +23,16 @@
 
 #ifdef GEGL_PROPERTIES
 
-property_double (mask_radius, _("Mask Radius"), 10.0)
+property_double (mask_radius, _("Mask radius"), 10.0)
     value_range (0.0, 50.0)
 
 property_double (sharpness, _("Sharpness"), 0.5)
     value_range (0.0, 1.0)
 
-property_double (black, _("Percent Black"), 0.2)
+property_double (black, _("Percent black"), 0.2)
     value_range (0.0, 1.0)
 
-property_double (white, _("Percent White"), 0.2)
+property_double (white, _("Percent white"), 0.2)
     value_range (0.0, 1.0)
 
 #else

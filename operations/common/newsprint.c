@@ -175,7 +175,7 @@ property_double (blocksize, _("Blocksize"), -1.0)
                  value_range (-1.0, 64.0)
                  description (_("Number of periods per tile, this tiling avoids high frequency anomaly that angle boost causes"))
 
-property_double (angleboost, _("Angle Boost"), 0.0)
+property_double (angleboost, _("Angle boost"), 0.0)
                  value_range (0.0, 4.0)
                  description (_("Multiplication factor for desired rotation of the local space for texture, the way this is computed makes it weak for desaturated colors and possibly stronger where there is color."))
 

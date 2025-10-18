@@ -25,13 +25,13 @@
 
 #ifdef GEGL_PROPERTIES
 
-property_int (tile_width, _("Tile Width"), 25)
+property_int (tile_width, _("Tile width"), 25)
    value_range (5, 500)
    ui_range    (5, 50)
    ui_meta     ("unit",   "pixel-distance")
    ui_meta     ("axis",   "x")
 
-property_int (tile_height, _("Tile Height"), 25)
+property_int (tile_height, _("Tile height"), 25)
    value_range (5, 500)
    ui_range    (5, 50)
    ui_meta     ("unit",   "pixel-distance")

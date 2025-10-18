@@ -51,7 +51,7 @@ enum_start (gbevel_type)
               N_("Bump"))
 enum_end (gbeveltype)
 
-property_enum (type, _("Bevel Type"),
+property_enum (type, _("Bevel type"),
     gbeveltype, gbevel_type,
     GEGL_BEVEL_CHAMFER)
     description (_("The family of bevel to use"))
@@ -73,12 +73,12 @@ enum_start (gchamfer_blend_mode)
               N_("Add"))
 enum_end (gChamferBlendMode)
 
-property_enum (blendmode, _("Blend Mode"),
+property_enum (blendmode, _("Blend mode"),
     gChamferBlendMode, gchamfer_blend_mode,
     CHAMFER_BLEND_HARDLIGHT)
   description (_("What blending mode the bevel's emboss will be. Light Map is a special blend mode that allows users to extract the filters output as a light map which should be put on a layer above or be used with Gimp's blending options."))
 
-property_enum (metric, _("Distance Map Setting"),
+property_enum (metric, _("Distance map setting"),
                GeglDistanceMetric, gegl_distance_metric, GEGL_DISTANCE_METRIC_CHEBYSHEV)
     description (_("Distance Map is unique to chamfer bevel and has three settings that alter the structure of the chamfer."))
 ui_meta ("visible", "!type {bump}" )
@@ -107,7 +107,7 @@ property_int (depth, _("Depth"), 40)
     value_range (1, 100)
     ui_range (1, 80)
 
-property_double (azimuth, _("Light Angle"), 68.0)
+property_double (azimuth, _("Light angle"), 68.0)
     description (_("Direction of a light source illuminating and shading the bevel."))
     value_range (0, 360)
   ui_steps      (0.01, 0.50)
