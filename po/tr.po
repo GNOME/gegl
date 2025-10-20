@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2025-10-08 09:25+0000\n"
-"PO-Revision-Date: 2025-10-08 21:45+0300\n"
+"POT-Creation-Date: 2025-10-15 16:35+0000\n"
+"PO-Revision-Date: 2025-10-20 23:10+0300\n"
 "Last-Translator: Sabri Ünal <yakushabb@gmail.com>\n"
 "Language-Team: Turkish <takim@gnome.org.tr>\n"
 "Language: tr\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 3.7\n"
+"X-Generator: Poedit 3.8\n"
 "X-POOTLE-MTIME: 1437504675.000000\n"
 
 #: bin/gegl.c:179
@@ -658,9 +658,10 @@ msgstr "Alfa değerlerini belirli bir erimde tut"
 msgid "Chamfer"
 msgstr "Kubbe"
 
+# Konumu gereği başlık düzenine gerek yok
 #: operations/common/bevel.c:51
 msgid "Bump"
-msgstr "Derinlik Etkisi"
+msgstr "Derinlik etkisi"
 
 #: operations/common/bevel.c:54
 msgid "Bevel Type"
@@ -1818,15 +1819,15 @@ msgstr "Yarıçap 2"
 
 #: operations/common/difference-of-gaussians.c:85
 msgid "Difference of Gaussians"
-msgstr "Gaussians Farklılığı"
+msgstr "Gauss Farklılığı"
 
 #: operations/common/difference-of-gaussians.c:88
 msgid ""
 "Edge detection with control of edge thickness, based on the difference of "
 "two gaussian blurs"
 msgstr ""
-"İki gaussian bulanıklığının farkına bağlı olarak, kenar kalınlığının "
-"denetimi ile kenar saptama"
+"İki gauss bulanıklığının farkına bağlı olarak, kenar kalınlığının denetimi "
+"ile kenar tanıma"
 
 #: operations/common/display.c:23 operations/external/sdl2-display.c:28
 #: operations/external/sdl-display.c:25
@@ -2066,11 +2067,11 @@ msgstr "Etkinin Kuvveti"
 
 #: operations/common/edge-neon.c:537
 msgid "Neon Edge Detection"
-msgstr "Neon Kenar Saptama"
+msgstr "Neon Kenar Tanıma"
 
 #: operations/common/edge-neon.c:541
 msgid "Performs edge detection using a Gaussian derivative method"
-msgstr "Gaussian türev yöntemini kullanarak kenar saptama"
+msgstr "Gauss türev yöntemini kullanarak kenar tanıma"
 
 #: operations/common/edge-sobel.c:31
 msgid "Keep Sign"
@@ -2086,11 +2087,11 @@ msgstr ""
 
 #: operations/common/edge-sobel.c:397
 msgid "Sobel Edge Detection"
-msgstr "Sobel Kenar Saptama"
+msgstr "Sobel Kenar Tanıma"
 
 #: operations/common/edge-sobel.c:400
 msgid "Specialized direction-dependent edge detection"
-msgstr "Özelleşmiş yön bağımlı kenar saptama"
+msgstr "Özelleşmiş yön bağımlı kenar tanıma"
 
 #: operations/common/exp-combine.c:25
 msgid "Exposure values"
@@ -2220,7 +2221,7 @@ msgstr "Süzgeç"
 
 #: operations/common/gaussian-blur.c:55 operations/common/gblur-1d.c:58
 msgid "How the gaussian kernel is discretized"
-msgstr "Gaussian çekirdeği nasıl ayrıştırılsın"
+msgstr "Gauss çekirdeği nasıl ayrıştırılsın"
 
 #: operations/common/gaussian-blur.c:57 operations/common/gblur-1d.c:60
 #: operations/common/map-absolute.c:26 operations/common/map-relative.c:30
@@ -2248,7 +2249,7 @@ msgstr "Çıktı ölçüsü girdi ölçüsünde kırpılsın"
 
 #: operations/common/gaussian-blur.c:115 operations/common-cxx/focus-blur.c:29
 msgid "Gaussian Blur"
-msgstr "Gaussian Bulanıklığı"
+msgstr "Gauss Bulanıklığı"
 
 #: operations/common/gaussian-blur.c:118 operations/common/gblur-1d.c:1388
 msgid ""
@@ -2274,7 +2275,7 @@ msgstr "Bulanıklığın yönelimi - yat/dik"
 
 #: operations/common/gblur-1d.c:1385
 msgid "1D Gaussian-blur"
-msgstr "1D Gaussian Bulanıklığı"
+msgstr "1D Gauss Bulanıklığı"
 
 #: operations/common/gegl-buffer-load-op.c:24
 #: operations/common/gegl-buffer-save-op.c:24 operations/common/icc-load.c:24
@@ -2841,9 +2842,10 @@ msgstr ""
 "sapması. 0 kullanılırsa, yerel karşıtlığa dayalı eşik yerine küresel eşik "
 "kullanılır."
 
+# Arayüzde uyumlu görünmesi için Tümcü düzeni kullanıldı.
 #: operations/common/local-threshold.c:32 operations/common-gpl3+/mosaic.c:87
 msgid "Antialiasing"
-msgstr "Kenar Yumuşatma"
+msgstr "Kenar yumuşatma"
 
 #: operations/common/local-threshold.c:33
 msgid ""
@@ -3031,9 +3033,9 @@ msgid ""
 "scaling factor of displacement, indicates how large spatial displacement a "
 "relative mapping value of 1.0 corresponds to."
 msgstr ""
-"yer değiştirmenin ölçeklendirme katsayısı, göreceli bir eşleştirme "
-"değerinin 1.0'a karşılık gelen uzaysal yer değiştirmesinin ne kadar büyük "
-"olduğunu gösterir."
+"yer değiştirmenin ölçeklendirme katsayısı, göreceli bir eşleştirme değerinin "
+"1.0'a karşılık gelen uzaysal yer değiştirmesinin ne kadar büyük olduğunu "
+"gösterir."
 
 #: operations/common/map-relative.c:80
 msgid "Map Relative"
@@ -3926,15 +3928,14 @@ msgstr "Doğrusal RGB renk verisi üzerinde çalış"
 
 #: operations/common/noise-rgb.c:36
 msgid "Gaussian distribution"
-msgstr "Gaussian dağılımı"
+msgstr "Gauss dağılımı"
 
 #: operations/common/noise-rgb.c:37
 msgid ""
 "Use a gaussian noise distribution, when unticked a linear noise distribution "
 "is used instead"
 msgstr ""
-"Gaussian gürültü dağılımı kullan. İmlenmemişse, doğrusal gürültü dağılımı "
-"kullan"
+"Gauss gürültü dağılımı kullan. İmlenmemişse, doğrusal gürültü dağılımı kullan"
 
 #: operations/common/noise-rgb.c:39 operations/common/normal-map.c:25
 msgid "Red"
@@ -4046,16 +4047,16 @@ msgid ""
 "Global opacity value that is always used on top of the optional auxiliary "
 "input buffer."
 msgstr ""
-"Genel matlık değeri her zaman isteğe bağlı ek girdi tamponu "
-"üstünde kullanılır."
+"Genel matlık değeri her zaman isteğe bağlı ek girdi tamponu üstünde "
+"kullanılır."
 
 #: operations/common/opacity.c:292
 msgid ""
 "Weights the opacity of the input both the value of the aux input and the "
 "global value property."
 msgstr ""
-"Girdi matlığı, hem aux girdi değeri hem de genel değer özelliği "
-"olarak arttırır."
+"Girdi matlığı, hem aux girdi değeri hem de genel değer özelliği olarak "
+"arttırır."
 
 #: operations/common/open-buffer.c:26
 msgid "a GeglBuffer on disk to open"
@@ -4404,7 +4405,9 @@ msgstr "Kaydedilecek dosyanın yolu."
 msgid "Metadata"
 msgstr "Üst veri"
 
-#: operations/common/save.c:29
+#: operations/common/save.c:29 operations/core/load.c:34
+#: operations/external/jpg-save.c:45 operations/external/png-load.c:37
+#: operations/external/png-save.c:35
 msgid "Object providing image metadata"
 msgstr "Görüntü üst verisi sağlayan nesne"
 
@@ -5822,7 +5825,7 @@ msgstr "Katsayı"
 #: operations/common-gpl3+/bayer-matrix.c:69
 #: operations/common-gpl3+/linear-sinusoid.c:77
 msgid "Value exponent (logarithmic scale)"
-msgstr "Değer katsayısı (logaritmik ölçek)"
+msgstr "Katsayı değeri (logaritmik ölçek)"
 
 #: operations/common-gpl3+/bayer-matrix.c:73
 #: operations/common-gpl3+/linear-sinusoid.c:81
@@ -5832,7 +5835,7 @@ msgstr "X Konumu"
 #: operations/common-gpl3+/bayer-matrix.c:74
 #: operations/common-gpl3+/linear-sinusoid.c:82
 msgid "Offset for X axis"
-msgstr "X ekseni için konumu"
+msgstr "X ekseni için konum"
 
 #: operations/common-gpl3+/bayer-matrix.c:80
 #: operations/common-gpl3+/linear-sinusoid.c:88
@@ -5842,7 +5845,7 @@ msgstr "Y Konumu"
 #: operations/common-gpl3+/bayer-matrix.c:81
 #: operations/common-gpl3+/linear-sinusoid.c:89
 msgid "Offset for Y axis"
-msgstr "Y ekseni için konumu"
+msgstr "Y ekseni için konum"
 
 #: operations/common-gpl3+/bayer-matrix.c:323
 msgid "Bayer Matrix"
@@ -6418,11 +6421,11 @@ msgstr "Algoritma"
 
 #: operations/common-gpl3+/edge.c:40
 msgid "Edge detection algorithm"
-msgstr "Kenar saptama algoritması"
+msgstr "Kenar tanıma algoritması"
 
 #: operations/common-gpl3+/edge.c:43
 msgid "Edge detection amount"
-msgstr "Kenar saptama miktarı"
+msgstr "Kenar tanıma miktarı"
 
 #: operations/common-gpl3+/edge.c:47
 msgid "Border behavior"
@@ -6430,23 +6433,23 @@ msgstr "Kenar davranışı"
 
 #: operations/common-gpl3+/edge.c:50
 msgid "Edge detection behavior"
-msgstr "Kenar saptama davranışı"
+msgstr "Kenar tanıma davranışı"
 
 #: operations/common-gpl3+/edge.c:366
 msgid "Edge Detection"
-msgstr "Kenar Saptama"
+msgstr "Kenar Tanıma"
 
 #: operations/common-gpl3+/edge.c:370
 msgid "Several simple methods for detecting edges"
-msgstr "Kenar saptama için birkaç basit yöntem"
+msgstr "Kenar tanıma için birkaç basit yöntem"
 
 #: operations/common-gpl3+/edge-laplace.c:411
 msgid "Laplacian Edge Detection"
-msgstr "Laplace Kenar Saptama"
+msgstr "Laplace Kenar Tanıma"
 
 #: operations/common-gpl3+/edge-laplace.c:415
 msgid "High-resolution edge detection"
-msgstr "Yüksek çözünürlüklü kenar saptama"
+msgstr "Yüksek çözünürlüklü kenar tanıma"
 
 #: operations/common-gpl3+/emboss.c:26 operations/common-gpl3+/emboss.c:279
 msgid "Emboss"
@@ -6631,6 +6634,7 @@ msgstr "Mavi ters çevirme"
 msgid "Number of colors"
 msgstr "Renk sayısı"
 
+# log log ve loglog aynı şey, birleşik halini kullanalım
 #: operations/common-gpl3+/fractal-explorer.c:118
 msgid "Loglog smoothing"
 msgstr "Loglog pürüzsüzleştirme"
@@ -6714,7 +6718,7 @@ msgstr "En çok delta"
 
 #: operations/common-gpl3+/gaussian-blur-selective.c:376
 msgid "Selective Gaussian Blur"
-msgstr "Seçmeli Gaussian Bulanıklığı"
+msgstr "Seçmeli Gauss Bulanıklığı"
 
 #: operations/common-gpl3+/gaussian-blur-selective.c:380
 msgid "Blur neighboring pixels, but only in low-contrast areas"
@@ -6890,11 +6894,11 @@ msgstr "Doğrusal sinüs biçimli örüntü oluştur"
 
 #: operations/common-gpl3+/maze.c:38
 msgid "Depth first"
-msgstr "Derinlik önce"
+msgstr "Önce derinlik"
 
 #: operations/common-gpl3+/maze.c:39
 msgid "Prim's algorithm"
-msgstr "Prim Algoritması"
+msgstr "Prim algoritması"
 
 #: operations/common-gpl3+/maze.c:58
 msgid "Algorithm type"
@@ -8154,11 +8158,6 @@ msgstr "Adres"
 msgid "URI of file to load."
 msgstr "Yüklenecek dosyanın adresi."
 
-#: operations/core/load.c:34 operations/external/jpg-save.c:45
-#: operations/external/png-load.c:37 operations/external/png-save.c:35
-msgid "Object to supply image metadata"
-msgstr "Görüntü üst verilerini sağlayan nesne"
-
 #: operations/core/load.c:372
 msgid ""
 "Multipurpose file loader, that uses other native handlers, and fallback "
@@ -8382,11 +8381,11 @@ msgstr "i-quant-offset"
 msgid "me-subpel-quality"
 msgstr "me-subpel-quality"
 
-#: operations/external/ff-save.c:1244
+#: operations/external/ff-save.c:1262
 msgid "FFmpeg Frame Saver"
 msgstr "FFmpeg Çerçeve Kaydedici"
 
-#: operations/external/ff-save.c:1246
+#: operations/external/ff-save.c:1264
 msgid "FFmpeg video output sink"
 msgstr "FFmpeg video çıktı havuzu"
 
@@ -8750,8 +8749,8 @@ msgid ""
 "Opacity of stroke, note, does not behave like SVG since at the moment "
 "stroking is done using an airbrush tool"
 msgstr ""
-"Darbe matlığı, not, SVG gibi davranmaz çünkü vuruş bir hava "
-"fırçası aracı kullanılarak yapılır"
+"Darbe matlığı, not, SVG gibi davranmaz çünkü vuruş bir hava fırçası aracı "
+"kullanılarak yapılır"
 
 #: operations/external/path.c:41 operations/workshop/external/spyrograph.c:86
 msgid "Hardness of the brush, 0.0 for a soft brush, 1.0 for a hard brush"
@@ -9227,8 +9226,8 @@ msgid ""
 "Opacity of stroke, note, does not behave like SVG since at the moment "
 "stroking is done using an airbrush tool."
 msgstr ""
-"Darbe matlığı, not, SVG gibi davranmaz çünkü vuruş bir hava "
-"fırçası aracı kullanılarak yapılır."
+"Darbe matlığı, not, SVG gibi davranmaz çünkü vuruş bir hava fırçası aracı "
+"kullanılarak yapılır."
 
 #: operations/external/vector-stroke.c:355
 msgid "Vector Stroke"
@@ -9817,8 +9816,8 @@ msgid ""
 "A fast approximation of bilateral filter, using a box-filter instead of a "
 "gaussian blur."
 msgstr ""
-"Gaussian bulanıklaştırması yerine kutu süzgeci kullanan çift taraflı "
-"süzgecin hızlı yaklaşımı."
+"Gauss bulanıklığı yerine kutu süzgeci kullanan çift taraflı süzgecin hızlı "
+"yaklaşımı."
 
 #: operations/workshop/boxblur-1d.c:28
 msgid "Radius of row pixel region, (size will be radius*2+1)"
@@ -10493,3 +10492,6 @@ msgid ""
 msgstr ""
 "Pikselleri karıştırır ve komşu pikselleri karıştırarak titremeyi eniyilemek "
 "için komşularla niceleme yapar."
+
+#~ msgid "Object to supply image metadata"
+#~ msgstr "Görüntü üst verilerini sağlayan nesne"
