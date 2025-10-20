@@ -207,6 +207,7 @@ static void
 gegl_config_class_init (GeglConfigClass *klass)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+  char         *env           = NULL;
 
   parent_class  = g_type_class_peek_parent (klass);
 
@@ -330,7 +331,12 @@ gegl_config_class_init (GeglConfigClass *klass)
     if (default_tile_cache_size < mem_min)
       default_tile_cache_size = mem_min;
 
-    if (getenv ("GEGL_BUILD")) /* make .gir reproducible */
+#ifndef _WIN64
+    env = getenv ("GEGL_BUILD");
+#else
+    _dupenv_s (&env, NULL, "GEGL_BUILD");
+#endif
+    if (env) /* make .gir reproducible */
        default_tile_cache_size = 1024 * 1024 * 256;
 
     g_object_class_install_property (gobject_class, PROP_TILE_CACHE_SIZE,
@@ -379,7 +385,12 @@ gegl_config_class_init (GeglConfigClass *klass)
   _gegl_threads = g_get_num_processors ();
   _gegl_threads = MIN (_gegl_threads, GEGL_MAX_THREADS);
 
-  if (getenv ("GEGL_BUILD")) // to make .gir reproducible
+#ifndef _WIN64
+  env = getenv ("GEGL_BUILD");
+#else
+  _dupenv_s (&env, NULL, "GEGL_BUILD");
+#endif
+  if (env) // to make .gir reproducible
     _gegl_threads = GEGL_MAX_THREADS;
 
   g_object_class_install_property (gobject_class, PROP_THREADS,
