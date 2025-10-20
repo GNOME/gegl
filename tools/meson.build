@@ -6,7 +6,6 @@ tools_deps = [
 ]
 
 tools_c_args = [
-  cflags_common,
   '-DTOP_SRCDIR="' + project_source_root + '"',
 ]
 

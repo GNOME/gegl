@@ -1,3 +1,4 @@
+#include "config.h"
 #include <errno.h>
 #include <string.h>
 #ifdef HAVE_UNISTD_H
