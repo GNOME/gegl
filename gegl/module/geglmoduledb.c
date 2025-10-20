@@ -244,7 +244,11 @@ gegl_module_db_remove_duplicates (GeglModuleDB *db)
        while (p && p>expected && *p != 'x' ) p--;
        if (p && *p == 'x' && p[-1] == '-'){
          p--;
+#ifndef _WIN64
          strcpy (p, e);
+#else
+         strcpy_s (p, (e - p + 1), e);
+#endif
        }
        for (GList *l2 = db->to_load; l2; l2=l2->next)
        {

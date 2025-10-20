@@ -566,9 +566,17 @@ query_exr (const gchar *path,
       if (ch.findChannel ("R") || ch.findChannel ("G") || ch.findChannel ("B"))
         {
           if (format_flags & COLOR_ALPHA)
+#ifndef _WIN64
             strcpy (format_string, "RaGaBa");
+#else
+            strcpy_s (format_string, sizeof(format_string), "RaGaBa");
+#endif
           else
+#ifndef _WIN64
             strcpy (format_string, "RGB");
+#else
+            strcpy_s (format_string, sizeof(format_string), "RGB");
+#endif
           format_flags |= COLOR_RGB;
 
           if ((chan = ch.findChannel ("R")))
@@ -582,9 +590,17 @@ query_exr (const gchar *path,
                (ch.findChannel("RY") || ch.findChannel("BY")))
         {
           if (format_flags & COLOR_ALPHA)
+#ifndef _WIN64
             strcpy (format_string, "RaGaBa");
+#else
+            strcpy_s (format_string, sizeof(format_string), "RaGaBa");
+#endif
           else
+#ifndef _WIN64
             strcpy (format_string, "RGB");
+#else
+            strcpy_s (format_string, sizeof(format_string), "RGB");
+#endif
           format_flags |= COLOR_Y | COLOR_C;
 
           pt = ch.findChannel ("Y")->type;
@@ -592,9 +608,17 @@ query_exr (const gchar *path,
       else if (ch.findChannel ("Y"))
         {
           if (format_flags & COLOR_ALPHA)
+#ifndef _WIN64
             strcpy (format_string, "Ya");
+#else
+            strcpy_s (format_string, sizeof(format_string), "Ya");
+#endif
           else
+#ifndef _WIN64
             strcpy (format_string, "Y");
+#else
+            strcpy_s (format_string, sizeof(format_string), "Y");
+#endif
           format_flags |= COLOR_Y;
           pt = ch.findChannel ("Y")->type;
         }

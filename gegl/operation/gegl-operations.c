@@ -349,7 +349,11 @@ gchar **gegl_list_operations (guint *n_operations_p)
     {
       const gchar *name = iter->data;
       pasp[i] = ((gchar *) pasp) + pasp_pos;
+#ifndef _WIN64
       strcpy (pasp[i], name);
+#else
+      strcpy_s (pasp[i], strlen(name) + 1, name);
+#endif
       pasp_pos += strlen (name) + 1;
     }
   pasp[i] = NULL;

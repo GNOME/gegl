@@ -174,23 +174,47 @@ get_babl_format(int bit_depth, int color_type, const Babl *space)
    if (color_type & PNG_COLOR_TYPE_RGB)
       {
         if (color_type & PNG_COLOR_MASK_ALPHA)
+#ifndef _WIN64
           strcpy (format_string, "R'G'B'A ");
+#else
+          strcpy_s (format_string, sizeof(format_string), "R'G'B'A ");
+#endif
         else
+#ifndef _WIN64
           strcpy (format_string, "R'G'B' ");
+#else
+          strcpy_s (format_string, sizeof(format_string), "R'G'B' ");
+#endif
       }
     else if ((color_type & PNG_COLOR_TYPE_GRAY) == PNG_COLOR_TYPE_GRAY)
       {
         if (color_type & PNG_COLOR_MASK_ALPHA)
+#ifndef _WIN64
           strcpy (format_string, "Y'A ");
+#else
+          strcpy_s (format_string, sizeof(format_string), "Y'A ");
+#endif
         else
+#ifndef _WIN64
           strcpy (format_string, "Y' ");
+#else
+          strcpy_s (format_string, sizeof(format_string), "Y' ");
+#endif
       }
     else if (color_type & PNG_COLOR_TYPE_PALETTE)
       {
         if (color_type & PNG_COLOR_MASK_ALPHA)
+#ifndef _WIN64
           strcpy (format_string, "R'G'B'A ");
+#else
+          strcpy_s (format_string, sizeof(format_string), "R'G'B'A ");
+#endif
         else
+#ifndef _WIN64
           strcpy (format_string, "R'G'B' ");
+#else
+          strcpy_s (format_string, sizeof(format_string), "R'G'B' ");
+#endif
       }
     else
       {

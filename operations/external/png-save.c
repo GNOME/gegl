@@ -153,23 +153,39 @@ export_png (GeglOperation       *operation,
       if (babl_format_get_n_components (babl) != 2)
         {
           png_color_type = PNG_COLOR_TYPE_RGB_ALPHA;
+#ifndef _WIN64
           strcpy (format_string, "R'G'B'A ");
+#else
+          strcpy_s (format_string, sizeof(format_string), "R'G'B'A ");
+#endif
         }
       else
         {
           png_color_type = PNG_COLOR_TYPE_GRAY_ALPHA;
+#ifndef _WIN64
           strcpy (format_string, "Y'A ");
+#else
+          strcpy_s (format_string, sizeof(format_string), "Y'A ");
+#endif
         }
     else
       if (babl_format_get_n_components (babl) != 1)
         {
           png_color_type = PNG_COLOR_TYPE_RGB;
+#ifndef _WIN64
           strcpy (format_string, "R'G'B' ");
+#else
+          strcpy_s (format_string, sizeof(format_string), "R'G'B' ");
+#endif
         }
       else
         {
           png_color_type = PNG_COLOR_TYPE_GRAY;
+#ifndef _WIN64
           strcpy (format_string, "Y' ");
+#else
+          strcpy_s (format_string, sizeof(format_string), "Y' ");
+#endif
         }
   }
 
