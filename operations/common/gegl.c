@@ -106,8 +106,11 @@ prepare (GeglOperation *operation)
 
   gegl_node_link_many (input, output, NULL);
   {
-     gchar cwd[81920]; // XXX: should do better
-     getcwd (cwd, sizeof(cwd));
+     gchar cwd[81920];
+     if (getcwd (cwd, sizeof(cwd)) == NULL)
+       {
+         g_warning ("Failed to get current working directory");
+       }
      gegl_create_chain (o->string, input, output, 0.0,
                         gegl_node_get_bounding_box (input).height, cwd,
                         &error);
