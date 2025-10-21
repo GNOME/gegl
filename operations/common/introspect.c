@@ -66,7 +66,12 @@ gegl_introspect_load_cache (GeglProperties *op_introspect)
   /* Construct the .dot source */
   fd = g_mkstemp (dot_filename);
   dot_string = gegl_to_dot (GEGL_NODE (op_introspect->node));
-  write (fd, dot_string, strlen (dot_string));
+  if (write (fd, dot_string, strlen (dot_string)) < 0)
+    {
+      g_warning ("Error when writing temporary file: %s", g_strerror(errno));
+      close (fd);
+      goto cleanup;
+    }
   close (fd);
 
   /* The only point of using g_mkstemp() here is creating a new file and making
