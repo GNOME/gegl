@@ -122,11 +122,12 @@ gegl_introspect_load_cache (GeglProperties *op_introspect)
   unlink (png_filename);
 
   /* Cleanup */
-  g_free (dot);
-  g_free (dot_string);
-  g_free (dot_cmd);
-  g_free (dot_filename);
-  g_free (png_filename);
+  cleanup:
+    g_free (dot);
+    g_free (dot_string);
+    g_free (dot_cmd);
+    g_free (dot_filename);
+    g_free (png_filename);
 }
 
 static void
