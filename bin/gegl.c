@@ -22,6 +22,7 @@
 #include <glib/gprintf.h>
 #include <glib/gi18n-lib.h>
 #include <gegl.h>
+#include <locale.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
