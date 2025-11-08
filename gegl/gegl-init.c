@@ -568,6 +568,18 @@ gegl_config_parse_env (GeglConfig *config)
         g_warning ("Unknown value for GEGL_USE_OPENCL: %s", opencl_env);
     }
 
+  if (g_getenv ("GEGL_OPENCL_PROFILING"))
+    {
+      const char *env_val = g_getenv ("GEGL_OPENCL_PROFILING");
+
+      if (g_ascii_strcasecmp(env_val, "yes") == 0)
+        gegl_cl_set_profiling (TRUE);
+      else if (g_ascii_strcasecmp (env_val, "no") == 0)
+        gegl_cl_set_profiling (FALSE);
+      else
+        g_warning ("Unknown value for GEGL_OPENCL_PROFILING: %s", env_val);
+    }
+
   if (g_getenv ("GEGL_SWAP"))
     g_object_set (config, "swap", g_getenv ("GEGL_SWAP"), NULL);
 

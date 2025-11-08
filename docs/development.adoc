@@ -187,6 +187,13 @@ link:images/gaussian-blur-graph.png[Resulting graph].
 You can also just call the function `gegl_dot_node_to_png()` directly from
 within gdb to show the Graphviz graph of a node and its dependencies.
 
+Profiling
+---------
+In order to get profiling information for individual OpenCL operations, the
+link:environment.html#GEGL_OPENCL_PROFILING[`GEGL_OPENCL_PROFILING`] variable
+needs to be enabled. This is useful for external profiling/tracing tools
+because GEGL itself does not make use of this information.
+
 Tests
 -----
 There are regression tests in the subfolder `tests`. These are run with the

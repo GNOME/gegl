@@ -76,6 +76,14 @@ GEGL_USE_OPENCL::
   [`yes, no, cpu, gpu, accelerator`] +
   Enable use of OpenCL processing.
 
+[[GEGL_OPENCL_PROFILING]]
+GEGL_OPENCL_PROFILING::
+  [`true`, `false`] default: `false` +
+  Create OpenCL command queues with the `CL_QUEUE_PROFILING_ENABLE` flag
+  enabled. This makes it possible to profile individual OpenCL commands.
+  `1` and `yes` are synonyms for `true`, everything else is taken as
+  `false`.
+
 [[GEGL_PATH]]
 GEGL_PATH::
   The directory where GEGL looks (recursively) for dynamically
