@@ -534,7 +534,7 @@ msgstr "Mavi frekansı"
 
 #: operations/common/alien-map.c:59
 msgid "Lightness frequency"
-msgstr "Aydınlık frekansı"
+msgstr "Açıklık frekansı"
 
 #: operations/common/alien-map.c:61
 msgid "Component 1 phase shift"
@@ -570,7 +570,7 @@ msgstr "Mavi faz kayması"
 
 #: operations/common/alien-map.c:86
 msgid "Lightness phase shift"
-msgstr "Aydınlık faz kayması"
+msgstr "Açıklık faz kayması"
 
 #: operations/common/alien-map.c:88
 msgid "Keep component 1"
@@ -606,7 +606,7 @@ msgstr "Mavi bileşeni koru"
 
 #: operations/common/alien-map.c:104
 msgid "Keep lightness component"
-msgstr "Aydınlık bileşeni koru"
+msgstr "Açıklık bileşenini koru"
 
 #: operations/common/alien-map.c:260
 msgid "Alien Map"
@@ -663,9 +663,10 @@ msgstr "Kubbe"
 msgid "Bump"
 msgstr "Derinlik etkisi"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common/bevel.c:54
 msgid "Bevel Type"
-msgstr "Eğim Türü"
+msgstr "Eğim türü"
 
 #: operations/common/bevel.c:57
 msgid "The family of bevel to use"
@@ -705,9 +706,10 @@ msgstr "Parlat"
 msgid "Add"
 msgstr "Ekle"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common/bevel.c:76 operations/common-gpl3+/sinus.c:67
 msgid "Blend Mode"
-msgstr "Harmanlama Kipi"
+msgstr "Harmanlama kipi"
 
 #: operations/common/bevel.c:79
 msgid ""
@@ -720,9 +722,10 @@ msgstr ""
 "gereken ya da Gimpʼin harmanlama seçenekleriyle kullanılacak ışık haritası "
 "olarak çıkarmasını sağlayan özel bir harmanlama kipidir."
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common/bevel.c:81
 msgid "Distance Map Setting"
-msgstr "Mesafe Haritası Ayarı"
+msgstr "Mesafe haritası ayarı"
 
 #: operations/common/bevel.c:83
 msgid ""
@@ -779,9 +782,10 @@ msgstr ""
 "Kabartma derinliği - Derinlik etkisi eğiminin derinliğini ve ayrıntısını "
 "ortaya çıkarır."
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common/bevel.c:110
 msgid "Light Angle"
-msgstr "Işık Açısı"
+msgstr "Işık açısı"
 
 #: operations/common/bevel.c:111
 msgid "Direction of a light source illuminating and shading the bevel."
@@ -1025,9 +1029,10 @@ msgstr ""
 "Yineleme sayısı, yüksek yineleme sayısı daha az gürültü oluşturur ancak "
 "bilgisayımsal bedele neden olur"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common/c2g.c:48 operations/common/stress.c:44
 msgid "Enhance Shadows"
-msgstr "Gölgeleri İyileştir"
+msgstr "Gölgeleri iyileştir"
 
 #: operations/common/c2g.c:49
 msgid "When enabled details in shadows are boosted at the expense of noise"
@@ -1079,25 +1084,27 @@ msgstr "Yükseklik"
 msgid "Vertical width of cells pixels"
 msgstr "Hücre piksellerinin dikey genişliği"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common/checkerboard.c:42 operations/common/grid.c:38
 #: operations/common/mirrors.c:46 operations/common/pixelize.c:51
 #: operations/common-gpl3+/bump-map.c:62
 #: operations/seamless-clone/seamless-clone.c:26
 #: operations/seamless-clone/seamless-clone-compose.c:25
 msgid "Offset X"
-msgstr "X Konumu"
+msgstr "X konumu"
 
 #: operations/common/checkerboard.c:43 operations/common/grid.c:39
 msgid "Horizontal offset (from origin) for start of grid"
 msgstr "Izgara başlangıcı için yatay konum (başlangıçtan)"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common/checkerboard.c:48 operations/common/grid.c:44
 #: operations/common/mirrors.c:52 operations/common/pixelize.c:58
 #: operations/common-gpl3+/bump-map.c:68
 #: operations/seamless-clone/seamless-clone.c:32
 #: operations/seamless-clone/seamless-clone-compose.c:31
 msgid "Offset Y"
-msgstr "Y Konumu"
+msgstr "Y konumu"
 
 #: operations/common/checkerboard.c:49 operations/common/grid.c:45
 msgid "Vertical offset (from origin) for start of grid"
@@ -1222,7 +1229,7 @@ msgid ""
 "lightness untouched."
 msgstr ""
 "Renk parlaklığını olabildiğince çok erimi kaplayacak biçimde genişlet, renk "
-"tonuna ve aydınlığa dokunma."
+"tonuna ve açıklığa dokunma."
 
 #: operations/common/color-overlay.c:27 operations/common/inner-glow.c:81
 msgid "The color to paint over the input"
@@ -1526,7 +1533,7 @@ msgstr "HSL Doygunluk"
 
 #: operations/common/component-extract.c:32
 msgid "HSL Lightness"
-msgstr "HSL Aydınlık"
+msgstr "HSL Açıklık"
 
 #: operations/common/component-extract.c:33
 msgid "CMYK Cyan"
@@ -1881,11 +1888,11 @@ msgstr "Alfa kanalı için düzey sayısı"
 
 #: operations/common/dither.c:51
 msgid "Dithering method"
-msgstr "Renk taklidi yöntemi"
+msgstr "Titreme yöntemi"
 
 #: operations/common/dither.c:53
 msgid "The dithering method to use"
-msgstr "Kullanılacak renk taklidi yöntemi"
+msgstr "Kullanılacak titreme yöntemi"
 
 #: operations/common/dither.c:55 operations/common/matting-global.c:28
 #: operations/common/noise-cell.c:55 operations/common/noise-cie-lch.c:38
@@ -1905,7 +1912,7 @@ msgstr "Rastgele parçacık"
 
 #: operations/common/dither.c:640
 msgid "Dither"
-msgstr "Renk taklidi"
+msgstr "Titreme"
 
 #: operations/common/dither.c:643
 msgid ""
@@ -1914,7 +1921,7 @@ msgid ""
 "counteract quantization induced banding."
 msgstr ""
 "Kanal başına düşen düzeyleri (renkler ve alfa) azaltarak görüntüdeki renk "
-"sayısını azalt. Örnekleme kaynaklı şeritlenme için farklı renk taklidi "
+"sayısını azalt. Örnekleme kaynaklı şeritlenme için farklı titreme "
 "yöntemleri belirtilebilir."
 
 #: operations/common/domain-transform.c:24 operations/external/jpg-save.c:28
@@ -2073,9 +2080,12 @@ msgstr "Neon Kenar Tanıma"
 msgid "Performs edge detection using a Gaussian derivative method"
 msgstr "Gauss türev yöntemini kullanarak kenar tanıma"
 
+# Konumu gereği tümce düzeni kullanıldı
+# Sign burada eksi-artı anlamında sayının işareti olarak kullanılmış
+# İmza ile alakası yok.
 #: operations/common/edge-sobel.c:31
 msgid "Keep Sign"
-msgstr "İmzayı Koru"
+msgstr "İşareti koru"
 
 #: operations/common/edge-sobel.c:32
 msgid ""
@@ -2198,17 +2208,19 @@ msgstr "FIR"
 msgid "IIR"
 msgstr "IIR"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common/gaussian-blur.c:36
 msgid "Size X"
-msgstr "X Boyutu"
+msgstr "X boyutu"
 
 #: operations/common/gaussian-blur.c:37
 msgid "Standard deviation for the horizontal axis"
 msgstr "Yatay eksen için standart sapma"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common/gaussian-blur.c:44
 msgid "Size Y"
-msgstr "Y Boyutu"
+msgstr "Y boyutu"
 
 #: operations/common/gaussian-blur.c:45 operations/common/gblur-1d.c:45
 #: operations/common/high-pass.c:25
@@ -2382,9 +2394,10 @@ msgstr "Izgara"
 msgid "Grid renderer"
 msgstr "Izgara görselleyici"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common/high-pass.c:24
 msgid "Std. Dev."
-msgstr "Std. Sap."
+msgstr "Standart sapma"
 
 #: operations/common/high-pass.c:31
 msgid "Contrast of high-pass"
@@ -2415,12 +2428,12 @@ msgstr "Renk parlaklığı ayarı"
 #: operations/common/styles.c:392
 #: operations/workshop/selective-hue-saturation.c:42
 msgid "Lightness"
-msgstr "Aydınlık"
+msgstr "Açıklık"
 
 #: operations/common/hue-chroma.c:34
 #: operations/workshop/selective-hue-saturation.c:43
 msgid "Lightness adjustment"
-msgstr "Aydınlık ayarı"
+msgstr "Açıklık ayarı"
 
 #: operations/common/hue-chroma.c:120
 msgid "Hue-Chroma"
@@ -2428,7 +2441,7 @@ msgstr "Renk Tonu - Renk Parlaklığı"
 
 #: operations/common/hue-chroma.c:124
 msgid "Adjust LCH Hue, Chroma, and Lightness"
-msgstr "LCH renk tonunu, Renk Parlaklığını ve Aydınlığı ayarla"
+msgstr "LCH renk tonunu, Renk Parlaklığını ve Açıklığı ayarla"
 
 #: operations/common/icc-load.c:25 operations/external/gif-load.c:35
 #: operations/external/jp2-load.c:26 operations/external/jpg-load.c:25
@@ -2579,11 +2592,12 @@ msgstr ""
 "Bileşenleri (alfa hariç) algısal olarak tersine çevir, sonuç karşılık gelen "
 "\"negatif\" görüntüdür."
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common/invert-linear.c:54 operations/common-gpl3+/bump-map.c:45
 #: operations/workshop/connected-components.c:28
 #: operations/workshop/external/voronoi-diagram.cc:32
 msgid "Invert"
-msgstr "Tersine Çevir"
+msgstr "Tersine çevir"
 
 #: operations/common/invert-linear.c:59
 msgid ""
@@ -3171,41 +3185,45 @@ msgstr "Kullanılacak ayna sayısı"
 msgid "position of symmetry center in output"
 msgstr "çıktıdaki simetri merkezi konumu"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common/mirrors.c:58 operations/common/vignette.c:65
 #: operations/common-cxx/focus-blur.c:75 operations/common-gpl3+/displace.c:81
 #: operations/common-gpl3+/motion-blur-circular.c:40
 #: operations/common-gpl3+/motion-blur-zoom.c:39
 #: operations/common-gpl3+/supernova.c:32 operations/common-gpl3+/waves.c:25
 msgid "Center X"
-msgstr "X Merkezi"
+msgstr "X merkezi"
 
 #: operations/common/mirrors.c:59
 msgid "X axis ratio for the center of mirroring"
 msgstr "Aynalama merkezi için X ekseni oranı"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common/mirrors.c:63 operations/common/vignette.c:70
 #: operations/common-cxx/focus-blur.c:80 operations/common-gpl3+/displace.c:88
 #: operations/common-gpl3+/motion-blur-circular.c:45
 #: operations/common-gpl3+/motion-blur-zoom.c:45
 #: operations/common-gpl3+/supernova.c:38 operations/common-gpl3+/waves.c:30
 msgid "Center Y"
-msgstr "Y Merkezi"
+msgstr "Y merkezi"
 
 #: operations/common/mirrors.c:64
 msgid "Y axis ratio for the center of mirroring"
 msgstr "Aynalama merkezi için Y ekseni oranı"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common/mirrors.c:68
 msgid "Trim X"
-msgstr "X Kırpım"
+msgstr "X kırpım"
 
 #: operations/common/mirrors.c:69
 msgid "X axis ratio for trimming mirror expanse"
 msgstr "Ayna genişliğinin kırpılması için X ekseni"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common/mirrors.c:72
 msgid "Trim Y"
-msgstr "Y Kırpım"
+msgstr "Y kırpım"
 
 #: operations/common/mirrors.c:73
 msgid "Y axis ratio for trimming mirror expanse"
@@ -3259,17 +3277,20 @@ msgstr "Lerp uygula, girdi ve aux arasında doğrusal aradeğerleme (lerp)"
 msgid "Preserve luminosity"
 msgstr "Renk parlaklığını koru"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common/mono-mixer.c:26
 msgid "Red Channel Multiplier"
-msgstr "Kırmızı Kanal Çarpanı"
+msgstr "Kırmızı kanal çarpanı"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common/mono-mixer.c:30
 msgid "Green Channel Multiplier"
-msgstr "Yeşil Kanal Çarpanı"
+msgstr "Yeşil kanal çarpanı"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common/mono-mixer.c:34
 msgid "Blue Channel Multiplier"
-msgstr "Mavi Kanal Çarpanı"
+msgstr "Mavi kanal çarpanı"
 
 #: operations/common/mono-mixer.c:113
 msgid "Mono Mixer"
@@ -3744,9 +3765,10 @@ msgstr "Türbülans"
 msgid "Color saturation dependent compression of period"
 msgstr "Renk doygunluğuna bağlı sıklık sıkıştırması"
 
+# Bulunduğu yer gereği tümce düzeni kullanıldığı
 #: operations/common/newsprint.c:174
 msgid "Blocksize"
-msgstr "Blok Boyutu"
+msgstr "Blok boyutu"
 
 #: operations/common/newsprint.c:176
 msgid ""
@@ -3756,9 +3778,10 @@ msgstr ""
 "Döşeme başına sıklık sayısı; bu döşeme, açı artmanın neden olduğu yüksek "
 "frekanslı düzensizlikten kaçınır"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common/newsprint.c:178
 msgid "Angle Boost"
-msgstr "Açı Artır"
+msgstr "Açı artır"
 
 #: operations/common/newsprint.c:180
 msgid ""
@@ -3838,7 +3861,7 @@ msgstr "CIE Lch Gürültüsü Ekle"
 #: operations/common/noise-cie-lch.c:198
 msgid "Randomize lightness, chroma and hue independently"
 msgstr ""
-"Aydınlığı, renk parlaklığını ve renk tonunu bağımsız olarak rastgele seç"
+"Açıklığı, renk parlaklığını ve renk tonunu bağımsız olarak rastgele seç"
 
 #: operations/common/noise-hsv.c:37 operations/common/noise-rgb.c:42
 #: operations/generated/add.c:29 operations/generated/divide.c:29
@@ -3985,41 +4008,46 @@ msgstr "Pikselleri çevrede rastgele hareket ettir"
 msgid "The amount by which to scale the height values"
 msgstr "Yükseklik değerlerinin ölçekleneceği miktar"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common/normal-map.c:35
 msgid "X Component"
-msgstr "X Bileşeni"
+msgstr "X bileşeni"
 
 #: operations/common/normal-map.c:38
 msgid "The component used for the X coordinates"
 msgstr "X koordinatları için kullanılacak bileşen"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common/normal-map.c:40
 msgid "Y Component"
-msgstr "Y Bileşeni"
+msgstr "Y bileşeni"
 
 #: operations/common/normal-map.c:43
 msgid "The component used for the Y coordinates"
 msgstr "Y koordinatları için kullanılacak bileşen"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common/normal-map.c:45
 msgid "Flip X"
-msgstr "X Çevir"
+msgstr "X çevir"
 
 #: operations/common/normal-map.c:46
 msgid "Flip the X coordinates"
 msgstr "X koordinatlarını çevir"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common/normal-map.c:48
 msgid "Flip Y"
-msgstr "Y Çevir"
+msgstr "Y çevir"
 
 #: operations/common/normal-map.c:49
 msgid "Flip the Y coordinates"
 msgstr "Y koordinatlarını çevir"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common/normal-map.c:51
 msgid "Full Z Range"
-msgstr "Tam Z Aralığı"
+msgstr "Tam Z aralığı"
 
 #: operations/common/normal-map.c:52
 msgid "Use the full [0,1] range to encode the Z coordinates"
@@ -4378,9 +4406,10 @@ msgstr "CIE Yuv"
 msgid "Scale, strength of effect"
 msgstr "Ölçek, etkinin kuvveti"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common/saturation.c:36
 msgid "Interpolation Color Space"
-msgstr "Ara Değerleme Renk Uzayı"
+msgstr "Ara değerleme renk uzayı"
 
 # Üstte kullanılan Yerli çevirisine dikkat. Farklı çeviri durumunda burayı da uyumlayın.
 #: operations/common/saturation.c:37
@@ -4631,9 +4660,10 @@ msgstr "Renk, Anahat ve Gölge"
 msgid "Bevel and Inner Glow"
 msgstr "Eğim ve İç Parıltı"
 
+# Konumu gereği başlık düzeni kullanıldı
 #: operations/common/styles.c:31
 msgid "Image upload and Outline Bevel"
-msgstr "Görüntü yükleme ve Anahat Eğimi"
+msgstr "Görüntü Yükleme ve Anahat Eğimi"
 
 #. List of all GUI options
 #. GUI Change list in GUI
@@ -4961,11 +4991,12 @@ msgstr "İç Parıltının değiştirilmemiş piksel düzeltmesi"
 msgid "Cover pixels that inner glow might miss"
 msgstr "İç parıltının gözden kaçırabileceği pikselleri ört"
 
+# Konumu gereği başlık düzeni kullanıldı
 #. Without this Inner Glow would miss many pixels around alpha defined shapes edges'
 #. Image file overlay GUI options begin here
 #: operations/common/styles.c:365
 msgid "Enable image upload"
-msgstr "Görüntü yüklemeyi etkinleştir"
+msgstr "Görüntü Yüklemeyi Etkinleştir"
 
 #: operations/common/styles.c:366 operations/common/styles.c:465
 msgid "Whether to enable or disable the image file upload."
@@ -5001,7 +5032,7 @@ msgstr ""
 msgid ""
 "Lightness adjustment of the uploaded image file or whatever is on canvas"
 msgstr ""
-"Yüklenen görüntü dosyasının ya da tuval üzerindeki her şeyin aydınlık ayarı"
+"Yüklenen görüntü dosyasının ya da tuval üzerindeki her şeyin açıklık ayarı"
 
 #. Outline special options in GUI begin here
 #: operations/common/styles.c:398
@@ -5352,7 +5383,7 @@ msgstr "Uzaysal düzenleme"
 #: operations/common/waterpixels.c:49
 msgid ""
 "trade-off between superpixel regularity and adherence to object boundaries"
-msgstr "süperpiksel düzenliliği ve nesne sınırlarına bağlılık arasındaki denge"
+msgstr "Süperpiksel düzenliliği ve nesne sınırlarına bağlılık arasındaki denge"
 
 #: operations/common/waterpixels.c:52
 msgid "Superpixels color"
@@ -5475,6 +5506,7 @@ msgstr "Düşük eşik"
 msgid "Threshold high"
 msgstr "Yüksek eşik"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common-cxx/distance-transform.cc:49
 msgid "Grayscale Averaging"
 msgstr "Gri tonlamalı ortalama"
@@ -5757,17 +5789,19 @@ msgstr "Alt bölümler"
 msgid "Number of subdivisions"
 msgstr "Alt bölümlerin sayısı"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common-gpl3+/bayer-matrix.c:29 operations/common-gpl3+/sinus.c:31
 msgid "X Scale"
-msgstr "X Ölçeği"
+msgstr "X ölçeği"
 
 #: operations/common-gpl3+/bayer-matrix.c:30
 msgid "Horizontal pattern scale"
 msgstr "Yatay örüntü ölçeği"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common-gpl3+/bayer-matrix.c:36 operations/common-gpl3+/sinus.c:38
 msgid "Y Scale"
-msgstr "Y Ölçeği"
+msgstr "Y ölçeği"
 
 #: operations/common-gpl3+/bayer-matrix.c:37
 msgid "Vertical pattern scale"
@@ -5827,20 +5861,22 @@ msgstr "Katsayı"
 msgid "Value exponent (logarithmic scale)"
 msgstr "Katsayı değeri (logaritmik ölçek)"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common-gpl3+/bayer-matrix.c:73
 #: operations/common-gpl3+/linear-sinusoid.c:81
 msgid "X Offset"
-msgstr "X Konumu"
+msgstr "X konumu"
 
 #: operations/common-gpl3+/bayer-matrix.c:74
 #: operations/common-gpl3+/linear-sinusoid.c:82
 msgid "Offset for X axis"
 msgstr "X ekseni için konum"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common-gpl3+/bayer-matrix.c:80
 #: operations/common-gpl3+/linear-sinusoid.c:88
 msgid "Y Offset"
-msgstr "Y Konumu"
+msgstr "Y konumu"
 
 #: operations/common-gpl3+/bayer-matrix.c:81
 #: operations/common-gpl3+/linear-sinusoid.c:89
@@ -5907,9 +5943,10 @@ msgstr "Tam saydamlığın temsil etmesi gereken düzey"
 msgid "Ambient lighting factor"
 msgstr "Ortam ışıklandırma katsayısı"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common-gpl3+/bump-map.c:472
 msgid "Height Map"
-msgstr "Yükseklik Haritası"
+msgstr "Yükseklik haritası"
 
 #: operations/common-gpl3+/bump-map.c:476
 msgid "Bump Map"
@@ -6035,6 +6072,7 @@ msgid ""
 msgstr ""
 "Renkleri karıştır; kaynak bileşenlerden göreceli katkıları tanımlayarak."
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common-gpl3+/color-exchange.c:31
 msgid "From Color"
 msgstr "Renkten"
@@ -6043,33 +6081,37 @@ msgstr "Renkten"
 msgid "The color to change."
 msgstr "Değiştirilecek renk."
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common-gpl3+/color-exchange.c:34
 msgid "To Color"
 msgstr "Renge"
 
 #: operations/common-gpl3+/color-exchange.c:35
 msgid "Replacement color."
-msgstr "Renk değiştirme."
+msgstr "Yerine gelecek renk."
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common-gpl3+/color-exchange.c:37
 msgid "Red Threshold"
-msgstr "Kırmızı Eşik"
+msgstr "Kırmızı eşik"
 
 #: operations/common-gpl3+/color-exchange.c:38
 msgid "Red threshold of the input color"
 msgstr "Girdi rengi kırmızı eşiği"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common-gpl3+/color-exchange.c:41
 msgid "Green Threshold"
-msgstr "Yeşil Eşik"
+msgstr "Yeşil eşik"
 
 #: operations/common-gpl3+/color-exchange.c:42
 msgid "Green threshold of the input color"
 msgstr "Girdi renginin yeşil eşiği"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common-gpl3+/color-exchange.c:45
 msgid "Blue Threshold"
-msgstr "Mavi Eşik"
+msgstr "Mavi eşik"
 
 #: operations/common-gpl3+/color-exchange.c:46
 msgid "Blue threshold of the input color"
@@ -6459,9 +6501,10 @@ msgstr "Kabartma"
 msgid "Bumpmap (preserve original colors)"
 msgstr "Derinlik etkisi eşlemi (özgün renkleri koru)"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common-gpl3+/emboss.c:30
 msgid "Emboss Type"
-msgstr "Kabartma Türü"
+msgstr "Kabartma türü"
 
 #: operations/common-gpl3+/emboss.c:32
 msgid "Rendering type"
@@ -6551,19 +6594,21 @@ msgstr "Bir fraktalın türü"
 msgid "Zoom in the fractal space"
 msgstr "Fraktal alanda yakınlaştır"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common-gpl3+/fractal-explorer.c:64
 #: operations/common-gpl3+/lens-distortion.c:45
 msgid "Shift X"
-msgstr "X Değiştir"
+msgstr "X değiştir"
 
 #: operations/common-gpl3+/fractal-explorer.c:65
 msgid "X shift in the fractal space"
 msgstr "Fraktal alanda X değiştir"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common-gpl3+/fractal-explorer.c:68
 #: operations/common-gpl3+/lens-distortion.c:49
 msgid "Shift Y"
-msgstr "Y Değiştir"
+msgstr "Y değiştir"
 
 #: operations/common-gpl3+/fractal-explorer.c:69
 msgid "Y shift in the fractal space"
@@ -6824,49 +6869,55 @@ msgstr "Mercek Parlaması"
 msgid "Adds a lens flare effect."
 msgstr "Mercek parlaması etkisi uygula."
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common-gpl3+/linear-sinusoid.c:25
 msgid "X Period"
-msgstr "X Sıklığı"
+msgstr "X sıklığı"
 
 #: operations/common-gpl3+/linear-sinusoid.c:26
 msgid "Period for X axis"
 msgstr "X ekseninin sıklığı"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common-gpl3+/linear-sinusoid.c:32
 msgid "Y Period"
-msgstr "Y Sıklığı"
+msgstr "Y sıklığı"
 
 #: operations/common-gpl3+/linear-sinusoid.c:33
 msgid "Period for Y axis"
 msgstr "Y ekseninin sıklığı"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common-gpl3+/linear-sinusoid.c:39
 msgid "X Amplitude"
-msgstr "X Boyutu"
+msgstr "X boyutu"
 
 #: operations/common-gpl3+/linear-sinusoid.c:40
 msgid "Amplitude for X axis (logarithmic scale)"
 msgstr "X ekseni için boyut (logaritmik ölçek)"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common-gpl3+/linear-sinusoid.c:45
 msgid "Y Amplitude"
-msgstr "Y Boyutu"
+msgstr "Y boyutu"
 
 #: operations/common-gpl3+/linear-sinusoid.c:46
 msgid "Amplitude for Y axis (logarithmic scale)"
 msgstr "Y ekseni için boyut (logaritmik ölçek)"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common-gpl3+/linear-sinusoid.c:51
 msgid "X Phase"
-msgstr "X Fazı"
+msgstr "X fazı"
 
 #: operations/common-gpl3+/linear-sinusoid.c:52
 msgid "Phase for X axis"
 msgstr "X ekseni fazı"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common-gpl3+/linear-sinusoid.c:58
 msgid "Y Phase"
-msgstr "Y Fazı"
+msgstr "Y fazı"
 
 #: operations/common-gpl3+/linear-sinusoid.c:59
 msgid "Phase for Y axis"
@@ -6908,17 +6959,19 @@ msgstr "Algoritma türü"
 msgid "Maze algorithm type"
 msgstr "Labirent algoritma türü"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common-gpl3+/maze.c:67
 msgid "Foreground Color"
-msgstr "Ön Plan Rengi"
+msgstr "Ön plan rengi"
 
 #: operations/common-gpl3+/maze.c:68
 msgid "The foreground color"
 msgstr "Ön plan rengi"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common-gpl3+/maze.c:71
 msgid "Background Color"
-msgstr "Arka Plan Rengi"
+msgstr "Arka plan rengi"
 
 #: operations/common-gpl3+/maze.c:72
 msgid "The background color"
@@ -7079,17 +7132,19 @@ msgstr "Slur Gürültüsü"
 msgid "Randomly slide some pixels downward (similar to melting)"
 msgstr "Bazı pikselleri aşağıya doğru kaydır (erimeye benzer biçimde)"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common-gpl3+/noise-solid.c:36
 msgid "X Size"
-msgstr "X Boyutu"
+msgstr "X boyutu"
 
 #: operations/common-gpl3+/noise-solid.c:37
 msgid "Horizontal texture size"
 msgstr "Yatay desen boyutu"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common-gpl3+/noise-solid.c:43
 msgid "Y Size"
-msgstr "Y Boyutu"
+msgstr "Y boyutu"
 
 #: operations/common-gpl3+/noise-solid.c:44
 msgid "Vertical texture size"
@@ -7119,9 +7174,10 @@ msgstr "Yoğun Gürültü"
 msgid "Create a random cloud-like texture"
 msgstr "Rastgele bulut benzeri desen oluştur"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common-gpl3+/oilify.c:28 operations/common-gpl3+/photocopy.c:26
 msgid "Mask Radius"
-msgstr "Maske Yarıçapı"
+msgstr "Maske yarıçapı"
 
 #: operations/common-gpl3+/oilify.c:29
 msgid ""
@@ -7147,9 +7203,10 @@ msgstr "Yoğunluk sayısı"
 msgid "Histogram size"
 msgstr "Histogram boyutu"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common-gpl3+/oilify.c:44
 msgid "Intensity Mode"
-msgstr "Yoğunluk Kipi"
+msgstr "Yoğunluk kipi"
 
 #: operations/common-gpl3+/oilify.c:45
 msgid "Use pixel luminance values"
@@ -7187,13 +7244,15 @@ msgstr "Yağlı boya"
 msgid "Emulate an oil painting"
 msgstr "Yağlı boya benzetimi yap"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common-gpl3+/photocopy.c:32
 msgid "Percent Black"
-msgstr "Siyah Yüzdesi"
+msgstr "Siyah yüzdesi"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common-gpl3+/photocopy.c:35
 msgid "Percent White"
-msgstr "Beyaz Yüzdesi"
+msgstr "Beyaz yüzdesi"
 
 #: operations/common-gpl3+/photocopy.c:329
 msgid "Photocopy"
@@ -7606,15 +7665,17 @@ msgstr "Tuvali Desenle"
 msgid "Textures the image as if it were an artist's canvas."
 msgstr "Görüntüyü bir sanatçı tuvaliymiş gibi desenler."
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common-gpl3+/tile-glass.c:28
 #: operations/common-gpl3+/tile-paper.c:40
 msgid "Tile Width"
-msgstr "Döşeme Genişliği"
+msgstr "Döşeme genişliği"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common-gpl3+/tile-glass.c:34
 #: operations/common-gpl3+/tile-paper.c:47
 msgid "Tile Height"
-msgstr "Döşeme Yüksekliği"
+msgstr "Döşeme yüksekliği"
 
 #: operations/common-gpl3+/tile-glass.c:233
 msgid "Tile Glass"
@@ -7972,9 +8033,10 @@ msgstr "Etki biçemi"
 msgid "Direction of the effect"
 msgstr "Etki yönü"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/common-gpl3+/wind.c:55
 msgid "Edge Affected"
-msgstr "Etkilenen Kenar"
+msgstr "Etkilenen kenar"
 
 #: operations/common-gpl3+/wind.c:58
 msgid "Edge behavior"
@@ -10194,25 +10256,28 @@ msgstr "Spirograf"
 msgid "EPITROCHOID"
 msgstr "EPITROCHOID"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/workshop/external/spyrograph.c:31
 msgid "Curve Type"
-msgstr "Eğri Türü"
+msgstr "Eğri türü"
 
 #: operations/workshop/external/spyrograph.c:34
 msgid "Curve type"
 msgstr "Eğri türü"
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/workshop/external/spyrograph.c:36
 msgid "Fixed Gear Teeth"
-msgstr "Sabit Dişli Dişleri"
+msgstr "Sabit dişli dişleri"
 
 #: operations/workshop/external/spyrograph.c:37
 msgid "Number of teeth in fixed gear."
 msgstr "Sabit dişlideki diş sayısı."
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/workshop/external/spyrograph.c:40
 msgid "Moving Gear Teeth"
-msgstr "Hareketli Dişli Dişleri"
+msgstr "Hareketli dişli dişleri"
 
 #: operations/workshop/external/spyrograph.c:41
 msgid ""
@@ -10223,9 +10288,10 @@ msgstr ""
 "Hareketli dişlideki diş sayısı. Hareketli dişli yarıçapı, sabit dişli "
 "yarıçapına göre, dişlilerin diş sayısı arasındaki oranla belirlenir."
 
+# Konumu gereği tümce düzeni kullanıldı
 #: operations/workshop/external/spyrograph.c:46
 msgid "Hole Percent"
-msgstr "Delik Yüzdesi"
+msgstr "Delik yüzdesi"
 
 #: operations/workshop/external/spyrograph.c:47
 msgid ""
@@ -10455,7 +10521,7 @@ msgstr "Seçilebilir Renk Tonu Doygunluğu"
 
 #: operations/workshop/selective-hue-saturation.c:173
 msgid "Selective adjust Hue, Saturation and Lightness"
-msgstr "Seçilebilir ayarlanabilir renk tonu, doygunluk ve aydınlık"
+msgstr "Seçilebilir ayarlanabilir renk tonu, doygunluk ve açıklık"
 
 #: operations/workshop/shuffle-search.c:32
 msgid "How many times to run optimization"
