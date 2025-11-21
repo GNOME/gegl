@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2025-10-15 16:35+0000\n"
-"PO-Revision-Date: 2025-10-20 23:10+0300\n"
+"POT-Creation-Date: 2025-11-10 19:10+0000\n"
+"PO-Revision-Date: 2025-11-16 13:51+0300\n"
 "Last-Translator: Sabri Ünal <yakushabb@gmail.com>\n"
 "Language-Team: Turkish <takim@gnome.org.tr>\n"
 "Language: tr\n"
@@ -23,17 +23,17 @@ msgstr ""
 "X-Generator: Poedit 3.8\n"
 "X-POOTLE-MTIME: 1437504675.000000\n"
 
-#: bin/gegl.c:179
+#: bin/gegl.c:182
 #, c-format
 msgid "Unable to read file: %s"
 msgstr "Dosya okunamadı: %s"
 
-#: bin/gegl.c:227
+#: bin/gegl.c:230
 #, c-format
 msgid "Invalid graph, abort.\n"
 msgstr "Geçersiz grafik, iptal et.\n"
 
-#: bin/gegl.c:390 bin/gegl-options.c:133
+#: bin/gegl.c:393 bin/gegl-options.c:133
 #, c-format
 msgid "Unknown GeglOption mode: %d"
 msgstr "Bilinmeyen GeglOption kipi: %d"
@@ -170,7 +170,7 @@ msgstr ""
 "\n"
 "\n"
 
-#: bin/ui-core.c:4387 gegl/gegl-serialize.c:690
+#: bin/ui-core.c:4389 gegl/gegl-serialize.c:690
 #, c-format
 msgid "BablFormat \"%s\" does not exist."
 msgstr "BablFormat \"%s\" yok."
@@ -353,45 +353,45 @@ msgstr "Asla"
 msgid "Always"
 msgstr "Her Zaman"
 
-#: gegl/gegl-init.c:354
+#: gegl/gegl-init.c:363
 msgid "Where GEGL stores its swap"
 msgstr "GEGL takas alanının depolandığı yer"
 
-#: gegl/gegl-init.c:359
+#: gegl/gegl-init.c:368
 msgid "Compression algorithm used for data stored in the swap"
 msgstr ""
 "Takas alanında depolanan veriler için kullanılacak sıkıştırma algoritması"
 
-#: gegl/gegl-init.c:364
+#: gegl/gegl-init.c:373
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr ""
 "Görüntülerin önbelleğe alınması için ne kadar bellek kullanılacağı (yaklaşık "
 "olarak)"
 
-#: gegl/gegl-init.c:369
+#: gegl/gegl-init.c:378
 msgid "Default size of tiles in GeglBuffers"
 msgstr "GeglBuffers içindeki döşemelerin öntanımlı boyutu"
 
-#: gegl/gegl-init.c:374
+#: gegl/gegl-init.c:383
 msgid "The count of pixels to compute simultaneously"
 msgstr "Aynı anda hesaplamak için piksel sayısı"
 
-#: gegl/gegl-init.c:379
+#: gegl/gegl-init.c:388
 msgid ""
 "The quality of rendering, a value between 0.0 (fast) and 1.0 (reference)"
 msgstr ""
 "Görselleştirme kalitesi, 0.0 (hızlı) ve 1.0 (başvuru) arasındaki bir değer "
 "cinsinden"
 
-#: gegl/gegl-init.c:384
+#: gegl/gegl-init.c:393
 msgid "The number of concurrent processing threads to use"
 msgstr "Kullanılacak eşzamanlı işlem parçaçıkları"
 
-#: gegl/gegl-init.c:389
+#: gegl/gegl-init.c:398
 msgid "Disable OpenCL"
 msgstr "OpenCL Kapat"
 
-#: gegl/gegl-init.c:401
+#: gegl/gegl-init.c:410
 msgid "Show GEGL Options"
 msgstr "GEGL Seçeneklerini Göster"
 
@@ -742,7 +742,7 @@ msgstr ""
 #: operations/common/stress.c:27 operations/common/unsharp-mask.c:24
 #: operations/common/vignette.c:40 operations/common/wavelet-blur-1d.c:28
 #: operations/common/wavelet-blur.c:27 operations/common-cxx/focus-blur.c:85
-#: operations/common-cxx/lens-blur.cc:24
+#: operations/common-cxx/lens-blur.cc:27
 #: operations/common-cxx/variable-blur.c:30
 #: operations/common-gpl3+/shadows-highlights.c:40
 #: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:44
@@ -814,7 +814,7 @@ msgstr "Eğim..."
 #: operations/common/bilateral-filter.c:26
 #: operations/common/domain-transform.c:29 operations/common/dropshadow.c:46
 #: operations/common/inner-glow.c:58 operations/common-cxx/focus-blur.c:45
-#: operations/common-cxx/lens-blur.cc:25
+#: operations/common-cxx/lens-blur.cc:28
 #: operations/common-gpl3+/gaussian-blur-selective.c:29
 #: operations/workshop/bilateral-filter-fast.c:43
 msgid "Blur radius"
@@ -1900,7 +1900,7 @@ msgstr "Kullanılacak titreme yöntemi"
 #: operations/common/noise-pick.c:38 operations/common/noise-rgb.c:55
 #: operations/common/noise-simplex.c:39 operations/common/noise-spread.c:41
 #: operations/common-gpl3+/cubism.c:42 operations/common-gpl3+/maze.c:65
-#: operations/common-gpl3+/mosaic.c:90 operations/common-gpl3+/noise-slur.c:40
+#: operations/common-gpl3+/mosaic.c:92 operations/common-gpl3+/noise-slur.c:40
 #: operations/common-gpl3+/noise-solid.c:61 operations/common-gpl3+/plasma.c:70
 #: operations/common-gpl3+/shift.c:35 operations/common-gpl3+/sinus.c:49
 #: operations/common-gpl3+/supernova.c:63
@@ -1921,8 +1921,8 @@ msgid ""
 "counteract quantization induced banding."
 msgstr ""
 "Kanal başına düşen düzeyleri (renkler ve alfa) azaltarak görüntüdeki renk "
-"sayısını azalt. Örnekleme kaynaklı şeritlenme için farklı titreme "
-"yöntemleri belirtilebilir."
+"sayısını azalt. Örnekleme kaynaklı şeritlenme için farklı titreme yöntemleri "
+"belirtilebilir."
 
 #: operations/common/domain-transform.c:24 operations/external/jpg-save.c:28
 #: operations/external/webp-save.c:28
@@ -2344,11 +2344,11 @@ msgstr ""
 "Söz diziminde veya ayrıştırılmış özellik değerlerinin uygulanmasında bir "
 "sorun oluştu. Bazı şeyler yine de işe yarayabilir."
 
-#: operations/common/gegl.c:168
+#: operations/common/gegl.c:171
 msgid "GEGL graph"
 msgstr "GEGL graph"
 
-#: operations/common/gegl.c:171
+#: operations/common/gegl.c:174
 msgid ""
 "Do a chain of operations, with key=value pairs after each operation name to "
 "set properties. And aux=[ source filter ] for specifying a chain with a "
@@ -2572,11 +2572,11 @@ msgstr ""
 msgid "Inner Glow..."
 msgstr "İç Parıltı..."
 
-#: operations/common/introspect.c:27
+#: operations/common/introspect.c:33
 msgid "Node"
 msgstr "Düğüm"
 
-#: operations/common/introspect.c:210
+#: operations/common/introspect.c:222
 msgid "GEGL graph visualizer."
 msgstr "GEGL graph görselleştiricisi."
 
@@ -2857,7 +2857,7 @@ msgstr ""
 "kullanılır."
 
 # Arayüzde uyumlu görünmesi için Tümcü düzeni kullanıldı.
-#: operations/common/local-threshold.c:32 operations/common-gpl3+/mosaic.c:87
+#: operations/common/local-threshold.c:32 operations/common-gpl3+/mosaic.c:89
 msgid "Antialiasing"
 msgstr "Kenar yumuşatma"
 
@@ -5527,7 +5527,7 @@ msgstr "Mesafe Dönüşümü"
 msgid "Calculate a distance transform"
 msgstr "Bir mesafe dönüşümü hesapla"
 
-#: operations/common-cxx/focus-blur.c:30 operations/common-cxx/lens-blur.cc:504
+#: operations/common-cxx/focus-blur.c:30 operations/common-cxx/lens-blur.cc:507
 msgid "Lens Blur"
 msgstr "Mercek Bulanıklığı"
 
@@ -5539,23 +5539,23 @@ msgstr "Bulanıklık türü"
 msgid "Out-of-focus blur radius"
 msgstr "Odak dışı bulanıklık yarıçapı"
 
-#: operations/common-cxx/focus-blur.c:52 operations/common-cxx/lens-blur.cc:31
+#: operations/common-cxx/focus-blur.c:52 operations/common-cxx/lens-blur.cc:34
 msgid "Highlight factor"
 msgstr "Vurgu katsayısı"
 
-#: operations/common-cxx/focus-blur.c:53 operations/common-cxx/lens-blur.cc:32
+#: operations/common-cxx/focus-blur.c:53 operations/common-cxx/lens-blur.cc:35
 msgid "Relative highlight strength"
 msgstr "Göreceli vurgu gücü"
 
-#: operations/common-cxx/focus-blur.c:57 operations/common-cxx/lens-blur.cc:35
+#: operations/common-cxx/focus-blur.c:57 operations/common-cxx/lens-blur.cc:38
 msgid "Highlight threshold (low)"
 msgstr "Vurgu eşiği (düşük)"
 
-#: operations/common-cxx/focus-blur.c:61 operations/common-cxx/lens-blur.cc:39
+#: operations/common-cxx/focus-blur.c:61 operations/common-cxx/lens-blur.cc:42
 msgid "Highlight threshold"
 msgstr "Vurgu eşiği"
 
-#: operations/common-cxx/focus-blur.c:64 operations/common-cxx/lens-blur.cc:41
+#: operations/common-cxx/focus-blur.c:64 operations/common-cxx/lens-blur.cc:44
 msgid "Highlight threshold (high)"
 msgstr "Vurgu eşiği (yüksek)"
 
@@ -5638,27 +5638,27 @@ msgstr "Gürültü Kaldırma DCT"
 msgid "Denoising algorithm using a per-patch DCT thresholding"
 msgstr "Yama başına DCT eşikleme kullanan gürültü kaldırma algoritması"
 
-#: operations/common-cxx/lens-blur.cc:46
+#: operations/common-cxx/lens-blur.cc:49
 msgid "Clip to input extents"
 msgstr "Girdi ölçülerine kırp"
 
-#: operations/common-cxx/lens-blur.cc:47
+#: operations/common-cxx/lens-blur.cc:50
 msgid "Clip output to the input extents"
 msgstr "Çıktıyı girdi ölçülerine kırp"
 
-#: operations/common-cxx/lens-blur.cc:49
+#: operations/common-cxx/lens-blur.cc:52
 #: operations/common-cxx/piecewise-blend.cc:38
 #: operations/common-cxx/variable-blur.c:37
 msgid "Linear mask"
 msgstr "Doğrusal maske"
 
-#: operations/common-cxx/lens-blur.cc:50
+#: operations/common-cxx/lens-blur.cc:53
 #: operations/common-cxx/piecewise-blend.cc:39
 #: operations/common-cxx/variable-blur.c:38
 msgid "Use linear mask values"
 msgstr "Doğrusal maske değerlerini kullan"
 
-#: operations/common-cxx/lens-blur.cc:507
+#: operations/common-cxx/lens-blur.cc:510
 msgid "Simulate out-of-focus lens blur"
 msgstr "Odak dışı lens bulanıklığına benzet"
 
@@ -6157,11 +6157,11 @@ msgstr "Renkten Alfaya"
 msgid "Convert a specified color to transparency, works best with white."
 msgstr "Belirtilen rengi saydama dönüştür, en iyi beyaz ile çalışır."
 
-#: operations/common-gpl3+/cubism.c:30 operations/common-gpl3+/mosaic.c:43
+#: operations/common-gpl3+/cubism.c:30 operations/common-gpl3+/mosaic.c:45
 msgid "Tile size"
 msgstr "Döşeme boyutu"
 
-#: operations/common-gpl3+/cubism.c:31 operations/common-gpl3+/mosaic.c:44
+#: operations/common-gpl3+/cubism.c:31 operations/common-gpl3+/mosaic.c:46
 msgid "Average diameter of each tile (in pixels)"
 msgstr "Her döşemenin ortalama çapı (piksel olarak)"
 
@@ -6985,112 +6985,112 @@ msgstr "Labirent"
 msgid "Draw a labyrinth"
 msgstr "Bir labirent çiz"
 
-#: operations/common-gpl3+/mosaic.c:33
+#: operations/common-gpl3+/mosaic.c:35
 msgid "Squares"
 msgstr "Kare"
 
-#: operations/common-gpl3+/mosaic.c:34
+#: operations/common-gpl3+/mosaic.c:36
 msgid "Hexagons"
 msgstr "Altıgen"
 
-#: operations/common-gpl3+/mosaic.c:35
+#: operations/common-gpl3+/mosaic.c:37
 msgid "Octagons"
 msgstr "Sekizgen"
 
-#: operations/common-gpl3+/mosaic.c:36
+#: operations/common-gpl3+/mosaic.c:38
 msgid "Triangles"
 msgstr "Üçgen"
 
-#: operations/common-gpl3+/mosaic.c:39
+#: operations/common-gpl3+/mosaic.c:41
 msgid "Tile geometry"
 msgstr "Döşeme şekli"
 
-#: operations/common-gpl3+/mosaic.c:41
+#: operations/common-gpl3+/mosaic.c:43
 msgid "What shape to use for tiles"
 msgstr "Döşemeler için kullanılacak şekil"
 
-#: operations/common-gpl3+/mosaic.c:49
+#: operations/common-gpl3+/mosaic.c:51
 msgid "Tile height"
 msgstr "Döşeme yüksekliği"
 
-#: operations/common-gpl3+/mosaic.c:50
+#: operations/common-gpl3+/mosaic.c:52
 msgid "Apparent height of each tile (in pixels)"
 msgstr "Her döşemenin görünür yüksekliği (piksel olarak)"
 
-#: operations/common-gpl3+/mosaic.c:54
+#: operations/common-gpl3+/mosaic.c:56
 msgid "Tile neatness"
 msgstr "Döşeme keskinliği"
 
-#: operations/common-gpl3+/mosaic.c:55
+#: operations/common-gpl3+/mosaic.c:57
 msgid "Deviation from perfectly formed tiles"
 msgstr "Mükemmel şekillendirilmiş döşemelerden sapma"
 
-#: operations/common-gpl3+/mosaic.c:58
+#: operations/common-gpl3+/mosaic.c:60
 msgid "Tile color variation"
 msgstr "Döşeme renk çeşitliliği"
 
-#: operations/common-gpl3+/mosaic.c:59
+#: operations/common-gpl3+/mosaic.c:61
 msgid "Magnitude of random color variations"
 msgstr "Rastgele renk çeşitliliğinin büyüklüğü"
 
-#: operations/common-gpl3+/mosaic.c:62
+#: operations/common-gpl3+/mosaic.c:64
 msgid "Color averaging"
 msgstr "Renk ortalaması"
 
-#: operations/common-gpl3+/mosaic.c:63
+#: operations/common-gpl3+/mosaic.c:65
 msgid "Tile color based on average of subsumed pixels"
 msgstr "Kalan piksellerin ortalamasına bağlı olarak döşeme rengi"
 
-#: operations/common-gpl3+/mosaic.c:65
+#: operations/common-gpl3+/mosaic.c:67
 msgid "Rough tile surface"
 msgstr "Pürüzlü döşeme yüzeyi"
 
-#: operations/common-gpl3+/mosaic.c:66
+#: operations/common-gpl3+/mosaic.c:68
 msgid "Surface characteristics"
 msgstr "Yüzey özellikleri"
 
-#: operations/common-gpl3+/mosaic.c:68
+#: operations/common-gpl3+/mosaic.c:70
 msgid "Allow splitting tiles"
 msgstr "Döşemeleri ayırmaya izin ver"
 
-#: operations/common-gpl3+/mosaic.c:69
+#: operations/common-gpl3+/mosaic.c:71
 msgid "Allows splitting tiles at hard edges"
 msgstr "Döşemeleri sert köşelerinden ayırmaya izin ver"
 
-#: operations/common-gpl3+/mosaic.c:71
+#: operations/common-gpl3+/mosaic.c:73
 msgid "Tile spacing"
 msgstr "Döşeme boşluğu"
 
-#: operations/common-gpl3+/mosaic.c:72
+#: operations/common-gpl3+/mosaic.c:74
 msgid "Inter-tile spacing (in pixels)"
 msgstr "Döşemeler arası boşluk (piksel olarak)"
 
-#: operations/common-gpl3+/mosaic.c:77
+#: operations/common-gpl3+/mosaic.c:79
 msgid "Joints color"
 msgstr "Eklem rengi"
 
-#: operations/common-gpl3+/mosaic.c:79
+#: operations/common-gpl3+/mosaic.c:81
 msgid "Light color"
 msgstr "Işık rengi"
 
-#: operations/common-gpl3+/mosaic.c:81
+#: operations/common-gpl3+/mosaic.c:83
 msgid "Light direction"
 msgstr "Işık yönü"
 
-#: operations/common-gpl3+/mosaic.c:82
+#: operations/common-gpl3+/mosaic.c:84
 msgid "Direction of light-source (in degrees)"
 msgstr "Işık kaynağının yönü (derece olarak)"
 
-#: operations/common-gpl3+/mosaic.c:88
+#: operations/common-gpl3+/mosaic.c:90
 msgid "Enables smoother tile output"
 msgstr "Daha pürüzsüz döşeme çıktılarını etkinleştir"
 
-#: operations/common-gpl3+/mosaic.c:2472
+#: operations/common-gpl3+/mosaic.c:2474
 msgid "Mosaic"
 msgstr "Mozaik"
 
 # menü komutu ipucu olduğu için cümle sonunda nokta yer almaması gerekiyor
-#: operations/common-gpl3+/mosaic.c:2476
+#: operations/common-gpl3+/mosaic.c:2478
 msgid ""
 "Mosaic is a filter which transforms an image into what appears to be a "
 "mosaic, composed of small primitives, each of constant color and of an "
@@ -8925,11 +8925,11 @@ msgstr "<em>pixbuf</em> bellek konumunda bulunan GdkPixbuf kullanır."
 msgid "URI for file to load."
 msgstr "Yüklenecek dosya için URI."
 
-#: operations/external/png-load.c:656
+#: operations/external/png-load.c:680
 msgid "PNG File Loader"
 msgstr "PNG Dosya Yükleyicisi"
 
-#: operations/external/png-load.c:658
+#: operations/external/png-load.c:682
 msgid "PNG image loader."
 msgstr "PNG görüntü yükleyicisi."
 
@@ -8950,11 +8950,11 @@ msgstr "Bit derinliği"
 msgid "8 and 16 are the currently accepted values."
 msgstr "8 ve 16 kabul edilen değerlerdir."
 
-#: operations/external/png-save.c:418
+#: operations/external/png-save.c:434
 msgid "PNG File Saver"
 msgstr "PNG Dosya Kaydedici"
 
-#: operations/external/png-save.c:420
+#: operations/external/png-save.c:436
 msgid "PNG image saver, using libpng"
 msgstr "PNG görüntü kaydedici, libpng kullanarak"
 
@@ -10558,6 +10558,3 @@ msgid ""
 msgstr ""
 "Pikselleri karıştırır ve komşu pikselleri karıştırarak titremeyi eniyilemek "
 "için komşularla niceleme yapar."
-
-#~ msgid "Object to supply image metadata"
-#~ msgstr "Görüntü üst verilerini sağlayan nesne"
