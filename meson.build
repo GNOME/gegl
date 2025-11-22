@@ -280,6 +280,22 @@ if os_osx
 endif
 
 ################################################################################
+# C/C++ language support in the compiler
+
+config.set(
+  'GEGL_GNUC_VARIADIC_MACROS',
+  cc.compiles(
+    '''
+#include <stdio.h>
+#define X(foo...)   printf(foo)
+#define Y(foo, ...) printf(foo, ##__VA_ARGS__)
+void main(void) { X ("%d", 42); Y ("%d"); }
+    ''',
+    name: 'GNU C variadic macros extension'
+  )
+)
+
+################################################################################
 # Build Utilities
 
 asciidoc          = find_program('asciidoc',
