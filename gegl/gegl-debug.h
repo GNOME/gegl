@@ -51,7 +51,7 @@ const GDebugKey gegl_debug_keys[] = {
 extern GDebugKey gegl_debug_keys[];
 #endif /* __GEGL_INIT_C */
 
-#if defined(__cplusplus) && defined(GEGL_ISO_CXX_VARIADIC_MACROS)
+#if (defined(__cplusplus) && defined(GEGL_ISO_CXX_VARIADIC_MACROS)) || __STDC_VERSION__ >= 199901L
 #  define GEGL_ISO_VARIADIC_MACROS 1
 #endif
 
