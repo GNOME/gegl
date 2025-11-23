@@ -120,7 +120,7 @@ gegl_parallel_distribute_get_thread_time (void)
  *
  *   n_elements / n_threads + thread_cost * n_threads
  */
-inline gint
+gint
 gegl_parallel_distribute_get_optimal_n_threads (gdouble n_elements,
                                                 gdouble thread_cost)
 {
