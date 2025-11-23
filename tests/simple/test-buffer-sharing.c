@@ -15,6 +15,8 @@
  * Copyright (C) 2017 Jon Nordby <jononor@gmail.com>
  */
 
+#include "config.h"
+
 #include <gegl.h>
 #include <glib/gstdio.h>
 
