@@ -937,7 +937,19 @@ rgbe_save_path (const gchar *path,
   FILE        *f       = NULL;
   gboolean     success = FALSE;
 
+#ifndef _WIN64
   f = (!strcmp (path, "-") ? stdout : fopen(path, "wb"));
+#else
+  if (!strcmp (path, "-"))
+    {
+      f = stdout;
+    }
+  else if (fopen_s(&f, path, "wb") != 0)
+    {
+      f = NULL;
+    }
+#endif
+
   if (!f)
       goto cleanup;
 
