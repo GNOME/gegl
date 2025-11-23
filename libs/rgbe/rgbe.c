@@ -313,8 +313,13 @@ rgbe_header_read_variables (rgbe_file *file,
           else
             {
               guint linesize = lineend - data;
+#ifndef _WIN64
               strncpy (file->header.software, data,
                        MIN (linesize, G_N_ELEMENTS (file->header.software) - 1));
+#else
+              strncpy_s (file->header.software, sizeof(file->header.software),
+                         data, _TRUNCATE);
+#endif
             }
         }
 
