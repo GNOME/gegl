@@ -165,7 +165,12 @@ on_timeout(gpointer user_data) {
     return FALSE;
 }
 
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#endif
+#ifdef _WIN32
+#include <windows.h>
+#endif
 
 static void
 test_init(TestData *data) {
@@ -183,7 +188,11 @@ test_init(TestData *data) {
     gegl_buffer_set_color(data->a, &rect, blank);
     gegl_buffer_flush(data->a); // ensure file exists on disk
 
+#ifndef _WIN32
     sleep(1);
+#else
+    Sleep(1);
+#endif
 
     // B observes the same on-disk buffer
     data->b = gegl_buffer_open(data->file_path);
