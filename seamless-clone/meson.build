@@ -22,6 +22,7 @@ seamlessclone_lib = library('gegl-sc-' + api_version,
     math,
     poly2tri_c,
   ],
+  vs_module_defs: 'gegl-sc.def',
   install: true,
 )
 

@@ -1,0 +1,7 @@
+EXPORTS
+  gegl_sc_context_free
+  gegl_sc_context_new
+  gegl_sc_context_prepare_render
+  gegl_sc_context_render
+  gegl_sc_context_set_uvt_cache
+  gegl_sc_context_update
