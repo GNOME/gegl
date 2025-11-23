@@ -46,7 +46,6 @@ gegl_bin = executable('gegl',
   gegl_sources,
   include_directories: [rootInclude, geglInclude],
   dependencies: gegl_deps,
-  export_dynamic: true,
   link_with: gegl_lib,
   install: true,
 )
