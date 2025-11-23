@@ -5,10 +5,15 @@ examples = [
   { 'name': 'gegl-convert', },
   { 'name': 'gegl-slicer', },
   { 'name': 'geglbuffer-add-image', },
-  { 'name': 'geglbuffer-clock', },
   { 'name': 'hello-world', },
   { 'name': 'video-invert', },
 ]
+
+if cc.has_header('unistd.h')
+  examples += {
+    'name': 'geglbuffer-clock',
+  }
+endif
 
 if sdl2.found()
   examples += {
