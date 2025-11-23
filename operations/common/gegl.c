@@ -80,8 +80,12 @@ property_string (error, _("Eeeeeek"), "")
 #define GEGL_OP_C_SOURCE gegl.c
 
 #include "gegl-op.h"
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
-
+#endif
+#ifdef _WIN32
+#include <direct.h>
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
