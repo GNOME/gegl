@@ -1,0 +1,12 @@
+EXPORTS
+  npd_compute_MLS_weights
+  npd_create_model_from_image
+  npd_deform_model
+  npd_destroy_model
+  npd_draw_line
+  npd_draw_model_into_image
+  npd_gegl_init_image
+  npd_get_pixel_color
+  npd_process_pixel
+  npd_set_deformation_type
+  npd_set_pixel_color
