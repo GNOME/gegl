@@ -39,7 +39,13 @@ def_files = (
    "seamless-clone/gegl-sc.def"
 )
 
-exclude_symbols = []
+exclude_symbols = [
+    "_gegl_cl_is_accelerated",
+    "_gegl_float_epsilon_equal",
+    "_gegl_float_epsilon_zero",
+    "gegl_glXGetCurrentContext", 
+    "gegl_glXGetCurrentDisplay"
+]
 
 have_errors = 0
 

@@ -1,12 +1,41 @@
 EXPORTS
+  npd_add_control_point
+  npd_apply_transformation
   npd_compute_MLS_weights
+  npd_compute_affinity
   npd_create_model_from_image
+  npd_create_square
+  npd_cut_edges
   npd_deform_model
   npd_destroy_model
   npd_draw_line
+  npd_draw_mesh
   npd_draw_model_into_image
+  npd_equal_floats
+  npd_equal_floats_epsilon
+  npd_find_edges
+  npd_gegl_close_buffer
+  npd_gegl_get_pixel_color
   npd_gegl_init_image
+  npd_gegl_open_buffer
+  npd_gegl_set_pixel_color
+  npd_get_control_point_at
+  npd_get_control_point_with_radius_at
   npd_get_pixel_color
+  npd_init_model
+  npd_is_color_transparent
+  npd_print_bone
+  npd_print_hidden_model
+  npd_print_model
+  npd_print_overlapping_points
+  npd_print_point
   npd_process_pixel
+  npd_process_pixel_bilinear
+  npd_remove_all_control_points
+  npd_remove_control_point
+  npd_remove_control_points
+  npd_SED
+  npd_set_control_point_weight
   npd_set_deformation_type
   npd_set_pixel_color
+  npd_set_point_coordinates
