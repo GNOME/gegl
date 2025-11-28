@@ -19,6 +19,13 @@ gegl_npd_headers = files(
   'npd.h',
 )
 
+#Needed otherwise defcheck.py fails
+gegl_npd_def = configure_file(
+  input: 'gegl-npd.def',
+  output: 'gegl-npd.def',
+  copy: true
+)
+
 gegl_npd_lib = library(meson.project_name() + '-npd-' + api_version,
   gegl_npd_sources,
   dependencies: [ glib, babl, math, ],
@@ -26,7 +33,7 @@ gegl_npd_lib = library(meson.project_name() + '-npd-' + api_version,
   link_with: [
     gegl_lib,
   ],
-  vs_module_defs: 'gegl-npd.def',
+  vs_module_defs: gegl_npd_def,
   install: true,
 )
 

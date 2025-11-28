@@ -644,9 +644,9 @@ if not os_win32 and not os_osx
   # machine). And it worked fine until now.
   custom_target('check-def-files',
     input: [
-      'gegl/gegl.def',
-      'libs/npd/gegl-npd.def',
-      'seamless-clone/gegl-sc.def',
+      gegl_def,
+      gegl_npd_def,
+      gegl_sc_def,
     ],
     depends: [
       gegl_lib,
@@ -655,7 +655,7 @@ if not os_win32 and not os_osx
     ],
     output: [ 'check-def-files', ],
     command: [
-      python, meson.project_source_root() / 'tools' / 'defcheck.py', meson.project_source_root(),
+      python, meson.project_source_root() / 'tools' / 'defcheck.py', '@INPUT@',
     ],
     build_by_default: true,
   )

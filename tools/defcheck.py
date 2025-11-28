@@ -21,23 +21,18 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 This is a hack to check the consistency of the .def files compared to
 the respective libraries.
 
-Invoke in the top level of the gimp source tree after compiling GIMP.
-If srcdir != builddir, run it in the build directory and pass the name
-of the source directory on the command-line.
+Invoke in the build directory and pass the name
+of the built .def files on the command-line.
 
 Needs the tool "nm" to work
 
 """
 
-import sys, subprocess
+import os, sys, subprocess
 
 from os import path
 
-def_files = (
-   "gegl/gegl.def",
-   "libs/npd/gegl-npd.def",
-   "seamless-clone/gegl-sc.def"
-)
+def_files = sys.argv[1:]
 
 exclude_symbols = [
     "_gegl_cl_is_accelerated",
@@ -49,27 +44,16 @@ exclude_symbols = [
 
 have_errors = 0
 
-srcdir = None
-if len(sys.argv) > 1:
-   srcdir = sys.argv[1]
-   if not path.exists(srcdir):
-      print("Directory '%s' does not exist" % srcdir)
-      sys.exit (-1)
-
 for df in def_files:
    directory, name = path.split (df)
    basename, extension = name.split (".")
    libname = path.join(directory, "lib" + basename + "-*.so")
 
    filename = df
-   if srcdir:
-      filename = path.join(srcdir, df)
    try:
       defsymbols = open (filename).read ().split ()[1:]
    except IOError as message:
       print(message)
-      if not srcdir:
-         print("You should run this script from the toplevel source directory.")
       sys.exit (-1)
 
    doublesymbols = []

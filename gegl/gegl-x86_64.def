@@ -1,0 +1,12 @@
+  gegl_downscale_2x2_get_fun_x86_64_v2
+  gegl_downscale_2x2_get_fun_x86_64_v3
+  gegl_downscale_2x2_nearest_x86_64_v2
+  gegl_downscale_2x2_nearest_x86_64_v3
+  gegl_downscale_2x2_x86_64_v2
+  gegl_downscale_2x2_x86_64_v3
+  gegl_resample_bilinear_x86_64_v2
+  gegl_resample_bilinear_x86_64_v3
+  gegl_resample_boxfilter_x86_64_v2
+  gegl_resample_boxfilter_x86_64_v3
+  gegl_resample_nearest_x86_64_v2
+  gegl_resample_nearest_x86_64_v3

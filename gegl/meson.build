@@ -96,12 +96,28 @@ opencl_dep = declare_dependency(
 )
 
 
+gegl_def = 'gegl-generic.def'
 if host_cpu_family == 'x86_64'
   simd_extra = [lib_gegl_x86_64_v2, lib_gegl_x86_64_v3]
+  simd_extra_def = ['gegl-x86_64.def']
 elif host_cpu_family == 'arm'
   simd_extra = [lib_gegl_arm_neon]
+  simd_extra_def = []
 else
   simd_extra = []
+  simd_extra_def = []
+endif
+
+if not os_osx
+  gegl_def = custom_target('gegl.def',
+    input: [
+      'gegl-generic.def',
+      simd_extra_def,
+    ],
+    output: [ 'gegl.def', ],
+    command: [python, '-c', 'import sys; data="".join(open(f).read() for f in sys.argv[2:]); open(sys.argv[1],"w").write(data)', '@OUTPUT@', '@INPUT@'],
+    build_by_default: true,
+  )
 endif
 
 gegl_lib = library(api_name,
@@ -119,7 +135,7 @@ gegl_lib = library(api_name,
 
   link_with: simd_extra,
   link_args: gegl_ldflags,
-  vs_module_defs: 'gegl.def',
+  vs_module_defs: gegl_def,
   install: true,
   version: so_version,
 )

@@ -264,13 +264,7 @@ EXPORTS
   gegl_downscale_2x2
   gegl_downscale_2x2_generic
   gegl_downscale_2x2_get_fun_generic
-  gegl_downscale_2x2_get_fun_x86_64_v2
-  gegl_downscale_2x2_get_fun_x86_64_v3
   gegl_downscale_2x2_nearest_generic
-  gegl_downscale_2x2_nearest_x86_64_v2
-  gegl_downscale_2x2_nearest_x86_64_v3
-  gegl_downscale_2x2_x86_64_v2
-  gegl_downscale_2x2_x86_64_v3
   gegl_eval_manager_apply
   gegl_eval_manager_get_bounding_box
   gegl_eval_manager_get_type
@@ -723,16 +717,10 @@ EXPORTS
   gegl_render_op_valist
   gegl_resample_bilinear
   gegl_resample_bilinear_generic
-  gegl_resample_bilinear_x86_64_v2
-  gegl_resample_bilinear_x86_64_v3
   gegl_resample_boxfilter
   gegl_resample_boxfilter_generic
-  gegl_resample_boxfilter_x86_64_v2
-  gegl_resample_boxfilter_x86_64_v3
   gegl_resample_nearest
   gegl_resample_nearest_generic
-  gegl_resample_nearest_x86_64_v2
-  gegl_resample_nearest_x86_64_v3
   gegl_reset_stats
   gegl_resolution_unit_get_type  
   gegl_sampler_cubic_get_type

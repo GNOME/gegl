@@ -14,6 +14,13 @@ seamlessclone_headers = [
   'sc-sample.h',
 ]
 
+#Needed otherwise defcheck.py fails
+gegl_sc_def = configure_file(
+  input: 'gegl-sc.def',
+  output: 'gegl-sc.def',
+  copy: true
+)
+
 seamlessclone_lib = library('gegl-sc-' + api_version,
   seamlessclone_sources,
   include_directories: [ rootInclude, geglInclude, ],
@@ -22,7 +29,7 @@ seamlessclone_lib = library('gegl-sc-' + api_version,
     math,
     poly2tri_c,
   ],
-  vs_module_defs: 'gegl-sc.def',
+  vs_module_defs: gegl_sc_def,
   install: true,
 )
 
