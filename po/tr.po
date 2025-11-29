@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2025-11-10 19:10+0000\n"
-"PO-Revision-Date: 2025-11-16 13:51+0300\n"
+"POT-Creation-Date: 2025-11-26 12:57+0000\n"
+"PO-Revision-Date: 2025-11-27 00:44+0300\n"
 "Last-Translator: Sabri Ünal <yakushabb@gmail.com>\n"
 "Language-Team: Turkish <takim@gnome.org.tr>\n"
 "Language: tr\n"
@@ -907,7 +907,7 @@ msgstr ""
 
 #: operations/common/box-blur.c:404
 msgid "Box Blur"
-msgstr "Kutu Bulanıklığı"
+msgstr "Box Blur"
 
 #: operations/common/box-blur.c:407 operations/workshop/boxblur.c:76
 msgid "Blur resulting from averaging the colors of a square neighborhood."
@@ -940,7 +940,7 @@ msgstr "Parlaklığı artırma miktarı"
 
 #: operations/common/brightness-contrast.c:165
 msgid "Brightness Contrast"
-msgstr "Parlaklık Karşıtlığı"
+msgstr "Parlaklık-Karşıtlık"
 
 #: operations/common/brightness-contrast.c:170
 #, no-c-format
@@ -1494,9 +1494,10 @@ msgstr "küresel ağırlık ölçeği"
 msgid "amount"
 msgstr "miktar"
 
+# Konumu gereği başlık düzeni kullanıldı.
 #: operations/common/color-warp.c:337
 msgid "Color warp"
-msgstr "Renk çarpıt"
+msgstr "Renk Çarpıt"
 
 #: operations/common/color-warp.c:341
 msgid ""
@@ -2145,7 +2146,7 @@ msgstr "Kara düzey"
 msgid "Adjust the black level"
 msgstr "Kara düzeyini ayarla"
 
-#: operations/common/exposure.c:30 operations/common/exposure.c:480
+#: operations/common/exposure.c:30 operations/common/exposure.c:476
 #: operations/common/negative-darkroom.c:29
 msgid "Exposure"
 msgstr "Pozlama"
@@ -2154,7 +2155,7 @@ msgstr "Pozlama"
 msgid "Relative brightness change in stops"
 msgstr "Duraklarda göreceli parlaklık değişimi"
 
-#: operations/common/exposure.c:484
+#: operations/common/exposure.c:480
 msgid "Change exposure of an image in shutter speed stops"
 msgstr "Görüntünün pozlamasını deklanşör hızı duraklarında değiştir"
 
@@ -2344,11 +2345,11 @@ msgstr ""
 "Söz diziminde veya ayrıştırılmış özellik değerlerinin uygulanmasında bir "
 "sorun oluştu. Bazı şeyler yine de işe yarayabilir."
 
-#: operations/common/gegl.c:171
+#: operations/common/gegl.c:175
 msgid "GEGL graph"
 msgstr "GEGL graph"
 
-#: operations/common/gegl.c:174
+#: operations/common/gegl.c:178
 msgid ""
 "Do a chain of operations, with key=value pairs after each operation name to "
 "set properties. And aux=[ source filter ] for specifying a chain with a "
@@ -5250,9 +5251,10 @@ msgstr ""
 "Girdi tamponunu kusursuz döşe. Algoritma içerik duyarlı değildir, bu nedenle "
 "sonucun işlemden geçirilmesi gerekebilir."
 
+# Konumu gereği başlık düzeni kullanıldı.
 #: operations/common/unpremultiply.c:78
 msgid "Unpremultiply alpha"
-msgstr "Önceden çoğaltılmamış alfa"
+msgstr "Önceden Çoğaltılmamış Alfa"
 
 #: operations/common/unpremultiply.c:80
 msgid ""
@@ -9829,7 +9831,7 @@ msgid ""
 "pass."
 msgstr ""
 "Kenar bandı için öznitelik boyutu; ayrıntı katmanındaki kenar yitimini "
-"gidermede kullanılır"
+"gidermede kullanılır."
 
 #: operations/workshop/band-tune.c:45
 msgid ""
@@ -9847,9 +9849,10 @@ msgstr "Kenar bant genişliği"
 msgid "Visualize Adjustment Mask"
 msgstr "Ayarlama Maskesini Görselleştir"
 
+# Konumu gereği başlık düzeni kullanıldı.
 #: operations/workshop/band-tune.c:217
 msgid "Band tune"
-msgstr "Bant ince ayar"
+msgstr "Bant İnce Ayar"
 
 #: operations/workshop/band-tune.c:219
 msgid ""
@@ -9895,9 +9898,10 @@ msgstr ""
 "Satır komşuluğunun renklerinin ortalamasının alınmasından kaynaklanan "
 "bulanıklık."
 
+# Konumu gereği başlık düzeni kullanıldı.
 #: operations/workshop/boxblur.c:75
 msgid "BoxBlur"
-msgstr "BoxBlur"
+msgstr "Kutu Bulanıklığı"
 
 #: operations/workshop/connected-components.c:25
 msgid "Separator"
@@ -9963,11 +9967,11 @@ msgid ""
 "interpolation."
 msgstr ""
 "Görüntü üzerinde, çift ortanca ara değerleme kullanarak gri tonlamadan renge "
-"mozaik giderme işlemi gerçekleştirir"
+"mozaik giderme işlemi gerçekleştirir."
 
 #: operations/workshop/demosaic-simple.c:152
 msgid "Demosaic Without Interpolation"
-msgstr "Aradeğerleme Olmadan Demosaic"
+msgstr "Aradeğerleme Olmadan Mozaik Giderme"
 
 #: operations/workshop/demosaic-simple.c:155
 msgid ""
