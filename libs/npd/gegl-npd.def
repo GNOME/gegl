@@ -7,7 +7,6 @@ EXPORTS
   npd_create_square
   npd_cut_edges
   npd_deform_model
-  npd_destroy_model
   npd_draw_line
   npd_draw_mesh
   npd_draw_model_into_image

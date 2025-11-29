@@ -291,7 +291,6 @@ EXPORTS
   p2tr_triangle_remove
   p2tr_triangle_smallest_non_constrained_angle
   p2tr_triangle_unref
-  p2tr_utils_new_reversed_pointer_list
   p2tr_vector2_center
   p2tr_vector2_copy
   p2tr_vector2_dot

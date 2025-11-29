@@ -568,7 +568,6 @@ EXPORTS
   gegl_pad_get_connections
   gegl_pad_get_depends_on
   gegl_pad_get_format
-  gegl_pad_get_name
   gegl_pad_get_node
   gegl_pad_get_num_connections
   gegl_pad_get_param_spec
