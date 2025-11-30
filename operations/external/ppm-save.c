@@ -126,7 +126,18 @@ process (GeglOperation       *operation,
   gsize     numsamples;
   gboolean  ret = FALSE;
 
+#ifndef _WIN64
   fp = (!strcmp (o->path, "-") ? stdout : fopen(o->path, "wb") );
+#else
+  if (!strcmp (o->path, "-"))
+    {
+      fp = stdout;
+    }
+  else if (fopen_s (&fp, o->path, "wb") != 0)
+    {
+      fp = NULL;
+    }
+#endif
 
   if (!fp)
     return FALSE;
