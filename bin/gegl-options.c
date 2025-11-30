@@ -178,14 +178,25 @@ print_key_value (const gchar *key,
   gchar      *val              = g_strdup (value);
   gint        current_val_len;
   gchar      *token;
+#ifdef _WIN64
+  gchar      *context = NULL;
+#endif
 
+#ifndef _WIN64
   token = strtok (val, " \t\n\r");
+#else
+  token = strtok_s (val, " \t\n\r", &context);
+#endif
   if (token)
   {
     current_val_len = strlen (token);
     fprintf (stdout, "%-*s %s", padding, key, token);
 
+#ifndef _WIN64
     while ((token = strtok (NULL, " \t\n\r")))
+#else
+    while ((token = strtok_s (NULL, " \t\n\r", &context)))
+#endif
     {
       if (current_val_len + strlen (token) > max_value_length)
         {
