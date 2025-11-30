@@ -19,6 +19,10 @@
 #include "config.h"
 #include <glib/gi18n-lib.h>
 
+#if !defined(HAVE_UNISTD_H) && defined(_WIN64)
+#define getcwd(b,n) _getcwd(b,n)
+#endif
+
 #define TUTORIAL \
 "# uncomment a set of lines below by removing the\n"\
 "# leading to test and modify an example, use\n"\

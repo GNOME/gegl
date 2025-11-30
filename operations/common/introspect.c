@@ -25,6 +25,8 @@
 #if !defined (HAVE_UNISTD_H) && defined(_WIN64)
 #include <io.h>
 #define close _close
+#define write _write
+#define unlink _unlink
 #endif
 
 

@@ -25,6 +25,9 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+#if !defined(HAVE_UNISTD_H) && defined(_WIN64)
+#define unlink _unlink
+#endif
 #include <dirent.h>
 #include <math.h>
 #include <mrg.h>
