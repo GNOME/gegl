@@ -36,6 +36,7 @@ property_seed (seed, _("Random seed"), rand)
 #include "gegl-op.h"
 #include "gegl-debug.h"
 
+#ifndef _USE_MATH_DEFINES
 #define max(a,b) \
   ({ __typeof__ (a) _a = (a); \
   __typeof__ (b) _b = (b); \
@@ -45,6 +46,7 @@ property_seed (seed, _("Random seed"), rand)
   ({ __typeof__ (a) _a = (a); \
   __typeof__ (b) _b = (b); \
   _a > _b ? _b : _a; })
+#endif
 
 #define likely(x)       __builtin_expect((x),1)
 #define unlikely(x)       __builtin_expect((x),0)
