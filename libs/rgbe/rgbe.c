@@ -684,6 +684,13 @@ rgbe_read_new_rle (const rgbe_file *file,
 
           data++;
 
+          /* Check if there's enought space in the buffer to avoid OOB */
+          if (length > (pixels + RGBE_NUM_RGBE * linesize - pixoffset[component]) / RGBE_NUM_RGBE)
+            {
+              g_warning ("Buffer overflow detected.");
+              return FALSE;
+            }
+        
           /* A compressed run */
           if (rle)
             {
