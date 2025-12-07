@@ -1,4 +1,4 @@
-/* ctx-0.1.11 */
+/* ctx-0.1.14 */
 /*
  * Copyright (c) 2012, 2015, 2019, 2020, 2021, 2022, 2023, 2024, 2025
  * Øyvind Kolps <pippin@gimp.org> with contributors.
@@ -1136,7 +1136,7 @@ void ctx_radial_gradient (Ctx *ctx, float x0, float y0, float r0,
 
 /**
  * ctx_conic_gradient:
- * Change the source to a conic/conic gradient cenetered at cx,cy with gradient starting at angle start_angle.
+ * Change the source to a conic/conic gradient centered at cx,cy with gradient starting at angle start_angle.
  */
 void ctx_conic_gradient (Ctx *ctx, float cx, float cy, float start_angle, float cycles);
 
@@ -2356,7 +2356,7 @@ void vt_draw (VT *vt, Ctx *ctx, double x0, double y0, int has_focus);
 void vt_set_palette(VT *vt, int color_no, uint8_t red, uint8_t green, uint8_t blue);
 
 void
-vt_set_ctx_events_init (VT *vt, void (*ctx_events_init)(VT *vt, void *data), void *user_data);
+vt_set_ctx_events_init (void (*ctx_events_init)(VT *vt, void *data), void *user_data);
 
 typedef struct _CtxList CtxList;
 CtxList *ctx_clients (Ctx *ctx);
@@ -2403,6 +2403,10 @@ CtxClient *ctx_client_new_argv (Ctx *ctx, char **argv, int x, int y, int width, 
 int ctx_clients_need_redraw (Ctx *ctx);
 
 CtxClient *ctx_client_new_thread (Ctx *ctx, void (*start_routine)(Ctx *ctx, void *user_data),
+                                  int x, int y, int width, int height, float font_size, CtxClientFlags flags, void *user_data, CtxClientFinalize finalize);
+
+
+CtxClient *ctx_client_new_socket (Ctx *ctx, int socket,
                                   int x, int y, int width, int height, float font_size, CtxClientFlags flags, void *user_data, CtxClientFinalize finalize);
 
 extern float ctx_shape_cache_rate;
@@ -3648,10 +3652,10 @@ int       ctx_get_render_threads   (Ctx *ctx);
 #endif
 
 #ifndef CTX_VERSION_STRING
-#define CTX_VERSION_STRING "0.1.11"
+#define CTX_VERSION_STRING "0.1.15"
 #define CTX_VERSION_MAJOR 0
 #define CTX_VERSION_MINOR 1
-#define CTX_VERSION_MICRO 11
+#define CTX_VERSION_MICRO 15
 #endif
 #ifndef __CTX_H__
 #define __CTX_H__
@@ -4744,6 +4748,10 @@ int       ctx_get_render_threads   (Ctx *ctx);
 #define CTX_HOST 1
 #endif
 
+
+#ifndef CTX_SOCKETS
+#define CTX_SOCKETS 0
+#endif
 #ifndef _DEFAULT_SOURCE
 #define _DEFAULT_SOURCE
 #endif
@@ -8310,7 +8318,6 @@ struct _CtxControl{
 float css_panel_scroll (Css *itk);
 void css_panel_set_scroll (Css *itk, float scroll);
 
-typedef struct _Css          Css;
 typedef struct _CtxStyle     CtxStyle;
 
 void css_start            (Css *mrg, const char *class_name, void *id_ptr);
@@ -8382,8 +8389,8 @@ int css_xml_extent (Css *mrg, uint8_t *contents, float *width, float *height, fl
 #define SQZ_bidi_override 29328268u // "bidi-override"
 #define SQZ_black 271321868u // "black"
 #define SQZ_blend 316843154u // "blend"
-#define SQZ_blending 3694082958u // "blending"
 #define SQZ_blendMode 644815934u // "blendMode"
+#define SQZ_blending 3694082958u // "blending"
 #define SQZ_blink 2515894180u // "blink"
 #define SQZ_block 2220858820u // "block"
 #define SQZ_blue 1702194373u // "blue"
@@ -8423,14 +8430,14 @@ int css_xml_extent (Css *mrg, uint8_t *contents, float *width, float *height, fl
 #define SQZ_clip 1885957319u // "clip"
 #define SQZ_closePath 3537486488u // "closePath"
 #define SQZ_cmyk 1803120071u // "cmyk"
-#define SQZ_cmyka 3355381580u // "cmyka"
-#define SQZ_cmykaS 3917993734u // "cmykaS"
 #define SQZ_cmykS 3263315852u // "cmykS"
 #define SQZ_cmykSpace 2366647638u // "cmykSpace"
+#define SQZ_cmyka 3355381580u // "cmyka"
+#define SQZ_cmykaS 3917993734u // "cmykaS"
+#define SQZ_col_resize 2272161114u // "col-resize"
 #define SQZ_colgroup 4270888898u // "colgroup"
 #define SQZ_color 4231809138u // "color"
 #define SQZ_colorSpace 4246256736u // "colorSpace"
-#define SQZ_col_resize 2272161114u // "col-resize"
 #define SQZ_compositingMode 3764262848u // "compositingMode"
 #define SQZ_conicGradient 1669326832u // "conicGradient"
 #define SQZ_context_menu 434478918u // "context-menu"
@@ -8465,17 +8472,17 @@ int css_xml_extent (Css *mrg, uint8_t *contents, float *width, float *height, fl
 #define SQZ_div 7760329u // "div"
 #define SQZ_dotted 1961166438u // "dotted"
 #define SQZ_drgb 1650946761u // "drgb"
-#define SQZ_drgba 465014226u // "drgba"
-#define SQZ_drgbaS 2465325300u // "drgbaS"
 #define SQZ_drgbS 179784888u // "drgbS"
 #define SQZ_drgbSpace 1000873868u // "drgbSpace"
+#define SQZ_drgba 465014226u // "drgba"
+#define SQZ_drgbaS 2465325300u // "drgbaS"
 #define SQZ_dt 29897u // "dt"
+#define SQZ_e_resize 3569673796u // "e-resize"
 #define SQZ_ellipse 3790670476u // "ellipse"
 #define SQZ_embed 3279610738u // "embed"
 #define SQZ_end 6581963u // "end"
 #define SQZ_endFrame 2645960260u // "endFrame"
 #define SQZ_endGroup 2864376370u // "endGroup"
-#define SQZ_e_resize 3569673796u // "e-resize"
 #define SQZ_euro 1869772235u // "euro"
 #define SQZ_evenOdd 3373267632u // "evenOdd"
 #define SQZ_evenodd 1852152574u // "evenodd"
@@ -8484,17 +8491,17 @@ int css_xml_extent (Css *mrg, uint8_t *contents, float *width, float *height, fl
 #define SQZ_feather 4162344430u // "feather"
 #define SQZ_file 1701603789u // "file"
 #define SQZ_fill 1819044301u // "fill"
-#define SQZ_fill_color 2350805940u // "fill-color"
 #define SQZ_fillRect 3070816944u // "fillRect"
 #define SQZ_fillRule 2262201016u // "fillRule"
+#define SQZ_fill_color 2350805940u // "fill-color"
 #define SQZ_fill_rule 1151472398u // "fill-rule"
 #define SQZ_first_child 439258010u // "first-child"
 #define SQZ_fixed 778407114u // "fixed"
 #define SQZ_float 2455282620u // "float"
 #define SQZ_flow_root 518738066u // "flow-root"
 #define SQZ_font 1953394637u // "font"
-#define SQZ_font_family 2798191102u // "font-family"
 #define SQZ_fontSize 2620910512u // "fontSize"
+#define SQZ_font_family 2798191102u // "font-family"
 #define SQZ_font_size 3477901146u // "font-size"
 #define SQZ_font_style 2628706306u // "font-style"
 #define SQZ_font_weight 1197895732u // "font-weight"
@@ -8509,9 +8516,9 @@ int css_xml_extent (Css *mrg, uint8_t *contents, float *width, float *height, fl
 #define SQZ_gradientTransform 1288938878u // "gradientTransform"
 #define SQZ_gradientUnits 2968072588u // "gradientUnits"
 #define SQZ_gray 2036429519u // "gray"
+#define SQZ_grayS 417614710u // "grayS"
 #define SQZ_graya 2560443068u // "graya"
 #define SQZ_grayaS 2408801086u // "grayaS"
-#define SQZ_grayS 417614710u // "grayS"
 #define SQZ_green 1517032782u // "green"
 #define SQZ_gt 29903u // "gt"
 #define SQZ_hanging 72134188u // "hanging"
@@ -8540,31 +8547,31 @@ int css_xml_extent (Css *mrg, uint8_t *contents, float *width, float *height, fl
 #define SQZ_justify 233888506u // "justify"
 #define SQZ_kerningPair 2079485344u // "kerningPair"
 #define SQZ_lab 6447577u // "lab"
+#define SQZ_labS 1398956505u // "labS"
 #define SQZ_laba 1633837529u // "laba"
 #define SQZ_labaS 4170772618u // "labaS"
-#define SQZ_labS 1398956505u // "labS"
 #define SQZ_laquo 64667100u // "laquo"
 #define SQZ_lch 6841305u // "lch"
+#define SQZ_lchS 1399350233u // "lchS"
 #define SQZ_lcha 1634231257u // "lcha"
 #define SQZ_lchaS 2598918966u // "lchaS"
-#define SQZ_lchS 1399350233u // "lchS"
 #define SQZ_left 1952867801u // "left"
 #define SQZ_letter_spacing 1326564462u // "letter-spacing"
 #define SQZ_li 27097u // "li"
 #define SQZ_lighten 2693650260u // "lighten"
 #define SQZ_lime 1701669337u // "lime"
 #define SQZ_line 1701734873u // "line"
-#define SQZ_linearGradient 905023680u // "linearGradient"
 #define SQZ_lineCap 3957741450u // "lineCap"
 #define SQZ_lineDash 2886130602u // "lineDash"
 #define SQZ_lineDashOffset 1904302200u // "lineDashOffset"
 #define SQZ_lineHeight 1698077880u // "lineHeight"
-#define SQZ_line_height 3733591786u // "line-height"
 #define SQZ_lineJoin 3891781172u // "lineJoin"
-#define SQZ_linethrough 34244248u // "linethrough"
 #define SQZ_lineTo 3077153258u // "lineTo"
 #define SQZ_lineWidth 3851910782u // "lineWidth"
+#define SQZ_line_height 3733591786u // "line-height"
 #define SQZ_line_width 1869007654u // "line-width"
+#define SQZ_linearGradient 905023680u // "linearGradient"
+#define SQZ_linethrough 34244248u // "linethrough"
 #define SQZ_link 1802398169u // "link"
 #define SQZ_list_item 2339943222u // "list-item"
 #define SQZ_lower 697158190u // "lower"
@@ -8579,8 +8586,8 @@ int css_xml_extent (Css *mrg, uint8_t *contents, float *width, float *height, fl
 #define SQZ_margin_top 625296560u // "margin-top"
 #define SQZ_maroon 3386542482u // "maroon"
 #define SQZ_max_height 129479668u // "max-height"
-#define SQZ_maximize 4009606768u // "maximize"
 #define SQZ_max_width 713333008u // "max-width"
+#define SQZ_maximize 4009606768u // "maximize"
 #define SQZ_mdash 2043309408u // "mdash"
 #define SQZ_meta 1635018203u // "meta"
 #define SQZ_middle 2223770148u // "middle"
@@ -8592,6 +8599,7 @@ int css_xml_extent (Css *mrg, uint8_t *contents, float *width, float *height, fl
 #define SQZ_move 1702260699u // "move"
 #define SQZ_moveTo 3083476356u // "moveTo"
 #define SQZ_multiply 3976122014u // "multiply"
+#define SQZ_n_resize 202450980u // "n-resize"
 #define SQZ_navy 2037801437u // "navy"
 #define SQZ_nbsp 1886610141u // "nbsp"
 #define SQZ_ne_resize 2436514350u // "ne-resize"
@@ -8605,7 +8613,6 @@ int css_xml_extent (Css *mrg, uint8_t *contents, float *width, float *height, fl
 #define SQZ_normal 1883425054u // "normal"
 #define SQZ_not_allowed 224860282u // "not-allowed"
 #define SQZ_nowrap 3884678112u // "nowrap"
-#define SQZ_n_resize 202450980u // "n-resize"
 #define SQZ_ns_resize 1753032392u // "ns-resize"
 #define SQZ_nw_resize 3642132534u // "nw-resize"
 #define SQZ_oblique 2262696070u // "oblique"
@@ -8636,8 +8643,8 @@ int css_xml_extent (Css *mrg, uint8_t *contents, float *width, float *height, fl
 #define SQZ_pound 363756384u // "pound"
 #define SQZ_pre 6648545u // "pre"
 #define SQZ_pre_line 4122418998u // "pre-line"
-#define SQZ_preserve 1666261276u // "preserve"
 #define SQZ_pre_wrap 837003298u // "pre-wrap"
+#define SQZ_preserve 1666261276u // "preserve"
 #define SQZ_print_symbols 669612738u // "print-symbols"
 #define SQZ_progress 2815872894u // "progress"
 #define SQZ_purple 3066163412u // "purple"
@@ -8654,23 +8661,23 @@ int css_xml_extent (Css *mrg, uint8_t *contents, float *width, float *height, fl
 #define SQZ_reg 6776293u // "reg"
 #define SQZ_rel 7103973u // "rel"
 #define SQZ_relArcTo 4253296276u // "relArcTo"
-#define SQZ_relative 979899102u // "relative"
 #define SQZ_relCurveTo 2548821600u // "relCurveTo"
 #define SQZ_relHorLineTo 3243288302u // "relHorLineTo"
 #define SQZ_relLineTo 1630005260u // "relLineTo"
 #define SQZ_relMoveTo 429673596u // "relMoveTo"
 #define SQZ_relQuadTo 2362773920u // "relQuadTo"
-#define SQZ_relSmoothqTo 2960208730u // "relSmoothqTo"
 #define SQZ_relSmoothTo 1725151068u // "relSmoothTo"
+#define SQZ_relSmoothqTo 2960208730u // "relSmoothqTo"
 #define SQZ_relVerLineTo 1112835164u // "relVerLineTo"
+#define SQZ_relative 979899102u // "relative"
 #define SQZ_resetPath 2864022032u // "resetPath"
 #define SQZ_restore 1405984258u // "restore"
 #define SQZ_reverse 2464792996u // "reverse"
 #define SQZ_rgb 6449125u // "rgb"
-#define SQZ_rgba 1633839077u // "rgba"
-#define SQZ_rgbaS 4158357036u // "rgbaS"
 #define SQZ_rgbS 1398958053u // "rgbS"
 #define SQZ_rgbSpace 1625332122u // "rgbSpace"
+#define SQZ_rgba 1633839077u // "rgba"
+#define SQZ_rgbaS 4158357036u // "rgbaS"
 #define SQZ_right 1751820526u // "right"
 #define SQZ_rotate 1488065704u // "rotate"
 #define SQZ_round 3173447652u // "round"
@@ -8679,12 +8686,13 @@ int css_xml_extent (Css *mrg, uint8_t *contents, float *width, float *height, fl
 #define SQZ_rtl 7107813u // "rtl"
 #define SQZ_rx 30949u // "rx"
 #define SQZ_ry 31205u // "ry"
+#define SQZ_s_resize 125328402u // "s-resize"
 #define SQZ_save 1702257127u // "save"
 #define SQZ_scale 2647970994u // "scale"
 #define SQZ_screen 3670530854u // "screen"
 #define SQZ_scroll 3099410214u // "scroll"
-#define SQZ_sect 1952671207u // "sect"
 #define SQZ_se_resize 315956726u // "se-resize"
+#define SQZ_sect 1952671207u // "sect"
 #define SQZ_setFontSize 231476456u // "setFontSize"
 #define SQZ_setLineCap 174619460u // "setLineCap"
 #define SQZ_setLineJoin 4048631422u // "setLineJoin"
@@ -8706,7 +8714,6 @@ int css_xml_extent (Css *mrg, uint8_t *contents, float *width, float *height, fl
 #define SQZ_spreadMethod 3574032566u // "spreadMethod"
 #define SQZ_square 239664392u // "square"
 #define SQZ_src 6517479u // "src"
-#define SQZ_s_resize 125328402u // "s-resize"
 #define SQZ_start 4080984002u // "start"
 #define SQZ_startFrame 2128007688u // "startFrame"
 #define SQZ_startGroup 4085444064u // "startGroup"
@@ -8715,13 +8722,13 @@ int css_xml_extent (Css *mrg, uint8_t *contents, float *width, float *height, fl
 #define SQZ_stop_color 1175890462u // "stop-color"
 #define SQZ_stop_opacity 250359768u // "stop-opacity"
 #define SQZ_stroke 1444212908u // "stroke"
+#define SQZ_strokePos 888669104u // "strokePos"
+#define SQZ_strokeRect 1131907664u // "strokeRect"
+#define SQZ_strokeSource 2685374474u // "strokeSource"
 #define SQZ_stroke_color 1804158464u // "stroke-color"
 #define SQZ_stroke_linecap 535668102u // "stroke-linecap"
 #define SQZ_stroke_linejoin 1888005366u // "stroke-linejoin"
 #define SQZ_stroke_miterlimit 1499817720u // "stroke-miterlimit"
-#define SQZ_strokePos 888669104u // "strokePos"
-#define SQZ_strokeRect 1131907664u // "strokeRect"
-#define SQZ_strokeSource 2685374474u // "strokeSource"
 #define SQZ_stroke_width 2655701078u // "stroke-width"
 #define SQZ_style 3511288852u // "style"
 #define SQZ_sub 6452711u // "sub"
@@ -8732,18 +8739,18 @@ int css_xml_extent (Css *mrg, uint8_t *contents, float *width, float *height, fl
 #define SQZ_svg 6780647u // "svg"
 #define SQZ_sw_resize 2121684268u // "sw-resize"
 #define SQZ_syntax_highlight 1534043236u // "syntax-highlight"
-#define SQZ_table 2705307032u // "table"
 #define SQZ_tab_size 945510526u // "tab-size"
+#define SQZ_table 2705307032u // "table"
 #define SQZ_tbody 3472781808u // "tbody"
 #define SQZ_td 25833u // "td"
 #define SQZ_teal 1818322409u // "teal"
 #define SQZ_text 1954047465u // "text"
 #define SQZ_textAlign 3594701278u // "textAlign"
+#define SQZ_textBaseline 1453773018u // "textBaseline"
+#define SQZ_textDirection 1179776176u // "textDirection"
 #define SQZ_text_align 519203916u // "text-align"
 #define SQZ_text_anchor 2618811808u // "text-anchor"
-#define SQZ_textBaseline 1453773018u // "textBaseline"
 #define SQZ_text_decoration 2191990606u // "text-decoration"
-#define SQZ_textDirection 1179776176u // "textDirection"
 #define SQZ_text_indent 1164860048u // "text-indent"
 #define SQZ_text_stroke 3855125514u // "text-stroke"
 #define SQZ_text_stroke_color 357760164u // "text-stroke-color"
@@ -8774,6 +8781,7 @@ int css_xml_extent (Css *mrg, uint8_t *contents, float *width, float *height, fl
 #define SQZ_viewbox 816983354u // "viewbox"
 #define SQZ_visibility 4182119682u // "visibility"
 #define SQZ_visible 2712656970u // "visible"
+#define SQZ_w_resize 505786646u // "w-resize"
 #define SQZ_white 518020662u // "white"
 #define SQZ_white_space 2063040106u // "white-space"
 #define SQZ_width 3799171678u // "width"
@@ -8781,7 +8789,6 @@ int css_xml_extent (Css *mrg, uint8_t *contents, float *width, float *height, fl
 #define SQZ_word_spacing 2779764612u // "word-spacing"
 #define SQZ_wrapLeft 3331521568u // "wrapLeft"
 #define SQZ_wrapRight 1810250152u // "wrapRight"
-#define SQZ_w_resize 505786646u // "w-resize"
 #define SQZ_x 241u // "x"
 #define SQZ_x1 12785u // "x1"
 #define SQZ_x2 13041u // "x2"
@@ -12584,6 +12591,7 @@ struct _CtxClient {
 };
 
 
+void ctx_unix_server (Ctx *ctx, const char *path);
 void ctx_client_lock (CtxClient *client);
 void ctx_client_unlock (CtxClient *client);
 void ctx_set_focus_cb (Ctx *ctx, void(*focus_cb)(Ctx *ctx, int id, void *user_data), void *user_data);
@@ -14061,6 +14069,7 @@ void ctx_svg_arc_to (Ctx *ctx, float rx, float ry,
  * Clears registered key-bindings.
  */
 void  ctx_clear_bindings     (Ctx *ctx);
+Ctx *ctx_new_unix (int width, int height, int flags, const char *path);
 Ctx *ctx_new_net (int width, int height, int flags, const char *hostip, int port);
 Ctx *ctx_new_fds (int width, int height, int in_fd, int out_fd, int flags);
 
@@ -14140,7 +14149,7 @@ _ctx_transform_prime (CtxState *state)
    {
      state->gstate.tolerance = 0.25f/scale;
      state->gstate.tolerance *= state->gstate.tolerance;
-     state->gstate.tolerance_fixed =
+     state->gstate.tolerance_fixed = (long)
      (state->gstate.tolerance * CTX_FIX_SCALE * CTX_FIX_SCALE);
    }
 }
@@ -14417,7 +14426,7 @@ void ctx_term_destroy (CtxTerm *term);
 typedef struct _CtxNet CtxNet;
 void ctx_net_destroy (CtxNet *net);
 extern CtxList *registered_contents;
-void ctx_parser_feed_byte (CtxParser *parser, char byte);
+void ctx_parser_feed_byte (CtxParser *parser, char byte, int accumulate);
 inline static void
 ctx_332_unpack (uint8_t pixel,
                 uint8_t *red,
@@ -14450,6 +14459,7 @@ void ctx_cmyk_to_rgb (float c, float m, float y, float k, float *r, float *g, fl
 
 
 CtxFont *_ctx_font_from_no(int no);
+char *ctx_socket_path (void);
 
 void ctx_draw_pointer_ (Ctx *ctx, float x, float y, float size,
                         CtxCursor cursor);
@@ -17682,9 +17692,9 @@ ctx_fragment_conic_gradient_RGBA8 (CtxRasterizer *rasterizer, float x, float y, 
   float cy = g->conic_gradient.y;
   float offset = g->conic_gradient.start_angle;
   float cycles = g->conic_gradient.cycles;
-  if (cycles < 0.01) cycles = 1.0f;
+  if (cycles < 0.01f) cycles = 1.0f;
 
-  float scale = cycles/(M_PI * 2);
+  float scale = cycles/(float)(M_PI * 2);
 #if CTX_GRADIENT_CACHE
   float fscale = (rasterizer->gradient_cache_elements-1) * 256;
 #endif
@@ -17692,14 +17702,14 @@ ctx_fragment_conic_gradient_RGBA8 (CtxRasterizer *rasterizer, float x, float y, 
   x-=cx;
   y-=cy;
 
-  offset += M_PI;
+  offset += (float)M_PI;
 
   uint8_t global_alpha_u8 = rasterizer->state->gstate.global_alpha_u8;
   if (global_alpha_u8 != 255)
   for (int i = 0; i < count ; i++)
   {
 #if CTX_GRADIENT_CACHE
-    int vv = ctx_fmod1f((ctx_atan2f (x,y) + offset) * scale) * fscale;
+    int vv = (int)(ctx_fmod1f((ctx_atan2f (x,y) + offset) * scale) * fscale);
   *((uint32_t*)rgba) = *((uint32_t*)(&rasterizer->gradient_cache_u8[ctx_grad_index_i (rasterizer, vv)][0]));
 #else
     float vv = ctx_fmod1f((ctx_atan2f (x,y) + offset) * scale);
@@ -17722,7 +17732,7 @@ ctx_fragment_conic_gradient_RGBA8 (CtxRasterizer *rasterizer, float x, float y, 
   for (int i = 0; i < count ; i++)
   {
 #if CTX_GRADIENT_CACHE
-    int vv = ctx_fmod1f((ctx_atan2f_rest (x,y_recip) + offset) * scale) * fscale;
+    int vv = (int)(ctx_fmod1f((ctx_atan2f_rest (x,y_recip) + offset) * scale) * fscale);
   *((uint32_t*)rgba) = *((uint32_t*)(&rasterizer->gradient_cache_u8[ctx_grad_index_i (rasterizer, vv)][0]));
 #else
     float vv = ctx_fmod1f((ctx_atan2f_rest (x,y_recip) + offset) * scale);
@@ -17739,7 +17749,7 @@ ctx_fragment_conic_gradient_RGBA8 (CtxRasterizer *rasterizer, float x, float y, 
   for (int i = 0; i < count ; i++)
   {
 #if CTX_GRADIENT_CACHE
-    int vv = ctx_fmod1f((ctx_atan2f (x,y) + offset) * scale) * fscale;
+    int vv = (int)(ctx_fmod1f((ctx_atan2f (x,y) + offset) * scale) * fscale);
   *((uint32_t*)rgba) = *((uint32_t*)(&rasterizer->gradient_cache_u8[ctx_grad_index_i (rasterizer, vv)][0]));
 #else
     float vv = ctx_fmod1f((ctx_atan2f (x,y) + offset) * scale);
@@ -17900,9 +17910,9 @@ ctx_fragment_conic_gradient_RGBAF (CtxRasterizer *rasterizer, float x, float y, 
   float cy = g->conic_gradient.y;
   float offset = g->conic_gradient.start_angle;
   float cycles = g->conic_gradient.cycles;
-  if (cycles < 0.01) cycles = 1.0f;
+  if (cycles < 0.01f) cycles = 1.0f;
 
-  float scale = cycles/(M_PI * 2);
+  float scale = cycles/(float)(M_PI * 2);
 
   x-=cx;
   y-=cy;
@@ -18005,9 +18015,9 @@ ctx_matrix_determinant (const CtxMatrix *m);
 static int ctx_valid_transform(CtxMatrix *transform)
 {
   float limit = 32000;
-  if ((int)(ctx_fabsf (transform->m[0][0]) < (1.0/limit)) |
-      (int)(ctx_fabsf (transform->m[1][1]) < (1.0/limit)) |
-      (int)(ctx_fabsf (transform->m[2][2]) < (1.0/limit)))
+  if ((int)(ctx_fabsf (transform->m[0][0]) < (1.0f/limit)) |
+      (int)(ctx_fabsf (transform->m[1][1]) < (1.0f/limit)) |
+      (int)(ctx_fabsf (transform->m[2][2]) < (1.0f/limit)))
          return 0;
   for (int i = 0; i < 3; i++)
     for (int j = 0; j < 3; j++)
@@ -21900,8 +21910,8 @@ static inline void ctx_RGBA8_image_rgba8_RGBA8_nearest_fill_rect_copy (CtxRaster
 #endif
   int bwidth  = buffer->width;
   int bheight = buffer->height;
-  int u = u0;// + 0.5f;
-  int v = v0;// + 0.5f;
+  int u = (int)u0;// + 0.5f;
+  int v = (int)v0;// + 0.5f;
 
   uint32_t *src = ((uint32_t*)buffer->data) + bwidth * v + u;
 
@@ -22364,10 +22374,10 @@ CTX_SIMD_SUFFIX (ctx_composite_fill_rect) (CtxRasterizer *rasterizer,
   has_right *= !(x1 >= blit_x + blit_width);
   has_bottom *= !(y1 >= blit_y + blit_height);
 
-  x0 = ctx_maxi (x0, blit_x);
-  x1 = ctx_mini (x1, blit_x + blit_width);
-  y0 = ctx_maxi (y0, blit_y);
-  y1 = ctx_mini (y1, blit_y + blit_height);
+  x0 = ctx_maxi ((int)x0, blit_x);
+  x1 = ctx_mini ((int)x1, blit_x + blit_width);
+  y0 = ctx_maxi ((int)y0, blit_y);
+  y1 = ctx_mini ((int)y1, blit_y + blit_height);
   x0 = ctx_floorf (x0);
   y0 = ctx_floorf (y0);
   x1 = ctx_floorf (x1);
@@ -23168,9 +23178,9 @@ static inline float dist_to_edge (int u, int v, CtxSegment *__restrict__ entries
 
 static inline float smin_exp( float a, float b, float k )
 {
-    k *= 1.0;
-    float r = exp2(-a/k) + exp2(-b/k);
-    return -k*log2(r);
+    k *= 1.0f;
+    float r = exp2f(-a/k) + exp2f(-b/k);
+    return -k*log2f(r);
 }
 
 static inline float smin_cubic( float a, float b, float k )
@@ -23216,7 +23226,7 @@ static inline uint8_t gaussian_approximation(float x)
   x+= 0.5f;
   if (x > 1.0f) return 255;
   if (x < 0.0f) return 0;
-  return x * 255.0f;
+  return (uint8_t)(x * 255.0f);
 }
 
 #ifndef CTX_RASTERIZER_SDF_SKIP
@@ -23238,9 +23248,9 @@ ctx_rasterizer_generate_sdf (CtxRasterizer *rasterizer,
   int shadow_active_edges    = rasterizer->shadow_active_edges;
   int scanline        = rasterizer->scanline;
   int parity        = 0;
-  float inv_blur = 1.0/(blur * CTX_FULL_AA);
+  float inv_blur = 1.0f/(blur * CTX_FULL_AA);
 #if CTX_RASTERIZER_SDF_SKIP
-  const int skip_len = blur / 2 + 1;
+  const int skip_len = (int)(blur / 2 + 1);
   // how far ahead we jump looking for
                           // same alpha runs - speeding up solid/blank and
 #endif
@@ -28554,7 +28564,7 @@ static mz_bool tdefl_compress_block(tdefl_compressor *d, mz_bool static_block)
     return tdefl_compress_lz_codes(d);
 }
 
-static const mz_uint s_tdefl_num_probes[11];
+static const mz_uint s_tdefl_num_probes[11] = { 0, 1, 6, 32, 16, 32, 128, 256, 512, 768, 1500 };
 
 static int tdefl_flush_block(tdefl_compressor *d, int flush)
 {
@@ -29413,7 +29423,6 @@ size_t tdefl_compress_mem_to_mem(void *pOut_buf, size_t out_buf_len, const void 
     return out_buf.m_size;
 }
 
-static const mz_uint s_tdefl_num_probes[11] = { 0, 1, 6, 32, 16, 32, 128, 256, 512, 768, 1500 };
 
 /* level may actually range from [0,10] (10 is a "hidden" max level, where we want a bit more compression and it's fine if throughput to fall off a cliff on some files). */
 mz_uint tdefl_create_comp_flags_from_zip_params(int level, int window_bits, int strategy)
@@ -38060,7 +38069,7 @@ void *ctx_state_get_blob (CtxState *state, uint32_t key)
 
   ctx_num_idx ++;
   if (ctx_num_idx >=8) ctx_num_idx = 0;
-  snprintf (&ctx_kv_num[ctx_num_idx][0], 31, "%.6f", stored);
+  snprintf (&ctx_kv_num[ctx_num_idx][0], 31, "%.6f", (double)stored);
 
   return ctx_kv_num[ctx_num_idx];
 }
@@ -40674,7 +40683,7 @@ typedef struct CtxRawKey{
   int scan;
 } CtxRawKey;
 
-static const CtxRawKey raw_key_map[];
+extern const CtxRawKey *raw_key_map;
 
 #if CTX_PTY
 int ctx_fd_supports_ctx_protocol (int outfd, int infd)
@@ -40915,6 +40924,22 @@ Ctx *ctx_new_ui (int width, int height, const char *backend)
    *
    */
    #if CTX_NET
+  if ((!ret && (backend && !strncmp(backend, "unix", 4))) ||
+      (backend == NULL))
+  {
+    const char *path = ctx_socket_path ();
+    char *dup = NULL;
+    if (backend)
+    {
+    dup = strdup (backend);
+    if (strchr(dup, ':'))
+      path = strchr (dup, ':') + 1;
+    }
+    ret = ctx_new_unix (width, height, flags, path);
+    if (dup)
+      free (dup);
+  }
+
   if (!ret && (backend && !strncmp(backend, "tcp", 3)))
   {
     char *dup = strdup (backend);
@@ -41043,7 +41068,7 @@ int ctx_main (Ctx *in_ctx,
     if (ctx_need_redraw (ctx))
     {
       float delta_s = ctx_start_frame (ctx);
-      if (delta_s > 0.2)
+      if (delta_s > 0.2f)
         delta_s = 0.0;
       fun (ctx, delta_s, user_data);
       ctx_end_frame (ctx);
@@ -41375,7 +41400,7 @@ void ctx_remove_idle (Ctx *ctx, int handle)
 
   while (ctx->events.idles_to_remove)
   {
-    CtxIdleCb *item = ctx->events.idles_to_remove->data;
+    CtxIdleCb *item = (CtxIdleCb*)ctx->events.idles_to_remove->data;
     ctx_list_remove (&ctx->events.idles, item);
     ctx_list_remove (&ctx->events.idles_to_remove, item);
     if (item->destroy_notify)
@@ -41605,7 +41630,7 @@ void ctx_listen_full (Ctx     *ctx,
       }
     }
 
-    item = ctx_calloc (1, sizeof (CtxItem));
+    item = (CtxItem*) ctx_calloc (1, sizeof (CtxItem));
     item->x0 = x;
     item->y0 = y;
     item->x1 = x + width;
@@ -41694,7 +41719,7 @@ void ctx_listen (Ctx          *ctx,
   }
 
   if (types & CTX_DRAG_MOTION)
-    types |= CTX_DRAG_PRESS;
+    types = (CtxEventType)(types|CTX_DRAG_PRESS);
   ctx_listen_full (ctx, x, y, width, height, types, cb, data1, data2, NULL, NULL);
 }
 
@@ -41744,6 +41769,11 @@ static void ctx_report_hit_region (CtxEvent *event,
   // XXX: NYI
 }
 
+static void ctx_free_w (void *a, void *b, void *d)
+{
+  ctx_free (a);
+}
+
 void ctx_add_hit_region (Ctx *ctx, const char *id)
 {
   char *id_copy = ctx_strdup (id);
@@ -41760,7 +41790,7 @@ void ctx_add_hit_region (Ctx *ctx, const char *id)
   
   ctx_listen_full (ctx, x, y, width, height,
                    CTX_POINTER, ctx_report_hit_region,
-                   id_copy, NULL, (void*)ctx_free, NULL);
+                   id_copy, NULL, ctx_free_w, NULL);
 }
 
 typedef struct _CtxGrab CtxGrab;
@@ -41795,7 +41825,7 @@ static void device_remove_grab (Ctx *ctx, CtxGrab *grab)
 
 static CtxGrab *device_add_grab (Ctx *ctx, int device_no, CtxItem *item, CtxEventType type)
 {
-  CtxGrab *grab = ctx_calloc (1, sizeof (CtxGrab));
+  CtxGrab *grab = (CtxGrab*)ctx_calloc (1, sizeof (CtxGrab));
   grab->item = item;
   grab->type = type;
   _ctx_item_ref (item);
@@ -41810,7 +41840,7 @@ static CtxList *_ctx_device_get_grabs (Ctx *ctx, int device_no)
   CtxList *l;
   for (l = ctx->events.grabs; l; l = l->next)
   {
-    CtxGrab *grab = l->data;
+    CtxGrab *grab = (CtxGrab*)l->data;
     if (grab->device_no == device_no)
       ctx_list_append (&ret, grab);
   }
@@ -41841,7 +41871,7 @@ CtxList *_ctx_detect_list (Ctx *ctx, float x, float y, CtxEventType type)
   {
     for (a = ctx->events.items; a; a = a->next)
     {
-      CtxItem *item = a->data;
+      CtxItem *item = (CtxItem*)a->data;
       if (item->types & type)
       {
         ctx_list_prepend (&ret, item);
@@ -41853,7 +41883,7 @@ CtxList *_ctx_detect_list (Ctx *ctx, float x, float y, CtxEventType type)
 
   for (a = ctx->events.items; a; a = a->next)
   {
-    CtxItem *item= a->data;
+    CtxItem *item = (CtxItem*)a->data;
   
     float u, v;
     u = x;
@@ -41868,7 +41898,7 @@ CtxList *_ctx_detect_list (Ctx *ctx, float x, float y, CtxEventType type)
       if (item->path)
       {
         // XXX  - is this done on wrongly transformed coordinates?
-        if (ctx_in_fill_path (ctx, u, v, item->path))
+        if (ctx_in_fill_path (ctx, u, v, (CtxDrawlist*)item->path))
         {
           ctx_list_prepend (&ret, item);
         }
@@ -41888,7 +41918,7 @@ CtxItem *_ctx_detect (Ctx *ctx, float x, float y, CtxEventType type)
   if (l)
   {
     ctx_list_reverse (&l);
-    CtxItem *ret = l->data;
+    CtxItem *ret = (CtxItem*)l->data;
     ctx_list_free (&l);
     return ret;
   }
@@ -42040,7 +42070,7 @@ _ctx_emit_cb (Ctx *ctx, CtxList *items, CtxEvent *event, CtxEventType type, floa
   event->stop_propagate = 0;
   for (l = items; l; l = l->next)
   {
-    _ctx_emit_cb_item (ctx, l->data, event, type, x, y);
+    _ctx_emit_cb_item (ctx, (CtxItem*)l->data, event, type, x, y);
     if (event->stop_propagate)
       return event->stop_propagate;
   }
@@ -42060,7 +42090,7 @@ static CtxItem *_ctx_update_item (Ctx *ctx, int device_no, float x, float y, Ctx
   if (l)
   {
     ctx_list_reverse (&l);
-    current = l->data;
+    current = (CtxItem*)l->data;
   }
   if (hitlist)
     *hitlist = l;
@@ -42122,10 +42152,10 @@ static CtxItem *_ctx_update_item (Ctx *ctx, int device_no, float x, float y, Ctx
 
 static int tap_and_hold_fire (Ctx *ctx, void *data)
 {
-  CtxGrab *grab = data;
+  CtxGrab *grab = (CtxGrab*)data;
   CtxList *list = NULL;
   ctx_list_prepend (&list, grab->item);
-  CtxEvent event = {0, };
+  CtxEvent event = {(CtxEventType)0, };
 
   event.ctx = ctx;
   event.time = ctx_ms (ctx);
@@ -42181,11 +42211,11 @@ ctx_pointer_drop (Ctx *ctx, float x, float y, int device_no, uint32_t time,
   event->time      = time;
   event->stop_propagate = 0;
 
-  _ctx_update_item (ctx, device_no, x, y, CTX_DROP, &hitlist);
+  _ctx_update_item (ctx, device_no, x, y, (CtxEventType)CTX_DROP, &hitlist);
 
   for (l = hitlist; l; l = l?l->next:NULL)
   {
-    CtxItem *item = l->data;
+    CtxItem *item = (CtxItem*)l->data;
     _ctx_emit_cb_item (ctx, item, event, CTX_DROP, x, y);
 
     if (event->stop_propagate)
@@ -42248,13 +42278,16 @@ ctx_pointer_press (Ctx *ctx, float x, float y, int device_no, uint32_t time)
   switch (device_no)
   {
     case 1:
-      events->modifier_state |= CTX_MODIFIER_STATE_BUTTON1;
+      events->modifier_state = 
+        (CtxModifierState)(events->modifier_state | CTX_MODIFIER_STATE_BUTTON1);
       break;
     case 2:
-      events->modifier_state |= CTX_MODIFIER_STATE_BUTTON2;
+      events->modifier_state = 
+        (CtxModifierState)(events->modifier_state | CTX_MODIFIER_STATE_BUTTON2);
       break;
     case 3:
-      events->modifier_state |= CTX_MODIFIER_STATE_BUTTON3;
+      events->modifier_state = 
+        (CtxModifierState)(events->modifier_state | CTX_MODIFIER_STATE_BUTTON3);
       break;
     default:
       break;
@@ -42266,11 +42299,11 @@ ctx_pointer_press (Ctx *ctx, float x, float y, int device_no, uint32_t time)
 
 
   _ctx_update_item (ctx, device_no, x, y, 
-      CTX_PRESS | CTX_DRAG_PRESS | CTX_TAP | CTX_TAP_AND_HOLD, &hitlist);
+      (CtxEventType)(CTX_PRESS | CTX_DRAG_PRESS | CTX_TAP | CTX_TAP_AND_HOLD), &hitlist);
 
   for (l = hitlist; l; l = l?l->next:NULL)
   {
-    CtxItem *item = l->data;
+    CtxItem *item = (CtxItem*)l->data;
     if (item &&
         ((item->types & CTX_DRAG)||
          (item->types & CTX_TAP) ||
@@ -42303,7 +42336,7 @@ ctx_pointer_press (Ctx *ctx, float x, float y, int device_no, uint32_t time)
 void _ctx_resized (Ctx *ctx, int width, int height, long time)
 {
   CtxItem *item = _ctx_detect (ctx, 0, 0, CTX_KEY_PRESS);
-  CtxEvent event = {0, };
+  CtxEvent event = {(CtxEventType)0, };
 
   if (!time)
     time = ctx_ms (ctx);
@@ -42345,15 +42378,18 @@ ctx_pointer_release (Ctx *ctx, float x, float y, int device_no, uint32_t time)
   {
     case 1:
       if (events->modifier_state & CTX_MODIFIER_STATE_BUTTON1)
-        events->modifier_state -= CTX_MODIFIER_STATE_BUTTON1;
+        events->modifier_state = 
+         (CtxModifierState)(events->modifier_state - CTX_MODIFIER_STATE_BUTTON1);
       break;
     case 2:
       if (events->modifier_state & CTX_MODIFIER_STATE_BUTTON2)
-        events->modifier_state -= CTX_MODIFIER_STATE_BUTTON2;
+        events->modifier_state = 
+         (CtxModifierState)(events->modifier_state - CTX_MODIFIER_STATE_BUTTON2);
       break;
     case 3:
       if (events->modifier_state & CTX_MODIFIER_STATE_BUTTON3)
-        events->modifier_state -= CTX_MODIFIER_STATE_BUTTON3;
+        events->modifier_state = 
+         (CtxModifierState)(events->modifier_state - CTX_MODIFIER_STATE_BUTTON3);
       break;
     default:
       break;
@@ -42378,12 +42414,12 @@ ctx_pointer_release (Ctx *ctx, float x, float y, int device_no, uint32_t time)
   CtxList *grablist = NULL , *g= NULL;
   CtxGrab *grab;
 
-  _ctx_update_item (ctx, device_no, x, y, CTX_RELEASE | CTX_DRAG_RELEASE, &hitlist);
+  _ctx_update_item (ctx, device_no, x, y, (CtxEventType)(CTX_RELEASE | CTX_DRAG_RELEASE), &hitlist);
   grablist = _ctx_device_get_grabs (ctx, device_no);
 
   for (g = grablist; g; g = g->next)
   {
-    grab = g->data;
+    grab = (CtxGrab*)g->data;
 
     if (!event->stop_propagate)
     {
@@ -42432,8 +42468,10 @@ ctx_pointer_motion (Ctx *ctx, float x, float y, int device_no, uint32_t time)
   CtxList *grablist = NULL, *g;
   CtxGrab *grab;
 
-  if (device_no < 0) device_no = 0;
-  if (device_no >= CTX_MAX_DEVICES) device_no = CTX_MAX_DEVICES-1;
+  if (device_no < 0)
+    device_no = 0;
+  if (device_no >= CTX_MAX_DEVICES)
+    device_no = CTX_MAX_DEVICES-1;
   CtxEvent *event = &ctx->events.drag_event[device_no];
 
   if (time == 0)
@@ -42456,7 +42494,7 @@ ctx_pointer_motion (Ctx *ctx, float x, float y, int device_no, uint32_t time)
   }
 
   grablist = _ctx_device_get_grabs (ctx, device_no);
-  _ctx_update_item (ctx, device_no, x, y, CTX_MOTION, &hitlist);
+  _ctx_update_item (ctx, device_no, x, y, (CtxEventType)CTX_MOTION, &hitlist);
 
   {
     CtxItem  *cursor_item = _ctx_detect (ctx, x, y, CTX_SET_CURSOR);
@@ -42486,7 +42524,7 @@ ctx_pointer_motion (Ctx *ctx, float x, float y, int device_no, uint32_t time)
 
   for (g = grablist; g; g = g->next)
   {
-    grab = g->data;
+    grab = (CtxGrab*)g->data;
 
     if ((grab->type & CTX_TAP) ||
         (grab->type & CTX_TAP_AND_HOLD))
@@ -42517,7 +42555,7 @@ ctx_pointer_motion (Ctx *ctx, float x, float y, int device_no, uint32_t time)
   if (remove_grabs)
   {
     for (g = remove_grabs; g; g = g->next)
-      device_remove_grab (ctx, g->data);
+      device_remove_grab (ctx, (CtxGrab*)g->data);
     ctx_list_free (&remove_grabs);
   }
   if (hitlist)
@@ -42534,7 +42572,7 @@ CTX_EXPORT void
 ctx_incoming_message (Ctx *ctx, const char *message, long time)
 {
   CtxItem *item = _ctx_detect (ctx, 0, 0, CTX_MESSAGE);
-  CtxEvent event = {0, };
+  CtxEvent event = {(CtxEventType)0, };
 
   if (!time)
     time = ctx_ms (ctx);
@@ -42589,11 +42627,11 @@ ctx_scrolled (Ctx *ctx, float x, float y, CtxScrollDirection scroll_direction, u
   event->stop_propagate = 0;
   event->scroll_direction = scroll_direction;
 
-  _ctx_update_item (ctx, device_no, x, y, CTX_SCROLL, &hitlist);
+  _ctx_update_item (ctx, device_no, x, y, (CtxEventType)CTX_SCROLL, &hitlist);
 
   for (l = hitlist; l; l = l?l->next:NULL)
   {
-    CtxItem *item = l->data;
+    CtxItem *item = (CtxItem*)l->data;
 
     _ctx_emit_cb_item (ctx, item, event, CTX_SCROLL, x, y);
 
@@ -42822,7 +42860,7 @@ CTX_EXPORT int
 ctx_text_input (Ctx *ctx, const char *string, uint32_t time)
 {
   CtxItem *item = _ctx_detect (ctx, 0, 0, CTX_TEXT_INPUT);
-  CtxEvent event = {0,};
+  CtxEvent event = {(CtxEventType)0, };
 
   if (item)
   {
@@ -42899,7 +42937,7 @@ ctx_key_press (Ctx *ctx, unsigned int keyval,
   if (!string)
   {
     string = ctx_keycode_to_keyname (ctx->events.modifier_state, keyval);
-    string_alone = ctx_keycode_to_keyname (0, keyval);
+    string_alone = ctx_keycode_to_keyname ((CtxModifierState)0, keyval);
   }
 
   if (!ctx_strcmp (string, "shift") ||
@@ -42953,14 +42991,14 @@ ctx_key_press (Ctx *ctx, unsigned int keyval,
   else if (!ctx_strcmp (event_type, "pr"))
     return ctx_pointer_release (ctx, x, y, b, 0);
   else if (!ctx_strcmp (event_type, "sc"))
-    return ctx_scrolled (ctx, x, y, b, 0);
+    return ctx_scrolled (ctx, x, y, (CtxScrollDirection)b, 0);
   //else if (!ctx_strcmp (event_type, "kd"))
   //  return ctx_key_down (ctx, keyval, string + 8, time);
   //else if (!ctx_strcmp (event_type, "ku"))
   //  return ctx_key_up (ctx, keyval, string + 6, time);
 
   CtxItem *item = _ctx_detect (ctx, 0, 0, CTX_KEY_PRESS);
-  CtxEvent event = {0,};
+  CtxEvent event = {(CtxEventType)0, };
 
   if (time == 0)
     time = ctx_ms (ctx);
@@ -43031,23 +43069,26 @@ ctx_key_down (Ctx *ctx, unsigned int scan,
               const char *string, uint32_t time)
 {
   CtxItem *item = _ctx_detect (ctx, 0, 0, CTX_KEY_DOWN);
-  CtxEvent event = {0,};
+  CtxEvent event = {(CtxEventType)0, };
   if (!string)
-    string = ctx_keycode_to_keyname (0, scan);
+    string = ctx_keycode_to_keyname ((CtxModifierState)0, scan);
   if (!scan)
     scan = ctx_keyname_to_keycode (string);
 
   if (!ctx_strcmp (string, "shift"))
   {
-    ctx->events.modifier_state |= CTX_MODIFIER_STATE_SHIFT;
+    ctx->events.modifier_state = (CtxModifierState)
+      (ctx->events.modifier_state | CTX_MODIFIER_STATE_SHIFT);
   }
   else if (!ctx_strcmp (string, "control"))
   {
-    ctx->events.modifier_state |= CTX_MODIFIER_STATE_CONTROL;
+    ctx->events.modifier_state = (CtxModifierState)
+      (ctx->events.modifier_state | CTX_MODIFIER_STATE_CONTROL);
   }
   else if (!ctx_strcmp (string, "alt"))
   {
-    ctx->events.modifier_state |= CTX_MODIFIER_STATE_ALT;
+    ctx->events.modifier_state = (CtxModifierState)
+      (ctx->events.modifier_state | CTX_MODIFIER_STATE_ALT);
   }
 
   if (time == 0)
@@ -43085,23 +43126,26 @@ ctx_key_up (Ctx *ctx, unsigned int scan,
             const char *string, uint32_t time)
 {
   CtxItem *item = _ctx_detect (ctx, 0, 0, CTX_KEY_UP);
-  CtxEvent event = {0,};
+  CtxEvent event = {(CtxEventType)0, };
   if (!string)
-    string = ctx_keycode_to_keyname (0, scan);
+    string = ctx_keycode_to_keyname ((CtxModifierState)0, scan);
   if (!scan)
     scan = ctx_keyname_to_keycode (string);
 
   if (!ctx_strcmp (string, "shift"))
   {
-    ctx->events.modifier_state &= ~(CTX_MODIFIER_STATE_SHIFT);
+    ctx->events.modifier_state = (CtxModifierState)
+      ( ctx->events.modifier_state & ~(CTX_MODIFIER_STATE_SHIFT));
   }
   else if (!ctx_strcmp (string, "control"))
   {
-    ctx->events.modifier_state &= ~(CTX_MODIFIER_STATE_CONTROL);
+    ctx->events.modifier_state = (CtxModifierState)
+      ( ctx->events.modifier_state & ~(CTX_MODIFIER_STATE_CONTROL));
   }
   else if (!ctx_strcmp (string, "alt"))
   {
-    ctx->events.modifier_state &= ~(CTX_MODIFIER_STATE_ALT);
+    ctx->events.modifier_state = (CtxModifierState)
+      ( ctx->events.modifier_state & ~(CTX_MODIFIER_STATE_ALT));
   }
 
   if (time == 0)
@@ -43188,7 +43232,7 @@ void _ctx_debug_overlays (Ctx *ctx)
   {
     float current_x = ctx_pointer_x (ctx);
     float current_y = ctx_pointer_y (ctx);
-    CtxItem *item = a->data;
+    CtxItem *item = (CtxItem*) a->data;
     CtxMatrix matrix = item->inv_matrix;
 
     _ctx_matrix_apply_transform (&matrix, &current_x, &current_y);
@@ -43326,7 +43370,7 @@ void ctx_events_deinit (Ctx *ctx)
 
   while (ctx->events.idles)
   {
-    CtxIdleCb *item = ctx->events.idles->data;
+    CtxIdleCb *item = (CtxIdleCb*)ctx->events.idles->data;
     ctx_list_remove (&ctx->events.idles, item);
     if (item->destroy_notify)
       item->destroy_notify (item->destroy_data);
@@ -43337,17 +43381,17 @@ void ctx_events_deinit (Ctx *ctx)
 #if CTX_TERMINAL_EVENTS
 
 #if CTX_PTY
-static int mice_has_event (void);
-static char *mice_get_event (void);
-static void mice_destroy (void);
+static int mice_has_event (EvSource *es);
+static char *mice_get_event (EvSource *es);
+static void mice_destroy (EvSource *es);
 static int mice_get_fd (EvSource *ev_source);
 static void mice_set_coord (EvSource *ev_source, double x, double y);
 
 static EvSource ctx_ev_src_mice = {
   NULL,
-  (void*)mice_has_event,
-  (void*)mice_get_event,
-  (void*)mice_destroy,
+  mice_has_event,
+  mice_get_event,
+  mice_destroy,
   mice_get_fd,
   mice_set_coord,
   "linux-mice"
@@ -43389,13 +43433,13 @@ static int mmm_ctx_evsource_mice_init ()
   return 0;
 }
 
-static void mice_destroy (void)
+static void mice_destroy (EvSource *es)
 {
   if (mrg_mice_this->fd != -1)
     close (mrg_mice_this->fd);
 }
 
-static int mice_has_event (void)
+static int mice_has_event (EvSource *es)
 {
   struct timeval tv;
   int retval;
@@ -43413,7 +43457,7 @@ static int mice_has_event (void)
   return 0;
 }
 
-static char *mice_get_event (void)
+static char *mice_get_event (EvSource *es)
 {
   const char *ret = "pm";
   double relx, rely;
@@ -43425,7 +43469,7 @@ static char *mice_get_event (void)
   relx = buf[1];
   rely = -buf[2];
 
-  Ctx *ctx = (void*)ctx_ev_src_mice.priv;
+  Ctx *ctx = (Ctx*)ctx_ev_src_mice.priv;
   int width = ctx_width (ctx);
   int height = ctx_height (ctx);
 
@@ -43535,7 +43579,7 @@ static char *mice_get_event (void)
   mrg_mice_this->prev_state = buf[0];
 
   {
-    char *r = ctx_malloc (64);
+    char *r = (char *)ctx_malloc (64);
     sprintf (r, "%s %.0f %.0f %i", ret, mrg_mice_this->x, mrg_mice_this->y, button);
     return r;
   }
@@ -43567,18 +43611,18 @@ EvSource *ctx_evsource_mice_new (void)
 }
 #endif
 
-static int ctx_evsource_kb_term_has_event (void);
-static char *ctx_evsource_kb_term_get_event (void);
-static void ctx_evsource_kb_term_destroy (int sign);
-static int ctx_evsource_kb_term_get_fd (void);
+static int ctx_evsource_kb_term_has_event (EvSource *es);
+static char *ctx_evsource_kb_term_get_event (EvSource *es);
+static void ctx_evsource_kb_term_destroy (EvSource *es);
+static int ctx_evsource_kb_term_get_fd (EvSource *es);
 
 /* kept out of struct to be reachable by atexit */
 static EvSource ctx_ev_src_kb_term = {
   NULL,
-  (void*)ctx_evsource_kb_term_has_event,
-  (void*)ctx_evsource_kb_term_get_event,
-  (void*)ctx_evsource_kb_term_destroy,
-  (void*)ctx_evsource_kb_term_get_fd,
+  ctx_evsource_kb_term_has_event,
+  ctx_evsource_kb_term_get_event,
+  ctx_evsource_kb_term_destroy,
+  ctx_evsource_kb_term_get_fd,
   NULL,
   "keyboard-stdin"
 };
@@ -43617,7 +43661,7 @@ static void real_ctx_evsource_kb_term_destroy (int sign)
 #endif
 }
 
-static void ctx_evsource_kb_term_destroy (int sign)
+static void ctx_evsource_kb_term_destroy (EvSource*es)
 {
   real_ctx_evsource_kb_term_destroy (-11);
 }
@@ -43627,13 +43671,13 @@ static int ctx_evsource_kb_term_init ()
 #if CTX_PTY
 //  ioctl(STDIN_FILENO, KDSKBMODE, K_RAW);
   //atexit ((void*) real_ctx_evsource_kb_term_destroy);
-  signal (SIGSEGV, (void*) real_ctx_evsource_kb_term_destroy);
-  signal (SIGABRT, (void*) real_ctx_evsource_kb_term_destroy);
-  signal (SIGBUS,  (void*) real_ctx_evsource_kb_term_destroy);
-  signal (SIGKILL, (void*) real_ctx_evsource_kb_term_destroy);
-  signal (SIGINT,  (void*) real_ctx_evsource_kb_term_destroy);
-  signal (SIGTERM, (void*) real_ctx_evsource_kb_term_destroy);
-  signal (SIGQUIT, (void*) real_ctx_evsource_kb_term_destroy);
+  signal (SIGSEGV, real_ctx_evsource_kb_term_destroy);
+  signal (SIGABRT, real_ctx_evsource_kb_term_destroy);
+  signal (SIGBUS,  real_ctx_evsource_kb_term_destroy);
+  signal (SIGKILL, real_ctx_evsource_kb_term_destroy);
+  signal (SIGINT,  real_ctx_evsource_kb_term_destroy);
+  signal (SIGTERM, real_ctx_evsource_kb_term_destroy);
+  signal (SIGQUIT, real_ctx_evsource_kb_term_destroy);
 
   struct termios raw;
   if (tcgetattr (STDIN_FILENO, &orig_attr) == -1)
@@ -43651,7 +43695,7 @@ static int ctx_evsource_kb_term_init ()
 #endif
   return 0;
 }
-static int ctx_evsource_kb_term_has_event (void)
+static int ctx_evsource_kb_term_has_event (EvSource *es)
 {
   int retval = 0;
 #if CTX_PTY
@@ -43873,9 +43917,9 @@ static int fb_keyboard_match_keycode (const char *buf, int length, const MmmKeyC
   return matches==1?2:matches;
 }
 
-static char *ctx_evsource_kb_term_get_event (void)
+static char *ctx_evsource_kb_term_get_event (EvSource *es)
 {
-  Ctx *ctx = (void*)ctx_ev_src_kb_term.priv;
+  Ctx *ctx = (Ctx*)ctx_ev_src_kb_term.priv;
   unsigned char buf[20];
   int length;
 
@@ -43901,7 +43945,7 @@ static char *ctx_evsource_kb_term_get_event (void)
               return ctx_strdup ("escape");
           }
 
-        switch (fb_keyboard_match_keycode ((void*)buf, length + 1, &match))
+        switch (fb_keyboard_match_keycode ((const char*)buf, length + 1, &match))
           {
             case 1: /* unique match */
               if (!match)
@@ -43930,7 +43974,7 @@ static char *ctx_evsource_kb_term_get_event (void)
                 if (length == 0) /* ascii */
                   {
                     buf[1]=0;
-                    strcpy (ret, (void*)buf);
+                    strcpy (ret, (const char*)buf);
                     ctx_text_input (ctx, (char*)buf, 0);
                     return NULL;
                   }
@@ -43962,7 +44006,7 @@ static char *ctx_evsource_kb_term_get_event (void)
   return ctx_strdup("fail");
 }
 
-static int ctx_evsource_kb_term_get_fd (void)
+static int ctx_evsource_kb_term_get_fd (EvSource *es)
 {
   return STDIN_FILENO;
 }
@@ -43979,52 +44023,23 @@ EvSource *ctx_evsource_kb_term_new (void)
 
 #if CTX_RAW_KB_EVENTS
 
-static int ctx_evsource_kb_raw_has_event (void);
-static char *ctx_evsource_kb_raw_get_event (void);
-static void ctx_evsource_kb_raw_destroy (int sign);
-static int ctx_evsource_kb_raw_get_fd (void);
+static int ctx_evsource_kb_raw_has_event (EvSource *es);
+static char *ctx_evsource_kb_raw_get_event (EvSource *es);
+static void ctx_evsource_kb_raw_destroy (EvSource *es);
+static int ctx_evsource_kb_raw_get_fd (EvSource *es);
 
 
 /* kept out of struct to be reachable by atexit */
 static EvSource ctx_ev_src_kb_raw = {
   NULL,
-  (void*)ctx_evsource_kb_raw_has_event,
-  (void*)ctx_evsource_kb_raw_get_event,
-  (void*)ctx_evsource_kb_raw_destroy,
-  (void*)ctx_evsource_kb_raw_get_fd,
+  ctx_evsource_kb_raw_has_event,
+  ctx_evsource_kb_raw_get_event,
+  ctx_evsource_kb_raw_destroy,
+  ctx_evsource_kb_raw_get_fd,
   NULL,
   "keyboard-linux-raw"
 };
 
-#if 0
-static void real_ctx_evsource_kb_raw_destroy (int sign)
-{
-  static int done = 0;
-
-  if (sign == 0)
-    return;
-
-  if (done)
-    return;
-  done = 1;
-
-  switch (sign)
-  {
-    case  -11:break; /* will be called from atexit with sign==-11 */
-    case   SIGSEGV: break;//fprintf (stderr, " SIGSEGV\n");break;
-    case   SIGABRT: fprintf (stderr, " SIGABRT\n");break;
-    case   SIGBUS:  fprintf (stderr, " SIGBUS\n");break;
-    case   SIGKILL: fprintf (stderr, " SIGKILL\n");break;
-    case   SIGINT:  fprintf (stderr, " SIGINT\n");break;
-    case   SIGTERM: fprintf (stderr, " SIGTERM\n");break;
-    case   SIGQUIT: fprintf (stderr, " SIGQUIT\n");break;
-    default: fprintf (stderr, "sign: %i\n", sign);
-             fprintf (stderr, "%i %i %i %i %i %i %i\n", SIGSEGV, SIGABRT, SIGBUS, SIGKILL, SIGINT, SIGTERM, SIGQUIT);
-  }
-  tcsetattr (STDIN_FILENO, TCSAFLUSH, &orig_attr);
-  //fprintf (stderr, "evsource kb destroy\n");
-}
-#endif
 
 #include <string.h>
 #include <stdint.h>
@@ -44035,7 +44050,7 @@ static void real_ctx_evsource_kb_raw_destroy (int sign)
 
 #include <linux/input.h>
 
-static const CtxRawKey raw_key_map[]=
+static const CtxRawKey raw_key_map_[]=
 {
    {KEY_F1, "F1","F1", 112},
    {KEY_F2, "F2","F2", 113},
@@ -44125,11 +44140,8 @@ static const CtxRawKey raw_key_map[]=
 };
 
 static int kb_fd = -1;
-static void ctx_evsource_kb_raw_destroy (int sign)
+static void ctx_evsource_kb_raw_destroy (EvSource *es)
 {
-#if 0
-  real_ctx_evsource_kb_raw_destroy (-11);
-#endif
   if (kb_fd)
     close (kb_fd);
   kb_fd = 0;
@@ -44207,7 +44219,7 @@ static int ctx_evsource_kb_raw_init ()
    }
    return -1;
 }
-static int ctx_evsource_kb_raw_has_event (void)
+static int ctx_evsource_kb_raw_has_event (EvSource *es)
 {
   struct timeval tv;
   int retval;
@@ -44222,10 +44234,10 @@ static int ctx_evsource_kb_raw_has_event (void)
 
 
 
-static char *ctx_evsource_kb_raw_get_event (void)
+static char *ctx_evsource_kb_raw_get_event (EvSource *es)
 {
   struct input_event ev;
-  Ctx *ctx = (void*)ctx_ev_src_kb_raw.priv;
+  Ctx *ctx = (Ctx*)ctx_ev_src_kb_raw.priv;
 
   memset (&ev, 0, sizeof (ev));
   if (-1==read(kb_fd, &ev, sizeof(ev)))
@@ -44234,7 +44246,7 @@ static char *ctx_evsource_kb_raw_get_event (void)
   }
   if (ev.type == EV_KEY)
   {
-     for (unsigned int i = 0; i < sizeof(raw_key_map)/sizeof(raw_key_map[0]); i++)
+     for (unsigned int i = 0; i < sizeof(raw_key_map_)/sizeof(raw_key_map_[0]); i++)
      {
        if (raw_key_map[i].code == ev.code)
        {
@@ -44288,7 +44300,7 @@ static char *ctx_evsource_kb_raw_get_event (void)
   return NULL;
 }
 
-static int ctx_evsource_kb_raw_get_fd (void)
+static int ctx_evsource_kb_raw_get_fd (EvSource *es)
 {
   if (kb_fd >= 0)
     return kb_fd;
@@ -44306,77 +44318,49 @@ EvSource *ctx_evsource_kb_raw_new (void)
 }
 #else
 
-static const CtxRawKey raw_key_map[]=
+static const CtxRawKey raw_key_map_[]=
 {
    {0, NULL, NULL, 0},
 };
 #endif
+const CtxRawKey *raw_key_map = &raw_key_map_[0];
 
 #if CTX_RAW_KB_EVENTS
 
 static int ts_is_mt = 0;
 
-static int ctx_evsource_linux_ts_has_event (void);
-static char *ctx_evsource_linux_ts_get_event (void);
-static void ctx_evsource_linux_ts_destroy (int sign);
-static int ctx_evsource_linux_ts_get_fd (void);
+static int ctx_evsource_linux_ts_has_event (EvSource *es);
+static char *ctx_evsource_linux_ts_get_event (EvSource *es);
+static void ctx_evsource_linux_ts_destroy (EvSource *es);
+static int ctx_evsource_linux_ts_get_fd (EvSource *es);
 
 
-static int ctx_evsource_linux_tpad_has_event (void);
-static char *ctx_evsource_linux_tpad_get_event (void);
-static void ctx_evsource_linux_tpad_destroy (int sign);
-static int ctx_evsource_linux_tpad_get_fd (void);
+static int ctx_evsource_linux_tpad_has_event (EvSource *es);
+static char *ctx_evsource_linux_tpad_get_event (EvSource *es);
+static void ctx_evsource_linux_tpad_destroy (EvSource *es);
+static int ctx_evsource_linux_tpad_get_fd (EvSource *es);
 
 /* kept out of struct to be reachable by atexit */
 static EvSource ctx_ev_src_linux_ts = {
   NULL,
-  (void*)ctx_evsource_linux_ts_has_event,
-  (void*)ctx_evsource_linux_ts_get_event,
-  (void*)ctx_evsource_linux_ts_destroy,
-  (void*)ctx_evsource_linux_ts_get_fd,
+  ctx_evsource_linux_ts_has_event,
+  ctx_evsource_linux_ts_get_event,
+  ctx_evsource_linux_ts_destroy,
+  ctx_evsource_linux_ts_get_fd,
   NULL,
   "linux-ts"
 };
 
 static EvSource ctx_ev_src_linux_tpad = {
   NULL,
-  (void*)ctx_evsource_linux_tpad_has_event,
-  (void*)ctx_evsource_linux_tpad_get_event,
-  (void*)ctx_evsource_linux_tpad_destroy,
-  (void*)ctx_evsource_linux_tpad_get_fd,
+  ctx_evsource_linux_tpad_has_event,
+  ctx_evsource_linux_tpad_get_event,
+  ctx_evsource_linux_tpad_destroy,
+  ctx_evsource_linux_tpad_get_fd,
   mice_set_coord,
   "linux-touchpad"
 };
 
-#if 0
-static void real_ctx_evsource_linux_ts_destroy (int sign)
-{
-  static int done = 0;
-
-  if (sign == 0)
-    return;
-
-  if (done)
-    return;
-  done = 1;
-
-  switch (sign)
-  {
-    case  -11:break; /* will be called from atexit with sign==-11 */
-    case   SIGSEGV: break;//fprintf (stderr, " SIGSEGV\n");break;
-    case   SIGABRT: fprintf (stderr, " SIGABRT\n");break;
-    case   SIGBUS:  fprintf (stderr, " SIGBUS\n");break;
-    case   SIGKILL: fprintf (stderr, " SIGKILL\n");break;
-    case   SIGINT:  fprintf (stderr, " SIGINT\n");break;
-    case   SIGTERM: fprintf (stderr, " SIGTERM\n");break;
-    case   SIGQUIT: fprintf (stderr, " SIGQUIT\n");break;
-    default: fprintf (stderr, "sign: %i\n", sign);
-             fprintf (stderr, "%i %i %i %i %i %i %i\n", SIGSEGV, SIGABRT, SIGBUS, SIGKILL, SIGINT, SIGTERM, SIGQUIT);
-  }
-  tcsetattr (STDIN_FILENO, TCSAFLUSH, &orig_attr);
-  //fprintf (stderr, "evsource kb destroy\n");
-}
-#endif
 
 #include <string.h>
 #include <stdint.h>
@@ -44389,21 +44373,15 @@ static void real_ctx_evsource_linux_ts_destroy (int sign)
 
 static int ctx_ts_fd = -1;
 static int ctx_tpad_fd = -1;
-static void ctx_evsource_linux_ts_destroy (int sign)
+static void ctx_evsource_linux_ts_destroy (EvSource *es)
 {
-#if 0
-  real_ctx_evsource_linux_ts_destroy (-11);
-#endif
   if (ctx_ts_fd)
     close (ctx_ts_fd);
   ctx_ts_fd = 0;
 }
 
-static void ctx_evsource_linux_tpad_destroy (int sign)
+static void ctx_evsource_linux_tpad_destroy (EvSource *es)
 {
-#if 0
-  real_ctx_evsource_linux_ts_destroy (-11);
-#endif
   if (ctx_tpad_fd)
     close (ctx_tpad_fd);
   ctx_tpad_fd = 0;
@@ -44581,7 +44559,7 @@ static int ctx_evsource_linux_tpad_init ()
 
   return 0;
 }
-static int ctx_evsource_linux_ts_has_event (void)
+static int ctx_evsource_linux_ts_has_event (EvSource *es)
 {
   struct timeval tv;
   int retval;
@@ -44593,7 +44571,7 @@ static int ctx_evsource_linux_ts_has_event (void)
   retval = select (ctx_ts_fd+1, &rfds, NULL, NULL, &tv);
   return retval == 1;
 }
-static int ctx_evsource_linux_tpad_has_event (void)
+static int ctx_evsource_linux_tpad_has_event (EvSource *es)
 {
   struct timeval tv;
   int retval;
@@ -44624,12 +44602,12 @@ static int mt_slot = 0;
 
 MtMtSlot ctx_mt[CTX_MAX_DEVICES];
 
-static char *ctx_evsource_linux_ts_get_event (void)
+static char *ctx_evsource_linux_ts_get_event (EvSource *es)
 {
   struct input_event ev;
   static int down_count = 0;
   memset (&ev, 0, sizeof (ev));
-  Ctx *ctx = (void*)ctx_ev_src_linux_ts.priv;
+  Ctx *ctx = (Ctx*)ctx_ev_src_linux_ts.priv;
   if (-1==read(ctx_ts_fd, &ev, sizeof(ev)))
   {
     return NULL;
@@ -44721,7 +44699,7 @@ static char *ctx_evsource_linux_ts_get_event (void)
   return NULL;
 }
 
-static char *ctx_evsource_linux_tpad_get_event (void)
+static char *ctx_evsource_linux_tpad_get_event (EvSource *es)
 {
   struct input_event ev;
   static int down_count = 0;
@@ -44733,7 +44711,7 @@ static char *ctx_evsource_linux_tpad_get_event (void)
   static float pad_height = 600;
 
   memset (&ev, 0, sizeof (ev));
-  Ctx *ctx = (void*)ctx_ev_src_linux_tpad.priv;
+  Ctx *ctx = (Ctx*)ctx_ev_src_linux_tpad.priv;
   if (-1==read(ctx_tpad_fd, &ev, sizeof(ev)))
   {
     return NULL;
@@ -44857,13 +44835,13 @@ static char *ctx_evsource_linux_tpad_get_event (void)
 }
 
 
-static int ctx_evsource_linux_ts_get_fd (void)
+static int ctx_evsource_linux_ts_get_fd (EvSource *es)
 {
   if (ctx_ts_fd >= 0)
     return ctx_ts_fd;
   return 0;
 }
-static int ctx_evsource_linux_tpad_get_fd (void)
+static int ctx_evsource_linux_tpad_get_fd (EvSource *es)
 {
   if (ctx_tpad_fd >= 0)
     return ctx_tpad_fd;
@@ -45008,6 +44986,10 @@ const char *ctx_event_source_name (Ctx *ctx, int no)
   if (no < cb->evsource_count && no >= 0)
     return cb->evsource[no]->name;
   return NULL;
+#if CTX_EVENTS
+  return keymap_get_shifted (" ");  // hack to shut up overzealous builds
+  return keymap_get_unshifted (" ");
+#endif
 }
 
 
@@ -45721,7 +45703,7 @@ static void
 ctx_parser_motion (CtxEvent *event, void *data1, void *data2)
 {
   char buf[128];
-  snprintf (buf, sizeof(buf)-1, "pm %.0f %.0f %i\n", event->x, event->y, event->device_no);
+  snprintf (buf, sizeof(buf)-1, "pm %.0f %.0f %i\n", (double)event->x, (double)event->y, event->device_no);
   ctx_parser_response ((CtxParser*)data1, buf, strlen (buf));
 }
 
@@ -45729,7 +45711,7 @@ static void
 ctx_parser_press (CtxEvent *event, void *data1, void *data2)
 {
   char buf[128];
-  snprintf (buf, sizeof(buf)-1, "pp %.0f %.0f %i\n", event->x, event->y, event->device_no);
+  snprintf (buf, sizeof(buf)-1, "pp %.0f %.0f %i\n", (double)event->x, (double)event->y, event->device_no);
   ctx_parser_response ((CtxParser*)data1, buf, strlen (buf));
 }
 
@@ -45737,7 +45719,7 @@ static void
 ctx_parser_release (CtxEvent *event, void *data1, void *data2)
 {
   char buf[128];
-  snprintf (buf, sizeof(buf)-1, "pr %.0f %.0f %i\n", event->x, event->y, event->device_no);
+  snprintf (buf, sizeof(buf)-1, "pr %.0f %.0f %i\n", (double)event->x, (double)event->y, event->device_no);
   ctx_parser_response ((CtxParser*)data1, buf, strlen (buf));
 }
 
@@ -45758,6 +45740,14 @@ ctx_parser_key_up (CtxEvent *event, void *data1, void *data2)
 }
 
 static void
+ctx_parser_text_input (CtxEvent *event, void *data1, void *data2)
+{
+  char buf[128];
+  snprintf (buf, sizeof(buf)-1, " %s\n", event->string);
+  ctx_parser_response ((CtxParser*)data1, buf, strlen (buf));
+}
+
+static void
 ctx_parser_key_press (CtxEvent *event, void *data1, void *data2)
 {
   char buf[128];
@@ -45771,6 +45761,14 @@ void ctx_parser_new_frame (CtxParser *parser)
   CtxString *tmp = parser->ctx_prev_frame;
   parser->ctx_prev_frame = parser->ctx_frame;
   parser->ctx_frame = tmp;
+#if 0
+  static FILE *f = NULL;
+  if (!f)
+    f = fopen ("/tmp/logparsed", "w");
+
+  fprintf (f, "------------------------------------------------------------------------\n");
+  fprintf (f, "%s\n", parser->ctx_prev_frame->str);
+#endif
   ctx_string_set (parser->ctx_frame, "");
   parser->frame_started = 0;
   ctx_parser_init (parser, parser->ctx, NULL);
@@ -46248,10 +46246,10 @@ static void ctx_parser_dispatch_command (CtxParser *parser)
         ctx_shadow_offset_y (ctx, arg(0) );
         break;
       case CTX_LINE_JOIN:
-        ctx_line_join (ctx, (CtxLineJoin) ctx_clamp (arg(0), 0, 2));
+        ctx_line_join (ctx, (CtxLineJoin) ctx_clamp ((int)arg(0), 0, 2));
         break;
       case CTX_LINE_CAP:
-        ctx_line_cap (ctx, (CtxLineCap) ctx_clamp (arg(0), 0, 2));
+        ctx_line_cap (ctx, (CtxLineCap) ctx_clamp ((int)arg(0), 0, 2));
         break;
       case CTX_COMPOSITING_MODE:
         {
@@ -46269,19 +46267,19 @@ static void ctx_parser_dispatch_command (CtxParser *parser)
         }
         break;
       case CTX_EXTEND:
-        ctx_extend (ctx, (CtxExtend)ctx_clamp(arg(0), 0, CTX_EXTEND_LAST));
+        ctx_extend (ctx, (CtxExtend)ctx_clamp((int)arg(0), 0, CTX_EXTEND_LAST));
         break;
       case CTX_FILL_RULE:
-        ctx_fill_rule (ctx, (CtxFillRule) ctx_clamp(arg(0), 0, 1));
+        ctx_fill_rule (ctx, (CtxFillRule) ctx_clamp((int)arg(0), 0, 1));
         break;
       case CTX_TEXT_ALIGN:
-        ctx_text_align (ctx, (CtxTextAlign) ctx_clamp(arg(0), 0, CTX_TEXT_ALIGN_RIGHT));
+        ctx_text_align (ctx, (CtxTextAlign) ctx_clamp((int)arg(0), 0, CTX_TEXT_ALIGN_RIGHT));
         break;
       case CTX_TEXT_BASELINE:
-        ctx_text_baseline (ctx, (CtxTextBaseline) ctx_clamp(arg(0), 0, CTX_TEXT_BASELINE_BOTTOM));
+        ctx_text_baseline (ctx, (CtxTextBaseline) ctx_clamp((int)arg(0), 0, CTX_TEXT_BASELINE_BOTTOM));
         break;
       case CTX_TEXT_DIRECTION:
-        ctx_text_direction (ctx, (CtxTextDirection) ctx_clamp(arg(0), 0, CTX_TEXT_DIRECTION_RTL));
+        ctx_text_direction (ctx, (CtxTextDirection) ctx_clamp((int)arg(0), 0, CTX_TEXT_DIRECTION_RTL));
         break;
       case CTX_IDENTITY:
         ctx_identity (ctx);
@@ -46310,7 +46308,7 @@ static void ctx_parser_dispatch_command (CtxParser *parser)
           if (w > 1 && h > 1)
           {
             ctx_view_box (ctx, x, y, w, h);
-            ctx_parser_set_size (parser, w, h, 0, 0);
+            ctx_parser_set_size (parser, (int)w, (int)h, 0, 0);
           }
         }
         break;
@@ -46356,12 +46354,10 @@ static void ctx_parser_dispatch_command (CtxParser *parser)
           ctx_listen (ctx, CTX_KEY_DOWN, ctx_parser_key_down, parser, NULL);
           ctx_listen (ctx, CTX_KEY_PRESS, ctx_parser_key_press, parser, NULL);
           ctx_listen (ctx, CTX_KEY_UP, ctx_parser_key_up, parser, NULL);
+          ctx_listen (ctx, CTX_TEXT_INPUT, ctx_parser_text_input, parser, NULL);
           ctx_reset_path (ctx);
-        }
-      #endif
-      #if CTX_EVENTS
-        if (parser->config.flags & CTX_FLAG_FORWARD_EVENTS)
           ctx_handle_events (ctx);
+        }
       #endif
         if (parser->config.end_frame)
           { 
@@ -46545,6 +46541,24 @@ static void ctx_parser_transform_cell (CtxParser *parser, CtxCode code, int arg_
     }
 }
 
+static inline void ctx_parser_finish_number (CtxParser *parser)
+{
+  if (parser->state == CTX_PARSER_NEGATIVE_NUMBER)
+     { parser->numbers[parser->n_numbers] *= -1; }
+  if (parser->exp > 100) parser->exp = 100;
+  if (parser->exponent < 0)
+  {
+    for (int i = 0; i < parser->exp; i++)
+     parser->numbers[parser->n_numbers] *= 0.1f;
+  }
+  else if (parser->exponent > 0)
+  {
+    for (int i = 0; i < parser->exp; i++)
+     parser->numbers[parser->n_numbers] *= 10.0f;
+  }
+  parser->exponent = 0;
+}
+
 static void ctx_parser_word_done (CtxParser *parser)
 {
   parser->holding[parser->pos]=0;
@@ -46570,8 +46584,8 @@ static void ctx_parser_word_done (CtxParser *parser)
 
       // trigger transition from number
       parser->state = CTX_PARSER_NUMBER;
-      char c = ',';
-      ctx_parser_feed_bytes (parser, &c, 1);
+      char c = ' ';
+      ctx_parser_feed_byte (parser, c, 0);
     }
   else if (command > 0)
     {
@@ -46608,23 +46622,6 @@ static void ctx_parser_string_done (CtxParser *parser)
   {
     ctx_parser_dispatch_command (parser);
   }
-}
-static inline void ctx_parser_finish_number (CtxParser *parser)
-{
-  if (parser->state == CTX_PARSER_NEGATIVE_NUMBER)
-     { parser->numbers[parser->n_numbers] *= -1; }
-  if (parser->exp > 100) parser->exp = 100;
-  if (parser->exponent < 0)
-  {
-    for (int i = 0; i < parser->exp; i++)
-     parser->numbers[parser->n_numbers] *= 0.1f;
-  }
-  else if (parser->exponent > 0)
-  {
-    for (int i = 0; i < parser->exp; i++)
-     parser->numbers[parser->n_numbers] *= 10.0f;
-  }
-  parser->exponent = 0;
 }
 
 static void ctx_parser_feed_byte_real (CtxParser *parser, char byte)
@@ -47108,7 +47105,7 @@ static void ctx_parser_feed_byte_real (CtxParser *parser, char byte)
 }
 
 
-void ctx_parser_feed_byte (CtxParser *parser, char byte)
+void ctx_parser_feed_byte (CtxParser *parser, char byte, int accumulate_frame)
 {
     if (parser->in_from_prev)
     {
@@ -47178,7 +47175,8 @@ void ctx_parser_feed_byte (CtxParser *parser, char byte)
       if (l1 && l2 && parser->clen == l1 + l2)
       {
 	 int matchpos = _ctx_utf8_to_unichar (parser->cbuf) - 1;
-	 int matchlen = _ctx_utf8_to_unichar (parser->cbuf + _ctx_utf8_len(*parser->cbuf));
+	 int matchlen = _ctx_utf8_to_unichar (parser->cbuf + _ctx_utf8_len(parser->cbuf[0]));
+        
 	 matchpos += 2; // tweak : skipping ":\n"
 			//
          // bounds checking
@@ -47226,7 +47224,7 @@ void ctx_parser_feed_byte (CtxParser *parser, char byte)
     if (byte == ':' && parser->frame_started == 0)
       parser->frame_started = 1;
 
-    if (parser->frame_started)
+    if (parser->frame_started && accumulate_frame)
       ctx_string_append_byte (parser->ctx_frame, byte);
 
     ctx_parser_feed_byte_real (parser, byte);
@@ -47235,7 +47233,7 @@ void ctx_parser_feed_byte (CtxParser *parser, char byte)
 void ctx_parser_feed_bytes (CtxParser *parser, const char *data, int count)
 {
   for (int i = 0; i < count; i++)
-    ctx_parser_feed_byte (parser, data[i]);
+    ctx_parser_feed_byte (parser, data[i], 1);
 }
 
 CTX_EXPORT void
@@ -47243,12 +47241,14 @@ ctx_parse (Ctx *ctx, const char *string)
 {
   if (!string)
     return;
+  float cell_width = ctx_get_font_size(ctx);
+  float cell_height = cell_width * 1.2f;
   CtxParserConfig config =
   {
     .width = ctx_width(ctx),
     .height = ctx_height(ctx),
-    .cell_width = ctx_get_font_size(ctx),
-    .cell_height = ctx_get_font_size(ctx) * 1.2,
+    .cell_width = cell_width,
+    .cell_height = cell_height
   };
   CtxParser *parser = ctx_parser_new (ctx, &config);
   ctx_parser_feed_bytes (parser, string, ctx_strlen (string));
@@ -49658,6 +49658,10 @@ int ctx_frame_ack = -1;
 
 #if CTX_NET
 
+// escape codes to initialize terminal for ctx mode
+//   alt-screen hide-cursor ctx-events ctx-mode
+#define CTX_INIT_STRING    "\033[?1049h\033[?25l\033[?201h\033[?200h"
+
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <sys/time.h>
@@ -49722,8 +49726,8 @@ static uint32_t ctx_compress_hash(const char *ptr, const char *endptr, int len)
 static void ctx_net_write_compressed (int fd, const char *frame, int frame_len,
                                               const char *prev_frame, int prev_frame_len)
 {
-  CtxCompressDict *prevdict = ctx_calloc (CTX_COMPRESS_HT_SIZE, sizeof (CtxCompressDict));
-  CtxCompressDict *curdict = ctx_calloc (CTX_COMPRESS_HT_SIZE, sizeof (CtxCompressDict));
+  CtxCompressDict *prevdict = (CtxCompressDict*)ctx_calloc (CTX_COMPRESS_HT_SIZE, sizeof (CtxCompressDict));
+  CtxCompressDict *curdict = (CtxCompressDict*)ctx_calloc (CTX_COMPRESS_HT_SIZE, sizeof (CtxCompressDict));
   int pos;
 
   pos = 0;
@@ -49761,18 +49765,20 @@ static void ctx_net_write_compressed (int fd, const char *frame, int frame_len,
   static FILE *f = NULL;
   if (!f)
      f = fopen ("/tmp/logg", "w");
+  fprintf (f, "-----------------------------------------------\n");
+
+  for (int i = 0; i < prev_frame_len; i++)
+  {
 
   if (prev_frame)
   {
     if (prev_frame[0]>31)
-      fprintf (f, "prevstart:%c\n", prev_frame[0]);
+      fprintf (f, "%c", prev_frame[i]);
     else
-      fprintf (f, "prevstart:%i\n", prev_frame[0]);
+      fprintf (f, "{%i}", prev_frame[i]);
   }
-  if (frame[0]>31)
-  fprintf (f, "start:%c\n", frame[0]);
-  else
-  fprintf (f, "start: %i\n", frame[0]);
+  }
+  fprintf (f, "\n");
 #endif
 
   const char *p;
@@ -49944,7 +49950,7 @@ static void ctx_net_end_frame (Ctx *ctx)
 
 #if CTX_COMPRESS
   int len;
-  char *str = ctx_render_string (net->backend.ctx, 0, &len);
+  char *str = ctx_render_string (net->backend.ctx, (CtxFormatterFlag)0, &len);
   if (str)
   {
     if (net->flags & CTX_FLAG_COMPRESS)
@@ -50087,12 +50093,14 @@ static void ctx_net_consume_events (Ctx *ctx)
         net->rows = b;
         net->cols = cols;
         net->flag_do_reset = 1;
+#if CTX_COMPRESS
         if (net->prev_frame)
           ctx_free (net->prev_frame);
         net->prev_frame = NULL;
         net->prev_frame_len = 0;
+#endif
 
-        ctx_set_size (ctx, x, y);
+        ctx_set_size (ctx, (int)x, (int)y);
         ctx_queue_draw (ctx);
       }
       else if (!strcmp (event_type, "ku"))
@@ -50112,6 +50120,96 @@ static void ctx_net_consume_events (Ctx *ctx)
           ctx_free (event);
       }
     } while (event);
+}
+
+#include <sys/un.h>
+
+char *ctx_socket_path (void)
+{
+  static char *cached = NULL;
+  if (!cached)
+  {
+    if (getenv ("XDG_RUNTIME_DIR"))
+    {
+      cached = ctx_strdup_printf ("%s/%s", getenv ("XDG_RUNTIME_DIR"), "ctx-0");
+    }
+    else
+    {
+      cached = strdup ("/tmp/ctx-0");
+    }  
+  }
+  return cached;
+}
+
+Ctx *ctx_new_unix (int width, int height, int flags, const char *path)
+{
+  if (!path)
+    path = ctx_socket_path();
+  float font_size = 12.0;
+  CtxNet *net = (CtxNet*)ctx_calloc (1, sizeof (CtxNet));
+  net->sock = socket (AF_UNIX, SOCK_STREAM,0);
+
+  if (net->sock < 0)
+  {
+    fprintf (stderr, "failed to create socket\n");
+    ctx_free (net);
+    return NULL;
+  }
+  
+  struct sockaddr_un server_addr;
+  memset(&server_addr, 0, sizeof(struct sockaddr_un));
+  server_addr.sun_family = AF_UNIX;
+  strncpy(server_addr.sun_path, path, sizeof(server_addr.sun_path) - 1);
+  
+  if (connect(net->sock, (struct sockaddr *)&server_addr, sizeof(struct sockaddr_un)) == -1) {
+        close(net->sock);
+        ctx_free (net);
+        return NULL;
+    }
+
+  CtxBackend *backend = (CtxBackend*)net;
+
+  net->in_fd = net->out_fd = net->sock;
+
+
+  net->flags = flags;
+  if (width <= 0 || height <= 0)
+  {
+    width  = ctx_terminal_width (net->in_fd, net->out_fd);
+    height = ctx_terminal_height (net->in_fd, net->out_fd);
+    net->cols = ctx_terminal_cols (net->in_fd, net->out_fd);
+    net->rows = ctx_terminal_rows (net->in_fd, net->out_fd);
+    font_size = height / net->rows;
+    //fprintf (stderr, "got dim: %ix%i fs:%f rows:%i\n", width, height, font_size, net->rows);
+  }
+  else
+  {
+    net->cols   = width / 80;
+    net->rows   = height / 24;
+  }
+
+  int retcode = ctx_net_strout (net, CTX_INIT_STRING);
+  if (retcode < 0)
+  {
+    fprintf(stderr, "*** ERROR - initial send() failed \n");
+    ctx_free (net);
+    return NULL;
+  }
+
+  Ctx *ctx = ctx_new_drawlist (width, height);
+
+
+  backend->ctx         = ctx;
+  backend->start_frame = ctx_net_start_frame;
+  backend->end_frame   = ctx_net_end_frame;
+  backend->type    = CTX_BACKEND_CTX;
+  backend->destroy = (void(*)(void *))ctx_net_destroy;
+  backend->process = (void(*)(Ctx *a, const CtxCommand *c))ctx_drawlist_process;
+  backend->consume_events = ctx_net_consume_events;
+  ctx_set_backend (ctx, net);
+  //ctx_set_size (ctx, width, height);
+  ctx_font_size (ctx, font_size);
+  return ctx;
 }
 
 
@@ -50143,13 +50241,6 @@ Ctx *ctx_new_net (int width, int height, int flags, const char *hostip, int port
 
   net->in_fd = net->out_fd = net->sock;
 
-  retcode = ctx_net_strout (net, "\033[?1049h\033[?200h\033[?201h\033[?25l");
-  if (retcode < 0)
-  {
-    fprintf(stderr, "*** ERROR - initial send() failed \n");
-    ctx_free (net);
-    return NULL;
-  }
 
   net->flags = flags;
   if (width <= 0 || height <= 0)
@@ -50166,6 +50257,15 @@ Ctx *ctx_new_net (int width, int height, int flags, const char *hostip, int port
     net->cols   = width / 80;
     net->rows   = height / 24;
   }
+
+  retcode = ctx_net_strout (net, CTX_INIT_STRING);
+  if (retcode < 0)
+  {
+    fprintf(stderr, "*** ERROR - initial send() failed \n");
+    ctx_free (net);
+    return NULL;
+  }
+
   Ctx *ctx = ctx_new_drawlist (width, height);
 
   backend->ctx         = ctx;
@@ -50207,11 +50307,18 @@ Ctx *ctx_new_fds (int width, int height, int in_fd, int out_fd, int flags)
     net->rows   = height / 24;
   }
 
-  Ctx *ctx = ctx_new_drawlist (width, height);
 #if CTX_EVENTS
   ctx_term_raw (net->in_fd);
 #endif
-  ctx_net_strout (net, "\033[?1049h\n\033[?201h\n");
+  int retcode =
+  ctx_net_strout (net, CTX_INIT_STRING);
+  if (retcode < 0)
+  {
+    fprintf(stderr, "*** ERROR - initial send() failed \n");
+    ctx_free (net);
+    return NULL;
+  }
+  Ctx *ctx = ctx_new_drawlist (width, height);
 
   backend->ctx = ctx;
   backend->start_frame = ctx_net_start_frame;
@@ -50438,7 +50545,7 @@ static int ctx_render_cb (CtxCbBackend *backend_cb,
 
   int subpixel = CTX_SUBPIXEL_NONE;//
   
-  if (scale > 1.0)
+  if (scale > 1.0f)
     subpixel = _ctx_subpixel_layout;
   if (subpixel)
     scale = 3.0f;
@@ -50492,13 +50599,13 @@ static int ctx_render_cb (CtxCbBackend *backend_cb,
 
   if (scale != 1.0f)
   {
-    int needed = (width * scale + 1) * (render_height * scale + 1) * bpp;
+    int needed = (int)((width * scale + 1) * (render_height * scale + 1)) * bpp;
 
     if (backend_cb->temp_len[rno] < needed)
     {
       if (backend_cb->temp[rno])
         ctx_free (backend_cb->temp[rno]);
-      backend_cb->temp[rno] = ctx_malloc (needed);
+      backend_cb->temp[rno] = (uint8_t*)ctx_malloc (needed);
       backend_cb->temp_len[rno] = needed;
     }
     temp = backend_cb->temp[rno];
@@ -50515,7 +50622,7 @@ static int ctx_render_cb (CtxCbBackend *backend_cb,
         uint8_t *fb = (uint8_t*)backend_cb->config.fb;
         //fb += stride * y0 + x0 * bpp;
         if (temp)
-        ctx_rasterizer_reinit(backend_cb->rctx[rno], temp, 0, 0, width * scale, render_height * scale, scale * width*bpp, format);
+        ctx_rasterizer_reinit(backend_cb->rctx[rno], temp, 0, 0, (int)(width * scale), (int)(render_height * scale), (int)(scale * width*bpp), format);
         else
         ctx_rasterizer_reinit(backend_cb->rctx[rno], fb + stride * y0 + x0 * bpp, 0, 0, width, render_height, stride, format);
         if (!keep_data)
@@ -50530,12 +50637,12 @@ static int ctx_render_cb (CtxCbBackend *backend_cb,
       else
       {
         if (temp)
-        ctx_rasterizer_reinit(backend_cb->rctx[rno], temp, 0, 0, width * scale, render_height * scale, scale * width * bpp, format);
+        ctx_rasterizer_reinit(backend_cb->rctx[rno], temp, 0, 0, (int)(width * scale), (int)(render_height * scale), (int)(scale * width * bpp), format);
         else
-        ctx_rasterizer_reinit(backend_cb->rctx[rno], scratch, 0, 0, width * scale, render_height * scale, scale * width * bpp, format);
+        ctx_rasterizer_reinit(backend_cb->rctx[rno], scratch, 0, 0, (int)(width * scale), (int)(render_height * scale), (int)(scale * width * bpp), format);
 
         if (!keep_data)
-          memset (temp?temp:(uint8_t*)scratch, 0, width * bpp * render_height * scale * scale);
+          memset (temp?temp:(uint8_t*)scratch, 0, (int)(width * bpp * render_height * scale * scale));
       }
 
       ctx_save (backend_cb->rctx[rno]);
@@ -50564,11 +50671,11 @@ static int ctx_render_cb (CtxCbBackend *backend_cb,
              out = fb + stride * (y+y0) + x0 * bpp;
 
            const uint32_t w[5] = {
-             (0x8/256.0) * (1<<12)/3,
-             (0x4d/256.0) * (1<<12)/3,
-             (0x56/256.0) * (1<<12)/3,
-             (0x4d/256.0) * (1<<12)/3,
-             (0x8/256.0) * (1<<12)/3};
+             (uint32_t)((0x8/256.0f) * (1<<12)/3),
+             (uint32_t)((0x4d/256.0f) * (1<<12)/3),
+             (uint32_t)((0x56/256.0f) * (1<<12)/3),
+             (uint32_t)((0x4d/256.0f) * (1<<12)/3),
+             (uint32_t)((0x8/256.0f) * (1<<12)/3)};
 
            uint8_t *prev0 = in;
            uint8_t *prev1 = in + rowstride;
@@ -51219,7 +51326,7 @@ ctx_cb_end_frame (Ctx *ctx)
         float y = ctx_height (ctx);
         ctx_save (ctx);
         ctx_font_size (ctx, em);
-        ctx_rectangle (ctx, ctx_width(ctx)-(em*4), y-em * 1.1, em *4, em * 1.1f);
+        ctx_rectangle (ctx, ctx_width(ctx)-(em*4), y-em * 1.1f, em *4, em * 1.1f);
         ctx_rgba (ctx, 0, 0, 0, 0.7f);
         ctx_fill (ctx);
   
@@ -51327,8 +51434,8 @@ static void ctx_cb_consume_events (Ctx *ctx)
   int old_pointer_y = 0;
   if (backend_cb->config.flags & CTX_FLAG_POINTER)
   {
-    old_pointer_x = ctx_pointer_x (ctx);
-    old_pointer_y = ctx_pointer_y (ctx);
+    old_pointer_x = (int)ctx_pointer_x (ctx);
+    old_pointer_y = (int)ctx_pointer_y (ctx);
   }
 #endif
   if (backend_cb->config.consume_events)
@@ -51340,8 +51447,8 @@ static void ctx_cb_consume_events (Ctx *ctx)
 #if CTX_PARSER
   if (backend_cb->config.flags & CTX_FLAG_POINTER)
   {
-    int pointer_x = ctx_pointer_x (ctx);
-    int pointer_y = ctx_pointer_y (ctx);
+    int pointer_x = (int)ctx_pointer_x (ctx);
+    int pointer_y = (int)ctx_pointer_y (ctx);
     if ((pointer_x != old_pointer_x) |
         (pointer_y != old_pointer_y))
       ctx_queue_draw (ctx);
@@ -51642,7 +51749,7 @@ Ctx *ctx_new_cb_old (int width, int height, CtxPixelFormat format,
 {
   CtxCbConfig config = {
     .format               = format,
-    .update_fb            = (void*)update_fb, // XXX : hacky but maintains API/ABI - assuming extra args are ignored in calling convention
+    .update_fb            = update_fb, // XXX : hacky but maintains API/ABI - assuming extra args are ignored in calling convention
     .update_fb_user_data  = update_fb_user_data,
     .set_pixels           = set_pixels,
     .set_pixels_user_data = set_pixels_user_data,
@@ -52939,7 +53046,7 @@ void ctx_set_keymap (const char *keymap);
 
 void sdl_cb_set_size (Ctx *ctx, void *userdata, int width, int height)
 {
-  CtxSDLCb *sdl = userdata;
+  CtxSDLCb *sdl = (CtxSDLCb*)userdata;
   // XXX : unfullscreen if we were fullscreen?
   sdl->width_requested = width;
   sdl->height_requested = height;
@@ -53096,7 +53203,7 @@ Ctx *ctx_new_sdl_cb_fb_full (int width, int height, int flags)
 #include "emscripten.h"
 
 #include <unistd.h>
-
+ 
 int width = 512;
 int height = 384;
 
@@ -53120,13 +53227,10 @@ get_fb(int w, int h) {
   return fb;
 }
 
-EMSCRIPTEN_KEEPALIVE
-float pointer_x = 0;
-EMSCRIPTEN_KEEPALIVE
-float pointer_y = 0;
-EMSCRIPTEN_KEEPALIVE
-int32_t pointer_down = 0;
-int32_t pointer_was_down = 0;
+static float pointer_x = 0;
+static float pointer_y = 0;
+static int32_t pointer_down = 0;
+static int32_t pointer_was_down = 0;
 
 
 static uint32_t key_queue[32];
@@ -53158,32 +53262,50 @@ int ctx_wasm_get_key_event (int *type, int *keycode)
   return 0;
 }
 
-int update_fb (Ctx *ctx, void *user_data)
+
+
+void wctx_consume_events (Ctx *ctx, void *user_data)
 {
   EM_ASM(
+    const pointer_x = $0;
+    const pointer_y = $1;
+    const pointer_down = $2;
     var canvas = document.getElementById('c');
     var context = canvas.getContext('2d');
 
      if (!canvas.regevents)
      {
        canvas.onpointerdown = function (e){
-          var loc = windowToCanvas (canvas, e.clientX, e.clientY);
-          setValue(_pointer_x, loc.x, "float");
-          setValue(_pointer_y, loc.y, "float");
-          setValue(_pointer_down, 1, "i32");
+          var bbox = canvas.getBoundingClientRect();
+          setValue(pointer_x,
+            (e.clientX - bbox.left) * (canvas.width  / bbox.width)
+              , "float");
+          setValue(pointer_y, 
+              (e.clientY - bbox.top)  * (canvas.height / bbox.height),
+              "float");
+          setValue(pointer_down, 1, "i32");
           e.stopPropagate=1;
                        };
        canvas.onpointerup = function (e){
-          var loc = windowToCanvas (canvas, e.clientX, e.clientY);
-          setValue(_pointer_x, loc.x, "float");
-          setValue(_pointer_y, loc.y, "float");
-          setValue(_pointer_down, 0, "i32");
+          var bbox = canvas.getBoundingClientRect();
+          setValue(pointer_x,
+            (e.clientX - bbox.left) * (canvas.width  / bbox.width)
+              , "float");
+          setValue(pointer_y, 
+              (e.clientY - bbox.top)  * (canvas.height / bbox.height),
+              "float");
+          setValue(pointer_down, 0, "i32");
           e.stopPropagate=1;
                        };
        canvas.onpointermove = function (e){
-          var loc = windowToCanvas (canvas, e.clientX, e.clientY);
-          setValue(_pointer_x, loc.x, "float");
-          setValue(_pointer_y, loc.y, "float");
+          var bbox = canvas.getBoundingClientRect();
+          setValue(pointer_x,
+            (e.clientX - bbox.left) * (canvas.width  / bbox.width)
+              , "float");
+          setValue(pointer_y, 
+              (e.clientY - bbox.top)  * (canvas.height / bbox.height),
+              "float");
+
           e.stopPropagate=1;
                        };
        canvas.onkeydown = function (e){
@@ -53198,11 +53320,12 @@ int update_fb (Ctx *ctx, void *user_data)
                        e.stopPropagate = 1;
                        };
        canvas.regevents = true;
-     }
+     },
+    &pointer_x, &pointer_y, &pointer_down
   );
 
 #ifndef __EMSCRIPTEN_PTHREADS__
-   emscripten_sleep(1);
+   //emscripten_sleep(1);
 #endif
 
    int ret = 0;
@@ -53218,6 +53341,9 @@ int update_fb (Ctx *ctx, void *user_data)
        case 1:
          ctx_key_down(ctx,keycode,NULL,0);
          ctx_key_press(ctx,keycode,NULL,0);
+
+         ctx_text_input_scancode (ctx, keycode, 0);
+
          ret = 1;
          break;
        case 2:
@@ -53230,46 +53356,32 @@ int update_fb (Ctx *ctx, void *user_data)
    if (pointer_down && !pointer_was_down)
    {
       ctx_pointer_press (ctx, pointer_x, pointer_y, 0, 0);
-      ret = 1;
    } else if (!pointer_down && pointer_was_down)
    {
       ctx_pointer_release (ctx, pointer_x, pointer_y, 0, 0);
-      ret = 1;
-   } else if (pointer_down)
+   } else
    {
       ctx_pointer_motion (ctx, pointer_x, pointer_y, 0, 0);
-      ret = 1;
    }
 
    pointer_was_down = pointer_down;
-
-   return ret;
+   if (ret)
+   ;
 }
-
-EMSCRIPTEN_KEEPALIVE
-uint8_t wasm_scratch[1024*1024*4];
 
 CTX_EXPORT
 void wctx_set_pixels (Ctx *ctx, void *user_data, int x0, int y0, int w, int h, void *buf)
 {
   uint8_t *src = (uint8_t*)buf;
-  int in_w = w;
   if (x0 < 0) x0 = 0;
   if (y0 < 0) y0 = 0;
   if (x0 + w > ctx_width (ctx))
   {
-     fprintf (stderr, "adjusting xbounds from %i %i\n", x0, w);
      w = ctx_width (ctx) - x0;
   }
   if (y0 + h > ctx_height (ctx))
   {
      h = ctx_height (ctx) - y0;
-     fprintf (stderr, "adjusting ybounds\n");
-  }
-  for (int i = 0; i < h; i++)
-  {
-    ctx_RGB565_BS_to_RGBA8 (NULL, x0, src + i * in_w * 2,
-                    wasm_scratch + i * w * 4, w);
   }
   if (w <= 0 || h <= 0)
     return;
@@ -53279,27 +53391,25 @@ void wctx_set_pixels (Ctx *ctx, void *user_data, int x0, int y0, int w, int h, v
     var y0 = $1;
     var w = $2;
     var h = $3;
+    var buf_ptr = $4;
+    var buf_size = $5;
     var canvas = document.getElementById('c');
     var context = canvas.getContext('2d');
     var _ctx = _ctx_host();
     const offset = _get_fb(canvas.width, canvas.height);
     const imgData = context.createImageData(w,h);
 
-    const linearMem = new Uint8Array(wasmMemory.buffer, _wasm_scratch,
-                                     w*h*4);
+    var linearMem = new Uint8Array(Module.HEAPU8.buffer, buf_ptr, buf_size);
 
     for (let i = 0; i < w * h;i++)
     {
-      //var a = linearMem[i*4+3];
-      //var r = 1.0;
-      //if (a!=0) r = 255.0/a;
       imgData.data[i*4+0] = linearMem[i*4+0];// * r;
       imgData.data[i*4+1] = linearMem[i*4+1];// * r;
       imgData.data[i*4+2] = linearMem[i*4+2];// * r;
       imgData.data[i*4+3] = 255;
     }
     context.putImageData(imgData,x0,y0);
-  , x0,y0, w, h);
+  , x0,y0, w, h, src, w * h * 4);
 
 }
 
@@ -53312,25 +53422,19 @@ void ctx_wasm_reset (void)
 CTX_EXPORT
 Ctx *ctx_host (void)
 {
-  int memory_budget = 64 * 1024;
+  int memory_budget = 512 * 1024;
   if (em_ctx) return em_ctx;
 
 EM_ASM(
-    {var canvas = document.getElementById('c');
-     const offset = _get_fb(canvas.width, canvas.height);
-
-     //var dc = document.getElementById('damagecontrol');
-     //if (dc)
-     //{
-     //  _wasm_set_damage_control(dc.checked?1:0);
-     //}
+   {var canvas = document.getElementById('c');
+    const offset = _get_fb(canvas.width, canvas.height);
    }
 );
 
    if (em_ctx && memory_budget)
    {
       CtxCbBackend *cb_backend = (CtxCbBackend*)em_ctx->backend;
-      if (memory_budget != cb_backend->memory_budget)
+      if (memory_budget != cb_backend->config.buffer_size)
       {
          ctx_cb_set_memory_budget (em_ctx, memory_budget);
          ctx_cb_set_flags (em_ctx, 0);
@@ -53338,15 +53442,16 @@ EM_ASM(
    }
 
 
+   CtxCbConfig config = {
+    .flags = CTX_FLAG_HASH_CACHE,
+    .format = CTX_FORMAT_RGBA8,
+    .set_pixels = wctx_set_pixels,
+    .consume_events = wctx_consume_events,
+    .buffer_size = memory_budget,
+   };
 
    if (!em_ctx){
-      em_ctx = ctx_new_cb_old (width, height, CTX_FORMAT_RGB565_BYTESWAPPED,
-                           wctx_set_pixels, 
-                           NULL,
-                           update_fb,
-                           NULL,
-                           memory_budget, NULL, 
-                           0);
+      em_ctx = ctx_new_cb (width, height, &config);
    }
 
 #if 0
@@ -54368,7 +54473,7 @@ void ctx_draw_pointer_ (Ctx *ctx, float x, float y, float size, CtxCursor cursor
     const char *drawing = "M 0 0 L 30 40 L 10 50 z" CURSOR_POST;
     ctx_save(ctx);
     ctx_translate (ctx, x, y);
-    ctx_scale (ctx, size/50.0, size/50.0);
+    ctx_scale (ctx, size/50.0f, size/50.0f);
 
     switch (cursor)
     {
@@ -54970,7 +55075,7 @@ _ctx_text (Ctx        *ctx,
             uint32_t nextnext  = _ctx_utf8_to_unichar (ctx_utf8_skip(next_utf8, 1));
 
             int n;
-            if (n = _ctx_text_substitute_ligatures (ctx, font, &unichar, next_unichar, nextnext));
+            if ((n = _ctx_text_substitute_ligatures (ctx, font, &unichar, next_unichar, nextnext)))
               bp += n;
 
             int glyph_id = ctx_glyph_lookup (ctx, unichar);
@@ -55572,7 +55677,7 @@ ctx_fontgen_add_glyph_real (CtxFontGenerator *gen, uint32_t glyph)
   gen->glyphs[gen->n_glyphs++] = glyph;
   if (ctx->drawlist.count > 5)
     ctx_drawlist_compact (&ctx->drawlist);
-  uint32_t args[2] = {glyph, ctx_glyph_width (ctx, ctx_glyph_lookup (ctx, glyph)) * 256};
+  uint32_t args[2] = {glyph, (uint32_t)ctx_glyph_width (ctx, ctx_glyph_lookup (ctx, glyph)) * 256};
   ctx_drawlist_add_u32 (&gen->output_font, CTX_DEFINE_GLYPH, args);
 
   for (unsigned int i = 1; i < ctx->drawlist.count - 1; i++)
@@ -55580,7 +55685,7 @@ ctx_fontgen_add_glyph_real (CtxFontGenerator *gen, uint32_t glyph)
     CtxEntry *entry = &ctx->drawlist.entries[i];
     args[0] = entry->data.u32[0];
     args[1] = entry->data.u32[1];
-    ctx_drawlist_add_u32 (&gen->output_font, entry->code, &args[0]);
+    ctx_drawlist_add_u32 (&gen->output_font, (CtxCode)entry->code, &args[0]);
   }
 }
 
@@ -55644,7 +55749,7 @@ void ctx_generate_font (const char  *path,
                         const char  *utf8_glyphs,
                         int          binary)
 {
-  CtxFontGenerator *gen = ctx_calloc (sizeof (CtxFontGenerator), 1);
+  CtxFontGenerator *gen = (CtxFontGenerator*)ctx_calloc (sizeof (CtxFontGenerator), 1);
   
   int font_no = gen->font_no = ctx_load_font_hb (NULL, path, -2);
   Ctx *ctx = gen->ctx = ctx_new (1000, 1000, "drawlist");
@@ -56478,7 +56583,8 @@ ctx_glyph_hb (CtxFont *font, Ctx *ctx, int glyph_id, int stroke)
   ctx_current_point (ctx, &origin_x, &origin_y);
   ctx_translate (ctx, origin_x, origin_y);
 
-  CtxHb ctxhb = {ctx, font_size * font->hb.scale};
+  float scaled_font_size = font_size * font->hb.scale;
+  CtxHb ctxhb = {ctx, scaled_font_size};
 
 #if HB_VERSION_MAJOR >= 7
   hb_font_draw_glyph (font->hb.font, glyph_id, font->hb.draw_funcs, &ctxhb);
@@ -56587,7 +56693,7 @@ ctx_load_font_hb (const char *name, const char *data, int length)
   if (length == -2)
     font->hb.blob = hb_blob_create_from_file (data);
   else
-    font->hb.blob = hb_blob_create (data, length, HB_MEMORY_MODE_READONLY, ctx_free, NULL);
+    font->hb.blob = hb_blob_create (data, length, HB_MEMORY_MODE_READONLY, (void*)ctx_free, NULL);
   font->hb.face = hb_face_create(font->hb.blob, 0);
   font->hb.font = hb_font_create(font->hb.face);
 
@@ -56597,7 +56703,7 @@ ctx_load_font_hb (const char *name, const char *data, int length)
   hb_paint_funcs_t *pfuncs = hb_paint_funcs_create ();
   if (name == NULL)
   {
-    font->hb.name = ctx_malloc (64);
+    font->hb.name = (char *)ctx_malloc (64);
     unsigned int text_size = 63;
     hb_ot_name_get_utf8 (font->hb.face, HB_OT_NAME_ID_FULL_NAME, HB_LANGUAGE_INVALID, &text_size, (char*)font->hb.name);
   }
@@ -57005,8 +57111,9 @@ const char *_ctx_code_to_name (int code)
       return NULL;
 }
 
-static void _ctx_print_name (CtxFormatter *formatter, int code)
+static void _ctx_print_name (CtxFormatter *formatter, int code_i)
 {
+  CtxCode code = (CtxCode)code_i;
 #define CTX_VERBOSE_NAMES 1
 #if CTX_VERBOSE_NAMES
   if (formatter->longform)
@@ -58005,7 +58112,7 @@ ctx_get_image_data (Ctx *ctx, int sx, int sy, int sw, int sh,
      {
        if (dst_stride <= 0) dst_stride = ctx_pixel_format_get_stride (format, sw);
        int src_stride = cb->ctx->width * 4;
-       uint8_t *src_buf = cb->config.fb;
+       uint8_t *src_buf = (uint8_t*)cb->config.fb;
        int y = 0;
        for (int v = sy; v < sy + sh; v++, y++)
        {
@@ -58491,15 +58598,15 @@ ctx_draw_texture_clipped  (Ctx *ctx, const char *eid,
   int tex_height = 0;
   if (ctx_eid_valid (ctx, eid , &tex_width, &tex_height))
   {
-    if (width < 0 && height > 0)
+    if ((width < 0) && (height > 0))
     {
       width = height * (tex_width / tex_height);
     }
-    else if (height <0 && height > 0)
+    else if ((height <0) && (width > 0))
     {
       height = width * (tex_height / tex_width);
     }
-    else if (width <0 && height <0)
+    else if ((width <0) && (height <0))
     {
       width = tex_width;
       height = tex_height;
@@ -60266,6 +60373,7 @@ ctx_destroy (Ctx *ctx)
     CtxIdleCb *item = (CtxIdleCb*)ctx->events.idles->data;
     ctx_remove_idle (ctx, item->id);
   }
+  ctx_events_deinit (ctx);
 
 #endif
   ctx_deinit (ctx);
@@ -61439,7 +61547,7 @@ void ctx_write_png (const char *dst_path, int w, int h, int num_chans, void *dat
 {
 #if CTX_IMAGE_WRITE
   size_t len = 0;
-  char *buf = tdefl_write_image_to_png_file_in_memory (data, w, h, num_chans, &len);
+  char *buf = (char*)tdefl_write_image_to_png_file_in_memory (data, w, h, num_chans, &len);
   if (buf)
   {
     FILE *f = fopen (dst_path, "w");
@@ -61987,12 +62095,12 @@ void ctx_string_init (CtxString *string, int initial_size);
 
 VtLine *vt_line_new_with_size (const char *initial, int initial_size)
 {
-  VtLine *line = ctx_calloc (sizeof (VtLine), 1);
+  VtLine *line = (VtLine*)ctx_calloc (sizeof (VtLine), 1);
   CtxString *string = (CtxString*)line;
   ctx_string_init (string, initial_size);
   if (initial)
     { ctx_string_append_str (string, initial); }
-  line->style = ctx_calloc (sizeof (vt_style_t), initial_size);
+  line->style = (vt_style_t*)ctx_calloc (sizeof (vt_style_t), initial_size);
   line->style_size = initial_size;
   string->is_line = 1;
   return line;
@@ -62031,7 +62139,7 @@ void        vt_line_clear          (VtLine *line)
 
 typedef struct VtPty
 {
-  int        pty; //    0 if thread
+  int        fd;  //    0, socket or pipe
   pid_t      pid; //    0 if thread
   int        done;
 
@@ -62319,6 +62427,10 @@ VT *vt_new_argv (char **argv, int width, int height, float font_size, float line
 VT *vt_new_thread (void (*start_routine)(void *userdata), void *userdata,
                    int width, int height, float font_size, float line_spacing, int id, int can_launch);
 
+VT *vt_new_socket (int socket,
+                   int width, int height, float font_size,
+                   float line_spacing,
+                   int id, int can_launch);
 
 void vt_open_log (VT *vt, const char *path);
 
@@ -62492,8 +62604,8 @@ void vt_audio (VT *vt, const char *command);
 
 static int ydec (const void *srcp, void *dstp, int count)
 {
-  const char *src = srcp;
-  char *dst = dstp;
+  const char *src = (const char*) srcp;
+  char *dst = (char*)dstp;
   int out_len = 0;
   for (int i = 0; i < count; i ++)
   {
@@ -62559,19 +62671,19 @@ void vt_feed_audio (VT *vt, void *samples, int bytes)
 {
   char buf[256];
   AudioState *audio = &vt->audio;
-  uint8_t *data = samples;
+  uint8_t *data = (uint8_t*)samples;
   int frames = bytes / (audio->bits/8) / audio->channels;
 
   if (audio->compression == 'z')
   {
     unsigned long len = bytes * 1.2;//compressBound(bytes);
-    data = ctx_malloc (len);
-    int z_result = compress (data, &len, samples, len);
+    data = (uint8_t*)ctx_malloc (len);
+    int z_result = compress (data, &len, (const uint8_t*)samples, len);
     if (z_result != Z_OK)
     {
       const char *buf = "\033_Ao=z;zlib error2\033\\";
       vt_write (vt, buf, strlen(buf));
-      data = samples;
+      data = (uint8_t*)samples;
     }
     else
     {
@@ -62579,7 +62691,7 @@ void vt_feed_audio (VT *vt, void *samples, int bytes)
     }
   }
 
-  char *encoded = ctx_malloc (bytes * 2);
+  char *encoded = (char*)ctx_malloc (bytes * 2);
   encoded[0]=0;
   if (audio->encoding == 'a')
   {
@@ -62657,8 +62769,8 @@ static void mic_callback(void*     userdata,
                          uint8_t * stream,
                          int       len)
 {
-  AudioState *audio = userdata;
-  int16_t *sstream = (void*)stream;
+  AudioState *audio = (AudioState*)userdata;
+  int16_t *sstream = (int16_t*)stream;
   int frames;
   int channels = audio->channels;
 
@@ -63804,12 +63916,12 @@ void vt_audio (VT *vt, const char *command)
      if (audio->data == NULL)
      {
        audio->data_size = chunk_size;
-       audio->data = ctx_malloc (audio->data_size + 1);
+       audio->data = (uint8_t*)ctx_malloc (audio->data_size + 1);
      }
      else
      {
        audio->data_size += chunk_size;
-       audio->data = ctx_realloc (audio->data, audio->data_size+1 - chunk_size, audio->data_size + 1);
+       audio->data = (uint8_t*)ctx_realloc (audio->data, audio->data_size+1 - chunk_size, audio->data_size + 1);
      }
      memcpy (audio->data + old_size, payload, chunk_size);
      audio->data[audio->data_size]=0;
@@ -63826,11 +63938,11 @@ void vt_audio (VT *vt, const char *command)
         int bin_length = audio->data_size;
         if (bin_length)
         {
-        uint8_t *data2 = ctx_malloc ((unsigned int)ctx_a85len ((char*)audio->data, audio->data_size) + 1);
+        uint8_t *data2 = (uint8_t*)ctx_malloc ((unsigned int)ctx_a85len ((char*)audio->data, audio->data_size) + 1);
         // a85len is inaccurate but gives an upper bound,
         // should be fixed.
         bin_length = ctx_a85dec ((char*)audio->data,
-                                 (void*)data2,
+                                 (char*)data2,
                                  bin_length);
         free (audio->data);
         audio->data = data2;
@@ -63842,7 +63954,7 @@ void vt_audio (VT *vt, const char *command)
       case 'b':
       {
         int bin_length = audio->data_size;
-        uint8_t *data2 = ctx_malloc (audio->data_size);
+        uint8_t *data2 = (uint8_t*)ctx_malloc (audio->data_size);
         bin_length = ctx_base642bin ((char*)audio->data,
                                      &bin_length,
                                      data2);
@@ -63860,7 +63972,7 @@ void vt_audio (VT *vt, const char *command)
     {
       unsigned long int
               actual_uncompressed_size = audio->frames * audio->bits/8 * audio->channels + 512;
-      unsigned char *data2 = ctx_malloc (actual_uncompressed_size);
+      unsigned char *data2 = (uint8_t*)ctx_malloc (actual_uncompressed_size);
       /* if a buf size is set (rather compression, but
        * this works first..) then */
       int z_result = uncompress (data2, &actual_uncompressed_size,
@@ -66478,6 +66590,17 @@ int vt_special_glyph (Ctx *ctx, VT *vt, float x, float y, float cw, float ch, in
 //#undef CTX_VT_LOG
 //#define CTX_VT_LOG 1
 
+#ifdef EMSCRIPTEN
+#define EM_BUFSIZE 81920
+char em_inbuf[EM_BUFSIZE]="";
+char em_outbuf[EM_BUFSIZE]="";
+int em_in_len = 0;
+int em_in_pos = 0;
+int em_in_read_pos = 0;
+EMSCRIPTEN_KEEPALIVE int em_out_len = 0;
+int em_out_pos = 0;
+#endif
+
 #if CTX_VT
 
 #if CTX_STB_IMAGE
@@ -66620,7 +66743,7 @@ static VtLine *vt_line_new2 (VT *vt)
 {
   if (vt->limbo)
   {
-    VtLine *ret = vt->limbo->data;
+    VtLine *ret = (VtLine*)vt->limbo->data;
     ctx_list_remove (&vt->limbo, ret);
     vt_line_set (ret, "");
     vt_line_clear (ret);
@@ -66724,52 +66847,56 @@ static Image *image_add (int width,
   return image;
 }
 
+
+void socket_resize (void *data, int cols, int rows, int px_width, int px_height)
+{
+  VT    *vt    = (VT*)data;
+  char buf[64];
+  sprintf (buf, "resize-event %i %i %i %i", px_width, px_height, rows, cols);
+  vt_feed_event (vt, NULL, buf);
+}
+
 void vtpty_resize (void *data, int cols, int rows, int px_width, int px_height)
 {
 #if CTX_PTY
-  VtPty *vtpty = data;
-  VT    *vt    = data;
+  VtPty *vtpty = (VtPty*)data;
   struct winsize ws;
   ws.ws_row = rows;
   ws.ws_col = cols;
   ws.ws_xpixel = px_width;
   ws.ws_ypixel = px_height;
-  ioctl (vtpty->pty, TIOCSWINSZ, &ws);
-  char buf[64];
-  sprintf (buf, "resize-event %i %i %i %i", px_width, px_height, rows, cols);
-  vt_feed_event (vt, NULL, buf);
+  ioctl (vtpty->fd, TIOCSWINSZ, &ws);
 #endif
+  socket_resize (data, cols, rows, px_width, px_height);
 }
 
 ssize_t vtpty_write (void *data, const void *buf, size_t count)
 {
-  VtPty *vtpty = data;
-  return write (vtpty->pty, buf, count);
+  return write (((VtPty*)data)->fd, buf, count);
 }
 
 ssize_t vtpty_read (void  *data, void *buf, size_t count)
 {
-  VtPty *vtpty = data;
-  return read (vtpty->pty, buf, count);
+  return read (((VtPty*)data)->fd, buf, count);
 }
 
 int vtpty_waitdata (void  *data, int timeout)
 {
-  VtPty *vtpty = data;
+  VtPty *vtpty = (VtPty*)data;
   struct timeval tv;
   fd_set fdset;
   FD_ZERO (&fdset);
-  FD_SET (vtpty->pty, &fdset);
+  FD_SET (vtpty->fd, &fdset);
   tv.tv_sec = 0;
   tv.tv_usec = timeout;
   tv.tv_sec  = timeout / 1000000;
   tv.tv_usec = timeout % 1000000;
-  if (select (vtpty->pty+1, &fdset, NULL, NULL, &tv) == -1)
+  if (select (vtpty->fd+1, &fdset, NULL, NULL, &tv) == -1)
     {
       perror ("select");
       return 0;
     }
-  if (FD_ISSET (vtpty->pty, &fdset) )
+  if (FD_ISSET (vtpty->fd, &fdset) )
     {
       return 1;
     }
@@ -66836,7 +66963,7 @@ static int vt_margin_right (VT *vt)
 #define VT_MARGIN_RIGHT vt_margin_right(vt)
 
 static void vtcmd_reset_to_initial_state (VT *vt, const char *sequence);
-int vt_set_prop (Ctx *ctx, VT *vt, uint32_t key_hash, const char *val);
+int vt_set_prop (Ctx *ctx, void *vt, uint32_t key_hash, const char *val, int len);
 
 void vt_set_title (VT *vt, const char *new_title)
 {
@@ -66844,7 +66971,7 @@ void vt_set_title (VT *vt, const char *new_title)
   if (vt->title)
     { ctx_free (vt->title); }
   vt->title = ctx_strdup (new_title);
-  vt_set_prop (vt->current_line->ctx, vt, ctx_strhash ("title"), (char*)new_title);
+  vt_set_prop ((Ctx*)vt->current_line->ctx, vt, ctx_strhash ("title"), (char*)new_title, strlen(new_title));
 }
 
 const char *vt_get_title (VT *vt)
@@ -66865,7 +66992,7 @@ static void vtcmd_clear (VT *vt, const char *sequence)
 
   while (vt->lines)
     {
-      vt_line_free2 (vt, vt->lines->data);
+      vt_line_free2 (vt, (VtLine*)vt->lines->data);
       ctx_list_remove (&vt->lines, vt->lines->data);
     }
   vt->lines = NULL;
@@ -66877,7 +67004,7 @@ static void vtcmd_clear (VT *vt, const char *sequence)
     int images = 0;
     for (int i = 0; i < vt->rows; i++)
     {
-      VtLine *line = ctx_list_nth_data (vt->scrollback, i);
+      VtLine *line = (VtLine*)ctx_list_nth_data (vt->scrollback, i);
       if (line && line->images)
         images++;
     }
@@ -67024,12 +67151,12 @@ static void vtcmd_reset_to_initial_state (VT *vt, const char *sequence)
   vt->audio.mic = 0;
   while (vt->scrollback)
     {
-      vt_line_free (vt->scrollback->data, 1);
+      vt_line_free ((VtLine*)vt->scrollback->data, 1);
       ctx_list_remove (&vt->scrollback, vt->scrollback->data);
     }
   while (vt->limbo)
     {
-      vt_line_free (vt->limbo->data, 1);
+      vt_line_free ((VtLine*)vt->limbo->data, 1);
       ctx_list_remove (&vt->limbo, vt->limbo->data);
     }
   vt->scrollback_count = 0;
@@ -67072,7 +67199,7 @@ static void ctx_clients_signal_child (int signum)
         {
           for (CtxList *l = ctx_vts; l; l=l->next)
             {
-              VtPty *vt = l->data;
+              VtPty *vt = (VtPty*)l->data;
               if (vt->pid == pid)
                 {
                   vt->done = 1;
@@ -67116,7 +67243,7 @@ static void vt_init (VT *vt, int width, int height, float font_size, float line_
   vt->scrollback_limit   = CTX_VT_SCROLL_LIMIT;
   vt->argument_buf_len   = 0;
   vt->argument_buf_cap   = 64;
-  vt->argument_buf       = ctx_malloc (vt->argument_buf_cap);
+  vt->argument_buf       = (char*)ctx_malloc (vt->argument_buf_cap);
   vt->argument_buf[0]    = 0;
   vt->vtpty.done         = 0;
   vt->result             = -1;
@@ -67222,15 +67349,7 @@ void _ctx_remove_listen_fd (int fd);
 
 #ifdef EMSCRIPTEN
 
-#define EM_BUFSIZE 81920
 
-char em_inbuf[EM_BUFSIZE]="";
-char em_outbuf[EM_BUFSIZE]="";
-int em_in_len = 0;
-int em_in_pos = 0;
-int em_in_read_pos = 0;
-EMSCRIPTEN_KEEPALIVE int em_out_len = 0;
-int em_out_pos = 0;
 
 ssize_t em_write (void *s, const void *buf, size_t count)
 {
@@ -67433,7 +67552,7 @@ static void vt_run_argv (VT *vt, char **argv, const char *term)
   ws.ws_col = vt->cols;
   ws.ws_xpixel = ws.ws_col * vt->cw;
   ws.ws_ypixel = ws.ws_row * vt->ch;
-  vt->vtpty.pid = vt_forkpty (&vt->vtpty.pty, NULL, NULL, &ws);
+  vt->vtpty.pid = vt_forkpty (&vt->vtpty.fd, NULL, NULL, &ws);
 #endif
   if (vt->vtpty.pid == 0)
     {
@@ -67447,21 +67566,25 @@ static void vt_run_argv (VT *vt, char **argv, const char *term)
       VT_error ("forkpty failed (%s)", argv[0]);
       return;
     }
-  fcntl(vt->vtpty.pty, F_SETFL, O_NONBLOCK);//|O_NOCTTY);
-  _ctx_add_listen_fd (vt->vtpty.pty);
+  fcntl(vt->vtpty.fd, F_SETFL, O_NONBLOCK);
+  _ctx_add_listen_fd (vt->vtpty.fd);
 }
 
 
-VT *vt_new_argv (char **argv, int width, int height, float font_size, float line_spacing, int id, int can_launch)
+// note the commandline is simulating and breaking things down
+// to argv, this is the only real entry point
+VT *vt_new_argv (char **argv, 
+                 int width, int height, float font_size,
+                 float line_spacing,
+                 int id, int can_launch)
 {
-  VT *vt                 = ctx_calloc (sizeof (VT), 1);
+  VT *vt                 = (VT*)ctx_calloc (sizeof (VT), 1);
   vt_init (vt, width, height, font_size, line_spacing, id, can_launch);
   vt_set_font_size (vt, font_size);
   vt_set_line_spacing (vt, line_spacing);
-  //if (argv)
-    {
-      vt_run_argv (vt, argv, NULL);
-    }
+
+  vt_run_argv (vt, argv, NULL);
+
   if (width <= 0) width = 640;
   if (height <= 0) width = 480;
   vt_set_px_size (vt, width, height);
@@ -67470,6 +67593,36 @@ VT *vt_new_argv (char **argv, int width, int height, float font_size, float line
   ctx_list_prepend (&ctx_vts, vt);
   return vt;
 }
+
+
+
+VT *vt_new_socket (int socket,
+                   int width, int height, float font_size,
+                   float line_spacing,
+                   int id, int can_launch)
+{
+  VT *vt                 = (VT*)ctx_calloc (sizeof (VT), 1);
+  vt_init (vt, width, height, font_size, line_spacing, id, can_launch);
+
+  vt->resize             = socket_resize;
+  
+  vt->vtpty.fd = socket;
+  fcntl(vt->vtpty.fd, F_SETFL, O_NONBLOCK);
+  _ctx_add_listen_fd (vt->vtpty.fd);
+
+  vt_set_font_size (vt, font_size);
+  vt_set_line_spacing (vt, line_spacing);
+
+
+  if (width <= 0) width = 640;
+  if (height <= 0) width = 480;
+  vt_set_px_size (vt, width, height);
+
+  vtcmd_reset_to_initial_state (vt, NULL);
+  ctx_list_prepend (&ctx_vts, vt);
+  return vt;
+}
+
 
 static char *string_chop_head (char *orig) /* return pointer to reset after arg */
 {
@@ -67543,7 +67696,7 @@ VT *vt_new (const char *command, int width, int height, float font_size, float l
   char *cargv[32];
   int   cargc;
   char *rest, *copy;
-  copy = ctx_calloc (strlen (command)+2, 1); // XXX leaked!
+  copy = (char*)ctx_calloc (strlen (command)+2, 1); // XXX leaked!
   strcpy (copy, command);
   rest = copy;
   cargc = 0;
@@ -67588,7 +67741,7 @@ static int vt_trimlines (VT *vt, int max)
     {
       if (vt->in_alt_screen)
         {
-          vt_line_free2 (vt, chop_point->data);
+          vt_line_free2 (vt, (VtLine*)chop_point->data);
         }
       else
         {
@@ -67616,7 +67769,7 @@ static int vt_trimlines (VT *vt, int max)
         }
       while (chop_point)
         {
-          vt_line_free2 (vt, chop_point->data);
+          vt_line_free2 (vt, (VtLine*)chop_point->data);
           ctx_list_remove (&chop_point, chop_point->data);
           vt->scrollback_count --;
         }
@@ -67660,6 +67813,7 @@ static void vt_rewrap (VT *vt, int max_col)
     ctx_list_remove (&vt->lines, l->data);
     l = next;
   }
+
   for (CtxList *l = vt->scrollback; l;)
   {
     CtxList *next = l->next;
@@ -67670,21 +67824,21 @@ static void vt_rewrap (VT *vt, int max_col)
 
   for (CtxList *l = list; l; l = l->next)
     {
-      VtLine *line = l->data;
-      VtLine *next = l->next ?l->next->data:NULL;
+      VtLine *line = (VtLine*)l->data;
+      VtLine *next = (VtLine*)(l->next ?l->next->data:NULL);
 
       if (vt_line_get_utf8length (line) >= max_col || (next && next->wrapped))
       {
         if (!next)
         {
           ctx_list_append (&list, vt_line_new2 (vt));
-          next = l->next->data;
+          next = (VtLine*)l->next->data;
           next->wrapped = 1;
         }
         else if (!next->wrapped)
         {
           ctx_list_insert_before (&list, l->next, vt_line_new2 (vt));
-          next = l->next->data;
+          next = (VtLine*)l->next->data;
           next->wrapped = 1;
         } 
         vt_rewrap_pair (vt, line, next, max_col);
@@ -67716,7 +67870,11 @@ static void vt_rewrap (VT *vt, int max_col)
     l = next;
     c++;
   }
+
+  vt->scrollback_count = ctx_list_length (vt->scrollback);
 }
+
+void vt_reinit_parser (VT *vt);
 
 void vt_set_term_size (VT *vt, int icols, int irows)
 {
@@ -67732,13 +67890,13 @@ void vt_set_term_size (VT *vt, int icols, int irows)
   {
     for (CtxList *l = vt->lines; l; l = l->next)
     {
-    VtLine *line = l->data;
+    VtLine *line = (VtLine*)l->data;
     if (line->ctx)
     {
       //fprintf (stderr, "setting size %i %i\n", vt->width, vt->height);
-      ctx_set_size (line->ctx, vt->width, vt->height);
+      ctx_set_size ((Ctx*)line->ctx, vt->width, vt->height);
       if (line->ctx_copy)
-        ctx_set_size (line->ctx_copy, vt->width, vt->height);
+        ctx_set_size ((Ctx*)line->ctx_copy, vt->width, vt->height);
       vt_resize (vt, icols, irows, vt->width, vt->height);
       if (line->ctxp)
       {
@@ -67748,6 +67906,7 @@ void vt_set_term_size (VT *vt, int icols, int irows)
     }
     }
     vt->ctxp = NULL;
+
   }
 #if CTX_PARSER
   if (vt->state == vt_state_ctx)
@@ -67834,7 +67993,7 @@ static inline void vt_argument_buf_add (VT *vt, int ch)
       vt->argument_buf_cap)
     {
       vt->argument_buf_cap = vt->argument_buf_cap * 2;
-      vt->argument_buf = ctx_realloc (vt->argument_buf, vt->argument_buf_cap/2, vt->argument_buf_cap);
+      vt->argument_buf = (char*)ctx_realloc (vt->argument_buf, vt->argument_buf_cap/2, vt->argument_buf_cap);
     }
   vt->argument_buf[vt->argument_buf_len] = ch;
   vt->argument_buf[++vt->argument_buf_len] = 0;
@@ -67852,13 +68011,13 @@ _vt_move_to (VT *vt, int y, int x)
   i = vt->rows - y;
   CtxList *l;
   if (vt->lines)
-    vt->current_line = vt->lines->data;
+    vt->current_line = (VtLine*)vt->lines->data;
   else
     vt->current_line = NULL;
   for (l = vt->lines; l && i >= 1; l = l->next, i--);
   if (l)
     {
-      vt->current_line = l->data;
+      vt->current_line = (VtLine*)l->data;
     }
   else
     {
@@ -68061,7 +68220,7 @@ static void vt_scroll (VT *vt, int amount)
     {
       if (i == remove_no)
         {
-          string = l->data;
+          string = (VtLine*)l->data;
           ctx_list_remove (&vt->lines, string);
           break;
         }
@@ -68355,7 +68514,7 @@ static void vtcmd_erase_in_display (VT *vt, const char *sequence)
           int no = vt->rows;
           for (l = vt->lines; l && l->data != vt->current_line; l = l->next, no--)
             {
-              VtLine *buf = l->data;
+              VtLine *buf = (VtLine*)l->data;
               buf->string.str[0] = 0;
               buf->string.length = 0;
               buf->string.utf8_length = 0;
@@ -68378,7 +68537,7 @@ static void vtcmd_erase_in_display (VT *vt, const char *sequence)
           int no = vt->rows;
           for (l = vt->lines; l; l = l->next, no--)
             {
-              VtLine *buf = l->data;
+              VtLine *buf = (VtLine*)l->data;
               if (there_yet)
                 {
                   buf->string.str[0] = 0;
@@ -68397,7 +68556,7 @@ static void vtcmd_erase_in_display (VT *vt, const char *sequence)
       case 3: // also clear scrollback
         while (vt->scrollback)
         {
-           vt_line_free2 (vt, vt->scrollback->data);
+           vt_line_free2 (vt, (VtLine*)vt->scrollback->data);
            ctx_list_remove (&vt->scrollback, vt->scrollback->data);
          }
         vt->scrollback_count = 0;
@@ -68410,7 +68569,7 @@ static void vtcmd_erase_in_display (VT *vt, const char *sequence)
           _vt_move_to (vt, ty, tx);
           for (CtxList *l = vt->lines; l; l = l->next)
             {
-              VtLine *line = l->data;
+              VtLine *line = (VtLine*)l->data;
               for (int col = 1; col <= vt->cols; col++)
                 { vt_line_set_style (line, col-1, vt->cstyle); }
             }
@@ -69012,7 +69171,7 @@ static void vt_ctx_start_frame (Ctx *ctx, void *data)
 
 static void vt_ctx_end_frame (Ctx *ctx, void *data)
 {
-  VT *vt = data;
+  VT *vt = (VT*)data;
   vt->state = vt_state_neutral;
   ctx_client_rev_inc (vt->client);
   if (!vt->current_line)
@@ -69031,8 +69190,8 @@ static void vt_ctx_end_frame (Ctx *ctx, void *data)
 
   if (vt->current_line->ctx && vt->current_line->ctx_copy)
   {
-    ctx_set_textureclock (vt->current_line->ctx, ctx_textureclock (vt->current_line->ctx) + 1);
-    ctx_set_textureclock (vt->current_line->ctx_copy, ctx_textureclock (vt->current_line->ctx));
+    ctx_set_textureclock ((Ctx*)vt->current_line->ctx, ctx_textureclock ((Ctx*)vt->current_line->ctx) + 1);
+    ctx_set_textureclock ((Ctx*)vt->current_line->ctx_copy, ctx_textureclock ((Ctx*)vt->current_line->ctx));
   }
 #if 1
   if (vt->current_line->ctxp) // XXX: hack to aid double buffering
@@ -69043,9 +69202,10 @@ static void vt_ctx_end_frame (Ctx *ctx, void *data)
 #endif
 }
 
-static int vt_get_prop (Ctx *ctx, VT *vt, const char *key, const char **val, int *len)
+static int vt_get_prop (Ctx *ctx, void *vtp, const char *key, char **val, int *len)
 {
 #if 0
+  VT *vt = (VT*)=vtp;
   uint32_t key_hash = ctx_strhash (key);
   char str[4096]="";
   fprintf (stderr, "%s: %s %i\n", __FUNCTION__, key, key_hash);
@@ -69082,13 +69242,35 @@ static int vt_get_prop (Ctx *ctx, VT *vt, const char *key, const char **val, int
   return 0;
 }
 
+static void    (*ctx_events_init) (VT *vt, void *user_data) = NULL;
+static void     *ctx_events_init_data = NULL;
+
 void
-vt_set_ctx_events_init (VT *vt, void (*ctx_events_init)(VT *vt, void *data), void *user_data)
+vt_set_ctx_events_init (void (*ctx_events_init_a)(VT *vt, void *data), void *user_data)
 {
-  vt->ctx_events_init = ctx_events_init;
-  vt->ctx_events_init_data = user_data;
+  ctx_events_init = ctx_events_init_a;
+  ctx_events_init_data = user_data;
 }
 
+void vt_reinit_parser (VT *vt)
+{
+    CtxParserConfig config = {
+       .width = vt->width,
+       .height = vt->height,
+       .cell_width = vt->cw,
+       .cell_height = vt->ch,
+       .cursor_x = vt->cursor_x,
+       .cursor_y = vt->cursor_y,
+       .user_data = vt,
+       .set_prop = vt_set_prop,
+       .get_prop = vt_get_prop,
+       .start_frame = vt_ctx_start_frame,
+       .end_frame = vt_ctx_end_frame,
+    };
+    if (!vt->current_line->ctxp)
+      vt->current_line->ctxp = ctx_parser_new ((Ctx*)vt->current_line->ctx, &config);
+    vt->ctxp = vt->current_line->ctxp;
+}
 
 static void vtcmd_set_mode (VT *vt, const char *sequence)
 {
@@ -69212,7 +69394,7 @@ qagain:
                   {
                     while (vt->lines)
                       {
-                        vt_line_free2 (vt, vt->lines->data);
+                        vt_line_free2 (vt, (VtLine*)vt->lines->data);
                         ctx_list_remove (&vt->lines, vt->lines->data);
                       }
                     vt->line_count = vt->saved_line_count;
@@ -69241,8 +69423,10 @@ qagain:
             vt->ctx_events = set;
             if (set)
             {
-              if (vt->ctx_events_init)
-                vt->ctx_events_init (vt, vt->ctx_events_init_data);
+              if (ctx_events_init)
+              {
+                ctx_events_init (vt, vt->ctx_events_init_data);
+              }
             }
             break;
          
@@ -69256,30 +69440,13 @@ qagain:
                     vt->current_line->ctx_copy = ctx_new (vt->width, vt->height, "drawlist");
                     if (vt->in_alt_screen)
                       vt->had_ctx_in_alt_screen = 1;
-                    ctx_set_texture_cache (vt->current_line->ctx_copy, vt->current_line->ctx);
-                    _ctx_set_transformation (vt->current_line->ctx, 0);
-                    _ctx_set_transformation (vt->current_line->ctx_copy, 0);
+                    ctx_set_texture_cache ((Ctx*)vt->current_line->ctx_copy, (Ctx*)vt->current_line->ctx);
+                    _ctx_set_transformation ((Ctx*)vt->current_line->ctx, 0);
+                    _ctx_set_transformation ((Ctx*)vt->current_line->ctx_copy, 0);
 
                   }
 
-                {
-                CtxParserConfig config = {
-                   .width = vt->width,
-                   .height = vt->height,
-                   .cell_width = vt->cw,
-                   .cell_height = vt->ch,
-                   .cursor_x = vt->cursor_x,
-                   .cursor_y = vt->cursor_y,
-                   .set_prop = (void*)vt_set_prop,
-                   .get_prop = (void*)vt_get_prop,
-                   .user_data = vt,
-                   .end_frame = vt_ctx_end_frame,
-                   .start_frame = vt_ctx_start_frame,
-                };
-		if (!vt->current_line->ctxp)
-		  vt->current_line->ctxp = ctx_parser_new (vt->current_line->ctx, &config);
-                vt->ctxp = vt->current_line->ctxp;
-                }
+                vt_reinit_parser (vt);
                 vt->utf8_holding[vt->utf8_pos=0]=0; // XXX : needed?
                 vt->state = vt_state_ctx;
               }
@@ -69709,7 +69876,7 @@ static void vtcmd_set_led (VT *vt, const char *sequence)
 
 static void vtcmd_char_at_cursor (VT *vt, const char *sequence)
 {
-  char *buf="";
+  const char *buf="";
   vt_write (vt, buf, strlen (buf) );
 }
 
@@ -70358,7 +70525,7 @@ static void display_image (VT *vt, Image *image,
   }
   if (!vt_image)
   {
-    vt_image = ctx_calloc (sizeof (CtxVtImage), 1);
+    vt_image = (CtxVtImage*)ctx_calloc (sizeof (CtxVtImage), 1);
     vt_image->next = vt->current_line->images;
     vt->current_line->images = vt_image;
   }
@@ -70411,6 +70578,7 @@ void vt_gfx (VT *vt, const char *command)
       vt->gfx.action='t';
       vt->gfx.transmission='d';
     }
+  Image *image = NULL;
   while (pos < len && command[pos] != ';')
     {
       pos ++; // G or ,
@@ -70501,12 +70669,12 @@ void vt_gfx (VT *vt, const char *command)
     if (vt->gfx.data == NULL)
       {
         vt->gfx.data_size = chunk_size;
-        vt->gfx.data = ctx_malloc (vt->gfx.data_size + 1);
+        vt->gfx.data = (uint8_t*)ctx_malloc (vt->gfx.data_size + 1);
       }
     else
       {
         vt->gfx.data_size += chunk_size;
-        vt->gfx.data = ctx_realloc (vt->gfx.data, vt->gfx.data_size-chunk_size,vt->gfx.data_size + 1);
+        vt->gfx.data = (uint8_t*)ctx_realloc (vt->gfx.data, vt->gfx.data_size-chunk_size,vt->gfx.data_size + 1);
       }
     memcpy (vt->gfx.data + old_size, payload, chunk_size);
     vt->gfx.data[vt->gfx.data_size]=0;
@@ -70523,7 +70691,7 @@ void vt_gfx (VT *vt, const char *command)
         }
       {
         int bin_length = vt->gfx.data_size;
-        uint8_t *data2 = ctx_malloc (vt->gfx.data_size);
+        uint8_t *data2 = (uint8_t*)ctx_malloc (vt->gfx.data_size);
         bin_length = ctx_base642bin ( (char *) vt->gfx.data,
                                      &bin_length,
                                      data2);
@@ -70578,7 +70746,6 @@ void vt_gfx (VT *vt, const char *command)
           vt->gfx.data_size= vt->gfx.buf_width * vt->gfx.buf_height * 4;
         }
 #endif
-      Image *image = NULL;
       switch (vt->gfx.action)
         {
           case 't': // transfer
@@ -70629,7 +70796,7 @@ void vt_gfx (VT *vt, const char *command)
               int row = vt->rows; // probably not right at start of session XXX
               for (CtxList *l = vt->lines; l; l = l->next, row --)
                 {
-                  VtLine *line = l->data;
+                  VtLine *line = (VtLine*)l->data;
                   CtxVtImage *image;
                   for (image = line->images; image; image = image->next)
                     {
@@ -70732,8 +70899,9 @@ cleanup:
 }
 #endif
 
-static void vt_state_vt52 (VT *vt, int byte)
+static void vt_state_vt52 (VT *vt, int b)
 {
+  uint8_t byte = b;
   /* in vt52 mode, utf8_pos being non 0 means we got ESC prior */
   switch (vt->utf8_pos)
     {
@@ -70746,7 +70914,8 @@ static void vt_state_vt52 (VT *vt, int byte)
                 break;
               default:
                 {
-                  char str[2] = {byte & 127, 0};
+                  uint8_t v = byte & 127;
+                  char str[2] = {v, 0};
                   /* we're not validating utf8, and our utf8 manipulation
                    * functions are not robust against malformed utf8,
                    * hence we strip to ascii
@@ -70899,7 +71068,7 @@ static void vt_sixels (VT *vt, const char *sixels)
     return;
   x = 0;
   y = 0;
-  pixels = ctx_calloc (width * (height + 6), 4);
+  pixels = (uint8_t*)ctx_calloc (width * (height + 6), 4);
   image = image_add (width, height, 0,
                      32, width*height*4, pixels);
   uint8_t *dst = pixels;
@@ -70998,14 +71167,24 @@ static void vt_sixels (VT *vt, const char *sixels)
 
 #if CTX_PARSER
 
+void vt_reinit_parser (VT *vt);
+
 static void vt_state_ctx (VT *vt, int byte)
 {
-  Ctx **parser = (void*)vt->ctxp;
+  Ctx **parser = (Ctx**)vt->ctxp;
+  if (!parser)
+  {
+    vt_reinit_parser (vt);
+    vt->ctxp = vt->current_line->ctxp;
+    parser = (Ctx**)vt->ctxp;
+    if (!parser)
+      return;
+  }
   if (!parser[0])
   {
-    parser[0] = vt->current_line->ctx;
+    parser[0] = (Ctx*)vt->current_line->ctx;
   }
-  ctx_parser_feed_byte (vt->ctxp, byte);
+  ctx_parser_feed_byte (vt->ctxp, byte, 1);
 }
 #endif
 
@@ -71081,165 +71260,28 @@ static int vt_decode_hex (const char *two_digits)
 
 static uint8_t palettes[][16][3]=
 {
-  {
+
+{
+
 {0, 0, 0},
-{160, 41, 41},
-{74, 160, 139},
-{135, 132, 83},
-{36, 36, 237},
-{171, 74, 223},
-{59, 107, 177},
-{195, 195, 195},
-{111, 111, 111},
-{237, 172, 130},
-{153, 237, 186},
-{233, 216, 8},
-{130, 180, 237},
-{214, 111, 237},
-{29, 225, 237},
+{125, 13, 13},
+{88, 139, 96},
+{231, 148, 0},
+{48, 27, 137},
+{100, 31, 104},
+{19, 147, 228},
+{175, 175, 175},
+{82, 82, 82},
+{209, 59, 0},
+{126, 217, 131},
+{255, 220, 17},
+{7, 19, 255},
+{183, 26, 255},
+{20, 219, 255},
 {255, 255, 255},
 
-  },
+},
 
-  {
-{0, 0, 0},
-{160, 41, 41},
-{74, 160, 139},
-{135, 132, 83},
-{36, 36, 237},
-{171, 74, 223},
-{59, 107, 177},
-{195, 195, 195},
-{111, 111, 111},
-{237, 172, 130},
-{153, 237, 186},
-{233, 216, 8},
-{130, 180, 237},
-{214, 111, 237},
-{29, 225, 237},
-{255, 255, 255},
-
-  },{
-    {0, 0, 0},
-    {147, 53, 38},
-    {30, 171, 82},
-    {188, 153, 0},
-    {32, 71, 193},
-    {236, 49, 188},
-    {42, 182, 253},
-    {149, 149, 149},
-    {73, 73, 73},
-    {210, 36, 0},
-    {96, 239, 97},
-    {247, 240, 2},
-    {93, 11, 249},
-    {222, 42, 255},
-    {11, 227, 255},
-    {233, 235, 235},
-  },
-
-
-  { {0, 0, 0},{97, 27, 0},{129, 180, 0},{127, 100, 0},{44, 15, 255},{135, 10, 167},{20, 133, 164},{174, 174, 174},{71, 71, 71},{167, 114, 90},{162, 214, 127},{255, 251, 83},{118, 77, 253},{192, 121, 255},{14, 217, 255},{255, 255, 255},
-  },{
-
-
-#if 0
-    {
-      {0, 0, 0},
-      {144, 0, 0},
-      {9, 154, 9},
-      {255, 137, 113},
-      {3, 0, 255},
-      {56, 0, 132},
-      {0, 131, 131},
-      {204, 204, 204},
-      {127, 127, 127},
-      {255, 33, 0},
-      {113, 255, 88},
-      {255, 236, 8},
-      {1, 122, 255},
-      {235, 0, 222},
-      {0, 217, 255},
-      {255, 255, 255},
-    },{
-#endif
-
-
-    {0, 0, 0},
-    {139, 0, 0},
-    {9, 154, 9},
-    {255, 137, 113},
-    {3, 0, 255},
-    {56, 0, 132},
-    {0, 111, 111},
-    {204, 204, 204},
-    {127, 127, 127},
-    {255, 33, 0},
-    {118, 255, 92},
-    {255, 230, 15},
-    {1, 122, 255},
-    {232, 0, 220},
-    {1, 217, 255},
-    {255, 255, 255},
-  },
-  {
-
-    {0, 0, 0},
-    {191, 0, 0},
-    {3, 187, 0},
-    {254, 212, 0},
-    {0, 0, 255},
-    {80, 0, 128},
-    {0, 156, 255},
-    {166, 166, 166},
-    {84, 84, 84},
-    {255, 62, 0},
-    {85, 255, 143},
-    {255, 255, 0},
-    {67, 80, 255},
-    {243, 70, 255},
-    {30, 255, 222},
-    {255, 255, 255},
-  },
-  {
-    /* */
-    { 32, 32, 32}, // 0 - background (black)
-    {165, 15, 21}, // 1               red
-    { 95,130, 10}, // 2               green
-    {205,145, 60}, // 3               yellow
-    { 49,130,189}, // 4               blue
-    {120, 40,160}, // 5               magenta
-    {120,230,230}, // 6               cyan
-    {196,196,196},// 7                light-gray
-    { 85, 85, 85},// 8                dark gray
-
-    {251,106, 74},// 9                light red
-    {130,215,140},// 10               light green
-    {255,255,  0},// 11               light yellow
-    {107,174,214},// 12               light blue
-    {215,130,160},// 13               light magenta
-    {225,255,245},// 14               light cyan
-    {255,255,255},// 15 - foreground (white)
-  },{
-    /* */
-    { 32, 32, 32}, // 0 - background (black)
-    {160,  0,  0}, // 1               red
-    {  9,233,  0}, // 2               green
-    {220,110, 44}, // 3               yellow
-    {  0,  0,200}, // 4               blue
-    { 90,  0,130}, // 5               magenta
-    {  0,156,180}, // 6               cyan
-    {196,196,196}, // 7                light-gray
-    { 85, 85, 85}, // 8                dark gray
-
-    {240, 60, 40}, // 9                light red
-    {170,240, 80}, // 10               light green
-    {248,248,  0}, // 11               light yellow
-    {  0, 40,255}, // 12               light blue
-    {204, 62,214}, // 13               light magenta
-    { 10,234,254}, // 14               light cyan
-    {255,255,255}, // 15 - foreground (white)
-  },
   /* inspired by DEC */
   { {  0,  0,  0}, // 0 - background  black
     {150, 10, 10}, // 1               red
@@ -71521,7 +71563,7 @@ static void vt_state_osc (VT *vt, int byte)
                   Image *image = NULL;
                   {
                     int bin_length = vt->argument_buf_len;
-                    uint8_t *data2 = ctx_malloc (bin_length);
+                    uint8_t *data2 = (uint8_t*)ctx_malloc (bin_length);
                     bin_length = ctx_base642bin ( (char *) p,
                                                  &bin_length,
                                                  data2);
@@ -71734,8 +71776,9 @@ static void vt_state_esc_sequence (VT *vt, int byte)
     }
 }
 
-static void vt_state_esc (VT *vt, int byte)
+static void vt_state_esc (VT *vt, int b)
 {
+  uint8_t byte = b;
   if (_vt_handle_control (vt, byte) == 0)
     switch (byte)
       {
@@ -71913,6 +71956,11 @@ int vt_poll (VT *vt, int timeout)
           fwrite (vt->buf, len, 1, vt->log);
 #endif
      // fwrite (vt->buf, len, 1, stdout);
+      }
+      else
+      {
+        vt->vtpty.done = 1;
+        return -1;
       }
       for (int i = 0; i < len; i++)
         { vt->state (vt, vt->buf[i]); }
@@ -72489,7 +72537,7 @@ void vt_paste (VT *vt, const char *str)
     {
       vt_write (vt, "\033[200~", 6);
     }
-  char *tmp = ctx_malloc (strlen (str) + 4);
+  char *tmp = (char*)ctx_malloc (strlen (str) + 4);
   sprintf (tmp, " %s", str);
   vt_feed_event (vt, NULL, tmp);
   ctx_free (tmp);
@@ -72520,7 +72568,7 @@ void vt_run_command (VT *vt, const char *command, const char *term)
   ws.ws_col = vt->cols;
   ws.ws_xpixel = ws.ws_col * vt->cw;
   ws.ws_ypixel = ws.ws_row * vt->ch;
-  vt->vtpty.pid = vt_forkpty (&vt->vtpty.pty, NULL, NULL, &ws);
+  vt->vtpty.pid = vt_forkpty (&vt->vtpty.fd, NULL, NULL, &ws);
   if (vt->vtpty.pid == 0)
     {
       ctx_child_prepare_env (was_pidone, term);
@@ -72531,8 +72579,8 @@ void vt_run_command (VT *vt, const char *command, const char *term)
       VT_error ("forkpty failed (%s)", command);
       return;
     }
-  fcntl(vt->vtpty.pty, F_SETFL, O_NONBLOCK);//|O_NOCTTY);
-  _ctx_add_listen_fd (vt->vtpty.pty);
+  fcntl(vt->vtpty.fd, F_SETFL, O_NONBLOCK);//|O_NOCTTY);
+  _ctx_add_listen_fd (vt->vtpty.fd);
 #endif
 }
 #endif
@@ -72542,33 +72590,39 @@ void vt_destroy (VT *vt)
 {
   while (vt->lines)
     {
-      vt_line_free (vt->lines->data, 1);
+      vt_line_free ((VtLine*)vt->lines->data, 1);
       ctx_list_remove (&vt->lines, vt->lines->data);
       vt->line_count--;
     }
   while (vt->scrollback)
     {
-      vt_line_free (vt->scrollback->data, 1);
+      vt_line_free ((VtLine*)vt->scrollback->data, 1);
       ctx_list_remove (&vt->scrollback, vt->scrollback->data);
     }
   while (vt->limbo)
     {
-      vt_line_free (vt->limbo->data, 1);
+      vt_line_free ((VtLine*)vt->limbo->data, 1);
       ctx_list_remove (&vt->limbo, vt->limbo->data);
     }
   free (vt->argument_buf);
   ctx_list_remove (&ctx_vts, vt);
+  if (vt->vtpty.pid)
+  {
 #if CTX_HAVE_KILL
   kill (vt->vtpty.pid, 9);
 #endif
-  _ctx_remove_listen_fd (vt->vtpty.pty);
-  close (vt->vtpty.pty);
+  }
+  _ctx_remove_listen_fd (vt->vtpty.fd);
+  close (vt->vtpty.fd);
 #if 1
   if (vt->title)
     free (vt->title);
 #endif
   if (vt->arg_copy)
     ctx_free (vt->arg_copy);
+  if (vt->word)
+    ctx_string_free (vt->word, 1);
+  vt->word = NULL;
   free (vt);
   //seq_stats();
 }
@@ -72579,7 +72633,7 @@ int vt_get_line_count (VT *vt)
   int no = 0;
   for (CtxList *l = vt->lines; l; l = l->next, no++)
   {
-    CtxString *str = l->data;
+    CtxString *str = (CtxString*)l->data;
     if (str->str[0]) max_pop = no;
   }
   return max_pop + 1;
@@ -72594,7 +72648,7 @@ const char *vt_get_line (VT *vt, int no)
       { 
          return "";
       }
-    CtxString *str = l->data;
+    CtxString *str = (CtxString*)l->data;
     return str->str;
   }
   else
@@ -72604,7 +72658,7 @@ const char *vt_get_line (VT *vt, int no)
       { 
          return "-";
       }
-    CtxString *str = l->data;
+    CtxString *str = (CtxString*)l->data;
     return str->str;
   }
 }
@@ -72618,7 +72672,7 @@ int vt_line_is_continuation (VT *vt, int no)
       { 
          return 1;
       }
-    VtLine *line = l->data;
+    VtLine *line = (VtLine*)l->data;
     return line->wrapped;
   }
   else
@@ -72628,7 +72682,7 @@ int vt_line_is_continuation (VT *vt, int no)
       { 
          return 1;
       }
-    VtLine *line = l->data;
+    VtLine *line = (VtLine*)l->data;
     return line->wrapped;
   }
 }
@@ -73675,7 +73729,7 @@ float ctx_vt_scrollbar_width_event   = 4.0f;
 
 void ctx_client_mouse_event (CtxEvent *event, void *data, void *data2)
 {
-  CtxClient *client = data;
+  CtxClient *client = (CtxClient*)data;
   if (!client)
   {
     event->stop_propagate = 1;
@@ -73784,7 +73838,7 @@ void ctx_client_mouse_event (CtxEvent *event, void *data, void *data2)
 
 void vt_mouse_event (CtxEvent *event, void *data, void *data2)
 {
-  VT   *vt = data;
+  VT   *vt = (VT*)data;
   CtxClient *client = vt_get_client (vt);
   if (!client)
   {
@@ -73863,14 +73917,14 @@ static int scrollbar_focused = 0;
 #if 0
 static void scrollbar_enter (CtxEvent *event, void *data, void *data2)
 {
-  VT *vt = data;
+  VT *vt = (VT*)data;
   vt->rev++;
   scrollbar_focused = 1;
 }
 
 static void scrollbar_leave (CtxEvent *event, void *data, void *data2)
 {
-  VT *vt = data;
+  VT *vt = (VT*)data;
   vt->rev++;
   scrollbar_focused = 0;
 }
@@ -73895,7 +73949,7 @@ void vt_line_clear_images (VtLine *line)
 
 static void mt_drag (CtxEvent *event, void *data, void *data2)
 {
-  VT *vt = data;
+  VT *vt = (VT*)data;
 
   /* we scroll on motion events from both touch points, thus the /2.0f */
   vt->scroll += (event->delta_y / (1.0f * vt->ch)) / 2.0f;
@@ -73910,7 +73964,7 @@ static void mt_drag (CtxEvent *event, void *data, void *data2)
 
 static void scrollbar_drag (CtxEvent *event, void *data, void *data2)
 {
-  VT *vt = data;
+  VT *vt = (VT*)data;
   float disp_lines = vt->rows;
   float tot_lines = vt->line_count + vt->scrollback_count;
 
@@ -73937,7 +73991,7 @@ static void scrollbar_drag (CtxEvent *event, void *data, void *data2)
 #if 0
 static void scroll_handle_drag (CtxEvent *event, void *data, void *data2)
 {
-  VT *vt = data;
+  VT *vt = (VT*)data;
   float tot_lines = vt->line_count + vt->scrollback_count;
   if (event->type == CTX_DRAG_MOTION)
   {
@@ -73953,7 +74007,7 @@ static void scroll_handle_drag (CtxEvent *event, void *data, void *data2)
 #if 0
 static void test_popup (Ctx *ctx, void *data)
 {
-  VT *vt = data;
+  VT *vt = (VT*)data;
 
   float x = ctx_client_x (vt->root_ctx, vt->id);
   float y = ctx_client_y (vt->root_ctx, vt->id);
@@ -73994,10 +74048,10 @@ void vt_use_images (VT *vt, Ctx *ctx)
 
        if (l && y <= (vt->rows - vt->scroll) *  vt->ch)
          {
-           VtLine *line = l->data;
+           VtLine *line = (VtLine*)l->data;
            if (line->ctx_copy)
              {
-               ctx_render_ctx_textures (line->ctx_copy, ctx);
+               ctx_render_ctx_textures ((Ctx*)line->ctx_copy, ctx);
              }
          }
     }
@@ -74123,7 +74177,7 @@ void vt_draw (VT *vt, Ctx *ctx, double x0, double y0, int has_focus)
            }
          if (l && y <= (vt->rows - vt->scroll) *  vt->ch)
            {
-             VtLine *line = l->data;
+             VtLine *line = (VtLine*)l->data;
              int r = vt->rows - row;
              const char *data = line->string.str;
 
@@ -74139,7 +74193,7 @@ void vt_draw (VT *vt, Ctx *ctx, double x0, double y0, int has_focus)
                if (fg_pass)
                   vt_flush_bg (vt, ctx);
   
-               for (int col = 1; col < vt->cols && x < vt->cols * vt->cw; col++)
+               for (int col = 1; col <= vt->cols && x < vt->cols * vt->cw; col++)
                  {
                    int c = col;
                    float real_cw;
@@ -74264,7 +74318,7 @@ void vt_draw (VT *vt, Ctx *ctx, double x0, double y0, int has_focus)
 
         if (l && y <= (vt->rows - vt->scroll) *  vt->ch)
           {
-            VtLine *line = l->data;
+            VtLine *line = (VtLine*)l->data;
             {
                CtxVtImage *vt_image;
             for (vt_image = line->images; vt_image; vt_image = vt_image->next)
@@ -74324,7 +74378,7 @@ void vt_draw (VT *vt, Ctx *ctx, double x0, double y0, int has_focus)
                                  // hit.
                 ctx_translate (ctx, 0.0, y - vt->ch);
 
-                ctx_render_ctx (line->ctx_copy, ctx);
+                ctx_render_ctx ((Ctx*)line->ctx_copy, ctx);
                 ctx_restore (ctx);
               }
             }
@@ -74563,7 +74617,7 @@ static int long_tap_cb_id = 0;
 static int single_tap (Ctx *ctx, void *data)
 {
 #if 0 // XXX
-  VT *vt = data;
+  VT *vt = (VT*)data;
   if (short_count == 0 && !vt->select_active)
     terminal_long_tap (ctx, vt);
 #endif
@@ -74791,7 +74845,7 @@ void vt_mouse (VT *vt, CtxEvent *event, VtMouseEvent type, int button, int x, in
    {
      vt_write (vt, buf, strlen (buf) );
 #ifndef PICO_BUILD
-     fsync (vt->vtpty.pty);
+     fsync (vt->vtpty.fd);
 #endif
    }
 //#endif
@@ -74809,7 +74863,7 @@ void vt_set_ctx (VT *vt, Ctx *ctx)
 
 #endif
 
-float ctx_target_fps = 120.0f;
+float ctx_target_fps = 50.0f;
 
 #if CTX_VT
 
@@ -74866,10 +74920,11 @@ const char *ctx_client_get_title (Ctx *ctx, int id)
    return client->title;
 }
 
-int vt_set_prop (Ctx *ctx, VT *vt, uint32_t key_hash, const char *val)
+int vt_set_prop (Ctx *ctx, void *vtp, uint32_t key_hash, const char *val, int len)
 {
 #if CTX_VT
 #if 1
+  VT *vt = (VT*)vtp;
   switch (key_hash)
   {
     case SQZ_title:  
@@ -74983,6 +75038,41 @@ static void ctx_client_init (Ctx *ctx, CtxClient *client, int x, int y, int widt
 #endif
 }
 
+static CtxClient *
+ctx_client_new_int (Ctx *ctx,
+                    const char *commandline,
+                    char **argv,
+                    int    socket,
+                    int x, int y, int width, int height,
+                    float font_size,
+                    CtxClientFlags flags,
+                    void *user_data,
+                    CtxClientFinalize finalize)
+{
+  CtxClient *client = (CtxClient*)ctx_calloc (1, sizeof (CtxClient));
+  ctx_client_init (ctx, client, x, y, width, height, font_size, flags, user_data, finalize);
+  float line_spacing = 1.0f;
+  if (commandline)
+    client->vt = vt_new (commandline, width, height, font_size,line_spacing, client->id, (flags & CTX_CLIENT_CAN_LAUNCH)!=0);
+  else if (argv)
+    client->vt = vt_new_argv (argv, width, height, font_size,line_spacing, client->id, (flags & CTX_CLIENT_CAN_LAUNCH)!=0);
+  else if (socket)
+    client->vt = vt_new_socket (socket,
+                   width, height, font_size,
+                   line_spacing,
+                   client->id, (flags & CTX_CLIENT_CAN_LAUNCH)!=0);
+  else
+  {
+    fprintf (stderr, "UH?\n");
+    return 0;
+  }
+  client->vt->client = client;
+  vt_set_ctx (client->vt, ctx);
+  vt_set_title (client->vt, "ctx");
+  ctx_list_append (&ctx->events.clients, client);
+  return client;
+}
+
 CtxClient *ctx_client_new (Ctx *ctx,
                            const char *commandline,
                            int x, int y, int width, int height,
@@ -74991,30 +75081,17 @@ CtxClient *ctx_client_new (Ctx *ctx,
                            void *user_data,
                            CtxClientFinalize finalize)
 {
-  CtxClient *client = (CtxClient*)ctx_calloc (1, sizeof (CtxClient));
-  ctx_list_append (&ctx->events.clients, client);
-  ctx_client_init (ctx, client, x, y, width, height, font_size, flags, user_data, finalize);
-  float line_spacing = 1.0f;
-  client->vt = vt_new (commandline, width, height, font_size,line_spacing, client->id, (flags & CTX_CLIENT_CAN_LAUNCH)!=0);
-  client->vt->client = client;
-  vt_set_ctx (client->vt, ctx);
-  vt_set_title (client->vt, "ctx");
-  return client;
+  return ctx_client_new_int (ctx, commandline, NULL, 0, x, y, width, height, font_size, flags, user_data, finalize);
 }
 
 CtxClient *ctx_client_new_argv (Ctx *ctx, char **argv, int x, int y, int width, int height, float font_size, CtxClientFlags flags, void *user_data, CtxClientFinalize finalize)
 {
+  return ctx_client_new_int (ctx, NULL, argv, 0, x, y, width, height, font_size, flags, user_data, finalize);
+}
 
-  CtxClient *client = (CtxClient*)ctx_calloc (1, sizeof (CtxClient));
-  ctx_client_init (ctx, client, x, y, width, height, font_size, flags, user_data, finalize);
-  ctx_list_append (&ctx->events.clients, client);
-
-  float line_spacing = 1.0f;
-  client->vt = vt_new_argv (argv, width, height, font_size,line_spacing, client->id, (flags & CTX_CLIENT_CAN_LAUNCH)!=0);
-  client->vt->client = client;
-  vt_set_ctx (client->vt, ctx);
-  vt_set_title (client->vt, "ctx");
-  return client;
+CtxClient *ctx_client_new_socket (Ctx *ctx, int socket, int x, int y, int width, int height, float font_size, CtxClientFlags flags, void *user_data, CtxClientFinalize finalize)
+{
+  return ctx_client_new_int (ctx, NULL, NULL, socket, x, y, width, height, font_size, flags, user_data, finalize);
 }
 
 #ifndef EMSCRIPTEN
@@ -75156,6 +75233,7 @@ CtxClient *ctx_client_by_id (Ctx *ctx, int id)
   }
   return NULL;
 }
+
 
 void ctx_client_remove (Ctx *ctx, CtxClient *client)
 {
@@ -76321,15 +76399,31 @@ CtxList *ctx_clients (Ctx *ctx)
 
 #endif /* CTX_VT */
 
+int ctx_server_tick (Ctx *ctx, void *data);
+
 #if CTX_EVENTS
 int ctx_clients_handle_events (Ctx *ctx)
 {
   //int n_clients = ctx_list_length (clients);
 #if CTX_VT
+#if CTX_SOCKETS
+  static int n = 10;
+  n++;
+  if (n>10)
+  {n=0;
+  ctx_server_tick (ctx, NULL);
+  }
+#endif
   int pending_data = 0;
-  long time_start = ctx_ticks ();
+  static long time_start = 0;
+  if (time_start == 0) time_start = ctx_ticks ();
+
   int sleep_time = 1000000/ctx_target_fps;
-  pending_data += ctx_input_pending (ctx, sleep_time);
+
+  int timeout = sleep_time - (ctx_ticks()-time_start);
+  if (timeout < 0) timeout = 1000;
+
+  pending_data += ctx_input_pending (ctx, timeout * 0.8);
 
   CtxList *clients = ctx_clients (ctx);
   if (!clients)
@@ -76338,11 +76432,6 @@ int ctx_clients_handle_events (Ctx *ctx)
   if (pending_data)
   {
     if (!pending_data)pending_data = 1;
-    /* record amount of time spent - and adjust time of reading for
-     * vts?
-     */
-    //long int fractional_sleep = sleep_time / pending_data;
-    long int fractional_sleep = sleep_time * 0.75;
     for (CtxList *l = clients; l; l = l->next)
     {
       CtxClient *client = (CtxClient*)l->data;
@@ -76353,9 +76442,20 @@ int ctx_clients_handle_events (Ctx *ctx)
       if (!found)
         goto done; // XXX : skipping unlock?
       
-      ctx_fetched_bytes += vt_poll (client->vt, fractional_sleep);
-      //ctx_fetched_bytes += vt_poll (client->vt, sleep_time); //fractional_sleep);
+      int fetched = vt_poll (client->vt, 2000); // XXX : investigate improvements
+                                                // vt_poll is expecting more
+                                                // variable.. but perhaps
+                                                // just draining like this is
+                                                // good
+      ctx_fetched_bytes += fetched;
       ctx_client_unlock (client);
+
+      if (fetched == -1)
+      {
+        ctx_client_remove (ctx, client);
+        ctx_queue_draw (ctx);
+        return 0;
+      }
     }
 done:
     if(0){
@@ -76376,9 +76476,19 @@ done:
 
   //while (ctx_get_event (ctx)) { }
 
+#if 0
+  while (ctx_ticks() - time_start < (sleep_time * 0.25))
+  {
+     usleep (100);
+  }
+#endif
+
   long time_end = ctx_ticks ();
 
   int timed = (time_end-time_start);
+
+  time_start = time_end;
+
   float bytespeed = ctx_fetched_bytes / ((timed)/ (1000.0f * 1000.0f));
 
   ctx_avg_bytespeed = bytespeed * 0.2 + ctx_avg_bytespeed * 0.8;
@@ -76405,6 +76515,7 @@ ctx_client_feed_event (CtxClient *client, CtxEvent *event, const char *str)
   vt_feed_event (client->vt, event, str);
 #endif
 }
+
 
 #if CTX_VT
 int ctx_client_id (CtxClient *client)
@@ -76456,6 +76567,247 @@ CtxClient *ctx_client_find (Ctx *ctx, const char *label)
   return NULL;
 }
 
+#endif
+
+#if CTX_VT
+#if CTX_SOCKETS
+static int unix_sock = 0;
+static int tcp_sock = 0;
+
+#define CTX_TCP_PORT  6150
+
+#include <sys/select.h>
+#include <sys/socket.h>
+#include <sys/un.h>
+
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
+
+int
+ctx_server_has_connection (Ctx *ctx, int tcp)
+{
+  int sock = unix_sock;
+  if (tcp)
+    sock = tcp_sock;
+  if (unix_sock == 0)
+    return 0;
+  fd_set fds;
+  FD_ZERO(&fds);
+  FD_SET(sock, &fds);
+  struct timeval tv = {0,0};
+  int activity = select (sock + 1, &fds, NULL, NULL, &tv);
+  if (activity < 0)
+  {
+    fprintf (stderr, "select error\n");
+  }
+  return activity;
+}
+
+static int
+ctx_unix_server_has_connection (Ctx *ctx)
+{
+  return ctx_server_has_connection (ctx, 0);
+}
+
+static int
+ctx_tcp_server_has_connection (Ctx *ctx)
+{
+  return ctx_server_has_connection (ctx, 1);
+}
+
+#include <sys/socket.h>
+#include <sys/un.h>
+#include <fcntl.h>
+#include <errno.h>
+
+static int ctx_unix_enabled = 0;
+static int ctx_unix_started = 0;
+static int ctx_tcp_enabled = 0;
+static int ctx_tcp_started = 0;
+
+static void
+ctx_server_start_stop (Ctx *ctx)
+{
+  if (ctx_unix_enabled && (ctx_unix_started == 0))
+  {
+    const char *path = ctx_socket_path ();
+
+    unix_sock = socket(AF_UNIX, SOCK_STREAM, 0);
+    if (unix_sock < 0)
+    {
+      perror ("socket");
+      return;
+    }
+
+    struct sockaddr_un addr;
+    memset (&addr, 0, sizeof(addr));
+    addr.sun_family = AF_UNIX;
+    strncpy (addr.sun_path, path, sizeof(addr.sun_path) - 1);
+    unlink (path);
+    int err = bind (unix_sock, (const struct sockaddr *)&addr, sizeof(addr));
+    if (err != 0)
+    {
+      perror ("unable to bind socket");
+      close (unix_sock);
+      unlink (path);
+      unix_sock = 0;
+      return;
+    }
+    err = listen (unix_sock, 1);
+    if (err != 0)
+    {  
+      perror ("listen");
+      close (unix_sock);
+      unlink (path);
+      unix_sock = 0;
+      return;
+    }
+    ctx_unix_started = 1;
+  }
+  else if ((ctx_unix_enabled==0) && (ctx_unix_started == 1))
+  {
+    // stop server
+    if (unix_sock)
+    {
+      const char *path = ctx_socket_path ();
+      close (unix_sock);
+      unlink (path);
+      unix_sock = 0;
+    }
+    ctx_unix_started = 0;
+  }
+
+  ////
+  if (ctx_tcp_enabled && (ctx_tcp_started == 0))
+  {
+    struct sockaddr_in6 dest_addr;
+    struct sockaddr_in *dest_addr_ip4 = (struct sockaddr_in *)&dest_addr;
+    dest_addr_ip4->sin_addr.s_addr = htonl(INADDR_ANY);
+    dest_addr_ip4->sin_family = AF_INET;
+    dest_addr_ip4->sin_port = htons(CTX_TCP_PORT);
+
+    tcp_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_IP);
+    if (tcp_sock < 0)
+    {
+      perror ("socket");
+      return;
+    }
+    int opt = 1;
+    setsockopt(tcp_sock, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+
+    int err = bind (tcp_sock, (const struct sockaddr *)&dest_addr, sizeof(dest_addr));
+    if (err != 0)
+    {
+      perror ("unable to bind socket");
+      close (tcp_sock);
+      tcp_sock = 0;
+      return;
+    }
+    err = listen (tcp_sock, 1);
+    if (err != 0)
+    {  
+      perror ("listen");
+      close (tcp_sock);
+      tcp_sock = 0;
+      return;
+    }
+    ctx_tcp_started = 1;
+  }
+  else if ((ctx_tcp_enabled==0) && (ctx_tcp_started == 1))
+  {
+    // stop server
+    if (tcp_sock)
+    {
+      const char *path = ctx_socket_path ();
+      close (tcp_sock);
+      unlink (path);
+      tcp_sock = 0;
+    }
+    ctx_tcp_started = 0;
+  }
+
+}
+
+int
+ctx_server_tick (Ctx *ctx, void *data)
+{
+  ctx_server_start_stop (ctx);
+
+  if (ctx_unix_enabled && ctx_unix_server_has_connection(ctx))
+  {
+    struct sockaddr_un client_addr;
+    socklen_t client_len = sizeof(client_addr);
+    int socket = accept(unix_sock, (struct sockaddr*)&client_addr, &client_len);
+    if (socket == -1) {
+        perror("accept");
+        return 1;
+    }
+
+    CtxClient *client = ctx_client_new_socket (ctx, socket, 0, 100, 512, 512, 
+                    15.0f, // font_size
+                    CTX_CLIENT_UI_RESIZABLE | CTX_CLIENT_TITLEBAR, // flags
+                    NULL, // user_data
+                    NULL); // client_finalize
+    int id = ctx_client_id (client);
+    ctx_client_focus (ctx, id);
+  }
+
+  if (ctx_tcp_enabled && ctx_tcp_server_has_connection(ctx))
+  {
+    struct sockaddr client_addr;
+    socklen_t client_len = sizeof(client_addr);
+    int socket = accept(tcp_sock, (struct sockaddr*)&client_addr, &client_len);
+    if (socket == -1) {
+        perror("accept");
+        return 1;
+    }
+
+    CtxClient *client = ctx_client_new_socket (ctx, socket, 0, 100, 512, 512, 
+                    15.0f, // font_size
+                    CTX_CLIENT_UI_RESIZABLE | CTX_CLIENT_TITLEBAR, // flags
+                    NULL, // user_data
+                    NULL); // client_finalize
+    int id = ctx_client_id (client);
+    ctx_client_focus (ctx, id);
+  }
+  return 1;
+}
+
+
+void ctx_unix_start (Ctx *ctx)
+{
+  ctx_unix_enabled = 1;
+}
+
+void ctx_unix_stop (Ctx *ctx)
+{
+  ctx_unix_enabled = 0;
+  ctx_server_tick (ctx, NULL);
+}
+
+int ctx_unix_status (Ctx *ctx)
+{
+  return ctx_unix_enabled;
+}
+
+void ctx_tcp_start (Ctx *ctx)
+{
+  ctx_tcp_enabled = 1;
+}
+
+void ctx_tcp_stop (Ctx *ctx)
+{
+  ctx_tcp_enabled = 0;
+  ctx_server_tick (ctx, NULL);
+}
+
+int ctx_tcp_status (Ctx *ctx)
+{
+  return ctx_unix_enabled;
+}
+
+#endif
 #endif
 
 #if 0
@@ -76548,7 +76900,6 @@ SQZ_ui
 #include <string.h>
 #include <math.h>
 
-typedef struct _Css          Css;
 
 
 void mrg_clear (Css *mrg);
@@ -76593,8 +76944,6 @@ typedef struct CtxFloatData {
 
 typedef void (*CssNewText)       (const char *new_text, void *data);
 typedef void (*UiRenderFun)      (Css *mrg, void *ui_data);
-
-typedef struct _Css Css;
 
 typedef enum {
   CTX_DISPLAY_INLINE = 0,
@@ -77088,7 +77437,6 @@ void _ctX_bindings_key_down (CtxEvent *event, void *data1, void *data2)
 
 #include <stdio.h>
 
-typedef struct _Css    Css;
 typedef struct _CssXml CssXml;
 
 enum
