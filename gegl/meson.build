@@ -135,7 +135,6 @@ gegl_lib = library(api_name,
 
   link_with: simd_extra,
   link_args: gegl_ldflags,
-  vs_module_defs: gegl_def,
   install: true,
   version: so_version,
 )
