@@ -254,16 +254,50 @@ gegl_init_get_prefix (void)
 
       if (exe)
         {
-          char *sep1, *sep2;
+          char   *sep1, *sep2;
+          size_t  len;
 
-          sep1 = strrchr (exe, G_DIR_SEPARATOR);
+          len   = strlen (exe);
+          sep1  = strrchr (exe, G_DIR_SEPARATOR);
           *sep1 = '\0';
 
           sep2 = strrchr (exe, G_DIR_SEPARATOR);
-          if (sep2 != NULL && g_strcmp0 (sep2 + 1, "bin") == 0)
+          if (sep2 != NULL)
             {
-              *sep2 = '\0';
-              prefix = exe;
+              while (g_strcmp0 (sep2 + 1, "bin") != 0 &&
+                     strstr (sep2 + 1, "lib") != sep2 + 1)
+                {
+                  *sep2 = '\0';
+                  sep2  = strrchr (exe, G_DIR_SEPARATOR);
+
+                  if (sep2 == NULL)
+                    break;
+                }
+
+              if (sep2 == NULL)
+                {
+                  while (strlen (exe) < len)
+                    exe[strlen (exe)] = G_DIR_SEPARATOR;
+
+                  /* This may happen when GEGL is loaded by uninstalled
+                   * binaries, such as build-time tools, in which case, this is
+                   * not an error, and we fallback to the build-time prefix.
+                   * We assume that relocatable builds are not relocated during
+                   * the build of a full bundle.
+                   * This is why we output a message on stderr, but this is not
+                   * a fatal error.
+                   */
+                  fprintf (stderr,
+                           "Relocatable builds require the executable to be installed in bin/ or lib*/ unlike: %s\n"
+                           "If this is a build-time tool, you may ignore this message.\n",
+                           exe);
+                  g_free (exe);
+                }
+              else
+                {
+                  *sep2 = '\0';
+                  prefix = exe;
+                }
             }
           else
             {
