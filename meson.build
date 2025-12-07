@@ -279,6 +279,21 @@ if os_osx
   add_project_arguments('-xobjective-c', language : 'c')
 endif
 
+# Build relocatable GEGL
+relocatable = false
+if get_option('relocatable').auto()
+  if os_win32
+    relocatable = true
+  endif
+else
+  relocatable = get_option('relocatable').enabled()
+  if relocatable and os_osx
+    warning('-Drelocatable=enabled not implemented yet for macOS.')
+    relocatable = false
+  endif
+endif
+config.set('ENABLE_RELOCATABLE', relocatable)
+
 ################################################################################
 # C/C++ language support in the compiler
 

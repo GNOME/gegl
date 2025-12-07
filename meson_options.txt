@@ -51,6 +51,9 @@ option('operation-test',
   description: 'include gegl-tester in test suite'
 )
 
+option('relocatable', type: 'feature', value: 'auto',
+       description: 'build with resources considered bundled under the same prefix (auto: platform defaults)')
+
 # optional dependencies
 option('gdk-pixbuf',    type: 'feature', value: 'auto')
 option('gexiv2',        type: 'feature', value: 'auto')
