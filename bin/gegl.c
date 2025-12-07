@@ -124,8 +124,10 @@ main (gint    argc,
 #endif
                 NULL);
 
-  o = gegl_options_parse (argc, argv);
   gegl_init (NULL, NULL);
+
+  o = gegl_options_parse (argc, argv);
+
 #ifdef HAVE_SPIRO
   gegl_path_spiro_init ();
 #endif
