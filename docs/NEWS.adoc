@@ -1,3 +1,30 @@
+GEGL-0.4.66 2025-12-11
+----------------------
+
+Core:
+------
+ - Improved relocability now also on linux.
+
+Ops:
+----
+ - gif-load: don't embed libnsgif directly
+
+Dependencies:
+----
+ - libnsgif: support using distro provided lib.
+ - ctx: synchronize with ctx-0.1.14
+
+General:
+--------
+ - Fixes for building with MSVC
+
+Contributors to this release, including translators:
+----------------------------------------------------
+
+Alan Mortensen, Alexander Alexandrov Shopov, Alfred Wingate,
+Bruno Lopes, Jehan, Jeremy Bícha, Marco Ciampa, Ondřej Míchal,
+Sabri Ünal, Ulf Martin Prill and Øyvind Kolås,
+
 GEGL-0.4.64 2025-10-04
 ----------------------
 
