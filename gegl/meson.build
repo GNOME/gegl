@@ -102,7 +102,7 @@ if host_cpu_family == 'x86_64'
   simd_extra_def = ['gegl-x86_64.def']
 elif host_cpu_family == 'arm'
   simd_extra = [lib_gegl_arm_neon]
-  simd_extra_def = []
+  simd_extra_def = ['gegl-arm.def']
 else
   simd_extra = []
   simd_extra_def = []

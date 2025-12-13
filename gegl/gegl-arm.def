@@ -1,0 +1,6 @@
+  gegl_downscale_2x2_arm_neon
+  gegl_downscale_2x2_get_fun_arm_neon
+  gegl_downscale_2x2_nearest_arm_neon
+  gegl_resample_bilinear_arm_neon
+  gegl_resample_boxfilter_arm_neon
+  gegl_resample_nearest_arm_neon
