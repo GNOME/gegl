@@ -66,6 +66,8 @@ DllMain (HINSTANCE hinstDLL,
 
 #ifdef __APPLE__
 #import <Foundation/Foundation.h>
+#include <dlfcn.h>
+#include <libgen.h>
 #endif
 
 #include "gegl-debug.h"
@@ -708,7 +710,28 @@ gegl_get_default_module_paths(void)
     }
 
   /* System library dir */
-#if defined(G_OS_WIN32)
+#if defined (__APPLE__)
+  Dl_info info;
+  /* The checked symbol must be exported in the libgegl*.dylib */
+  if (dladdr((const void *)gegl_get_default_module_paths, &info) && info.dli_fname)
+    {
+      char  dylib_path[PATH_MAX];
+      char *dylib_dir;
+  
+      /* Get the parent directory containing the .dylib (e.g. <foobar>\Frameworks\,
+         does not matter the parent dir, this is packaging-agnostic) */
+      strlcpy(dylib_path, info.dli_fname, sizeof(dylib_path));
+      dylib_dir = dirname(dylib_path);
+          
+      /* Construct the gegl dir on the parent dir (e.g. <foobar>\Frameworks\{GEGL_LIBRARY}) */
+      module_path = g_build_filename(dylib_dir, GEGL_LIBRARY, NULL);
+    }
+  else
+    {
+      g_critical ("Getting module path for relocatibility failed\n");
+      module_path = g_build_filename (LIBDIR, GEGL_LIBRARY, NULL);
+    }
+#elif defined(G_OS_WIN32)
   prefix      = g_win32_get_package_installation_directory_of_module (hLibGeglModule);
   module_path = g_build_filename (prefix, "lib", GEGL_LIBRARY, NULL);
   g_free(prefix);

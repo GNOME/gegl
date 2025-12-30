@@ -282,15 +282,11 @@ endif
 # Build relocatable GEGL
 relocatable = false
 if get_option('relocatable').auto()
-  if os_win32
+  if os_win32 or os_osx
     relocatable = true
   endif
 else
   relocatable = get_option('relocatable').enabled()
-  if relocatable and os_osx
-    warning('-Drelocatable=enabled not implemented yet for macOS.')
-    relocatable = false
-  endif
 endif
 config.set('ENABLE_RELOCATABLE', relocatable)
 
