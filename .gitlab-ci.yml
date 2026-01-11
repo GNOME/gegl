@@ -24,6 +24,8 @@ include:
       meson ninja-build gcc g++ git gettext glib2-devel libjpeg-turbo-devel
       libpng-devel json-glib-devel lcms2-devel diffutils shellcheck devscripts
     FDO_UPSTREAM_REPO: $CI_PROJECT_PATH
+    # Disable timestamps on CI logs
+    FF_TIMESTAMPS: false
 
 
 stages:
