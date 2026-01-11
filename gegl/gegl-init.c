@@ -104,7 +104,7 @@ static gboolean      gegl_post_parse_hook      (GOptionContext *context,
                                                 gpointer        data,
                                                 GError        **error);
 static const gchar * gegl_find_relocatable_exe (void);
-#if defined(ENABLE_RELOCATABLE)
+#if defined(ENABLE_RELOCATABLE) && !defined(G_OS_WIN32) && !defined(__APPLE__)
 static gchar       * gegl_guess_libdir         (void);
 #endif
 
