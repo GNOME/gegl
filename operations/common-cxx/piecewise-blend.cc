@@ -75,8 +75,8 @@ attach (GeglOperation *operation)
       gchar aux_name[32];
       gchar aux_desc[32];
 
-      sprintf (aux_name, "aux%d",  i);
-      sprintf (aux_desc, "Aux %d", i);
+      snprintf (aux_name, sizeof(aux_name), "aux%d",  i);
+      snprintf (aux_desc, sizeof(aux_desc), "Aux %d", i);
 
       pspec = g_param_spec_object (aux_name,
                                    aux_desc,
@@ -128,7 +128,7 @@ prepare (GeglOperation *operation)
     {
       gchar aux_name[32];
 
-      sprintf (aux_name, "aux%d", i);
+      snprintf (aux_name, sizeof(aux_name), "aux%d", i);
 
       gegl_operation_set_format (operation, aux_name, format);
     }
@@ -202,7 +202,7 @@ process (GeglOperation        *operation,
     {
       gchar aux_name[32];
 
-      sprintf (aux_name, "aux%d", levels);
+      snprintf (aux_name, sizeof(aux_name), "aux%d", levels);
 
       gegl_operation_context_set_object (
         context, "output",
@@ -244,7 +244,7 @@ process (GeglOperation        *operation,
           GeglBuffer *aux;
           gchar       aux_name[32];
 
-          sprintf (aux_name, "aux%d", i);
+          snprintf (aux_name, sizeof(aux_name), "aux%d", i);
 
           aux = GEGL_BUFFER (gegl_operation_context_get_object (context,
                                                                 aux_name));
