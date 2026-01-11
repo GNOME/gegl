@@ -696,7 +696,7 @@ gegl_get_default_module_paths(void)
   gchar  *module_path = NULL;
 #if defined(G_OS_WIN32)
   gchar  *prefix;
-#elif defined(ENABLE_RELOCATABLE)
+#elif defined(ENABLE_RELOCATABLE) && !defined(__APPLE__)
   gchar  *prefix;
   gchar  *libdir;
 #endif
@@ -997,7 +997,7 @@ gegl_find_relocatable_exe (void)
 #endif
 }
 
-#if defined(ENABLE_RELOCATABLE)
+#if defined(ENABLE_RELOCATABLE) && !defined(G_OS_WIN32) && !defined(__APPLE__)
 /* Returns the relative libdir, which may be lib/ or lib64/ or again
  * some subdirectory with multiarch.
  */
