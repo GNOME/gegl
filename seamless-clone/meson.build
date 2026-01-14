@@ -14,11 +14,18 @@ seamlessclone_headers = [
   'sc-sample.h',
 ]
 
+gegl_sc_def_conf = {}
+if poly2tri_c.type_name() == 'internal'
+  gegl_sc_def_conf += { 'p2t_exports' : fs.read('gegl-p2t.def') }
+else
+  gegl_sc_def_conf += { 'p2t_exports' : '' }
+endif
+
 #Needed otherwise defcheck.py fails
 gegl_sc_def = configure_file(
   input: 'gegl-sc.def',
   output: 'gegl-sc.def',
-  copy: true
+  configuration: gegl_sc_def_conf
 )
 
 seamlessclone_lib = library('gegl-sc-' + api_version,
