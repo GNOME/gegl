@@ -48,6 +48,12 @@ static GRecMutex cache_mutex = { 0, };
 static gboolean
 cache_entry_find_invalid (gpointer *data)
 {
+  gboolean found = FALSE;
+
+  *data = NULL;
+
+  g_rec_mutex_lock (&cache_mutex);
+
   for (GList *elem = cache_entries; elem != NULL; elem = elem->next)
     {
       CacheEntry *e = elem->data;
@@ -56,44 +62,64 @@ cache_entry_find_invalid (gpointer *data)
       if (!e->valid && g_atomic_ref_count_compare (&e->refcount, 1))
         {
           *data = e;
-          return TRUE;
+          found = TRUE;
+          break;
         }
     }
 
-  *data = NULL;
-  return FALSE;
+  g_rec_mutex_unlock (&cache_mutex);
+
+  return found;
 }
 
 cl_mem
 gegl_buffer_cl_cache_get (GeglBuffer          *buffer,
                           const GeglRectangle *roi)
 {
+  cl_mem cache_tex = NULL;
+
+  g_rec_mutex_lock (&cache_mutex);
+
   for (GList *elem = cache_entries; elem != NULL; elem = elem->next)
     {
       CacheEntry *e = elem->data;
+
       if (e->valid && e->buffer == buffer
           && gegl_rectangle_equal (&e->roi, roi))
         {
           g_atomic_ref_count_inc (&e->refcount);
-          return e->tex;
+          cache_tex = e->tex;
+          break;
         }
     }
-  return NULL;
+
+  g_rec_mutex_unlock (&cache_mutex);
+
+  return cache_tex;
 }
 
 gboolean
 gegl_buffer_cl_cache_release (cl_mem tex)
 {
+  gboolean found = FALSE;
+
+  g_rec_mutex_lock (&cache_mutex);
+
   for (GList *elem = cache_entries; elem != NULL; elem = elem->next)
     {
       CacheEntry *e = elem->data;
+
       if (e->tex == tex)
         {
           e->valid = !g_atomic_ref_count_dec (&e->refcount);
-          return TRUE;
+          found = TRUE;
+          break;
         }
     }
-  return FALSE;
+
+  g_rec_mutex_unlock (&cache_mutex);
+
+  return found;
 }
 
 void
@@ -103,14 +129,14 @@ gegl_buffer_cl_cache_new (GeglBuffer            *buffer,
 {
   CacheEntry *e = g_slice_new (CacheEntry);
 
-  g_rec_mutex_lock (&cache_mutex);
-
   e->buffer        = buffer;
   e->tile_storage  = buffer->tile_storage;
   e->roi           = *roi;
   e->tex           = tex;
   e->valid         = TRUE;
   g_atomic_ref_count_init (&e->refcount);
+
+  g_rec_mutex_lock (&cache_mutex);
 
   cache_entries = g_list_prepend (cache_entries, e);
 
@@ -124,6 +150,8 @@ _gegl_buffer_cl_cache_flush2 (GeglTileHandlerCache *cache,
   gpointer data    = NULL;
   cl_int   cl_err  = 0;
   gboolean need_cl = FALSE;
+
+  g_rec_mutex_lock (&cache_mutex);
 
   for (GList *elem = cache_entries; elem != NULL; elem = elem->next)
     {
@@ -165,8 +193,6 @@ _gegl_buffer_cl_cache_flush2 (GeglTileHandlerCache *cache,
       cl_err = gegl_clFinish (gegl_cl_get_command_queue ());
       CL_CHECK;
 
-      g_rec_mutex_lock (&cache_mutex);
-
       while (cache_entry_find_invalid (&data))
         {
           CacheEntry *entry = data;
@@ -183,16 +209,13 @@ _gegl_buffer_cl_cache_flush2 (GeglTileHandlerCache *cache,
           g_slice_free (CacheEntry, data);
           cache_entries = g_list_remove (cache_entries, data);
         }
-
-      g_rec_mutex_unlock (&cache_mutex);
     }
+
+  g_rec_mutex_unlock (&cache_mutex);
 
   return TRUE;
 
 error:
-
-  g_rec_mutex_lock (&cache_mutex);
-
   while (cache_entry_find_invalid (&data))
     {
       g_slice_free (CacheEntry, data);
@@ -226,6 +249,8 @@ gegl_buffer_cl_cache_invalidate (GeglBuffer          *buffer,
   GeglRectangle tmp;
   gpointer data;
 
+  g_rec_mutex_lock (&cache_mutex);
+
   for (GList *elem = cache_entries; elem != NULL; elem = elem->next)
     {
       CacheEntry *e = elem->data;
@@ -237,8 +262,6 @@ gegl_buffer_cl_cache_invalidate (GeglBuffer          *buffer,
         }
     }
 
-  g_rec_mutex_lock (&cache_mutex);
-
   while (cache_entry_find_invalid (&data))
     {
       CacheEntry *entry = data;
@@ -247,8 +270,6 @@ gegl_buffer_cl_cache_invalidate (GeglBuffer          *buffer,
       g_slice_free (CacheEntry, data);
       cache_entries = g_list_remove (cache_entries, data);
     }
-
-  g_rec_mutex_unlock (&cache_mutex);
 
 #if 0
   g_printf ("-- ");
@@ -260,4 +281,5 @@ gegl_buffer_cl_cache_invalidate (GeglBuffer          *buffer,
   g_printf ("\n");
 #endif
 
+  g_rec_mutex_unlock (&cache_mutex);
 }
