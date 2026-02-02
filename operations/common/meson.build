@@ -113,6 +113,7 @@ gegl_common_sources = files(
   'unpremultiply.c',
   'unsharp-mask.c',
   'value-invert.c',
+  'vibrance.c',
   'vignette.c',
   'waterpixels.c',
   'watershed-transform.c',
