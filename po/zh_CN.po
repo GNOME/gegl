@@ -8,14 +8,14 @@
 # Wylmer Wang <wantinghard@gmail.com>, 2013
 # 周 周 <annjouno@gmail.com>, 2013
 # 白铭骢 <jeffbai@aosc.xyz>, 2015
-# lumingzh <lumingzh@qq.com>, 2019-2025.
+# lumingzh <lumingzh@qq.com>, 2019-2026.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gegl-master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2025-09-22 19:24+0000\n"
-"PO-Revision-Date: 2025-09-23 08:25+0800\n"
+"POT-Creation-Date: 2026-02-02 16:00+0000\n"
+"PO-Revision-Date: 2026-02-03 08:56+0800\n"
 "Last-Translator: lumingzh <lumingzh@qq.com>\n"
 "Language-Team: Chinese (China) <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
@@ -25,16 +25,17 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Gtranslator 49.0\n"
 
-#: bin/gegl.c:179
+#: bin/gegl.c:184
 #, c-format
 msgid "Unable to read file: %s"
 msgstr "无法读取文件: %s"
 
-#: bin/gegl.c:227
+#: bin/gegl.c:232
+#, c-format
 msgid "Invalid graph, abort.\n"
 msgstr "无效图形，放弃。\n"
 
-#: bin/gegl.c:390 bin/gegl-options.c:133
+#: bin/gegl.c:395 bin/gegl-options.c:133
 #, c-format
 msgid "Unknown GeglOption mode: %d"
 msgstr "未知的 GeglOption 模式：%d"
@@ -150,11 +151,11 @@ msgstr ""
 "\t其他:   %s\n"
 "\t\n"
 
-#: bin/gegl-options.c:347
+#: bin/gegl-options.c:358
 msgid "Properties:"
 msgstr "属性："
 
-#: bin/gegl-options.c:457
+#: bin/gegl-options.c:468
 #, c-format
 msgid ""
 "\n"
@@ -169,7 +170,7 @@ msgstr ""
 "\n"
 "\n"
 
-#: bin/ui-core.c:4387 gegl/gegl-serialize.c:690
+#: bin/ui-core.c:4389 gegl/gegl-serialize.c:690
 #, c-format
 msgid "BablFormat \"%s\" does not exist."
 msgstr "BablFormat“%s”不存在。"
@@ -352,40 +353,40 @@ msgstr "永不"
 msgid "Always"
 msgstr "总是"
 
-#: gegl/gegl-init.c:354
+#: gegl/gegl-init.c:427
 msgid "Where GEGL stores its swap"
 msgstr "GEGL 存储其交换区的位置"
 
-#: gegl/gegl-init.c:359
+#: gegl/gegl-init.c:432
 msgid "Compression algorithm used for data stored in the swap"
 msgstr "用于交换区中数据存储的压缩算法"
 
-#: gegl/gegl-init.c:364
+#: gegl/gegl-init.c:437
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr "多少内存（近似值）用于缓存图像"
 
-#: gegl/gegl-init.c:369
+#: gegl/gegl-init.c:442
 msgid "Default size of tiles in GeglBuffers"
 msgstr "GeglBuffers 中默认平铺大小"
 
-#: gegl/gegl-init.c:374
+#: gegl/gegl-init.c:447
 msgid "The count of pixels to compute simultaneously"
 msgstr "同时计算的像素数量"
 
-#: gegl/gegl-init.c:379
+#: gegl/gegl-init.c:452
 msgid ""
 "The quality of rendering, a value between 0.0 (fast) and 1.0 (reference)"
 msgstr "渲染质量， 0.0（快速）和 1.0（参考）之间的一个值"
 
-#: gegl/gegl-init.c:384
+#: gegl/gegl-init.c:457
 msgid "The number of concurrent processing threads to use"
 msgstr "使用并行处理线程的数量"
 
-#: gegl/gegl-init.c:389
+#: gegl/gegl-init.c:462
 msgid "Disable OpenCL"
 msgstr "禁用 OpenCL"
 
-#: gegl/gegl-init.c:401
+#: gegl/gegl-init.c:474
 msgid "Show GEGL Options"
 msgstr "显示 GEGL 选项"
 
@@ -724,7 +725,7 @@ msgstr "距离映射对于倒角斜面是唯一的且具有三种改变倒角结
 #: operations/common/stress.c:27 operations/common/unsharp-mask.c:24
 #: operations/common/vignette.c:40 operations/common/wavelet-blur-1d.c:28
 #: operations/common/wavelet-blur.c:27 operations/common-cxx/focus-blur.c:85
-#: operations/common-cxx/lens-blur.cc:24
+#: operations/common-cxx/lens-blur.cc:27
 #: operations/common-cxx/variable-blur.c:30
 #: operations/common-gpl3+/shadows-highlights.c:40
 #: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:44
@@ -792,7 +793,7 @@ msgstr "斜面…"
 #: operations/common/bilateral-filter.c:26
 #: operations/common/domain-transform.c:29 operations/common/dropshadow.c:46
 #: operations/common/inner-glow.c:58 operations/common-cxx/focus-blur.c:45
-#: operations/common-cxx/lens-blur.cc:25
+#: operations/common-cxx/lens-blur.cc:28
 #: operations/common-gpl3+/gaussian-blur-selective.c:29
 #: operations/workshop/bilateral-filter-fast.c:43
 msgid "Blur radius"
@@ -1146,7 +1147,7 @@ msgstr "网格大小"
 #: operations/common/color-rotate.c:84 operations/common/fattal02.c:39
 #: operations/common/mantiuk06.c:33 operations/common/noise-hsv.c:34
 #: operations/common/saturation.c:404 operations/common/styles.c:387
-#: operations/external/lcms-from-profile.c:35
+#: operations/common/vibrance.c:30 operations/external/lcms-from-profile.c:35
 #: operations/workshop/selective-hue-saturation.c:38
 msgid "Saturation"
 msgstr "饱和度"
@@ -1187,7 +1188,7 @@ msgstr "色彩增强"
 msgid ""
 "Stretch color chroma to cover maximum possible range, keeping hue and "
 "lightness untouched."
-msgstr "拉伸色彩浓度以覆盖最大的可能范围，保持色相和亮度不变。"
+msgstr "拉伸色彩彩度以覆盖最大的可能范围，保持色相和亮度不变。"
 
 #: operations/common/color-overlay.c:27 operations/common/inner-glow.c:81
 msgid "The color to paint over the input"
@@ -1849,7 +1850,7 @@ msgstr "要使用的抖动方式"
 #: operations/common/noise-pick.c:38 operations/common/noise-rgb.c:55
 #: operations/common/noise-simplex.c:39 operations/common/noise-spread.c:41
 #: operations/common-gpl3+/cubism.c:42 operations/common-gpl3+/maze.c:65
-#: operations/common-gpl3+/mosaic.c:90 operations/common-gpl3+/noise-slur.c:40
+#: operations/common-gpl3+/mosaic.c:92 operations/common-gpl3+/noise-slur.c:40
 #: operations/common-gpl3+/noise-solid.c:61 operations/common-gpl3+/plasma.c:70
 #: operations/common-gpl3+/shift.c:35 operations/common-gpl3+/sinus.c:49
 #: operations/common-gpl3+/supernova.c:63
@@ -2079,7 +2080,7 @@ msgstr "黑色色阶"
 msgid "Adjust the black level"
 msgstr "调整黑色色阶"
 
-#: operations/common/exposure.c:30 operations/common/exposure.c:480
+#: operations/common/exposure.c:30 operations/common/exposure.c:476
 #: operations/common/negative-darkroom.c:29
 msgid "Exposure"
 msgstr "曝光"
@@ -2088,7 +2089,7 @@ msgstr "曝光"
 msgid "Relative brightness change in stops"
 msgstr "中断点之间的相对亮度变化"
 
-#: operations/common/exposure.c:484
+#: operations/common/exposure.c:480
 msgid "Change exposure of an image in shutter speed stops"
 msgstr "以快门速度中断改变图像曝光"
 
@@ -2254,29 +2255,29 @@ msgstr "要写入 GeglBuffer 的目标文件路径。"
 msgid "GeglBuffer file writer."
 msgstr "GeglBuffer 文件写入器。"
 
-#: operations/common/gegl.c:68
+#: operations/common/gegl.c:72
 msgid "pipeline"
 msgstr "管道"
 
-#: operations/common/gegl.c:69
+#: operations/common/gegl.c:73
 msgid "[op [property=value] [property=value]] [[op] [property=value]"
 msgstr "[操作 [属性=赋值] [属性=赋值]] [[操作] [属性=赋值]"
 
-#: operations/common/gegl.c:72
+#: operations/common/gegl.c:76
 msgid "Eeeeeek"
 msgstr "哈"
 
-#: operations/common/gegl.c:73
+#: operations/common/gegl.c:77
 msgid ""
 "There is a problem in the syntax or in the application of parsed property "
 "values. Things might mostly work nevertheless."
 msgstr "在语法或解析的属性赋值中存在问题。不过多半可能会正常运行。"
 
-#: operations/common/gegl.c:168
+#: operations/common/gegl.c:179
 msgid "GEGL graph"
 msgstr "GEGL 图形"
 
-#: operations/common/gegl.c:171
+#: operations/common/gegl.c:182
 msgid ""
 "Do a chain of operations, with key=value pairs after each operation name to "
 "set properties. And aux=[ source filter ] for specifying a chain with a "
@@ -2344,11 +2345,11 @@ msgstr "色相调整"
 
 #: operations/common/hue-chroma.c:29 operations/common/noise-cie-lch.c:32
 msgid "Chroma"
-msgstr "色度"
+msgstr "彩度"
 
 #: operations/common/hue-chroma.c:30
 msgid "Chroma adjustment"
-msgstr "色度调整"
+msgstr "彩度调整"
 
 #: operations/common/hue-chroma.c:33 operations/common/noise-cie-lch.c:29
 #: operations/common/styles.c:392
@@ -2363,11 +2364,11 @@ msgstr "亮度调整"
 
 #: operations/common/hue-chroma.c:120
 msgid "Hue-Chroma"
-msgstr "色相-色度"
+msgstr "色相-彩度"
 
 #: operations/common/hue-chroma.c:124
 msgid "Adjust LCH Hue, Chroma, and Lightness"
-msgstr "调整 LCH 色相、色度和亮度"
+msgstr "调整 LCH 色相、彩度和亮度"
 
 #: operations/common/icc-load.c:25 operations/external/gif-load.c:35
 #: operations/external/jp2-load.c:26 operations/external/jpg-load.c:25
@@ -2496,11 +2497,11 @@ msgstr ""
 msgid "Inner Glow..."
 msgstr "内发光…"
 
-#: operations/common/introspect.c:27
+#: operations/common/introspect.c:35
 msgid "Node"
 msgstr "节点"
 
-#: operations/common/introspect.c:210
+#: operations/common/introspect.c:224
 msgid "GEGL graph visualizer."
 msgstr "GEGL 图形可视化工具。"
 
@@ -2766,7 +2767,7 @@ msgstr ""
 "用于计算局部对比度的高斯邻近平均值的标准差。如果为 0 则使用全局阈值代替基于局"
 "部对比度的阈值。"
 
-#: operations/common/local-threshold.c:32 operations/common-gpl3+/mosaic.c:87
+#: operations/common/local-threshold.c:32 operations/common-gpl3+/mosaic.c:89
 msgid "Antialiasing"
 msgstr "抗锯齿"
 
@@ -2961,11 +2962,11 @@ msgid ""
 "coordinates"
 msgstr "使用包含源相对坐标辅助缓存的采样输入"
 
-#: operations/common/matting-global.c:599
+#: operations/common/matting-global.c:601
 msgid "Matting Global"
 msgstr "全局抠图"
 
-#: operations/common/matting-global.c:601
+#: operations/common/matting-global.c:603
 msgid ""
 "Given a sparse user supplied tri-map and an input image, create a foreground "
 "alpha matte. Set white as foreground, black as background for the tri-map. "
@@ -3730,7 +3731,7 @@ msgstr "添加 CIE Lch 噪点"
 
 #: operations/common/noise-cie-lch.c:198
 msgid "Randomize lightness, chroma and hue independently"
-msgstr "独立的随机化亮度，色度和色相"
+msgstr "独立的随机化亮度，彩度和色相"
 
 #: operations/common/noise-hsv.c:37 operations/common/noise-rgb.c:42
 #: operations/generated/add.c:29 operations/generated/divide.c:29
@@ -4278,7 +4279,9 @@ msgstr "保存文件的路径。"
 msgid "Metadata"
 msgstr "元数据"
 
-#: operations/common/save.c:29
+#: operations/common/save.c:29 operations/core/load.c:34
+#: operations/external/jpg-save.c:45 operations/external/png-load.c:37
+#: operations/external/png-save.c:35
 msgid "Object providing image metadata"
 msgstr "提供图像元数据的对象"
 
@@ -5099,6 +5102,22 @@ msgid ""
 "the color."
 msgstr "反转明度分量，结果具有被反转的亮度，保留颜色。"
 
+#: operations/common/vibrance.c:24 operations/common/vibrance.c:77
+msgid "Vibrance"
+msgstr "自然饱和度"
+
+#: operations/common/vibrance.c:25
+msgid "Vibrance (chroma) adjustment"
+msgstr "自然饱和度（彩度）调整"
+
+#: operations/common/vibrance.c:31
+msgid "Saturation scale factor"
+msgstr "饱和度缩放系数"
+
+#: operations/common/vibrance.c:79
+msgid "Adjusts the saturation and vibrance of the image."
+msgstr "调整图像的饱和度和自然饱和度。"
+
 #: operations/common/vignette.c:32
 msgid "Vignette shape"
 msgstr "晕影形状"
@@ -5320,7 +5339,7 @@ msgstr "距离变换"
 msgid "Calculate a distance transform"
 msgstr "计算一个距离变换"
 
-#: operations/common-cxx/focus-blur.c:30 operations/common-cxx/lens-blur.cc:504
+#: operations/common-cxx/focus-blur.c:30 operations/common-cxx/lens-blur.cc:507
 msgid "Lens Blur"
 msgstr "镜头模糊"
 
@@ -5332,23 +5351,23 @@ msgstr "模糊类型"
 msgid "Out-of-focus blur radius"
 msgstr "焦外模糊半径"
 
-#: operations/common-cxx/focus-blur.c:52 operations/common-cxx/lens-blur.cc:31
+#: operations/common-cxx/focus-blur.c:52 operations/common-cxx/lens-blur.cc:34
 msgid "Highlight factor"
 msgstr "高光系数"
 
-#: operations/common-cxx/focus-blur.c:53 operations/common-cxx/lens-blur.cc:32
+#: operations/common-cxx/focus-blur.c:53 operations/common-cxx/lens-blur.cc:35
 msgid "Relative highlight strength"
 msgstr "相对高光强度"
 
-#: operations/common-cxx/focus-blur.c:57 operations/common-cxx/lens-blur.cc:35
+#: operations/common-cxx/focus-blur.c:57 operations/common-cxx/lens-blur.cc:38
 msgid "Highlight threshold (low)"
 msgstr "高光阈值（低）"
 
-#: operations/common-cxx/focus-blur.c:61 operations/common-cxx/lens-blur.cc:39
+#: operations/common-cxx/focus-blur.c:61 operations/common-cxx/lens-blur.cc:42
 msgid "Highlight threshold"
 msgstr "高光阈值"
 
-#: operations/common-cxx/focus-blur.c:64 operations/common-cxx/lens-blur.cc:41
+#: operations/common-cxx/focus-blur.c:64 operations/common-cxx/lens-blur.cc:44
 msgid "Highlight threshold (high)"
 msgstr "高光阈值（高）"
 
@@ -5431,27 +5450,27 @@ msgstr "降噪 DCT"
 msgid "Denoising algorithm using a per-patch DCT thresholding"
 msgstr "使用每个补丁 DCT 阈值的降噪算法"
 
-#: operations/common-cxx/lens-blur.cc:46
+#: operations/common-cxx/lens-blur.cc:49
 msgid "Clip to input extents"
 msgstr "剪裁至输入范围"
 
-#: operations/common-cxx/lens-blur.cc:47
+#: operations/common-cxx/lens-blur.cc:50
 msgid "Clip output to the input extents"
 msgstr "将输出剪裁至输入范围"
 
-#: operations/common-cxx/lens-blur.cc:49
+#: operations/common-cxx/lens-blur.cc:52
 #: operations/common-cxx/piecewise-blend.cc:38
 #: operations/common-cxx/variable-blur.c:37
 msgid "Linear mask"
 msgstr "线性蒙板"
 
-#: operations/common-cxx/lens-blur.cc:50
+#: operations/common-cxx/lens-blur.cc:53
 #: operations/common-cxx/piecewise-blend.cc:39
 #: operations/common-cxx/variable-blur.c:38
 msgid "Use linear mask values"
 msgstr "使用线性蒙板明度"
 
-#: operations/common-cxx/lens-blur.cc:507
+#: operations/common-cxx/lens-blur.cc:510
 msgid "Simulate out-of-focus lens blur"
 msgstr "模拟焦外镜头模糊"
 
@@ -5930,11 +5949,11 @@ msgstr "色彩转透明"
 msgid "Convert a specified color to transparency, works best with white."
 msgstr "将指定色彩转换为透明，对白色效果最好。"
 
-#: operations/common-gpl3+/cubism.c:30 operations/common-gpl3+/mosaic.c:43
+#: operations/common-gpl3+/cubism.c:30 operations/common-gpl3+/mosaic.c:45
 msgid "Tile size"
 msgstr "平铺大小"
 
-#: operations/common-gpl3+/cubism.c:31 operations/common-gpl3+/mosaic.c:44
+#: operations/common-gpl3+/cubism.c:31 operations/common-gpl3+/mosaic.c:46
 msgid "Average diameter of each tile (in pixels)"
 msgstr "每块平铺的平均直径（像素）"
 
@@ -6742,111 +6761,111 @@ msgstr "迷宫"
 msgid "Draw a labyrinth"
 msgstr "绘制迷宫"
 
-#: operations/common-gpl3+/mosaic.c:33
+#: operations/common-gpl3+/mosaic.c:35
 msgid "Squares"
 msgstr "方块"
 
-#: operations/common-gpl3+/mosaic.c:34
+#: operations/common-gpl3+/mosaic.c:36
 msgid "Hexagons"
 msgstr "六角形"
 
-#: operations/common-gpl3+/mosaic.c:35
+#: operations/common-gpl3+/mosaic.c:37
 msgid "Octagons"
 msgstr "八角形"
 
-#: operations/common-gpl3+/mosaic.c:36
+#: operations/common-gpl3+/mosaic.c:38
 msgid "Triangles"
 msgstr "三角形"
 
-#: operations/common-gpl3+/mosaic.c:39
+#: operations/common-gpl3+/mosaic.c:41
 msgid "Tile geometry"
 msgstr "平铺几何属性"
 
-#: operations/common-gpl3+/mosaic.c:41
+#: operations/common-gpl3+/mosaic.c:43
 msgid "What shape to use for tiles"
 msgstr "平铺使用什么形状"
 
-#: operations/common-gpl3+/mosaic.c:49
+#: operations/common-gpl3+/mosaic.c:51
 msgid "Tile height"
 msgstr "平铺高度"
 
-#: operations/common-gpl3+/mosaic.c:50
+#: operations/common-gpl3+/mosaic.c:52
 msgid "Apparent height of each tile (in pixels)"
 msgstr "每块平铺的表面高度（像素）"
 
-#: operations/common-gpl3+/mosaic.c:54
+#: operations/common-gpl3+/mosaic.c:56
 msgid "Tile neatness"
 msgstr "平铺规则度"
 
-#: operations/common-gpl3+/mosaic.c:55
+#: operations/common-gpl3+/mosaic.c:57
 msgid "Deviation from perfectly formed tiles"
 msgstr "与完美形状平铺分块的偏差"
 
-#: operations/common-gpl3+/mosaic.c:58
+#: operations/common-gpl3+/mosaic.c:60
 msgid "Tile color variation"
 msgstr "平铺颜色变异"
 
-#: operations/common-gpl3+/mosaic.c:59
+#: operations/common-gpl3+/mosaic.c:61
 msgid "Magnitude of random color variations"
 msgstr "随机颜色变化的量值"
 
-#: operations/common-gpl3+/mosaic.c:62
+#: operations/common-gpl3+/mosaic.c:64
 msgid "Color averaging"
 msgstr "色彩均化"
 
-#: operations/common-gpl3+/mosaic.c:63
+#: operations/common-gpl3+/mosaic.c:65
 msgid "Tile color based on average of subsumed pixels"
 msgstr "基于计入像素的平均值的平铺颜色"
 
-#: operations/common-gpl3+/mosaic.c:65
+#: operations/common-gpl3+/mosaic.c:67
 msgid "Rough tile surface"
 msgstr "粗糙的平铺表面"
 
-#: operations/common-gpl3+/mosaic.c:66
+#: operations/common-gpl3+/mosaic.c:68
 msgid "Surface characteristics"
 msgstr "表面特征"
 
-#: operations/common-gpl3+/mosaic.c:68
+#: operations/common-gpl3+/mosaic.c:70
 msgid "Allow splitting tiles"
 msgstr "允许分割平铺"
 
-#: operations/common-gpl3+/mosaic.c:69
+#: operations/common-gpl3+/mosaic.c:71
 msgid "Allows splitting tiles at hard edges"
 msgstr "允许在硬边缘分割平铺"
 
-#: operations/common-gpl3+/mosaic.c:71
+#: operations/common-gpl3+/mosaic.c:73
 msgid "Tile spacing"
 msgstr "平铺间距"
 
-#: operations/common-gpl3+/mosaic.c:72
+#: operations/common-gpl3+/mosaic.c:74
 msgid "Inter-tile spacing (in pixels)"
 msgstr "平铺内部间距（像素）"
 
-#: operations/common-gpl3+/mosaic.c:77
+#: operations/common-gpl3+/mosaic.c:79
 msgid "Joints color"
 msgstr "接合处颜色"
 
-#: operations/common-gpl3+/mosaic.c:79
+#: operations/common-gpl3+/mosaic.c:81
 msgid "Light color"
 msgstr "光照颜色"
 
-#: operations/common-gpl3+/mosaic.c:81
+#: operations/common-gpl3+/mosaic.c:83
 msgid "Light direction"
 msgstr "光照方向"
 
-#: operations/common-gpl3+/mosaic.c:82
+#: operations/common-gpl3+/mosaic.c:84
 msgid "Direction of light-source (in degrees)"
 msgstr "光源的方向（度数）"
 
-#: operations/common-gpl3+/mosaic.c:88
+#: operations/common-gpl3+/mosaic.c:90
 msgid "Enables smoother tile output"
 msgstr "启用更平滑的平铺输出"
 
-#: operations/common-gpl3+/mosaic.c:2472
+#: operations/common-gpl3+/mosaic.c:2474
 msgid "Mosaic"
 msgstr "马赛克"
 
-#: operations/common-gpl3+/mosaic.c:2476
+#: operations/common-gpl3+/mosaic.c:2478
 msgid ""
 "Mosaic is a filter which transforms an image into what appears to be a "
 "mosaic, composed of small primitives, each of constant color and of an "
@@ -7941,11 +7960,6 @@ msgstr "网址"
 msgid "URI of file to load."
 msgstr "要加载文件的网址。"
 
-#: operations/core/load.c:34 operations/external/jpg-save.c:45
-#: operations/external/png-load.c:37 operations/external/png-save.c:35
-msgid "Object to supply image metadata"
-msgstr "提供图像元数据的对象"
-
 #: operations/core/load.c:372
 msgid ""
 "Multipurpose file loader, that uses other native handlers, and fallback "
@@ -8157,11 +8171,11 @@ msgstr "i-quant-offset"
 msgid "me-subpel-quality"
 msgstr "me-subpel-quality"
 
-#: operations/external/ff-save.c:1244
+#: operations/external/ff-save.c:1262
 msgid "FFmpeg Frame Saver"
 msgstr "FFmpeg 帧保存器"
 
-#: operations/external/ff-save.c:1246
+#: operations/external/ff-save.c:1264
 msgid "FFmpeg video output sink"
 msgstr "FFmpeg 视频输出接收端"
 
@@ -8185,11 +8199,11 @@ msgstr "frame-delay"
 msgid "Delay in ms for last decoded frame"
 msgstr "解码的上一帧的延迟时间（ms）"
 
-#: operations/external/gif-load.c:250
+#: operations/external/gif-load.c:248
 msgid "GIF File Loader"
 msgstr "GIF 文件加载器"
 
-#: operations/external/gif-load.c:252
+#: operations/external/gif-load.c:250
 msgid "GIF image loader."
 msgstr "GIF 图像加载器。"
 
@@ -8629,11 +8643,11 @@ msgstr "使用 <em>pixbuf</em> 中处于内存位置的 GdkPixbuf。"
 msgid "URI for file to load."
 msgstr "要加载文件的网址。"
 
-#: operations/external/png-load.c:656
+#: operations/external/png-load.c:680
 msgid "PNG File Loader"
 msgstr "PNG 文件加载器"
 
-#: operations/external/png-load.c:658
+#: operations/external/png-load.c:682
 msgid "PNG image loader."
 msgstr "PNG 图像加载器。"
 
@@ -8654,11 +8668,11 @@ msgstr "位深"
 msgid "8 and 16 are the currently accepted values."
 msgstr "8 和 16 是当前可接受的数值。"
 
-#: operations/external/png-save.c:418
+#: operations/external/png-save.c:434
 msgid "PNG File Saver"
 msgstr "PNG 文件保存器"
 
-#: operations/external/png-save.c:420
+#: operations/external/png-save.c:436
 msgid "PNG image saver, using libpng"
 msgstr "使用 libpng 的 PNG 图像保存器"
 
@@ -8666,11 +8680,11 @@ msgstr "使用 libpng 的 PNG 图像保存器"
 msgid "URI of image to load."
 msgstr "要加载图像的网址。"
 
-#: operations/external/ppm-load.c:460
+#: operations/external/ppm-load.c:473
 msgid "PPM File Loader"
 msgstr "PPM 文件加载器"
 
-#: operations/external/ppm-load.c:462
+#: operations/external/ppm-load.c:475
 msgid "PPM image loader."
 msgstr "PPM 图像加载器。"
 
@@ -8678,11 +8692,11 @@ msgstr "PPM 图像加载器。"
 msgid "Raw format"
 msgstr "Raw 格式"
 
-#: operations/external/ppm-save.c:190
+#: operations/external/ppm-save.c:201
 msgid "PPM File Saver"
 msgstr "PPM 文件保存器"
 
-#: operations/external/ppm-save.c:193
+#: operations/external/ppm-save.c:204
 msgid "PPM image saver (Portable pixmap saver.)"
 msgstr "PPM 图像保存器（便携 pixmap 保存器。）"
 
@@ -10198,6 +10212,9 @@ msgid ""
 "Shuffles pixels, and quantization with neighbors to optimize dither, by "
 "shuffling neighboring pixels."
 msgstr "混合像素，通过混合邻近像素，并用邻近像素量化来优化抖动。"
+
+#~ msgid "Object to supply image metadata"
+#~ msgstr "提供图像元数据的对象"
 
 #~ msgid "Ctx script"
 #~ msgstr "Ctx 脚本"
