@@ -22,8 +22,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  GEGL_0_2_0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-22 11:18+0200\n"
-"PO-Revision-Date: 2025-10-22 11:23+0200\n"
+"POT-Creation-Date: 2026-02-03 09:43+0100\n"
+"PO-Revision-Date: 2026-02-03 09:44+0100\n"
 "Last-Translator: Marco Ciampa <ciampix@posteo.net>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -33,17 +33,17 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n>1;\n"
 "Generated-By: Babel 2.15.0\n"
 
-#: ../bin/gegl.c:179
+#: ../bin/gegl.c:184
 #, c-format
 msgid "Unable to read file: %s"
 msgstr "Impossibile leggere il file: %s"
 
-#: ../bin/gegl.c:227
+#: ../bin/gegl.c:232
 #, c-format
 msgid "Invalid graph, abort.\n"
 msgstr "Grafo non valido, interrotto.\n"
 
-#: ../bin/gegl.c:390 ../bin/gegl-options.c:133
+#: ../bin/gegl.c:395 ../bin/gegl-options.c:133
 #, c-format
 msgid "Unknown GeglOption mode: %d"
 msgstr "Modalità GeglOption sconosciuta: %d"
@@ -166,11 +166,11 @@ msgstr ""
 "\trest:      %s\n"
 "\t\n"
 
-#: ../bin/gegl-options.c:347
+#: ../bin/gegl-options.c:358
 msgid "Properties:"
 msgstr "Proprietà:"
 
-#: ../bin/gegl-options.c:457
+#: ../bin/gegl-options.c:468
 #, c-format
 msgid ""
 "\n"
@@ -369,41 +369,41 @@ msgstr "Mai"
 msgid "Always"
 msgstr "Sempre"
 
-#: ../gegl/gegl-init.c:363
+#: ../gegl/gegl-init.c:427
 msgid "Where GEGL stores its swap"
 msgstr "Dove GEGL memorizza la propria swap"
 
-#: ../gegl/gegl-init.c:368
+#: ../gegl/gegl-init.c:432
 msgid "Compression algorithm used for data stored in the swap"
 msgstr "Algoritmo di compressione usato per i dati immagazzinati nello swap"
 
-#: ../gegl/gegl-init.c:373
+#: ../gegl/gegl-init.c:437
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr "Quanta memoria usare (approssimativamente) per la cache immagini"
 
-#: ../gegl/gegl-init.c:378
+#: ../gegl/gegl-init.c:442
 msgid "Default size of tiles in GeglBuffers"
 msgstr "Dimensione predefinita delle tile in GeglBuffers"
 
-#: ../gegl/gegl-init.c:383
+#: ../gegl/gegl-init.c:447
 msgid "The count of pixels to compute simultaneously"
 msgstr "Il numero di pixel da elaborare simultaneamente"
 
-#: ../gegl/gegl-init.c:388
+#: ../gegl/gegl-init.c:452
 msgid ""
 "The quality of rendering, a value between 0.0 (fast) and 1.0 (reference)"
 msgstr ""
 "La qualità del rendering, un valore tra 0.0 (veloce) e 1.0 (riferimento)"
 
-#: ../gegl/gegl-init.c:393
+#: ../gegl/gegl-init.c:457
 msgid "The number of concurrent processing threads to use"
 msgstr "Il numero di thread concorrenti da usare"
 
-#: ../gegl/gegl-init.c:398
+#: ../gegl/gegl-init.c:462
 msgid "Disable OpenCL"
 msgstr "Disabilita OpenCL"
 
-#: ../gegl/gegl-init.c:410
+#: ../gegl/gegl-init.c:474
 msgid "Show GEGL Options"
 msgstr "Mostra opzioni GEGL"
 
@@ -1214,6 +1214,7 @@ msgstr "Dimensione griglia"
 #: ../operations/common/color-rotate.c:84 ../operations/common/fattal02.c:39
 #: ../operations/common/mantiuk06.c:33 ../operations/common/noise-hsv.c:34
 #: ../operations/common/saturation.c:404 ../operations/common/styles.c:387
+#: ../operations/common/vibrance.c:30
 #: ../operations/external/lcms-from-profile.c:35
 #: ../operations/workshop/selective-hue-saturation.c:38
 msgid "Saturation"
@@ -2199,7 +2200,7 @@ msgstr "Livello del nero"
 msgid "Adjust the black level"
 msgstr "Regola il livello del nero"
 
-#: ../operations/common/exposure.c:30 ../operations/common/exposure.c:480
+#: ../operations/common/exposure.c:30 ../operations/common/exposure.c:476
 #: ../operations/common/negative-darkroom.c:29
 msgid "Exposure"
 msgstr "Esposizione"
@@ -2208,7 +2209,7 @@ msgstr "Esposizione"
 msgid "Relative brightness change in stops"
 msgstr "Cambiamento brillantezza relativa in stop"
 
-#: ../operations/common/exposure.c:484
+#: ../operations/common/exposure.c:480
 msgid "Change exposure of an image in shutter speed stops"
 msgstr ""
 "Cambia l'esposizione di una immagine, in velocità di otturazione in stop."
@@ -2387,19 +2388,19 @@ msgstr "Percorso file su cui scrivere il GeglBuffer."
 msgid "GeglBuffer file writer."
 msgstr "Scrittore file GeglBuffer."
 
-#: ../operations/common/gegl.c:68
+#: ../operations/common/gegl.c:72
 msgid "pipeline"
 msgstr "coda comandi"
 
-#: ../operations/common/gegl.c:69
+#: ../operations/common/gegl.c:73
 msgid "[op [property=value] [property=value]] [[op] [property=value]"
 msgstr "[op [proprietà=valore] [proprietà=valore]] [[op] [proprietà=valore]"
 
-#: ../operations/common/gegl.c:72
+#: ../operations/common/gegl.c:76
 msgid "Eeeeeek"
 msgstr "Iiiiiik"
 
-#: ../operations/common/gegl.c:73
+#: ../operations/common/gegl.c:77
 msgid ""
 "There is a problem in the syntax or in the application of parsed property "
 "values. Things might mostly work nevertheless."
@@ -2407,11 +2408,11 @@ msgstr ""
 "C'è un problema nella sintassi o nell'applicazione dei valori delle "
 "proprietà elaborate. Comunque potrebbe funzionare ugualmente."
 
-#: ../operations/common/gegl.c:171
+#: ../operations/common/gegl.c:179
 msgid "GEGL graph"
 msgstr "Grafo GEGL"
 
-#: ../operations/common/gegl.c:174
+#: ../operations/common/gegl.c:182
 msgid ""
 "Do a chain of operations, with key=value pairs after each operation name to "
 "set properties. And aux=[ source filter ] for specifying a chain with a "
@@ -2642,11 +2643,11 @@ msgstr ""
 msgid "Inner Glow..."
 msgstr "Bagliore interno..."
 
-#: ../operations/common/introspect.c:33
+#: ../operations/common/introspect.c:35
 msgid "Node"
 msgstr "Nodo"
 
-#: ../operations/common/introspect.c:222
+#: ../operations/common/introspect.c:224
 msgid "GEGL graph visualizer."
 msgstr "Visualizzatore grafo GEGL."
 
@@ -3139,11 +3140,11 @@ msgstr ""
 "campiona l'ingresso con un buffer ausiliario che contiene le coordinate "
 "relative della sorgente"
 
-#: ../operations/common/matting-global.c:599
+#: ../operations/common/matting-global.c:601
 msgid "Matting Global"
 msgstr "Satinatura globale"
 
-#: ../operations/common/matting-global.c:601
+#: ../operations/common/matting-global.c:603
 msgid ""
 "Given a sparse user supplied tri-map and an input image, create a foreground "
 "alpha matte. Set white as foreground, black as background for the tri-map. "
@@ -5382,6 +5383,22 @@ msgid ""
 msgstr ""
 "Inverte il componente valore, il risultato ha la luminosità invertita, "
 "mantenendo il colore."
+
+#: ../operations/common/vibrance.c:24 ../operations/common/vibrance.c:77
+msgid "Vibrance"
+msgstr "Vividezza"
+
+#: ../operations/common/vibrance.c:25
+msgid "Vibrance (chroma) adjustment"
+msgstr "Regolazione vividezza (crominanza)"
+
+#: ../operations/common/vibrance.c:31
+msgid "Saturation scale factor"
+msgstr "Fattore di scala di saturazione"
+
+#: ../operations/common/vibrance.c:79
+msgid "Adjusts the saturation and vibrance of the image."
+msgstr "Regola la saturazione e la vividezza dell'immagine."
 
 #: ../operations/common/vignette.c:32
 msgid "Vignette shape"
@@ -9057,11 +9074,11 @@ msgstr "Salvatore immagini PNG, usa libpng"
 msgid "URI of image to load."
 msgstr "URI dell'immagine da caricare."
 
-#: ../operations/external/ppm-load.c:460
+#: ../operations/external/ppm-load.c:473
 msgid "PPM File Loader"
 msgstr "Caricatore immagini PPM."
 
-#: ../operations/external/ppm-load.c:462
+#: ../operations/external/ppm-load.c:475
 msgid "PPM image loader."
 msgstr "Caricatore immagini PPM."
 
@@ -9069,11 +9086,11 @@ msgstr "Caricatore immagini PPM."
 msgid "Raw format"
 msgstr "Formato RAW"
 
-#: ../operations/external/ppm-save.c:190
+#: ../operations/external/ppm-save.c:201
 msgid "PPM File Saver"
 msgstr "Salvatore immagini PPM."
 
-#: ../operations/external/ppm-save.c:193
+#: ../operations/external/ppm-save.c:204
 msgid "PPM image saver (Portable pixmap saver.)"
 msgstr "Salvatore immagini RGBE (formato radianza HDR)"
 
