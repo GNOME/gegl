@@ -75,109 +75,63 @@ extern gboolean _gegl_cl_is_accelerated;
 
 #ifdef __GEGL_CL_INIT_MAIN__
 
-t_clGetPlatformIDs  gegl_clGetPlatformIDs  = NULL;
-t_clGetPlatformInfo gegl_clGetPlatformInfo = NULL;
-t_clGetDeviceIDs    gegl_clGetDeviceIDs    = NULL;
-t_clGetDeviceInfo   gegl_clGetDeviceInfo   = NULL;
-
-t_clCreateContext           gegl_clCreateContext           = NULL;
-t_clCreateContextFromType   gegl_clCreateContextFromType   = NULL;
-t_clCreateCommandQueue      gegl_clCreateCommandQueue      = NULL;
-t_clCreateProgramWithSource gegl_clCreateProgramWithSource = NULL;
-t_clBuildProgram            gegl_clBuildProgram            = NULL;
-t_clGetProgramBuildInfo     gegl_clGetProgramBuildInfo     = NULL;
-t_clCreateKernel            gegl_clCreateKernel            = NULL;
-t_clSetKernelArg            gegl_clSetKernelArg            = NULL;
-t_clGetKernelWorkGroupInfo  gegl_clGetKernelWorkGroupInfo  = NULL;
-t_clCreateBuffer            gegl_clCreateBuffer            = NULL;
-t_clEnqueueWriteBuffer      gegl_clEnqueueWriteBuffer      = NULL;
-t_clEnqueueReadBuffer       gegl_clEnqueueReadBuffer       = NULL;
-t_clEnqueueCopyBuffer       gegl_clEnqueueCopyBuffer       = NULL;
-t_clEnqueueReadBufferRect   gegl_clEnqueueReadBufferRect   = NULL;
-t_clEnqueueWriteBufferRect  gegl_clEnqueueWriteBufferRect  = NULL;
-t_clEnqueueCopyBufferRect   gegl_clEnqueueCopyBufferRect   = NULL;
-t_clCreateImage2D           gegl_clCreateImage2D           = NULL;
-t_clCreateImage3D           gegl_clCreateImage3D           = NULL;
-t_clEnqueueWriteImage       gegl_clEnqueueWriteImage       = NULL;
-t_clEnqueueReadImage        gegl_clEnqueueReadImage        = NULL;
-t_clEnqueueCopyImage        gegl_clEnqueueCopyImage        = NULL;
-t_clEnqueueCopyBufferToImage gegl_clEnqueueCopyBufferToImage = NULL;
-t_clEnqueueCopyImageToBuffer gegl_clEnqueueCopyImageToBuffer = NULL;
-t_clEnqueueNDRangeKernel    gegl_clEnqueueNDRangeKernel    = NULL;
-t_clEnqueueBarrier          gegl_clEnqueueBarrier          = NULL;
-t_clFinish                  gegl_clFinish                  = NULL;
-
-t_clGetEventProfilingInfo   gegl_clGetEventProfilingInfo   = NULL;
-
-t_clEnqueueMapBuffer        gegl_clEnqueueMapBuffer        = NULL;
-t_clEnqueueMapImage         gegl_clEnqueueMapImage         = NULL;
-t_clEnqueueUnmapMemObject   gegl_clEnqueueUnmapMemObject   = NULL;
-
-t_clReleaseKernel       gegl_clReleaseKernel       = NULL;
-t_clReleaseProgram      gegl_clReleaseProgram      = NULL;
-t_clReleaseCommandQueue gegl_clReleaseCommandQueue = NULL;
-t_clReleaseContext      gegl_clReleaseContext      = NULL;
-t_clReleaseMemObject    gegl_clReleaseMemObject    = NULL;
-
-t_clGetExtensionFunctionAddress gegl_clGetExtensionFunctionAddress = NULL;
-
-t_clCreateFromGLTexture2D    gegl_clCreateFromGLTexture2D = NULL;
-t_clEnqueueAcquireGLObjects  gegl_clEnqueueAcquireGLObjects = NULL;
-t_clEnqueueReleaseGLObjects  gegl_clEnqueueReleaseGLObjects = NULL;
+#define _GEGL_CL_WRAP_FUNCTION(cl_func) t_##cl_func gegl_##cl_func = NULL;
 
 #else
 
-extern t_clGetPlatformIDs  gegl_clGetPlatformIDs;
-extern t_clGetPlatformInfo gegl_clGetPlatformInfo;
-extern t_clGetDeviceIDs    gegl_clGetDeviceIDs;
-extern t_clGetDeviceInfo   gegl_clGetDeviceInfo;
-
-extern t_clCreateContext           gegl_clCreateContext;
-extern t_clCreateContextFromType   gegl_clCreateContextFromType;
-extern t_clCreateCommandQueue      gegl_clCreateCommandQueue;
-extern t_clCreateProgramWithSource gegl_clCreateProgramWithSource;
-extern t_clBuildProgram            gegl_clBuildProgram;
-extern t_clGetProgramBuildInfo     gegl_clGetProgramBuildInfo;
-extern t_clCreateKernel            gegl_clCreateKernel;
-extern t_clSetKernelArg            gegl_clSetKernelArg;
-extern t_clGetKernelWorkGroupInfo  gegl_clGetKernelWorkGroupInfo;
-extern t_clCreateBuffer            gegl_clCreateBuffer;
-extern t_clEnqueueWriteBuffer      gegl_clEnqueueWriteBuffer;
-extern t_clEnqueueReadBuffer       gegl_clEnqueueReadBuffer;
-extern t_clEnqueueReadBufferRect   gegl_clEnqueueReadBufferRect;
-extern t_clEnqueueWriteBufferRect  gegl_clEnqueueWriteBufferRect;
-extern t_clEnqueueCopyBufferRect   gegl_clEnqueueCopyBufferRect;
-extern t_clCreateImage2D           gegl_clCreateImage2D;
-extern t_clCreateImage3D           gegl_clCreateImage3D;
-extern t_clEnqueueWriteImage       gegl_clEnqueueWriteImage;
-extern t_clEnqueueReadImage        gegl_clEnqueueReadImage;
-extern t_clEnqueueCopyImage        gegl_clEnqueueCopyImage;
-extern t_clEnqueueCopyBuffer       gegl_clEnqueueCopyBuffer;
-extern t_clEnqueueCopyBufferToImage gegl_clEnqueueCopyBufferToImage;
-extern t_clEnqueueCopyImageToBuffer gegl_clEnqueueCopyImageToBuffer;
-extern t_clEnqueueNDRangeKernel    gegl_clEnqueueNDRangeKernel;
-extern t_clEnqueueBarrier          gegl_clEnqueueBarrier;
-extern t_clFinish                  gegl_clFinish;
-
-extern t_clGetEventProfilingInfo   gegl_clGetEventProfilingInfo;
-
-extern t_clEnqueueMapBuffer        gegl_clEnqueueMapBuffer;
-extern t_clEnqueueMapImage         gegl_clEnqueueMapImage;
-extern t_clEnqueueUnmapMemObject   gegl_clEnqueueUnmapMemObject;
-
-extern t_clReleaseKernel       gegl_clReleaseKernel;
-extern t_clReleaseProgram      gegl_clReleaseProgram;
-extern t_clReleaseCommandQueue gegl_clReleaseCommandQueue;
-extern t_clReleaseContext      gegl_clReleaseContext;
-extern t_clReleaseMemObject    gegl_clReleaseMemObject;
-
-extern t_clGetExtensionFunctionAddress gegl_clGetExtensionFunctionAddress;
-
-extern t_clCreateFromGLTexture2D gegl_clCreateFromGLTexture2D;
-extern t_clEnqueueAcquireGLObjects gegl_clEnqueueAcquireGLObjects;
-extern t_clEnqueueReleaseGLObjects gegl_clEnqueueReleaseGLObjects;
+#define _GEGL_CL_WRAP_FUNCTION(cl_func) extern t_##cl_func gegl_##cl_func;
 
 #endif
+
+_GEGL_CL_WRAP_FUNCTION (clGetPlatformIDs);
+_GEGL_CL_WRAP_FUNCTION (clGetPlatformInfo);
+_GEGL_CL_WRAP_FUNCTION (clGetDeviceIDs);
+_GEGL_CL_WRAP_FUNCTION (clGetDeviceInfo);
+
+_GEGL_CL_WRAP_FUNCTION (clCreateContext);
+_GEGL_CL_WRAP_FUNCTION (clCreateContextFromType);
+_GEGL_CL_WRAP_FUNCTION (clCreateCommandQueue);
+_GEGL_CL_WRAP_FUNCTION (clCreateProgramWithSource);
+_GEGL_CL_WRAP_FUNCTION (clBuildProgram);
+_GEGL_CL_WRAP_FUNCTION (clGetProgramBuildInfo);
+_GEGL_CL_WRAP_FUNCTION (clCreateKernel);
+_GEGL_CL_WRAP_FUNCTION (clSetKernelArg);
+_GEGL_CL_WRAP_FUNCTION (clGetKernelWorkGroupInfo);
+_GEGL_CL_WRAP_FUNCTION (clCreateBuffer);
+_GEGL_CL_WRAP_FUNCTION (clEnqueueWriteBuffer);
+_GEGL_CL_WRAP_FUNCTION (clEnqueueReadBuffer);
+_GEGL_CL_WRAP_FUNCTION (clEnqueueCopyBuffer);
+_GEGL_CL_WRAP_FUNCTION (clEnqueueReadBufferRect);
+_GEGL_CL_WRAP_FUNCTION (clEnqueueWriteBufferRect);
+_GEGL_CL_WRAP_FUNCTION (clEnqueueCopyBufferRect);
+_GEGL_CL_WRAP_FUNCTION (clCreateImage2D);
+_GEGL_CL_WRAP_FUNCTION (clCreateImage3D);
+_GEGL_CL_WRAP_FUNCTION (clEnqueueWriteImage);
+_GEGL_CL_WRAP_FUNCTION (clEnqueueReadImage);
+_GEGL_CL_WRAP_FUNCTION (clEnqueueCopyImage);
+_GEGL_CL_WRAP_FUNCTION (clEnqueueCopyBufferToImage);
+_GEGL_CL_WRAP_FUNCTION (clEnqueueCopyImageToBuffer);
+_GEGL_CL_WRAP_FUNCTION (clEnqueueNDRangeKernel);
+_GEGL_CL_WRAP_FUNCTION (clEnqueueBarrier);
+_GEGL_CL_WRAP_FUNCTION (clFinish);
+
+_GEGL_CL_WRAP_FUNCTION (clGetEventProfilingInfo);
+
+_GEGL_CL_WRAP_FUNCTION (clEnqueueMapBuffer);
+_GEGL_CL_WRAP_FUNCTION (clEnqueueMapImage);
+_GEGL_CL_WRAP_FUNCTION (clEnqueueUnmapMemObject);
+
+_GEGL_CL_WRAP_FUNCTION (clReleaseKernel);
+_GEGL_CL_WRAP_FUNCTION (clReleaseProgram);
+_GEGL_CL_WRAP_FUNCTION (clReleaseCommandQueue);
+_GEGL_CL_WRAP_FUNCTION (clReleaseContext);
+_GEGL_CL_WRAP_FUNCTION (clReleaseMemObject);
+
+_GEGL_CL_WRAP_FUNCTION (clGetExtensionFunctionAddress);
+
+_GEGL_CL_WRAP_FUNCTION (clCreateFromGLTexture2D);
+_GEGL_CL_WRAP_FUNCTION (clEnqueueAcquireGLObjects);
+_GEGL_CL_WRAP_FUNCTION (clEnqueueReleaseGLObjects);
 
 G_END_DECLS
 
