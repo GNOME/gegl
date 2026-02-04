@@ -178,26 +178,23 @@ gegl_buffer_cl_iterator_add_2 (GeglBufferClIterator  *iterator,
     }
   else
     {
-      gint x, y, j;
+      gint roi = 0;
 
       i->rois = 0;
-      for (y=result->y; y < result->y + result->height; y += gegl_cl_get_iter_height ())
-        for (x=result->x; x < result->x + result->width;  x += gegl_cl_get_iter_width ())
+      for (gint y = result->y; y < result->y + result->height; y += gegl_cl_get_iter_height ())
+        for (gint x = result->x; x < result->x + result->width;  x += gegl_cl_get_iter_width ())
           i->rois++;
-
+      i->roi_all = g_new0 (GeglRectangle, i->rois);
       i->iteration_no = 0;
 
-      i->roi_all = g_new0 (GeglRectangle, i->rois);
-
-      j = 0;
-      for (y=0; y < result->height; y += gegl_cl_get_iter_height ())
-        for (x=0; x < result->width;  x += gegl_cl_get_iter_width ())
+      for (gint y = 0; y < result->height; y += gegl_cl_get_iter_height ())
+        for (gint x = 0; x < result->width; x += gegl_cl_get_iter_width ())
           {
             GeglRectangle r = {x, y,
                                MIN(gegl_cl_get_iter_width (),  result->width  - x),
                                MIN(gegl_cl_get_iter_height (), result->height - y)};
-            i->roi_all[j] = r;
-            j++;
+            i->roi_all[roi] = r;
+            roi++;
           }
     }
 
@@ -239,20 +236,19 @@ gegl_buffer_cl_iterator_add_aux  (GeglBufferClIterator  *iterator,
 static void
 dealloc_iterator(GeglBufferClIterators *i)
 {
-  int no;
-
-  for (no=0; no<i->iterators;no++)
+  for (gint no = 0; no < i->iterators; no++)
     {
       if (i->buffer[no])
         {
-          gint j;
           gboolean found = FALSE;
-          for (j=0; j<no; j++)
-            if (i->buffer[no]==i->buffer[j])
-              {
-                found = TRUE;
-                break;
-              }
+          for (gint j = 0; j < no; j++)
+            {
+              if (i->buffer[no] == i->buffer[j])
+                {
+                  found = TRUE;
+                  break;
+                }
+            }
           if (!found)
             gegl_buffer_unlock (i->buffer[no]);
 
@@ -270,7 +266,6 @@ gboolean
 gegl_buffer_cl_iterator_next (GeglBufferClIterator *iterator, gboolean *err)
 {
   GeglBufferClIterators *i = (gpointer)iterator;
-  gint no;
   cl_int cl_err = 0;
   int color_err = 0;
   gboolean is_finished;
@@ -280,13 +275,12 @@ gegl_buffer_cl_iterator_next (GeglBufferClIterator *iterator, gboolean *err)
 
   if (i->iteration_no == 0)
     {
-      for (no=0; no<i->iterators;no++)
+      for (gint no = 0; no < i->iterators; no++)
         {
           if (i->buffer[no])
             {
-              gint j;
               gboolean found = FALSE;
-              for (j=0; j<no; j++)
+              for (gint j = 0; j < no; j++)
                 if (i->buffer[no]==i->buffer[j])
                   {
                     found = TRUE;
@@ -307,7 +301,7 @@ gegl_buffer_cl_iterator_next (GeglBufferClIterator *iterator, gboolean *err)
   else
     {
       /* complete pending write work */
-      for (no=0; no<i->iterators;no++)
+      for (gint no = 0; no < i->iterators; no++)
         {
           if (i->flags[no] == GEGL_CL_BUFFER_WRITE)
             {
@@ -370,7 +364,7 @@ gegl_buffer_cl_iterator_next (GeglBufferClIterator *iterator, gboolean *err)
       cl_err = gegl_clFinish(gegl_cl_get_command_queue());
       CL_CHECK;
 
-      for (no=0; no < i->iterators; no++)
+      for (gint no = 0; no < i->iterators; no++)
           {
             if (i->tex_buf_from_cache [no])
               {
@@ -396,19 +390,20 @@ gegl_buffer_cl_iterator_next (GeglBufferClIterator *iterator, gboolean *err)
   /* then we iterate all */
   if (!i->is_finished)
     {
-      for (no=0; no<i->iterators;no++)
+      for (gint no = 0; no < i->iterators; no++)
         {
-            {
-              GeglRectangle r = {i->rect[no].x + i->roi_all[i->iteration_no].x - i->area[no][0],
-                                 i->rect[no].y + i->roi_all[i->iteration_no].y - i->area[no][2],
-                                 i->roi_all[i->iteration_no].width             + i->area[no][0] + i->area[no][1],
-                                 i->roi_all[i->iteration_no].height            + i->area[no][2] + i->area[no][3]};
-              i->roi [no] = r;
-              i->size[no] = r.width * r.height;
+          GeglRectangle r = {i->rect[no].x + i->roi_all[i->iteration_no].x - i->area[no][0],
+                             i->rect[no].y + i->roi_all[i->iteration_no].y - i->area[no][2],
+                             i->roi_all[i->iteration_no].width             + i->area[no][0] + i->area[no][1],
+                             i->roi_all[i->iteration_no].height            + i->area[no][2] + i->area[no][3]};
+          i->roi [no] = r;
+          i->size[no] = r.width * r.height;
 
-              g_assert(i->size[no] > 0);
-            }
+          g_assert(i->size[no] > 0);
+        }
 
+      for (gint no = 0; no < i->iterators; no++)
+        {
           if (i->flags[no] == GEGL_CL_BUFFER_READ)
             {
                 {
@@ -636,9 +631,8 @@ void
 gegl_buffer_cl_iterator_stop (GeglBufferClIterator *iterator)
 {
   GeglBufferClIterators *i = (GeglBufferClIterators *)iterator;
-  int no;
 
-  for (no = 0; no < i->iterators; no++)
+  for (gint no = 0; no < i->iterators; no++)
     {
       if (i->tex_buf[no]) gegl_clReleaseMemObject (i->tex_buf[no]);
       if (i->tex_op [no]) gegl_clReleaseMemObject (i->tex_op [no]);

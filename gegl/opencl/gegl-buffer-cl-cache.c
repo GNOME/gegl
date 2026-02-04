@@ -48,9 +48,7 @@ static GMutex cache_mutex = { 0, };
 static gboolean
 cache_entry_find_invalid (gpointer *data)
 {
-  GList *elem;
-
-  for (elem=cache_entries; elem; elem=elem->next)
+  for (GList *elem = cache_entries; elem != NULL; elem = elem->next)
     {
       CacheEntry *e = elem->data;
       if (!e->valid && e->used == 0)
@@ -68,9 +66,7 @@ cl_mem
 gegl_buffer_cl_cache_get (GeglBuffer          *buffer,
                           const GeglRectangle *roi)
 {
-  GList *elem;
-
-  for (elem=cache_entries; elem; elem=elem->next)
+  for (GList *elem = cache_entries; elem != NULL; elem = elem->next)
     {
       CacheEntry *e = elem->data;
       if (e->valid && e->buffer == buffer
@@ -86,9 +82,7 @@ gegl_buffer_cl_cache_get (GeglBuffer          *buffer,
 gboolean
 gegl_buffer_cl_cache_release (cl_mem tex)
 {
-  GList *elem;
-
-  for (elem=cache_entries; elem; elem=elem->next)
+  for (GList *elem = cache_entries; elem != NULL; elem = elem->next)
     {
       CacheEntry *e = elem->data;
       if (e->tex == tex)
@@ -106,10 +100,9 @@ gegl_buffer_cl_cache_new (GeglBuffer            *buffer,
                           const GeglRectangle   *roi,
                           cl_mem                 tex)
 {
-  g_mutex_lock (&cache_mutex);
-
-  {
   CacheEntry *e = g_slice_new (CacheEntry);
+
+  g_mutex_lock (&cache_mutex);
 
   e->buffer =  buffer;
   e->tile_storage = buffer->tile_storage;
@@ -119,7 +112,6 @@ gegl_buffer_cl_cache_new (GeglBuffer            *buffer,
   e->used   =  0;
 
   cache_entries = g_list_prepend (cache_entries, e);
-  }
 
   g_mutex_unlock (&cache_mutex);
 }
@@ -128,21 +120,20 @@ static inline gboolean
 _gegl_buffer_cl_cache_flush2 (GeglTileHandlerCache *cache,
                               const GeglRectangle  *roi)
 {
-  size_t size;
-  GList *elem;
-  GeglRectangle tmp;
-  cl_int cl_err = 0;
-
-  gpointer data;
+  gpointer data    = NULL;
+  cl_int   cl_err  = 0;
   gboolean need_cl = FALSE;
 
-  for (elem=cache_entries; elem; elem=elem->next)
+  for (GList *elem = cache_entries; elem != NULL; elem = elem->next)
     {
-      CacheEntry *entry = elem->data;
+      CacheEntry    *entry = elem->data;
+      GeglRectangle  tmp;
 
       if (entry->valid && entry->tile_storage->cache == cache
           && (!roi || gegl_rectangle_intersect (&tmp, roi, &entry->roi)))
         {
+          size_t size;
+
           entry->valid = FALSE;
           entry->used ++;
 
@@ -229,10 +220,9 @@ gegl_buffer_cl_cache_invalidate (GeglBuffer          *buffer,
                                  const GeglRectangle *roi)
 {
   GeglRectangle tmp;
-  GList *elem;
   gpointer data;
 
-  for (elem=cache_entries; elem; elem=elem->next)
+  for (GList *elem = cache_entries; elem != NULL; elem = elem->next)
     {
       CacheEntry *e = elem->data;
       if (e->valid && e->buffer == buffer
