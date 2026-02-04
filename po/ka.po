@@ -1,14 +1,14 @@
 # Georgian translation for gegl.
 # Copyright (C) 2023 gegl's authors.
 # This file is distributed under the same license as the gegl package.
-# Ekaterine Papava <papava.e@gtu.ge>, 2023-2025.
+# Ekaterine Papava <papava.e@gtu.ge>, 2023-2026.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2025-09-10 20:28+0000\n"
-"PO-Revision-Date: 2025-09-11 12:57+0200\n"
+"POT-Creation-Date: 2026-02-02 16:00+0000\n"
+"PO-Revision-Date: 2026-02-04 03:56+0100\n"
 "Last-Translator: Ekaterine Papava <papava.e@gtu.ge>\n"
 "Language-Team: Georgian <(nothing)>\n"
 "Language: ka\n"
@@ -16,18 +16,19 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.7\n"
+"X-Generator: Poedit 3.8\n"
 
-#: bin/gegl.c:179
+#: bin/gegl.c:184
 #, c-format
 msgid "Unable to read file: %s"
 msgstr "ფაილის წაკითხვის პრობლემა: %s"
 
-#: bin/gegl.c:227
+#: bin/gegl.c:232
+#, c-format
 msgid "Invalid graph, abort.\n"
 msgstr "არასწორი გრაფიკი. დასასრული.\n"
 
-#: bin/gegl.c:390 bin/gegl-options.c:133
+#: bin/gegl.c:395 bin/gegl-options.c:133
 #, c-format
 msgid "Unknown GeglOption mode: %d"
 msgstr "GeglOption -ის უცნობი რეჟიმი: %d"
@@ -106,11 +107,11 @@ msgid ""
 "\t\n"
 msgstr ""
 
-#: bin/gegl-options.c:347
+#: bin/gegl-options.c:358
 msgid "Properties:"
 msgstr "თვისებები:"
 
-#: bin/gegl-options.c:457
+#: bin/gegl-options.c:468
 #, c-format
 msgid ""
 "\n"
@@ -120,7 +121,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: bin/ui-core.c:4387 gegl/gegl-serialize.c:690
+#: bin/ui-core.c:4389 gegl/gegl-serialize.c:690
 #, c-format
 msgid "BablFormat \"%s\" does not exist."
 msgstr ""
@@ -303,40 +304,40 @@ msgstr "არასდროს"
 msgid "Always"
 msgstr "ყოველთვის"
 
-#: gegl/gegl-init.c:354
+#: gegl/gegl-init.c:427
 msgid "Where GEGL stores its swap"
 msgstr ""
 
-#: gegl/gegl-init.c:359
+#: gegl/gegl-init.c:432
 msgid "Compression algorithm used for data stored in the swap"
 msgstr ""
 
-#: gegl/gegl-init.c:364
+#: gegl/gegl-init.c:437
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr ""
 
-#: gegl/gegl-init.c:369
+#: gegl/gegl-init.c:442
 msgid "Default size of tiles in GeglBuffers"
 msgstr ""
 
-#: gegl/gegl-init.c:374
+#: gegl/gegl-init.c:447
 msgid "The count of pixels to compute simultaneously"
 msgstr ""
 
-#: gegl/gegl-init.c:379
+#: gegl/gegl-init.c:452
 msgid ""
 "The quality of rendering, a value between 0.0 (fast) and 1.0 (reference)"
 msgstr ""
 
-#: gegl/gegl-init.c:384
+#: gegl/gegl-init.c:457
 msgid "The number of concurrent processing threads to use"
 msgstr ""
 
-#: gegl/gegl-init.c:389
+#: gegl/gegl-init.c:462
 msgid "Disable OpenCL"
 msgstr "OpenCL-ის გამორთვა"
 
-#: gegl/gegl-init.c:401
+#: gegl/gegl-init.c:474
 msgid "Show GEGL Options"
 msgstr "GEGL-ის პარამეტრების ჩვენება"
 
@@ -591,7 +592,7 @@ msgstr ""
 msgid "Clip Alpha"
 msgstr "ალფას ამოჭრა"
 
-#: operations/common/alpha-clip.c:199
+#: operations/common/alpha-clip.c:200
 msgid "Keep alpha values inside a specific range"
 msgstr ""
 
@@ -673,7 +674,7 @@ msgstr ""
 #: operations/common/stress.c:27 operations/common/unsharp-mask.c:24
 #: operations/common/vignette.c:40 operations/common/wavelet-blur-1d.c:28
 #: operations/common/wavelet-blur.c:27 operations/common-cxx/focus-blur.c:85
-#: operations/common-cxx/lens-blur.cc:24
+#: operations/common-cxx/lens-blur.cc:27
 #: operations/common-cxx/variable-blur.c:30
 #: operations/common-gpl3+/shadows-highlights.c:40
 #: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:44
@@ -738,7 +739,7 @@ msgstr ""
 #: operations/common/bilateral-filter.c:26
 #: operations/common/domain-transform.c:29 operations/common/dropshadow.c:46
 #: operations/common/inner-glow.c:58 operations/common-cxx/focus-blur.c:45
-#: operations/common-cxx/lens-blur.cc:25
+#: operations/common-cxx/lens-blur.cc:28
 #: operations/common-gpl3+/gaussian-blur-selective.c:29
 #: operations/workshop/bilateral-filter-fast.c:43
 msgid "Blur radius"
@@ -1086,7 +1087,7 @@ msgstr "ბადის ზომა"
 #: operations/common/color-rotate.c:84 operations/common/fattal02.c:39
 #: operations/common/mantiuk06.c:33 operations/common/noise-hsv.c:34
 #: operations/common/saturation.c:404 operations/common/styles.c:387
-#: operations/external/lcms-from-profile.c:35
+#: operations/common/vibrance.c:30 operations/external/lcms-from-profile.c:35
 #: operations/workshop/selective-hue-saturation.c:38
 msgid "Saturation"
 msgstr "გაჯერებულობა"
@@ -1121,7 +1122,7 @@ msgstr ""
 msgid "Color Enhance"
 msgstr ""
 
-#: operations/common/color-enhance.c:281
+#: operations/common/color-enhance.c:280
 msgid ""
 "Stretch color chroma to cover maximum possible range, keeping hue and "
 "lightness untouched."
@@ -1506,7 +1507,7 @@ msgstr ""
 msgid "Extract Component"
 msgstr "კომპონენტის გამოყოფა"
 
-#: operations/common/component-extract.c:264
+#: operations/common/component-extract.c:263
 msgid "Extract a color model component"
 msgstr ""
 
@@ -1676,11 +1677,11 @@ msgstr ""
 msgid "Border"
 msgstr "საზღვარი"
 
-#: operations/common/convolution-matrix.c:634
+#: operations/common/convolution-matrix.c:633
 msgid "Convolution Matrix"
 msgstr "კონვოლუციის მატრიცა"
 
-#: operations/common/convolution-matrix.c:635
+#: operations/common/convolution-matrix.c:634
 msgid "Apply a generic 5x5 convolution matrix"
 msgstr ""
 
@@ -1783,7 +1784,7 @@ msgstr "დიზერინგის მეთოდი"
 #: operations/common/noise-pick.c:38 operations/common/noise-rgb.c:55
 #: operations/common/noise-simplex.c:39 operations/common/noise-spread.c:41
 #: operations/common-gpl3+/cubism.c:42 operations/common-gpl3+/maze.c:65
-#: operations/common-gpl3+/mosaic.c:90 operations/common-gpl3+/noise-slur.c:40
+#: operations/common-gpl3+/mosaic.c:92 operations/common-gpl3+/noise-slur.c:40
 #: operations/common-gpl3+/noise-solid.c:61 operations/common-gpl3+/plasma.c:70
 #: operations/common-gpl3+/shift.c:35 operations/common-gpl3+/sinus.c:49
 #: operations/common-gpl3+/supernova.c:63
@@ -1966,7 +1967,7 @@ msgstr ""
 msgid "Sobel Edge Detection"
 msgstr ""
 
-#: operations/common/edge-sobel.c:401
+#: operations/common/edge-sobel.c:400
 msgid "Specialized direction-dependent edge detection"
 msgstr ""
 
@@ -2010,7 +2011,7 @@ msgstr "შავის დონე"
 msgid "Adjust the black level"
 msgstr "შავის დონის მორგება"
 
-#: operations/common/exposure.c:30 operations/common/exposure.c:480
+#: operations/common/exposure.c:30 operations/common/exposure.c:476
 #: operations/common/negative-darkroom.c:29
 msgid "Exposure"
 msgstr "ექსპოზიცია"
@@ -2019,7 +2020,7 @@ msgstr "ექსპოზიცია"
 msgid "Relative brightness change in stops"
 msgstr ""
 
-#: operations/common/exposure.c:484
+#: operations/common/exposure.c:480
 msgid "Change exposure of an image in shutter speed stops"
 msgstr ""
 
@@ -2121,7 +2122,7 @@ msgstr ""
 msgid "Gaussian Blur"
 msgstr "გაუსის ბუნდოვნება"
 
-#: operations/common/gaussian-blur.c:119 operations/common/gblur-1d.c:1388
+#: operations/common/gaussian-blur.c:118 operations/common/gblur-1d.c:1388
 msgid ""
 "Performs an averaging of neighboring pixels with the normal distribution as "
 "weighting"
@@ -2182,29 +2183,29 @@ msgstr ""
 msgid "GeglBuffer file writer."
 msgstr ""
 
-#: operations/common/gegl.c:68
+#: operations/common/gegl.c:72
 msgid "pipeline"
 msgstr "ფაიფლაინი"
 
-#: operations/common/gegl.c:69
+#: operations/common/gegl.c:73
 msgid "[op [property=value] [property=value]] [[op] [property=value]"
 msgstr ""
 
-#: operations/common/gegl.c:72
+#: operations/common/gegl.c:76
 msgid "Eeeeeek"
 msgstr "Eeeeeek"
 
-#: operations/common/gegl.c:73
+#: operations/common/gegl.c:77
 msgid ""
 "There is a problem in the syntax or in the application of parsed property "
 "values. Things might mostly work nevertheless."
 msgstr ""
 
-#: operations/common/gegl.c:168
+#: operations/common/gegl.c:179
 msgid "GEGL graph"
 msgstr ""
 
-#: operations/common/gegl.c:171
+#: operations/common/gegl.c:182
 msgid ""
 "Do a chain of operations, with key=value pairs after each operation name to "
 "set properties. And aux=[ source filter ] for specifying a chain with a "
@@ -2215,7 +2216,7 @@ msgstr ""
 msgid "Make Gray"
 msgstr ""
 
-#: operations/common/grey.c:142
+#: operations/common/grey.c:141
 msgid "Turns the image grayscale"
 msgstr ""
 
@@ -2259,7 +2260,7 @@ msgstr ""
 msgid "High Pass Filter"
 msgstr ""
 
-#: operations/common/high-pass.c:87
+#: operations/common/high-pass.c:86
 msgid "Enhances fine details."
 msgstr ""
 
@@ -2387,7 +2388,7 @@ msgstr "გამოტანის რეჟიმი"
 msgid "Image Gradient"
 msgstr "სურათის გრადიენტი"
 
-#: operations/common/image-gradient.c:228
+#: operations/common/image-gradient.c:227
 msgid "Compute gradient magnitude and/or direction by central differences"
 msgstr ""
 
@@ -2416,11 +2417,11 @@ msgstr ""
 msgid "Inner Glow..."
 msgstr ""
 
-#: operations/common/introspect.c:27
+#: operations/common/introspect.c:35
 msgid "Node"
 msgstr "კვანძი"
 
-#: operations/common/introspect.c:210
+#: operations/common/introspect.c:224
 msgid "GEGL graph visualizer."
 msgstr ""
 
@@ -2582,7 +2583,7 @@ msgstr ""
 msgid "Linear Gradient"
 msgstr "ხაზოვანი გრადიენტი"
 
-#: operations/common/linear-gradient.c:142
+#: operations/common/linear-gradient.c:141
 msgid "Linear gradient renderer"
 msgstr ""
 
@@ -2682,7 +2683,7 @@ msgid ""
 "local contrast."
 msgstr ""
 
-#: operations/common/local-threshold.c:32 operations/common-gpl3+/mosaic.c:87
+#: operations/common/local-threshold.c:32 operations/common-gpl3+/mosaic.c:89
 msgid "Antialiasing"
 msgstr "მომრგვალება"
 
@@ -2807,7 +2808,7 @@ msgstr ""
 msgid "Long Shadow"
 msgstr "გრძელი ჩრდილი"
 
-#: operations/common/long-shadow.c:1651
+#: operations/common/long-shadow.c:1650
 msgid "Creates a long-shadow effect"
 msgstr ""
 
@@ -2849,7 +2850,7 @@ msgstr ""
 msgid "Map Absolute"
 msgstr ""
 
-#: operations/common/map-absolute.c:64
+#: operations/common/map-absolute.c:65
 msgid ""
 "sample input with an auxiliary buffer that contain absolute source "
 "coordinates"
@@ -2869,17 +2870,17 @@ msgstr ""
 msgid "Map Relative"
 msgstr ""
 
-#: operations/common/map-relative.c:84
+#: operations/common/map-relative.c:83
 msgid ""
 "sample input with an auxiliary buffer that contain relative source "
 "coordinates"
 msgstr ""
 
-#: operations/common/matting-global.c:599
+#: operations/common/matting-global.c:601
 msgid "Matting Global"
 msgstr "ფონის გლობალური დაჩრდილვა"
 
-#: operations/common/matting-global.c:601
+#: operations/common/matting-global.c:603
 msgid ""
 "Given a sparse user supplied tri-map and an input image, create a foreground "
 "alpha matte. Set white as foreground, black as background for the tri-map. "
@@ -3053,11 +3054,11 @@ msgstr ""
 msgid "Fill full output area"
 msgstr ""
 
-#: operations/common/mirrors.c:466
+#: operations/common/mirrors.c:480
 msgid "Kaleidoscopic Mirroring"
 msgstr ""
 
-#: operations/common/mirrors.c:471
+#: operations/common/mirrors.c:484
 msgid "Create a kaleidoscope like effect."
 msgstr ""
 
@@ -3097,7 +3098,7 @@ msgstr ""
 msgid "Mono Mixer"
 msgstr ""
 
-#: operations/common/mono-mixer.c:117
+#: operations/common/mono-mixer.c:116
 msgid "Monochrome channel mixer"
 msgstr ""
 
@@ -3113,7 +3114,7 @@ msgstr ""
 msgid "Linear Motion Blur"
 msgstr ""
 
-#: operations/common/motion-blur-linear.c:337
+#: operations/common/motion-blur-linear.c:336
 msgid ""
 "Blur pixels in a direction, simulates blurring caused by moving camera in a "
 "straight line during exposure."
@@ -3653,7 +3654,7 @@ msgstr "მნიშვნელობა"
 msgid "Add HSV Noise"
 msgstr ""
 
-#: operations/common/noise-hsv.c:281
+#: operations/common/noise-hsv.c:280
 msgid "Randomize hue, saturation and value independently"
 msgstr ""
 
@@ -3691,7 +3692,7 @@ msgstr "პერლინის ხმაურის გენერატო�
 msgid "Noise Pick"
 msgstr ""
 
-#: operations/common/noise-pick.c:148
+#: operations/common/noise-pick.c:147
 msgid "Randomly interchange some pixels with neighbors"
 msgstr ""
 
@@ -3754,7 +3755,7 @@ msgstr "ლურჯი"
 msgid "Add RGB Noise"
 msgstr ""
 
-#: operations/common/noise-rgb.c:217
+#: operations/common/noise-rgb.c:216
 msgid "Distort colors by random amounts"
 msgstr ""
 
@@ -3778,7 +3779,7 @@ msgstr ""
 msgid "Noise Spread"
 msgstr ""
 
-#: operations/common/noise-spread.c:187
+#: operations/common/noise-spread.c:186
 msgid "Move pixels around randomly"
 msgstr ""
 
@@ -3839,7 +3840,7 @@ msgstr ""
 msgid "Normal Map"
 msgstr ""
 
-#: operations/common/normal-map.c:252
+#: operations/common/normal-map.c:251
 msgid "Generate a normal map from a height map"
 msgstr ""
 
@@ -3907,7 +3908,7 @@ msgstr ""
 msgid "Panorama Projection"
 msgstr ""
 
-#: operations/common/panorama-projection.c:543
+#: operations/common/panorama-projection.c:542
 msgid ""
 "Do panorama viewer rendering mapping or its inverse for an equirectangular "
 "input image. (2:1 ratio containing 360x180 degree panorama)."
@@ -3996,7 +3997,7 @@ msgstr ""
 msgid "Radial Gradient"
 msgstr "რადიალური გრადიენტი"
 
-#: operations/common/radial-gradient.c:128
+#: operations/common/radial-gradient.c:127
 msgid "Radial gradient renderer"
 msgstr "რადიალური გრადიენტის რენდერერი"
 
@@ -4068,7 +4069,7 @@ msgstr ""
 
 #: operations/common/recursive-transform.c:49
 msgid "Paste below"
-msgstr ""
+msgstr "ქვემოთ ჩასმა"
 
 #: operations/common/recursive-transform.c:50
 msgid "Paste transformed images below each other"
@@ -4083,7 +4084,7 @@ msgstr ""
 msgid "Recursive Transform"
 msgstr ""
 
-#: operations/common/recursive-transform.c:381
+#: operations/common/recursive-transform.c:382
 msgid "Apply a transformation recursively."
 msgstr ""
 
@@ -4183,7 +4184,9 @@ msgstr ""
 msgid "Metadata"
 msgstr "მეტამონაცემები"
 
-#: operations/common/save.c:29
+#: operations/common/save.c:29 operations/core/load.c:34
+#: operations/external/jpg-save.c:45 operations/external/png-load.c:37
+#: operations/external/png-save.c:35
 msgid "Object providing image metadata"
 msgstr ""
 
@@ -4425,7 +4428,7 @@ msgstr "მყარი ფერი"
 #. Outline's normal GUI options begin here
 #: operations/common/styles.c:67
 msgid "Enable Outline"
-msgstr ""
+msgstr "კონტურის ჩართვა"
 
 #: operations/common/styles.c:68
 msgid "Disable or enable the outline"
@@ -4966,7 +4969,7 @@ msgstr ""
 msgid "Sharpen (Unsharp Mask)"
 msgstr "გამკვეთრება"
 
-#: operations/common/unsharp-mask.c:148
+#: operations/common/unsharp-mask.c:147
 msgid ""
 "Sharpen image, by adding difference to blurred image, a technique for "
 "sharpening originally used in darkrooms."
@@ -4976,10 +4979,26 @@ msgstr ""
 msgid "Value Invert"
 msgstr "მნიშვნელობების ინვერსია"
 
-#: operations/common/value-invert.c:154
+#: operations/common/value-invert.c:153
 msgid ""
 "Invert the value component, the result has the brightness inverted, keeping "
 "the color."
+msgstr ""
+
+#: operations/common/vibrance.c:24 operations/common/vibrance.c:77
+msgid "Vibrance"
+msgstr "ფერების გაჯერებულობა"
+
+#: operations/common/vibrance.c:25
+msgid "Vibrance (chroma) adjustment"
+msgstr ""
+
+#: operations/common/vibrance.c:31
+msgid "Saturation scale factor"
+msgstr "გაჯერებულობის მასშტაბის კოეფიციენტი"
+
+#: operations/common/vibrance.c:79
+msgid "Adjusts the saturation and vibrance of the image."
 msgstr ""
 
 #: operations/common/vignette.c:32
@@ -5036,7 +5055,7 @@ msgstr "შემობრუნება"
 msgid "Vignette"
 msgstr "ვინიეტი"
 
-#: operations/common/vignette.c:398
+#: operations/common/vignette.c:397
 msgid ""
 "Applies a vignette to an image. Simulates the luminance fall off at the edge "
 "of exposed film, and some other fuzzier border effects that can naturally "
@@ -5097,7 +5116,7 @@ msgstr ""
 msgid "Watershed Transform"
 msgstr ""
 
-#: operations/common/watershed-transform.c:493
+#: operations/common/watershed-transform.c:492
 msgid ""
 "Labels propagation by watershed transformation. Output buffer will keep the "
 "input format. Unlabelled pixels are marked with a given flag value (by "
@@ -5115,7 +5134,7 @@ msgstr ""
 msgid "1D Wavelet-blur"
 msgstr ""
 
-#: operations/common/wavelet-blur-1d.c:277 operations/common/wavelet-blur.c:80
+#: operations/common/wavelet-blur-1d.c:276 operations/common/wavelet-blur.c:80
 msgid ""
 "This blur is used for the wavelet decomposition filter, each pixel is "
 "computed from another by the HAT transform"
@@ -5195,7 +5214,7 @@ msgstr ""
 msgid "Calculate a distance transform"
 msgstr ""
 
-#: operations/common-cxx/focus-blur.c:30 operations/common-cxx/lens-blur.cc:504
+#: operations/common-cxx/focus-blur.c:30 operations/common-cxx/lens-blur.cc:507
 msgid "Lens Blur"
 msgstr "ლინზის ბუნდოვნება"
 
@@ -5207,23 +5226,23 @@ msgstr "ბუნდოვნების ტიპი"
 msgid "Out-of-focus blur radius"
 msgstr ""
 
-#: operations/common-cxx/focus-blur.c:52 operations/common-cxx/lens-blur.cc:31
+#: operations/common-cxx/focus-blur.c:52 operations/common-cxx/lens-blur.cc:34
 msgid "Highlight factor"
 msgstr ""
 
-#: operations/common-cxx/focus-blur.c:53 operations/common-cxx/lens-blur.cc:32
+#: operations/common-cxx/focus-blur.c:53 operations/common-cxx/lens-blur.cc:35
 msgid "Relative highlight strength"
 msgstr ""
 
-#: operations/common-cxx/focus-blur.c:57 operations/common-cxx/lens-blur.cc:35
+#: operations/common-cxx/focus-blur.c:57 operations/common-cxx/lens-blur.cc:38
 msgid "Highlight threshold (low)"
 msgstr ""
 
-#: operations/common-cxx/focus-blur.c:61 operations/common-cxx/lens-blur.cc:39
+#: operations/common-cxx/focus-blur.c:61 operations/common-cxx/lens-blur.cc:42
 msgid "Highlight threshold"
 msgstr ""
 
-#: operations/common-cxx/focus-blur.c:64 operations/common-cxx/lens-blur.cc:41
+#: operations/common-cxx/focus-blur.c:64 operations/common-cxx/lens-blur.cc:44
 msgid "Highlight threshold (high)"
 msgstr ""
 
@@ -5306,27 +5325,27 @@ msgstr ""
 msgid "Denoising algorithm using a per-patch DCT thresholding"
 msgstr ""
 
-#: operations/common-cxx/lens-blur.cc:46
+#: operations/common-cxx/lens-blur.cc:49
 msgid "Clip to input extents"
 msgstr ""
 
-#: operations/common-cxx/lens-blur.cc:47
+#: operations/common-cxx/lens-blur.cc:50
 msgid "Clip output to the input extents"
 msgstr ""
 
-#: operations/common-cxx/lens-blur.cc:49
+#: operations/common-cxx/lens-blur.cc:52
 #: operations/common-cxx/piecewise-blend.cc:38
 #: operations/common-cxx/variable-blur.c:37
 msgid "Linear mask"
 msgstr ""
 
-#: operations/common-cxx/lens-blur.cc:50
+#: operations/common-cxx/lens-blur.cc:53
 #: operations/common-cxx/piecewise-blend.cc:39
 #: operations/common-cxx/variable-blur.c:38
 msgid "Use linear mask values"
 msgstr ""
 
-#: operations/common-cxx/lens-blur.cc:507
+#: operations/common-cxx/lens-blur.cc:510
 msgid "Simulate out-of-focus lens blur"
 msgstr ""
 
@@ -5342,7 +5361,7 @@ msgstr ""
 msgid "Piecewise Blend"
 msgstr ""
 
-#: operations/common-cxx/piecewise-blend.cc:348
+#: operations/common-cxx/piecewise-blend.cc:349
 msgid "Blend a chain of inputs using a mask"
 msgstr ""
 
@@ -5411,7 +5430,7 @@ msgstr ""
 msgid "Warp"
 msgstr "მოკეცვა"
 
-#: operations/common-cxx/warp.cc:988
+#: operations/common-cxx/warp.cc:989
 msgid "Compute a relative displacement mapping from a stroke"
 msgstr ""
 
@@ -5439,7 +5458,7 @@ msgstr ""
 msgid "Apply Lens"
 msgstr "ლინზის დადება"
 
-#: operations/common-gpl3+/apply-lens.c:306
+#: operations/common-gpl3+/apply-lens.c:305
 msgid ""
 "Simulates the optical distortion caused by having an elliptical lens over "
 "the image"
@@ -5611,8 +5630,7 @@ msgstr ""
 msgid "Bump Map"
 msgstr "რელიეფის რუკა"
 
-#. "reference-hash", "8d3700ec06e9cbba3cb2b4a9f3061a10",
-#: operations/common-gpl3+/bump-map.c:482
+#: operations/common-gpl3+/bump-map.c:481
 msgid ""
 "This plug-in uses the algorithm described by John Schlag, \"Fast Embossing "
 "Effects on Raster Image Data\" in Graphics GEMS IV (ISBN 0-12-336155-9). It "
@@ -5632,7 +5650,7 @@ msgstr ""
 msgid "Cartoon"
 msgstr "მულტფილმი"
 
-#: operations/common-gpl3+/cartoon.c:326
+#: operations/common-gpl3+/cartoon.c:325
 msgid ""
 "Simulates a cartoon, its result is similar to a black felt pen drawing "
 "subsequently shaded with color. This is achieved by enhancing edges and "
@@ -5801,11 +5819,11 @@ msgstr "ფერიდან ალფასკენ"
 msgid "Convert a specified color to transparency, works best with white."
 msgstr ""
 
-#: operations/common-gpl3+/cubism.c:30 operations/common-gpl3+/mosaic.c:43
+#: operations/common-gpl3+/cubism.c:30 operations/common-gpl3+/mosaic.c:45
 msgid "Tile size"
 msgstr "ფილის ზომა"
 
-#: operations/common-gpl3+/cubism.c:31 operations/common-gpl3+/mosaic.c:44
+#: operations/common-gpl3+/cubism.c:31 operations/common-gpl3+/mosaic.c:46
 msgid "Average diameter of each tile (in pixels)"
 msgstr ""
 
@@ -5825,7 +5843,7 @@ msgstr ""
 msgid "Cubism"
 msgstr "კუბიზმი"
 
-#: operations/common-gpl3+/cubism.c:655
+#: operations/common-gpl3+/cubism.c:654
 msgid ""
 "Convert the image into randomly rotated square blobs, somehow resembling a "
 "cubist painting style"
@@ -6121,9 +6139,9 @@ msgstr ""
 
 #: operations/common-gpl3+/edge.c:366
 msgid "Edge Detection"
-msgstr ""
+msgstr "წიბოს დადგენა"
 
-#: operations/common-gpl3+/edge.c:371
+#: operations/common-gpl3+/edge.c:370
 msgid "Several simple methods for detecting edges"
 msgstr ""
 
@@ -6131,7 +6149,7 @@ msgstr ""
 msgid "Laplacian Edge Detection"
 msgstr ""
 
-#: operations/common-gpl3+/edge-laplace.c:416
+#: operations/common-gpl3+/edge-laplace.c:415
 msgid "High-resolution edge detection"
 msgstr ""
 
@@ -6385,7 +6403,7 @@ msgstr ""
 msgid "Fractal Trace"
 msgstr "ფრაქტალური კვალი"
 
-#: operations/common-gpl3+/fractal-trace.c:285
+#: operations/common-gpl3+/fractal-trace.c:284
 msgid "Transform the image with the fractals"
 msgstr ""
 
@@ -6477,7 +6495,7 @@ msgstr ""
 msgid "Lens Distortion"
 msgstr "ლინზის დამახინჯება"
 
-#: operations/common-gpl3+/lens-distortion.c:504
+#: operations/common-gpl3+/lens-distortion.c:503
 msgid "Corrects barrel or pincushion lens distortion."
 msgstr ""
 
@@ -6501,7 +6519,7 @@ msgstr ""
 msgid "Lens Flare"
 msgstr "ლი_ნზის ანარეკლი"
 
-#: operations/common-gpl3+/lens-flare.c:515
+#: operations/common-gpl3+/lens-flare.c:514
 msgid "Adds a lens flare effect."
 msgstr ""
 
@@ -6613,111 +6631,111 @@ msgstr "ლაბირინთი"
 msgid "Draw a labyrinth"
 msgstr ""
 
-#: operations/common-gpl3+/mosaic.c:33
+#: operations/common-gpl3+/mosaic.c:35
 msgid "Squares"
 msgstr "კვარატები"
 
-#: operations/common-gpl3+/mosaic.c:34
+#: operations/common-gpl3+/mosaic.c:36
 msgid "Hexagons"
 msgstr "ექვსკუთხედები"
 
-#: operations/common-gpl3+/mosaic.c:35
+#: operations/common-gpl3+/mosaic.c:37
 msgid "Octagons"
 msgstr "რვაკუთხედები"
 
-#: operations/common-gpl3+/mosaic.c:36
+#: operations/common-gpl3+/mosaic.c:38
 msgid "Triangles"
 msgstr "სამკუთხედები"
 
-#: operations/common-gpl3+/mosaic.c:39
+#: operations/common-gpl3+/mosaic.c:41
 msgid "Tile geometry"
 msgstr ""
 
-#: operations/common-gpl3+/mosaic.c:41
+#: operations/common-gpl3+/mosaic.c:43
 msgid "What shape to use for tiles"
 msgstr ""
 
-#: operations/common-gpl3+/mosaic.c:49
+#: operations/common-gpl3+/mosaic.c:51
 msgid "Tile height"
 msgstr "ფილის სიმაღლე"
 
-#: operations/common-gpl3+/mosaic.c:50
+#: operations/common-gpl3+/mosaic.c:52
 msgid "Apparent height of each tile (in pixels)"
 msgstr ""
 
-#: operations/common-gpl3+/mosaic.c:54
+#: operations/common-gpl3+/mosaic.c:56
 msgid "Tile neatness"
 msgstr ""
 
-#: operations/common-gpl3+/mosaic.c:55
+#: operations/common-gpl3+/mosaic.c:57
 msgid "Deviation from perfectly formed tiles"
 msgstr ""
 
-#: operations/common-gpl3+/mosaic.c:58
+#: operations/common-gpl3+/mosaic.c:60
 msgid "Tile color variation"
 msgstr ""
 
-#: operations/common-gpl3+/mosaic.c:59
+#: operations/common-gpl3+/mosaic.c:61
 msgid "Magnitude of random color variations"
 msgstr ""
 
-#: operations/common-gpl3+/mosaic.c:62
+#: operations/common-gpl3+/mosaic.c:64
 msgid "Color averaging"
 msgstr ""
 
-#: operations/common-gpl3+/mosaic.c:63
+#: operations/common-gpl3+/mosaic.c:65
 msgid "Tile color based on average of subsumed pixels"
 msgstr ""
 
-#: operations/common-gpl3+/mosaic.c:65
+#: operations/common-gpl3+/mosaic.c:67
 msgid "Rough tile surface"
 msgstr ""
 
-#: operations/common-gpl3+/mosaic.c:66
+#: operations/common-gpl3+/mosaic.c:68
 msgid "Surface characteristics"
 msgstr ""
 
-#: operations/common-gpl3+/mosaic.c:68
+#: operations/common-gpl3+/mosaic.c:70
 msgid "Allow splitting tiles"
 msgstr ""
 
-#: operations/common-gpl3+/mosaic.c:69
+#: operations/common-gpl3+/mosaic.c:71
 msgid "Allows splitting tiles at hard edges"
 msgstr ""
 
-#: operations/common-gpl3+/mosaic.c:71
+#: operations/common-gpl3+/mosaic.c:73
 msgid "Tile spacing"
 msgstr ""
 
-#: operations/common-gpl3+/mosaic.c:72
+#: operations/common-gpl3+/mosaic.c:74
 msgid "Inter-tile spacing (in pixels)"
 msgstr ""
 
-#: operations/common-gpl3+/mosaic.c:77
+#: operations/common-gpl3+/mosaic.c:79
 msgid "Joints color"
 msgstr ""
 
-#: operations/common-gpl3+/mosaic.c:79
+#: operations/common-gpl3+/mosaic.c:81
 msgid "Light color"
 msgstr ""
 
-#: operations/common-gpl3+/mosaic.c:81
+#: operations/common-gpl3+/mosaic.c:83
 msgid "Light direction"
 msgstr "სინათლის მიმართულება"
 
-#: operations/common-gpl3+/mosaic.c:82
+#: operations/common-gpl3+/mosaic.c:84
 msgid "Direction of light-source (in degrees)"
 msgstr ""
 
-#: operations/common-gpl3+/mosaic.c:88
+#: operations/common-gpl3+/mosaic.c:90
 msgid "Enables smoother tile output"
 msgstr ""
 
-#: operations/common-gpl3+/mosaic.c:2472
+#: operations/common-gpl3+/mosaic.c:2474
 msgid "Mosaic"
 msgstr "მოზაიკა"
 
-#: operations/common-gpl3+/mosaic.c:2477
+#: operations/common-gpl3+/mosaic.c:2478
 msgid ""
 "Mosaic is a filter which transforms an image into what appears to be a "
 "mosaic, composed of small primitives, each of constant color and of an "
@@ -6744,7 +6762,7 @@ msgstr ""
 msgid "Zooming Motion Blur"
 msgstr ""
 
-#: operations/common-gpl3+/motion-blur-zoom.c:277
+#: operations/common-gpl3+/motion-blur-zoom.c:276
 msgid "Zoom motion blur"
 msgstr ""
 
@@ -6852,7 +6870,7 @@ msgstr ""
 msgid "Oilify"
 msgstr "ზეთის საღებავი"
 
-#: operations/common-gpl3+/oilify.c:632
+#: operations/common-gpl3+/oilify.c:631
 msgid "Emulate an oil painting"
 msgstr ""
 
@@ -6868,7 +6886,7 @@ msgstr ""
 msgid "Photocopy"
 msgstr "ფოტოასლი"
 
-#: operations/common-gpl3+/photocopy.c:332
+#: operations/common-gpl3+/photocopy.c:331
 msgid "Simulate color distortion produced by a copy machine"
 msgstr ""
 
@@ -6888,7 +6906,7 @@ msgstr ""
 msgid "Plasma"
 msgstr "პლაზმა"
 
-#: operations/common-gpl3+/plasma.c:451
+#: operations/common-gpl3+/plasma.c:450
 msgid "Creates an image filled with a plasma effect."
 msgstr ""
 
@@ -6953,7 +6971,7 @@ msgstr ""
 msgid "Red Eye Removal"
 msgstr "_წითელი თვალის მოცილება"
 
-#: operations/common-gpl3+/red-eye-removal.c:175
+#: operations/common-gpl3+/red-eye-removal.c:174
 msgid "Remove the red eye effect caused by camera flashes"
 msgstr ""
 
@@ -6981,7 +6999,7 @@ msgstr ""
 msgid "Ripple"
 msgstr "ჭავლი"
 
-#: operations/common-gpl3+/ripple.c:264
+#: operations/common-gpl3+/ripple.c:263
 msgid "Displace pixels in a ripple pattern"
 msgstr ""
 
@@ -7073,7 +7091,7 @@ msgstr ""
 msgid "Shift direction"
 msgstr ""
 
-#: operations/common-gpl3+/shift.c:149
+#: operations/common-gpl3+/shift.c:148
 msgid "Shift each row or column of pixels by a random amount"
 msgstr ""
 
@@ -7281,7 +7299,7 @@ msgstr ""
 msgid "Tile Glass"
 msgstr ""
 
-#: operations/common-gpl3+/tile-glass.c:239
+#: operations/common-gpl3+/tile-glass.c:238
 msgid "Simulate distortion caused by rectangular glass tiles"
 msgstr ""
 
@@ -7563,7 +7581,7 @@ msgstr ""
 msgid "Waves"
 msgstr "ტალღები"
 
-#: operations/common-gpl3+/waves.c:201
+#: operations/common-gpl3+/waves.c:200
 msgid "Distort the image with waves"
 msgstr ""
 
@@ -7585,7 +7603,7 @@ msgstr ""
 msgid "Whirl Pinch"
 msgstr "დაგრეხა შეკუმშვა"
 
-#: operations/common-gpl3+/whirl-pinch.c:299
+#: operations/common-gpl3+/whirl-pinch.c:298
 msgid "Distort an image by whirling and pinching"
 msgstr ""
 
@@ -7792,11 +7810,6 @@ msgstr "URI"
 
 #: operations/core/load.c:32
 msgid "URI of file to load."
-msgstr ""
-
-#: operations/core/load.c:34 operations/external/jpg-save.c:45
-#: operations/external/png-load.c:37 operations/external/png-save.c:35
-msgid "Object to supply image metadata"
 msgstr ""
 
 #: operations/core/load.c:372
@@ -8010,11 +8023,11 @@ msgstr ""
 msgid "me-subpel-quality"
 msgstr ""
 
-#: operations/external/ff-save.c:1244
+#: operations/external/ff-save.c:1262
 msgid "FFmpeg Frame Saver"
 msgstr ""
 
-#: operations/external/ff-save.c:1246
+#: operations/external/ff-save.c:1264
 msgid "FFmpeg video output sink"
 msgstr ""
 
@@ -8038,11 +8051,11 @@ msgstr ""
 msgid "Delay in ms for last decoded frame"
 msgstr ""
 
-#: operations/external/gif-load.c:244
+#: operations/external/gif-load.c:248
 msgid "GIF File Loader"
 msgstr ""
 
-#: operations/external/gif-load.c:246
+#: operations/external/gif-load.c:250
 msgid "GIF image loader."
 msgstr ""
 
@@ -8478,11 +8491,11 @@ msgstr ""
 msgid "URI for file to load."
 msgstr ""
 
-#: operations/external/png-load.c:656
+#: operations/external/png-load.c:680
 msgid "PNG File Loader"
 msgstr ""
 
-#: operations/external/png-load.c:658
+#: operations/external/png-load.c:682
 msgid "PNG image loader."
 msgstr ""
 
@@ -8503,11 +8516,11 @@ msgstr ""
 msgid "8 and 16 are the currently accepted values."
 msgstr ""
 
-#: operations/external/png-save.c:418
+#: operations/external/png-save.c:434
 msgid "PNG File Saver"
 msgstr ""
 
-#: operations/external/png-save.c:420
+#: operations/external/png-save.c:436
 msgid "PNG image saver, using libpng"
 msgstr ""
 
@@ -8515,11 +8528,11 @@ msgstr ""
 msgid "URI of image to load."
 msgstr ""
 
-#: operations/external/ppm-load.c:460
+#: operations/external/ppm-load.c:473
 msgid "PPM File Loader"
 msgstr ""
 
-#: operations/external/ppm-load.c:462
+#: operations/external/ppm-load.c:475
 msgid "PPM image loader."
 msgstr ""
 
@@ -8527,11 +8540,11 @@ msgstr ""
 msgid "Raw format"
 msgstr ""
 
-#: operations/external/ppm-save.c:190
+#: operations/external/ppm-save.c:201
 msgid "PPM File Saver"
 msgstr ""
 
-#: operations/external/ppm-save.c:193
+#: operations/external/ppm-save.c:204
 msgid "PPM image saver (Portable pixmap saver.)"
 msgstr ""
 
@@ -9105,7 +9118,7 @@ msgid ""
 "that is defined by the x and y properties. "
 msgstr ""
 
-#: operations/transform/reset-origin.c:98
+#: operations/transform/reset-origin.c:99
 msgid "Translate top-left to 0,0."
 msgstr ""
 
@@ -9340,7 +9353,7 @@ msgstr ""
 msgid "Bilateral Box Filter"
 msgstr ""
 
-#: operations/workshop/bilateral-filter-fast.c:510
+#: operations/workshop/bilateral-filter-fast.c:508
 msgid ""
 "A fast approximation of bilateral filter, using a box-filter instead of a "
 "gaussian blur."
@@ -9394,7 +9407,7 @@ msgstr ""
 msgid "Connected Components"
 msgstr ""
 
-#: operations/workshop/connected-components.c:292
+#: operations/workshop/connected-components.c:284
 msgid ""
 "Fills each connected region of the input, separated from the rest of the "
 "input by a given color, with a unique color."
@@ -9873,7 +9886,7 @@ msgstr ""
 msgid "Gradient Map"
 msgstr "გრადიენტის რუკა"
 
-#: operations/workshop/gradient-map.c:245
+#: operations/workshop/gradient-map.c:243
 msgid "Applies a color gradient."
 msgstr ""
 
