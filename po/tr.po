@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2025-11-26 12:57+0000\n"
-"PO-Revision-Date: 2025-11-27 00:44+0300\n"
+"POT-Creation-Date: 2026-02-02 16:00+0000\n"
+"PO-Revision-Date: 2026-02-06 00:24+0300\n"
 "Last-Translator: Sabri Ünal <yakushabb@gmail.com>\n"
 "Language-Team: Turkish <takim@gnome.org.tr>\n"
 "Language: tr\n"
@@ -23,17 +23,17 @@ msgstr ""
 "X-Generator: Poedit 3.8\n"
 "X-POOTLE-MTIME: 1437504675.000000\n"
 
-#: bin/gegl.c:182
+#: bin/gegl.c:184
 #, c-format
 msgid "Unable to read file: %s"
 msgstr "Dosya okunamadı: %s"
 
-#: bin/gegl.c:230
+#: bin/gegl.c:232
 #, c-format
 msgid "Invalid graph, abort.\n"
 msgstr "Geçersiz grafik, iptal et.\n"
 
-#: bin/gegl.c:393 bin/gegl-options.c:133
+#: bin/gegl.c:395 bin/gegl-options.c:133
 #, c-format
 msgid "Unknown GeglOption mode: %d"
 msgstr "Bilinmeyen GeglOption kipi: %d"
@@ -151,11 +151,11 @@ msgstr ""
 "\tkalan:  %s\n"
 "\t\n"
 
-#: bin/gegl-options.c:347
+#: bin/gegl-options.c:358
 msgid "Properties:"
 msgstr "Özellikler:"
 
-#: bin/gegl-options.c:457
+#: bin/gegl-options.c:468
 #, c-format
 msgid ""
 "\n"
@@ -353,45 +353,45 @@ msgstr "Asla"
 msgid "Always"
 msgstr "Her Zaman"
 
-#: gegl/gegl-init.c:363
+#: gegl/gegl-init.c:427
 msgid "Where GEGL stores its swap"
 msgstr "GEGL takas alanının depolandığı yer"
 
-#: gegl/gegl-init.c:368
+#: gegl/gegl-init.c:432
 msgid "Compression algorithm used for data stored in the swap"
 msgstr ""
 "Takas alanında depolanan veriler için kullanılacak sıkıştırma algoritması"
 
-#: gegl/gegl-init.c:373
+#: gegl/gegl-init.c:437
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr ""
 "Görüntülerin önbelleğe alınması için ne kadar bellek kullanılacağı (yaklaşık "
 "olarak)"
 
-#: gegl/gegl-init.c:378
+#: gegl/gegl-init.c:442
 msgid "Default size of tiles in GeglBuffers"
 msgstr "GeglBuffers içindeki döşemelerin öntanımlı boyutu"
 
-#: gegl/gegl-init.c:383
+#: gegl/gegl-init.c:447
 msgid "The count of pixels to compute simultaneously"
 msgstr "Aynı anda hesaplamak için piksel sayısı"
 
-#: gegl/gegl-init.c:388
+#: gegl/gegl-init.c:452
 msgid ""
 "The quality of rendering, a value between 0.0 (fast) and 1.0 (reference)"
 msgstr ""
 "Görselleştirme kalitesi, 0.0 (hızlı) ve 1.0 (başvuru) arasındaki bir değer "
 "cinsinden"
 
-#: gegl/gegl-init.c:393
+#: gegl/gegl-init.c:457
 msgid "The number of concurrent processing threads to use"
 msgstr "Kullanılacak eşzamanlı işlem parçaçıkları"
 
-#: gegl/gegl-init.c:398
+#: gegl/gegl-init.c:462
 msgid "Disable OpenCL"
 msgstr "OpenCL Kapat"
 
-#: gegl/gegl-init.c:410
+#: gegl/gegl-init.c:474
 msgid "Show GEGL Options"
 msgstr "GEGL Seçeneklerini Göster"
 
@@ -1184,7 +1184,7 @@ msgstr "Izgara boyutu"
 #: operations/common/color-rotate.c:84 operations/common/fattal02.c:39
 #: operations/common/mantiuk06.c:33 operations/common/noise-hsv.c:34
 #: operations/common/saturation.c:404 operations/common/styles.c:387
-#: operations/external/lcms-from-profile.c:35
+#: operations/common/vibrance.c:30 operations/external/lcms-from-profile.c:35
 #: operations/workshop/selective-hue-saturation.c:38
 msgid "Saturation"
 msgstr "Doygunluk"
@@ -1217,7 +1217,7 @@ msgstr ""
 "Görüntüyü gri tonlamalı yap ve üzerine aşırı doygun ızgara bindir. İnsan "
 "görsel sisteminde gerçekleşen renk özümsemesi sayesinde, bazı ızgara "
 "ölçeklerinde gri tonlamalı hücrelerin kendilerinde de renk varmış gibi "
-"yanılsama oluşur"
+"yanılsama oluşur."
 
 #: operations/common/color-enhance.c:276
 msgid "Color Enhance"
@@ -2325,19 +2325,19 @@ msgstr "GeglBuffer'a yazmak için hedef dosya yolu."
 msgid "GeglBuffer file writer."
 msgstr "GeglBuffer dosya yazıcısı."
 
-#: operations/common/gegl.c:68
+#: operations/common/gegl.c:72
 msgid "pipeline"
 msgstr "komut zinciri"
 
-#: operations/common/gegl.c:69
+#: operations/common/gegl.c:73
 msgid "[op [property=value] [property=value]] [[op] [property=value]"
 msgstr "[op [property=value] [property=value]] [[op] [property=value]"
 
-#: operations/common/gegl.c:72
+#: operations/common/gegl.c:76
 msgid "Eeeeeek"
 msgstr "Amanın"
 
-#: operations/common/gegl.c:73
+#: operations/common/gegl.c:77
 msgid ""
 "There is a problem in the syntax or in the application of parsed property "
 "values. Things might mostly work nevertheless."
@@ -2345,11 +2345,11 @@ msgstr ""
 "Söz diziminde veya ayrıştırılmış özellik değerlerinin uygulanmasında bir "
 "sorun oluştu. Bazı şeyler yine de işe yarayabilir."
 
-#: operations/common/gegl.c:175
+#: operations/common/gegl.c:179
 msgid "GEGL graph"
 msgstr "GEGL graph"
 
-#: operations/common/gegl.c:178
+#: operations/common/gegl.c:182
 msgid ""
 "Do a chain of operations, with key=value pairs after each operation name to "
 "set properties. And aux=[ source filter ] for specifying a chain with a "
@@ -2398,7 +2398,7 @@ msgstr "Izgara görselleyici"
 # Konumu gereği tümce düzeni kullanıldı
 #: operations/common/high-pass.c:24
 msgid "Std. Dev."
-msgstr "Standart sapma"
+msgstr "Standart Sapma"
 
 #: operations/common/high-pass.c:31
 msgid "Contrast of high-pass"
@@ -2573,11 +2573,11 @@ msgstr ""
 msgid "Inner Glow..."
 msgstr "İç Parıltı..."
 
-#: operations/common/introspect.c:33
+#: operations/common/introspect.c:35
 msgid "Node"
 msgstr "Düğüm"
 
-#: operations/common/introspect.c:222
+#: operations/common/introspect.c:224
 msgid "GEGL graph visualizer."
 msgstr "GEGL graph görselleştiricisi."
 
@@ -3062,11 +3062,11 @@ msgid ""
 "coordinates"
 msgstr "göreceli kaynak koordinatlarını içeren ek tampon ile örnek girdi"
 
-#: operations/common/matting-global.c:599
+#: operations/common/matting-global.c:601
 msgid "Matting Global"
 msgstr "Matting Global"
 
-#: operations/common/matting-global.c:601
+#: operations/common/matting-global.c:603
 msgid ""
 "Given a sparse user supplied tri-map and an input image, create a foreground "
 "alpha matte. Set white as foreground, black as background for the tri-map. "
@@ -4966,7 +4966,7 @@ msgstr "İç Parıltının büyüme yarıçapı"
 
 #: operations/common/styles.c:340
 msgid "The distance to expand the inner glow before blurring"
-msgstr "Bulanıklaştırmadan önce iç parıltının büyüme mesafesi."
+msgstr "Bulanıklaştırmadan önce iç parıltının büyüme mesafesi"
 
 #: operations/common/styles.c:344
 msgid "Inner Glow's opacity"
@@ -5295,6 +5295,22 @@ msgid ""
 msgstr ""
 "Değer bileşenini tersine çevir, sonuç rengi koruyarak parlaklığı tersine "
 "çevirir."
+
+#: operations/common/vibrance.c:24 operations/common/vibrance.c:77
+msgid "Vibrance"
+msgstr "Canlılık"
+
+#: operations/common/vibrance.c:25
+msgid "Vibrance (chroma) adjustment"
+msgstr "Canlılık (renk parlaklığı) ayarı"
+
+#: operations/common/vibrance.c:31
+msgid "Saturation scale factor"
+msgstr "Doygunluk ölçek katsayısı"
+
+#: operations/common/vibrance.c:79
+msgid "Adjusts the saturation and vibrance of the image."
+msgstr "Görüntünün doygunluk ve canlılığını ayarlar."
 
 #: operations/common/vignette.c:32
 msgid "Vignette shape"
@@ -8964,11 +8980,11 @@ msgstr "PNG görüntü kaydedici, libpng kullanarak"
 msgid "URI of image to load."
 msgstr "Yüklenecek görüntünün adresi."
 
-#: operations/external/ppm-load.c:460
+#: operations/external/ppm-load.c:473
 msgid "PPM File Loader"
 msgstr "PPM Dosya Yükleyicisi"
 
-#: operations/external/ppm-load.c:462
+#: operations/external/ppm-load.c:475
 msgid "PPM image loader."
 msgstr "PPM görüntü yükleyicisi."
 
@@ -8976,11 +8992,11 @@ msgstr "PPM görüntü yükleyicisi."
 msgid "Raw format"
 msgstr "Raw biçimi"
 
-#: operations/external/ppm-save.c:190
+#: operations/external/ppm-save.c:201
 msgid "PPM File Saver"
 msgstr "PPM Dosya Kaydedici"
 
-#: operations/external/ppm-save.c:193
+#: operations/external/ppm-save.c:204
 msgid "PPM image saver (Portable pixmap saver.)"
 msgstr "PPM görüntü kaydedici (Taşınabilir pixmap kaydedici.)"
 
