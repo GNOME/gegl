@@ -159,7 +159,8 @@ _gegl_buffer_cl_cache_flush2 (GeglTileHandlerCache *cache,
       if (entry->valid && entry->buffer->tile_storage->cache == cache
           && (!roi || gegl_rectangle_intersect (&tmp, roi, &entry->roi)))
         {
-          size_t size;
+          const Babl *format = gegl_buffer_get_format (entry->buffer);
+          size_t      size;
 
           need_cl = TRUE;
 
@@ -168,7 +169,7 @@ _gegl_buffer_cl_cache_flush2 (GeglTileHandlerCache *cache,
           g_atomic_ref_count_inc (&entry->refcount);
           entry->valid = FALSE;
 
-          gegl_cl_color_babl (entry->buffer->soft_format, &size);
+          gegl_cl_color_babl (format, &size);
 
           data = g_malloc(entry->roi.width * entry->roi.height * size);
 
@@ -176,7 +177,7 @@ _gegl_buffer_cl_cache_flush2 (GeglTileHandlerCache *cache,
                                             entry->tex, CL_TRUE, 0, entry->roi.width * entry->roi.height * size, data,
                                             0, NULL, NULL);
           /* tile-ize */
-          gegl_buffer_set (entry->buffer, &entry->roi, 0, entry->buffer->soft_format, data, GEGL_AUTO_ROWSTRIDE);
+          gegl_buffer_set (entry->buffer, &entry->roi, 0, format, data, GEGL_AUTO_ROWSTRIDE);
 
           g_atomic_ref_count_dec (&entry->refcount);
 
