@@ -34,7 +34,6 @@
 typedef struct
 {
   GeglBuffer           *buffer;
-  GeglTileStorage      *tile_storage;
   GeglRectangle         roi;
   cl_mem                tex;
   gboolean              valid;
@@ -130,7 +129,6 @@ gegl_buffer_cl_cache_new (GeglBuffer            *buffer,
   CacheEntry *e = g_slice_new (CacheEntry);
 
   e->buffer        = buffer;
-  e->tile_storage  = buffer->tile_storage;
   e->roi           = *roi;
   e->tex           = tex;
   e->valid         = TRUE;
@@ -158,7 +156,7 @@ _gegl_buffer_cl_cache_flush2 (GeglTileHandlerCache *cache,
       CacheEntry    *entry = elem->data;
       GeglRectangle  tmp;
 
-      if (entry->valid && entry->tile_storage->cache == cache
+      if (entry->valid && entry->buffer->tile_storage->cache == cache
           && (!roi || gegl_rectangle_intersect (&tmp, roi, &entry->roi)))
         {
           size_t size;
