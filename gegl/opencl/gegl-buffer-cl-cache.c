@@ -71,6 +71,25 @@ cache_entry_find_invalid (gpointer *data)
   return found;
 }
 
+static void
+free_cache_entry (gpointer data)
+{
+  CacheEntry *entry = data;
+
+  GEGL_NOTE (GEGL_DEBUG_OPENCL, "Removing from cl-cache: %p %s {%d %d %d %d}",
+             entry->buffer,
+             babl_get_name (gegl_buffer_get_format (entry->buffer)),
+             entry->roi.x,
+             entry->roi.y,
+             entry->roi.width,
+             entry->roi.height);
+
+  gegl_clReleaseMemObject (entry->tex);
+
+  g_slice_free (CacheEntry, data);
+  cache_entries = g_list_remove (cache_entries, data);
+}
+
 cl_mem
 gegl_buffer_cl_cache_get (GeglBuffer          *buffer,
                           const GeglRectangle *roi)
@@ -193,21 +212,7 @@ _gegl_buffer_cl_cache_flush2 (GeglTileHandlerCache *cache,
       CL_CHECK;
 
       while (cache_entry_find_invalid (&data))
-        {
-          CacheEntry *entry = data;
-
-#if 1
-          GEGL_NOTE (GEGL_DEBUG_OPENCL, "Removing from cl-cache: %p %s {%d %d %d %d}", entry->buffer, babl_get_name(entry->buffer->soft_format),
-                                                                                       entry->roi.x, entry->roi.y, entry->roi.width, entry->roi.height);
-#endif
-
-          gegl_clReleaseMemObject(entry->tex);
-
-          memset (entry, 0x0, sizeof (CacheEntry));
-
-          g_slice_free (CacheEntry, data);
-          cache_entries = g_list_remove (cache_entries, data);
-        }
+        free_cache_entry (data);
     }
 
   g_rec_mutex_unlock (&cache_mutex);
@@ -216,10 +221,7 @@ _gegl_buffer_cl_cache_flush2 (GeglTileHandlerCache *cache,
 
 error:
   while (cache_entry_find_invalid (&data))
-    {
-      g_slice_free (CacheEntry, data);
-      cache_entries = g_list_remove (cache_entries, data);
-    }
+    free_cache_entry (data);
 
   g_rec_mutex_unlock (&cache_mutex);
 
@@ -253,32 +255,15 @@ gegl_buffer_cl_cache_invalidate (GeglBuffer          *buffer,
   for (GList *elem = cache_entries; elem != NULL; elem = elem->next)
     {
       CacheEntry *e = elem->data;
-      if (e->valid && e->buffer == buffer
-          && (!roi || gegl_rectangle_intersect (&tmp, roi, &e->roi)))
+      if (e->valid && e->buffer == buffer &&
+          (!roi || gegl_rectangle_intersect (&tmp, roi, &e->roi)))
         {
-          gegl_clReleaseMemObject (e->tex);
           e->valid = FALSE;
         }
     }
 
   while (cache_entry_find_invalid (&data))
-    {
-      CacheEntry *entry = data;
-      memset(entry, 0x0, sizeof (CacheEntry));
-
-      g_slice_free (CacheEntry, data);
-      cache_entries = g_list_remove (cache_entries, data);
-    }
-
-#if 0
-  g_printf ("-- ");
-  for (elem=cache_entry; elem; elem=elem->next)
-    {
-      CacheEntry *e = elem->data;
-      g_printf ("%p %p {%d, %d, %d, %d} %d | ", e->tex, e->buffer, e->roi.x, e->roi.y, e->roi.width, e->roi.height, e->valid);
-    }
-  g_printf ("\n");
-#endif
+    free_cache_entry (data);
 
   g_rec_mutex_unlock (&cache_mutex);
 }
