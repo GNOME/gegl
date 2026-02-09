@@ -247,7 +247,6 @@ void
 gegl_buffer_cl_cache_invalidate (GeglBuffer          *buffer,
                                  const GeglRectangle *roi)
 {
-  GeglRectangle tmp;
   gpointer data;
 
   g_rec_mutex_lock (&cache_mutex);
@@ -256,7 +255,7 @@ gegl_buffer_cl_cache_invalidate (GeglBuffer          *buffer,
     {
       CacheEntry *e = elem->data;
       if (e->valid && e->buffer == buffer &&
-          (!roi || gegl_rectangle_intersect (&tmp, roi, &e->roi)))
+          (!roi || gegl_rectangle_intersect (NULL, roi, &e->roi)))
         {
           e->valid = FALSE;
         }
