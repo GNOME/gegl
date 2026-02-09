@@ -85,6 +85,7 @@ free_cache_entry (gpointer data)
              entry->roi.height);
 
   gegl_clReleaseMemObject (entry->tex);
+  g_object_unref (entry->buffer);
 
   g_slice_free (CacheEntry, data);
   cache_entries = g_list_remove (cache_entries, data);
@@ -152,6 +153,7 @@ gegl_buffer_cl_cache_new (GeglBuffer            *buffer,
   e->tex           = tex;
   e->valid         = TRUE;
   g_atomic_ref_count_init (&e->refcount);
+  g_object_ref (buffer);
 
   g_rec_mutex_lock (&cache_mutex);
 
