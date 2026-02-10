@@ -38,7 +38,7 @@ typedef struct
   GeglRectangle         roi;
   cl_mem                tex;
   gboolean              valid;
-  gint                  used; /* don't free used entries */
+  gatomicrefcount       refcount;
 } CacheEntry;
 
 static GList *cache_entries = NULL;
@@ -51,7 +51,9 @@ cache_entry_find_invalid (gpointer *data)
   for (GList *elem = cache_entries; elem != NULL; elem = elem->next)
     {
       CacheEntry *e = elem->data;
-      if (!e->valid && e->used == 0)
+      /* refcount == 1 means nothing else has a reference to the CacheEntry
+         but the global cache store itself. */
+      if (!e->valid && g_atomic_ref_count_compare (&e->refcount, 1))
         {
           *data = e;
           return TRUE;
@@ -72,7 +74,7 @@ gegl_buffer_cl_cache_get (GeglBuffer          *buffer,
       if (e->valid && e->buffer == buffer
           && gegl_rectangle_equal (&e->roi, roi))
         {
-          e->used ++;
+          g_atomic_ref_count_inc (&e->refcount);
           return e->tex;
         }
     }
@@ -87,8 +89,7 @@ gegl_buffer_cl_cache_release (cl_mem tex)
       CacheEntry *e = elem->data;
       if (e->tex == tex)
         {
-          e->used --;
-          g_assert (e->used >= 0);
+          e->valid = !g_atomic_ref_count_dec (&e->refcount);
           return TRUE;
         }
     }
@@ -104,12 +105,12 @@ gegl_buffer_cl_cache_new (GeglBuffer            *buffer,
 
   g_mutex_lock (&cache_mutex);
 
-  e->buffer =  buffer;
-  e->tile_storage = buffer->tile_storage;
-  e->roi    = *roi;
-  e->tex    =  tex;
-  e->valid  =  TRUE;
-  e->used   =  0;
+  e->buffer        = buffer;
+  e->tile_storage  = buffer->tile_storage;
+  e->roi           = *roi;
+  e->tex           = tex;
+  e->valid         = TRUE;
+  g_atomic_ref_count_init (&e->refcount);
 
   cache_entries = g_list_prepend (cache_entries, e);
 
@@ -134,8 +135,12 @@ _gegl_buffer_cl_cache_flush2 (GeglTileHandlerCache *cache,
         {
           size_t size;
 
+          need_cl = TRUE;
+
+          /* Flush moves (not just copies) the content of a buffer from an
+             OpenCL device to the host and marks that entry as invalid. */
+          g_atomic_ref_count_inc (&entry->refcount);
           entry->valid = FALSE;
-          entry->used ++;
 
           gegl_cl_color_babl (entry->buffer->soft_format, &size);
 
@@ -147,8 +152,7 @@ _gegl_buffer_cl_cache_flush2 (GeglTileHandlerCache *cache,
           /* tile-ize */
           gegl_buffer_set (entry->buffer, &entry->roi, 0, entry->buffer->soft_format, data, GEGL_AUTO_ROWSTRIDE);
 
-          entry->used --;
-          need_cl = TRUE;
+          g_atomic_ref_count_dec (&entry->refcount);
 
           g_free(data);
 
@@ -228,7 +232,6 @@ gegl_buffer_cl_cache_invalidate (GeglBuffer          *buffer,
       if (e->valid && e->buffer == buffer
           && (!roi || gegl_rectangle_intersect (&tmp, roi, &e->roi)))
         {
-          g_assert (e->used == 0);
           gegl_clReleaseMemObject (e->tex);
           e->valid = FALSE;
         }
