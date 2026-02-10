@@ -76,7 +76,7 @@ free_cache_entry (gpointer data)
 {
   CacheEntry *entry = data;
 
-  GEGL_NOTE (GEGL_DEBUG_OPENCL, "Removing from cl-cache: %p %s {%d %d %d %d}",
+  GEGL_NOTE (GEGL_DEBUG_OPENCL, "Removing entry from OpenCL global cache: %p %s {%d %d %d %d}",
              entry->buffer,
              babl_get_name (gegl_buffer_get_format (entry->buffer)),
              entry->roi.x,

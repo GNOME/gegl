@@ -260,6 +260,26 @@ dealloc_iterator(GeglBufferClIterators *i)
   g_slice_free (GeglBufferClIterators, i);
 }
 
+static void
+cleanup_cl_buffers (GeglBufferClIterators *i)
+{
+  for (gint no = 0; no < i->iterators; no++)
+    {
+      if (i->tex_buf_from_cache [no])
+        g_assert_true (gegl_buffer_cl_cache_release (i->tex_buf[no]));
+
+      if (i->tex_buf[no] && !i->tex_buf_from_cache [no])
+        gegl_clReleaseMemObject (i->tex_buf[no]);
+
+      if (i->tex_op [no])
+        gegl_clReleaseMemObject (i->tex_op [no]);
+
+      i->tex    [no] = NULL;
+      i->tex_buf[no] = NULL;
+      i->tex_op [no] = NULL;
+    }
+}
+
 #define OPENCL_USE_CACHE 0
 
 gboolean
@@ -364,24 +384,7 @@ gegl_buffer_cl_iterator_next (GeglBufferClIterator *iterator, gboolean *err)
       cl_err = gegl_clFinish(gegl_cl_get_command_queue());
       CL_CHECK;
 
-      for (gint no = 0; no < i->iterators; no++)
-          {
-            if (i->tex_buf_from_cache [no])
-              {
-                gboolean ok = gegl_buffer_cl_cache_release (i->tex_buf[no]);
-                g_assert (ok);
-              }
-
-            if (i->tex_buf[no] && !i->tex_buf_from_cache [no])
-              gegl_clReleaseMemObject (i->tex_buf[no]);
-
-            if (i->tex_op [no])
-              gegl_clReleaseMemObject (i->tex_op [no]);
-
-            i->tex    [no] = NULL;
-            i->tex_buf[no] = NULL;
-            i->tex_op [no] = NULL;
-          }
+      cleanup_cl_buffers (i);
     }
 
   g_assert (i->iterators > 0);
@@ -632,16 +635,7 @@ gegl_buffer_cl_iterator_stop (GeglBufferClIterator *iterator)
 {
   GeglBufferClIterators *i = (GeglBufferClIterators *)iterator;
 
-  for (gint no = 0; no < i->iterators; no++)
-    {
-      if (i->tex_buf[no]) gegl_clReleaseMemObject (i->tex_buf[no]);
-      if (i->tex_op [no]) gegl_clReleaseMemObject (i->tex_op [no]);
-
-      i->tex    [no] = NULL;
-      i->tex_buf[no] = NULL;
-      i->tex_op [no] = NULL;
-    }
-
+  cleanup_cl_buffers (i);
   dealloc_iterator (i);
 }
 
