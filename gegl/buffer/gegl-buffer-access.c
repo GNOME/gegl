@@ -881,10 +881,7 @@ gegl_buffer_set_internal (GeglBuffer          *buffer,
                           const void          *src,
                           gint                 rowstride)
 {
-  if (gegl_buffer_ext_flush)
-    {
-      gegl_buffer_ext_flush (buffer, rect);
-    }
+  gegl_buffer_flush_ext (buffer, rect);
 
   gegl_buffer_iterate_write (buffer, rect, (void *) src, rowstride, format, level);
 
@@ -2048,8 +2045,7 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
   if (! format)
     format = buffer->soft_format;
 
-  if (gegl_buffer_ext_flush)
-    gegl_buffer_ext_flush (buffer, rect);
+  gegl_buffer_flush_ext (buffer, rect);
 
   if (G_UNLIKELY (scale == 1.0 &&
       rect->width == 1))
