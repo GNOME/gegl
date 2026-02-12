@@ -92,19 +92,16 @@ tile_glass (GeglBuffer          *src,
   gint components;
   gfloat *src_row_buf;
   gfloat *dst_row_buf;
-  const GeglRectangle *extent;
   GeglRectangle src_bufrect, dst_bufrect;
 
   gint row, col, i;
   gint x1, y1, y2;
-  gint dst_xoffs, src_x0, xright_abyss, src_rowwidth;
+  gint dst_xoffs, src_x0, xright_abyss, src_rowwidth, src_rowsize;
 
   gint xpixel1, xpixel2;
   gint ypixel2;
   gint xhalf, xoffs, xmiddle, xplus;
   gint yhalf, yoffs, ymiddle, yplus;
-
-  extent = gegl_buffer_get_extent (dst);
 
   x1 = dst_rect->x;
   y1 = dst_rect->y;
@@ -116,12 +113,12 @@ tile_glass (GeglBuffer          *src,
   xplus = tileWidth  % 2;
   yplus = tileHeight % 2;
 
-  dst_xoffs = x1 % tileWidth + xplus;
-  src_x0 = x1 - dst_xoffs;
-  xright_abyss = 2 * ((x1 + dst_rect->width) % tileWidth);
+  dst_xoffs = abs (x1 % tileWidth) + xhalf;
+  src_x0 = x1 - abs (dst_xoffs);
+  xright_abyss = abs (2 * ((x1 + dst_rect->width) % tileWidth) + xhalf);
   if (xright_abyss > tileWidth - 2)
     xright_abyss = tileWidth - 2;
-  src_rowwidth = dst_xoffs + dst_rect->width + xright_abyss;
+  src_rowwidth = abs (dst_xoffs) + dst_rect->width + xright_abyss;
 
   yoffs = y1 % tileHeight;
   ymiddle = y1 - yoffs;
@@ -132,8 +129,9 @@ tile_glass (GeglBuffer          *src,
     }
 
   components = babl_format_get_n_components (format);
+  src_rowsize = src_rowwidth * components;
 
-  src_row_buf = g_new (gfloat, src_rowwidth * components);
+  src_row_buf = g_new (gfloat, src_rowsize);
   dst_row_buf = g_new (gfloat, dst_rect->width * components);
   gegl_rectangle_set (&src_bufrect, src_x0, 0, src_rowwidth, 1);
   gegl_rectangle_set (&dst_bufrect, x1, 0, dst_rect->width, 1);
@@ -168,11 +166,8 @@ tile_glass (GeglBuffer          *src,
       for (col = 0; col < dst_rect->width; ++col)
         {
           xpixel1 = (xmiddle + xoffs - x1) * components;
-          if (xmiddle + xoffs * 2 + dst_xoffs < extent->width)
-            {
-              xpixel2 = (xmiddle + xoffs * 2 - x1 + dst_xoffs) * components;
-            }
-          else
+          xpixel2 = (xmiddle + (xoffs) * 2 - x1 + dst_xoffs) * components;
+          if (xpixel2 + components > src_rowsize)
             {
               xpixel2 = (xmiddle + xoffs - x1 + dst_xoffs) * components;
             }
