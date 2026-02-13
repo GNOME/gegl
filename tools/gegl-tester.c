@@ -217,6 +217,7 @@ uri_get_contents (const gchar *uri, gchar **contents, gsize *length, GError **er
   int reported_size = -1;
 
   GError *error = NULL;
+  GQuark  quark = g_quark_from_static_string ("gegl-tester");
 
   file = g_file_new_for_uri (uri);
   is = g_file_read (file, NULL, &error);
@@ -235,6 +236,11 @@ uri_get_contents (const gchar *uri, gchar **contents, gsize *length, GError **er
       reported_size = g_file_info_get_size (info);
     g_object_unref (info);
   }
+  else
+    {
+      g_printf ("Error querying stream info: '%s' for uri '%s'.\n", (*err)->message, uri);
+      g_clear_error (err);
+    }
 
   if(reported_size > 0)
   {
@@ -255,7 +261,7 @@ uri_get_contents (const gchar *uri, gchar **contents, gsize *length, GError **er
       g_free (contents);
       *contents = NULL;
 
-      g_set_error (err, 0, 0, "http fetch size mismatch");
+      g_set_error (err, quark, 0, "http fetch size mismatch");
       ret = FALSE;
     }
     else
@@ -264,7 +270,7 @@ uri_get_contents (const gchar *uri, gchar **contents, gsize *length, GError **er
     }
   } else
   {
-    g_set_error (err, 0, 0, "http didnt get size");
+    g_set_error (err, quark, 0, "http didnt get size");
     ret = FALSE;
   }
 
