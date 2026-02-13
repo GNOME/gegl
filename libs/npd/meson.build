@@ -33,7 +33,6 @@ gegl_npd_lib = library(meson.project_name() + '-npd-' + api_version,
   link_with: [
     gegl_lib,
   ],
-  vs_module_defs: gegl_npd_def,
   install: true,
 )
 
