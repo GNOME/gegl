@@ -330,9 +330,10 @@ G_STMT_END
 #define CL_LOAD_EXTENSION_FUNCTION(func)                                          \
 G_STMT_START                                                                      \
   {                                                                               \
-    g_assert (gegl_clGetExtensionFunctionAddress != NULL);                        \
+    g_assert (gegl_clGetExtensionFunctionAddressForPlatform != NULL);             \
                                                                                   \
-    gegl_##func = gegl_clGetExtensionFunctionAddress(#func);                      \
+    gegl_##func = gegl_clGetExtensionFunctionAddressForPlatform (platform,        \
+                                                                 #func);          \
     if (gegl_##func == NULL)                                                      \
       {                                                                           \
         GEGL_NOTE (GEGL_DEBUG_OPENCL, "symbol gegl_##func is NULL");              \
@@ -360,53 +361,145 @@ gegl_cl_init_load_functions (void)
       return FALSE;
     }
 
+  /* Query Platform Info */
   CL_LOAD_FUNCTION (clGetPlatformIDs);
   CL_LOAD_FUNCTION (clGetPlatformInfo);
+
+  /* Query Devices */
   CL_LOAD_FUNCTION (clGetDeviceIDs);
   CL_LOAD_FUNCTION (clGetDeviceInfo);
 
+  /* Partition a Device */
+  CL_LOAD_FUNCTION (clCreateSubDevices);
+  CL_LOAD_FUNCTION (clReleaseDevice);
+  CL_LOAD_FUNCTION (clRetainDevice);
+
+  /* Contexts */
   CL_LOAD_FUNCTION (clCreateContext);
   CL_LOAD_FUNCTION (clCreateContextFromType);
-  CL_LOAD_FUNCTION (clCreateCommandQueue);
-  CL_LOAD_FUNCTION (clCreateProgramWithSource);
-  CL_LOAD_FUNCTION (clBuildProgram);
-  CL_LOAD_FUNCTION (clGetProgramBuildInfo);
+  CL_LOAD_FUNCTION (clGetContextInfo);
+  CL_LOAD_FUNCTION (clReleaseContext);
+  CL_LOAD_FUNCTION (clRetainContext);
+  CL_LOAD_FUNCTION (clSetContextDestructorCallback);
 
-  CL_LOAD_FUNCTION (clCreateKernel);
-  CL_LOAD_FUNCTION (clSetKernelArg);
-  CL_LOAD_FUNCTION (clGetKernelWorkGroupInfo);
+  /* Command-Queues */
+  CL_LOAD_FUNCTION (clCreateCommandQueueWithProperties);
+  CL_LOAD_FUNCTION (clGetCommandQueueInfo);
+  CL_LOAD_FUNCTION (clReleaseCommandQueue);
+  CL_LOAD_FUNCTION (clRetainCommandQueue);
+  CL_LOAD_FUNCTION (clSetDefaultDeviceCommandQueue);
+
+  /* Buffer Objects */
   CL_LOAD_FUNCTION (clCreateBuffer);
-  CL_LOAD_FUNCTION (clEnqueueWriteBuffer);
+  CL_LOAD_FUNCTION (clCreateBufferWithProperties);
+  CL_LOAD_FUNCTION (clCreateSubBuffer);
   CL_LOAD_FUNCTION (clEnqueueReadBuffer);
-  CL_LOAD_FUNCTION (clEnqueueCopyBuffer);
+  CL_LOAD_FUNCTION (clEnqueueWriteBuffer);
   CL_LOAD_FUNCTION (clEnqueueReadBufferRect);
   CL_LOAD_FUNCTION (clEnqueueWriteBufferRect);
+  CL_LOAD_FUNCTION (clEnqueueCopyBuffer);
   CL_LOAD_FUNCTION (clEnqueueCopyBufferRect);
-  CL_LOAD_FUNCTION (clCreateImage2D);
-  CL_LOAD_FUNCTION (clCreateImage3D);
+  CL_LOAD_FUNCTION (clEnqueueFillBuffer);
+  CL_LOAD_FUNCTION (clEnqueueMapBuffer);
+
+  /* Image Objects */
+  CL_LOAD_FUNCTION (clCreateImage);
+  CL_LOAD_FUNCTION (clCreateImageWithProperties);
   CL_LOAD_FUNCTION (clEnqueueReadImage);
   CL_LOAD_FUNCTION (clEnqueueWriteImage);
   CL_LOAD_FUNCTION (clEnqueueCopyImage);
   CL_LOAD_FUNCTION (clEnqueueCopyImageToBuffer);
   CL_LOAD_FUNCTION (clEnqueueCopyBufferToImage);
-
-  CL_LOAD_FUNCTION (clEnqueueMapBuffer);
+  CL_LOAD_FUNCTION (clEnqueueFillImage);
   CL_LOAD_FUNCTION (clEnqueueMapImage);
-  CL_LOAD_FUNCTION (clEnqueueUnmapMemObject);
+  CL_LOAD_FUNCTION (clGetImageInfo);
+  CL_LOAD_FUNCTION (clGetSupportedImageFormats);
 
+  /* Memory Objects */
+  CL_LOAD_FUNCTION (clEnqueueUnmapMemObject);
+  CL_LOAD_FUNCTION (clEnqueueMigrateMemObjects);
+  CL_LOAD_FUNCTION (clGetMemObjectInfo);
+  CL_LOAD_FUNCTION (clRetainMemObject);
+  CL_LOAD_FUNCTION (clReleaseMemObject);
+  CL_LOAD_FUNCTION (clSetMemObjectDestructorCallback);
+
+  /* Sampler Objects */
+  CL_LOAD_FUNCTION (clCreateSamplerWithProperties);
+  CL_LOAD_FUNCTION (clReleaseSampler);
+  CL_LOAD_FUNCTION (clRetainSampler);
+  CL_LOAD_FUNCTION (clGetSamplerInfo);
+
+  /* Program Objects */
+  CL_LOAD_FUNCTION (clBuildProgram);
+  CL_LOAD_FUNCTION (clCompileProgram);
+  CL_LOAD_FUNCTION (clCreateProgramWithSource);
+  CL_LOAD_FUNCTION (clCreateProgramWithBinary);
+  CL_LOAD_FUNCTION (clCreateProgramWithBuiltInKernels);
+  CL_LOAD_FUNCTION (clCreateProgramWithIL);
+  CL_LOAD_FUNCTION (clGetProgramBuildInfo);
+  CL_LOAD_FUNCTION (clGetProgramInfo);
+  CL_LOAD_FUNCTION (clLinkProgram);
+  CL_LOAD_FUNCTION (clReleaseProgram);
+  CL_LOAD_FUNCTION (clRetainProgram);
+  CL_LOAD_FUNCTION (clSetProgramSpecializationConstant);
+  CL_LOAD_FUNCTION (clUnloadPlatformCompiler);
+
+  /* Kernel Objects */
+  CL_LOAD_FUNCTION (clCloneKernel);
+  CL_LOAD_FUNCTION (clCreateKernel);
+  CL_LOAD_FUNCTION (clCreateKernelsInProgram);
+  CL_LOAD_FUNCTION (clGetKernelInfo);
+  CL_LOAD_FUNCTION (clGetKernelArgInfo);
+  CL_LOAD_FUNCTION (clGetKernelSubGroupInfo);
+  CL_LOAD_FUNCTION (clGetKernelWorkGroupInfo);
+  CL_LOAD_FUNCTION (clReleaseKernel);
+  CL_LOAD_FUNCTION (clRetainKernel);
+  CL_LOAD_FUNCTION (clSetKernelArg);
+  CL_LOAD_FUNCTION (clSetKernelArgSVMPointer);
+  CL_LOAD_FUNCTION (clSetKernelExecInfo);
+
+  /* Executing Kernels */
   CL_LOAD_FUNCTION (clEnqueueNDRangeKernel);
-  CL_LOAD_FUNCTION (clEnqueueBarrier);
+  CL_LOAD_FUNCTION (clEnqueueNativeKernel);
+
+  /* Event Objects */
+  CL_LOAD_FUNCTION (clCreateUserEvent);
+  CL_LOAD_FUNCTION (clGetEventInfo);
+  CL_LOAD_FUNCTION (clReleaseEvent);
+  CL_LOAD_FUNCTION (clRetainEvent);
+  CL_LOAD_FUNCTION (clSetEventCallback);
+  CL_LOAD_FUNCTION (clSetUserEventStatus);
+  CL_LOAD_FUNCTION (clWaitForEvents);
+
+  /* Markers, Barriers, and Waiting */
+  CL_LOAD_FUNCTION (clEnqueueBarrierWithWaitList);
+  CL_LOAD_FUNCTION (clEnqueueMarkerWithWaitList);
+
+  /* Profiling Operations on Memory Objects and Kernels */
+  CL_LOAD_FUNCTION (clGetDeviceAndHostTimer);
+  CL_LOAD_FUNCTION (clGetEventProfilingInfo);
+  CL_LOAD_FUNCTION (clGetHostTimer);
+
+  /* Flush and Finish */
+  CL_LOAD_FUNCTION (clFlush);
   CL_LOAD_FUNCTION (clFinish);
 
-  CL_LOAD_FUNCTION (clGetEventProfilingInfo);
+  /* Pipes */
+  CL_LOAD_FUNCTION (clCreatePipe);
+  CL_LOAD_FUNCTION (clGetPipeInfo);
 
-  CL_LOAD_FUNCTION (clReleaseKernel);
-  CL_LOAD_FUNCTION (clReleaseProgram);
-  CL_LOAD_FUNCTION (clReleaseCommandQueue);
-  CL_LOAD_FUNCTION (clReleaseContext);
-  CL_LOAD_FUNCTION (clReleaseMemObject);
+  /* Shared Virtual Memory (SVM) */
+  CL_LOAD_FUNCTION (clSVMAlloc);
+  CL_LOAD_FUNCTION (clSVMFree);
+  CL_LOAD_FUNCTION (clEnqueueSVMFree);
+  CL_LOAD_FUNCTION (clEnqueueSVMMap);
+  CL_LOAD_FUNCTION (clEnqueueSVMMemcpy);
+  CL_LOAD_FUNCTION (clEnqueueSVMMemFill);
+  CL_LOAD_FUNCTION (clEnqueueSVMMigrateMem);
+  CL_LOAD_FUNCTION (clEnqueueSVMUnmap);
 
-  CL_LOAD_FUNCTION (clGetExtensionFunctionAddress);
+  /* Optional Extensions */
+  CL_LOAD_FUNCTION (clGetExtensionFunctionAddressForPlatform);
 
   return TRUE;
 }
@@ -571,8 +664,8 @@ gegl_cl_init_common (cl_device_type requested_device_type)
 
   if (!cl_state.is_loaded)
     {
-      cl_command_queue_properties command_queue_flags = 0;
-      cl_context ctx = NULL;
+      cl_queue_properties queue_props[] = { CL_QUEUE_PROPERTIES, 0, 0 };
+      cl_context          ctx           = NULL;
 
       if (!gegl_cl_init_load_functions ())
         return FALSE;
@@ -596,11 +689,10 @@ gegl_cl_init_common (cl_device_type requested_device_type)
 
       cl_state.ctx = ctx;
 
-      command_queue_flags = 0;
       if (cl_state.enable_profiling)
-        command_queue_flags |= CL_QUEUE_PROFILING_ENABLE;
+        queue_props[1] = CL_QUEUE_PROFILING_ENABLE;
 
-      cl_state.cq = gegl_clCreateCommandQueue (cl_state.ctx, cl_state.device, command_queue_flags, &err);
+      cl_state.cq = gegl_clCreateCommandQueueWithProperties (cl_state.ctx, cl_state.device, (const cl_queue_properties *)&queue_props, &err);
 
       if (err != CL_SUCCESS)
         {

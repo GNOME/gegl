@@ -14,12 +14,14 @@
  * License along with GEGL; if not, see <https://www.gnu.org/licenses/>.
  *
  * Copyright 2012 Victor Oliveira (victormatheus@gmail.com)
+ * Copyright 2026 Ondřej Míchal <harrymichal@seznam.cz>
  */
 
 #ifndef __GEGL_CL_INIT_H__
 #define __GEGL_CL_INIT_H__
 
 #include "gegl-cl-types.h"
+#include "CL/cl_function_types.h"
 
 G_BEGIN_DECLS
 
@@ -75,61 +77,161 @@ extern gboolean _gegl_cl_is_accelerated;
 
 #ifdef __GEGL_CL_INIT_MAIN__
 
-#define _GEGL_CL_WRAP_FUNCTION(cl_func) t_##cl_func gegl_##cl_func = NULL;
+#define _GEGL_CL_WRAP_FUNCTION(cl_func) cl_func##_fn gegl_##cl_func = NULL;
 
 #else
 
-#define _GEGL_CL_WRAP_FUNCTION(cl_func) extern t_##cl_func gegl_##cl_func;
+#define _GEGL_CL_WRAP_FUNCTION(cl_func) extern cl_func##_fn gegl_##cl_func;
 
 #endif
 
+/* Query Platform Info */
 _GEGL_CL_WRAP_FUNCTION (clGetPlatformIDs);
 _GEGL_CL_WRAP_FUNCTION (clGetPlatformInfo);
+
+/* Query Devices */
 _GEGL_CL_WRAP_FUNCTION (clGetDeviceIDs);
 _GEGL_CL_WRAP_FUNCTION (clGetDeviceInfo);
 
+/* Partition a Device */
+_GEGL_CL_WRAP_FUNCTION (clCreateSubDevices);
+_GEGL_CL_WRAP_FUNCTION (clReleaseDevice);
+_GEGL_CL_WRAP_FUNCTION (clRetainDevice);
+
+/* Contexts */
 _GEGL_CL_WRAP_FUNCTION (clCreateContext);
 _GEGL_CL_WRAP_FUNCTION (clCreateContextFromType);
-_GEGL_CL_WRAP_FUNCTION (clCreateCommandQueue);
-_GEGL_CL_WRAP_FUNCTION (clCreateProgramWithSource);
-_GEGL_CL_WRAP_FUNCTION (clBuildProgram);
-_GEGL_CL_WRAP_FUNCTION (clGetProgramBuildInfo);
-_GEGL_CL_WRAP_FUNCTION (clCreateKernel);
-_GEGL_CL_WRAP_FUNCTION (clSetKernelArg);
-_GEGL_CL_WRAP_FUNCTION (clGetKernelWorkGroupInfo);
+_GEGL_CL_WRAP_FUNCTION (clGetContextInfo);
+_GEGL_CL_WRAP_FUNCTION (clReleaseContext);
+_GEGL_CL_WRAP_FUNCTION (clRetainContext);
+_GEGL_CL_WRAP_FUNCTION (clSetContextDestructorCallback);
+
+/* Command-Queues */
+_GEGL_CL_WRAP_FUNCTION (clCreateCommandQueueWithProperties);
+_GEGL_CL_WRAP_FUNCTION (clGetCommandQueueInfo);
+_GEGL_CL_WRAP_FUNCTION (clReleaseCommandQueue);
+_GEGL_CL_WRAP_FUNCTION (clRetainCommandQueue);
+_GEGL_CL_WRAP_FUNCTION (clSetDefaultDeviceCommandQueue);
+
+/* Buffer Objects */
 _GEGL_CL_WRAP_FUNCTION (clCreateBuffer);
-_GEGL_CL_WRAP_FUNCTION (clEnqueueWriteBuffer);
+_GEGL_CL_WRAP_FUNCTION (clCreateBufferWithProperties);
+_GEGL_CL_WRAP_FUNCTION (clCreateSubBuffer);
 _GEGL_CL_WRAP_FUNCTION (clEnqueueReadBuffer);
-_GEGL_CL_WRAP_FUNCTION (clEnqueueCopyBuffer);
+_GEGL_CL_WRAP_FUNCTION (clEnqueueWriteBuffer);
 _GEGL_CL_WRAP_FUNCTION (clEnqueueReadBufferRect);
 _GEGL_CL_WRAP_FUNCTION (clEnqueueWriteBufferRect);
+_GEGL_CL_WRAP_FUNCTION (clEnqueueCopyBuffer);
 _GEGL_CL_WRAP_FUNCTION (clEnqueueCopyBufferRect);
-_GEGL_CL_WRAP_FUNCTION (clCreateImage2D);
-_GEGL_CL_WRAP_FUNCTION (clCreateImage3D);
-_GEGL_CL_WRAP_FUNCTION (clEnqueueWriteImage);
+_GEGL_CL_WRAP_FUNCTION (clEnqueueFillBuffer);
+_GEGL_CL_WRAP_FUNCTION (clEnqueueMapBuffer);
+
+/* Image Objects */
+_GEGL_CL_WRAP_FUNCTION (clCreateImage);
+_GEGL_CL_WRAP_FUNCTION (clCreateImageWithProperties);
 _GEGL_CL_WRAP_FUNCTION (clEnqueueReadImage);
+_GEGL_CL_WRAP_FUNCTION (clEnqueueWriteImage);
 _GEGL_CL_WRAP_FUNCTION (clEnqueueCopyImage);
-_GEGL_CL_WRAP_FUNCTION (clEnqueueCopyBufferToImage);
 _GEGL_CL_WRAP_FUNCTION (clEnqueueCopyImageToBuffer);
+_GEGL_CL_WRAP_FUNCTION (clEnqueueCopyBufferToImage);
+_GEGL_CL_WRAP_FUNCTION (clEnqueueFillImage);
+_GEGL_CL_WRAP_FUNCTION (clEnqueueMapImage);
+_GEGL_CL_WRAP_FUNCTION (clGetImageInfo);
+_GEGL_CL_WRAP_FUNCTION (clGetSupportedImageFormats);
+
+/* Memory Objects */
+_GEGL_CL_WRAP_FUNCTION (clEnqueueUnmapMemObject);
+_GEGL_CL_WRAP_FUNCTION (clEnqueueMigrateMemObjects);
+_GEGL_CL_WRAP_FUNCTION (clGetMemObjectInfo);
+_GEGL_CL_WRAP_FUNCTION (clRetainMemObject);
+_GEGL_CL_WRAP_FUNCTION (clReleaseMemObject);
+_GEGL_CL_WRAP_FUNCTION (clSetMemObjectDestructorCallback);
+
+/* Sampler Objects */
+_GEGL_CL_WRAP_FUNCTION (clCreateSamplerWithProperties);
+_GEGL_CL_WRAP_FUNCTION (clReleaseSampler);
+_GEGL_CL_WRAP_FUNCTION (clRetainSampler);
+_GEGL_CL_WRAP_FUNCTION (clGetSamplerInfo);
+
+/* Program Objects */
+_GEGL_CL_WRAP_FUNCTION (clBuildProgram);
+_GEGL_CL_WRAP_FUNCTION (clCompileProgram);
+_GEGL_CL_WRAP_FUNCTION (clCreateProgramWithSource);
+_GEGL_CL_WRAP_FUNCTION (clCreateProgramWithBinary);
+_GEGL_CL_WRAP_FUNCTION (clCreateProgramWithBuiltInKernels);
+_GEGL_CL_WRAP_FUNCTION (clCreateProgramWithIL);
+_GEGL_CL_WRAP_FUNCTION (clGetProgramBuildInfo);
+_GEGL_CL_WRAP_FUNCTION (clGetProgramInfo);
+_GEGL_CL_WRAP_FUNCTION (clLinkProgram);
+_GEGL_CL_WRAP_FUNCTION (clReleaseProgram);
+_GEGL_CL_WRAP_FUNCTION (clRetainProgram);
+_GEGL_CL_WRAP_FUNCTION (clSetProgramSpecializationConstant);
+_GEGL_CL_WRAP_FUNCTION (clUnloadPlatformCompiler);
+
+/* Kernel Objects */
+_GEGL_CL_WRAP_FUNCTION (clCloneKernel);
+_GEGL_CL_WRAP_FUNCTION (clCreateKernel);
+_GEGL_CL_WRAP_FUNCTION (clCreateKernelsInProgram);
+_GEGL_CL_WRAP_FUNCTION (clGetKernelInfo);
+_GEGL_CL_WRAP_FUNCTION (clGetKernelArgInfo);
+_GEGL_CL_WRAP_FUNCTION (clGetKernelSubGroupInfo);
+_GEGL_CL_WRAP_FUNCTION (clGetKernelWorkGroupInfo);
+_GEGL_CL_WRAP_FUNCTION (clReleaseKernel);
+_GEGL_CL_WRAP_FUNCTION (clRetainKernel);
+_GEGL_CL_WRAP_FUNCTION (clSetKernelArg);
+_GEGL_CL_WRAP_FUNCTION (clSetKernelArgSVMPointer);
+_GEGL_CL_WRAP_FUNCTION (clSetKernelExecInfo);
+
+/* Executing Kernels */
 _GEGL_CL_WRAP_FUNCTION (clEnqueueNDRangeKernel);
-_GEGL_CL_WRAP_FUNCTION (clEnqueueBarrier);
+_GEGL_CL_WRAP_FUNCTION (clEnqueueNativeKernel);
+
+/* Event Objects */
+_GEGL_CL_WRAP_FUNCTION (clCreateUserEvent);
+_GEGL_CL_WRAP_FUNCTION (clGetEventInfo);
+_GEGL_CL_WRAP_FUNCTION (clReleaseEvent);
+_GEGL_CL_WRAP_FUNCTION (clRetainEvent);
+_GEGL_CL_WRAP_FUNCTION (clSetEventCallback);
+_GEGL_CL_WRAP_FUNCTION (clSetUserEventStatus);
+_GEGL_CL_WRAP_FUNCTION (clWaitForEvents);
+
+/* Markers, Barriers, and Waiting */
+_GEGL_CL_WRAP_FUNCTION (clEnqueueBarrierWithWaitList);
+_GEGL_CL_WRAP_FUNCTION (clEnqueueMarkerWithWaitList);
+
+/* Profiling Operations on Memory Objects and Kernels */
+_GEGL_CL_WRAP_FUNCTION (clGetDeviceAndHostTimer);
+_GEGL_CL_WRAP_FUNCTION (clGetEventProfilingInfo);
+_GEGL_CL_WRAP_FUNCTION (clGetHostTimer);
+
+/* Flush and Finish */
+_GEGL_CL_WRAP_FUNCTION (clFlush);
 _GEGL_CL_WRAP_FUNCTION (clFinish);
 
-_GEGL_CL_WRAP_FUNCTION (clGetEventProfilingInfo);
+/* Pipes */
+_GEGL_CL_WRAP_FUNCTION (clCreatePipe);
+_GEGL_CL_WRAP_FUNCTION (clGetPipeInfo);
 
-_GEGL_CL_WRAP_FUNCTION (clEnqueueMapBuffer);
-_GEGL_CL_WRAP_FUNCTION (clEnqueueMapImage);
-_GEGL_CL_WRAP_FUNCTION (clEnqueueUnmapMemObject);
+/* Shared Virtual Memory (SVM) */
+_GEGL_CL_WRAP_FUNCTION (clSVMAlloc);
+_GEGL_CL_WRAP_FUNCTION (clSVMFree);
+_GEGL_CL_WRAP_FUNCTION (clEnqueueSVMFree);
+_GEGL_CL_WRAP_FUNCTION (clEnqueueSVMMap);
+_GEGL_CL_WRAP_FUNCTION (clEnqueueSVMMemcpy);
+_GEGL_CL_WRAP_FUNCTION (clEnqueueSVMMemFill);
+_GEGL_CL_WRAP_FUNCTION (clEnqueueSVMMigrateMem);
+_GEGL_CL_WRAP_FUNCTION (clEnqueueSVMUnmap);
 
-_GEGL_CL_WRAP_FUNCTION (clReleaseKernel);
-_GEGL_CL_WRAP_FUNCTION (clReleaseProgram);
-_GEGL_CL_WRAP_FUNCTION (clReleaseCommandQueue);
-_GEGL_CL_WRAP_FUNCTION (clReleaseContext);
-_GEGL_CL_WRAP_FUNCTION (clReleaseMemObject);
+/* Optional Extensions */
+_GEGL_CL_WRAP_FUNCTION (clGetExtensionFunctionAddressForPlatform);
 
-_GEGL_CL_WRAP_FUNCTION (clGetExtensionFunctionAddress);
-
-_GEGL_CL_WRAP_FUNCTION (clCreateFromGLTexture2D);
+/* cl_khr_gl_sharing */
+_GEGL_CL_WRAP_FUNCTION (clGetGLContextInfoKHR);
+_GEGL_CL_WRAP_FUNCTION (clCreateFromGLBuffer);
+_GEGL_CL_WRAP_FUNCTION (clCreateFromGLTexture);
+_GEGL_CL_WRAP_FUNCTION (clCreateFromGLRenderbuffer);
+_GEGL_CL_WRAP_FUNCTION (clGetGLObjectInfo);
+_GEGL_CL_WRAP_FUNCTION (clGetGLTextureInfo);
 _GEGL_CL_WRAP_FUNCTION (clEnqueueAcquireGLObjects);
 _GEGL_CL_WRAP_FUNCTION (clEnqueueReleaseGLObjects);
 

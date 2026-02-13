@@ -145,48 +145,115 @@ EXPORTS
   gegl_cl_set_kernel_args
   gegl_cl_set_profiling
   gegl_clBuildProgram
+  gegl_clCloneKernel
+  gegl_clCompileProgram
   gegl_clCreateBuffer
-  gegl_clCreateCommandQueue
+  gegl_clCreateBufferWithProperties
+  gegl_clCreateCommandQueueWithProperties
   gegl_clCreateContext
   gegl_clCreateContextFromType
-  gegl_clCreateFromGLTexture2D
-  gegl_clCreateImage2D
-  gegl_clCreateImage3D
+  gegl_clCreateFromGLBuffer
+  gegl_clCreateFromGLRenderbuffer
+  gegl_clCreateFromGLTexture
+  gegl_clCreateImage
+  gegl_clCreateImageWithProperties
   gegl_clCreateKernel
+  gegl_clCreateKernelsInProgram
+  gegl_clCreatePipe
+  gegl_clCreateProgramWithBinary
+  gegl_clCreateProgramWithBuiltInKernels
+  gegl_clCreateProgramWithIL
   gegl_clCreateProgramWithSource
+  gegl_clCreateSamplerWithProperties
+  gegl_clCreateSubBuffer
+  gegl_clCreateSubDevices
+  gegl_clCreateUserEvent
   gegl_clEnqueueAcquireGLObjects
-  gegl_clEnqueueBarrier
+  gegl_clEnqueueBarrierWithWaitList
   gegl_clEnqueueCopyBuffer
   gegl_clEnqueueCopyBufferRect
   gegl_clEnqueueCopyBufferToImage
   gegl_clEnqueueCopyImage
   gegl_clEnqueueCopyImageToBuffer
+  gegl_clEnqueueFillBuffer
+  gegl_clEnqueueFillImage
   gegl_clEnqueueMapBuffer
   gegl_clEnqueueMapImage
+  gegl_clEnqueueMarkerWithWaitList
+  gegl_clEnqueueMigrateMemObjects
+  gegl_clEnqueueNativeKernel
   gegl_clEnqueueNDRangeKernel
   gegl_clEnqueueReadBuffer
   gegl_clEnqueueReadBufferRect
   gegl_clEnqueueReadImage
   gegl_clEnqueueReleaseGLObjects
+  gegl_clEnqueueSVMFree
+  gegl_clEnqueueSVMMap
+  gegl_clEnqueueSVMMemcpy
+  gegl_clEnqueueSVMMemFill
+  gegl_clEnqueueSVMMigrateMem
+  gegl_clEnqueueSVMUnmap
   gegl_clEnqueueUnmapMemObject
   gegl_clEnqueueWriteBuffer
   gegl_clEnqueueWriteBufferRect
   gegl_clEnqueueWriteImage
   gegl_clFinish
+  gegl_clFlush
+  gegl_clGetCommandQueueInfo
+  gegl_clGetContextInfo
+  gegl_clGetDeviceAndHostTimer
   gegl_clGetDeviceIDs
   gegl_clGetDeviceInfo
+  gegl_clGetEventInfo
   gegl_clGetEventProfilingInfo
-  gegl_clGetExtensionFunctionAddress
+  gegl_clGetExtensionFunctionAddressForPlatform
+  gegl_clGetGLContextInfoKHR
+  gegl_clGetGLObjectInfo
+  gegl_clGetGLTextureInfo
+  gegl_clGetHostTimer
+  gegl_clGetImageInfo
+  gegl_clGetKernelArgInfo
+  gegl_clGetKernelInfo
+  gegl_clGetKernelSubGroupInfo
   gegl_clGetKernelWorkGroupInfo
+  gegl_clGetMemObjectInfo
+  gegl_clGetPipeInfo
   gegl_clGetPlatformIDs
   gegl_clGetPlatformInfo
   gegl_clGetProgramBuildInfo
+  gegl_clGetProgramInfo
+  gegl_clGetSamplerInfo
+  gegl_clGetSupportedImageFormats
+  gegl_clLinkProgram
   gegl_clReleaseCommandQueue
   gegl_clReleaseContext
+  gegl_clReleaseDevice
+  gegl_clReleaseEvent
   gegl_clReleaseKernel
   gegl_clReleaseMemObject
   gegl_clReleaseProgram
+  gegl_clReleaseSampler
+  gegl_clRetainCommandQueue
+  gegl_clRetainContext
+  gegl_clRetainDevice
+  gegl_clRetainEvent
+  gegl_clRetainKernel
+  gegl_clRetainMemObject
+  gegl_clRetainProgram
+  gegl_clRetainSampler
+  gegl_clSetContextDestructorCallback
+  gegl_clSetDefaultDeviceCommandQueue
+  gegl_clSetEventCallback
   gegl_clSetKernelArg
+  gegl_clSetKernelArgSVMPointer
+  gegl_clSetKernelExecInfo
+  gegl_clSetMemObjectDestructorCallback
+  gegl_clSetProgramSpecializationConstant
+  gegl_clSetUserEventStatus
+  gegl_clSVMAlloc
+  gegl_clSVMFree
+  gegl_clUnloadPlatformCompiler
+  gegl_clWaitForEvents
   gegl_color_duplicate
   gegl_color_get_bytes
   gegl_color_get_cmyk
