@@ -385,9 +385,7 @@ static gboolean
 gegl_cl_init_get_gl_sharing_props (cl_context_properties   gl_contex_props[64],
                                    GError                **error)
 {
-#ifndef _WIN32
   static gboolean gl_loaded = FALSE;
-#endif
 
   #if defined(__APPLE__)
   CGLContextObj kCGLContext;
@@ -411,14 +409,15 @@ gegl_cl_init_get_gl_sharing_props (cl_context_properties   gl_contex_props[64],
   gl_contex_props[0] = CL_CONTEXT_PROPERTY_USE_CGL_SHAREGROUP_APPLE;
   gl_contex_props[1] = (cl_context_properties)kCGLShareGroup;
   gl_contex_props[2] = 0;
-  return TRUE;
+
+  return gl_loaded;
 
   #elif defined(G_OS_WIN32)
 
   GEGL_NOTE (GEGL_DEBUG_OPENCL, "GL sharing not supported on WIN32");
   g_set_error (error, GEGL_OPENCL_ERROR, 0, "GL sharing not supported on WIN32");
 
-  return FALSE;
+  return gl_loaded;
 
   #else /* Some kind of unix */
   GLXContext  context;
@@ -442,7 +441,9 @@ gegl_cl_init_get_gl_sharing_props (cl_context_properties   gl_contex_props[64],
     {
       GEGL_NOTE (GEGL_DEBUG_OPENCL, "Could not get a valid OpenGL context");
       g_set_error (error, GEGL_OPENCL_ERROR, 0, "Could not get a valid OpenGL context");
-      return FALSE;
+      gl_loaded = FALSE;
+
+      return gl_loaded;
     }
 
   gl_contex_props[0] = CL_GL_CONTEXT_KHR;
@@ -450,7 +451,7 @@ gegl_cl_init_get_gl_sharing_props (cl_context_properties   gl_contex_props[64],
   gl_contex_props[2] = CL_GLX_DISPLAY_KHR;
   gl_contex_props[3] = (cl_context_properties)display;
   gl_contex_props[4] = 0;
-  return TRUE;
+  return gl_loaded;
 
   #endif
 }
