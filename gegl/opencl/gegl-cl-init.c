@@ -293,54 +293,53 @@ gegl_cl_has_extension (const char *extension_name)
   return gegl_cl_device_has_extension (cl_state.device, extension_name);
 }
 
-#ifdef G_OS_WIN32
-
-#include <windows.h>
-
-#define CL_LOAD_FUNCTION(func)                                                    \
-if ((gegl_##func = (t_##func) GetProcAddress(module, #func)) == NULL)             \
-  {                                                                               \
-    GEGL_NOTE (GEGL_DEBUG_OPENCL, "symbol gegl_##func is NULL");                  \
-    FreeLibrary(module);                                                          \
-    return FALSE;                                                                 \
-  }
-
-#else
-
-#ifdef __APPLE__
+#if defined(__APPLE__)
 #define GL_LIBRARY_NAME "/System/Library/Frameworks/OpenGL.framework/Versions/Current/OpenGL"
 #define CL_LIBRARY_NAME "/System/Library/Frameworks/OpenCL.framework/Versions/Current/OpenCL"
+#elif defined(G_OS_WIN32)
+#define CL_LIBRARY_NAME "OpenCL.dll"
 #else
 #define GL_LIBRARY_NAME "libGL.so.1"
 #define CL_LIBRARY_NAME "libOpenCL.so.1"
 #endif
 
 #define CL_LOAD_FUNCTION(func)                                                    \
-if (!g_module_symbol (module, #func, (gpointer *)& gegl_##func))                  \
+G_STMT_START                                                                      \
   {                                                                               \
-    GEGL_NOTE (GEGL_DEBUG_OPENCL, "%s: %s", CL_LIBRARY_NAME, g_module_error ());  \
-    if (!g_module_close (module))                                                 \
-      g_warning ("%s: %s", CL_LIBRARY_NAME, g_module_error ());                   \
-    return FALSE;                                                                 \
+    if (!g_module_symbol (module, #func, (gpointer *)&gegl_##func))               \
+      {                                                                           \
+        GEGL_NOTE (GEGL_DEBUG_OPENCL, "%s: %s", CL_LIBRARY_NAME,                  \
+                   g_module_error ());                                            \
+        if (!g_module_close (module))                                             \
+          g_warning ("%s: %s", CL_LIBRARY_NAME, g_module_error ());               \
+                                                                                  \
+        return FALSE;                                                             \
+      }                                                                           \
+                                                                                  \
+    if (gegl_##func == NULL)                                                      \
+      {                                                                           \
+        GEGL_NOTE (GEGL_DEBUG_OPENCL, "symbol gegl_##func is NULL");              \
+        if (!g_module_close (module))                                             \
+          g_warning ("%s: %s", CL_LIBRARY_NAME, g_module_error ());               \
+                                                                                  \
+        return FALSE;                                                             \
+      }                                                                           \
   }                                                                               \
-if (gegl_##func == NULL)                                                          \
-  {                                                                               \
-    GEGL_NOTE (GEGL_DEBUG_OPENCL, "symbol gegl_##func is NULL");                  \
-    if (!g_module_close (module))                                                 \
-      g_warning ("%s: %s", CL_LIBRARY_NAME, g_module_error ());                   \
-    return FALSE;                                                                 \
-  }
-
-#endif
+G_STMT_END
 
 #define CL_LOAD_EXTENSION_FUNCTION(func)                                          \
-g_assert(gegl_clGetExtensionFunctionAddress);                                     \
-gegl_##func = gegl_clGetExtensionFunctionAddress(#func);                          \
-if (gegl_##func == NULL)                                                          \
+G_STMT_START                                                                      \
   {                                                                               \
-    GEGL_NOTE (GEGL_DEBUG_OPENCL, "symbol gegl_##func is NULL");                  \
-    return FALSE;                                                                 \
-  }
+    g_assert (gegl_clGetExtensionFunctionAddress != NULL);                        \
+                                                                                  \
+    gegl_##func = gegl_clGetExtensionFunctionAddress(#func);                      \
+    if (gegl_##func == NULL)                                                      \
+      {                                                                           \
+        GEGL_NOTE (GEGL_DEBUG_OPENCL, "symbol gegl_##func is NULL");              \
+        return FALSE;                                                             \
+      }                                                                           \
+  }                                                                               \
+G_STMT_END
 
 static gboolean
 gegl_cl_init_common (cl_device_type requested_device_type);
@@ -354,63 +353,58 @@ gegl_cl_init (void)
 static gboolean
 gegl_cl_init_load_functions (void)
 {
-#ifdef G_OS_WIN32
-  HINSTANCE module = LoadLibrary ("OpenCL.dll");
-#else
   GModule *module = g_module_open (CL_LIBRARY_NAME, G_MODULE_BIND_LAZY);
-#endif
-
   if (!module)
     {
-      GEGL_NOTE (GEGL_DEBUG_OPENCL, "Unable to load OpenCL library");
+      GEGL_NOTE (GEGL_DEBUG_OPENCL, "Unable to load OpenCL library %s", CL_LIBRARY_NAME);
       return FALSE;
     }
 
-  CL_LOAD_FUNCTION (clGetPlatformIDs)
-  CL_LOAD_FUNCTION (clGetPlatformInfo)
-  CL_LOAD_FUNCTION (clGetDeviceIDs)
-  CL_LOAD_FUNCTION (clGetDeviceInfo)
+  CL_LOAD_FUNCTION (clGetPlatformIDs);
+  CL_LOAD_FUNCTION (clGetPlatformInfo);
+  CL_LOAD_FUNCTION (clGetDeviceIDs);
+  CL_LOAD_FUNCTION (clGetDeviceInfo);
 
-  CL_LOAD_FUNCTION (clCreateContext)
-  CL_LOAD_FUNCTION (clCreateContextFromType)
-  CL_LOAD_FUNCTION (clCreateCommandQueue)
-  CL_LOAD_FUNCTION (clCreateProgramWithSource)
-  CL_LOAD_FUNCTION (clBuildProgram)
-  CL_LOAD_FUNCTION (clGetProgramBuildInfo)
+  CL_LOAD_FUNCTION (clCreateContext);
+  CL_LOAD_FUNCTION (clCreateContextFromType);
+  CL_LOAD_FUNCTION (clCreateCommandQueue);
+  CL_LOAD_FUNCTION (clCreateProgramWithSource);
+  CL_LOAD_FUNCTION (clBuildProgram);
+  CL_LOAD_FUNCTION (clGetProgramBuildInfo);
 
-  CL_LOAD_FUNCTION (clCreateKernel)
-  CL_LOAD_FUNCTION (clSetKernelArg)
-  CL_LOAD_FUNCTION (clGetKernelWorkGroupInfo)
-  CL_LOAD_FUNCTION (clCreateBuffer)
-  CL_LOAD_FUNCTION (clEnqueueWriteBuffer)
-  CL_LOAD_FUNCTION (clEnqueueReadBuffer)
-  CL_LOAD_FUNCTION (clEnqueueCopyBuffer)
-  CL_LOAD_FUNCTION (clEnqueueReadBufferRect)
-  CL_LOAD_FUNCTION (clEnqueueWriteBufferRect)
-  CL_LOAD_FUNCTION (clEnqueueCopyBufferRect)
-  CL_LOAD_FUNCTION (clCreateImage2D)
-  CL_LOAD_FUNCTION (clCreateImage3D)
-  CL_LOAD_FUNCTION (clEnqueueReadImage)
-  CL_LOAD_FUNCTION (clEnqueueWriteImage)
-  CL_LOAD_FUNCTION (clEnqueueCopyImage)
-  CL_LOAD_FUNCTION (clEnqueueCopyImageToBuffer)
-  CL_LOAD_FUNCTION (clEnqueueCopyBufferToImage)
+  CL_LOAD_FUNCTION (clCreateKernel);
+  CL_LOAD_FUNCTION (clSetKernelArg);
+  CL_LOAD_FUNCTION (clGetKernelWorkGroupInfo);
+  CL_LOAD_FUNCTION (clCreateBuffer);
+  CL_LOAD_FUNCTION (clEnqueueWriteBuffer);
+  CL_LOAD_FUNCTION (clEnqueueReadBuffer);
+  CL_LOAD_FUNCTION (clEnqueueCopyBuffer);
+  CL_LOAD_FUNCTION (clEnqueueReadBufferRect);
+  CL_LOAD_FUNCTION (clEnqueueWriteBufferRect);
+  CL_LOAD_FUNCTION (clEnqueueCopyBufferRect);
+  CL_LOAD_FUNCTION (clCreateImage2D);
+  CL_LOAD_FUNCTION (clCreateImage3D);
+  CL_LOAD_FUNCTION (clEnqueueReadImage);
+  CL_LOAD_FUNCTION (clEnqueueWriteImage);
+  CL_LOAD_FUNCTION (clEnqueueCopyImage);
+  CL_LOAD_FUNCTION (clEnqueueCopyImageToBuffer);
+  CL_LOAD_FUNCTION (clEnqueueCopyBufferToImage);
 
-  CL_LOAD_FUNCTION (clEnqueueMapBuffer)
-  CL_LOAD_FUNCTION (clEnqueueMapImage)
-  CL_LOAD_FUNCTION (clEnqueueUnmapMemObject)
+  CL_LOAD_FUNCTION (clEnqueueMapBuffer);
+  CL_LOAD_FUNCTION (clEnqueueMapImage);
+  CL_LOAD_FUNCTION (clEnqueueUnmapMemObject);
 
-  CL_LOAD_FUNCTION (clEnqueueNDRangeKernel)
-  CL_LOAD_FUNCTION (clEnqueueBarrier)
-  CL_LOAD_FUNCTION (clFinish)
+  CL_LOAD_FUNCTION (clEnqueueNDRangeKernel);
+  CL_LOAD_FUNCTION (clEnqueueBarrier);
+  CL_LOAD_FUNCTION (clFinish);
 
-  CL_LOAD_FUNCTION (clGetEventProfilingInfo)
+  CL_LOAD_FUNCTION (clGetEventProfilingInfo);
 
-  CL_LOAD_FUNCTION (clReleaseKernel)
-  CL_LOAD_FUNCTION (clReleaseProgram)
-  CL_LOAD_FUNCTION (clReleaseCommandQueue)
-  CL_LOAD_FUNCTION (clReleaseContext)
-  CL_LOAD_FUNCTION (clReleaseMemObject)
+  CL_LOAD_FUNCTION (clReleaseKernel);
+  CL_LOAD_FUNCTION (clReleaseProgram);
+  CL_LOAD_FUNCTION (clReleaseCommandQueue);
+  CL_LOAD_FUNCTION (clReleaseContext);
+  CL_LOAD_FUNCTION (clReleaseMemObject);
 
   CL_LOAD_FUNCTION (clGetExtensionFunctionAddress);
 
