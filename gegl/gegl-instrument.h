@@ -43,9 +43,9 @@ void gegl_instrument_enable   (void);
 real_gegl_instrument (parent, scale, usecs); \
                                  } }
 
-void real_gegl_instrument     (const gchar *parent,
-                               const gchar *scale,
-                               long         usecs);
+G_GNUC_INTERNAL void real_gegl_instrument (const gchar *parent,
+                                           const gchar *scale,
+                                           long         usecs);
 
 /* create a utf8 string with bar charts for where time disappears
  * during a gegl-run

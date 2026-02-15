@@ -868,4 +868,3 @@ EXPORTS
   gegl_visitor_traverse_topological
   gegl_visitor_visit_node
   gegl_visitor_visit_pad
-  real_gegl_instrument
