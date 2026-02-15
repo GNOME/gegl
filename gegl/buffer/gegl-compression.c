@@ -28,18 +28,18 @@
 
 /*  local function prototypes  */
 
-void   gegl_compression_register_alias (const gchar *name,
-                                        ...) G_GNUC_NULL_TERMINATED;
+static void gegl_compression_register_alias (const gchar *name,
+                                             ...) G_GNUC_NULL_TERMINATED;
 
 
 /*  local variables  */
 
-GHashTable *algorithms;
+static GHashTable *algorithms;
 
 
 /*  private functions  */
 
-void
+static void
 gegl_compression_register_alias (const gchar *name,
                                  ...)
 {

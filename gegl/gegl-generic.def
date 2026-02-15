@@ -2,7 +2,6 @@ EXPORTS
   _gegl_cl_is_accelerated
   _gegl_float_epsilon_equal
   _gegl_float_epsilon_zero
-  algorithms
   gegl_abyss_policy_get_type
   gegl_access_mode_get_type  
   gegl_apply_op
@@ -217,7 +216,6 @@ EXPORTS
   gegl_compression_list  
   gegl_compression_nop_init
   gegl_compression_register
-  gegl_compression_register_alias
   gegl_compression_rle_init
   gegl_compression_zlib_init
   gegl_config
