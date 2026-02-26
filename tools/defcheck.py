@@ -24,7 +24,7 @@ the respective libraries.
 Invoke in the build directory and pass the name
 of the built .def files on the command-line.
 
-Needs the tool "nm" to work
+Needs the tool "objdump" to work
 
 """
 
@@ -38,16 +38,37 @@ exclude_symbols = [
     "_gegl_cl_is_accelerated",
     "_gegl_float_epsilon_equal",
     "_gegl_float_epsilon_zero",
-    "gegl_glXGetCurrentContext", 
+    "gegl_glXGetCurrentContext",
     "gegl_glXGetCurrentDisplay"
+]
+
+# Some .def files are concatenated, which can result in an unsorted error.
+# We allow those cases to be skipped by defining them here.
+ignore_sorting_errors = [
+   # in gegl.def
+   "gegl_downscale_2x2_get_fun_x86_64_v2",
+   "gegl_downscale_2x2_arm_neon",
+   # in gegl-sc.def:
+   "AdvancingFront_set_head",
 ]
 
 have_errors = 0
 
+libextension   = ".so"
+command        = "nm --defined-only --extern-only "
+platform_linux = True
+
+if sys.platform in ['win32', 'cygwin']:
+   libextension   = ".dll"
+   command        = "objdump -p "
+   platform_linux = False
+
 for df in def_files:
    directory, name = path.split (df)
    basename, extension = name.split (".")
-   libname = path.join(directory, "lib" + basename + "-*.so")
+
+   libname = path.join(directory, "lib" + basename + "-*" + libextension)
+   print ("platform: " + sys.platform + " - extracting symbols from " + libname)
 
    filename = df
    try:
@@ -61,28 +82,47 @@ for df in def_files:
       if defsymbols[i] in defsymbols[:i]:
          doublesymbols.append ((defsymbols[i], i+2))
 
-   #Useless, see more below
-   #unsortindex = -1
-   #for i in range (len (defsymbols)-1):
-   #   if defsymbols[i] > defsymbols[i+1]:
-   #      unsortindex = i+1
-   #      break;
+   sorterrors = ""
+   sortok = True
+   for i in range (len (defsymbols)-1):
+      if defsymbols[i].lower() > defsymbols[i+1].lower():
+         if not defsymbols[i+1] in ignore_sorting_errors:
+            sorterrors += f"{defsymbols[i]} > {defsymbols[i+1]}\n"
+            sortok = False
+   sorterrors = sorterrors.split(sep='\n')
 
-   status, nm = subprocess.getstatusoutput ("nm --defined-only --extern-only " +
-                                            libname)
+   status, nm = subprocess.getstatusoutput (command + libname)
    if status != 0:
       print("trouble reading {} - has it been compiled?".format(libname))
       have_errors = -1
       continue
 
-   nmsymbols = nm.split()[2::3]
+   nmsymbols = ""
+   if platform_linux:
+      nmsymbols = nm
+
+   else: # Windows
+      # remove parts of objdump output we don't need: anything up to a few lines
+      # after Export Table: ' Ordinal      RVA  Name'
+
+      objnm = nm.split(sep='\n')
+
+      found = False
+      nmsymbols = ""
+      for s in objnm:
+         if s == " Ordinal      RVA  Name":
+            found = True
+         elif found:
+            nmsymbols += s
+         # else: skip this line
+
+   nmsymbols = nmsymbols.split()[2::3]
    nmsymbols = [s for s in nmsymbols if s[0] != '_']
 
    missing_defs = [s for s in nmsymbols  if s not in defsymbols and s not in exclude_symbols]
    missing_nms  = [s for s in defsymbols if s not in nmsymbols  and s not in exclude_symbols]
 
-   #if unsortindex >= 0 or missing_defs or missing_nms or doublesymbols:
-   if missing_defs or missing_nms or doublesymbols:
+   if missing_defs or missing_nms or doublesymbols or not sortok:
       print()
       print("Problem found in", filename)
 
@@ -106,10 +146,11 @@ for df in def_files:
             print("     : %s (line %d)" % s)
          print()
 
-      #Useless, gives no info on how to fix the ordering
-      #if unsortindex >= 0:
-      #   print("  the .def-file is not properly sorted (line %d)" % (unsortindex + 2))
-      #   print()
+      if not sortok:
+         print("  the .def-file is not properly sorted in the following cases")
+         for s in sorterrors:
+            if s != "":
+               print("     * ", s)
 
       have_errors = -1
 
