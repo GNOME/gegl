@@ -26,7 +26,7 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-#if !defined(HAVE_UNISTD_H) && defined(_UCRT)
+#if !defined(HAVE_UNISTD_H) && defined(_WIN32)
 #include <io.h>
 #define write _write
 #define close _close

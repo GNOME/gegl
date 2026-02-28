@@ -39,7 +39,7 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-#if !defined (HAVE_UNISTD_H) && defined(_UCRT)
+#if !defined (HAVE_UNISTD_H) && defined(_WIN32)
 #include <io.h>
 #define read _read
 #define write _write
