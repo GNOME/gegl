@@ -3,27 +3,27 @@ EXPORTS
   _gegl_float_epsilon_equal
   _gegl_float_epsilon_zero
   gegl_abyss_policy_get_type
-  gegl_access_mode_get_type  
+  gegl_access_mode_get_type
   gegl_apply_op
   gegl_apply_op_valist
-  gegl_audio_fragment_get_channel_layout  
-  gegl_audio_fragment_get_channels  
+  gegl_audio_fragment_get_channel_layout
+  gegl_audio_fragment_get_channels
   gegl_audio_fragment_get_max_samples
-  gegl_audio_fragment_get_pos  
-  gegl_audio_fragment_get_sample_count  
-  gegl_audio_fragment_get_sample_rate  
-  gegl_audio_fragment_get_type  
-  gegl_audio_fragment_new  
-  gegl_audio_fragment_set_channel_layout  
-  gegl_audio_fragment_set_channels  
+  gegl_audio_fragment_get_pos
+  gegl_audio_fragment_get_sample_count
+  gegl_audio_fragment_get_sample_rate
+  gegl_audio_fragment_get_type
+  gegl_audio_fragment_new
+  gegl_audio_fragment_set_channel_layout
+  gegl_audio_fragment_set_channels
   gegl_audio_fragment_set_max_samples
-  gegl_audio_fragment_set_pos  
-  gegl_audio_fragment_set_sample_count  
-  gegl_audio_fragment_set_sample_rate  
+  gegl_audio_fragment_set_pos
+  gegl_audio_fragment_set_sample_count
+  gegl_audio_fragment_set_sample_rate
   gegl_babl_variant
   gegl_babl_variant_get_type
   gegl_bt
-  gegl_buffer_add_handler  
+  gegl_buffer_add_handler
   gegl_buffer_backend
   gegl_buffer_backend2
   gegl_buffer_cl_cache_flush
@@ -38,7 +38,7 @@ EXPORTS
   gegl_buffer_cl_iterator_new
   gegl_buffer_cl_iterator_next
   gegl_buffer_cl_iterator_stop
-  gegl_buffer_clear  
+  gegl_buffer_clear
   gegl_buffer_config
   gegl_buffer_config_get_type
   gegl_buffer_copy
@@ -47,9 +47,9 @@ EXPORTS
   gegl_buffer_emit_changed_signal
   gegl_buffer_ext_flush
   gegl_buffer_ext_invalidate
-  gegl_buffer_flush  
+  gegl_buffer_flush
   gegl_buffer_flush_ext
-  gegl_buffer_freeze_changed  
+  gegl_buffer_freeze_changed
   gegl_buffer_get
   gegl_buffer_get_abyss
   gegl_buffer_get_extent
@@ -69,7 +69,7 @@ EXPORTS
   gegl_buffer_iterator_stop
   gegl_buffer_leaks
   gegl_buffer_linear_close
-  gegl_buffer_linear_new  
+  gegl_buffer_linear_new
   gegl_buffer_linear_new_from_data
   gegl_buffer_linear_open
   gegl_buffer_list_valid_rectangles
@@ -95,8 +95,8 @@ EXPORTS
   gegl_buffer_set_abyss
   gegl_buffer_set_color
   gegl_buffer_set_color_from_pixel
-  gegl_buffer_set_extent  
-  gegl_buffer_set_format  
+  gegl_buffer_set_extent
+  gegl_buffer_set_format
   gegl_buffer_set_pattern
   gegl_buffer_set_unlocked
   gegl_buffer_set_unlocked_no_notify
@@ -113,7 +113,7 @@ EXPORTS
   gegl_cache_computed
   gegl_cache_get_type
   gegl_cache_invalidate
-  gegl_cache_policy_get_type  
+  gegl_cache_policy_get_type
   gegl_cache_signals
   gegl_callback_visitor_get_type
   gegl_callback_visitor_new
@@ -192,7 +192,7 @@ EXPORTS
   gegl_color_get_bytes
   gegl_color_get_cmyk
   gegl_color_get_components
-  gegl_color_get_format  
+  gegl_color_get_format
   gegl_color_get_hsla
   gegl_color_get_hsva
   gegl_color_get_pixel
@@ -208,18 +208,18 @@ EXPORTS
   gegl_color_set_pixel
   gegl_color_set_rgba
   gegl_color_set_rgba_with_space
-  gegl_compression  
+  gegl_compression
   gegl_compression_cleanup
-  gegl_compression_compress  
-  gegl_compression_decompress  
+  gegl_compression_compress
+  gegl_compression_decompress
   gegl_compression_init
-  gegl_compression_list  
+  gegl_compression_list
   gegl_compression_nop_init
   gegl_compression_register
   gegl_compression_rle_init
   gegl_compression_zlib_init
   gegl_config
-  gegl_config_get_type  
+  gegl_config_get_type
   gegl_config_threads
   gegl_connection_destroy
   gegl_connection_get_sink_node
@@ -240,14 +240,14 @@ EXPORTS
   gegl_curve_calc_values
   gegl_curve_duplicate
   gegl_curve_get_point
-  gegl_curve_get_type  
+  gegl_curve_get_type
   gegl_curve_get_y_bounds
   gegl_curve_new
   gegl_curve_new_default
   gegl_curve_num_points
   gegl_curve_set_point
   gegl_datafiles_check_extension
-  gegl_datafiles_read_directories  
+  gegl_datafiles_read_directories
   gegl_debug_flags
   gegl_debug_keys
   gegl_distance_metric_get_type
@@ -281,12 +281,12 @@ EXPORTS
   gegl_format_get_name
   gegl_free
   gegl_get_debug_enabled
-  gegl_get_default_module_paths  
+  gegl_get_default_module_paths
   gegl_get_option_group
   gegl_get_version
-  gegl_gio_datauri_get_content_type  
+  gegl_gio_datauri_get_content_type
   gegl_gio_open_input_stream
-  gegl_gio_open_output_stream  
+  gegl_gio_open_output_stream
   gegl_gio_uri_is_datauri
   gegl_graph_build
   gegl_graph_dump_outputs
@@ -313,36 +313,36 @@ EXPORTS
   gegl_lut_u8_to_u16f
   gegl_malloc
   gegl_matrix3_copy
-  gegl_matrix3_copy_into  
+  gegl_matrix3_copy_into
   gegl_matrix3_determinant
   gegl_matrix3_equal
-  gegl_matrix3_get_type  
+  gegl_matrix3_get_type
   gegl_matrix3_identity
   gegl_matrix3_invert
-  gegl_matrix3_is_affine  
-  gegl_matrix3_is_identity  
+  gegl_matrix3_is_affine
+  gegl_matrix3_is_identity
   gegl_matrix3_is_scale
-  gegl_matrix3_is_translate  
+  gegl_matrix3_is_translate
   gegl_matrix3_multiply
   gegl_matrix3_new
-  gegl_matrix3_originate  
+  gegl_matrix3_originate
   gegl_matrix3_parse_string
-  gegl_matrix3_round_error  
+  gegl_matrix3_round_error
   gegl_matrix3_to_string
   gegl_matrix3_transform_point
   gegl_memeq_zero
   gegl_memset_pattern
-  gegl_metadata_get_resolution  
+  gegl_metadata_get_resolution
   gegl_metadata_get_type
-  gegl_metadata_hash_get_type  
+  gegl_metadata_hash_get_type
   gegl_metadata_hash_new
-  gegl_metadata_iter_get_value  
-  gegl_metadata_iter_init  
-  gegl_metadata_iter_lookup  
-  gegl_metadata_iter_next  
-  gegl_metadata_iter_set_value  
-  gegl_metadata_register_map  
-  gegl_metadata_set_resolution  
+  gegl_metadata_iter_get_value
+  gegl_metadata_iter_init
+  gegl_metadata_iter_lookup
+  gegl_metadata_iter_next
+  gegl_metadata_iter_set_value
+  gegl_metadata_register_map
+  gegl_metadata_set_resolution
   gegl_metadata_store_declare
   gegl_metadata_store_get_artist
   gegl_metadata_store_get_comment
@@ -358,7 +358,7 @@ EXPORTS
   gegl_metadata_store_get_string
   gegl_metadata_store_get_timestamp
   gegl_metadata_store_get_title
-  gegl_metadata_store_get_type  
+  gegl_metadata_store_get_type
   gegl_metadata_store_get_value
   gegl_metadata_store_get_warning
   gegl_metadata_store_has_value
@@ -380,7 +380,7 @@ EXPORTS
   gegl_metadata_store_set_value
   gegl_metadata_store_set_warning
   gegl_metadata_store_typeof_value
-  gegl_metadata_unregister_map  
+  gegl_metadata_unregister_map
   gegl_module_db_get_type
   gegl_module_db_load
   gegl_module_db_new
@@ -391,27 +391,27 @@ EXPORTS
   gegl_module_modified
   gegl_module_new
   gegl_module_query_module
-  gegl_module_register_type  
+  gegl_module_register_type
   gegl_module_set_load_inhibit
   gegl_module_state_name
-  gegl_node_add_child  
+  gegl_node_add_child
   gegl_node_add_pad
   gegl_node_blit
-  gegl_node_blit_buffer  
+  gegl_node_blit_buffer
   gegl_node_connect
   gegl_node_connect_from
   gegl_node_connect_to
   gegl_node_create_child
-  gegl_node_detect  
+  gegl_node_detect
   gegl_node_disconnect
   gegl_node_dump_depends_on
   gegl_node_emit_computed
-  gegl_node_find_property  
+  gegl_node_find_property
   gegl_node_get
   gegl_node_get_bounding_box
   gegl_node_get_cache
   gegl_node_get_children
-  gegl_node_get_consumers  
+  gegl_node_get_consumers
   gegl_node_get_debug_name
   gegl_node_get_gegl_operation
   gegl_node_get_input_pads
@@ -420,7 +420,7 @@ EXPORTS
   gegl_node_get_nth_child
   gegl_node_get_num_children
   gegl_node_get_num_sinks
-  gegl_node_get_operation  
+  gegl_node_get_operation
   gegl_node_get_output_proxy
   gegl_node_get_output_visitable
   gegl_node_get_pad
@@ -430,7 +430,7 @@ EXPORTS
   gegl_node_get_parent
   gegl_node_get_passthrough
   gegl_node_get_producer
-  gegl_node_get_property  
+  gegl_node_get_property
   gegl_node_get_sinks
   gegl_node_get_type
   gegl_node_get_valist
@@ -438,7 +438,7 @@ EXPORTS
   gegl_node_insert_before
   gegl_node_introspectable_get_bounding_box
   gegl_node_introspectable_get_property
-  gegl_node_invalidated  
+  gegl_node_invalidated
   gegl_node_is_graph
   gegl_node_link
   gegl_node_link_many
@@ -449,7 +449,7 @@ EXPORTS
   gegl_node_new_from_file
   gegl_node_new_from_serialized
   gegl_node_new_from_xml
-  gegl_node_new_processor  
+  gegl_node_new_processor
   gegl_node_output_visitable_get_type
   gegl_node_output_visitable_new
   gegl_node_process
@@ -460,14 +460,14 @@ EXPORTS
   gegl_node_set
   gegl_node_set_enum_as_string
   gegl_node_set_name
-  gegl_node_set_passthrough  
-  gegl_node_set_property  
+  gegl_node_set_passthrough
+  gegl_node_set_property
   gegl_node_set_time
   gegl_node_set_valist
   gegl_node_to_xml
   gegl_node_to_xml_full
   gegl_node_use_cache
-  gegl_object_get_has_forked  
+  gegl_object_get_has_forked
   gegl_object_set_has_forked
   gegl_opencl_error_quark
   gegl_operation_area_filter_get_type
@@ -476,13 +476,13 @@ EXPORTS
   gegl_operation_class_get_key
   gegl_operation_class_get_property_key
   gegl_operation_class_register_name
-  gegl_operation_class_set_key  
+  gegl_operation_class_set_key
   gegl_operation_class_set_keys
   gegl_operation_class_set_property_key
   gegl_operation_composer3_get_type
   gegl_operation_composer_get_type
   gegl_operation_context_destroy
-  gegl_operation_context_dup_input_maybe_copy  
+  gegl_operation_context_dup_input_maybe_copy
   gegl_operation_context_dup_object
   gegl_operation_context_get_init_output
   gegl_operation_context_get_level
@@ -504,7 +504,7 @@ EXPORTS
   gegl_operation_context_set_result_rect
   gegl_operation_context_take_object
   gegl_operation_create_pad
-  gegl_operation_detect  
+  gegl_operation_detect
   gegl_operation_filter_get_type
   gegl_operation_find_property
   gegl_operation_get_bounding_box
@@ -518,14 +518,14 @@ EXPORTS
   gegl_operation_get_property_key
   gegl_operation_get_required_for_output
   gegl_operation_get_source_format
-  gegl_operation_get_source_node  
+  gegl_operation_get_source_node
   gegl_operation_get_source_space
   gegl_operation_get_type
   gegl_operation_gtype_cleanup
   gegl_operation_gtype_from_name
   gegl_operation_gtype_init
   gegl_operation_handlers_cleanup
-  gegl_operation_handlers_get_loader  
+  gegl_operation_handlers_get_loader
   gegl_operation_handlers_get_saver
   gegl_operation_handlers_register_loader
   gegl_operation_handlers_register_saver
@@ -557,7 +557,7 @@ EXPORTS
   gegl_operation_temporal_set_history_length
   gegl_operation_use_cache
   gegl_operation_use_opencl
-  gegl_operation_use_threading  
+  gegl_operation_use_threading
   gegl_operations_set_licenses_from_string
   gegl_orientation_get_type
   gegl_pad_connect
@@ -586,18 +586,18 @@ EXPORTS
   gegl_parallel_get_n_active_worker_threads
   gegl_parallel_get_n_assigned_worker_threads
   gegl_parallel_init
-  gegl_param_audio_fragment_get_type  
-  gegl_param_color_get_type  
-  gegl_param_curve_get_type  
+  gegl_param_audio_fragment_get_type
+  gegl_param_color_get_type
+  gegl_param_curve_get_type
   gegl_param_double_get_type
-  gegl_param_enum_get_type  
-  gegl_param_file_path_get_type  
-  gegl_param_format_get_type  
+  gegl_param_enum_get_type
+  gegl_param_file_path_get_type
+  gegl_param_format_get_type
   gegl_param_int_get_type
-  gegl_param_path_get_type  
-  gegl_param_seed_get_type  
-  gegl_param_spec_audio_fragment  
-  gegl_param_spec_color  
+  gegl_param_path_get_type
+  gegl_param_seed_get_type
+  gegl_param_spec_audio_fragment
+  gegl_param_spec_color
   gegl_param_spec_color_from_string
   gegl_param_spec_color_get_default
   gegl_param_spec_curve
@@ -615,34 +615,34 @@ EXPORTS
   gegl_param_spec_seed
   gegl_param_spec_set_property_key
   gegl_param_spec_string
-  gegl_param_spec_uri  
-  gegl_param_string_get_type  
+  gegl_param_spec_uri
+  gegl_param_string_get_type
   gegl_param_uri_get_type
   gegl_path_add_flattener
   gegl_path_add_type
-  gegl_path_append  
-  gegl_path_calc  
-  gegl_path_calc_values  
-  gegl_path_calc_y_for_x  
+  gegl_path_append
+  gegl_path_calc
+  gegl_path_calc_values
+  gegl_path_calc_y_for_x
   gegl_path_clear
   gegl_path_closest_point
   gegl_path_dirty
   gegl_path_foreach
-  gegl_path_foreach_flat  
+  gegl_path_foreach_flat
   gegl_path_freeze
-  gegl_path_get_bounds  
-  gegl_path_get_flat_path  
-  gegl_path_get_length  
+  gegl_path_get_bounds
+  gegl_path_get_flat_path
+  gegl_path_get_length
   gegl_path_get_matrix
   gegl_path_get_n_nodes
   gegl_path_get_node
   gegl_path_get_path
-  gegl_path_get_type  
+  gegl_path_get_type
   gegl_path_insert_node
   gegl_path_is_empty
   gegl_path_list_append
   gegl_path_list_destroy
-  gegl_path_new  
+  gegl_path_new
   gegl_path_new_from_string
   gegl_path_parse_string
   gegl_path_point_dist
@@ -654,18 +654,18 @@ EXPORTS
   gegl_path_thaw
   gegl_path_to_string
   gegl_processor_get_buffer
-  gegl_processor_get_type  
+  gegl_processor_get_type
   gegl_processor_set_level
-  gegl_processor_set_rectangle  
+  gegl_processor_set_rectangle
   gegl_processor_set_scale
-  gegl_processor_work  
+  gegl_processor_work
   gegl_random_cleanup
   gegl_random_duplicate
   gegl_random_float
   gegl_random_float_range
   gegl_random_free
   gegl_random_get_data
-  gegl_random_get_type  
+  gegl_random_get_type
   gegl_random_int
   gegl_random_int_range
   gegl_random_new
@@ -674,15 +674,15 @@ EXPORTS
   gegl_random_set_seed
   gegl_rectangle_align
   gegl_rectangle_align_to_buffer
-  gegl_rectangle_alignment_get_type  
+  gegl_rectangle_alignment_get_type
   gegl_rectangle_bounding_box
   gegl_rectangle_contains
   gegl_rectangle_copy
-  gegl_rectangle_dump  
+  gegl_rectangle_dump
   gegl_rectangle_dup
   gegl_rectangle_equal
   gegl_rectangle_equal_coords
-  gegl_rectangle_get_type  
+  gegl_rectangle_get_type
   gegl_rectangle_infinite_plane
   gegl_rectangle_intersect
   gegl_rectangle_is_empty
@@ -720,10 +720,10 @@ EXPORTS
   gegl_resample_nearest
   gegl_resample_nearest_generic
   gegl_reset_stats
-  gegl_resolution_unit_get_type  
+  gegl_resolution_unit_get_type
   gegl_sampler_cubic_get_type
   gegl_sampler_get
-  gegl_sampler_get_context_rect  
+  gegl_sampler_get_context_rect
   gegl_sampler_get_from_mipmap
   gegl_sampler_get_fun
   gegl_sampler_get_type
@@ -752,8 +752,8 @@ EXPORTS
   gegl_tile_alloc_init
   gegl_tile_backend_buffer_get_type
   gegl_tile_backend_buffer_new
-  gegl_tile_backend_command  
-  gegl_tile_backend_file_get_type  
+  gegl_tile_backend_command
+  gegl_tile_backend_file_get_type
   gegl_tile_backend_file_stats
   gegl_tile_backend_file_try_lock
   gegl_tile_backend_file_unlock
@@ -763,7 +763,7 @@ EXPORTS
   gegl_tile_backend_get_tile_height
   gegl_tile_backend_get_tile_size
   gegl_tile_backend_get_tile_width
-  gegl_tile_backend_get_type  
+  gegl_tile_backend_get_type
   gegl_tile_backend_peek_storage
   gegl_tile_backend_ram_get_type
   gegl_tile_backend_ram_stats
@@ -791,7 +791,7 @@ EXPORTS
   gegl_tile_entry_destroy
   gegl_tile_entry_new
   gegl_tile_free
-  gegl_tile_get_data  
+  gegl_tile_get_data
   gegl_tile_get_rev
   gegl_tile_handler_cache_connect
   gegl_tile_handler_cache_disconnect
@@ -825,7 +825,7 @@ EXPORTS
   gegl_tile_handler_lock
   gegl_tile_handler_log_get_type
   gegl_tile_handler_set_source
-  gegl_tile_handler_unlock  
+  gegl_tile_handler_unlock
   gegl_tile_handler_zoom_get_total
   gegl_tile_handler_zoom_get_type
   gegl_tile_handler_zoom_new
@@ -843,7 +843,7 @@ EXPORTS
   gegl_tile_set_data_full
   gegl_tile_set_rev
   gegl_tile_set_unlock_notify
-  gegl_tile_source_get_type  
+  gegl_tile_source_get_type
   gegl_tile_storage_add_handler
   gegl_tile_storage_get_type
   gegl_tile_storage_new
