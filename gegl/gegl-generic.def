@@ -479,8 +479,8 @@ EXPORTS
   gegl_operation_class_set_key  
   gegl_operation_class_set_keys
   gegl_operation_class_set_property_key
-  gegl_operation_composer_get_type
   gegl_operation_composer3_get_type
+  gegl_operation_composer_get_type
   gegl_operation_context_destroy
   gegl_operation_context_dup_input_maybe_copy  
   gegl_operation_context_dup_object
@@ -538,8 +538,8 @@ EXPORTS
   gegl_operation_meta_redirect
   gegl_operation_meta_watch_node
   gegl_operation_meta_watch_nodes
-  gegl_operation_point_composer_get_type
   gegl_operation_point_composer3_get_type
+  gegl_operation_point_composer_get_type
   gegl_operation_point_filter_get_type
   gegl_operation_point_render_get_type
   gegl_operation_prepare
@@ -746,10 +746,10 @@ EXPORTS
   gegl_temp_buffer_free
   gegl_ticks
   gegl_tile_alloc
+  gegl_tile_alloc0
   gegl_tile_alloc_cleanup
   gegl_tile_alloc_get_total
   gegl_tile_alloc_init
-  gegl_tile_alloc0
   gegl_tile_backend_buffer_get_type
   gegl_tile_backend_buffer_new
   gegl_tile_backend_command  
