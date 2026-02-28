@@ -39,7 +39,8 @@ exclude_symbols = [
     "_gegl_float_epsilon_equal",
     "_gegl_float_epsilon_zero",
     "gegl_glXGetCurrentContext",
-    "gegl_glXGetCurrentDisplay"
+    "gegl_glXGetCurrentDisplay",
+    "real_gegl_instrument",
 ]
 
 # Some .def files are concatenated, which can result in an unsorted error.
