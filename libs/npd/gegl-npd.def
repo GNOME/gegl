@@ -1,8 +1,8 @@
 EXPORTS
   npd_add_control_point
   npd_apply_transformation
-  npd_compute_MLS_weights
   npd_compute_affinity
+  npd_compute_MLS_weights
   npd_create_model_from_image
   npd_create_square
   npd_cut_edges
