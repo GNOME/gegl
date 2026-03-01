@@ -69,7 +69,8 @@ for df in def_files:
    basename, extension = name.split (".")
 
    libname = path.join(directory, "lib" + basename + "-*" + libextension)
-   print ("platform: " + sys.platform + " - extracting symbols from " + libname)
+   #FIXME: This leaks to ninja stdout, which should not happen
+   #print ("platform: " + sys.platform + " - extracting symbols from " + libname)
 
    filename = df
    try:
