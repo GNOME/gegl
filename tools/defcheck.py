@@ -34,13 +34,10 @@ from os import path
 
 def_files = sys.argv[1:]
 
+#gegl_glXG* symbols are Linux-specific
 exclude_symbols = [
-    "_gegl_cl_is_accelerated",
-    "_gegl_float_epsilon_equal",
-    "_gegl_float_epsilon_zero",
     "gegl_glXGetCurrentContext",
     "gegl_glXGetCurrentDisplay",
-    "real_gegl_instrument",
 ]
 
 # Some .def files are concatenated, which can result in an unsorted error.
@@ -94,6 +91,7 @@ for df in def_files:
    sorterrors = sorterrors.split(sep='\n')
 
    status, nm = subprocess.getstatusoutput (command + libname)
+   print(nm)
    if status != 0:
       print("trouble reading {} - has it been compiled?".format(libname))
       have_errors = -1

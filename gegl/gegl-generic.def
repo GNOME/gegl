@@ -1,7 +1,16 @@
 EXPORTS
+  _gegl_buffer_drop_hot_tile
   _gegl_cl_is_accelerated
   _gegl_float_epsilon_equal
   _gegl_float_epsilon_zero
+  _gegl_get_required_for_scale
+  _gegl_init_buffer
+  _gegl_operation_is_attached
+  _gegl_threads
+  _gegl_tile_handler_get_cache
+  _gegl_tile_handler_get_tile_storage
+  _gegl_tile_handler_set_cache
+  _gegl_tile_handler_set_tile_storage
   gegl_abyss_policy_get_type
   gegl_access_mode_get_type
   gegl_apply_op
