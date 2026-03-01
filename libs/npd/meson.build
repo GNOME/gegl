@@ -33,6 +33,10 @@ gegl_npd_lib = library(meson.project_name() + '-npd-' + api_version,
   link_with: [
     gegl_lib,
   ],
+  #FIXME: For some mystical reason, GNU compilers create a libgegl-*npd.dll that
+  #crashes, even it being mostly identical to the one with vs_module_defs (the
+  #only difference is one line of .buildid, so let's use the .def conditionally)
+  vs_module_defs: cc.get_argument_syntax() == 'msvc' ? geg_npd_def : null,
   install: true,
 )
 
