@@ -203,8 +203,8 @@ gboolean gegl_tile_damage         (GeglTile *tile,
 
 G_GNUC_INTERNAL void _gegl_buffer_drop_hot_tile (GeglBuffer *buffer);
 
-GeglRectangle _gegl_get_required_for_scale (const GeglRectangle *roi,
-                                            gdouble              scale);
+G_GNUC_INTERNAL GeglRectangle _gegl_get_required_for_scale (const GeglRectangle *roi,
+                                                            gdouble              scale);
 
 gboolean gegl_buffer_scan_compatible (GeglBuffer *bufferA,
                                       gint        xA,

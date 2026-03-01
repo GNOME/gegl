@@ -19,12 +19,12 @@
 #ifndef __GEGL_TILE_HANDLER_PRIVATE_H__
 #define __GEGL_TILE_HANDLER_PRIVATE_H__
 
-void   _gegl_tile_handler_set_tile_storage (GeglTileHandler      *handler,
-                                            GeglTileStorage      *tile_storage);
-void   _gegl_tile_handler_set_cache        (GeglTileHandler      *handler,
-                                            GeglTileHandlerCache *cache);
+G_GNUC_INTERNAL void   _gegl_tile_handler_set_tile_storage (GeglTileHandler      *handler,
+                                                            GeglTileStorage      *tile_storage);
+G_GNUC_INTERNAL void   _gegl_tile_handler_set_cache        (GeglTileHandler      *handler,
+                                                            GeglTileHandlerCache *cache);
 
-GeglTileStorage      * _gegl_tile_handler_get_tile_storage (GeglTileHandler *handler);
-GeglTileHandlerCache * _gegl_tile_handler_get_cache        (GeglTileHandler *handler);
+G_GNUC_INTERNAL GeglTileStorage      * _gegl_tile_handler_get_tile_storage (GeglTileHandler *handler);
+G_GNUC_INTERNAL GeglTileHandlerCache * _gegl_tile_handler_get_cache        (GeglTileHandler *handler);
 
 #endif

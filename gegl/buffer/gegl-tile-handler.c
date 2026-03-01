@@ -157,27 +157,27 @@ gegl_tile_handler_set_source (GeglTileHandler *handler,
     }
 }
 
-void
+G_GNUC_INTERNAL void
 _gegl_tile_handler_set_tile_storage (GeglTileHandler *handler,
                                      GeglTileStorage *tile_storage)
 {
   handler->priv->tile_storage = tile_storage;
 }
 
-void
+G_GNUC_INTERNAL void
 _gegl_tile_handler_set_cache (GeglTileHandler      *handler,
                               GeglTileHandlerCache *cache)
 {
   handler->priv->cache = cache;
 }
 
-GeglTileStorage *
+G_GNUC_INTERNAL GeglTileStorage *
 _gegl_tile_handler_get_tile_storage (GeglTileHandler *handler)
 {
   return handler->priv->tile_storage;
 }
 
-GeglTileHandlerCache *
+G_GNUC_INTERNAL GeglTileHandlerCache *
 _gegl_tile_handler_get_cache (GeglTileHandler *handler)
 {
   return handler->priv->cache;

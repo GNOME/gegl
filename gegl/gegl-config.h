@@ -53,7 +53,7 @@ struct _GeglConfigClass
   GObjectClass parent_class;
 };
 
-extern gint _gegl_threads;
+G_GNUC_INTERNAL extern gint _gegl_threads;
 #define gegl_config_threads()  (_gegl_threads)
 
 #define GEGL_MAX_THREADS 64
