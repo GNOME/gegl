@@ -273,7 +273,7 @@ add_project_link_arguments(lflags_common, language: [ 'c', 'cpp' ])
 # on OSX ObjC and C sources are mixed so adding objc to the linkflags
 
 if os_osx
-  add_languages('objc')
+  add_languages('objc', native: true)
   osx_ldflags = ['-Wl,-framework,Foundation', '-Wl,-framework,AppKit']
   add_project_link_arguments(osx_ldflags, language : ['objc', 'c'])
   add_project_arguments('-xobjective-c', language : 'c')
