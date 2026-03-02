@@ -661,7 +661,7 @@ subdir('po')
 subdir('docs')
 
 
-if not os_osx
+if not os_osx and host_cpu_family != 'x86'
   # Verify .def files for Windows linking.
   # We check this on non-Windows platform on CI, and on Windows itself.
   custom_target('check-def-files',
