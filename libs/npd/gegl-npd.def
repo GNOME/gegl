@@ -22,6 +22,7 @@ EXPORTS
   npd_get_control_point_at
   npd_get_control_point_with_radius_at
   npd_get_pixel_color
+  npd_init
   npd_init_model
   npd_is_color_transparent
   npd_print_bone

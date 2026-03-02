@@ -21,9 +21,22 @@
 
 #include "npd_common.h"
 #include "npd_math.h"
+#include "graphics.h"
 #include <math.h>
 #include <glib.h>
 #include <glib/gprintf.h>
+
+void
+npd_init (void *set_pixel,
+          void *get_pixel,
+          void *process_pixel,
+          void *draw_line)
+{
+  npd_set_pixel_color = set_pixel;
+  npd_get_pixel_color = get_pixel;
+  npd_process_pixel = process_pixel;
+  npd_draw_line = draw_line;
+}
 
 void
 npd_init_model (NPDModel *model)
