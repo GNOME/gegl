@@ -37,7 +37,7 @@ gegl_npd_lib_args = {
 #crashes, even it being mostly identical to the one with vs_module_defs (the
 #only difference is one line of .buildid, so let's use the .def conditionally)
 if cc.get_argument_syntax() == 'msvc'
-  gegl_npd_lib_args += {'vs_module_defs': geg_npd_def}
+  gegl_npd_lib_args += {'vs_module_defs': gegl_npd_def}
 endif
 gegl_npd_lib = library(meson.project_name() + '-npd-' + api_version,
   kwargs: gegl_npd_lib_args

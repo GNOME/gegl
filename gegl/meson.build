@@ -120,10 +120,10 @@ if not os_osx
   )
 endif
 
-gegl_lib = library(api_name,
-  gegl_sources,
-  include_directories: [rootInclude, geglInclude],
-  dependencies: [
+gegl_lib_args = {
+  'sources': gegl_sources,
+  'include_directories': [rootInclude, geglInclude],
+  'dependencies': [
     babl,
     glib,
     gio,
@@ -131,12 +131,19 @@ gegl_lib = library(api_name,
     gmodule,
     opencl_dep,
   ],
-  c_args: gegl_cflags,
+  'c_args': gegl_cflags,
 
-  link_with: simd_extra,
-  link_args: gegl_ldflags,
-  install: true,
-  version: so_version,
+  'link_with': simd_extra,
+  'link_args': gegl_ldflags,
+  'install': true,
+  'version': so_version,
+}
+#FIXME: some symbols are unreliable on Windows GNU compilers. See: #445
+if cc.get_argument_syntax() == 'msvc'
+  gegl_lib_args += {'vs_module_defs': gegl_def}
+endif
+gegl_lib = library(api_name,
+  kwargs: gegl_lib_args
 )
 
 
