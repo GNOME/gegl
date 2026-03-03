@@ -24,11 +24,11 @@ the respective libraries.
 Invoke in the build directory and pass the name
 of the built .def files on the command-line.
 
-Needs the tool "objdump" to work
+Needs the tool "nm", "objdump" or "dumpbin" to work
 
 """
 
-import os, sys, subprocess
+import os, sys, subprocess, shutil
 
 from os import path
 
@@ -57,18 +57,22 @@ have_errors = 0
 
 libextension   = ".so"
 command        = "nm --defined-only --extern-only "
+libprefix      = "lib"
 platform_linux = True
 
 if sys.platform in ['win32', 'cygwin']:
    libextension   = ".dll"
    command        = "objdump -p "
+   if shutil.which("dumpbin"):
+     command      = "dumpbin /EXPORTS "
+     libprefix    = ""
    platform_linux = False
 
 for df in def_files:
    directory, name = path.split (df)
    basename, extension = name.split (".")
 
-   libname = path.join(os.getcwd(), directory, "lib" + basename + "-*" + libextension)
+   libname = path.join(os.getcwd(), directory, libprefix + basename + "-*" + libextension)
    #FIXME: This leaks to ninja stdout, which should not happen
    #print ("platform: " + sys.platform + " - extracting symbols from " + libname)
 
@@ -102,8 +106,8 @@ for df in def_files:
    nmsymbols = ""
    if platform_linux:
       nmsymbols = nm
-
-   else: # Windows
+   
+   elif not shutil.which("dumpbin"): # Windows MSYS2
       # remove parts of objdump output we don't need: anything up to a few lines
       # after Export Table: ' Ordinal      RVA  Name'
 
@@ -116,6 +120,21 @@ for df in def_files:
             found = True
          elif found:
             nmsymbols += s
+         # else: skip this line
+
+   else: # Windows MSVC
+
+      dbin = nm.split(sep='\n')
+
+      found = False
+      nmsymbols = ""
+      for s in dbin:
+         if "ordinal" in s and "hint" in s and "RVA" in s:
+            found = True
+         elif found and s.strip() and "Summary" not in s:
+            parts = s.split()
+            if len(parts) >= 4:
+               nmsymbols += " 0 0 " + parts[3] # Keep the [2::3] logic happy
          # else: skip this line
 
    nmsymbols = nmsymbols.split()[2::3]
