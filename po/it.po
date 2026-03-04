@@ -22,8 +22,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  GEGL_0_2_0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-03 09:43+0100\n"
-"PO-Revision-Date: 2026-02-03 09:44+0100\n"
+"POT-Creation-Date: 2026-03-04 12:03+0100\n"
+"PO-Revision-Date: 2026-03-04 12:02+0100\n"
 "Last-Translator: Marco Ciampa <ciampix@posteo.net>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -201,7 +201,7 @@ msgstr "Niente"
 #: ../operations/common/gaussian-blur.c:31 ../operations/common/gblur-1d.c:33
 #: ../operations/common/median-blur.c:34
 msgid "Clamp"
-msgstr "Morsa"
+msgstr "Blocco"
 
 #: ../gegl/buffer/gegl-buffer-enums.c:34
 msgid "Loop"
@@ -752,7 +752,7 @@ msgstr ""
 #: ../operations/common/vignette.c:40 ../operations/common/wavelet-blur-1d.c:28
 #: ../operations/common/wavelet-blur.c:27
 #: ../operations/common-cxx/focus-blur.c:85
-#: ../operations/common-cxx/lens-blur.cc:27
+#: ../operations/common-cxx/lens-blur.cc:28
 #: ../operations/common-cxx/variable-blur.c:30
 #: ../operations/common-gpl3+/shadows-highlights.c:40
 #: ../operations/common-gpl3+/spiral.c:47
@@ -825,7 +825,7 @@ msgstr "Smusso..."
 #: ../operations/common/domain-transform.c:29
 #: ../operations/common/dropshadow.c:46 ../operations/common/inner-glow.c:58
 #: ../operations/common-cxx/focus-blur.c:45
-#: ../operations/common-cxx/lens-blur.cc:28
+#: ../operations/common-cxx/lens-blur.cc:29
 #: ../operations/common-gpl3+/gaussian-blur-selective.c:29
 #: ../operations/workshop/bilateral-filter-fast.c:43
 msgid "Blur radius"
@@ -2388,19 +2388,19 @@ msgstr "Percorso file su cui scrivere il GeglBuffer."
 msgid "GeglBuffer file writer."
 msgstr "Scrittore file GeglBuffer."
 
-#: ../operations/common/gegl.c:72
+#: ../operations/common/gegl.c:73
 msgid "pipeline"
 msgstr "coda comandi"
 
-#: ../operations/common/gegl.c:73
+#: ../operations/common/gegl.c:74
 msgid "[op [property=value] [property=value]] [[op] [property=value]"
 msgstr "[op [proprietà=valore] [proprietà=valore]] [[op] [proprietà=valore]"
 
-#: ../operations/common/gegl.c:76
+#: ../operations/common/gegl.c:77
 msgid "Eeeeeek"
 msgstr "Iiiiiik"
 
-#: ../operations/common/gegl.c:77
+#: ../operations/common/gegl.c:78
 msgid ""
 "There is a problem in the syntax or in the application of parsed property "
 "values. Things might mostly work nevertheless."
@@ -2408,11 +2408,11 @@ msgstr ""
 "C'è un problema nella sintassi o nell'applicazione dei valori delle "
 "proprietà elaborate. Comunque potrebbe funzionare ugualmente."
 
-#: ../operations/common/gegl.c:179
+#: ../operations/common/gegl.c:180
 msgid "GEGL graph"
 msgstr "Grafo GEGL"
 
-#: ../operations/common/gegl.c:182
+#: ../operations/common/gegl.c:183
 msgid ""
 "Do a chain of operations, with key=value pairs after each operation name to "
 "set properties. And aux=[ source filter ] for specifying a chain with a "
@@ -3228,11 +3228,11 @@ msgstr "Alta precisione"
 msgid "Avoid clipping and quantization (slower)"
 msgstr "Evita ritagli e quantizzazione (più lento)"
 
-#: ../operations/common/median-blur.c:1003
+#: ../operations/common/median-blur.c:1000
 msgid "Median Blur"
 msgstr "Sfocatura mediana"
 
-#: ../operations/common/median-blur.c:1006
+#: ../operations/common/median-blur.c:1003
 msgid ""
 "Blur resulting from computing the median color in the neighborhood of each "
 "pixel."
@@ -5642,7 +5642,7 @@ msgid "Calculate a distance transform"
 msgstr "Calcola una trasformazione di distanza"
 
 #: ../operations/common-cxx/focus-blur.c:30
-#: ../operations/common-cxx/lens-blur.cc:507
+#: ../operations/common-cxx/lens-blur.cc:508
 msgid "Lens Blur"
 msgstr "Sfocatura lente"
 
@@ -5655,27 +5655,27 @@ msgid "Out-of-focus blur radius"
 msgstr "Raggio sfocatura fuori-fuoco"
 
 #: ../operations/common-cxx/focus-blur.c:52
-#: ../operations/common-cxx/lens-blur.cc:34
+#: ../operations/common-cxx/lens-blur.cc:35
 msgid "Highlight factor"
 msgstr "Fattore evidenziazione"
 
 #: ../operations/common-cxx/focus-blur.c:53
-#: ../operations/common-cxx/lens-blur.cc:35
+#: ../operations/common-cxx/lens-blur.cc:36
 msgid "Relative highlight strength"
 msgstr "Intensità evidenziazione relativa"
 
 #: ../operations/common-cxx/focus-blur.c:57
-#: ../operations/common-cxx/lens-blur.cc:38
+#: ../operations/common-cxx/lens-blur.cc:39
 msgid "Highlight threshold (low)"
 msgstr "Soglia evidenziazione (bassa)"
 
 #: ../operations/common-cxx/focus-blur.c:61
-#: ../operations/common-cxx/lens-blur.cc:42
+#: ../operations/common-cxx/lens-blur.cc:43
 msgid "Highlight threshold"
 msgstr "Soglia evidenziazione"
 
 #: ../operations/common-cxx/focus-blur.c:64
-#: ../operations/common-cxx/lens-blur.cc:44
+#: ../operations/common-cxx/lens-blur.cc:45
 msgid "Highlight threshold (high)"
 msgstr "Soglia evidenziazione (alta)"
 
@@ -5760,27 +5760,27 @@ msgstr "Rimozione rumore DCT"
 msgid "Denoising algorithm using a per-patch DCT thresholding"
 msgstr "Algoritmo di riduzione del rumore che usa una soglia DCT per area"
 
-#: ../operations/common-cxx/lens-blur.cc:49
+#: ../operations/common-cxx/lens-blur.cc:50
 msgid "Clip to input extents"
 msgstr "Ritaglia alla dimensione in ingresso"
 
-#: ../operations/common-cxx/lens-blur.cc:50
+#: ../operations/common-cxx/lens-blur.cc:51
 msgid "Clip output to the input extents"
 msgstr "Ritaglia il risultato alla dimensione in ingresso"
 
-#: ../operations/common-cxx/lens-blur.cc:52
+#: ../operations/common-cxx/lens-blur.cc:53
 #: ../operations/common-cxx/piecewise-blend.cc:38
 #: ../operations/common-cxx/variable-blur.c:37
 msgid "Linear mask"
 msgstr "Maschera lineare"
 
-#: ../operations/common-cxx/lens-blur.cc:53
+#: ../operations/common-cxx/lens-blur.cc:54
 #: ../operations/common-cxx/piecewise-blend.cc:39
 #: ../operations/common-cxx/variable-blur.c:38
 msgid "Use linear mask values"
 msgstr "Usa i valori di maschera lineare"
 
-#: ../operations/common-cxx/lens-blur.cc:510
+#: ../operations/common-cxx/lens-blur.cc:511
 msgid "Simulate out-of-focus lens blur"
 msgstr "Simula la sfocatura di una lente fuori fuoco"
 
@@ -7782,11 +7782,11 @@ msgstr "Larghezza piastrella"
 msgid "Tile Height"
 msgstr "Altezza piastrella"
 
-#: ../operations/common-gpl3+/tile-glass.c:233
+#: ../operations/common-gpl3+/tile-glass.c:228
 msgid "Tile Glass"
 msgstr "Piastrella di vetro"
 
-#: ../operations/common-gpl3+/tile-glass.c:238
+#: ../operations/common-gpl3+/tile-glass.c:233
 msgid "Simulate distortion caused by rectangular glass tiles"
 msgstr "Simula la distorsione causata da piastrelle di vetro rettangolari"
 
