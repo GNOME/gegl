@@ -1,14 +1,14 @@
-# Japanese translation for gegl.
+# Japanese translation for GEGL.
 # Copyright (C) 2025 gegl's COPYRIGHT HOLDER
-# This file is distributed under the same license as the gegl package.
-# Shigeto YOSHIDA <shigep640509@gmail.com>,  2025.
+# This file is distributed under the same license as the GEGL package.
+# YOSHIDA Shigeto <shigep640509@gmail.com>, 2025.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2025-11-29 16:10+0000\n"
-"PO-Revision-Date: 2025-11-30 09:00+0900\n"
+"POT-Creation-Date: 2026-02-28 17:23+0000\n"
+"PO-Revision-Date: 2026-03-03 09:00+0900\n"
 "Last-Translator: YOSHIDA Shigeto <shigep640509@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.gnome.org/teams/ja/>\n"
 "Language: ja\n"
@@ -18,17 +18,17 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Poedit 3.8\n"
 
-#: bin/gegl.c:182
+#: bin/gegl.c:184
 #, c-format
 msgid "Unable to read file: %s"
 msgstr "ファイルを読み込めません: %s"
 
-#: bin/gegl.c:230
+#: bin/gegl.c:232
 #, c-format
 msgid "Invalid graph, abort.\n"
 msgstr "不正なグラフです。中止しました。\n"
 
-#: bin/gegl.c:393 bin/gegl-options.c:133
+#: bin/gegl.c:395 bin/gegl-options.c:133
 #, c-format
 msgid "Unknown GeglOption mode: %d"
 msgstr "未知の GeglOption モードです: %d"
@@ -148,11 +148,11 @@ msgstr ""
 "\t残りの引数: %s\n"
 "\t\n"
 
-#: bin/gegl-options.c:347
+#: bin/gegl-options.c:358
 msgid "Properties:"
 msgstr "属性:"
 
-#: bin/gegl-options.c:457
+#: bin/gegl-options.c:468
 #, c-format
 msgid ""
 "\n"
@@ -350,40 +350,40 @@ msgstr "常にしない"
 msgid "Always"
 msgstr "常にする"
 
-#: gegl/gegl-init.c:363
+#: gegl/gegl-init.c:427
 msgid "Where GEGL stores its swap"
 msgstr "GEGL がスワップファイルを保管する場所"
 
-#: gegl/gegl-init.c:368
+#: gegl/gegl-init.c:432
 msgid "Compression algorithm used for data stored in the swap"
 msgstr "スワップファイル内に格納されるデータの圧縮アルゴリズム"
 
-#: gegl/gegl-init.c:373
+#: gegl/gegl-init.c:437
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr "画像のキャッシュ用に (およそ) どのくらいのメモリを使用するか"
 
-#: gegl/gegl-init.c:378
+#: gegl/gegl-init.c:442
 msgid "Default size of tiles in GeglBuffers"
 msgstr "GeglBuffer におけるタイルのデフォルトサイズ"
 
-#: gegl/gegl-init.c:383
+#: gegl/gegl-init.c:447
 msgid "The count of pixels to compute simultaneously"
 msgstr "同時に計算するピクセルの数"
 
-#: gegl/gegl-init.c:388
+#: gegl/gegl-init.c:452
 msgid ""
 "The quality of rendering, a value between 0.0 (fast) and 1.0 (reference)"
 msgstr "レンダリングの品質は 0.0 (高速) から1.0 (基準) までの値です。"
 
-#: gegl/gegl-init.c:393
+#: gegl/gegl-init.c:457
 msgid "The number of concurrent processing threads to use"
 msgstr "使用する並列処理スレッドの数"
 
-#: gegl/gegl-init.c:398
+#: gegl/gegl-init.c:462
 msgid "Disable OpenCL"
 msgstr "OpenCL を無効"
 
-#: gegl/gegl-init.c:410
+#: gegl/gegl-init.c:474
 msgid "Show GEGL Options"
 msgstr "GEGL オプションを表示"
 
@@ -734,7 +734,7 @@ msgstr ""
 #: operations/common/stress.c:27 operations/common/unsharp-mask.c:24
 #: operations/common/vignette.c:40 operations/common/wavelet-blur-1d.c:28
 #: operations/common/wavelet-blur.c:27 operations/common-cxx/focus-blur.c:85
-#: operations/common-cxx/lens-blur.cc:27
+#: operations/common-cxx/lens-blur.cc:28
 #: operations/common-cxx/variable-blur.c:30
 #: operations/common-gpl3+/shadows-highlights.c:40
 #: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:44
@@ -804,7 +804,7 @@ msgstr "ベベル..."
 #: operations/common/bilateral-filter.c:26
 #: operations/common/domain-transform.c:29 operations/common/dropshadow.c:46
 #: operations/common/inner-glow.c:58 operations/common-cxx/focus-blur.c:45
-#: operations/common-cxx/lens-blur.cc:28
+#: operations/common-cxx/lens-blur.cc:29
 #: operations/common-gpl3+/gaussian-blur-selective.c:29
 #: operations/workshop/bilateral-filter-fast.c:43
 msgid "Blur radius"
@@ -1177,7 +1177,7 @@ msgstr "グリッドの大きさ"
 #: operations/common/color-rotate.c:84 operations/common/fattal02.c:39
 #: operations/common/mantiuk06.c:33 operations/common/noise-hsv.c:34
 #: operations/common/saturation.c:404 operations/common/styles.c:387
-#: operations/external/lcms-from-profile.c:35
+#: operations/common/vibrance.c:30 operations/external/lcms-from-profile.c:35
 #: operations/workshop/selective-hue-saturation.c:38
 msgid "Saturation"
 msgstr "彩度"
@@ -2314,19 +2314,19 @@ msgstr "GeglBuffer を書き込む対象ファイルのパスです。"
 msgid "GeglBuffer file writer."
 msgstr "GeglBuffer ファイルのライター (書き込み処理) です。"
 
-#: operations/common/gegl.c:68
+#: operations/common/gegl.c:73
 msgid "pipeline"
 msgstr "パイプライン"
 
-#: operations/common/gegl.c:69
+#: operations/common/gegl.c:74
 msgid "[op [property=value] [property=value]] [[op] [property=value]"
 msgstr "[オプション [property=値] [property=値]] [[オプション] [property=値]"
 
-#: operations/common/gegl.c:72
+#: operations/common/gegl.c:77
 msgid "Eeeeeek"
 msgstr "キャーッ"
 
-#: operations/common/gegl.c:73
+#: operations/common/gegl.c:78
 msgid ""
 "There is a problem in the syntax or in the application of parsed property "
 "values. Things might mostly work nevertheless."
@@ -2334,12 +2334,11 @@ msgstr ""
 "構文または解析されたプロパティ値の適用に問題があります。ただし、ほとんどの場"
 "合は正常に動作する可能性があります。"
 
-#: operations/common/gegl.c:175
+#: operations/common/gegl.c:180
 msgid "GEGL graph"
 msgstr "GEGL グラフ"
 
-#  ツールチップのメッセージ
-#: operations/common/gegl.c:178
+#: operations/common/gegl.c:183
 msgid ""
 "Do a chain of operations, with key=value pairs after each operation name to "
 "set properties. And aux=[ source filter ] for specifying a chain with a "
@@ -2565,11 +2564,11 @@ msgstr ""
 msgid "Inner Glow..."
 msgstr "光彩 (内側)..."
 
-#: operations/common/introspect.c:33
+#: operations/common/introspect.c:35
 msgid "Node"
 msgstr "ノード"
 
-#: operations/common/introspect.c:222
+#: operations/common/introspect.c:224
 msgid "GEGL graph visualizer."
 msgstr "GEGLグラフ可視化ツールです。"
 
@@ -3053,11 +3052,11 @@ msgid ""
 "coordinates"
 msgstr "相対的なソース座標を含む補助バッファーを用いて入力をサンプリングします"
 
-#: operations/common/matting-global.c:599
+#: operations/common/matting-global.c:601
 msgid "Matting Global"
 msgstr "全体的にマット処理"
 
-#: operations/common/matting-global.c:601
+#: operations/common/matting-global.c:603
 msgid ""
 "Given a sparse user supplied tri-map and an input image, create a foreground "
 "alpha matte. Set white as foreground, black as background for the tri-map. "
@@ -3140,12 +3139,12 @@ msgstr "高精度"
 msgid "Avoid clipping and quantization (slower)"
 msgstr "切り捨てや量子化を回避します (処理は遅くなります)"
 
-#: operations/common/median-blur.c:1003
+#: operations/common/median-blur.c:1000
 msgid "Median Blur"
 msgstr "メディアンぼかし"
 
 #  ツールチップのメッセージ
-#: operations/common/median-blur.c:1006
+#: operations/common/median-blur.c:1003
 msgid ""
 "Blur resulting from computing the median color in the neighborhood of each "
 "pixel."
@@ -5294,6 +5293,22 @@ msgstr ""
 "値 (明度) 成分のみを反転し、色相と彩度を保ったまま明るさを反転させた画像を生"
 "成します。"
 
+#: operations/common/vibrance.c:24 operations/common/vibrance.c:77
+msgid "Vibrance"
+msgstr "鮮やかさ"
+
+#: operations/common/vibrance.c:25
+msgid "Vibrance (chroma) adjustment"
+msgstr "鮮やかさ (彩度) の調整"
+
+#: operations/common/vibrance.c:31
+msgid "Saturation scale factor"
+msgstr "彩度のスケール係数"
+
+#: operations/common/vibrance.c:79
+msgid "Adjusts the saturation and vibrance of the image."
+msgstr "画像の彩度と鮮やかさを調整します。"
+
 #: operations/common/vignette.c:32
 msgid "Vignette shape"
 msgstr "ビネットの形状"
@@ -5526,7 +5541,7 @@ msgstr "距離変換"
 msgid "Calculate a distance transform"
 msgstr "距離変換を計算します"
 
-#: operations/common-cxx/focus-blur.c:30 operations/common-cxx/lens-blur.cc:507
+#: operations/common-cxx/focus-blur.c:30 operations/common-cxx/lens-blur.cc:508
 msgid "Lens Blur"
 msgstr "レンズぼかし"
 
@@ -5539,23 +5554,23 @@ msgstr "ぼかしの種類"
 msgid "Out-of-focus blur radius"
 msgstr "ボケ半径 (ピントが合っていない部分) の大きさです"
 
-#: operations/common-cxx/focus-blur.c:52 operations/common-cxx/lens-blur.cc:34
+#: operations/common-cxx/focus-blur.c:52 operations/common-cxx/lens-blur.cc:35
 msgid "Highlight factor"
 msgstr "ハイライト係数"
 
-#: operations/common-cxx/focus-blur.c:53 operations/common-cxx/lens-blur.cc:35
+#: operations/common-cxx/focus-blur.c:53 operations/common-cxx/lens-blur.cc:36
 msgid "Relative highlight strength"
 msgstr "相対的なハイライトの強さ"
 
-#: operations/common-cxx/focus-blur.c:57 operations/common-cxx/lens-blur.cc:38
+#: operations/common-cxx/focus-blur.c:57 operations/common-cxx/lens-blur.cc:39
 msgid "Highlight threshold (low)"
 msgstr "ハイライトのしきい値 (低)"
 
-#: operations/common-cxx/focus-blur.c:61 operations/common-cxx/lens-blur.cc:42
+#: operations/common-cxx/focus-blur.c:61 operations/common-cxx/lens-blur.cc:43
 msgid "Highlight threshold"
 msgstr "ハイライトのしきい値"
 
-#: operations/common-cxx/focus-blur.c:64 operations/common-cxx/lens-blur.cc:44
+#: operations/common-cxx/focus-blur.c:64 operations/common-cxx/lens-blur.cc:45
 msgid "Highlight threshold (high)"
 msgstr "ハイライトのしきい値 (高)"
 
@@ -5642,28 +5657,28 @@ msgstr ""
 "パッチごとの DCT (離散コサイン変換) しきい値処理を用いたノイズ除去アルゴリズ"
 "ムです"
 
-#: operations/common-cxx/lens-blur.cc:49
+#: operations/common-cxx/lens-blur.cc:50
 msgid "Clip to input extents"
 msgstr "入力範囲にクリップ"
 
-#: operations/common-cxx/lens-blur.cc:50
+#: operations/common-cxx/lens-blur.cc:51
 msgid "Clip output to the input extents"
 msgstr "出力を入力範囲にクリップ"
 
-#: operations/common-cxx/lens-blur.cc:52
+#: operations/common-cxx/lens-blur.cc:53
 #: operations/common-cxx/piecewise-blend.cc:38
 #: operations/common-cxx/variable-blur.c:37
 msgid "Linear mask"
 msgstr "線形マスク"
 
-#: operations/common-cxx/lens-blur.cc:53
+#: operations/common-cxx/lens-blur.cc:54
 #: operations/common-cxx/piecewise-blend.cc:39
 #: operations/common-cxx/variable-blur.c:38
 msgid "Use linear mask values"
 msgstr "線形マスク値を使用する"
 
 #  ツールチップのメッセージ
-#: operations/common-cxx/lens-blur.cc:510
+#: operations/common-cxx/lens-blur.cc:511
 msgid "Simulate out-of-focus lens blur"
 msgstr "ピントが合っていないレンズのぼかし (被写界深度ぼけ) を再現します"
 
@@ -7691,12 +7706,12 @@ msgstr "タイルの幅"
 msgid "Tile Height"
 msgstr "タイルの高さ"
 
-#: operations/common-gpl3+/tile-glass.c:233
+#: operations/common-gpl3+/tile-glass.c:228
 msgid "Tile Glass"
 msgstr "ガラス風タイル"
 
 #  ツールチップのメッセージ
-#: operations/common-gpl3+/tile-glass.c:238
+#: operations/common-gpl3+/tile-glass.c:233
 msgid "Simulate distortion caused by rectangular glass tiles"
 msgstr "長方形のガラスタイルによって生じるひずみを再現します"
 
@@ -8245,11 +8260,6 @@ msgstr "URI"
 #: operations/core/load.c:32
 msgid "URI of file to load."
 msgstr "読み込むファイルの URI です。"
-
-#: operations/core/load.c:34 operations/external/jpg-save.c:45
-#: operations/external/png-load.c:37 operations/external/png-save.c:35
-msgid "Object to supply image metadata"
-msgstr "画像メタデータを提供するオブジェクト"
 
 #: operations/core/load.c:372
 msgid ""
@@ -9000,11 +9010,11 @@ msgstr "libpng を使って PNG ファイルを保存"
 msgid "URI of image to load."
 msgstr "読み込む画像の URI です。"
 
-#: operations/external/ppm-load.c:460
+#: operations/external/ppm-load.c:473
 msgid "PPM File Loader"
 msgstr "PPM ファイルを読み込み"
 
-#: operations/external/ppm-load.c:462
+#: operations/external/ppm-load.c:475
 msgid "PPM image loader."
 msgstr "PPM ファイルを読み込みます。"
 
@@ -9012,11 +9022,11 @@ msgstr "PPM ファイルを読み込みます。"
 msgid "Raw format"
 msgstr "Raw 形式"
 
-#: operations/external/ppm-save.c:190
+#: operations/external/ppm-save.c:201
 msgid "PPM File Saver"
 msgstr "PPM ファイルを保存"
 
-#: operations/external/ppm-save.c:193
+#: operations/external/ppm-save.c:204
 msgid "PPM image saver (Portable pixmap saver.)"
 msgstr "PPM(Portable pixmap) ファイルを保存"
 
@@ -9215,7 +9225,7 @@ msgstr "Pango と Cairo を使ってテキスト文字列を表示します。"
 
 #: operations/external/tiff-load.c:34
 msgid "Directory"
-msgstr "ディレクトリー"
+msgstr "ディレクトリ"
 
 #: operations/external/tiff-load.c:35
 msgid "Image file directory (subfile)"
@@ -10582,3 +10592,6 @@ msgid ""
 msgstr ""
 "隣接するピクセルをシャッフルすることでディザ処理を最適化し、ピクセルの並び替"
 "えと周辺との量子化を行います。"
+
+#~ msgid "Object to supply image metadata"
+#~ msgstr "画像メタデータを提供するオブジェクト"
