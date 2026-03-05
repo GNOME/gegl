@@ -17,6 +17,7 @@
 #ifndef __GEGL_MEMORY_PRIVATE_H__
 #define __GEGL_MEMORY_PRIVATE_H__
 
+G_BEGIN_DECLS
 
 #define GEGL_ALIGNMENT 16
 #define GEGL_ALIGN(n)             \
@@ -24,5 +25,6 @@
    GEGL_ALIGNMENT               * \
    GEGL_ALIGNMENT)
 
+G_END_DECLS
 
 #endif  /* __GEGL_MEMORY_PRIVATE_H__ */

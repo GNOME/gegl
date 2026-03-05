@@ -18,6 +18,9 @@
 
 #ifndef __GEGL_MATH_H__
 #define __GEGL_MATH_H__
+
+G_BEGIN_DECLS
+
 #ifndef __cplusplus
 
 static inline float gegl_fabsf (float x)
@@ -85,6 +88,8 @@ static inline double gegl_fmod (double x, double y)
 #define fmodf(x,y) gegl_fmodf(x,y)
 #define fmod(x,y)  gegl_fmod(x,y)
 
-
 #endif
+
+G_END_DECLS
+
 #endif

@@ -22,6 +22,7 @@
 #include "gegl-buffer-enums.h"
 #include "gegl-buffer-backend.h"
 
+G_BEGIN_DECLS
 
 /* gegl-buffer-types.h is not installed, thus all of this is private to
  * GeglBuffer even though some of it leaks among the components of GeglBuffer
@@ -49,5 +50,7 @@ typedef struct _GeglTileHandlerChain      GeglTileHandlerChain;
 
 typedef struct _GeglTileStorage           GeglTileStorage;
 
+
+G_END_DECLS
 
 #endif

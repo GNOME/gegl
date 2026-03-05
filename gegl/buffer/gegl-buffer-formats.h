@@ -20,7 +20,7 @@
 #define __GEGL_BUFFER_FORMATS_H__
 
 
-//G_BEGIN_DECLS
+G_BEGIN_DECLS
 
 #include <babl/babl.h>
 #include <glib-object.h>
@@ -80,6 +80,6 @@ static inline int int_ceilf (float x)
   return -int_floorf(-(x));
 }
 
-//G_END_DECLS
+G_END_DECLS
 
 #endif /* __GEGL_BUFFER_FORMATS_H__ */

@@ -23,6 +23,8 @@
 #include "gegl-tile-handler-chain.h"
 #include "gegl-tile-handler-cache.h"
 
+G_BEGIN_DECLS
+
 /***
  * GeglTileStorage provide the command API to GeglBuffer, and setup a chain of GeglTileHandler to
  * treat and store tiles.
@@ -75,5 +77,7 @@ GeglTile * gegl_tile_storage_try_steal_hot_tile (GeglTileStorage *tile_storage,
                                                  GeglTile        *tile);
 void       gegl_tile_storage_take_hot_tile      (GeglTileStorage *tile_storage,
                                                  GeglTile        *tile);
+
+G_END_DECLS
 
 #endif

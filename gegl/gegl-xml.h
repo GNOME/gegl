@@ -19,6 +19,8 @@
 #ifndef GEGL_XML_H
 #define GEGL_XML_H
 
+G_BEGIN_DECLS
+
 gchar    * gegl_node_to_xml        (GeglNode    *gegl,
                                     const gchar *path_root);
 gchar    * gegl_node_to_xml_full   (GeglNode    *head,
@@ -27,5 +29,7 @@ gchar    * gegl_node_to_xml_full   (GeglNode    *head,
 GeglNode * gegl_node_new_from_xml  (const gchar *xmldata,
                                     const gchar *path_root);
 GeglNode * gegl_node_new_from_file (const gchar *path);
+
+G_END_DECLS
 
 #endif

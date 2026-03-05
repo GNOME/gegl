@@ -24,6 +24,8 @@
 #include "gegl-tile-handler.h"
 #include "gegl-buffer-iterator.h"
 
+G_BEGIN_DECLS
+
 #define GEGL_BUFFER_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass),  GEGL_TYPE_BUFFER, GeglBufferClass))
 #define GEGL_IS_BUFFER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass),  GEGL_TYPE_BUFFER))
 #define GEGL_BUFFER_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj),  GEGL_TYPE_BUFFER, GeglBufferClass))
@@ -278,5 +280,7 @@ extern void (*gegl_downscale_2x2) (const Babl *format,
   (((coordinate) >= 0)?\
       (coordinate) / (stride):\
       ((((coordinate) + 1) /(stride)) - 1))
+
+G_END_DECLS
 
 #endif

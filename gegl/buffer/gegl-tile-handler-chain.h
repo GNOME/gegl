@@ -21,6 +21,8 @@
 
 #include "gegl-tile-handler.h"
 
+G_BEGIN_DECLS
+
 /***
  * GeglTileHandlerChain is a GeglTileHandler that easily create and destroy a chain of GeglTileHandler.
  */
@@ -72,5 +74,7 @@ void gegl_tile_handler_chain_bind (GeglTileHandlerChain *tile_handler_chain);
 GeglTileHandler * gegl_tile_handler_chain_get_first
                                       (GeglTileHandlerChain *tile_handler_chain,
                                        GType                 type);
+
+G_END_DECLS
 
 #endif

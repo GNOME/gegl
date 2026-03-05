@@ -19,6 +19,8 @@
 #ifndef __GEGL_RANDOM_PRIV_H__
 #define __GEGL_RANDOM_PRIV_H__
 
+G_BEGIN_DECLS
+
 #define RANDOM_DATA_SIZE (15101 * 3)
 
 struct _GeglRandom
@@ -33,5 +35,7 @@ gegl_random_get_data (void);
 
 void
 gegl_random_cleanup (void);
+
+G_END_DECLS
 
 #endif /* __GEGL_RANDOM_PRIV_H__ */

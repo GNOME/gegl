@@ -24,12 +24,13 @@
 #include "gegl-cl-version.h"
 #include "opencl.h"
 
-struct _GeglClTexture
-{
-  cl_mem           data;
-  cl_image_format  format;
-  gint             width;
-  gint             height;
+G_BEGIN_DECLS
+
+struct _GeglClTexture {
+  cl_mem data;
+  cl_image_format format;
+  gint width;
+  gint height;
 };
 
 typedef struct _GeglClTexture GeglClTexture;
@@ -102,5 +103,7 @@ typedef CL_API_ENTRY cl_int            (CL_API_CALL *t_clEnqueueReleaseGLObjects
    cl_event *event);
 
 typedef CL_API_ENTRY void *            (CL_API_CALL *t_clGetExtensionFunctionAddress)  (const char *);
+
+G_END_DECLS
 
 #endif /* __GEGL_CL_TYPES_H__ */

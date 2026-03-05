@@ -19,6 +19,10 @@
 #ifndef __GEGL_EXTENSION_HANDLER_PRIVATE_H__
 #define __GEGL_EXTENSION_HANDLER_PRIVATE_H__
 
+G_BEGIN_DECLS
+
 void          gegl_operation_handlers_cleanup         (void);
+
+G_END_DECLS
 
 #endif

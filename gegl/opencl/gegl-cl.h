@@ -25,6 +25,8 @@
 #include "gegl-cl-color.h"
 #include "gegl-cl-random.h"
 
+G_BEGIN_DECLS
+
 cl_int gegl_cl_set_kernel_args (cl_kernel kernel, ...) G_GNUC_NULL_TERMINATED;
 
 #define CL_ERROR \
@@ -44,5 +46,7 @@ if (errcode != CL_SUCCESS)                  \
              __FILE__, __LINE__, __func__,  \
              gegl_cl_errstring (errcode));  \
 }
+
+G_END_DECLS
 
 #endif

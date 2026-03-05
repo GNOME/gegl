@@ -18,6 +18,8 @@
 #ifndef GEGL_INSTRUMENT_H
 #define GEGL_INSTRUMENT_H
 
+G_BEGIN_DECLS
+
 extern gboolean gegl_instrument_enabled;
 
 /* return number of usecs since gegl was initialized */
@@ -51,5 +53,7 @@ G_GNUC_INTERNAL void real_gegl_instrument (const gchar *parent,
  * during a gegl-run
  */
 gchar * gegl_instrument_utf8 (void);
+
+G_END_DECLS
 
 #endif

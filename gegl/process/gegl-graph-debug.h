@@ -19,6 +19,8 @@
 #ifndef __GEGL_GRAPH_DEBUG_H__
 #define __GEGL_GRAPH_DEBUG_H__
 
+G_BEGIN_DECLS
+
 /**
  * gegl_graph_dump_outputs:
  * @node: The final node of the graph
@@ -36,5 +38,7 @@ void gegl_graph_dump_outputs (GeglNode *node);
  * the request.
  */
 void gegl_graph_dump_request (GeglNode *node, const GeglRectangle *roi);
+
+G_END_DECLS
 
 #endif /* __GEGL_GRAPH_DEBUG_H__ */

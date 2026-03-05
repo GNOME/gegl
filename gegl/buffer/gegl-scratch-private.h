@@ -19,8 +19,10 @@
 #ifndef __GEGL_SCRATCH_PRIVATE_H__
 #define __GEGL_SCRATCH_PRIVATE_H__
 
+G_BEGIN_DECLS
 
 guint64   gegl_scratch_get_total (void);
 
+G_END_DECLS
 
 #endif /* __GEGL_SCRATCH_PRIVATE_H__ */

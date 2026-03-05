@@ -22,6 +22,8 @@
 #include "gegl-buffer.h"
 #include "opencl/gegl-cl.h"
 
+G_BEGIN_DECLS
+
 #define GEGL_CL_BUFFER_MAX_ITERATORS 6
 
 enum
@@ -72,4 +74,7 @@ GeglBufferClIterator *gegl_buffer_cl_iterator_new (GeglBuffer          *buffer,
                                                    const GeglRectangle *roi,
                                                    const Babl          *format,
                                                    guint                flags);
+
+G_END_DECLS
+
 #endif

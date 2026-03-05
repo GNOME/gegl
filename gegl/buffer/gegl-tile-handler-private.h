@@ -19,6 +19,8 @@
 #ifndef __GEGL_TILE_HANDLER_PRIVATE_H__
 #define __GEGL_TILE_HANDLER_PRIVATE_H__
 
+G_BEGIN_DECLS
+
 void   _gegl_tile_handler_set_tile_storage (GeglTileHandler      *handler,
                                             GeglTileStorage      *tile_storage);
 void   _gegl_tile_handler_set_cache        (GeglTileHandler      *handler,
@@ -26,5 +28,7 @@ void   _gegl_tile_handler_set_cache        (GeglTileHandler      *handler,
 
 GeglTileStorage      * _gegl_tile_handler_get_tile_storage (GeglTileHandler *handler);
 GeglTileHandlerCache * _gegl_tile_handler_get_cache        (GeglTileHandler *handler);
+
+G_END_DECLS
 
 #endif

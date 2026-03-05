@@ -20,13 +20,12 @@
 #ifndef __GEGL_CPU_ACCEL_PRIV_H__
 #define __GEGL_CPU_ACCEL_PRIV_H__
 
-G_BEGIN_DECLS
-
 #include "gegl-cpuaccel.h"
+
+G_BEGIN_DECLS
 
 /* for internal use only */
 void               gegl_cpu_accel_set_use     (gboolean use);
-
 
 G_END_DECLS
 

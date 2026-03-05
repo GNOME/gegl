@@ -21,6 +21,8 @@
 
 #include <glib.h>
 
+G_BEGIN_DECLS
+
 typedef enum
 {
   GEGL_RUN_MODE_HELP,
@@ -60,5 +62,7 @@ GeglOptions *gegl_options_parse (gint    argc,
 /* used to let the file member traverse the files list back and forth */
 gboolean gegl_options_next_file (GeglOptions *o);
 gboolean gegl_options_previous_file (GeglOptions *o);
+
+G_END_DECLS
 
 #endif

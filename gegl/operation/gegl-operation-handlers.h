@@ -19,6 +19,8 @@
 #ifndef __GEGL_OPERATION_HANDLERS_H__
 #define __GEGL_OPERATION_HANDLERS_H__
 
+G_BEGIN_DECLS
+
 gboolean      gegl_operation_handlers_register_loader (const gchar *content_type,
                                                        const gchar *handler);
 
@@ -28,5 +30,7 @@ gboolean      gegl_operation_handlers_register_saver  (const gchar *content_type
 const gchar * gegl_operation_handlers_get_loader      (const gchar *content_type);
 
 const gchar * gegl_operation_handlers_get_saver       (const gchar *content_type);
+
+G_END_DECLS
 
 #endif

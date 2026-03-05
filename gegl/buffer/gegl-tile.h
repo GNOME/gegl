@@ -22,6 +22,8 @@
 #include <glib-object.h>
 #include "gegl-buffer-backend.h"
 
+G_BEGIN_DECLS
+
 GeglTile   * gegl_tile_new            (gint             size);
 GeglTile   * gegl_tile_new_bare       (void);
 GeglTile   * gegl_tile_ref            (GeglTile         *tile);
@@ -74,5 +76,6 @@ void         gegl_tile_set_unlock_notify
                                        GeglTileCallback  unlock_notify,
                                        gpointer          unlock_notify_data);
 
+G_END_DECLS
 
 #endif

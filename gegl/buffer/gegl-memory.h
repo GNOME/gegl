@@ -17,6 +17,7 @@
 #ifndef __GEGL_MEMORY_H__
 #define __GEGL_MEMORY_H__
 
+G_BEGIN_DECLS
 
 /***
  * Aligned memory:
@@ -91,5 +92,6 @@ void       gegl_memset_pattern (gpointer      dst_ptr,
                                 gint          pattern_size,
                                 gint          count);
 
+G_END_DECLS
 
 #endif  /* __GEGL_MEMORY_H__ */

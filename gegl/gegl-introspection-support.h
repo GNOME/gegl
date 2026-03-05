@@ -29,6 +29,8 @@
 
 #include <gegl-types.h>
 
+G_BEGIN_DECLS
+
  /**
  * gegl_format:
  * @format_name: A Babl format name, e.g. "RGBA float"
@@ -157,5 +159,8 @@ void           gegl_buffer_introspectable_set (GeglBuffer          *buffer,
                                                const gchar         *format_name,
                                                const guchar        *src,
                                                gint                 src_length);
+
+G_END_DECLS
+
 #endif /* __GEGL_INTROSPECTION_SUPPORT_H__ */
 

@@ -21,6 +21,8 @@
 
 #include "gegl-cl-types.h"
 
+G_BEGIN_DECLS
+
 const char *      gegl_cl_errstring(cl_int err);
 
 gboolean          gegl_cl_init (GError **error);
@@ -178,5 +180,7 @@ extern t_clEnqueueAcquireGLObjects gegl_clEnqueueAcquireGLObjects;
 extern t_clEnqueueReleaseGLObjects gegl_clEnqueueReleaseGLObjects;
 
 #endif
+
+G_END_DECLS
 
 #endif  /* __GEGL_CL_INIT_H__ */

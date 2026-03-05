@@ -19,6 +19,8 @@
 #ifndef __GEGL_EXTENSION_HANDLER_H__
 #define __GEGL_EXTENSION_HANDLER_H__
 
+G_BEGIN_DECLS
+
 /* similar to gegl_extension_handler_register_loader(), kept for
  * compatibility reasons, do NOT use in newly written code.
  * TODO: remove this function in future versions!
@@ -53,5 +55,7 @@ const gchar * gegl_extension_handler_get_loader      (const gchar *extension) G_
  * TODO: remove this function in future versions!
  */
 const gchar * gegl_extension_handler_get_saver       (const gchar *extension) G_GNUC_DEPRECATED;
+
+G_END_DECLS
 
 #endif

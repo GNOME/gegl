@@ -22,6 +22,8 @@
 
 #include "gegl-buffer.h"
 
+G_BEGIN_DECLS
+
 #define GEGL_BUFFER_READ      GEGL_ACCESS_READ
 #define GEGL_BUFFER_WRITE     GEGL_ACCESS_WRITE
 #define GEGL_BUFFER_READWRITE GEGL_ACCESS_READWRITE
@@ -146,6 +148,6 @@ void                 gegl_buffer_iterator_stop  (GeglBufferIterator *iterator);
  */
 gboolean             gegl_buffer_iterator_next (GeglBufferIterator *iterator);
 
-
+G_END_DECLS
 
 #endif

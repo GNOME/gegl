@@ -17,10 +17,13 @@
  */
 
 #include "config.h"
-#include "gegl-path-smooth.h"
-#include <gegl.h>
-#include "gegl-path.h"
+
 #include <math.h>
+
+#include <gegl.h>
+
+#include "gegl-path.h"
+#include "gegl-path-smooth.h"
 
 static GeglPathList *
 points_to_bezier_path (gdouble  coord_x[],

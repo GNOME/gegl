@@ -19,6 +19,8 @@
 #ifndef __GEGL_GRAPH_TRAVERSAL_PRIVATE_H__
 #define __GEGL_GRAPH_TRAVERSAL_PRIVATE_H__
 
+G_BEGIN_DECLS
+
 struct _GeglGraphTraversal
 {
   GHashTable *contexts;
@@ -26,5 +28,7 @@ struct _GeglGraphTraversal
   gboolean    rects_dirty;
   GeglBuffer *shared_empty;
 };
+
+G_END_DECLS
 
 #endif /* __GEGL_GRAPH_TRAVERSAL_PRIVATE_H__ */

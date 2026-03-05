@@ -22,6 +22,8 @@
 #include <gegl.h>
 #include "gegl-cl-types.h"
 
+G_BEGIN_DECLS
+
 typedef enum
 {
   GEGL_CL_COLOR_NOT_SUPPORTED = 0,
@@ -50,5 +52,7 @@ gboolean      gegl_cl_color_conv (cl_mem        in_tex,
                                   const size_t  size,
                                   const Babl   *in_format,
                                   const Babl   *out_format);
+
+G_END_DECLS
 
 #endif

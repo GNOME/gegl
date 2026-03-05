@@ -18,6 +18,8 @@
 #ifndef __GEGL_GRAPH_TRAVERSAL_H__
 #define __GEGL_GRAPH_TRAVERSAL_H__
 
+G_BEGIN_DECLS
+
 typedef struct _GeglGraphTraversal GeglGraphTraversal;
 
 GeglGraphTraversal *gegl_graph_build            (GeglNode            *node);
@@ -33,5 +35,7 @@ GeglBuffer         *gegl_graph_process          (GeglGraphTraversal  *path,
                                                  gint                 level);
 
 GeglRectangle       gegl_graph_get_bounding_box (GeglGraphTraversal  *path);
+
+G_END_DECLS
 
 #endif /* __GEGL_GRAPH_TRAVERSAL_H__ */

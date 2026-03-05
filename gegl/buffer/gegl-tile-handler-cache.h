@@ -21,6 +21,8 @@
 
 #include "gegl-tile-handler.h"
 
+G_BEGIN_DECLS
+
 /***
  * GeglTileHandlerCache is a GeglTileHandler that cache recently used tiles in memory.
  */
@@ -82,5 +84,7 @@ gint              gegl_tile_handler_cache_get_hits               (void);
 gint              gegl_tile_handler_cache_get_misses             (void);
 
 void              gegl_tile_handler_cache_reset_stats            (void);
+
+G_END_DECLS
 
 #endif

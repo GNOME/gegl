@@ -28,6 +28,8 @@
 
 #include "opencl/gegl-cl.h"
 
+G_BEGIN_DECLS
+
 cl_mem
 gegl_buffer_cl_cache_get (GeglBuffer          *buffer,
                           const GeglRectangle *roi);
@@ -51,5 +53,7 @@ gegl_buffer_cl_cache_flush2 (GeglTileHandlerCache *cache,
 void
 gegl_buffer_cl_cache_invalidate (GeglBuffer          *buffer,
                                  const GeglRectangle *roi);
+
+G_END_DECLS
 
 #endif

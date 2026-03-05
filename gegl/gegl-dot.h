@@ -21,6 +21,7 @@
 
 #include "gegl.h"
 
+G_BEGIN_DECLS
 
 gchar *gegl_to_dot                       (GeglNode       *node);
 void   gegl_dot_util_add_node            (GString        *string,
@@ -33,5 +34,6 @@ void   gegl_dot_node_to_png              (GeglNode       *node,
                                           const gchar    *png_path);
 void   gegl_dot_node_to_png_default      (GeglNode       *node);
 
+G_END_DECLS
 
 #endif

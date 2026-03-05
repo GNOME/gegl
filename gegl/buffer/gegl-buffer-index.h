@@ -7,6 +7,7 @@ GeglBuffer on disk representation
 
 */
 
+G_BEGIN_DECLS
 
 /* Increase this number when the structures change.*/
 #define GEGL_FILE_SPEC_REV     0
@@ -143,5 +144,7 @@ GList          *gegl_buffer_read_index (int      i,
   {struct_check_padding (GeglBufferBlock, 16);\
   struct_check_padding (GeglBufferHeader, 256);}
 #define GEGL_BUFFER_SANITY {static gboolean done=FALSE;if(!done){GEGL_BUFFER_STRUCT_CHECK_PADDING;done=TRUE;}}
+
+G_END_DECLS
 
 #endif

@@ -45,6 +45,8 @@ SOFTWARE.
 #ifndef __GEGL_REGION_GENERIC_H__
 #define __GEGL_REGION_GENERIC_H__
 
+G_BEGIN_DECLS
+
 typedef GeglSegment GeglRegionBox;
 
 /*
@@ -167,5 +169,7 @@ typedef struct _POINTBLOCK {
   GeglPoint pts[NUMPTSTOBUFFER];
   struct _POINTBLOCK *next;
 } POINTBLOCK;
+
+G_END_DECLS
 
 #endif /* __GEGL_REGION_GENERIC_H__ */

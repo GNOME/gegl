@@ -19,6 +19,7 @@
 #ifndef __GEGL_VERSION_H__
 #define __GEGL_VERSION_H__
 
+G_BEGIN_DECLS
 
 /***
  * GEGL version information:
@@ -50,5 +51,6 @@ void           gegl_get_version          (int *major,
                                           int *minor,
                                           int *micro);
 
+G_END_DECLS
 
 #endif

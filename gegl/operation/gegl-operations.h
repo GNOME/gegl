@@ -22,6 +22,8 @@
 
 #include <glib-object.h>
 
+G_BEGIN_DECLS
+
 /* Used to look up the gtype when changing the type of operation associated
  * a GeglNode using just a string with the registered name.
  */
@@ -35,5 +37,7 @@ void       gegl_operation_class_register_name (GeglOperationClass *klass,
                                                const gboolean      is_compat);
 
 void       gegl_operations_set_licenses_from_string (const gchar *license_str);
+
+G_END_DECLS
 
 #endif

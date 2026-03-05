@@ -19,6 +19,7 @@
 #ifndef __GEGL_TILE_ALLOC_H__
 #define __GEGL_TILE_ALLOC_H__
 
+G_BEGIN_DECLS
 
 void       gegl_tile_alloc_init      (void);
 void       gegl_tile_alloc_cleanup   (void);
@@ -33,5 +34,6 @@ void       gegl_tile_free            (gpointer ptr);
 
 guint64    gegl_tile_alloc_get_total (void);
 
+G_END_DECLS
 
 #endif /* __GEGL_TILE_ALLOC_H__ */

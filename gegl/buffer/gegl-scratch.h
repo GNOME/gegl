@@ -19,6 +19,7 @@
 #ifndef __GEGL_SCRATCH_H__
 #define __GEGL_SCRATCH_H__
 
+G_BEGIN_DECLS
 
 /**
  * gegl_scratch_alloc: (skip)
@@ -98,5 +99,6 @@ void       gegl_scratch_free   (gpointer ptr);
   ((type *) (gegl_scratch_alloc0 (_GEGL_SCRATCH_MUL (sizeof (type), \
                                                     (gsize) (n)))))
 
+G_END_DECLS
 
 #endif /* __GEGL_SCRATCH_H__ */

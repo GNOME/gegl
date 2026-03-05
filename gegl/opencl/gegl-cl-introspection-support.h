@@ -1,3 +1,4 @@
+G_BEGIN_DECLS
 
  /**
  * gegl_cl_init:
@@ -25,3 +26,5 @@ gboolean          gegl_cl_is_accelerated (void);
  * Disable OpenCL
  */
 void              gegl_cl_disable (void);
+
+G_END_DECLS

@@ -21,6 +21,8 @@
 
 #include <glib-object.h>
 
+G_BEGIN_DECLS
+
 void gegl_operation_class_set_property_key (GeglOperationClass *klass,
                                             const gchar        *property_name,
                                             const gchar        *key_name,
@@ -30,5 +32,7 @@ const gchar *
 gegl_operation_class_get_property_key (GeglOperationClass *operation_class,
                                        const gchar        *property_name,
                                        const gchar        *key_name);
+
+G_END_DECLS
 
 #endif
