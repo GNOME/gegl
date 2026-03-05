@@ -61,7 +61,7 @@ property_double (highlights_ccorrect, _("Highlights color adjustment"), 50.0)
 
 #include <gegl-plugin.h>
 
-struct _GeglOp_shadows_highlights
+struct _GeglOp
 {
   GeglOperationMeta parent_instance;
   gpointer          properties;

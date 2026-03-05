@@ -71,7 +71,7 @@ property_int    (height, _("Height"), 0)
 #include <pango/pangocairo.h>
 
 /* XXX: this struct is unneeded and could be folded directly into
- * struct _GeglOp_text
+ * struct _GeglOp
  */
 typedef struct {
   gchar         *string;
@@ -84,7 +84,7 @@ typedef struct {
   GeglRectangle  defined;
 } CachedExtent;
 
-struct _GeglOp_text
+struct _GeglOp
 {
   GeglOperationSource parent_instance;
   gpointer            properties;

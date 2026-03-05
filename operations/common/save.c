@@ -35,7 +35,7 @@ property_object (metadata, _("Metadata"), GEGL_TYPE_METADATA)
 
 #include "gegl-plugin.h"
 
-struct _GeglOp_save
+struct _GeglOp
 {
   GeglOperationSink  parent_instance;
   gpointer           properties;

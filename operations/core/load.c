@@ -41,7 +41,7 @@ property_object (metadata, _("Metadata"), GEGL_TYPE_METADATA)
 #include <gegl-plugin.h>
 #include <gegl-gio-private.h>
 
-struct _GeglOp_load
+struct _GeglOp
 {
   GeglOperationMeta parent_instance;
   gpointer          properties;
