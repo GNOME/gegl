@@ -39,7 +39,7 @@ property_double (sigma, _("Weight sigma"), 8.0f)
 /*#define DEBUG_SAVE_CURVES*/
 
 #include <gegl-plugin.h>
-struct _GeglOp
+struct _GeglOp_exp_combine
 {
   GeglOperationFilter parent_instance;
   gpointer            properties;

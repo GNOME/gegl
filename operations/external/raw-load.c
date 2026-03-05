@@ -44,7 +44,7 @@ property_int (quality, "quality", 10)
 #else
 
 #include "gegl-plugin.h"
-struct _GeglOp
+struct _GeglOp_raw_load
 {
   GeglOperationSource parent_instance;
   gpointer            properties;

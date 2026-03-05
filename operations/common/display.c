@@ -34,7 +34,7 @@ property_string  (window_title, _("Window title"), "window_title")
  * Will use one of several well-known display operations 
  * to actually display the output. */
 
-struct _GeglOp
+struct _GeglOp_display
 {
   GeglOperationSink parent_instance;
   gpointer          properties;

@@ -52,7 +52,7 @@ property_file_path(src, _("Source"), "")
 #else
 
 #include <gegl-plugin.h>
-struct _GeglOp
+struct _GeglOp_layer
 {
   GeglOperationMeta parent_instance;
   gpointer          properties;
