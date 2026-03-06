@@ -250,28 +250,28 @@ process (GeglOperation       *operation,
 
   /* Add 8 neighbours. */
   gegl_buffer_iterator_add (iter, input,
-                            GEGL_RECTANGLE (-1, -1, extent->width, extent->height),
+                            GEGL_RECTANGLE (extent->x - 1, extent->y - 1, extent->width, extent->height),
                             0, labels_format, GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
   gegl_buffer_iterator_add (iter, input,
-                            GEGL_RECTANGLE (0, -1, extent->width, extent->height),
+                            GEGL_RECTANGLE (extent->x, extent->y - 1, extent->width, extent->height),
                             0, labels_format, GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
   gegl_buffer_iterator_add (iter, input,
-                            GEGL_RECTANGLE (1, -1, extent->width, extent->height),
+                            GEGL_RECTANGLE (extent->x + 1, extent->y - 1, extent->width, extent->height),
                             0, labels_format, GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
   gegl_buffer_iterator_add (iter, input,
-                            GEGL_RECTANGLE (-1, 0, extent->width, extent->height),
+                            GEGL_RECTANGLE (extent->x - 1, extent->y, extent->width, extent->height),
                             0, labels_format, GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
   gegl_buffer_iterator_add (iter, input,
-                            GEGL_RECTANGLE (1, 0, extent->width, extent->height),
+                            GEGL_RECTANGLE (extent->x + 1, extent->y, extent->width, extent->height),
                             0, labels_format, GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
   gegl_buffer_iterator_add (iter, input,
-                            GEGL_RECTANGLE (-1, 1, extent->width, extent->height),
+                            GEGL_RECTANGLE (extent->x -1, extent->y + 1, extent->width, extent->height),
                             0, labels_format, GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
   gegl_buffer_iterator_add (iter, input,
-                            GEGL_RECTANGLE (0, 1, extent->width, extent->height),
+                            GEGL_RECTANGLE (extent->x, extent->y + 1, extent->width, extent->height),
                             0, labels_format, GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
   gegl_buffer_iterator_add (iter, input,
-                            GEGL_RECTANGLE (1, 1, extent->width, extent->height),
+                            GEGL_RECTANGLE (extent->x + 1, extent->y + 1, extent->width, extent->height),
                             0, labels_format, GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
   /* Priority map: lower is higher priority. */
   if (aux)
@@ -311,13 +311,13 @@ process (GeglOperation       *operation,
               {
                 for (j = 0; j < 8; j++)
                   {
-                    if (x == 0 && (j == 0 || j == 3 || j == 5))
+                    if (x == extent->x && (j == 0 || j == 3 || j == 5))
                       continue;
-                    if (y == 0 && (j == 0 || j == 1 || j == 2))
+                    if (y == extent->y && (j == 0 || j == 1 || j == 2))
                       continue;
-                    if (x == extent->width - 1 && (j == 2 || j == 4 || j == 7))
+                    if (x == extent->x + extent->width - 1 && (j == 2 || j == 4 || j == 7))
                       continue;
-                    if (y == extent->height - 1 && (j == 5 || j == 6 || j == 7))
+                    if (y == extent->y + extent->height - 1 && (j == 5 || j == 6 || j == 7))
                       continue;
 
                     flagged = TRUE;
@@ -382,7 +382,8 @@ process (GeglOperation       *operation,
           gint      ny = p->y + neighbors_coords[j][1];
           gboolean  flagged = TRUE;
 
-          if (nx < 0 || nx >= extent->width || ny < 0 || ny >= extent->height)
+          if (nx < extent->x || nx >= extent->x + extent->width ||
+              ny < extent->y || ny >= extent->y + extent->height)
             continue;
 
           neighbor_label = square3x3 + ((neighbors_coords[j][0] + 1) + (neighbors_coords[j][1] + 1) * 3) * bpp;
