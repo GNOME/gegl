@@ -2171,13 +2171,12 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
       gint    buf_width, buf_height;
       gint    y1 = int_floorf (rect2.y / scale_orig + GEGL_SCALE_EPSILON);
       gint    y2 = int_ceilf ((rect2.y + rect2.height) / scale_orig - GEGL_SCALE_EPSILON);
-      scale = scale_orig;
 
-      while (scale <= 0.5)
+      /* Loop the same number of times as for x1, x2. */
+      for (gint i = factor; i > 1; i /= 2)
         {
           y1 = 0 < y1 ? y1 / 2 : (y1 - 1) / 2;
           y2 = 0 < y2 ? (y2 + 1) / 2 : y2 / 2;
-          scale  *= 2;
         }
 
       if (rowstride == GEGL_AUTO_ROWSTRIDE)
