@@ -4,13 +4,13 @@
 #
 # Softcatala <gimp a llistes.softcatala.org>, 2000-2013.
 # Albert F. <lakonfrariadelavila@gmail.com>, 2012, 2014.
-# Jordi Mas i Hernàndez <jmas@softcatala.org>, 2015-2025
+# Jordi Mas i Hernàndez <jmas@softcatala.org>, 2015-2026
 msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
 "POT-Creation-Date: 2025-02-16 18:03+0000\n"
-"PO-Revision-Date: 2025-08-17 10:52+0200\n"
+"PO-Revision-Date: 2026-03-07 10:52+0200\n"
 "Last-Translator: Jordi Mas i Hernàndez <jmas@softcatala.org>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "Language: ca\n"
@@ -1039,7 +1039,7 @@ msgstr "Millora les ombres"
 #: operations/common/c2g.c:49
 msgid "When enabled details in shadows are boosted at the expense of noise"
 msgstr ""
-"Quan s'habiliten els detalls a les ombres s'acceleren a expenses del soroll"
+"Quan s'habiliten els detalls a les ombres s'incrementen a costa del soroll"
 
 #: operations/common/c2g.c:461
 msgid ""
@@ -1235,7 +1235,7 @@ msgstr ""
 
 #: operations/common/color-overlay.c:27 operations/common/inner-glow.c:81
 msgid "The color to paint over the input"
-msgstr "El color del dibuix sobre l'entrada"
+msgstr "El color a pintar sobre l'entrada"
 
 #: operations/common/color-overlay.c:30 operations/common/over.c:25
 #: operations/common/sepia.c:28 operations/generated/clear.c:38
@@ -2106,7 +2106,7 @@ msgstr "Detecció de vores Sobel"
 
 #: operations/common/edge-sobel.c:401
 msgid "Specialized direction-dependent edge detection"
-msgstr "Detecció de vores especialitzada basat en la direcció"
+msgstr "Detecció de vores especialitzada basada en la direcció"
 
 #: operations/common/exp-combine.c:25
 msgid "Exposure values"
@@ -2158,7 +2158,7 @@ msgstr "Exposició"
 
 #: operations/common/exposure.c:31
 msgid "Relative brightness change in stops"
-msgstr "La brillantor relativa varia en els diafragmes"
+msgstr "Canvi relatiu de la brillantor a les parades"
 
 #: operations/common/exposure.c:484
 msgid "Change exposure of an image in shutter speed stops"
