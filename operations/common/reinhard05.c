@@ -130,8 +130,8 @@ reinhard05_process (GeglOperation       *operation,
   const Babl *space = gegl_operation_get_format (operation, "output"); /* the format is sufficent */
   const GeglProperties *o = GEGL_PROPERTIES (operation);
 
-  const gint  pix_stride = 4, /* RGBA */
-              RGB        = 3;
+  const gint  pix_stride = 4; /* RGBA */
+#define       RGB          3
 
   gfloat *lum,
          *pix;
