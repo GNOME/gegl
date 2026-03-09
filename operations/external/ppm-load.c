@@ -94,7 +94,7 @@ read_line(GInputStream *stream, char *buffer, gsize max_length)
 static gint64
 read_value(GInputStream *stream)
 {
-    static const int MAX_CHARS = 20;
+#define MAX_CHARS 20
     char buffer[MAX_CHARS];
     gssize read = read_until(stream, buffer, MAX_CHARS, " \n", 2);
 
