@@ -134,7 +134,7 @@ error_fn(png_structp png_ptr, png_const_charp msg)
 static gboolean
 check_valid_png_header(GInputStream *stream, GError **err)
 {
-  const size_t hdr_size=8;
+#define hdr_size 8
   gssize hdr_read_size;
   unsigned char header[hdr_size];
 
@@ -163,6 +163,7 @@ check_valid_png_header(GInputStream *stream, GError **err)
       g_set_error(err, error_quark(), LOAD_PNG_WRONG_HEADER, "wrong png header");
       return FALSE;
     }
+#undef hdr_size
   return TRUE;
 }
 
