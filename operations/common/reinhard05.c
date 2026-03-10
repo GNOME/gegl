@@ -250,6 +250,7 @@ reinhard05_process (GeglOperation       *operation,
                    GEGL_AUTO_ROWSTRIDE);
   g_free (pix);
   g_free (lum);
+#undef RGB
 
   return TRUE;
 }

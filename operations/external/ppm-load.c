@@ -103,6 +103,7 @@ read_value(GInputStream *stream)
         // delimiter only, try read next value
         read = read_until(stream, buffer, MAX_CHARS, " \n", 2);
       }
+#undef MAX_CHARS 
 
     if (read <= 0)
       {
