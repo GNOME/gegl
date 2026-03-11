@@ -351,9 +351,18 @@ gegl_exr_save_process (GeglOperation       *operation,
    * ignored. Always write a file width x height; @todo: check if exr
    * can set the origin.
    */
-  void *pixels
-    = g_malloc (rect->width * rect->height * n_components * (int)(bits_per_component/8));
-  if (pixels == 0)
+  gsize bytes_per_component = bits_per_component / 8;
+  gsize pixel_bytes = bytes_per_component;
+  if (!g_size_checked_mul (&pixel_bytes, pixel_bytes, (gsize)n_components) ||
+      !g_size_checked_mul (&pixel_bytes, pixel_bytes, (gsize)rect->width) ||
+      !g_size_checked_mul (&pixel_bytes, pixel_bytes, (gsize)rect->height))
+  {
+    g_warning ("exr-save: refusing to allocate %d×%d×%u×%u bytes due to overflow",
+               rect->width, rect->height, n_components, (unsigned)bytes_per_component);
+    return FALSE;
+  }
+  void *pixels = g_try_malloc (pixel_bytes);
+  if (!pixels)
     {
       g_warning ("exr-save: could not allocate %d*%d*%d*%d pixels.",
         rect->width, rect->height, n_components, (int)(bits_per_component/8));
