@@ -1,3 +1,38 @@
+GEGL-0.4.68 2026-03-11
+----------------------
+
+Buffer:
+-------
+ - fix of a crash due to float/double precision differences
+
+Ops:
+----
+ - vibrance: new op to cater for PSD adjustments layers compatibility.
+ - tile-glass: handle buffers with negative offsets.
+ - watershed-transform: handle buffers with negative offsets; which impacted gegl:waterpixels done on selections in GIMP.
+ - rgbe-load: fix runlength induced buffer overflow
+
+Build:
+------
+ - tooling for verifying exported symbols.
+ - relocatable build for OSX
+ - improved UCRT conditional macros
+ - fix C++ symbol clashes when using link time optimization
+
+OpenCL:
+-------
+ - expose profiling hooks
+
+Contributors to this release, including translators:
+----------------------------------------------------
+
+Akascape, Alexander Alexandrov Shopov, Anders Jonsson, Asier Saratsua Garmendia,
+balooii balooii, Bruce Cowan, Bruno Lopes, dimspingos, Ekaterine Papava,
+Gabriele Barbero, HaroldKnowlden, Jacob Boerema, Jan Palus, Jan Tojnar,
+Jehan, Jordi Mas, luming zh, Marco Ciampa, Marcos Patrick, Martin,
+Ondřej Míchal, Øyvind Kolås, Sabri Ünal, YOSHIDA Shigeto and Yuri Chornoivan.
+
+
 GEGL-0.4.66 2025-12-11
 ----------------------
 
@@ -10,7 +45,7 @@ Ops:
  - gif-load: don't embed libnsgif directly
 
 Dependencies:
-----
+-------------
  - libnsgif: support using distro provided lib.
  - ctx: synchronize with ctx-0.1.14
 
