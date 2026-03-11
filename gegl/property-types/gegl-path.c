@@ -809,6 +809,11 @@ gegl_path_parse_string (GeglPath    *vector,
       gchar            type = *p;
       InstructionInfo *info = lookup_instruction_info(type);
 
+      int do_increment = 0;
+
+      if (info)
+        do_increment = 1;
+
       if (!info && ((type>= '0' && type <= '9') || type == '-'))
         {
           if (previnfo && previnfo->type == 'M')
@@ -832,21 +837,29 @@ gegl_path_parse_string (GeglPath    *vector,
                 /* coordinates are ignored, all of these could have used add3)*/
                 break;
               case 2:
+                if (*p && do_increment)
+                  p++;
                 p = parse_float_pair (p, &x0, &y0);
                 priv->path = gegl_path_list_append (priv->path, type, x0, y0);
                 continue;
               case 4:
+                if (*p && do_increment)
+                  p++;
                 p = parse_float_pair (p, &x0, &y0);
                 p = parse_float_pair (p, &x1, &y1);
                 priv->path = gegl_path_list_append (priv->path, type, x0, y0, x1, y1);
                 continue;
               case 6:
+                if (*p && do_increment)
+                  p++;
                 p = parse_float_pair (p, &x0, &y0);
                 p = parse_float_pair (p, &x1, &y1);
                 p = parse_float_pair (p, &x2, &y2);
                 priv->path = gegl_path_list_append (priv->path, type, x0, y0, x1, y1, x2, y2);
                 continue;
               default:
+                if (*p && do_increment)
+                  p++;
                 g_warning ("parsing of data %i items not implemented\n", info->n_items);
                 continue;
             }
