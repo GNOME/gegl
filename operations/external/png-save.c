@@ -335,7 +335,14 @@ export_png (GeglOperation       *operation,
   if (bit_depth > 8)
     png_set_swap (png);
 #endif
-  pixels = g_malloc0 (width * babl_format_get_bytes_per_pixel (format));
+  gsize row_bytes = 0;
+  const gsize bpp = babl_format_get_bytes_per_pixel (format);
+  if (!g_size_checked_mul (&row_bytes, (gsize)width, bpp))
+  {
+    g_warning ("png-save: refusing to allocate row buffer for width %u", (guint)width);
+    return -1;
+  }
+  pixels = g_malloc0 (row_bytes);
 
   for (i=0; i< height; i++)
     {
