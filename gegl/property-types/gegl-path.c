@@ -361,9 +361,9 @@ gegl_path_to_string (GeglPath  *vector)
       g_string_append_c (str, iter->d.type);
       for (i=0;i<(info->n_items+1)/2;i++)
         {
-          gchar buf[16];
+          gchar buf[G_ASCII_DTOSTR_BUF_SIZE];
           gchar *eptr;
-          g_sprintf (buf, "%f", iter->d.point[i].x);
+          g_ascii_dtostr (buf, sizeof buf, iter->d.point[i].x);
 
           for (eptr = &buf[strlen(buf)-1];eptr != buf && (*eptr=='0');eptr--)
               *eptr='\0';
@@ -376,7 +376,7 @@ gegl_path_to_string (GeglPath  *vector)
           if (info->n_items>1)
             {
               g_string_append_printf (str, "%s,", buf);
-              sprintf (buf, "%f", iter->d.point[i].y);
+              g_ascii_dtostr (buf, sizeof buf, iter->d.point[i].y);
 
               for (eptr = &buf[strlen(buf)-1];eptr != buf && (*eptr=='0');eptr--)
                   *eptr='\0';
