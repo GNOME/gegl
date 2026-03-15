@@ -30,7 +30,7 @@ Needs the tool "nm", "objdump" or "dumpbin" to work
 
 import os, sys, subprocess, shutil
 
-from os import path
+from os import getenv, path
 
 def_files = sys.argv[1:]
 
@@ -56,7 +56,7 @@ ignore_sorting_errors = [
 have_errors = 0
 
 libextension   = ".so"
-command        = "nm --defined-only --extern-only "
+command        = getenv("NM", default="nm") + " --defined-only --extern-only "
 libprefix      = "lib"
 platform_linux = True
 

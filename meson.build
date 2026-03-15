@@ -662,6 +662,8 @@ subdir('docs')
 
 
 if not os_osx and host_cpu_family != 'x86'
+  nm = find_program('nm', required: false)
+
   # Verify .def files for Windows linking.
   # We check this on non-Windows platform on CI, and on Windows itself.
   custom_target('check-def-files',
@@ -675,6 +677,7 @@ if not os_osx and host_cpu_family != 'x86'
       gegl_npd_lib,
       seamlessclone_lib
     ],
+    env: nm.found() ? { 'NM': nm.full_path() } : {},
     output: [ 'check-def-files', ],
     command: [
       python, meson.project_source_root() / 'tools' / 'defcheck.py', '@INPUT@',
