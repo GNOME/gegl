@@ -190,9 +190,17 @@ export_png (GeglOperation       *operation,
   }
 
   if (bit_depth == 16)
+#ifndef _UCRT
     strcat (format_string, "u16");
+#else
+    strcat_s (format_string, sizeof(format_string), "u16");
+#endif
   else
+#ifndef _UCRT
     strcat (format_string, "u8");
+#else
+    strcat_s (format_string, sizeof(format_string), "u8");
+#endif
 
   if (setjmp (png_jmpbuf (png)))
     return -1;
