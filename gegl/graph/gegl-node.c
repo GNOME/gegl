@@ -332,7 +332,7 @@ gegl_node_local_set_property (GObject      *gobject,
                          * the preceding argument is NULL, gcc might warn about
                          * use of uninitialized variable.
                          */
-#if defined(__GNUC__)
+#if defined(__GNUC__) || defined(_MSC_VER) 
           memset(&null, 0, sizeof(null));
 #endif
           gegl_node_set_op_class (node, g_value_get_string (value), NULL, null);
