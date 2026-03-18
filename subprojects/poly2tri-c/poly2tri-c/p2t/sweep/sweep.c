@@ -986,6 +986,7 @@ p2t_sweep_next_flip_point (P2tSweep *THIS, P2tPoint* ep, P2tPoint* eq, P2tTriang
       /*throw new RuntimeException("[Unsupported] Opposing point on constrained edge");*/
       assert (0);
     }
+  return NULL;
 }
 
 void

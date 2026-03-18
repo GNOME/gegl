@@ -310,6 +310,7 @@ p2t_triangle_index (P2tTriangle* THIS, const P2tPoint* p)
       return 2;
     }
   assert (0);
+  return -1;
 }
 
 int
@@ -400,6 +401,7 @@ p2t_triangle_point_cw (P2tTriangle* THIS, P2tPoint* point)
       return THIS->points_[1];
     }
   assert (0);
+  return NULL;
 }
 
 /* The point counter-clockwise to given point */
@@ -420,6 +422,7 @@ p2t_triangle_point_ccw (P2tTriangle* THIS, P2tPoint* point)
       return THIS->points_[0];
     }
   assert (0);
+  return NULL;
 }
 
 /* The neighbor clockwise to given point */
