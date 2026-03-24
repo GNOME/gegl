@@ -1,3 +1,27 @@
+GEGL-0.4.70 2025-03-24
+----------------------
+
+Core:
+-----
+ - GeglPath: avoid overflows when serializing paths with large coordinates
+ - GeglPath: avoid hang on parsing malformed paths.
+
+Ops:
+----
+ - png-save: avoid integer overflow when computing row_size
+ - exr-save: avoid integer overflow when computing width*height
+
+Build:
+------
+ - Improvements to defcheck, 
+ - More efforts to get rid of compiler warnings.
+
+Contributors to this release, including translators:
+----------------------------------------------------
+
+Alfred Wingate, Baurzhan Muftakhidinov, Bruno Lopes, Jehan, Luigino Camastra,
+Øyvind Kolås and Марко Костић.
+
 GEGL-0.4.68 2026-03-11
 ----------------------
 
