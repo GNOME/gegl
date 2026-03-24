@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2026-02-02 16:00+0000\n"
-"PO-Revision-Date: 2026-02-03 07:52+0100\n"
+"POT-Creation-Date: 2026-03-24 11:00+0000\n"
+"PO-Revision-Date: 2026-03-24 15:57+0100\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language: sl_SI\n"
@@ -659,7 +659,7 @@ msgid "Bump"
 msgstr "Odtisni"
 
 #: operations/common/bevel.c:54
-msgid "Bevel Type"
+msgid "Bevel type"
 msgstr "Vrsta izbočenosti"
 
 #: operations/common/bevel.c:57
@@ -701,7 +701,7 @@ msgid "Add"
 msgstr "Dodaj"
 
 #: operations/common/bevel.c:76 operations/common-gpl3+/sinus.c:67
-msgid "Blend Mode"
+msgid "Blend mode"
 msgstr "Način zlivanja"
 
 #: operations/common/bevel.c:79
@@ -716,7 +716,7 @@ msgstr ""
 "z možnostmi zlivanja Gimp."
 
 #: operations/common/bevel.c:81
-msgid "Distance Map Setting"
+msgid "Distance map setting"
 msgstr "Nastavitev zemljevida oddaljenosti"
 
 #: operations/common/bevel.c:83
@@ -734,7 +734,7 @@ msgstr ""
 #: operations/common/stress.c:27 operations/common/unsharp-mask.c:24
 #: operations/common/vignette.c:40 operations/common/wavelet-blur-1d.c:28
 #: operations/common/wavelet-blur.c:27 operations/common-cxx/focus-blur.c:85
-#: operations/common-cxx/lens-blur.cc:27
+#: operations/common-cxx/lens-blur.cc:28
 #: operations/common-cxx/variable-blur.c:30
 #: operations/common-gpl3+/shadows-highlights.c:40
 #: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:44
@@ -773,7 +773,7 @@ msgid "Emboss depth - Brings out depth and detail of the bump bevel."
 msgstr "Globina reliefa - pokaže globino in podrobnosti izbočenosti odtisa."
 
 #: operations/common/bevel.c:110
-msgid "Light Angle"
+msgid "Light angle"
 msgstr "Kot svetlobe"
 
 #: operations/common/bevel.c:111
@@ -803,7 +803,7 @@ msgstr "Izbočeno …"
 #: operations/common/bilateral-filter.c:26
 #: operations/common/domain-transform.c:29 operations/common/dropshadow.c:46
 #: operations/common/inner-glow.c:58 operations/common-cxx/focus-blur.c:45
-#: operations/common-cxx/lens-blur.cc:28
+#: operations/common-cxx/lens-blur.cc:29
 #: operations/common-gpl3+/gaussian-blur-selective.c:29
 #: operations/workshop/bilateral-filter-fast.c:43
 msgid "Blur radius"
@@ -1072,7 +1072,9 @@ msgstr "Navpična širina celic v slikovnih točkah."
 
 #: operations/common/checkerboard.c:42 operations/common/grid.c:38
 #: operations/common/mirrors.c:46 operations/common/pixelize.c:51
+#: operations/common-gpl3+/bayer-matrix.c:73
 #: operations/common-gpl3+/bump-map.c:62
+#: operations/common-gpl3+/linear-sinusoid.c:81
 #: operations/seamless-clone/seamless-clone.c:26
 #: operations/seamless-clone/seamless-clone-compose.c:25
 msgid "Offset X"
@@ -1084,7 +1086,9 @@ msgstr "Vodoravni odmik (od izvora) za začetek mreže."
 
 #: operations/common/checkerboard.c:48 operations/common/grid.c:44
 #: operations/common/mirrors.c:52 operations/common/pixelize.c:58
+#: operations/common-gpl3+/bayer-matrix.c:80
 #: operations/common-gpl3+/bump-map.c:68
+#: operations/common-gpl3+/linear-sinusoid.c:88
 #: operations/seamless-clone/seamless-clone.c:32
 #: operations/seamless-clone/seamless-clone-compose.c:31
 msgid "Offset Y"
@@ -2063,7 +2067,7 @@ msgid "Performs edge detection using a Gaussian derivative method"
 msgstr "Opravi zaznavo robov z Gaussovo metodo derivatov"
 
 #: operations/common/edge-sobel.c:31
-msgid "Keep Sign"
+msgid "Keep sign"
 msgstr "Ohrani predznak"
 
 #: operations/common/edge-sobel.c:32
@@ -2302,19 +2306,19 @@ msgstr "Pot ciljne datoteke za zapis GeglBuffer."
 msgid "GeglBuffer file writer."
 msgstr "Zapisovalnik datotek GeglBuffer."
 
-#: operations/common/gegl.c:72
+#: operations/common/gegl.c:73
 msgid "pipeline"
 msgstr "Cevovod"
 
-#: operations/common/gegl.c:73
+#: operations/common/gegl.c:74
 msgid "[op [property=value] [property=value]] [[op] [property=value]"
 msgstr "[op [lastnost=vrednost] [lastnost=vrednost]] [[op] [lastnost=vrednost]"
 
-#: operations/common/gegl.c:76
+#: operations/common/gegl.c:77
 msgid "Eeeeeek"
 msgstr "Bljak"
 
-#: operations/common/gegl.c:77
+#: operations/common/gegl.c:78
 msgid ""
 "There is a problem in the syntax or in the application of parsed property "
 "values. Things might mostly work nevertheless."
@@ -2322,11 +2326,11 @@ msgstr ""
 "Težava je v skladnji ali pri uporabi razčlenjenih vrednosti lastnosti. "
 "Stvari bi lahko kljub temu delovale."
 
-#: operations/common/gegl.c:179
+#: operations/common/gegl.c:180
 msgid "GEGL graph"
 msgstr "Grafikon GEGL"
 
-#: operations/common/gegl.c:182
+#: operations/common/gegl.c:183
 msgid ""
 "Do a chain of operations, with key=value pairs after each operation name to "
 "set properties. And aux=[ source filter ] for specifying a chain with a "
@@ -2373,8 +2377,8 @@ msgid "Grid renderer"
 msgstr "Upodobljevalnik mreže"
 
 #: operations/common/high-pass.c:24
-msgid "Std. Dev."
-msgstr "Stand. dev."
+msgid "Standard deviation"
+msgstr "Standardni odklon"
 
 #: operations/common/high-pass.c:31
 msgid "Contrast of high-pass"
@@ -3122,11 +3126,11 @@ msgstr "Visoka natančnost"
 msgid "Avoid clipping and quantization (slower)"
 msgstr "Izogni se porezavi in kvantizaciji (počasneje)"
 
-#: operations/common/median-blur.c:1003
+#: operations/common/median-blur.c:1000
 msgid "Median Blur"
 msgstr "Zabrisanost mediane"
 
-#: operations/common/median-blur.c:1006
+#: operations/common/median-blur.c:1003
 msgid ""
 "Blur resulting from computing the median color in the neighborhood of each "
 "pixel."
@@ -3253,15 +3257,15 @@ msgid "Preserve luminosity"
 msgstr "Ohrani svetlost"
 
 #: operations/common/mono-mixer.c:26
-msgid "Red Channel Multiplier"
+msgid "Red channel multiplier"
 msgstr "Množilnik rdečega kanala"
 
 #: operations/common/mono-mixer.c:30
-msgid "Green Channel Multiplier"
+msgid "Green channel multiplier"
 msgstr "Množilnik zelenega kanala"
 
 #: operations/common/mono-mixer.c:34
-msgid "Blue Channel Multiplier"
+msgid "Blue channel multiplier"
 msgstr "Množilnik modrega kanala"
 
 #: operations/common/mono-mixer.c:113
@@ -3752,7 +3756,7 @@ msgstr ""
 "frekvence, ki jih povzroča povečanje kota"
 
 #: operations/common/newsprint.c:178
-msgid "Angle Boost"
+msgid "Angle boost"
 msgstr "Kotna okrepitev"
 
 #: operations/common/newsprint.c:180
@@ -3982,7 +3986,7 @@ msgid "The amount by which to scale the height values"
 msgstr "Vrednost, za katero naj bo spremenjena velikost vrednosti višine"
 
 #: operations/common/normal-map.c:35
-msgid "X Component"
+msgid "X component"
 msgstr "Komponenta X"
 
 #: operations/common/normal-map.c:38
@@ -3990,7 +3994,7 @@ msgid "The component used for the X coordinates"
 msgstr "Komponenta za koordinate X"
 
 #: operations/common/normal-map.c:40
-msgid "Y Component"
+msgid "Y component"
 msgstr "Komponenta Y"
 
 #: operations/common/normal-map.c:43
@@ -4014,7 +4018,7 @@ msgid "Flip the Y coordinates"
 msgstr "Preobrni koordinate Y"
 
 #: operations/common/normal-map.c:51
-msgid "Full Z Range"
+msgid "Full Z range"
 msgstr "Poln obseg Z"
 
 #: operations/common/normal-map.c:52
@@ -4170,7 +4174,7 @@ msgstr "Razmerje navpične velikosti pike oz. točke v vsakem bloku"
 #: operations/common/pixelize.c:75 operations/common-gpl3+/apply-lens.c:44
 #: operations/common-gpl3+/cubism.c:39
 #: operations/common-gpl3+/lens-distortion.c:57
-#: operations/common-gpl3+/tile-paper.c:76
+#: operations/common-gpl3+/maze.c:71 operations/common-gpl3+/tile-paper.c:76
 msgid "Background color"
 msgstr "Barva ozadja"
 
@@ -4318,11 +4322,11 @@ msgstr "Svetlobna priredba"
 msgid "Adaptation to light variation across the image"
 msgstr "Prilagajanje svetlobni variaciji po celi sliki"
 
-#: operations/common/reinhard05.c:317
+#: operations/common/reinhard05.c:318
 msgid "Reinhard 2005 Tone Mapping"
 msgstr "Reinhard 2005 Preslikovanje tonov"
 
-#: operations/common/reinhard05.c:322
+#: operations/common/reinhard05.c:323
 msgid ""
 "Adapt an image, which may have a high dynamic range, for presentation using "
 "a low dynamic range. This is an efficient global operator derived from "
@@ -5360,7 +5364,7 @@ msgstr "Prostorska regularizacija"
 
 #: operations/common/waterpixels.c:49
 msgid ""
-"trade-off between superpixel regularity and adherence to object boundaries"
+"Trade-off between superpixel regularity and adherence to object boundaries"
 msgstr ""
 "Kompromis med regularnostjo slikovnih nadtočk in upoštevanjem meja predmeta"
 
@@ -5393,11 +5397,11 @@ msgstr "zastava"
 msgid "Pointer to flag value for unlabelled pixels"
 msgstr "Kazalec na vrednost zastavice za neoznačene slikovne točke"
 
-#: operations/common/watershed-transform.c:489
+#: operations/common/watershed-transform.c:490
 msgid "Watershed Transform"
 msgstr "Razvodna transformacija"
 
-#: operations/common/watershed-transform.c:492
+#: operations/common/watershed-transform.c:493
 msgid ""
 "Labels propagation by watershed transformation. Output buffer will keep the "
 "input format. Unlabelled pixels are marked with a given flag value (by "
@@ -5485,7 +5489,7 @@ msgid "Threshold high"
 msgstr "Zgornji prag"
 
 #: operations/common-cxx/distance-transform.cc:49
-msgid "Grayscale Averaging"
+msgid "Grayscale averaging"
 msgstr "Sivinsko povprečenje"
 
 #: operations/common-cxx/distance-transform.cc:50
@@ -5504,7 +5508,7 @@ msgstr "Preoblikuj z oddaljenostjo"
 msgid "Calculate a distance transform"
 msgstr "Izračunaj preoblikovanje z oddaljevanjem"
 
-#: operations/common-cxx/focus-blur.c:30 operations/common-cxx/lens-blur.cc:507
+#: operations/common-cxx/focus-blur.c:30 operations/common-cxx/lens-blur.cc:508
 msgid "Lens Blur"
 msgstr "Zabrisanost objektiva"
 
@@ -5516,23 +5520,23 @@ msgstr "Vrsta zabrisanosti"
 msgid "Out-of-focus blur radius"
 msgstr "Radij zabrisanost neostrine"
 
-#: operations/common-cxx/focus-blur.c:52 operations/common-cxx/lens-blur.cc:34
+#: operations/common-cxx/focus-blur.c:52 operations/common-cxx/lens-blur.cc:35
 msgid "Highlight factor"
 msgstr "Faktor svetlih področij"
 
-#: operations/common-cxx/focus-blur.c:53 operations/common-cxx/lens-blur.cc:35
+#: operations/common-cxx/focus-blur.c:53 operations/common-cxx/lens-blur.cc:36
 msgid "Relative highlight strength"
 msgstr "Relativna jakost poudarjenih svetlih tonov"
 
-#: operations/common-cxx/focus-blur.c:57 operations/common-cxx/lens-blur.cc:38
+#: operations/common-cxx/focus-blur.c:57 operations/common-cxx/lens-blur.cc:39
 msgid "Highlight threshold (low)"
 msgstr "Prag svetlih področij (nizko)"
 
-#: operations/common-cxx/focus-blur.c:61 operations/common-cxx/lens-blur.cc:42
+#: operations/common-cxx/focus-blur.c:61 operations/common-cxx/lens-blur.cc:43
 msgid "Highlight threshold"
 msgstr "Prag svetlih področij"
 
-#: operations/common-cxx/focus-blur.c:64 operations/common-cxx/lens-blur.cc:44
+#: operations/common-cxx/focus-blur.c:64 operations/common-cxx/lens-blur.cc:45
 msgid "Highlight threshold (high)"
 msgstr "Prag svetlih področij (visoko)"
 
@@ -5615,27 +5619,27 @@ msgstr "Odstrani šum DCT"
 msgid "Denoising algorithm using a per-patch DCT thresholding"
 msgstr "Algoritem odstranjevanja šuma z uporabo praga DCT na obliž"
 
-#: operations/common-cxx/lens-blur.cc:49
+#: operations/common-cxx/lens-blur.cc:50
 msgid "Clip to input extents"
 msgstr "Poreži na velikost vhoda"
 
-#: operations/common-cxx/lens-blur.cc:50
+#: operations/common-cxx/lens-blur.cc:51
 msgid "Clip output to the input extents"
 msgstr "Poreži izhod na velikost vhoda"
 
-#: operations/common-cxx/lens-blur.cc:52
+#: operations/common-cxx/lens-blur.cc:53
 #: operations/common-cxx/piecewise-blend.cc:38
 #: operations/common-cxx/variable-blur.c:37
 msgid "Linear mask"
 msgstr "Linearna maska"
 
-#: operations/common-cxx/lens-blur.cc:53
+#: operations/common-cxx/lens-blur.cc:54
 #: operations/common-cxx/piecewise-blend.cc:39
 #: operations/common-cxx/variable-blur.c:38
 msgid "Use linear mask values"
 msgstr "Uporabi linearne vrednosti maske"
 
-#: operations/common-cxx/lens-blur.cc:510
+#: operations/common-cxx/lens-blur.cc:511
 msgid "Simulate out-of-focus lens blur"
 msgstr "Simulirajte zabrisanost neostrine objektiva"
 
@@ -5765,7 +5769,7 @@ msgid "Number of subdivisions"
 msgstr "Število podrazdelkov"
 
 #: operations/common-gpl3+/bayer-matrix.c:29 operations/common-gpl3+/sinus.c:31
-msgid "X Scale"
+msgid "Scale X"
 msgstr "Spremeni merilo X"
 
 #: operations/common-gpl3+/bayer-matrix.c:30
@@ -5773,7 +5777,7 @@ msgid "Horizontal pattern scale"
 msgstr "Vodoravno merilo vzorca"
 
 #: operations/common-gpl3+/bayer-matrix.c:36 operations/common-gpl3+/sinus.c:38
-msgid "Y Scale"
+msgid "Scale Y"
 msgstr "Spremeni merilo Y"
 
 #: operations/common-gpl3+/bayer-matrix.c:37
@@ -5834,20 +5838,10 @@ msgstr "Eksponentno"
 msgid "Value exponent (logarithmic scale)"
 msgstr "Eksponent vrednosti (logaritemsko merilo)"
 
-#: operations/common-gpl3+/bayer-matrix.c:73
-#: operations/common-gpl3+/linear-sinusoid.c:81
-msgid "X Offset"
-msgstr "Odmik X"
-
 #: operations/common-gpl3+/bayer-matrix.c:74
 #: operations/common-gpl3+/linear-sinusoid.c:82
 msgid "Offset for X axis"
 msgstr "Odmik na osi X"
-
-#: operations/common-gpl3+/bayer-matrix.c:80
-#: operations/common-gpl3+/linear-sinusoid.c:88
-msgid "Y Offset"
-msgstr "Odmik Y"
 
 #: operations/common-gpl3+/bayer-matrix.c:81
 #: operations/common-gpl3+/linear-sinusoid.c:89
@@ -5915,8 +5909,8 @@ msgid "Ambient lighting factor"
 msgstr "Faktor ambientalne osvetlitve"
 
 #: operations/common-gpl3+/bump-map.c:472
-msgid "Height Map"
-msgstr "Zemljevid višin"
+msgid "Height map"
+msgstr "Višinska poslikava"
 
 #: operations/common-gpl3+/bump-map.c:476
 msgid "Bump Map"
@@ -5934,11 +5928,12 @@ msgstr ""
 "Potrebuje medpomnilnik, ki ga uporabi kot odtis za poslikavo po drugem "
 "medpomnilniku in s tem izdela lep učinek izbočenja."
 
-#: operations/common-gpl3+/cartoon.c:28
+#: operations/common-gpl3+/cartoon.c:28 operations/common-gpl3+/oilify.c:28
+#: operations/common-gpl3+/photocopy.c:26
 msgid "Mask radius"
 msgstr "Polmer maske"
 
-#: operations/common-gpl3+/cartoon.c:31
+#: operations/common-gpl3+/cartoon.c:31 operations/common-gpl3+/photocopy.c:32
 msgid "Percent black"
 msgstr "Odstotek črnine"
 
@@ -6041,7 +6036,7 @@ msgid ""
 msgstr "Premešaj barve; z določanjem relativnih prispevkov iz komponent vira."
 
 #: operations/common-gpl3+/color-exchange.c:31
-msgid "From Color"
+msgid "From color"
 msgstr "Iz barve"
 
 #: operations/common-gpl3+/color-exchange.c:32
@@ -6049,7 +6044,7 @@ msgid "The color to change."
 msgstr "Barva, ki bo spremenjena."
 
 #: operations/common-gpl3+/color-exchange.c:34
-msgid "To Color"
+msgid "To color"
 msgstr "V barvo"
 
 #: operations/common-gpl3+/color-exchange.c:35
@@ -6057,7 +6052,7 @@ msgid "Replacement color."
 msgstr "Nadomestna barva."
 
 #: operations/common-gpl3+/color-exchange.c:37
-msgid "Red Threshold"
+msgid "Red threshold"
 msgstr "Prag rdeče"
 
 #: operations/common-gpl3+/color-exchange.c:38
@@ -6065,7 +6060,7 @@ msgid "Red threshold of the input color"
 msgstr "Prag rdeče za vhodno barvo"
 
 #: operations/common-gpl3+/color-exchange.c:41
-msgid "Green Threshold"
+msgid "Green threshold"
 msgstr "Prag zelene"
 
 #: operations/common-gpl3+/color-exchange.c:42
@@ -6073,7 +6068,7 @@ msgid "Green threshold of the input color"
 msgstr "Prag zelene za vhodno barvo"
 
 #: operations/common-gpl3+/color-exchange.c:45
-msgid "Blue Threshold"
+msgid "Blue threshold"
 msgstr "Prag modre"
 
 #: operations/common-gpl3+/color-exchange.c:46
@@ -6465,7 +6460,7 @@ msgid "Bumpmap (preserve original colors)"
 msgstr "Preslikaj odtis (ohrani izvirne barve)"
 
 #: operations/common-gpl3+/emboss.c:30
-msgid "Emboss Type"
+msgid "Emboss type"
 msgstr "Vrsta reliefnega krašenja"
 
 #: operations/common-gpl3+/emboss.c:32
@@ -6830,7 +6825,7 @@ msgid "Adds a lens flare effect."
 msgstr "Dodaj učinek odbleska leče."
 
 #: operations/common-gpl3+/linear-sinusoid.c:25
-msgid "X Period"
+msgid "Period X"
 msgstr "Perioda X"
 
 #: operations/common-gpl3+/linear-sinusoid.c:26
@@ -6838,7 +6833,7 @@ msgid "Period for X axis"
 msgstr "Perioda osi X"
 
 #: operations/common-gpl3+/linear-sinusoid.c:32
-msgid "Y Period"
+msgid "Period Y"
 msgstr "Perioda Y"
 
 #: operations/common-gpl3+/linear-sinusoid.c:33
@@ -6846,7 +6841,7 @@ msgid "Period for Y axis"
 msgstr "Perioda osi Y"
 
 #: operations/common-gpl3+/linear-sinusoid.c:39
-msgid "X Amplitude"
+msgid "Amplitude X"
 msgstr "Amplituda X"
 
 #: operations/common-gpl3+/linear-sinusoid.c:40
@@ -6854,7 +6849,7 @@ msgid "Amplitude for X axis (logarithmic scale)"
 msgstr "Amplituda osi X (logaritemsko merilo)"
 
 #: operations/common-gpl3+/linear-sinusoid.c:45
-msgid "Y Amplitude"
+msgid "Amplitude Y"
 msgstr "Amplituda Y"
 
 #: operations/common-gpl3+/linear-sinusoid.c:46
@@ -6862,7 +6857,7 @@ msgid "Amplitude for Y axis (logarithmic scale)"
 msgstr "Amplituda osi Y (logaritemsko merilo)"
 
 #: operations/common-gpl3+/linear-sinusoid.c:51
-msgid "X Phase"
+msgid "Phase X"
 msgstr "Faza X"
 
 #: operations/common-gpl3+/linear-sinusoid.c:52
@@ -6870,7 +6865,7 @@ msgid "Phase for X axis"
 msgstr "Faza osi X"
 
 #: operations/common-gpl3+/linear-sinusoid.c:58
-msgid "Y Phase"
+msgid "Phase Y"
 msgstr "Faza Y"
 
 #: operations/common-gpl3+/linear-sinusoid.c:59
@@ -6914,16 +6909,12 @@ msgid "Maze algorithm type"
 msgstr "Vrsta algoritma za labirint"
 
 #: operations/common-gpl3+/maze.c:67
-msgid "Foreground Color"
+msgid "Foreground color"
 msgstr "Barva ospredja"
 
 #: operations/common-gpl3+/maze.c:68
 msgid "The foreground color"
 msgstr "Barva ospredja"
-
-#: operations/common-gpl3+/maze.c:71
-msgid "Background Color"
-msgstr "Barva ozadja"
 
 #: operations/common-gpl3+/maze.c:72
 msgid "The background color"
@@ -6961,7 +6952,8 @@ msgstr "Geometrija tlakovcev"
 msgid "What shape to use for tiles"
 msgstr "Kakšne oblike naj bodo tlakovci"
 
-#: operations/common-gpl3+/mosaic.c:51
+#: operations/common-gpl3+/mosaic.c:51 operations/common-gpl3+/tile-glass.c:34
+#: operations/common-gpl3+/tile-paper.c:47
 msgid "Tile height"
 msgstr "Višina tlakovca"
 
@@ -7084,7 +7076,7 @@ msgid "Randomly slide some pixels downward (similar to melting)"
 msgstr "Naključno porini nekaj slikovnih točk navzdol (podobno taljenju)"
 
 #: operations/common-gpl3+/noise-solid.c:36
-msgid "X Size"
+msgid "X size"
 msgstr "Velikost X"
 
 #: operations/common-gpl3+/noise-solid.c:37
@@ -7092,7 +7084,7 @@ msgid "Horizontal texture size"
 msgstr "Velikost teksture vodoravno"
 
 #: operations/common-gpl3+/noise-solid.c:43
-msgid "Y Size"
+msgid "Y size"
 msgstr "Velikost Y"
 
 #: operations/common-gpl3+/noise-solid.c:44
@@ -7123,10 +7115,6 @@ msgstr "Enakomeren šum"
 msgid "Create a random cloud-like texture"
 msgstr "Ustvari naključno oblakom podobno teksturo"
 
-#: operations/common-gpl3+/oilify.c:28 operations/common-gpl3+/photocopy.c:26
-msgid "Mask Radius"
-msgstr "Polmer maske"
-
 #: operations/common-gpl3+/oilify.c:29
 msgid ""
 "Radius of circle around pixel, can also be scaled per pixel by a buffer on "
@@ -7152,7 +7140,7 @@ msgid "Histogram size"
 msgstr "Velikost histograma"
 
 #: operations/common-gpl3+/oilify.c:44
-msgid "Intensity Mode"
+msgid "Intensity mode"
 msgstr "Način intenzivnosti"
 
 #: operations/common-gpl3+/oilify.c:45
@@ -7191,12 +7179,8 @@ msgstr "Naolji"
 msgid "Emulate an oil painting"
 msgstr "Emuliraj oljno sliko"
 
-#: operations/common-gpl3+/photocopy.c:32
-msgid "Percent Black"
-msgstr "Odstotek črne"
-
 #: operations/common-gpl3+/photocopy.c:35
-msgid "Percent White"
+msgid "Percent white"
 msgstr "Odstotek bele"
 
 #: operations/common-gpl3+/photocopy.c:329
@@ -7612,19 +7596,14 @@ msgstr "Teksturira sliko, kot da gre za slikarsko platno."
 
 #: operations/common-gpl3+/tile-glass.c:28
 #: operations/common-gpl3+/tile-paper.c:40
-msgid "Tile Width"
+msgid "Tile width"
 msgstr "Širina tlakovca"
 
-#: operations/common-gpl3+/tile-glass.c:34
-#: operations/common-gpl3+/tile-paper.c:47
-msgid "Tile Height"
-msgstr "Višina tlakovca"
-
-#: operations/common-gpl3+/tile-glass.c:233
+#: operations/common-gpl3+/tile-glass.c:228
 msgid "Tile Glass"
 msgstr "Tlakovanje s steklom"
 
-#: operations/common-gpl3+/tile-glass.c:238
+#: operations/common-gpl3+/tile-glass.c:233
 msgid "Simulate distortion caused by rectangular glass tiles"
 msgstr "Simuliraj popačenje, kakršnega ustvarijo pravokotni stekleni tlakovci"
 
@@ -7982,7 +7961,7 @@ msgid "Direction of the effect"
 msgstr "Smer učinka"
 
 #: operations/common-gpl3+/wind.c:55
-msgid "Edge Affected"
+msgid "Edge affected"
 msgstr "Prizadeti robovi"
 
 #: operations/common-gpl3+/wind.c:58
@@ -8869,11 +8848,11 @@ msgstr ""
 msgid "URI for file to load."
 msgstr "URI datoteke, ki jo želite naložiti."
 
-#: operations/external/png-load.c:680
+#: operations/external/png-load.c:689
 msgid "PNG File Loader"
 msgstr "Nalagalnik slik PNG"
 
-#: operations/external/png-load.c:682
+#: operations/external/png-load.c:691
 msgid "PNG image loader."
 msgstr "Nalagalnik slik PNG."
 
@@ -8894,11 +8873,11 @@ msgstr "Bitna globina"
 msgid "8 and 16 are the currently accepted values."
 msgstr "8 in 16 sta trenutno podprti vrednosti."
 
-#: operations/external/png-save.c:434
+#: operations/external/png-save.c:449
 msgid "PNG File Saver"
 msgstr "SHranjevalnik slik PNG"
 
-#: operations/external/png-save.c:436
+#: operations/external/png-save.c:451
 msgid "PNG image saver, using libpng"
 msgstr "Shranjevalnik slik PNG z uporabo libpng"
 
@@ -8906,11 +8885,11 @@ msgstr "Shranjevalnik slik PNG z uporabo libpng"
 msgid "URI of image to load."
 msgstr "URI slike za nalaganje."
 
-#: operations/external/ppm-load.c:473
+#: operations/external/ppm-load.c:474
 msgid "PPM File Loader"
 msgstr "Nalagalnik slik PPM"
 
-#: operations/external/ppm-load.c:475
+#: operations/external/ppm-load.c:476
 msgid "PPM image loader."
 msgstr "Nalagalnik slik PPM."
 
@@ -10207,15 +10186,12 @@ msgid "EPITROCHOID"
 msgstr "Epitrohoida"
 
 #: operations/workshop/external/spyrograph.c:31
-msgid "Curve Type"
-msgstr "Vrsta krivulje"
-
 #: operations/workshop/external/spyrograph.c:34
 msgid "Curve type"
 msgstr "Vrsta krivulje"
 
 #: operations/workshop/external/spyrograph.c:36
-msgid "Fixed Gear Teeth"
+msgid "Fixed gear teeth"
 msgstr "Zobci fiksnega zobnika"
 
 #: operations/workshop/external/spyrograph.c:37
@@ -10223,7 +10199,7 @@ msgid "Number of teeth in fixed gear."
 msgstr "Število zobcev fiksnega zobatega kolesa."
 
 #: operations/workshop/external/spyrograph.c:40
-msgid "Moving Gear Teeth"
+msgid "Moving gear teeth"
 msgstr "Zobci gibljivega zobnika"
 
 #: operations/workshop/external/spyrograph.c:41
@@ -10237,7 +10213,7 @@ msgstr ""
 "zobnikov v zobnikih."
 
 #: operations/workshop/external/spyrograph.c:46
-msgid "Hole Percent"
+msgid "Hole percent"
 msgstr "Odstotek luknje"
 
 #: operations/workshop/external/spyrograph.c:47
