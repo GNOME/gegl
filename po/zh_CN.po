@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl-master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2026-02-02 16:00+0000\n"
-"PO-Revision-Date: 2026-02-03 08:56+0800\n"
+"POT-Creation-Date: 2026-03-24 11:00+0000\n"
+"PO-Revision-Date: 2026-03-25 08:54+0800\n"
 "Last-Translator: lumingzh <lumingzh@qq.com>\n"
 "Language-Team: Chinese (China) <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
@@ -23,7 +23,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Gtranslator 49.0\n"
+"X-Generator: Gtranslator 50.0\n"
 
 #: bin/gegl.c:184
 #, c-format
@@ -654,7 +654,7 @@ msgid "Bump"
 msgstr "凹凸"
 
 #: operations/common/bevel.c:54
-msgid "Bevel Type"
+msgid "Bevel type"
 msgstr "斜面类型"
 
 #: operations/common/bevel.c:57
@@ -696,7 +696,7 @@ msgid "Add"
 msgstr "添加"
 
 #: operations/common/bevel.c:76 operations/common-gpl3+/sinus.c:67
-msgid "Blend Mode"
+msgid "Blend mode"
 msgstr "混合模式"
 
 #: operations/common/bevel.c:79
@@ -709,7 +709,7 @@ msgstr ""
 "置在图层上方或与 GIMP 混合选项配合使用的特殊混合模式。"
 
 #: operations/common/bevel.c:81
-msgid "Distance Map Setting"
+msgid "Distance map setting"
 msgstr "距离映射设置"
 
 #: operations/common/bevel.c:83
@@ -725,7 +725,7 @@ msgstr "距离映射对于倒角斜面是唯一的且具有三种改变倒角结
 #: operations/common/stress.c:27 operations/common/unsharp-mask.c:24
 #: operations/common/vignette.c:40 operations/common/wavelet-blur-1d.c:28
 #: operations/common/wavelet-blur.c:27 operations/common-cxx/focus-blur.c:85
-#: operations/common-cxx/lens-blur.cc:27
+#: operations/common-cxx/lens-blur.cc:28
 #: operations/common-cxx/variable-blur.c:30
 #: operations/common-gpl3+/shadows-highlights.c:40
 #: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:44
@@ -764,7 +764,7 @@ msgid "Emboss depth - Brings out depth and detail of the bump bevel."
 msgstr "凸起深度 - 显示凹凸斜面的深度和细节。"
 
 #: operations/common/bevel.c:110
-msgid "Light Angle"
+msgid "Light angle"
 msgstr "光照角度"
 
 #: operations/common/bevel.c:111
@@ -793,7 +793,7 @@ msgstr "斜面…"
 #: operations/common/bilateral-filter.c:26
 #: operations/common/domain-transform.c:29 operations/common/dropshadow.c:46
 #: operations/common/inner-glow.c:58 operations/common-cxx/focus-blur.c:45
-#: operations/common-cxx/lens-blur.cc:28
+#: operations/common-cxx/lens-blur.cc:29
 #: operations/common-gpl3+/gaussian-blur-selective.c:29
 #: operations/workshop/bilateral-filter-fast.c:43
 msgid "Blur radius"
@@ -1053,7 +1053,9 @@ msgstr "单元像素的竖直宽度"
 
 #: operations/common/checkerboard.c:42 operations/common/grid.c:38
 #: operations/common/mirrors.c:46 operations/common/pixelize.c:51
+#: operations/common-gpl3+/bayer-matrix.c:73
 #: operations/common-gpl3+/bump-map.c:62
+#: operations/common-gpl3+/linear-sinusoid.c:81
 #: operations/seamless-clone/seamless-clone.c:26
 #: operations/seamless-clone/seamless-clone-compose.c:25
 msgid "Offset X"
@@ -1065,7 +1067,9 @@ msgstr "对于网格开始处的水平位移（从原点）"
 
 #: operations/common/checkerboard.c:48 operations/common/grid.c:44
 #: operations/common/mirrors.c:52 operations/common/pixelize.c:58
+#: operations/common-gpl3+/bayer-matrix.c:80
 #: operations/common-gpl3+/bump-map.c:68
+#: operations/common-gpl3+/linear-sinusoid.c:88
 #: operations/seamless-clone/seamless-clone.c:32
 #: operations/seamless-clone/seamless-clone-compose.c:31
 msgid "Offset Y"
@@ -2023,7 +2027,7 @@ msgid "Performs edge detection using a Gaussian derivative method"
 msgstr "使用一种高斯衍生方式执行边缘检测"
 
 #: operations/common/edge-sobel.c:31
-msgid "Keep Sign"
+msgid "Keep sign"
 msgstr "保留符号"
 
 #: operations/common/edge-sobel.c:32
@@ -2255,29 +2259,29 @@ msgstr "要写入 GeglBuffer 的目标文件路径。"
 msgid "GeglBuffer file writer."
 msgstr "GeglBuffer 文件写入器。"
 
-#: operations/common/gegl.c:72
+#: operations/common/gegl.c:73
 msgid "pipeline"
 msgstr "管道"
 
-#: operations/common/gegl.c:73
+#: operations/common/gegl.c:74
 msgid "[op [property=value] [property=value]] [[op] [property=value]"
 msgstr "[操作 [属性=赋值] [属性=赋值]] [[操作] [属性=赋值]"
 
-#: operations/common/gegl.c:76
+#: operations/common/gegl.c:77
 msgid "Eeeeeek"
 msgstr "哈"
 
-#: operations/common/gegl.c:77
+#: operations/common/gegl.c:78
 msgid ""
 "There is a problem in the syntax or in the application of parsed property "
 "values. Things might mostly work nevertheless."
 msgstr "在语法或解析的属性赋值中存在问题。不过多半可能会正常运行。"
 
-#: operations/common/gegl.c:179
+#: operations/common/gegl.c:180
 msgid "GEGL graph"
 msgstr "GEGL 图形"
 
-#: operations/common/gegl.c:182
+#: operations/common/gegl.c:183
 msgid ""
 "Do a chain of operations, with key=value pairs after each operation name to "
 "set properties. And aux=[ source filter ] for specifying a chain with a "
@@ -2323,8 +2327,8 @@ msgid "Grid renderer"
 msgstr "网格渲染器"
 
 #: operations/common/high-pass.c:24
-msgid "Std. Dev."
-msgstr "标准偏差"
+msgid "Standard deviation"
+msgstr "标准差"
 
 #: operations/common/high-pass.c:31
 msgid "Contrast of high-pass"
@@ -3044,11 +3048,11 @@ msgstr "高精度"
 msgid "Avoid clipping and quantization (slower)"
 msgstr "避免修剪和量化（较慢）"
 
-#: operations/common/median-blur.c:1003
+#: operations/common/median-blur.c:1000
 msgid "Median Blur"
 msgstr "中值模糊"
 
-#: operations/common/median-blur.c:1006
+#: operations/common/median-blur.c:1003
 msgid ""
 "Blur resulting from computing the median color in the neighborhood of each "
 "pixel."
@@ -3171,15 +3175,15 @@ msgid "Preserve luminosity"
 msgstr "保持明度"
 
 #: operations/common/mono-mixer.c:26
-msgid "Red Channel Multiplier"
+msgid "Red channel multiplier"
 msgstr "红色通道乘数"
 
 #: operations/common/mono-mixer.c:30
-msgid "Green Channel Multiplier"
+msgid "Green channel multiplier"
 msgstr "绿色通道乘数"
 
 #: operations/common/mono-mixer.c:34
-msgid "Blue Channel Multiplier"
+msgid "Blue channel multiplier"
 msgstr "蓝色通道乘数"
 
 #: operations/common/mono-mixer.c:113
@@ -3652,7 +3656,7 @@ msgid ""
 msgstr "每块平铺的周期数，该平铺避免了角度提升造成的高频异常"
 
 #: operations/common/newsprint.c:178
-msgid "Angle Boost"
+msgid "Angle boost"
 msgstr "角度提升"
 
 #: operations/common/newsprint.c:180
@@ -3715,7 +3719,7 @@ msgstr "单元噪点"
 
 #: operations/common/noise-cell.c:435
 msgid "Generates a cellular texture."
-msgstr "生成单元式的纹理贴图。"
+msgstr "生成单元式的纹理。"
 
 #: operations/common/noise-cie-lch.c:25 operations/common/noise-hsv.c:27
 msgid "Dulling"
@@ -3855,7 +3859,7 @@ msgstr "单一噪点"
 
 #: operations/common/noise-simplex.c:335
 msgid "Generates a solid noise texture."
-msgstr "生成固态噪点纹理贴图。"
+msgstr "生成固态噪点纹理。"
 
 #: operations/common/noise-spread.c:30
 msgid "Horizontal spread amount"
@@ -3878,7 +3882,7 @@ msgid "The amount by which to scale the height values"
 msgstr "按比例决定高度值所需的数量"
 
 #: operations/common/normal-map.c:35
-msgid "X Component"
+msgid "X component"
 msgstr "X 分量"
 
 #: operations/common/normal-map.c:38
@@ -3886,7 +3890,7 @@ msgid "The component used for the X coordinates"
 msgstr "用于 X 坐标的分量"
 
 #: operations/common/normal-map.c:40
-msgid "Y Component"
+msgid "Y component"
 msgstr "Y 分量"
 
 #: operations/common/normal-map.c:43
@@ -3910,7 +3914,7 @@ msgid "Flip the Y coordinates"
 msgstr "翻转 Y 坐标"
 
 #: operations/common/normal-map.c:51
-msgid "Full Z Range"
+msgid "Full Z range"
 msgstr "全 Z 范围"
 
 #: operations/common/normal-map.c:52
@@ -3928,11 +3932,11 @@ msgstr "生成可平铺映射"
 
 #: operations/common/normal-map.c:248
 msgid "Normal Map"
-msgstr "法线贴图"
+msgstr "法线映射"
 
 #: operations/common/normal-map.c:251
 msgid "Generate a normal map from a height map"
-msgstr "从高度贴图生成法线贴图"
+msgstr "从高度映射生成法线映射"
 
 #: operations/common/opacity.c:26
 msgid ""
@@ -4058,7 +4062,7 @@ msgstr "每个分块内一个像素的竖直大小比率"
 #: operations/common/pixelize.c:75 operations/common-gpl3+/apply-lens.c:44
 #: operations/common-gpl3+/cubism.c:39
 #: operations/common-gpl3+/lens-distortion.c:57
-#: operations/common-gpl3+/tile-paper.c:76
+#: operations/common-gpl3+/maze.c:71 operations/common-gpl3+/tile-paper.c:76
 msgid "Background color"
 msgstr "背景色"
 
@@ -4201,11 +4205,11 @@ msgstr "光线适应"
 msgid "Adaptation to light variation across the image"
 msgstr "对遍布图像光线变化的适应性改变"
 
-#: operations/common/reinhard05.c:317
+#: operations/common/reinhard05.c:318
 msgid "Reinhard 2005 Tone Mapping"
 msgstr "Reinhard 2005 色调映射"
 
-#: operations/common/reinhard05.c:322
+#: operations/common/reinhard05.c:323
 msgid ""
 "Adapt an image, which may have a high dynamic range, for presentation using "
 "a low dynamic range. This is an efficient global operator derived from "
@@ -5201,7 +5205,7 @@ msgstr "空间规则化"
 
 #: operations/common/waterpixels.c:49
 msgid ""
-"trade-off between superpixel regularity and adherence to object boundaries"
+"Trade-off between superpixel regularity and adherence to object boundaries"
 msgstr "在超像素规则和对象边界吸附之间权衡取舍"
 
 #: operations/common/waterpixels.c:52
@@ -5233,11 +5237,11 @@ msgstr "标记"
 msgid "Pointer to flag value for unlabelled pixels"
 msgstr "指向无标号像素标记数值的指针"
 
-#: operations/common/watershed-transform.c:489
+#: operations/common/watershed-transform.c:490
 msgid "Watershed Transform"
 msgstr "分水岭变换"
 
-#: operations/common/watershed-transform.c:492
+#: operations/common/watershed-transform.c:493
 msgid ""
 "Labels propagation by watershed transformation. Output buffer will keep the "
 "input format. Unlabelled pixels are marked with a given flag value (by "
@@ -5320,7 +5324,7 @@ msgid "Threshold high"
 msgstr "阈值高"
 
 #: operations/common-cxx/distance-transform.cc:49
-msgid "Grayscale Averaging"
+msgid "Grayscale averaging"
 msgstr "灰阶均化"
 
 #: operations/common-cxx/distance-transform.cc:50
@@ -5339,7 +5343,7 @@ msgstr "距离变换"
 msgid "Calculate a distance transform"
 msgstr "计算一个距离变换"
 
-#: operations/common-cxx/focus-blur.c:30 operations/common-cxx/lens-blur.cc:507
+#: operations/common-cxx/focus-blur.c:30 operations/common-cxx/lens-blur.cc:508
 msgid "Lens Blur"
 msgstr "镜头模糊"
 
@@ -5351,23 +5355,23 @@ msgstr "模糊类型"
 msgid "Out-of-focus blur radius"
 msgstr "焦外模糊半径"
 
-#: operations/common-cxx/focus-blur.c:52 operations/common-cxx/lens-blur.cc:34
+#: operations/common-cxx/focus-blur.c:52 operations/common-cxx/lens-blur.cc:35
 msgid "Highlight factor"
 msgstr "高光系数"
 
-#: operations/common-cxx/focus-blur.c:53 operations/common-cxx/lens-blur.cc:35
+#: operations/common-cxx/focus-blur.c:53 operations/common-cxx/lens-blur.cc:36
 msgid "Relative highlight strength"
 msgstr "相对高光强度"
 
-#: operations/common-cxx/focus-blur.c:57 operations/common-cxx/lens-blur.cc:38
+#: operations/common-cxx/focus-blur.c:57 operations/common-cxx/lens-blur.cc:39
 msgid "Highlight threshold (low)"
 msgstr "高光阈值（低）"
 
-#: operations/common-cxx/focus-blur.c:61 operations/common-cxx/lens-blur.cc:42
+#: operations/common-cxx/focus-blur.c:61 operations/common-cxx/lens-blur.cc:43
 msgid "Highlight threshold"
 msgstr "高光阈值"
 
-#: operations/common-cxx/focus-blur.c:64 operations/common-cxx/lens-blur.cc:44
+#: operations/common-cxx/focus-blur.c:64 operations/common-cxx/lens-blur.cc:45
 msgid "Highlight threshold (high)"
 msgstr "高光阈值（高）"
 
@@ -5450,27 +5454,27 @@ msgstr "降噪 DCT"
 msgid "Denoising algorithm using a per-patch DCT thresholding"
 msgstr "使用每个补丁 DCT 阈值的降噪算法"
 
-#: operations/common-cxx/lens-blur.cc:49
+#: operations/common-cxx/lens-blur.cc:50
 msgid "Clip to input extents"
 msgstr "剪裁至输入范围"
 
-#: operations/common-cxx/lens-blur.cc:50
+#: operations/common-cxx/lens-blur.cc:51
 msgid "Clip output to the input extents"
 msgstr "将输出剪裁至输入范围"
 
-#: operations/common-cxx/lens-blur.cc:52
+#: operations/common-cxx/lens-blur.cc:53
 #: operations/common-cxx/piecewise-blend.cc:38
 #: operations/common-cxx/variable-blur.c:37
 msgid "Linear mask"
 msgstr "线性蒙板"
 
-#: operations/common-cxx/lens-blur.cc:53
+#: operations/common-cxx/lens-blur.cc:54
 #: operations/common-cxx/piecewise-blend.cc:39
 #: operations/common-cxx/variable-blur.c:38
 msgid "Use linear mask values"
 msgstr "使用线性蒙板明度"
 
-#: operations/common-cxx/lens-blur.cc:510
+#: operations/common-cxx/lens-blur.cc:511
 msgid "Simulate out-of-focus lens blur"
 msgstr "模拟焦外镜头模糊"
 
@@ -5598,16 +5602,16 @@ msgid "Number of subdivisions"
 msgstr "细分的数量"
 
 #: operations/common-gpl3+/bayer-matrix.c:29 operations/common-gpl3+/sinus.c:31
-msgid "X Scale"
-msgstr "X 比例"
+msgid "Scale X"
+msgstr "X 缩放"
 
 #: operations/common-gpl3+/bayer-matrix.c:30
 msgid "Horizontal pattern scale"
 msgstr "水平图案缩放"
 
 #: operations/common-gpl3+/bayer-matrix.c:36 operations/common-gpl3+/sinus.c:38
-msgid "Y Scale"
-msgstr "Y 比例"
+msgid "Scale Y"
+msgstr "Y 缩放"
 
 #: operations/common-gpl3+/bayer-matrix.c:37
 msgid "Vertical pattern scale"
@@ -5667,20 +5671,10 @@ msgstr "指数"
 msgid "Value exponent (logarithmic scale)"
 msgstr "明度指数（对数缩放）"
 
-#: operations/common-gpl3+/bayer-matrix.c:73
-#: operations/common-gpl3+/linear-sinusoid.c:81
-msgid "X Offset"
-msgstr "X 偏移"
-
 #: operations/common-gpl3+/bayer-matrix.c:74
 #: operations/common-gpl3+/linear-sinusoid.c:82
 msgid "Offset for X axis"
 msgstr "X 轴的偏移"
-
-#: operations/common-gpl3+/bayer-matrix.c:80
-#: operations/common-gpl3+/linear-sinusoid.c:88
-msgid "Y Offset"
-msgstr "Y 偏移"
 
 #: operations/common-gpl3+/bayer-matrix.c:81
 #: operations/common-gpl3+/linear-sinusoid.c:89
@@ -5709,7 +5703,7 @@ msgstr "类型"
 
 #: operations/common-gpl3+/bump-map.c:40
 msgid "Type of map"
-msgstr "贴图类型"
+msgstr "映射类型"
 
 #: operations/common-gpl3+/bump-map.c:42
 msgid "Compensate"
@@ -5721,7 +5715,7 @@ msgstr "补偿暗色"
 
 #: operations/common-gpl3+/bump-map.c:46
 msgid "Invert bumpmap"
-msgstr "反转凹凸贴图"
+msgstr "反转凹凸映射"
 
 #: operations/common-gpl3+/bump-map.c:48
 msgid "Tiled"
@@ -5729,7 +5723,7 @@ msgstr "平铺"
 
 #: operations/common-gpl3+/bump-map.c:49
 msgid "Tiled bumpmap"
-msgstr "平铺凹凸贴图"
+msgstr "平铺凹凸映射"
 
 #: operations/common-gpl3+/bump-map.c:51 operations/common-gpl3+/emboss.c:34
 msgid "Azimuth"
@@ -5748,12 +5742,12 @@ msgid "Ambient lighting factor"
 msgstr "环境光照系数"
 
 #: operations/common-gpl3+/bump-map.c:472
-msgid "Height Map"
-msgstr "高度贴图"
+msgid "Height map"
+msgstr "高度映射"
 
 #: operations/common-gpl3+/bump-map.c:476
 msgid "Bump Map"
-msgstr "凹凸贴图"
+msgstr "凹凸映射"
 
 #: operations/common-gpl3+/bump-map.c:481
 msgid ""
@@ -5766,11 +5760,12 @@ msgstr ""
 "Embossing Effects on Raster Image Data”论文中发表的算法。使用作为凹凸映射应用"
 "至另一个缓冲区的缓冲区并产生良好的浮雕效果。"
 
-#: operations/common-gpl3+/cartoon.c:28
+#: operations/common-gpl3+/cartoon.c:28 operations/common-gpl3+/oilify.c:28
+#: operations/common-gpl3+/photocopy.c:26
 msgid "Mask radius"
 msgstr "蒙板半径"
 
-#: operations/common-gpl3+/cartoon.c:31
+#: operations/common-gpl3+/cartoon.c:31 operations/common-gpl3+/photocopy.c:32
 msgid "Percent black"
 msgstr "黑色百分比"
 
@@ -5872,23 +5867,23 @@ msgid ""
 msgstr "通过明确来自于源分量的相对分布重混合颜色。"
 
 #: operations/common-gpl3+/color-exchange.c:31
-msgid "From Color"
-msgstr "从颜色"
+msgid "From color"
+msgstr "原始颜色"
 
 #: operations/common-gpl3+/color-exchange.c:32
 msgid "The color to change."
 msgstr "要更改的颜色。"
 
 #: operations/common-gpl3+/color-exchange.c:34
-msgid "To Color"
-msgstr "到颜色"
+msgid "To color"
+msgstr "目标颜色"
 
 #: operations/common-gpl3+/color-exchange.c:35
 msgid "Replacement color."
 msgstr "替换用的颜色。"
 
 #: operations/common-gpl3+/color-exchange.c:37
-msgid "Red Threshold"
+msgid "Red threshold"
 msgstr "红色阈值"
 
 #: operations/common-gpl3+/color-exchange.c:38
@@ -5896,7 +5891,7 @@ msgid "Red threshold of the input color"
 msgstr "输入色彩的红色阈值"
 
 #: operations/common-gpl3+/color-exchange.c:41
-msgid "Green Threshold"
+msgid "Green threshold"
 msgstr "绿色阈值"
 
 #: operations/common-gpl3+/color-exchange.c:42
@@ -5904,7 +5899,7 @@ msgid "Green threshold of the input color"
 msgstr "输入色彩的绿色阈值"
 
 #: operations/common-gpl3+/color-exchange.c:45
-msgid "Blue Threshold"
+msgid "Blue threshold"
 msgstr "蓝色阈值"
 
 #: operations/common-gpl3+/color-exchange.c:46
@@ -6289,10 +6284,10 @@ msgstr "浮雕"
 
 #: operations/common-gpl3+/emboss.c:27
 msgid "Bumpmap (preserve original colors)"
-msgstr "凹凸贴图（保留原始颜色）"
+msgstr "凹凸映射（保留原始颜色）"
 
 #: operations/common-gpl3+/emboss.c:30
-msgid "Emboss Type"
+msgid "Emboss type"
 msgstr "浮雕类型"
 
 #: operations/common-gpl3+/emboss.c:32
@@ -6654,7 +6649,7 @@ msgid "Adds a lens flare effect."
 msgstr "添加镜头光晕效果。"
 
 #: operations/common-gpl3+/linear-sinusoid.c:25
-msgid "X Period"
+msgid "Period X"
 msgstr "X 周期"
 
 #: operations/common-gpl3+/linear-sinusoid.c:26
@@ -6662,7 +6657,7 @@ msgid "Period for X axis"
 msgstr "X 轴的周期"
 
 #: operations/common-gpl3+/linear-sinusoid.c:32
-msgid "Y Period"
+msgid "Period Y"
 msgstr "Y 周期"
 
 #: operations/common-gpl3+/linear-sinusoid.c:33
@@ -6670,7 +6665,7 @@ msgid "Period for Y axis"
 msgstr "Y 轴的周期"
 
 #: operations/common-gpl3+/linear-sinusoid.c:39
-msgid "X Amplitude"
+msgid "Amplitude X"
 msgstr "X 幅度"
 
 #: operations/common-gpl3+/linear-sinusoid.c:40
@@ -6678,7 +6673,7 @@ msgid "Amplitude for X axis (logarithmic scale)"
 msgstr "X 轴的幅度（对数缩放）"
 
 #: operations/common-gpl3+/linear-sinusoid.c:45
-msgid "Y Amplitude"
+msgid "Amplitude Y"
 msgstr "Y 幅度"
 
 #: operations/common-gpl3+/linear-sinusoid.c:46
@@ -6686,7 +6681,7 @@ msgid "Amplitude for Y axis (logarithmic scale)"
 msgstr "Y 轴的幅度（对数缩放）"
 
 #: operations/common-gpl3+/linear-sinusoid.c:51
-msgid "X Phase"
+msgid "Phase X"
 msgstr "X 相位"
 
 #: operations/common-gpl3+/linear-sinusoid.c:52
@@ -6694,7 +6689,7 @@ msgid "Phase for X axis"
 msgstr "X 轴的相位"
 
 #: operations/common-gpl3+/linear-sinusoid.c:58
-msgid "Y Phase"
+msgid "Phase Y"
 msgstr "Y 相位"
 
 #: operations/common-gpl3+/linear-sinusoid.c:59
@@ -6738,16 +6733,12 @@ msgid "Maze algorithm type"
 msgstr "迷宫算法类型"
 
 #: operations/common-gpl3+/maze.c:67
-msgid "Foreground Color"
+msgid "Foreground color"
 msgstr "前景色"
 
 #: operations/common-gpl3+/maze.c:68
 msgid "The foreground color"
 msgstr "前景的颜色"
-
-#: operations/common-gpl3+/maze.c:71
-msgid "Background Color"
-msgstr "背景色"
 
 #: operations/common-gpl3+/maze.c:72
 msgid "The background color"
@@ -6785,7 +6776,8 @@ msgstr "平铺几何属性"
 msgid "What shape to use for tiles"
 msgstr "平铺使用什么形状"
 
-#: operations/common-gpl3+/mosaic.c:51
+#: operations/common-gpl3+/mosaic.c:51 operations/common-gpl3+/tile-glass.c:34
+#: operations/common-gpl3+/tile-paper.c:47
 msgid "Tile height"
 msgstr "平铺高度"
 
@@ -6907,7 +6899,7 @@ msgid "Randomly slide some pixels downward (similar to melting)"
 msgstr "随机向下滑动某些像素（类似融化）"
 
 #: operations/common-gpl3+/noise-solid.c:36
-msgid "X Size"
+msgid "X size"
 msgstr "X 大小"
 
 #: operations/common-gpl3+/noise-solid.c:37
@@ -6915,7 +6907,7 @@ msgid "Horizontal texture size"
 msgstr "水平纹理大小"
 
 #: operations/common-gpl3+/noise-solid.c:43
-msgid "Y Size"
+msgid "Y size"
 msgstr "Y 大小"
 
 #: operations/common-gpl3+/noise-solid.c:44
@@ -6946,10 +6938,6 @@ msgstr "固态噪点"
 msgid "Create a random cloud-like texture"
 msgstr "创建随机类似云彩的纹理"
 
-#: operations/common-gpl3+/oilify.c:28 operations/common-gpl3+/photocopy.c:26
-msgid "Mask Radius"
-msgstr "蒙板半径"
-
 #: operations/common-gpl3+/oilify.c:29
 msgid ""
 "Radius of circle around pixel, can also be scaled per pixel by a buffer on "
@@ -6971,7 +6959,7 @@ msgid "Histogram size"
 msgstr "直方图大小"
 
 #: operations/common-gpl3+/oilify.c:44
-msgid "Intensity Mode"
+msgid "Intensity mode"
 msgstr "强度模式"
 
 #: operations/common-gpl3+/oilify.c:45
@@ -7006,12 +6994,8 @@ msgstr "油画"
 msgid "Emulate an oil painting"
 msgstr "模拟油画绘制"
 
-#: operations/common-gpl3+/photocopy.c:32
-msgid "Percent Black"
-msgstr "黑色百分比"
-
 #: operations/common-gpl3+/photocopy.c:35
-msgid "Percent White"
+msgid "Percent white"
 msgstr "白色百分比"
 
 #: operations/common-gpl3+/photocopy.c:329
@@ -7421,19 +7405,14 @@ msgstr "使图像纹理化好像它是画家的画布。"
 
 #: operations/common-gpl3+/tile-glass.c:28
 #: operations/common-gpl3+/tile-paper.c:40
-msgid "Tile Width"
+msgid "Tile width"
 msgstr "平铺宽度"
 
-#: operations/common-gpl3+/tile-glass.c:34
-#: operations/common-gpl3+/tile-paper.c:47
-msgid "Tile Height"
-msgstr "平铺高度"
-
-#: operations/common-gpl3+/tile-glass.c:233
+#: operations/common-gpl3+/tile-glass.c:228
 msgid "Tile Glass"
 msgstr "平铺玻璃"
 
-#: operations/common-gpl3+/tile-glass.c:238
+#: operations/common-gpl3+/tile-glass.c:233
 msgid "Simulate distortion caused by rectangular glass tiles"
 msgstr "模拟矩形玻璃平铺造成的扭曲"
 
@@ -7782,7 +7761,7 @@ msgid "Direction of the effect"
 msgstr "效果方向"
 
 #: operations/common-gpl3+/wind.c:55
-msgid "Edge Affected"
+msgid "Edge affected"
 msgstr "影响边缘"
 
 #: operations/common-gpl3+/wind.c:58
@@ -8643,11 +8622,11 @@ msgstr "使用 <em>pixbuf</em> 中处于内存位置的 GdkPixbuf。"
 msgid "URI for file to load."
 msgstr "要加载文件的网址。"
 
-#: operations/external/png-load.c:680
+#: operations/external/png-load.c:689
 msgid "PNG File Loader"
 msgstr "PNG 文件加载器"
 
-#: operations/external/png-load.c:682
+#: operations/external/png-load.c:691
 msgid "PNG image loader."
 msgstr "PNG 图像加载器。"
 
@@ -8668,11 +8647,11 @@ msgstr "位深"
 msgid "8 and 16 are the currently accepted values."
 msgstr "8 和 16 是当前可接受的数值。"
 
-#: operations/external/png-save.c:434
+#: operations/external/png-save.c:449
 msgid "PNG File Saver"
 msgstr "PNG 文件保存器"
 
-#: operations/external/png-save.c:436
+#: operations/external/png-save.c:451
 msgid "PNG image saver, using libpng"
 msgstr "使用 libpng 的 PNG 图像保存器"
 
@@ -8680,11 +8659,11 @@ msgstr "使用 libpng 的 PNG 图像保存器"
 msgid "URI of image to load."
 msgstr "要加载图像的网址。"
 
-#: operations/external/ppm-load.c:473
+#: operations/external/ppm-load.c:474
 msgid "PPM File Loader"
 msgstr "PPM 文件加载器"
 
-#: operations/external/ppm-load.c:475
+#: operations/external/ppm-load.c:476
 msgid "PPM image loader."
 msgstr "PPM 图像加载器。"
 
@@ -9925,15 +9904,12 @@ msgid "EPITROCHOID"
 msgstr "外旋轮线"
 
 #: operations/workshop/external/spyrograph.c:31
-msgid "Curve Type"
-msgstr "曲线类型"
-
 #: operations/workshop/external/spyrograph.c:34
 msgid "Curve type"
 msgstr "曲线类型"
 
 #: operations/workshop/external/spyrograph.c:36
-msgid "Fixed Gear Teeth"
+msgid "Fixed gear teeth"
 msgstr "固定轮齿"
 
 #: operations/workshop/external/spyrograph.c:37
@@ -9941,7 +9917,7 @@ msgid "Number of teeth in fixed gear."
 msgstr "固定齿轮中齿牙的数量。"
 
 #: operations/workshop/external/spyrograph.c:40
-msgid "Moving Gear Teeth"
+msgid "Moving gear teeth"
 msgstr "移动轮齿"
 
 #: operations/workshop/external/spyrograph.c:41
@@ -9954,7 +9930,7 @@ msgstr ""
 "轮的半径。"
 
 #: operations/workshop/external/spyrograph.c:46
-msgid "Hole Percent"
+msgid "Hole percent"
 msgstr "孔洞百分比"
 
 #: operations/workshop/external/spyrograph.c:47
@@ -10212,6 +10188,60 @@ msgid ""
 "Shuffles pixels, and quantization with neighbors to optimize dither, by "
 "shuffling neighboring pixels."
 msgstr "混合像素，通过混合邻近像素，并用邻近像素量化来优化抖动。"
+
+#~ msgid "Std. Dev."
+#~ msgstr "标准偏差"
+
+#~ msgid "X Scale"
+#~ msgstr "X 比例"
+
+#~ msgid "Y Scale"
+#~ msgstr "Y 比例"
+
+#~ msgid "X Offset"
+#~ msgstr "X 偏移"
+
+#~ msgid "Y Offset"
+#~ msgstr "Y 偏移"
+
+#~ msgid "X Period"
+#~ msgstr "X 周期"
+
+#~ msgid "Y Period"
+#~ msgstr "Y 周期"
+
+#~ msgid "X Amplitude"
+#~ msgstr "X 幅度"
+
+#~ msgid "Y Amplitude"
+#~ msgstr "Y 幅度"
+
+#~ msgid "X Phase"
+#~ msgstr "X 相位"
+
+#~ msgid "Y Phase"
+#~ msgstr "Y 相位"
+
+#~ msgid "Background Color"
+#~ msgstr "背景色"
+
+#~ msgid "X Size"
+#~ msgstr "X 大小"
+
+#~ msgid "Y Size"
+#~ msgstr "Y 大小"
+
+#~ msgid "Mask Radius"
+#~ msgstr "蒙板半径"
+
+#~ msgid "Percent Black"
+#~ msgstr "黑色百分比"
+
+#~ msgid "Tile Height"
+#~ msgstr "平铺高度"
+
+#~ msgid "Curve Type"
+#~ msgstr "曲线类型"
 
 #~ msgid "Object to supply image metadata"
 #~ msgstr "提供图像元数据的对象"
