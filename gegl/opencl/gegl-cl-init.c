@@ -522,6 +522,8 @@ gegl_cl_init_load_functions (void)
   return TRUE;
 }
 
+#undef CL_LOAD_FUNCTION
+
 #ifndef __APPLE__
 static gboolean
 gegl_cl_gl_init_load_functions (cl_platform_id platform)
@@ -816,8 +818,6 @@ gegl_cl_init_common (cl_device_type requested_device_type,
 
   return TRUE;
 }
-
-#undef CL_LOAD_FUNCTION
 
 /* There is one known op where there is 1 pixel difference between the
  * OpenCL version and the regular version, when we do not set
