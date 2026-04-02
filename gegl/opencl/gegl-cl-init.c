@@ -342,118 +342,13 @@ if (gegl_##func == NULL)                                                        
     return FALSE;                                                                 \
   }
 
-#if defined(__APPLE__)
-typedef struct _CGLContextObject *CGLContextObj;
-typedef struct CGLShareGroupRec  *CGLShareGroupObj;
-
-typedef CGLContextObj (*t_CGLGetCurrentContext) (void);
-typedef CGLShareGroupObj (*t_CGLGetShareGroup) (CGLContextObj);
-
-t_CGLGetCurrentContext gegl_CGLGetCurrentContext;
-t_CGLGetShareGroup gegl_CGLGetShareGroup;
-
-/* FIXME: Move this to cl_gl_ext.h */
-#define CL_CONTEXT_PROPERTY_USE_CGL_SHAREGROUP_APPLE        0x10000000
-#elif defined(G_OS_WIN32)
-/* pass */
-#else
-typedef struct _XDisplay Display;
-typedef struct __GLXcontextRec *GLXContext;
-
-
-typedef GLXContext (*t_glXGetCurrentContext) (void);
-typedef Display * (*t_glXGetCurrentDisplay) (void);
-
-t_glXGetCurrentContext gegl_glXGetCurrentContext;
-t_glXGetCurrentDisplay gegl_glXGetCurrentDisplay;
-#endif
-
 static gboolean
-gegl_cl_init_get_gl_sharing_props (cl_context_properties gl_contex_props[64])
-{
-  static gboolean gl_loaded = FALSE;
-
-  #if defined(__APPLE__)
-  CGLContextObj kCGLContext;
-  CGLShareGroupObj kCGLShareGroup;
-
-  if (!gl_loaded)
-    {
-      GModule *module = g_module_open (GL_LIBRARY_NAME, G_MODULE_BIND_LAZY);
-
-      if (!g_module_symbol (module, "CGLGetCurrentContext", (gpointer *)&gegl_CGLGetCurrentContext))
-        printf ("Failed to load CGLGetCurrentContext");
-      if (!g_module_symbol (module, "CGLGetShareGroup", (gpointer *)&gegl_CGLGetShareGroup))
-        printf ("Failed to load CGLGetShareGroup");
-
-      gl_loaded = TRUE;
-    }
-
-  kCGLContext = gegl_CGLGetCurrentContext ();
-  kCGLShareGroup = gegl_CGLGetShareGroup (kCGLContext);
-
-  gl_contex_props[0] = CL_CONTEXT_PROPERTY_USE_CGL_SHAREGROUP_APPLE;
-  gl_contex_props[1] = (cl_context_properties)kCGLShareGroup;
-  gl_contex_props[2] = 0;
-
-  return gl_loaded;
-
-  #elif defined(G_OS_WIN32)
-
-  GEGL_NOTE (GEGL_DEBUG_OPENCL, "GL sharing not supported on WIN32");
-
-  return gl_loaded;
-
-  #else /* Some kind of unix */
-  GLXContext  context;
-  Display    *display;
-
-  if (!gl_loaded)
-    {
-      GModule *module = g_module_open (GL_LIBRARY_NAME, G_MODULE_BIND_LAZY);
-
-      if (!g_module_symbol (module, "glXGetCurrentContext", (gpointer *)&gegl_glXGetCurrentContext))
-        printf ("Failed to load glXGetCurrentContext");
-      if (!g_module_symbol (module, "glXGetCurrentDisplay", (gpointer *)&gegl_glXGetCurrentDisplay))
-        printf ("Failed to load glXGetCurrentDisplay");
-
-      gl_loaded = TRUE;
-    }
-
-  context = gegl_glXGetCurrentContext();
-  display = gegl_glXGetCurrentDisplay();
-  if (!context || !display)
-    {
-      GEGL_NOTE (GEGL_DEBUG_OPENCL, "Could not get a valid OpenGL context");
-      gl_loaded = FALSE;
-
-      return gl_loaded;
-    }
-
-  gl_contex_props[0] = CL_GL_CONTEXT_KHR;
-  gl_contex_props[1] = (cl_context_properties)context;
-  gl_contex_props[2] = CL_GLX_DISPLAY_KHR;
-  gl_contex_props[3] = (cl_context_properties)display;
-  gl_contex_props[4] = 0;
-  return gl_loaded;
-
-  #endif
-}
-
-static gboolean
-gegl_cl_init_common (cl_device_type          requested_device_type,
-                     gboolean                gl_sharing);
-
-gboolean
-gegl_cl_init_with_opengl  (void)
-{
-  return gegl_cl_init_common (gegl_cl_default_device_type, TRUE);
-}
+gegl_cl_init_common (cl_device_type requested_device_type);
 
 gboolean
 gegl_cl_init (void)
 {
-  return gegl_cl_init_common (gegl_cl_default_device_type, FALSE);
+  return gegl_cl_init_common (gegl_cl_default_device_type);
 }
 
 static gboolean
@@ -523,18 +418,6 @@ gegl_cl_init_load_functions (void)
 }
 
 #undef CL_LOAD_FUNCTION
-
-#ifndef __APPLE__
-static gboolean
-gegl_cl_gl_init_load_functions (cl_platform_id platform)
-{
-  CL_LOAD_EXTENSION_FUNCTION (clCreateFromGLTexture2D)
-  CL_LOAD_EXTENSION_FUNCTION (clEnqueueAcquireGLObjects)
-  CL_LOAD_EXTENSION_FUNCTION (clEnqueueReleaseGLObjects)
-
-  return TRUE;
-}
-
 #undef CL_LOAD_EXTENSION_FUNCTION
 
 static gboolean
@@ -682,8 +565,7 @@ gegl_cl_init_load_device_info (cl_platform_id platform,
 }
 
 static gboolean
-gegl_cl_init_common (cl_device_type requested_device_type,
-                     gboolean       gl_sharing)
+gegl_cl_init_common (cl_device_type requested_device_type)
 {
   cl_int err;
 
@@ -701,72 +583,9 @@ gegl_cl_init_common (cl_device_type requested_device_type,
       if (!gegl_cl_init_load_functions ())
         return FALSE;
 
-      if (gl_sharing)
-        {
-#ifdef __APPLE__
-          cl_device_id sharing_device;
-#endif
-          cl_context_properties gl_contex_props[64];
-
-          if (!gegl_cl_init_get_gl_sharing_props (gl_contex_props))
-            return FALSE;
-
-#ifdef __APPLE__
-          /* Create context */
-          ctx = gegl_clCreateContext (gl_contex_props, 0, 0, NULL, 0, &err);
-
-          if (err != CL_SUCCESS)
-            {
-              GEGL_NOTE (GEGL_DEBUG_OPENCL, "Could not create context: %s", gegl_cl_errstring (err));
-              return FALSE;
-            }
-
-          /* Get device */
-          clGetContextInfo (ctx, CL_CONTEXT_DEVICES, sizeof(cl_device_id), &sharing_device, NULL);
-
-          if (err != CL_SUCCESS)
-            {
-              clReleaseContext (ctx);
-              GEGL_NOTE (GEGL_DEBUG_OPENCL, "Could not get context's device: %s", gegl_cl_errstring (err));
-              return FALSE;
-            }
-
-          if (!gegl_cl_init_load_device_info (NULL, sharing_device, 0))
-            {
-              clReleaseContext (ctx);
-              return FALSE;
-            }
-#else
-          /* Get default GPU device */
-          if (!gegl_cl_init_load_device_info (NULL, NULL, CL_DEVICE_TYPE_GPU))
-            return FALSE;
-
-          if (!gegl_cl_device_has_extension (cl_state.device, "cl_khr_gl_sharing"))
-            {
-              GEGL_NOTE (GEGL_DEBUG_OPENCL, "Device does not support cl_khr_gl_sharing");
-              return FALSE;
-            }
-
-          /* Load extension functions */
-          if (!gegl_cl_gl_init_load_functions (cl_state.platform))
-            return FALSE;
-
-          /* Create context */
-          ctx = gegl_clCreateContext (gl_contex_props, 1, &cl_state.device, NULL, NULL, &err);
-
-          if (err != CL_SUCCESS)
-            {
-              GEGL_NOTE (GEGL_DEBUG_OPENCL, "Could not create context: %s", gegl_cl_errstring (err));
-              return FALSE;
-            }
-#endif
-        }
-      else
-        {
-          if (!gegl_cl_init_load_device_info (NULL, NULL, requested_device_type))
-            return FALSE;
-          ctx = gegl_clCreateContext (NULL, 1, &cl_state.device, NULL, NULL, &err);
-        }
+      if (!gegl_cl_init_load_device_info (NULL, NULL, requested_device_type))
+        return FALSE;
+      ctx = gegl_clCreateContext (NULL, 1, &cl_state.device, NULL, NULL, &err);
 
       if (cl_state.image_support)
         {
@@ -795,8 +614,6 @@ gegl_cl_init_common (cl_device_type requested_device_type,
           return FALSE;
         }
 
-      if (gl_sharing)
-        cl_state.have_opengl = TRUE;
       _gegl_cl_is_accelerated = TRUE;
       cl_state.is_loaded = TRUE;
 

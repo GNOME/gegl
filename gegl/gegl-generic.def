@@ -138,7 +138,6 @@ EXPORTS
   gegl_cl_has_extension
   gegl_cl_has_gl_sharing
   gegl_cl_init
-  gegl_cl_init_with_opengl
   gegl_cl_load_random_data
   gegl_cl_random_cleanup
   gegl_cl_random_get_ushort4

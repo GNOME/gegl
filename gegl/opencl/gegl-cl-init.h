@@ -27,8 +27,6 @@ const char *      gegl_cl_errstring(cl_int err);
 
 gboolean          gegl_cl_init (void);
 
-gboolean          gegl_cl_init_with_opengl (void);
-
 void              gegl_cl_cleanup (void);
 
 gboolean          gegl_cl_is_accelerated (void);
