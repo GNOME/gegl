@@ -534,7 +534,8 @@ gegl_cl_gl_init_load_functions (cl_platform_id platform)
 
   return TRUE;
 }
-#endif
+
+#undef CL_LOAD_EXTENSION_FUNCTION
 
 static gboolean
 gegl_cl_init_load_device_info (cl_platform_id platform,
