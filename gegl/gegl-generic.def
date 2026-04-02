@@ -469,7 +469,6 @@ EXPORTS
   gegl_node_use_cache
   gegl_object_get_has_forked
   gegl_object_set_has_forked
-  gegl_opencl_error_quark
   gegl_operation_area_filter_get_type
   gegl_operation_attach
   gegl_operation_cl_set_kernel_args

@@ -148,7 +148,7 @@ gegl_config_use_opencl_notify (GObject    *gobject,
 
   if (cfg->use_opencl)
     {
-       gegl_cl_init (NULL);
+       gegl_cl_init ();
     }
   else
     {

@@ -25,9 +25,9 @@ G_BEGIN_DECLS
 
 const char *      gegl_cl_errstring(cl_int err);
 
-gboolean          gegl_cl_init (GError **error);
+gboolean          gegl_cl_init (void);
 
-gboolean          gegl_cl_init_with_opengl (GError **error);
+gboolean          gegl_cl_init_with_opengl (void);
 
 void              gegl_cl_cleanup (void);
 
