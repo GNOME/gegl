@@ -31,12 +31,18 @@ property_file_path (path, "File", "")
 
 #include "gegl-op.h"
 
+/* ignore deprecated warnings from OpenEXR headers */
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated"
+
 #include <ImfInputFile.h>
 #include <ImfChannelList.h>
 #include <ImfRgbaFile.h>
 #include <ImfRgbaYca.h>
 #include <ImfChromaticities.h>
 #include <ImfStandardAttributes.h>
+
+#pragma GCC diagnostic pop
 
 #include <stdio.h>
 #include <string.h>
