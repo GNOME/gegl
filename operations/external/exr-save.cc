@@ -39,6 +39,11 @@ extern "C" {
 } /* extern "C" */
 
 #include <exception>
+
+/* ignore deprecated warnings from OpenEXR headers */
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated"
+
 #include <ImfTiledOutputFile.h>
 #include <ImfOutputFile.h>
 #include <ImfChannelList.h>
@@ -48,7 +53,7 @@ extern "C" {
 #include <ImfFrameBuffer.h>
 #include "ImathRandom.h"
 
-
+#pragma GCC diagnostic pop
 
 
 /**
