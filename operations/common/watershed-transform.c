@@ -363,7 +363,7 @@ process (GeglOperation       *operation,
   while (!HQ_is_empty (&hq))
     {
       PixelCoords *p = (PixelCoords *) HQ_pop (&hq);
-      guint8       label[bpp];
+      guint8      *label = g_newa (guint8, bpp);
 
       GeglRectangle square_rect = {p->x - 1, p->y - 1, 3, 3};
 

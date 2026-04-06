@@ -70,7 +70,7 @@ gegl_cl_color_load_conversion_set (ColorConversionInfo  *conversions,
                                    GeglClRunData       **kernels,
                                    const gchar          *source)
 {
-  const char *kernel_names[num_conversions + 1];
+  const char **kernel_names = g_newa (const char *, num_conversions + 1);
 
   for (int i = 0; i < num_conversions; ++i)
     {

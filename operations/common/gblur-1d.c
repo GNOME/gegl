@@ -330,7 +330,7 @@ fix_right_boundary_generic (gdouble        *buf,
                             const gfloat   *uplus,
                             const gint      nc)
 {
-  gdouble u[nc*3];
+  gdouble *u = g_newa (gdouble, nc * 3);
   gint    i, k, c;
 
   for (k = 0; k < 3; k++)
@@ -339,7 +339,7 @@ fix_right_boundary_generic (gdouble        *buf,
 
   for (i = 0; i < 3; i++)
     {
-      gdouble tmp[nc];
+      gdouble *tmp = g_newa (gdouble, nc);
       for (c = 0; c < nc ; c++)
         tmp[c] = m[i][0] * u[0 * nc + c];
 

@@ -13,11 +13,11 @@ BOXFILTER_FUNCNAME (guchar                    *dest_buf,
   const BOXFILTER_TYPE *src[9];
   gint  components = bpp / sizeof(BOXFILTER_TYPE);
 
-  gfloat left_weight[dst_rect->width];
-  gfloat center_weight[dst_rect->width];
-  gfloat right_weight[dst_rect->width];
+  gfloat *left_weight = g_newa (gfloat, dst_rect->width);
+  gfloat *center_weight = g_newa (gfloat, dst_rect->width);
+  gfloat *right_weight = g_newa (gfloat, dst_rect->width);
 
-  gint   jj[dst_rect->width];
+  gint   *jj = g_newa (gint, dst_rect->width);
 
   for (gint x = 0; x < dst_rect->width; x++)
   {

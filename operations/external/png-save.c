@@ -18,6 +18,11 @@
  */
 
 #include "config.h"
+
+#ifndef __PRETTY_FUNCTION__
+#define __PRETTY_FUNCTION__ __FUNCTION__
+#endif
+
 #include <glib/gi18n-lib.h>
 #include <gegl-metadata.h>
 

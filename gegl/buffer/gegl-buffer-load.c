@@ -44,7 +44,7 @@
 
 #ifdef _WIN32
 #define BINARY_FLAG O_BINARY
-#ifdef _WIN64
+#ifdef _WIN32
 #include <basetsd.h>
 typedef SSIZE_T ssize_t;
 #endif

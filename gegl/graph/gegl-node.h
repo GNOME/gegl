@@ -112,11 +112,11 @@ GeglNode    * gegl_node_new_child        (GeglNode      *parent,
  * Returns TRUE if the connection was successfully made.
  */
 
+G_DEPRECATED_FOR (gegl_node_connect or gegl_node_link if pads are "input" and "output")
 gboolean      gegl_node_connect_from     (GeglNode      *sink,
                                           const gchar   *input_pad_name,
                                           GeglNode      *source,
-                                          const gchar   *output_pad_name)
-G_DEPRECATED_FOR (gegl_node_connect or gegl_node_link if pads are "input" and "output");
+                                          const gchar   *output_pad_name);
 
 /**
  * gegl_node_connect_to:
@@ -129,11 +129,11 @@ G_DEPRECATED_FOR (gegl_node_connect or gegl_node_link if pads are "input" and "o
  *
  * Returns TRUE if the connection was successfully made.
  */
+G_DEPRECATED_FOR (gegl_node_connect or gegl_node_link if pads are "output" and "input")
 gboolean      gegl_node_connect_to       (GeglNode      *source,
                                           const gchar   *output_pad_name,
                                           GeglNode      *sink,
-                                          const gchar   *input_pad_name)
-G_DEPRECATED_FOR (gegl_node_connect or gegl_node_link if pads are "output" and "input");
+                                          const gchar   *input_pad_name);
 
 /**
  * gegl_node_connect:

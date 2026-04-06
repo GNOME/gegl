@@ -45,7 +45,11 @@ struct _GeglColorPrivate
      * be 16-byte aligned and would crash otherwise.
      * See: https://gitlab.gnome.org/GNOME/gegl/-/merge_requests/142
      */
+#ifdef _MSC_VER
+    __declspec(align(16)) guint8 pixel[48];
+#else
     guint8  pixel[48] __attribute__((aligned(16)));
+#endif
     gdouble alignment;
   };
 };

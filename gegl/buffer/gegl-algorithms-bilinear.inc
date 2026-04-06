@@ -12,8 +12,8 @@ BILINEAR_FUNCNAME (guchar                    *dest_buf,
   const gint ver  = s_rowstride/(bpp/components);
   const gint diag = ver + components;
 
-  gfloat dx[dst_rect->width];
-  gint   jj[dst_rect->width];
+  gfloat *dx = g_newa (gfloat, dst_rect->width);
+  gint   *jj = g_newa (gint, dst_rect->width);
 
   for (gint x = 0; x < dst_rect->width; x++)
   {

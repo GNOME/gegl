@@ -41,6 +41,12 @@ enum_start (gegl_long_shadow_composition)
   enum_value (GEGL_LONG_SHADOW_COMPOSITION_SHADOW_MINUS_IMAGE, "shadow-minus-image", N_("Shadow minus image"))
 enum_end (GeglLongShadowComposition)
 
+#ifdef WITH_FADING_FIXED_RATE
+#define GEGL_LONG_SHADOW_FIXED_RATE_SUFFIX ",fading-fixed-rate"
+#else
+#define GEGL_LONG_SHADOW_FIXED_RATE_SUFFIX ""
+#endif
+
 property_enum (style, _("Style"),
                GeglLongShadowStyle, gegl_long_shadow_style,
                GEGL_LONG_SHADOW_STYLE_FINITE)
@@ -58,9 +64,7 @@ property_double (length, _("Length"), 100.0)
   ui_range    (0.0, 1000.0)
   ui_meta     ("visible", "style {finite,            "
                           "       fading-fixed-length"
-#ifdef WITH_FADING_FIXED_RATE
-                          "       , fading-fixed-rate"
-#endif
+                          GEGL_LONG_SHADOW_FIXED_RATE_SUFFIX
                           "      }")
 
 property_double (midpoint, _("Midpoint"), 100.0)
@@ -73,9 +77,7 @@ property_double (midpoint_rel, _("Midpoint (relative)"), 0.5)
   description (_("Shadow fade midpoint, as a factor of the shadow length"))
   value_range (0.0, 1.0)
   ui_meta     ("visible", "style {fading-fixed-length"
-#ifdef WITH_FADING_FIXED_RATE
-                          "       , fading-fixed-rate"
-#endif
+                          GEGL_LONG_SHADOW_FIXED_RATE_SUFFIX
                           "      }")
   ui_meta     ("label", "alt-label")
   ui_meta     ("alt-label", _("Midpoint"))

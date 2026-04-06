@@ -75,10 +75,10 @@ gegl_boxfilter_u8_nl (guchar              *dest_buf,
   const uint8_t *src[9];
   gint  components = bpp / sizeof(uint8_t);
 
-  gfloat left_weight[dst_rect->width];
-  gfloat right_weight[dst_rect->width];
+  gfloat *left_weight = g_newa (gfloat, dst_rect->width);
+  gfloat *right_weight = g_newa (gfloat, dst_rect->width);
 
-  gint   jj[dst_rect->width];
+  gint   *jj = g_newa (gint, dst_rect->width);
 
   for (gint x = 0; x < dst_rect->width; x++)
   {
@@ -238,10 +238,10 @@ gegl_boxfilter_u8_nl_alpha (guchar              *dest_buf,
   const uint8_t *src[9];
   gint  components = bpp / sizeof(uint8_t);
 
-  gfloat left_weight[dst_rect->width];
-  gfloat right_weight[dst_rect->width];
+  gfloat *left_weight = g_newa (gfloat, dst_rect->width);
+  gfloat *right_weight = g_newa (gfloat, dst_rect->width);
 
-  gint   jj[dst_rect->width];
+  gint   *jj = g_newa (gint, dst_rect->width);
 
   for (gint x = 0; x < dst_rect->width; x++)
   {
@@ -363,8 +363,8 @@ gegl_bilinear_u8_nl (guchar              *dest_buf,
   const gint src_y = src_rect->y;
   const gint dst_width = dst_rect->width;
   const gint dst_height = dst_rect->height;
-  gfloat dx[dst_rect->width];
-  gint jj[dst_rect->width];
+  gfloat *dx = g_newa (gfloat, dst_rect->width);
+  gint   *jj = g_newa (gint, dst_rect->width);
 
   for (gint x = 0; x < dst_rect->width; x++)
   {
@@ -501,8 +501,8 @@ gegl_bilinear_u8_nl_alpha (guchar              *dest_buf,
   const gint src_y = src_rect->y;
   const gint dst_width = dst_rect->width;
   const gint dst_height = dst_rect->height;
-  gfloat dx[dst_rect->width];
-  gint jj[dst_rect->width];
+  gfloat *dx = g_newa (gfloat, dst_rect->width);
+  gint   *jj = g_newa (gint, dst_rect->width);
 
   for (gint x = 0; x < dst_rect->width; x++)
   {
@@ -890,7 +890,7 @@ GEGL_SIMD_SUFFIX(gegl_resample_nearest) (guchar              *dst,
                                          const gint           bpp,
                                          const gint           dst_stride)
 {
-  gint jj[dst_rect->width];
+  gint *jj = g_newa (gint, dst_rect->width);
   gint x, y;
   for (x = 0; x < dst_rect->width; x++)
   {

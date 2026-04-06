@@ -145,10 +145,10 @@ process (GeglOperation       *operation,
       gfloat              *out    = iter->items[0].data;
       const GeglRectangle *roi    = &iter->items[0].roi;
       gint                 stride = 2 * roi->width;
-      gfloat               top[2 * roi->width];
-      gfloat               bottom[2 * roi->width];
-      gfloat               left[2 * roi->height];
-      gfloat               right[2 * roi->height];
+      gfloat              *top    = g_newa (gfloat, 2 * roi->width);
+      gfloat              *bottom = g_newa (gfloat, 2 * roi->width);
+      gfloat              *left   = g_newa (gfloat, 2 * roi->height);
+      gfloat              *right  = g_newa (gfloat, 2 * roi->height);
       gint                 x;
       gint                 y;
 

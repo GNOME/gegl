@@ -276,7 +276,7 @@ _gegl_sampler_box_get (GeglSampler*    restrict  self,
 
       if (u_norm2 >= 4.0 || v_norm2 >= 4.0)
         {
-          gfloat  result[channels];
+          gfloat *result = g_newa (gfloat, channels);
           gdouble uv_samples_inv;
 
           for (gint c = 0; c < channels; c++)
@@ -355,7 +355,7 @@ _gegl_sampler_box_get (GeglSampler*    restrict  self,
                   for (u = 0; u < u_samples; u++)
                     {
                       int c;
-                      gfloat input[channels];
+                      gfloat *input = g_newa (gfloat, channels);
                       self->interpolate (self, x, y, input, repeat_mode);
                       for (c = 0; c < channels; c++)
                         result[c] += input[c];

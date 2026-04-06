@@ -71,7 +71,11 @@ G_BEGIN_DECLS
  * determine the smallest buffers needed at each stage of processing.
  */
 
+#ifdef _MSC_VER
+#define GEGL_ALIGNED __restrict__
+#else
 #define GEGL_ALIGNED __restrict__ __attribute__((__aligned__ (16)))
+#endif
 
 G_END_DECLS
 #endif  /* __GEGL_H__ */

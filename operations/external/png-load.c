@@ -19,6 +19,11 @@
  */
 
 #include "config.h"
+
+#ifndef __PRETTY_FUNCTION__
+#define __PRETTY_FUNCTION__ __FUNCTION__
+#endif
+
 #ifdef HAVE_STRPTIME
 #define _XOPEN_SOURCE
 #include <time.h>

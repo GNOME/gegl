@@ -1316,7 +1316,7 @@ gegl_sampler_nohalo_get (      GeglSampler*    restrict  self,
    * The newval array will contain one computed resampled value per
    * channel:
    */
-  gfloat newval[channels];
+  gfloat *newval = g_newa (gfloat, channels);
 
   {
     /*
@@ -1878,7 +1878,7 @@ gegl_sampler_nohalo_get (      GeglSampler*    restrict  self,
           /*
            * Storage for the EWA contribution:
            */
-          gfloat ewa_newval[channels];
+          gfloat *ewa_newval = g_newa (gfloat, channels);
           for (gint c = 0; c < channels; c++)
             ewa_newval[c] = (gfloat) 0;
 

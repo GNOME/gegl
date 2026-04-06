@@ -504,7 +504,7 @@ gegl_sampler_lohalo_get (      GeglSampler*    restrict  self,
    * The newval array will contain one computed resampled value per
    * channel:
    */
-  gfloat newval[channels];
+  gfloat *newval = g_newa (gfloat, channels);
   for (c = 0; c < channels-1; c++)
    newval[c] =
     extended_sigmoidal (
@@ -954,11 +954,9 @@ gegl_sampler_lohalo_get (      GeglSampler*    restrict  self,
         /*
          * Storage for the EWA contribution:
          */
-        gfloat ewa_newval[channels];
-        ewa_newval[0] = (gfloat) 0;
-        ewa_newval[1] = (gfloat) 0;
-        ewa_newval[2] = (gfloat) 0;
-        ewa_newval[3] = (gfloat) 0;
+        gfloat *ewa_newval = g_newa (gfloat, channels);
+        for (gint c = 0; c < channels; c++)
+          ewa_newval[c] = (gfloat) 0;
 
         {
           gint i = out_top_0;

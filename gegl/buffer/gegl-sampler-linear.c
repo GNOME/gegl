@@ -127,8 +127,8 @@ gegl_sampler_linear_interpolate (      GeglSampler       *self,
   /*
    * Load top row:
    */
-  gfloat top_left[nc];
-  gfloat top_rite[nc];
+  gfloat *top_left = g_newa (gfloat, nc);
+  gfloat *top_rite = g_newa (gfloat, nc);
 
   for (gint c = 0; c < nc; c++)
     top_left[c] = *in_bptr++;

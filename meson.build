@@ -245,6 +245,10 @@ if os_win32
   endif
 endif #if os_win32
 
+if cc.get_id() == 'msvc'
+  cflags_common += ['/D__restrict__=__restrict']
+endif
+
 if buildtype == 'debugoptimized' or buildtype == 'release'
   cflags_common += cc.get_supported_arguments(['-ftree-vectorize'])
 endif
