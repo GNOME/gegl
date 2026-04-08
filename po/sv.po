@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2026-02-15 22:03+0000\n"
-"PO-Revision-Date: 2026-02-17 22:23+0100\n"
+"POT-Creation-Date: 2026-04-06 19:44+0000\n"
+"PO-Revision-Date: 2026-04-08 13:00+0200\n"
 "Last-Translator: Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -661,7 +661,7 @@ msgid "Bump"
 msgstr "Gupp"
 
 #: operations/common/bevel.c:54
-msgid "Bevel Type"
+msgid "Bevel type"
 msgstr "Avfasningstyp"
 
 #: operations/common/bevel.c:57
@@ -703,7 +703,7 @@ msgid "Add"
 msgstr "Lägg till"
 
 #: operations/common/bevel.c:76 operations/common-gpl3+/sinus.c:67
-msgid "Blend Mode"
+msgid "Blend mode"
 msgstr "Sammansättningsläge"
 
 #: operations/common/bevel.c:79
@@ -718,7 +718,7 @@ msgstr ""
 "toningsalternativ."
 
 #: operations/common/bevel.c:81
-msgid "Distance Map Setting"
+msgid "Distance map setting"
 msgstr "Avståndskarteinställning"
 
 #: operations/common/bevel.c:83
@@ -736,7 +736,7 @@ msgstr ""
 #: operations/common/stress.c:27 operations/common/unsharp-mask.c:24
 #: operations/common/vignette.c:40 operations/common/wavelet-blur-1d.c:28
 #: operations/common/wavelet-blur.c:27 operations/common-cxx/focus-blur.c:85
-#: operations/common-cxx/lens-blur.cc:27
+#: operations/common-cxx/lens-blur.cc:28
 #: operations/common-cxx/variable-blur.c:30
 #: operations/common-gpl3+/shadows-highlights.c:40
 #: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:44
@@ -775,7 +775,7 @@ msgid "Emboss depth - Brings out depth and detail of the bump bevel."
 msgstr "Ciseleringsdjup - Drar ut djup och detaljer i guppavfasningen."
 
 #: operations/common/bevel.c:110
-msgid "Light Angle"
+msgid "Light angle"
 msgstr "Ljusvinkel"
 
 #: operations/common/bevel.c:111
@@ -805,7 +805,7 @@ msgstr "Avfasning…"
 #: operations/common/bilateral-filter.c:26
 #: operations/common/domain-transform.c:29 operations/common/dropshadow.c:46
 #: operations/common/inner-glow.c:58 operations/common-cxx/focus-blur.c:45
-#: operations/common-cxx/lens-blur.cc:28
+#: operations/common-cxx/lens-blur.cc:29
 #: operations/common-gpl3+/gaussian-blur-selective.c:29
 #: operations/workshop/bilateral-filter-fast.c:43
 msgid "Blur radius"
@@ -1079,7 +1079,9 @@ msgstr "Vertikal bredd av cellers bildpunkter"
 
 #: operations/common/checkerboard.c:42 operations/common/grid.c:38
 #: operations/common/mirrors.c:46 operations/common/pixelize.c:51
+#: operations/common-gpl3+/bayer-matrix.c:73
 #: operations/common-gpl3+/bump-map.c:62
+#: operations/common-gpl3+/linear-sinusoid.c:81
 #: operations/seamless-clone/seamless-clone.c:26
 #: operations/seamless-clone/seamless-clone-compose.c:25
 msgid "Offset X"
@@ -1091,7 +1093,9 @@ msgstr "Horisontell position (från origo) för början av rutnät"
 
 #: operations/common/checkerboard.c:48 operations/common/grid.c:44
 #: operations/common/mirrors.c:52 operations/common/pixelize.c:58
+#: operations/common-gpl3+/bayer-matrix.c:80
 #: operations/common-gpl3+/bump-map.c:68
+#: operations/common-gpl3+/linear-sinusoid.c:88
 #: operations/seamless-clone/seamless-clone.c:32
 #: operations/seamless-clone/seamless-clone-compose.c:31
 msgid "Offset Y"
@@ -1139,7 +1143,7 @@ msgstr "Rendera ett schackbrädesmönster"
 #: operations/common/color.c:24 operations/common/color.c:87
 #: operations/common/color-overlay.c:26 operations/common/dropshadow.c:67
 #: operations/common/grid.c:64 operations/common/inner-glow.c:80
-#: operations/common/long-shadow.c:83 operations/common/rectangle.c:48
+#: operations/common/long-shadow.c:85 operations/common/rectangle.c:48
 #: operations/common/vignette.c:36 operations/common-gpl3+/color-to-alpha.c:29
 #: operations/common-gpl3+/supernova.c:60
 #: operations/common-gpl3+/tile-paper.c:31
@@ -1182,7 +1186,7 @@ msgstr "Färgmättnad"
 
 #. FIXME: With a large angle, we lose AreaFilter's flavours
 #: operations/common/color-assimilation-grid.c:35
-#: operations/common/long-shadow.c:49 operations/common/motion-blur-linear.c:32
+#: operations/common/long-shadow.c:55 operations/common/motion-blur-linear.c:32
 #: operations/common/newsprint.c:158
 #: operations/common-gpl3+/linear-sinusoid.c:65
 #: operations/common-gpl3+/motion-blur-circular.c:51
@@ -2073,7 +2077,7 @@ msgid "Performs edge detection using a Gaussian derivative method"
 msgstr "Utför kantdetektering med en gaussisk derivatametod"
 
 #: operations/common/edge-sobel.c:31
-msgid "Keep Sign"
+msgid "Keep sign"
 msgstr "Behåll tecken"
 
 #: operations/common/edge-sobel.c:32
@@ -2285,9 +2289,9 @@ msgstr "1D-gaussisk oskärpa"
 #: operations/core/load.c:29 operations/external/exr-save.cc:24
 #: operations/external/ff-load.c:30 operations/external/ff-save.c:30
 #: operations/external/gif-load.c:34 operations/external/jp2-load.c:25
-#: operations/external/jpg-load.c:24 operations/external/jpg-save.c:25
-#: operations/external/npy-save.c:31 operations/external/png-load.c:32
-#: operations/external/png-save.c:26 operations/external/ppm-load.c:25
+#: operations/external/jpg-load.c:29 operations/external/jpg-save.c:25
+#: operations/external/npy-save.c:31 operations/external/png-load.c:37
+#: operations/external/png-save.c:31 operations/external/ppm-load.c:25
 #: operations/external/ppm-save.c:25 operations/external/rgbe-load.c:26
 #: operations/external/rgbe-save.c:26 operations/external/svg-load.c:25
 #: operations/external/tiff-load.c:29 operations/external/tiff-save.c:25
@@ -2313,19 +2317,19 @@ msgstr "Sökväg för målfil att skriva GeglBuffer till."
 msgid "GeglBuffer file writer."
 msgstr "GeglBuffer-filskrivare."
 
-#: operations/common/gegl.c:72
+#: operations/common/gegl.c:73
 msgid "pipeline"
 msgstr "rörledning"
 
-#: operations/common/gegl.c:73
+#: operations/common/gegl.c:74
 msgid "[op [property=value] [property=value]] [[op] [property=value]"
 msgstr "[åtg [egenskap=värde] [egenskap=värde]] [[åtg] [egenskap=värde]"
 
-#: operations/common/gegl.c:76
+#: operations/common/gegl.c:77
 msgid "Eeeeeek"
 msgstr "Ooooooj"
 
-#: operations/common/gegl.c:77
+#: operations/common/gegl.c:78
 msgid ""
 "There is a problem in the syntax or in the application of parsed property "
 "values. Things might mostly work nevertheless."
@@ -2333,11 +2337,11 @@ msgstr ""
 "Det finns ett problem med syntaxen eller i tillämpningen av tolkade "
 "egenskapsvärden. Det kan mestadels fungera trots allt."
 
-#: operations/common/gegl.c:179
+#: operations/common/gegl.c:180
 msgid "GEGL graph"
 msgstr "GEGL-graf"
 
-#: operations/common/gegl.c:182
+#: operations/common/gegl.c:183
 msgid ""
 "Do a chain of operations, with key=value pairs after each operation name to "
 "set properties. And aux=[ source filter ] for specifying a chain with a "
@@ -2384,8 +2388,8 @@ msgid "Grid renderer"
 msgstr "Rutnätsrenderare"
 
 #: operations/common/high-pass.c:24
-msgid "Std. Dev."
-msgstr "Standardavvikelse"
+msgid "Standard deviation"
+msgstr "Standardavvikelse för brus"
 
 #: operations/common/high-pass.c:31
 msgid "Contrast of high-pass"
@@ -2432,7 +2436,7 @@ msgid "Adjust LCH Hue, Chroma, and Lightness"
 msgstr "Justera LCH nyans, krominans och ljushet"
 
 #: operations/common/icc-load.c:25 operations/external/gif-load.c:35
-#: operations/external/jp2-load.c:26 operations/external/jpg-load.c:25
+#: operations/external/jp2-load.c:26 operations/external/jpg-load.c:30
 #: operations/external/svg-load.c:26 operations/external/tiff-load.c:30
 #: operations/external/webp-load.c:26
 msgid "Path of file to load"
@@ -2915,65 +2919,65 @@ msgstr "Endast skugga"
 msgid "Shadow minus image"
 msgstr "Skugga minus bild"
 
-#: operations/common/long-shadow.c:44 operations/common-gpl3+/wind.c:45
+#: operations/common/long-shadow.c:50 operations/common-gpl3+/wind.c:45
 msgid "Style"
 msgstr "Stil"
 
-#: operations/common/long-shadow.c:47
+#: operations/common/long-shadow.c:53
 msgid "Shadow style"
 msgstr "Skuggstil"
 
-#: operations/common/long-shadow.c:50
+#: operations/common/long-shadow.c:56
 msgid "Shadow angle"
 msgstr "Skuggvinkel"
 
-#: operations/common/long-shadow.c:55 operations/common/motion-blur-linear.c:25
+#: operations/common/long-shadow.c:61 operations/common/motion-blur-linear.c:25
 msgid "Length"
 msgstr "Längd"
 
-#: operations/common/long-shadow.c:56
+#: operations/common/long-shadow.c:62
 msgid "Shadow length"
 msgstr "Skugglängd"
 
-#: operations/common/long-shadow.c:66 operations/common/long-shadow.c:81
+#: operations/common/long-shadow.c:70 operations/common/long-shadow.c:83
 #: operations/common-cxx/focus-blur.c:95
 msgid "Midpoint"
 msgstr "Mittpunkt"
 
-#: operations/common/long-shadow.c:67
+#: operations/common/long-shadow.c:71
 msgid "Shadow fade midpoint"
 msgstr "Mittpunkt för skugguttoning"
 
-#: operations/common/long-shadow.c:72
+#: operations/common/long-shadow.c:76
 msgid "Midpoint (relative)"
 msgstr "Mittpunkt (relativ)"
 
-#: operations/common/long-shadow.c:73
+#: operations/common/long-shadow.c:77
 msgid "Shadow fade midpoint, as a factor of the shadow length"
 msgstr "Mittpunkt för skugguttoning, som en faktor av skugglängden"
 
-#: operations/common/long-shadow.c:84
+#: operations/common/long-shadow.c:86
 msgid "Shadow color"
 msgstr "Skuggfärg"
 
-#: operations/common/long-shadow.c:87
+#: operations/common/long-shadow.c:89
 msgid "Composition"
 msgstr "Sammansättning"
 
-#: operations/common/long-shadow.c:90
+#: operations/common/long-shadow.c:92
 msgid "Output composition"
 msgstr "Sammansättning av utdata"
 
-#: operations/common/long-shadow.c:1646
+#: operations/common/long-shadow.c:1648
 msgid "Long Shadow"
 msgstr "Lång skugga"
 
-#: operations/common/long-shadow.c:1650
+#: operations/common/long-shadow.c:1652
 msgid "Creates a long-shadow effect"
 msgstr "Skapar en lång skuggeffekt"
 
 #: operations/common/magick-load.c:27 operations/core/load.c:30
-#: operations/external/png-load.c:33 operations/external/ppm-load.c:26
+#: operations/external/png-load.c:38 operations/external/ppm-load.c:26
 #: operations/external/raw-load.c:37 operations/external/rgbe-load.c:27
 #: operations/workshop/rawbayer-load.c:26
 msgid "Path of file to load."
@@ -3132,11 +3136,11 @@ msgstr "Hög precision"
 msgid "Avoid clipping and quantization (slower)"
 msgstr "Undvik klippning och kvantisering (långsammare)"
 
-#: operations/common/median-blur.c:1003
+#: operations/common/median-blur.c:1000
 msgid "Median Blur"
 msgstr "Medianoskärpa"
 
-#: operations/common/median-blur.c:1006
+#: operations/common/median-blur.c:1003
 msgid ""
 "Blur resulting from computing the median color in the neighborhood of each "
 "pixel."
@@ -3263,15 +3267,15 @@ msgid "Preserve luminosity"
 msgstr "Bevara luminans"
 
 #: operations/common/mono-mixer.c:26
-msgid "Red Channel Multiplier"
+msgid "Red channel multiplier"
 msgstr "Multiplikator för röd kanal"
 
 #: operations/common/mono-mixer.c:30
-msgid "Green Channel Multiplier"
+msgid "Green channel multiplier"
 msgstr "Multiplikator för grön kanal"
 
 #: operations/common/mono-mixer.c:34
-msgid "Blue Channel Multiplier"
+msgid "Blue channel multiplier"
 msgstr "Multiplikator för blå kanal"
 
 #: operations/common/mono-mixer.c:113
@@ -3757,7 +3761,7 @@ msgstr ""
 "som vinkelförhöjning orsakar"
 
 #: operations/common/newsprint.c:178
-msgid "Angle Boost"
+msgid "Angle boost"
 msgstr "Vinkelförhöjning"
 
 #: operations/common/newsprint.c:180
@@ -3986,7 +3990,7 @@ msgid "The amount by which to scale the height values"
 msgstr "Mängden med vilken höjdvärdena ska skalas"
 
 #: operations/common/normal-map.c:35
-msgid "X Component"
+msgid "X component"
 msgstr "X-komponent"
 
 #: operations/common/normal-map.c:38
@@ -3994,7 +3998,7 @@ msgid "The component used for the X coordinates"
 msgstr "Komponenten som används för X-koordinaterna"
 
 #: operations/common/normal-map.c:40
-msgid "Y Component"
+msgid "Y component"
 msgstr "Y-komponent"
 
 #: operations/common/normal-map.c:43
@@ -4018,7 +4022,7 @@ msgid "Flip the Y coordinates"
 msgstr "Vänd Y-koordinaterna"
 
 #: operations/common/normal-map.c:51
-msgid "Full Z Range"
+msgid "Full Z range"
 msgstr "Fullständigt Z-intervall"
 
 #: operations/common/normal-map.c:52
@@ -4174,7 +4178,7 @@ msgstr "Vertikalt storleksförhållande för en bildpunkt inuti varje block"
 #: operations/common/pixelize.c:75 operations/common-gpl3+/apply-lens.c:44
 #: operations/common-gpl3+/cubism.c:39
 #: operations/common-gpl3+/lens-distortion.c:57
-#: operations/common-gpl3+/tile-paper.c:76
+#: operations/common-gpl3+/maze.c:71 operations/common-gpl3+/tile-paper.c:76
 msgid "Background color"
 msgstr "Bakgrundsfärg"
 
@@ -4321,11 +4325,11 @@ msgstr "Ljusanpassning"
 msgid "Adaptation to light variation across the image"
 msgstr "Anpassning till ljusvariation över bilden"
 
-#: operations/common/reinhard05.c:317
+#: operations/common/reinhard05.c:318
 msgid "Reinhard 2005 Tone Mapping"
 msgstr "Reinhard 2005 Tonmappning"
 
-#: operations/common/reinhard05.c:322
+#: operations/common/reinhard05.c:323
 msgid ""
 "Adapt an image, which may have a high dynamic range, for presentation using "
 "a low dynamic range. This is an efficient global operator derived from "
@@ -4397,15 +4401,15 @@ msgid "Path of file to save."
 msgstr "Sökväg för fil som ska sparas."
 
 #: operations/common/save.c:28 operations/core/load.c:33
-#: operations/external/jpg-save.c:44 operations/external/png-load.c:36
-#: operations/external/png-save.c:34 operations/external/tiff-load.c:39
+#: operations/external/jpg-save.c:44 operations/external/png-load.c:41
+#: operations/external/png-save.c:39 operations/external/tiff-load.c:39
 #: operations/external/tiff-save.c:34
 msgid "Metadata"
 msgstr "Metadata"
 
 #: operations/common/save.c:29 operations/core/load.c:34
-#: operations/external/jpg-save.c:45 operations/external/png-load.c:37
-#: operations/external/png-save.c:35
+#: operations/external/jpg-save.c:45 operations/external/png-load.c:42
+#: operations/external/png-save.c:40
 msgid "Object providing image metadata"
 msgstr "Objekt som tillhandahåller bildmetadata"
 
@@ -5361,9 +5365,9 @@ msgstr "Spatial regelbundenhet"
 
 #: operations/common/waterpixels.c:49
 msgid ""
-"trade-off between superpixel regularity and adherence to object boundaries"
+"Trade-off between superpixel regularity and adherence to object boundaries"
 msgstr ""
-"avvägning mellan regelbundenhet för superbildpunkter och att följa "
+"Avvägning mellan regelbundenhet för superbildpunkter och att följa "
 "objektgränser"
 
 #: operations/common/waterpixels.c:52
@@ -5395,12 +5399,12 @@ msgstr "flagga"
 msgid "Pointer to flag value for unlabelled pixels"
 msgstr "Pekare till flaggvärde för ej etiketterade bildpunkter"
 
-#: operations/common/watershed-transform.c:489
+#: operations/common/watershed-transform.c:490
 msgid "Watershed Transform"
 msgstr "Vattendelningstransform"
 
 # TODO: labellized -> labelled?
-#: operations/common/watershed-transform.c:492
+#: operations/common/watershed-transform.c:493
 msgid ""
 "Labels propagation by watershed transformation. Output buffer will keep the "
 "input format. Unlabelled pixels are marked with a given flag value (by "
@@ -5489,8 +5493,8 @@ msgid "Threshold high"
 msgstr "Tröskelvärde högt"
 
 #: operations/common-cxx/distance-transform.cc:49
-msgid "Grayscale Averaging"
-msgstr "Gråskala medelvärdesbildning"
+msgid "Grayscale averaging"
+msgstr "Medelvärdesbildning för gråskala"
 
 #: operations/common-cxx/distance-transform.cc:50
 msgid "Number of computations for grayscale averaging"
@@ -5508,7 +5512,7 @@ msgstr "Avståndstransform"
 msgid "Calculate a distance transform"
 msgstr "Beräkna en avståndstransform"
 
-#: operations/common-cxx/focus-blur.c:30 operations/common-cxx/lens-blur.cc:507
+#: operations/common-cxx/focus-blur.c:30 operations/common-cxx/lens-blur.cc:508
 msgid "Lens Blur"
 msgstr "Linsoskärpa"
 
@@ -5520,23 +5524,23 @@ msgstr "Oskärpetyp"
 msgid "Out-of-focus blur radius"
 msgstr "Oskärperadie utanför fokus"
 
-#: operations/common-cxx/focus-blur.c:52 operations/common-cxx/lens-blur.cc:34
+#: operations/common-cxx/focus-blur.c:52 operations/common-cxx/lens-blur.cc:35
 msgid "Highlight factor"
 msgstr "Högdagerfaktor"
 
-#: operations/common-cxx/focus-blur.c:53 operations/common-cxx/lens-blur.cc:35
+#: operations/common-cxx/focus-blur.c:53 operations/common-cxx/lens-blur.cc:36
 msgid "Relative highlight strength"
 msgstr "Relativ högdagerstyrka"
 
-#: operations/common-cxx/focus-blur.c:57 operations/common-cxx/lens-blur.cc:38
+#: operations/common-cxx/focus-blur.c:57 operations/common-cxx/lens-blur.cc:39
 msgid "Highlight threshold (low)"
 msgstr "Högdagertröskelvärde (lågt)"
 
-#: operations/common-cxx/focus-blur.c:61 operations/common-cxx/lens-blur.cc:42
+#: operations/common-cxx/focus-blur.c:61 operations/common-cxx/lens-blur.cc:43
 msgid "Highlight threshold"
 msgstr "Högdagertröskelvärde"
 
-#: operations/common-cxx/focus-blur.c:64 operations/common-cxx/lens-blur.cc:44
+#: operations/common-cxx/focus-blur.c:64 operations/common-cxx/lens-blur.cc:45
 msgid "Highlight threshold (high)"
 msgstr "Högdagertröskelvärde (högt)"
 
@@ -5619,27 +5623,27 @@ msgstr "Brusreducera (DCT)"
 msgid "Denoising algorithm using a per-patch DCT thresholding"
 msgstr "Brusreduceringsalgoritm som använder DCT-tröskelvärde per lapp"
 
-#: operations/common-cxx/lens-blur.cc:49
+#: operations/common-cxx/lens-blur.cc:50
 msgid "Clip to input extents"
 msgstr "Klipp till indatautsträckning"
 
-#: operations/common-cxx/lens-blur.cc:50
+#: operations/common-cxx/lens-blur.cc:51
 msgid "Clip output to the input extents"
 msgstr "Klipp utdata till indatautsträckning"
 
-#: operations/common-cxx/lens-blur.cc:52
+#: operations/common-cxx/lens-blur.cc:53
 #: operations/common-cxx/piecewise-blend.cc:38
 #: operations/common-cxx/variable-blur.c:37
 msgid "Linear mask"
 msgstr "Linjär mask"
 
-#: operations/common-cxx/lens-blur.cc:53
+#: operations/common-cxx/lens-blur.cc:54
 #: operations/common-cxx/piecewise-blend.cc:39
 #: operations/common-cxx/variable-blur.c:38
 msgid "Use linear mask values"
 msgstr "Använd linjära maskvärden"
 
-#: operations/common-cxx/lens-blur.cc:510
+#: operations/common-cxx/lens-blur.cc:511
 msgid "Simulate out-of-focus lens blur"
 msgstr "Simulera linsoskärpa utanför fokus"
 
@@ -5769,7 +5773,7 @@ msgid "Number of subdivisions"
 msgstr "Antal uppdelningar"
 
 #: operations/common-gpl3+/bayer-matrix.c:29 operations/common-gpl3+/sinus.c:31
-msgid "X Scale"
+msgid "Scale X"
 msgstr "X-skala"
 
 #: operations/common-gpl3+/bayer-matrix.c:30
@@ -5777,7 +5781,7 @@ msgid "Horizontal pattern scale"
 msgstr "Horisontell mönsterskala"
 
 #: operations/common-gpl3+/bayer-matrix.c:36 operations/common-gpl3+/sinus.c:38
-msgid "Y Scale"
+msgid "Scale Y"
 msgstr "Y-skala"
 
 #: operations/common-gpl3+/bayer-matrix.c:37
@@ -5838,20 +5842,10 @@ msgstr "Exponent"
 msgid "Value exponent (logarithmic scale)"
 msgstr "Värdeexponent (logaritmisk skala)"
 
-#: operations/common-gpl3+/bayer-matrix.c:73
-#: operations/common-gpl3+/linear-sinusoid.c:81
-msgid "X Offset"
-msgstr "X-position"
-
 #: operations/common-gpl3+/bayer-matrix.c:74
 #: operations/common-gpl3+/linear-sinusoid.c:82
 msgid "Offset for X axis"
 msgstr "Position för X-axel"
-
-#: operations/common-gpl3+/bayer-matrix.c:80
-#: operations/common-gpl3+/linear-sinusoid.c:88
-msgid "Y Offset"
-msgstr "Y-position"
 
 #: operations/common-gpl3+/bayer-matrix.c:81
 #: operations/common-gpl3+/linear-sinusoid.c:89
@@ -5919,7 +5913,7 @@ msgid "Ambient lighting factor"
 msgstr "Omgivningsbelysningsfaktor"
 
 #: operations/common-gpl3+/bump-map.c:472
-msgid "Height Map"
+msgid "Height map"
 msgstr "Höjdmappning"
 
 #: operations/common-gpl3+/bump-map.c:476
@@ -5938,11 +5932,12 @@ msgstr ""
 "0-12-336155-9). Den tar en buffert som tillämpas som en bumpmap för en annan "
 "buffert och producerar en trevlig ciseleringseffekt."
 
-#: operations/common-gpl3+/cartoon.c:28
+#: operations/common-gpl3+/cartoon.c:28 operations/common-gpl3+/oilify.c:28
+#: operations/common-gpl3+/photocopy.c:26
 msgid "Mask radius"
 msgstr "Maskradie"
 
-#: operations/common-gpl3+/cartoon.c:31
+#: operations/common-gpl3+/cartoon.c:31 operations/common-gpl3+/photocopy.c:32
 msgid "Percent black"
 msgstr "Procent svart"
 
@@ -6046,7 +6041,7 @@ msgstr ""
 "Remixa färger genom att definiera relativa bidrag från källkomponenter."
 
 #: operations/common-gpl3+/color-exchange.c:31
-msgid "From Color"
+msgid "From color"
 msgstr "Från färg"
 
 #: operations/common-gpl3+/color-exchange.c:32
@@ -6054,7 +6049,7 @@ msgid "The color to change."
 msgstr "Färg att ändra."
 
 #: operations/common-gpl3+/color-exchange.c:34
-msgid "To Color"
+msgid "To color"
 msgstr "Till färg"
 
 #: operations/common-gpl3+/color-exchange.c:35
@@ -6062,7 +6057,7 @@ msgid "Replacement color."
 msgstr "Ersättningsfärg."
 
 #: operations/common-gpl3+/color-exchange.c:37
-msgid "Red Threshold"
+msgid "Red threshold"
 msgstr "Rött tröskelvärde"
 
 #: operations/common-gpl3+/color-exchange.c:38
@@ -6070,7 +6065,7 @@ msgid "Red threshold of the input color"
 msgstr "Rött tröskelvärde för indatafärgen"
 
 #: operations/common-gpl3+/color-exchange.c:41
-msgid "Green Threshold"
+msgid "Green threshold"
 msgstr "Grönt tröskelvärde"
 
 #: operations/common-gpl3+/color-exchange.c:42
@@ -6078,7 +6073,7 @@ msgid "Green threshold of the input color"
 msgstr "Grönt tröskelvärde för indatafärgen"
 
 #: operations/common-gpl3+/color-exchange.c:45
-msgid "Blue Threshold"
+msgid "Blue threshold"
 msgstr "Blått tröskelvärde"
 
 #: operations/common-gpl3+/color-exchange.c:46
@@ -6470,7 +6465,7 @@ msgid "Bumpmap (preserve original colors)"
 msgstr "Bumpmap (behåll originalfärger)"
 
 #: operations/common-gpl3+/emboss.c:30
-msgid "Emboss Type"
+msgid "Emboss type"
 msgstr "Ciseleringstyp"
 
 #: operations/common-gpl3+/emboss.c:32
@@ -6834,7 +6829,7 @@ msgid "Adds a lens flare effect."
 msgstr "Lägger till en linsöverstrålningseffekt."
 
 #: operations/common-gpl3+/linear-sinusoid.c:25
-msgid "X Period"
+msgid "Period X"
 msgstr "X-period"
 
 #: operations/common-gpl3+/linear-sinusoid.c:26
@@ -6842,7 +6837,7 @@ msgid "Period for X axis"
 msgstr "Period för X-axel"
 
 #: operations/common-gpl3+/linear-sinusoid.c:32
-msgid "Y Period"
+msgid "Period Y"
 msgstr "Y-period"
 
 #: operations/common-gpl3+/linear-sinusoid.c:33
@@ -6850,7 +6845,7 @@ msgid "Period for Y axis"
 msgstr "Period för Y-axel"
 
 #: operations/common-gpl3+/linear-sinusoid.c:39
-msgid "X Amplitude"
+msgid "Amplitude X"
 msgstr "X-amplitud"
 
 #: operations/common-gpl3+/linear-sinusoid.c:40
@@ -6858,7 +6853,7 @@ msgid "Amplitude for X axis (logarithmic scale)"
 msgstr "Amplitud för X-axel (logaritmisk skala)"
 
 #: operations/common-gpl3+/linear-sinusoid.c:45
-msgid "Y Amplitude"
+msgid "Amplitude Y"
 msgstr "Y-amplitud"
 
 #: operations/common-gpl3+/linear-sinusoid.c:46
@@ -6866,7 +6861,7 @@ msgid "Amplitude for Y axis (logarithmic scale)"
 msgstr "Amplitud för Y-axel (logaritmisk skala)"
 
 #: operations/common-gpl3+/linear-sinusoid.c:51
-msgid "X Phase"
+msgid "Phase X"
 msgstr "X-fas"
 
 #: operations/common-gpl3+/linear-sinusoid.c:52
@@ -6874,7 +6869,7 @@ msgid "Phase for X axis"
 msgstr "Fas för X-axel"
 
 #: operations/common-gpl3+/linear-sinusoid.c:58
-msgid "Y Phase"
+msgid "Phase Y"
 msgstr "Y-fas"
 
 #: operations/common-gpl3+/linear-sinusoid.c:59
@@ -6918,16 +6913,12 @@ msgid "Maze algorithm type"
 msgstr "Algoritmtyp för labyrint"
 
 #: operations/common-gpl3+/maze.c:67
-msgid "Foreground Color"
+msgid "Foreground color"
 msgstr "Förgrundsfärg"
 
 #: operations/common-gpl3+/maze.c:68
 msgid "The foreground color"
 msgstr "Förgrundsfärgen"
-
-#: operations/common-gpl3+/maze.c:71
-msgid "Background Color"
-msgstr "Bakgrundsfärg"
 
 #: operations/common-gpl3+/maze.c:72
 msgid "The background color"
@@ -6965,7 +6956,8 @@ msgstr "Plattgeometri"
 msgid "What shape to use for tiles"
 msgstr "Vilken form som plattorna ska ha"
 
-#: operations/common-gpl3+/mosaic.c:51
+#: operations/common-gpl3+/mosaic.c:51 operations/common-gpl3+/tile-glass.c:34
+#: operations/common-gpl3+/tile-paper.c:47
 msgid "Tile height"
 msgstr "Platthöjd"
 
@@ -7088,7 +7080,7 @@ msgid "Randomly slide some pixels downward (similar to melting)"
 msgstr "Flytta slumpmässigt några bildpunkter nedåt (liknar smältning)"
 
 #: operations/common-gpl3+/noise-solid.c:36
-msgid "X Size"
+msgid "X size"
 msgstr "X-storlek"
 
 #: operations/common-gpl3+/noise-solid.c:37
@@ -7096,7 +7088,7 @@ msgid "Horizontal texture size"
 msgstr "Horisontell texturstorlek"
 
 #: operations/common-gpl3+/noise-solid.c:43
-msgid "Y Size"
+msgid "Y size"
 msgstr "Y-storlek"
 
 #: operations/common-gpl3+/noise-solid.c:44
@@ -7127,10 +7119,6 @@ msgstr "Enfärgat brus"
 msgid "Create a random cloud-like texture"
 msgstr "Skapa en slumpmässig molnlik textur"
 
-#: operations/common-gpl3+/oilify.c:28 operations/common-gpl3+/photocopy.c:26
-msgid "Mask Radius"
-msgstr "Maskradie"
-
 #: operations/common-gpl3+/oilify.c:29
 msgid ""
 "Radius of circle around pixel, can also be scaled per pixel by a buffer on "
@@ -7156,7 +7144,7 @@ msgid "Histogram size"
 msgstr "Histogramstorlek"
 
 #: operations/common-gpl3+/oilify.c:44
-msgid "Intensity Mode"
+msgid "Intensity mode"
 msgstr "Intensitetsläge"
 
 #: operations/common-gpl3+/oilify.c:45
@@ -7195,12 +7183,8 @@ msgstr "Oljifiera"
 msgid "Emulate an oil painting"
 msgstr "Emulera en oljemålning"
 
-#: operations/common-gpl3+/photocopy.c:32
-msgid "Percent Black"
-msgstr "Procent svart"
-
 #: operations/common-gpl3+/photocopy.c:35
-msgid "Percent White"
+msgid "Percent white"
 msgstr "Procent vitt"
 
 #: operations/common-gpl3+/photocopy.c:329
@@ -7617,13 +7601,8 @@ msgstr "Strukturerar bilden som om den fanns på en konstnärs duk."
 
 #: operations/common-gpl3+/tile-glass.c:28
 #: operations/common-gpl3+/tile-paper.c:40
-msgid "Tile Width"
+msgid "Tile width"
 msgstr "Plattbredd"
-
-#: operations/common-gpl3+/tile-glass.c:34
-#: operations/common-gpl3+/tile-paper.c:47
-msgid "Tile Height"
-msgstr "Platthöjd"
 
 #: operations/common-gpl3+/tile-glass.c:228
 msgid "Tile Glass"
@@ -7984,7 +7963,7 @@ msgid "Direction of the effect"
 msgstr "Riktning för effekten"
 
 #: operations/common-gpl3+/wind.c:55
-msgid "Edge Affected"
+msgid "Edge affected"
 msgstr "Om kanten påverkas"
 
 #: operations/common-gpl3+/wind.c:58
@@ -8161,8 +8140,8 @@ msgstr ""
 "av inmatningskedjan."
 
 #: operations/core/load.c:31 operations/external/jp2-load.c:27
-#: operations/external/jpg-load.c:26 operations/external/pdf-load.c:27
-#: operations/external/png-load.c:34 operations/external/ppm-load.c:27
+#: operations/external/jpg-load.c:31 operations/external/pdf-load.c:27
+#: operations/external/png-load.c:39 operations/external/ppm-load.c:27
 #: operations/external/svg-load.c:27 operations/external/tiff-load.c:31
 #: operations/external/webp-load.c:27
 msgid "URI"
@@ -8252,7 +8231,7 @@ msgstr "FFmpegs bildläsare"
 msgid "FFmpeg video frame importer."
 msgstr "FFmpegs videobildsimportör."
 
-#: operations/external/ff-save.c:31 operations/external/png-save.c:27
+#: operations/external/ff-save.c:31 operations/external/png-save.c:32
 #: operations/external/ppm-save.c:26 operations/external/rgbe-save.c:27
 msgid "Target path and filename, use '-' for stdout."
 msgstr "Målsökväg och filnamn, använd ”-” för standard ut."
@@ -8498,15 +8477,15 @@ msgstr "JPEG2000-filinläsare"
 msgid "JPEG 2000 image loader using jasper."
 msgstr "JPEG2000-bildläsare som använder jasper."
 
-#: operations/external/jpg-load.c:27
+#: operations/external/jpg-load.c:32
 msgid "URI of file to load"
 msgstr "URI för fil att läsa in"
 
-#: operations/external/jpg-load.c:390
+#: operations/external/jpg-load.c:395
 msgid "JPEG File Loader"
 msgstr "JPEG-filinläsare"
 
-#: operations/external/jpg-load.c:392
+#: operations/external/jpg-load.c:397
 msgid "JPEG image loader using libjpeg"
 msgstr "JPEG-bildläsare som använder libjpeg"
 
@@ -8867,40 +8846,40 @@ msgstr "GdkPixbuf-källa"
 msgid "Uses the GdkPixbuf located at the memory location in <em>pixbuf</em>."
 msgstr "Använder GdkPixbuf i minnesplatsen i <em>pixbuf</em>."
 
-#: operations/external/png-load.c:35
+#: operations/external/png-load.c:40
 msgid "URI for file to load."
 msgstr "URI för fil att läsa in."
 
-#: operations/external/png-load.c:680
+#: operations/external/png-load.c:694
 msgid "PNG File Loader"
 msgstr "PNG-filinläsare"
 
-#: operations/external/png-load.c:682
+#: operations/external/png-load.c:696
 msgid "PNG image loader."
 msgstr "PNG-bildläsare."
 
-#: operations/external/png-save.c:28
+#: operations/external/png-save.c:33
 msgid "Compression"
 msgstr "Komprimering"
 
-#: operations/external/png-save.c:29
+#: operations/external/png-save.c:34
 msgid "PNG compression level from 1 to 9"
 msgstr "PNG-komprimeringsnivå från 1 till 9"
 
-#: operations/external/png-save.c:31 operations/external/ppm-save.c:29
+#: operations/external/png-save.c:36 operations/external/ppm-save.c:29
 #: operations/external/tiff-save.c:27
 msgid "Bitdepth"
 msgstr "Bitdjup"
 
-#: operations/external/png-save.c:32 operations/external/ppm-save.c:30
+#: operations/external/png-save.c:37 operations/external/ppm-save.c:30
 msgid "8 and 16 are the currently accepted values."
 msgstr "8 och 16 är de värden som accepteras för närvarande."
 
-#: operations/external/png-save.c:434
+#: operations/external/png-save.c:454
 msgid "PNG File Saver"
 msgstr "PNG-filsparare"
 
-#: operations/external/png-save.c:436
+#: operations/external/png-save.c:456
 msgid "PNG image saver, using libpng"
 msgstr "PNG-bildsparare, använder libpng"
 
@@ -8908,11 +8887,11 @@ msgstr "PNG-bildsparare, använder libpng"
 msgid "URI of image to load."
 msgstr "URI för bild att läsa in."
 
-#: operations/external/ppm-load.c:473
+#: operations/external/ppm-load.c:474
 msgid "PPM File Loader"
 msgstr "PPM-filinläsare"
 
-#: operations/external/ppm-load.c:475
+#: operations/external/ppm-load.c:476
 msgid "PPM image loader."
 msgstr "PPM-bildläsare."
 
@@ -10213,15 +10192,12 @@ msgid "EPITROCHOID"
 msgstr "EPITROKOID"
 
 #: operations/workshop/external/spyrograph.c:31
-msgid "Curve Type"
-msgstr "Kurvtyp"
-
 #: operations/workshop/external/spyrograph.c:34
 msgid "Curve type"
 msgstr "Kurvtyp"
 
 #: operations/workshop/external/spyrograph.c:36
-msgid "Fixed Gear Teeth"
+msgid "Fixed gear teeth"
 msgstr "Kuggar i fast kugghjul"
 
 #: operations/workshop/external/spyrograph.c:37
@@ -10229,7 +10205,7 @@ msgid "Number of teeth in fixed gear."
 msgstr "Antalet kuggar i fast kugghjul."
 
 #: operations/workshop/external/spyrograph.c:40
-msgid "Moving Gear Teeth"
+msgid "Moving gear teeth"
 msgstr "Kuggar i rörligt kugghjul"
 
 #: operations/workshop/external/spyrograph.c:41
@@ -10243,7 +10219,7 @@ msgstr ""
 "kuggar i kugghjulen."
 
 #: operations/workshop/external/spyrograph.c:46
-msgid "Hole Percent"
+msgid "Hole percent"
 msgstr "Hålprocent"
 
 #: operations/workshop/external/spyrograph.c:47
@@ -10512,6 +10488,60 @@ msgid ""
 msgstr ""
 "Växlar bildpunkter, och kvantisering med grannar för att optimera "
 "färgutjämning, genom att växla intilliggande bildpunkter."
+
+#~ msgid "Std. Dev."
+#~ msgstr "Standardavvikelse"
+
+#~ msgid "X Scale"
+#~ msgstr "X-skala"
+
+#~ msgid "Y Scale"
+#~ msgstr "Y-skala"
+
+#~ msgid "X Offset"
+#~ msgstr "X-position"
+
+#~ msgid "Y Offset"
+#~ msgstr "Y-position"
+
+#~ msgid "X Period"
+#~ msgstr "X-period"
+
+#~ msgid "Y Period"
+#~ msgstr "Y-period"
+
+#~ msgid "X Amplitude"
+#~ msgstr "X-amplitud"
+
+#~ msgid "Y Amplitude"
+#~ msgstr "Y-amplitud"
+
+#~ msgid "X Phase"
+#~ msgstr "X-fas"
+
+#~ msgid "Y Phase"
+#~ msgstr "Y-fas"
+
+#~ msgid "Background Color"
+#~ msgstr "Bakgrundsfärg"
+
+#~ msgid "X Size"
+#~ msgstr "X-storlek"
+
+#~ msgid "Y Size"
+#~ msgstr "Y-storlek"
+
+#~ msgid "Mask Radius"
+#~ msgstr "Maskradie"
+
+#~ msgid "Percent Black"
+#~ msgstr "Procent svart"
+
+#~ msgid "Tile Height"
+#~ msgstr "Platthöjd"
+
+#~ msgid "Curve Type"
+#~ msgstr "Kurvtyp"
 
 #~ msgid "Object to supply image metadata"
 #~ msgstr "Objekt för att tillhandahålla bildmetadata"
