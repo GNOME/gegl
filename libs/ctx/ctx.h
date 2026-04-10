@@ -49,8 +49,19 @@ extern "C" {
 #include <stdint.h>
 #include <stdbool.h>
 #include <string.h>
+#ifndef _WIN32
 #include <strings.h>
+#endif
 #include <stdio.h>
+
+#ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#define usleep(usec) Sleep((usec) / 1000)
+#include <basetsd.h>
+typedef SSIZE_T ssize_t;
+typedef int pid_t;
+#endif
 
 /*** h2: context management */
 
@@ -12837,7 +12848,9 @@ void ctx_set_focus_cb (Ctx *ctx, void(*focus_cb)(Ctx *ctx, int id, void *user_da
 #if !__COSMOPOLITAN__
 #include <stdlib.h>
 #include <stdio.h>
+#ifndef _WIN32
 #include <unistd.h>
+#endif
 #include <math.h>
 #endif
 
@@ -41110,7 +41123,71 @@ int vt_special_glyph (Ctx *ctx, VT *vt, float x, float y, float cw, float ch, in
 
 
 #if !__COSMOPOLITAN__
+#ifndef _WIN32
 #include <sys/time.h>
+#else
+#include <time.h>
+#include <winsock2.h>
+#if defined(_MSC_VER) || defined(_MSC_EXTENSIONS)
+#define DELTA_EPOCH_IN_MICROSECS 11644473600000000Ui64
+#else
+#define DELTA_EPOCH_IN_MICROSECS 11644473600000000ULL
+#endif
+
+struct timezone
+{
+  int tz_minuteswest; /* minutes W of Greenwich */
+  int tz_dsttime;     /* type of dst correction */
+};
+
+static int
+gettimeofday (struct timeval *tv, struct timezone *tz)
+{
+  FILETIME         ft;
+  unsigned __int64 tmpres = 0;
+  static int       tzflag = 0;
+
+  if (NULL != tv)
+    {
+      GetSystemTimeAsFileTime (&ft);
+
+      tmpres |= ft.dwHighDateTime;
+      tmpres <<= 32;
+      tmpres |= ft.dwLowDateTime;
+
+      tmpres /= 10; /*convert into microseconds*/
+      /*converting file time to unix epoch*/
+      tmpres -= DELTA_EPOCH_IN_MICROSECS;
+      tv->tv_sec  = (long) (tmpres / 1000000UL);
+      tv->tv_usec = (long) (tmpres % 1000000UL);
+    }
+
+  if (NULL != tz)
+    {
+#ifdef _UCRT
+      long timezone_val;
+      int  daylight_val;
+#endif
+
+      if (! tzflag)
+        {
+          _tzset ();
+          tzflag++;
+        }
+#ifndef _UCRT
+      tz->tz_minuteswest = _timezone / 60;
+      tz->tz_dsttime     = _daylight;
+#else
+      _get_timezone (&timezone_val);
+      tz->tz_minuteswest = timezone_val / 60;
+      _get_daylight (&daylight_val);
+      tz->tz_dsttime     = daylight_val;
+#endif
+    }
+
+  return 0;
+}
+#endif
 #endif
 
 #ifdef EMSCRIPTEN
