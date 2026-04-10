@@ -52509,9 +52509,9 @@ static int ctx_render_cb (CtxCbBackend *backend_cb,
              uint8_t *inp2 = inp1 + rowstride;
 
              #define INP(pos)  (prev0[pos]+prev1[pos]+prev2[pos])
-             #define IN(pos)   (inp0[pos]+inp1[pos]+inp2[pos])
-             #define NEXT(pos) ((x<width)?IN(pos+12):IN(pos))
-             #define C(u)  ((u < 0) ? (INP(u + 12)) :  ((u >= 12) ? (NEXT(u-12)) : IN(u)))
+             #define CTX_IN(pos)   (inp0[pos]+inp1[pos]+inp2[pos])
+             #define NEXT(pos) ((x<width)?CTX_IN(pos+12):CTX_IN(pos))
+             #define C(u)  ((u < 0) ? (INP(u + 12)) :  ((u >= 12) ? (NEXT(u-12)) : CTX_IN(u)))
 	        
              out[0] = (C(-8) * w[0] + C(-4) * w[1] + C(0) * w[2] + C(4) * w[3] + C(8)  * w[4]) >> 12;
              out[1] = (C(-7) * w[0] + C(1)  * w[1] + C(5) * w[2] + C(9) * w[3] + C(13) * w[4]) >> 12;
