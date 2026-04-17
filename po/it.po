@@ -1,7 +1,7 @@
 # Italian translation for the gegl package.
 # Copyright (C) 2012 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gegl package.
-# Marco Ciampa <ciampix@posteo.net>, 2012-2025.
+# Marco Ciampa <ciampix@posteo.net>, 2012-2026.
 #
 # Elenco termini adottati per uniformità:
 # * smoothness = uniformità
@@ -22,8 +22,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  GEGL_0_2_0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-04 12:03+0100\n"
-"PO-Revision-Date: 2026-03-04 12:02+0100\n"
+"POT-Creation-Date: 2026-04-17 14:38+0200\n"
+"PO-Revision-Date: 2026-04-17 14:50+0200\n"
 "Last-Translator: Marco Ciampa <ciampix@posteo.net>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -675,7 +675,7 @@ msgid "Bump"
 msgstr "Sbalzo"
 
 #: ../operations/common/bevel.c:54
-msgid "Bevel Type"
+msgid "Bevel type"
 msgstr "Tipo smussatura"
 
 #: ../operations/common/bevel.c:57
@@ -717,7 +717,7 @@ msgid "Add"
 msgstr "Aggiungi"
 
 #: ../operations/common/bevel.c:76 ../operations/common-gpl3+/sinus.c:67
-msgid "Blend Mode"
+msgid "Blend mode"
 msgstr "Modalità fusione"
 
 #: ../operations/common/bevel.c:79
@@ -732,8 +732,8 @@ msgstr ""
 "su un livello superiore o utilizzata con le opzioni di fusione di GIMP."
 
 #: ../operations/common/bevel.c:81
-msgid "Distance Map Setting"
-msgstr "Impostazioni di distanza mappa"
+msgid "Distance map setting"
+msgstr "Impostazioni mappa distanza"
 
 #: ../operations/common/bevel.c:83
 msgid ""
@@ -794,7 +794,7 @@ msgstr ""
 "smussatura del rilievo."
 
 #: ../operations/common/bevel.c:110
-msgid "Light Angle"
+msgid "Light angle"
 msgstr "Angolo luce"
 
 #: ../operations/common/bevel.c:111
@@ -1053,7 +1053,7 @@ msgstr ""
 
 #: ../operations/common/c2g.c:48 ../operations/common/stress.c:44
 msgid "Enhance Shadows"
-msgstr "Aumenta ombre"
+msgstr "Migliora le ombre"
 
 #: ../operations/common/c2g.c:49
 msgid "When enabled details in shadows are boosted at the expense of noise"
@@ -1114,7 +1114,9 @@ msgstr "Ampiezza verticale dei pixel delle celle"
 
 #: ../operations/common/checkerboard.c:42 ../operations/common/grid.c:38
 #: ../operations/common/mirrors.c:46 ../operations/common/pixelize.c:51
+#: ../operations/common-gpl3+/bayer-matrix.c:73
 #: ../operations/common-gpl3+/bump-map.c:62
+#: ../operations/common-gpl3+/linear-sinusoid.c:81
 #: ../operations/seamless-clone/seamless-clone.c:26
 #: ../operations/seamless-clone/seamless-clone-compose.c:25
 msgid "Offset X"
@@ -1126,7 +1128,9 @@ msgstr "Scostamento orizzontale (dall'origine) per la griglia di partenza"
 
 #: ../operations/common/checkerboard.c:48 ../operations/common/grid.c:44
 #: ../operations/common/mirrors.c:52 ../operations/common/pixelize.c:58
+#: ../operations/common-gpl3+/bayer-matrix.c:80
 #: ../operations/common-gpl3+/bump-map.c:68
+#: ../operations/common-gpl3+/linear-sinusoid.c:88
 #: ../operations/seamless-clone/seamless-clone.c:32
 #: ../operations/seamless-clone/seamless-clone-compose.c:31
 msgid "Offset Y"
@@ -1176,7 +1180,7 @@ msgstr "Disegna un motivo a scacchiera"
 #: ../operations/common/color.c:24 ../operations/common/color.c:87
 #: ../operations/common/color-overlay.c:26 ../operations/common/dropshadow.c:67
 #: ../operations/common/grid.c:64 ../operations/common/inner-glow.c:80
-#: ../operations/common/long-shadow.c:83 ../operations/common/rectangle.c:48
+#: ../operations/common/long-shadow.c:85 ../operations/common/rectangle.c:48
 #: ../operations/common/vignette.c:36
 #: ../operations/common-gpl3+/color-to-alpha.c:29
 #: ../operations/common-gpl3+/supernova.c:60
@@ -1222,7 +1226,7 @@ msgstr "Saturazione"
 
 #. FIXME: With a large angle, we lose AreaFilter's flavours
 #: ../operations/common/color-assimilation-grid.c:35
-#: ../operations/common/long-shadow.c:49
+#: ../operations/common/long-shadow.c:55
 #: ../operations/common/motion-blur-linear.c:32
 #: ../operations/common/newsprint.c:158
 #: ../operations/common-gpl3+/linear-sinusoid.c:65
@@ -2139,7 +2143,7 @@ msgstr ""
 "Esegue il rilevamento bordi usando un metodo che usa una derivata gaussiana"
 
 #: ../operations/common/edge-sobel.c:31
-msgid "Keep Sign"
+msgid "Keep sign"
 msgstr "Mantieni il segno"
 
 #: ../operations/common/edge-sobel.c:32
@@ -2359,9 +2363,9 @@ msgstr "Sfocatura gaussiana 1D"
 #: ../operations/common/save.c:26 ../operations/core/load.c:29
 #: ../operations/external/exr-save.cc:24 ../operations/external/ff-load.c:30
 #: ../operations/external/ff-save.c:30 ../operations/external/gif-load.c:34
-#: ../operations/external/jp2-load.c:25 ../operations/external/jpg-load.c:24
+#: ../operations/external/jp2-load.c:25 ../operations/external/jpg-load.c:29
 #: ../operations/external/jpg-save.c:25 ../operations/external/npy-save.c:31
-#: ../operations/external/png-load.c:32 ../operations/external/png-save.c:26
+#: ../operations/external/png-load.c:37 ../operations/external/png-save.c:31
 #: ../operations/external/ppm-load.c:25 ../operations/external/ppm-save.c:25
 #: ../operations/external/rgbe-load.c:26 ../operations/external/rgbe-save.c:26
 #: ../operations/external/svg-load.c:25 ../operations/external/tiff-load.c:29
@@ -2460,8 +2464,8 @@ msgid "Grid renderer"
 msgstr "Disegnatore di griglie"
 
 #: ../operations/common/high-pass.c:24
-msgid "Std. Dev."
-msgstr "Dev. Std."
+msgid "Standard deviation"
+msgstr "Deviazione standard"
 
 #: ../operations/common/high-pass.c:31
 msgid "Contrast of high-pass"
@@ -2508,7 +2512,7 @@ msgid "Adjust LCH Hue, Chroma, and Lightness"
 msgstr "Regolazione della tonalità LCH, crominanza e luminosità"
 
 #: ../operations/common/icc-load.c:25 ../operations/external/gif-load.c:35
-#: ../operations/external/jp2-load.c:26 ../operations/external/jpg-load.c:25
+#: ../operations/external/jp2-load.c:26 ../operations/external/jpg-load.c:30
 #: ../operations/external/svg-load.c:26 ../operations/external/tiff-load.c:30
 #: ../operations/external/webp-load.c:26
 msgid "Path of file to load"
@@ -3008,66 +3012,66 @@ msgstr "Solo ombra"
 msgid "Shadow minus image"
 msgstr "Ombra meno immagine"
 
-#: ../operations/common/long-shadow.c:44 ../operations/common-gpl3+/wind.c:45
+#: ../operations/common/long-shadow.c:50 ../operations/common-gpl3+/wind.c:45
 msgid "Style"
 msgstr "Stile"
 
-#: ../operations/common/long-shadow.c:47
+#: ../operations/common/long-shadow.c:53
 msgid "Shadow style"
 msgstr "Stile ombra"
 
-#: ../operations/common/long-shadow.c:50
+#: ../operations/common/long-shadow.c:56
 msgid "Shadow angle"
 msgstr "Angolo ombra"
 
-#: ../operations/common/long-shadow.c:55
+#: ../operations/common/long-shadow.c:61
 #: ../operations/common/motion-blur-linear.c:25
 msgid "Length"
 msgstr "Lunghezza"
 
-#: ../operations/common/long-shadow.c:56
+#: ../operations/common/long-shadow.c:62
 msgid "Shadow length"
 msgstr "Lunghezza ombra"
 
-#: ../operations/common/long-shadow.c:66 ../operations/common/long-shadow.c:81
+#: ../operations/common/long-shadow.c:70 ../operations/common/long-shadow.c:83
 #: ../operations/common-cxx/focus-blur.c:95
 msgid "Midpoint"
 msgstr "Punto mediano"
 
-#: ../operations/common/long-shadow.c:67
+#: ../operations/common/long-shadow.c:71
 msgid "Shadow fade midpoint"
 msgstr "Punto mediano sfumo ombra"
 
-#: ../operations/common/long-shadow.c:72
+#: ../operations/common/long-shadow.c:76
 msgid "Midpoint (relative)"
 msgstr "Punto mediano (relativo)"
 
-#: ../operations/common/long-shadow.c:73
+#: ../operations/common/long-shadow.c:77
 msgid "Shadow fade midpoint, as a factor of the shadow length"
 msgstr "Punto mediano sfumo ombra, dipendente dalla lunghezza dell'ombra"
 
-#: ../operations/common/long-shadow.c:84
+#: ../operations/common/long-shadow.c:86
 msgid "Shadow color"
 msgstr "Colore ombra"
 
-#: ../operations/common/long-shadow.c:87
+#: ../operations/common/long-shadow.c:89
 msgid "Composition"
 msgstr "Composizione"
 
-#: ../operations/common/long-shadow.c:90
+#: ../operations/common/long-shadow.c:92
 msgid "Output composition"
 msgstr "Composizione in uscita"
 
-#: ../operations/common/long-shadow.c:1646
+#: ../operations/common/long-shadow.c:1648
 msgid "Long Shadow"
 msgstr "Ombra lunga"
 
-#: ../operations/common/long-shadow.c:1650
+#: ../operations/common/long-shadow.c:1652
 msgid "Creates a long-shadow effect"
 msgstr "Crea un effetto ombra lunga"
 
 #: ../operations/common/magick-load.c:27 ../operations/core/load.c:30
-#: ../operations/external/png-load.c:33 ../operations/external/ppm-load.c:26
+#: ../operations/external/png-load.c:38 ../operations/external/ppm-load.c:26
 #: ../operations/external/raw-load.c:37 ../operations/external/rgbe-load.c:27
 #: ../operations/workshop/rawbayer-load.c:26
 msgid "Path of file to load."
@@ -3364,15 +3368,15 @@ msgid "Preserve luminosity"
 msgstr "Preserva luminosità"
 
 #: ../operations/common/mono-mixer.c:26
-msgid "Red Channel Multiplier"
+msgid "Red channel multiplier"
 msgstr "Moltiplicatore del canale rosso"
 
 #: ../operations/common/mono-mixer.c:30
-msgid "Green Channel Multiplier"
+msgid "Green channel multiplier"
 msgstr "Moltiplicatore del canale verde"
 
 #: ../operations/common/mono-mixer.c:34
-msgid "Blue Channel Multiplier"
+msgid "Blue channel multiplier"
 msgstr "Moltiplicatore del canale blu"
 
 #: ../operations/common/mono-mixer.c:113
@@ -3864,8 +3868,8 @@ msgstr ""
 "alta frequenza che causa Impulsoangolare"
 
 #: ../operations/common/newsprint.c:178
-msgid "Angle Boost"
-msgstr "Impulsoangolare"
+msgid "Angle boost"
+msgstr "Aumento angolo"
 
 #: ../operations/common/newsprint.c:180
 msgid ""
@@ -4095,7 +4099,7 @@ msgid "The amount by which to scale the height values"
 msgstr "Quantità per la quale scalare i valori di altezza"
 
 #: ../operations/common/normal-map.c:35
-msgid "X Component"
+msgid "X component"
 msgstr "Componente X"
 
 #: ../operations/common/normal-map.c:38
@@ -4103,7 +4107,7 @@ msgid "The component used for the X coordinates"
 msgstr "La componente usata per le coordinate X"
 
 #: ../operations/common/normal-map.c:40
-msgid "Y Component"
+msgid "Y component"
 msgstr "Componente Y"
 
 #: ../operations/common/normal-map.c:43
@@ -4127,7 +4131,7 @@ msgid "Flip the Y coordinates"
 msgstr "Rovescia le coordinate Y"
 
 #: ../operations/common/normal-map.c:51
-msgid "Full Z Range"
+msgid "Full Z range"
 msgstr "Campo pieno Z"
 
 #: ../operations/common/normal-map.c:52
@@ -4286,6 +4290,7 @@ msgstr "Rapporto dimensione verticale di un pixel dentro ogni blocco"
 #: ../operations/common-gpl3+/apply-lens.c:44
 #: ../operations/common-gpl3+/cubism.c:39
 #: ../operations/common-gpl3+/lens-distortion.c:57
+#: ../operations/common-gpl3+/maze.c:71
 #: ../operations/common-gpl3+/tile-paper.c:76
 msgid "Background color"
 msgstr "Colore di sfondo"
@@ -4436,11 +4441,11 @@ msgstr "Adattamento di luce"
 msgid "Adaptation to light variation across the image"
 msgstr "Adattamento alle variazioni di luce attraverso l'immagine"
 
-#: ../operations/common/reinhard05.c:317
+#: ../operations/common/reinhard05.c:318
 msgid "Reinhard 2005 Tone Mapping"
 msgstr "Mappatura toni Reinhard 2005"
 
-#: ../operations/common/reinhard05.c:322
+#: ../operations/common/reinhard05.c:323
 msgid ""
 "Adapt an image, which may have a high dynamic range, for presentation using "
 "a low dynamic range. This is an efficient global operator derived from "
@@ -4514,15 +4519,15 @@ msgid "Path of file to save."
 msgstr "Percorso del file da salvare."
 
 #: ../operations/common/save.c:28 ../operations/core/load.c:33
-#: ../operations/external/jpg-save.c:44 ../operations/external/png-load.c:36
-#: ../operations/external/png-save.c:34 ../operations/external/tiff-load.c:39
+#: ../operations/external/jpg-save.c:44 ../operations/external/png-load.c:41
+#: ../operations/external/png-save.c:39 ../operations/external/tiff-load.c:39
 #: ../operations/external/tiff-save.c:34
 msgid "Metadata"
 msgstr "Metadati"
 
 #: ../operations/common/save.c:29 ../operations/core/load.c:34
-#: ../operations/external/jpg-save.c:45 ../operations/external/png-load.c:37
-#: ../operations/external/png-save.c:35
+#: ../operations/external/jpg-save.c:45 ../operations/external/png-load.c:42
+#: ../operations/external/png-save.c:40
 msgid "Object providing image metadata"
 msgstr "Oggetto che fornisce metadati immagine"
 
@@ -5491,9 +5496,8 @@ msgstr "Regolarizzazione spaziale"
 
 #: ../operations/common/waterpixels.c:49
 msgid ""
-"trade-off between superpixel regularity and adherence to object boundaries"
-msgstr ""
-"compromesso tra regolarità dei superpixel ed aderenza ai bordi degli oggetti"
+"Trade-off between superpixel regularity and adherence to object boundaries"
+msgstr "Compromesso tra regolarità dei superpixel ed aderenza ai bordi degli oggetti"
 
 #: ../operations/common/waterpixels.c:52
 msgid "Superpixels color"
@@ -5524,11 +5528,11 @@ msgstr "segnale"
 msgid "Pointer to flag value for unlabelled pixels"
 msgstr "Puntatore al valore segnale di pixel non etichettati"
 
-#: ../operations/common/watershed-transform.c:489
+#: ../operations/common/watershed-transform.c:490
 msgid "Watershed Transform"
 msgstr "Trasformazione spartiacque"
 
-#: ../operations/common/watershed-transform.c:492
+#: ../operations/common/watershed-transform.c:493
 msgid ""
 "Labels propagation by watershed transformation. Output buffer will keep the "
 "input format. Unlabelled pixels are marked with a given flag value (by "
@@ -5622,7 +5626,7 @@ msgid "Threshold high"
 msgstr "Soglia alta"
 
 #: ../operations/common-cxx/distance-transform.cc:49
-msgid "Grayscale Averaging"
+msgid "Grayscale averaging"
 msgstr "Media scala di grigi"
 
 #: ../operations/common-cxx/distance-transform.cc:50
@@ -5910,7 +5914,7 @@ msgstr "Numero di sottodivisioni"
 
 #: ../operations/common-gpl3+/bayer-matrix.c:29
 #: ../operations/common-gpl3+/sinus.c:31
-msgid "X Scale"
+msgid "Scale X"
 msgstr "Scala X"
 
 #: ../operations/common-gpl3+/bayer-matrix.c:30
@@ -5919,7 +5923,7 @@ msgstr "Scala motivo orizzontale"
 
 #: ../operations/common-gpl3+/bayer-matrix.c:36
 #: ../operations/common-gpl3+/sinus.c:38
-msgid "Y Scale"
+msgid "Scale Y"
 msgstr "Scala Y"
 
 #: ../operations/common-gpl3+/bayer-matrix.c:37
@@ -5981,20 +5985,10 @@ msgstr "Esponente"
 msgid "Value exponent (logarithmic scale)"
 msgstr "Esponente valore (scala logaritmica)"
 
-#: ../operations/common-gpl3+/bayer-matrix.c:73
-#: ../operations/common-gpl3+/linear-sinusoid.c:81
-msgid "X Offset"
-msgstr "Scostamento X"
-
 #: ../operations/common-gpl3+/bayer-matrix.c:74
 #: ../operations/common-gpl3+/linear-sinusoid.c:82
 msgid "Offset for X axis"
 msgstr "Scostamento per l'asse X"
-
-#: ../operations/common-gpl3+/bayer-matrix.c:80
-#: ../operations/common-gpl3+/linear-sinusoid.c:88
-msgid "Y Offset"
-msgstr "Scostamento Y"
 
 #: ../operations/common-gpl3+/bayer-matrix.c:81
 #: ../operations/common-gpl3+/linear-sinusoid.c:89
@@ -6065,7 +6059,7 @@ msgid "Ambient lighting factor"
 msgstr "Fattore di illuminazione ambiente"
 
 #: ../operations/common-gpl3+/bump-map.c:472
-msgid "Height Map"
+msgid "Height map"
 msgstr "Mappa altezza"
 
 #: ../operations/common-gpl3+/bump-map.c:476
@@ -6085,10 +6079,13 @@ msgstr ""
 "producendo un bell'effetto rilievo."
 
 #: ../operations/common-gpl3+/cartoon.c:28
+#: ../operations/common-gpl3+/oilify.c:28
+#: ../operations/common-gpl3+/photocopy.c:26
 msgid "Mask radius"
 msgstr "Raggio maschera"
 
 #: ../operations/common-gpl3+/cartoon.c:31
+#: ../operations/common-gpl3+/photocopy.c:32
 msgid "Percent black"
 msgstr "Nero percentuale"
 
@@ -6193,40 +6190,40 @@ msgstr ""
 "Mescola i colori; definendo i contributi relativi dai componenti sorgente."
 
 #: ../operations/common-gpl3+/color-exchange.c:31
-msgid "From Color"
-msgstr "Dal colore"
+msgid "From color"
+msgstr "Da colore"
 
 #: ../operations/common-gpl3+/color-exchange.c:32
 msgid "The color to change."
 msgstr "Il colore da cambiare."
 
 #: ../operations/common-gpl3+/color-exchange.c:34
-msgid "To Color"
-msgstr "Al colore"
+msgid "To color"
+msgstr "A colore"
 
 #: ../operations/common-gpl3+/color-exchange.c:35
 msgid "Replacement color."
 msgstr "Colore di rimpiazzo."
 
 #: ../operations/common-gpl3+/color-exchange.c:37
-msgid "Red Threshold"
-msgstr "Soglia del rosso"
+msgid "Red threshold"
+msgstr "Soglia rosso"
 
 #: ../operations/common-gpl3+/color-exchange.c:38
 msgid "Red threshold of the input color"
 msgstr "Soglia del rosso del colore in ingresso"
 
 #: ../operations/common-gpl3+/color-exchange.c:41
-msgid "Green Threshold"
-msgstr "Soglia del verde"
+msgid "Green threshold"
+msgstr "Soglia verde"
 
 #: ../operations/common-gpl3+/color-exchange.c:42
 msgid "Green threshold of the input color"
 msgstr "Soglia del verde del colore in ingresso"
 
 #: ../operations/common-gpl3+/color-exchange.c:45
-msgid "Blue Threshold"
-msgstr "Soglia del blu"
+msgid "Blue threshold"
+msgstr "Soglia blu"
 
 #: ../operations/common-gpl3+/color-exchange.c:46
 msgid "Blue threshold of the input color"
@@ -6625,7 +6622,7 @@ msgid "Bumpmap (preserve original colors)"
 msgstr "Mappa a sbalzo (preserva i colori originali)"
 
 #: ../operations/common-gpl3+/emboss.c:30
-msgid "Emboss Type"
+msgid "Emboss type"
 msgstr "Tipo rilievo"
 
 #: ../operations/common-gpl3+/emboss.c:32
@@ -6990,7 +6987,7 @@ msgid "Adds a lens flare effect."
 msgstr "Aggiunge un effetto lente."
 
 #: ../operations/common-gpl3+/linear-sinusoid.c:25
-msgid "X Period"
+msgid "Period X"
 msgstr "Periodo X"
 
 #: ../operations/common-gpl3+/linear-sinusoid.c:26
@@ -6998,7 +6995,7 @@ msgid "Period for X axis"
 msgstr "Periodo per l'asse X"
 
 #: ../operations/common-gpl3+/linear-sinusoid.c:32
-msgid "Y Period"
+msgid "Period Y"
 msgstr "Periodo Y"
 
 #: ../operations/common-gpl3+/linear-sinusoid.c:33
@@ -7006,7 +7003,7 @@ msgid "Period for Y axis"
 msgstr "Periodo per l'asse Y"
 
 #: ../operations/common-gpl3+/linear-sinusoid.c:39
-msgid "X Amplitude"
+msgid "Amplitude X"
 msgstr "Ampiezza X"
 
 #: ../operations/common-gpl3+/linear-sinusoid.c:40
@@ -7014,7 +7011,7 @@ msgid "Amplitude for X axis (logarithmic scale)"
 msgstr "Ampiezza per l'asse X (scala logaritmica)"
 
 #: ../operations/common-gpl3+/linear-sinusoid.c:45
-msgid "Y Amplitude"
+msgid "Amplitude Y"
 msgstr "Ampiezza Y"
 
 #: ../operations/common-gpl3+/linear-sinusoid.c:46
@@ -7022,7 +7019,7 @@ msgid "Amplitude for Y axis (logarithmic scale)"
 msgstr "Ampiezza per l'asse Y (scala logaritmica)"
 
 #: ../operations/common-gpl3+/linear-sinusoid.c:51
-msgid "X Phase"
+msgid "Phase X"
 msgstr "Fase X"
 
 #: ../operations/common-gpl3+/linear-sinusoid.c:52
@@ -7030,7 +7027,7 @@ msgid "Phase for X axis"
 msgstr "Fase per l'asse X"
 
 #: ../operations/common-gpl3+/linear-sinusoid.c:58
-msgid "Y Phase"
+msgid "Phase Y"
 msgstr "Fase Y"
 
 #: ../operations/common-gpl3+/linear-sinusoid.c:59
@@ -7074,16 +7071,12 @@ msgid "Maze algorithm type"
 msgstr "Tipo algoritmo labirinto"
 
 #: ../operations/common-gpl3+/maze.c:67
-msgid "Foreground Color"
+msgid "Foreground color"
 msgstr "Colore primo piano"
 
 #: ../operations/common-gpl3+/maze.c:68
 msgid "The foreground color"
 msgstr "Il colore di primo piano"
-
-#: ../operations/common-gpl3+/maze.c:71
-msgid "Background Color"
-msgstr "Colore di sfondo"
 
 #: ../operations/common-gpl3+/maze.c:72
 msgid "The background color"
@@ -7122,6 +7115,8 @@ msgid "What shape to use for tiles"
 msgstr "Forma da usare per le piastrelle"
 
 #: ../operations/common-gpl3+/mosaic.c:51
+#: ../operations/common-gpl3+/tile-glass.c:34
+#: ../operations/common-gpl3+/tile-paper.c:47
 msgid "Tile height"
 msgstr "Altezza piastrella"
 
@@ -7246,7 +7241,7 @@ msgid "Randomly slide some pixels downward (similar to melting)"
 msgstr "Sposta casualmente alcuni pixel in basso (simile allo scioglimento)"
 
 #: ../operations/common-gpl3+/noise-solid.c:36
-msgid "X Size"
+msgid "X size"
 msgstr "Dimensione X"
 
 #: ../operations/common-gpl3+/noise-solid.c:37
@@ -7254,7 +7249,7 @@ msgid "Horizontal texture size"
 msgstr "Dimensione orizzontale motivo"
 
 #: ../operations/common-gpl3+/noise-solid.c:43
-msgid "Y Size"
+msgid "Y size"
 msgstr "Dimensione Y"
 
 #: ../operations/common-gpl3+/noise-solid.c:44
@@ -7285,11 +7280,6 @@ msgstr "Rumore pieno"
 msgid "Create a random cloud-like texture"
 msgstr "Crea un motivo casuale tipo nuvole"
 
-#: ../operations/common-gpl3+/oilify.c:28
-#: ../operations/common-gpl3+/photocopy.c:26
-msgid "Mask Radius"
-msgstr "Raggio maschera"
-
 #: ../operations/common-gpl3+/oilify.c:29
 msgid ""
 "Radius of circle around pixel, can also be scaled per pixel by a buffer on "
@@ -7315,7 +7305,7 @@ msgid "Histogram size"
 msgstr "Dimensione istogramma"
 
 #: ../operations/common-gpl3+/oilify.c:44
-msgid "Intensity Mode"
+msgid "Intensity mode"
 msgstr "Modalità intensità"
 
 #: ../operations/common-gpl3+/oilify.c:45
@@ -7354,13 +7344,9 @@ msgstr "Pittura ad olio"
 msgid "Emulate an oil painting"
 msgstr "Emula la pittura ad olio"
 
-#: ../operations/common-gpl3+/photocopy.c:32
-msgid "Percent Black"
-msgstr "Nero percentuale"
-
 #: ../operations/common-gpl3+/photocopy.c:35
-msgid "Percent White"
-msgstr "Bianco percentuale"
+msgid "Percent white"
+msgstr "Percentuale bianco"
 
 #: ../operations/common-gpl3+/photocopy.c:329
 msgid "Photocopy"
@@ -7774,13 +7760,8 @@ msgstr "Rende l'immagine come se fosse eseguita sulla tela di un pittore."
 
 #: ../operations/common-gpl3+/tile-glass.c:28
 #: ../operations/common-gpl3+/tile-paper.c:40
-msgid "Tile Width"
+msgid "Tile width"
 msgstr "Larghezza piastrella"
-
-#: ../operations/common-gpl3+/tile-glass.c:34
-#: ../operations/common-gpl3+/tile-paper.c:47
-msgid "Tile Height"
-msgstr "Altezza piastrella"
 
 #: ../operations/common-gpl3+/tile-glass.c:228
 msgid "Tile Glass"
@@ -8141,8 +8122,8 @@ msgid "Direction of the effect"
 msgstr "Direzione dell'effetto"
 
 #: ../operations/common-gpl3+/wind.c:55
-msgid "Edge Affected"
-msgstr "Bordi soggetti"
+msgid "Edge affected"
+msgstr "Bordi coinvolti"
 
 #: ../operations/common-gpl3+/wind.c:58
 msgid "Edge behavior"
@@ -8317,8 +8298,8 @@ msgstr ""
 "contenitore del nodo alla fine produttiva della catena d'ingresso."
 
 #: ../operations/core/load.c:31 ../operations/external/jp2-load.c:27
-#: ../operations/external/jpg-load.c:26 ../operations/external/pdf-load.c:27
-#: ../operations/external/png-load.c:34 ../operations/external/ppm-load.c:27
+#: ../operations/external/jpg-load.c:31 ../operations/external/pdf-load.c:27
+#: ../operations/external/png-load.c:39 ../operations/external/ppm-load.c:27
 #: ../operations/external/svg-load.c:27 ../operations/external/tiff-load.c:31
 #: ../operations/external/webp-load.c:27
 msgid "URI"
@@ -8408,7 +8389,7 @@ msgstr "Caricatore quadro FFmpeg"
 msgid "FFmpeg video frame importer."
 msgstr "Importatore quadri video FFmpeg."
 
-#: ../operations/external/ff-save.c:31 ../operations/external/png-save.c:27
+#: ../operations/external/ff-save.c:31 ../operations/external/png-save.c:32
 #: ../operations/external/ppm-save.c:26 ../operations/external/rgbe-save.c:27
 msgid "Target path and filename, use '-' for stdout."
 msgstr "Nome e percorso file obiettivo, usare \"-\" per lo stdout."
@@ -8654,15 +8635,15 @@ msgstr "Caricatore immagini JPEG 2000"
 msgid "JPEG 2000 image loader using jasper."
 msgstr "Caricatore immagini JPEG 2000 che usa jasper."
 
-#: ../operations/external/jpg-load.c:27
+#: ../operations/external/jpg-load.c:32
 msgid "URI of file to load"
 msgstr "URI o file da caricare"
 
-#: ../operations/external/jpg-load.c:390
+#: ../operations/external/jpg-load.c:395
 msgid "JPEG File Loader"
 msgstr "Caricatore immagini JPEG"
 
-#: ../operations/external/jpg-load.c:392
+#: ../operations/external/jpg-load.c:397
 msgid "JPEG image loader using libjpeg"
 msgstr "Caricatore immagini JPEG che usa libjpeg"
 
@@ -9033,40 +9014,40 @@ msgid "Uses the GdkPixbuf located at the memory location in <em>pixbuf</em>."
 msgstr ""
 "Usa il GdkPixbuf posizionato alla locazione di memoria in <em>pixbuf</em>."
 
-#: ../operations/external/png-load.c:35
+#: ../operations/external/png-load.c:40
 msgid "URI for file to load."
 msgstr "URI per il file da caricare."
 
-#: ../operations/external/png-load.c:680
+#: ../operations/external/png-load.c:694
 msgid "PNG File Loader"
 msgstr "Caricatore immagini PNG"
 
-#: ../operations/external/png-load.c:682
+#: ../operations/external/png-load.c:696
 msgid "PNG image loader."
 msgstr "Caricatore immagini PNG."
 
-#: ../operations/external/png-save.c:28
+#: ../operations/external/png-save.c:33
 msgid "Compression"
 msgstr "Compressione"
 
-#: ../operations/external/png-save.c:29
+#: ../operations/external/png-save.c:34
 msgid "PNG compression level from 1 to 9"
 msgstr "Livello di compressione PNG da 1 a 9"
 
-#: ../operations/external/png-save.c:31 ../operations/external/ppm-save.c:29
+#: ../operations/external/png-save.c:36 ../operations/external/ppm-save.c:29
 #: ../operations/external/tiff-save.c:27
 msgid "Bitdepth"
 msgstr "Profondità di bit"
 
-#: ../operations/external/png-save.c:32 ../operations/external/ppm-save.c:30
+#: ../operations/external/png-save.c:37 ../operations/external/ppm-save.c:30
 msgid "8 and 16 are the currently accepted values."
 msgstr "8 e 16 sono tra i valori attualmente accettati."
 
-#: ../operations/external/png-save.c:434
+#: ../operations/external/png-save.c:454
 msgid "PNG File Saver"
 msgstr "Salvatore immagini PNG."
 
-#: ../operations/external/png-save.c:436
+#: ../operations/external/png-save.c:456
 msgid "PNG image saver, using libpng"
 msgstr "Salvatore immagini PNG, usa libpng"
 
@@ -9074,11 +9055,11 @@ msgstr "Salvatore immagini PNG, usa libpng"
 msgid "URI of image to load."
 msgstr "URI dell'immagine da caricare."
 
-#: ../operations/external/ppm-load.c:473
+#: ../operations/external/ppm-load.c:474
 msgid "PPM File Loader"
 msgstr "Caricatore immagini PPM."
 
-#: ../operations/external/ppm-load.c:475
+#: ../operations/external/ppm-load.c:476
 msgid "PPM image loader."
 msgstr "Caricatore immagini PPM."
 
@@ -10388,15 +10369,12 @@ msgid "EPITROCHOID"
 msgstr "EPITROCOIDE"
 
 #: ../operations/workshop/external/spyrograph.c:31
-msgid "Curve Type"
-msgstr "Tipo curva"
-
 #: ../operations/workshop/external/spyrograph.c:34
 msgid "Curve type"
 msgstr "Tipo curva"
 
 #: ../operations/workshop/external/spyrograph.c:36
-msgid "Fixed Gear Teeth"
+msgid "Fixed gear teeth"
 msgstr "Denti ingranaggio fisso"
 
 #: ../operations/workshop/external/spyrograph.c:37
@@ -10404,7 +10382,7 @@ msgid "Number of teeth in fixed gear."
 msgstr "Numero di denti nell'ingranaggio fisso."
 
 #: ../operations/workshop/external/spyrograph.c:40
-msgid "Moving Gear Teeth"
+msgid "Moving gear teeth"
 msgstr "Denti ingranaggio mobile"
 
 #: ../operations/workshop/external/spyrograph.c:41
@@ -10418,7 +10396,7 @@ msgstr ""
 "proporzione tra il numero di denti negli ingranaggi."
 
 #: ../operations/workshop/external/spyrograph.c:46
-msgid "Hole Percent"
+msgid "Hole percent"
 msgstr "Percento foro"
 
 #: ../operations/workshop/external/spyrograph.c:47
