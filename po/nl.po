@@ -6,8 +6,8 @@
 msgid ""
 msgstr "Project-Id-Version: GEGL master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2025-09-07 11:53+0000\n"
-"PO-Revision-Date: 2025-09-08 15:26+0100\n"
+"POT-Creation-Date: 2026-03-24 11:00+0000\n"
+"PO-Revision-Date: 2026-03-29 16:35+0200\n"
 "Last-Translator: Dick Groskamp <dikgro@yahoo.co.uk>\n"
 "Language-Team: Dutch <gnome-nl-list@gnome.org>\n"
 "Language: nl\n"
@@ -18,16 +18,17 @@ msgstr "Project-Id-Version: GEGL master\n"
 "X-Generator: OmegaT 6.1.0 \n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: bin/gegl.c:179
+#: bin/gegl.c:184
 #, c-format
 msgid "Unable to read file: %s"
 msgstr "Kan bestand niet lezen: %s"
 
-#: bin/gegl.c:227
+#: bin/gegl.c:232
+#, c-format
 msgid "Invalid graph, abort.\n"
 msgstr "Ongeldige grafiek, gestopt.\n"
 
-#: bin/gegl.c:390 bin/gegl-options.c:133
+#: bin/gegl.c:395 bin/gegl-options.c:133
 #, c-format
 msgid "Unknown GeglOption mode: %d"
 msgstr "Onbekende GeglOption-modus: %d"
@@ -141,11 +142,11 @@ msgstr "Verwerkte opdrachtregel:\n"
 "\trest:   %s\n"
 "\t\n"
 
-#: bin/gegl-options.c:347
+#: bin/gegl-options.c:358
 msgid "Properties:"
 msgstr "Eigenschappen:"
 
-#: bin/gegl-options.c:457
+#: bin/gegl-options.c:468
 #, c-format
 msgid ""
 "\n"
@@ -159,7 +160,7 @@ msgstr "\n"
 "\n"
 "\n"
 
-#: bin/ui-core.c:4387 gegl/gegl-serialize.c:690
+#: bin/ui-core.c:4389 gegl/gegl-serialize.c:690
 #, c-format
 msgid "BablFormat \"%s\" does not exist."
 msgstr "BablFormat \"%s\" bestaat niet."
@@ -342,40 +343,40 @@ msgstr "Nooit"
 msgid "Always"
 msgstr "Altijd"
 
-#: gegl/gegl-init.c:354
+#: gegl/gegl-init.c:427
 msgid "Where GEGL stores its swap"
 msgstr "Waar GEGL het wisselbestand plaatst"
 
-#: gegl/gegl-init.c:359
+#: gegl/gegl-init.c:432
 msgid "Compression algorithm used for data stored in the swap"
 msgstr "Compressiemethode voor data in het wisselbestand"
 
-#: gegl/gegl-init.c:364
+#: gegl/gegl-init.c:437
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr "Hoeveel geheugen gebruiken (ruwweg) om afbeeldingen te cachen"
 
-#: gegl/gegl-init.c:369
+#: gegl/gegl-init.c:442
 msgid "Default size of tiles in GeglBuffers"
 msgstr "Standaardgrootte van tegels in GeglBuffers"
 
-#: gegl/gegl-init.c:374
+#: gegl/gegl-init.c:447
 msgid "The count of pixels to compute simultaneously"
 msgstr "Aantal pixels om simultaan te verwerken"
 
-#: gegl/gegl-init.c:379
+#: gegl/gegl-init.c:452
 msgid ""
 "The quality of rendering, a value between 0.0 (fast) and 1.0 (reference)"
 msgstr "Renderkwaliteit, een waarde tussen 0,0 (snel) en 1,0 (referentie)"
 
-#: gegl/gegl-init.c:384
+#: gegl/gegl-init.c:457
 msgid "The number of concurrent processing threads to use"
 msgstr "Aantal te gebruiken threads"
 
-#: gegl/gegl-init.c:389
+#: gegl/gegl-init.c:462
 msgid "Disable OpenCL"
 msgstr "OpenCL uitschakelen"
 
-#: gegl/gegl-init.c:401
+#: gegl/gegl-init.c:474
 msgid "Show GEGL Options"
 msgstr "GEGL-opties tonen"
 
@@ -630,7 +631,7 @@ msgstr "Pixelwaarden hoger dan deze limiet krijgen deze waarde"
 msgid "Clip Alpha"
 msgstr "Alfa knippen"
 
-#: operations/common/alpha-clip.c:199
+#: operations/common/alpha-clip.c:200
 msgid "Keep alpha values inside a specific range"
 msgstr "Behoud alfawaarden in een specifiek bereik"
 
@@ -643,7 +644,7 @@ msgid "Bump"
 msgstr "Bump"
 
 #: operations/common/bevel.c:54
-msgid "Bevel Type"
+msgid "Bevel type"
 msgstr "Type schuin rand"
 
 #: operations/common/bevel.c:57
@@ -685,7 +686,7 @@ msgid "Add"
 msgstr "Toevoegen"
 
 #: operations/common/bevel.c:76 operations/common-gpl3+/sinus.c:67
-msgid "Blend Mode"
+msgid "Blend mode"
 msgstr "Mengmodus"
 
 #: operations/common/bevel.c:79
@@ -696,7 +697,7 @@ msgid ""
 msgstr "Welke mengmodus het embossen van de schuine rand zal hebben. Lichtkaart is een speciale mengmodus die gebruikers in staat stelt om de uitvoer van filters uit te nemen als een lichtkaart die bovenop een laag zou moeten worden geplaatst of moet worden gebruikt met de mengopties van Gimp."
 
 #: operations/common/bevel.c:81
-msgid "Distance Map Setting"
+msgid "Distance map setting"
 msgstr "Instelling afstandskaart"
 
 #: operations/common/bevel.c:83
@@ -712,7 +713,7 @@ msgstr "Afstandskaart is uniek voor de schuine rand en heeft drie instellingen d
 #: operations/common/stress.c:27 operations/common/unsharp-mask.c:24
 #: operations/common/vignette.c:40 operations/common/wavelet-blur-1d.c:28
 #: operations/common/wavelet-blur.c:27 operations/common-cxx/focus-blur.c:85
-#: operations/common-cxx/lens-blur.cc:24
+#: operations/common-cxx/lens-blur.cc:28
 #: operations/common-cxx/variable-blur.c:30
 #: operations/common-gpl3+/shadows-highlights.c:40
 #: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:44
@@ -751,7 +752,7 @@ msgid "Emboss depth - Brings out depth and detail of the bump bevel."
 msgstr "Diepte embossen - Brengt diepte en detail van de geprojecteerde schuine rand naar voren."
 
 #: operations/common/bevel.c:110
-msgid "Light Angle"
+msgid "Light angle"
 msgstr "Hoek licht"
 
 #: operations/common/bevel.c:111
@@ -777,7 +778,7 @@ msgstr "Schuine rand…"
 #: operations/common/bilateral-filter.c:26
 #: operations/common/domain-transform.c:29 operations/common/dropshadow.c:46
 #: operations/common/inner-glow.c:58 operations/common-cxx/focus-blur.c:45
-#: operations/common-cxx/lens-blur.cc:25
+#: operations/common-cxx/lens-blur.cc:29
 #: operations/common-gpl3+/gaussian-blur-selective.c:29
 #: operations/workshop/bilateral-filter-fast.c:43
 msgid "Blur radius"
@@ -1036,7 +1037,9 @@ msgstr "Verticale breedte van celpixels"
 
 #: operations/common/checkerboard.c:42 operations/common/grid.c:38
 #: operations/common/mirrors.c:46 operations/common/pixelize.c:51
+#: operations/common-gpl3+/bayer-matrix.c:73
 #: operations/common-gpl3+/bump-map.c:62
+#: operations/common-gpl3+/linear-sinusoid.c:81
 #: operations/seamless-clone/seamless-clone.c:26
 #: operations/seamless-clone/seamless-clone-compose.c:25
 msgid "Offset X"
@@ -1048,7 +1051,9 @@ msgstr "Horizontale verschuiving (vanaf oorsprong) om raster te starten"
 
 #: operations/common/checkerboard.c:48 operations/common/grid.c:44
 #: operations/common/mirrors.c:52 operations/common/pixelize.c:58
+#: operations/common-gpl3+/bayer-matrix.c:80
 #: operations/common-gpl3+/bump-map.c:68
+#: operations/common-gpl3+/linear-sinusoid.c:88
 #: operations/seamless-clone/seamless-clone.c:32
 #: operations/seamless-clone/seamless-clone-compose.c:31
 msgid "Offset Y"
@@ -1130,7 +1135,7 @@ msgstr "Rastergrootte"
 #: operations/common/color-rotate.c:84 operations/common/fattal02.c:39
 #: operations/common/mantiuk06.c:33 operations/common/noise-hsv.c:34
 #: operations/common/saturation.c:404 operations/common/styles.c:387
-#: operations/external/lcms-from-profile.c:35
+#: operations/common/vibrance.c:30 operations/external/lcms-from-profile.c:35
 #: operations/workshop/selective-hue-saturation.c:38
 msgid "Saturation"
 msgstr "Verzadiging"
@@ -1166,7 +1171,7 @@ msgstr "Converteer afbeelding naar grijswaarden en plaats er een oververzadigd r
 msgid "Color Enhance"
 msgstr "Kleurversterking"
 
-#: operations/common/color-enhance.c:281
+#: operations/common/color-enhance.c:280
 msgid ""
 "Stretch color chroma to cover maximum possible range, keeping hue and "
 "lightness untouched."
@@ -1552,7 +1557,7 @@ msgstr "Gebruik lineaire uitvoer in plaats van gammagecorrigeerd"
 msgid "Extract Component"
 msgstr "Extraheer component"
 
-#: operations/common/component-extract.c:264
+#: operations/common/component-extract.c:263
 msgid "Extract a color model component"
 msgstr "Extraheer een kleurmodelcomponent"
 
@@ -1722,11 +1727,11 @@ msgstr "Alfagewogen"
 msgid "Border"
 msgstr "Rand"
 
-#: operations/common/convolution-matrix.c:634
+#: operations/common/convolution-matrix.c:633
 msgid "Convolution Matrix"
 msgstr "Convolutiematrix"
 
-#: operations/common/convolution-matrix.c:635
+#: operations/common/convolution-matrix.c:634
 msgid "Apply a generic 5x5 convolution matrix"
 msgstr "Pas een generieke 5x5 convolutiematrix toe"
 
@@ -1829,7 +1834,7 @@ msgstr "Welke rastermethode te gebruiken"
 #: operations/common/noise-pick.c:38 operations/common/noise-rgb.c:55
 #: operations/common/noise-simplex.c:39 operations/common/noise-spread.c:41
 #: operations/common-gpl3+/cubism.c:42 operations/common-gpl3+/maze.c:65
-#: operations/common-gpl3+/mosaic.c:90 operations/common-gpl3+/noise-slur.c:40
+#: operations/common-gpl3+/mosaic.c:92 operations/common-gpl3+/noise-slur.c:40
 #: operations/common-gpl3+/noise-solid.c:61 operations/common-gpl3+/plasma.c:70
 #: operations/common-gpl3+/shift.c:35 operations/common-gpl3+/sinus.c:49
 #: operations/common-gpl3+/supernova.c:63
@@ -2002,7 +2007,7 @@ msgid "Performs edge detection using a Gaussian derivative method"
 msgstr "Randdetectie volgens een Gaussiaanse afgeleide"
 
 #: operations/common/edge-sobel.c:31
-msgid "Keep Sign"
+msgid "Keep sign"
 msgstr "Behoud teken"
 
 #: operations/common/edge-sobel.c:32
@@ -2015,7 +2020,7 @@ msgstr "Sta ook negatieve waarden in het resultaat toe; indien uitgeschakeld wor
 msgid "Sobel Edge Detection"
 msgstr "Sobel randdetectie"
 
-#: operations/common/edge-sobel.c:401
+#: operations/common/edge-sobel.c:400
 msgid "Specialized direction-dependent edge detection"
 msgstr "Speciale richtingsafhankelijke randdetectie"
 
@@ -2059,7 +2064,7 @@ msgstr "Zwartniveau"
 msgid "Adjust the black level"
 msgstr "Pas zwartniveau aan"
 
-#: operations/common/exposure.c:30 operations/common/exposure.c:480
+#: operations/common/exposure.c:30 operations/common/exposure.c:476
 #: operations/common/negative-darkroom.c:29
 msgid "Exposure"
 msgstr "Belichting"
@@ -2068,7 +2073,7 @@ msgstr "Belichting"
 msgid "Relative brightness change in stops"
 msgstr "Relatieve aanpassing helderheid in stops"
 
-#: operations/common/exposure.c:484
+#: operations/common/exposure.c:480
 msgid "Change exposure of an image in shutter speed stops"
 msgstr "Verander belichting van een foto in sluiterstops"
 
@@ -2170,7 +2175,7 @@ msgstr "Of de uitvoermaten moeten worden afgesneden tot de invoermaten"
 msgid "Gaussian Blur"
 msgstr "Gaussiaanse vervaging"
 
-#: operations/common/gaussian-blur.c:119 operations/common/gblur-1d.c:1388
+#: operations/common/gaussian-blur.c:118 operations/common/gblur-1d.c:1388
 msgid ""
 "Performs an averaging of neighboring pixels with the normal distribution as "
 "weighting"
@@ -2231,29 +2236,29 @@ msgstr "Doelpad om GeglBuffer naar toe te schrijven."
 msgid "GeglBuffer file writer."
 msgstr "GeglBuffer bestandsschrijver."
 
-#: operations/common/gegl.c:68
+#: operations/common/gegl.c:73
 msgid "pipeline"
 msgstr "pijplijn"
 
-#: operations/common/gegl.c:69
+#: operations/common/gegl.c:74
 msgid "[op [property=value] [property=value]] [[op] [property=value]"
 msgstr "[op [property=value] [property=value]] [[op] [property=value]"
 
-#: operations/common/gegl.c:72
+#: operations/common/gegl.c:77
 msgid "Eeeeeek"
 msgstr "Eeeeeek"
 
-#: operations/common/gegl.c:73
+#: operations/common/gegl.c:78
 msgid ""
 "There is a problem in the syntax or in the application of parsed property "
 "values. Things might mostly work nevertheless."
 msgstr "Er is een probleem in de syntaxis of in de toepassing van geparsete waarden voor eigenschappen. Dingen zouden, niettegenstaande dat, moeten werken."
 
-#: operations/common/gegl.c:168
+#: operations/common/gegl.c:180
 msgid "GEGL graph"
 msgstr "GEGL-grafiek"
 
-#: operations/common/gegl.c:171
+#: operations/common/gegl.c:183
 msgid ""
 "Do a chain of operations, with key=value pairs after each operation name to "
 "set properties. And aux=[ source filter ] for specifying a chain with a "
@@ -2264,7 +2269,7 @@ msgstr "Maak een reeks bewerkingen, met paren sleutel=waarde na elke naam van de
 msgid "Make Gray"
 msgstr "Grijs maken"
 
-#: operations/common/grey.c:142
+#: operations/common/grey.c:141
 msgid "Turns the image grayscale"
 msgstr "Zet beeld om naar grijswaarden"
 
@@ -2297,8 +2302,8 @@ msgid "Grid renderer"
 msgstr "Rastermaker"
 
 #: operations/common/high-pass.c:24
-msgid "Std. Dev."
-msgstr "Std. Afw."
+msgid "Standard deviation"
+msgstr "Standaard afwijking"
 
 #: operations/common/high-pass.c:31
 msgid "Contrast of high-pass"
@@ -2308,7 +2313,7 @@ msgstr "Contrast van hoogdoorlaat"
 msgid "High Pass Filter"
 msgstr "Hoogdoorlaatfilter"
 
-#: operations/common/high-pass.c:87
+#: operations/common/high-pass.c:86
 msgid "Enhances fine details."
 msgstr "Verbeter fijne details."
 
@@ -2437,7 +2442,7 @@ msgid "Image Gradient"
 msgstr "Kleurverloop"
 
 # differentialen? - pm
-#: operations/common/image-gradient.c:228
+#: operations/common/image-gradient.c:227
 msgid "Compute gradient magnitude and/or direction by central differences"
 msgstr "Bereken de grootte en/of richting van het kleurverloop door centrale verschillen"
 
@@ -2466,11 +2471,11 @@ msgstr "GEGL heeft een effect voor de binnenste gloed van een schaduw; voor meer
 msgid "Inner Glow..."
 msgstr "Binnenste gloed…"
 
-#: operations/common/introspect.c:27
+#: operations/common/introspect.c:35
 msgid "Node"
 msgstr "Knoop"
 
-#: operations/common/introspect.c:210
+#: operations/common/introspect.c:224
 msgid "GEGL graph visualizer."
 msgstr "GEGL-grafiekweergave."
 
@@ -2632,7 +2637,7 @@ msgstr "De kleur op (x2, y2)"
 msgid "Linear Gradient"
 msgstr "Lineair verloop"
 
-#: operations/common/linear-gradient.c:142
+#: operations/common/linear-gradient.c:141
 msgid "Linear gradient renderer"
 msgstr "Lineair verloop-maker"
 
@@ -2732,7 +2737,7 @@ msgid ""
 "local contrast."
 msgstr "Standaard afwijking van het Gaussiaanse gemiddelde voor de omgeving voor het berekenen van lokaal contrast. Als 0 wordt gebruikt, wordt een globale drempel gebruikt, in plaats van een die is gebaseerd op lokaal contrast."
 
-#: operations/common/local-threshold.c:32 operations/common-gpl3+/mosaic.c:87
+#: operations/common/local-threshold.c:32 operations/common-gpl3+/mosaic.c:89
 msgid "Antialiasing"
 msgstr "Randverzachting"
 
@@ -2857,7 +2862,7 @@ msgstr "Samenstelling uitvoer"
 msgid "Long Shadow"
 msgstr "Lange schaduw"
 
-#: operations/common/long-shadow.c:1651
+#: operations/common/long-shadow.c:1650
 msgid "Creates a long-shadow effect"
 msgstr "Creëert lange schaduwen"
 
@@ -2899,7 +2904,7 @@ msgstr "Pas een afbeelding, die een hoog dynamisch bereik kan hebben, aan om te 
 msgid "Map Absolute"
 msgstr "Absoluut mappen"
 
-#: operations/common/map-absolute.c:64
+#: operations/common/map-absolute.c:65
 msgid ""
 "sample input with an auxiliary buffer that contain absolute source "
 "coordinates"
@@ -2919,17 +2924,17 @@ msgstr "verplaatsingsfactor, geeft de ruimtelijke verplaatsing aan waarmee een r
 msgid "Map Relative"
 msgstr "Relatieve mapping"
 
-#: operations/common/map-relative.c:84
+#: operations/common/map-relative.c:83
 msgid ""
 "sample input with an auxiliary buffer that contain relative source "
 "coordinates"
 msgstr "voorbeeldinvoer met extra buffer die relatieve broncoördinaten bevat"
 
-#: operations/common/matting-global.c:599
+#: operations/common/matting-global.c:601
 msgid "Matting Global"
 msgstr "Globale matting"
 
-#: operations/common/matting-global.c:601
+#: operations/common/matting-global.c:603
 msgid ""
 "Given a sparse user supplied tri-map and an input image, create a foreground "
 "alpha matte. Set white as foreground, black as background for the tri-map. "
@@ -3007,11 +3012,11 @@ msgstr "Grote precisie"
 msgid "Avoid clipping and quantization (slower)"
 msgstr "Vermijd knippen en kwantisering (langzamer)"
 
-#: operations/common/median-blur.c:1003
+#: operations/common/median-blur.c:1000
 msgid "Median Blur"
 msgstr "Mediaanvervaging"
 
-#: operations/common/median-blur.c:1006
+#: operations/common/median-blur.c:1003
 msgid ""
 "Blur resulting from computing the median color in the neighborhood of each "
 "pixel."
@@ -3105,11 +3110,11 @@ msgstr "Invoer omslaan"
 msgid "Fill full output area"
 msgstr "Uitvoergebied volledig vullen"
 
-#: operations/common/mirrors.c:466
+#: operations/common/mirrors.c:480
 msgid "Kaleidoscopic Mirroring"
 msgstr "Caleidoscopisch spiegelen"
 
-#: operations/common/mirrors.c:471
+#: operations/common/mirrors.c:484
 msgid "Create a kaleidoscope like effect."
 msgstr "Creëer een caleidoscoopachtig effect."
 
@@ -3134,22 +3139,22 @@ msgid "Preserve luminosity"
 msgstr "Helderheid behouden"
 
 #: operations/common/mono-mixer.c:26
-msgid "Red Channel Multiplier"
+msgid "Red channel multiplier"
 msgstr "Vermenigvuldiging kanaal rood"
 
 #: operations/common/mono-mixer.c:30
-msgid "Green Channel Multiplier"
+msgid "Green channel multiplier"
 msgstr "Vermenigvuldiging kanaal groen"
 
 #: operations/common/mono-mixer.c:34
-msgid "Blue Channel Multiplier"
+msgid "Blue channel multiplier"
 msgstr "Vermenigvuldiging kanaal blauw"
 
 #: operations/common/mono-mixer.c:113
 msgid "Mono Mixer"
 msgstr "Monochrome mixer"
 
-#: operations/common/mono-mixer.c:117
+#: operations/common/mono-mixer.c:116
 msgid "Monochrome channel mixer"
 msgstr "Monochrome kanalenmixer"
 
@@ -3165,7 +3170,7 @@ msgstr "Vervagingshoek in graden"
 msgid "Linear Motion Blur"
 msgstr "Lineaire bewegingsvervaging"
 
-#: operations/common/motion-blur-linear.c:337
+#: operations/common/motion-blur-linear.c:336
 msgid ""
 "Blur pixels in a direction, simulates blurring caused by moving camera in a "
 "straight line during exposure."
@@ -3616,7 +3621,7 @@ msgid ""
 msgstr "Aantal perioden per tegel, deze methode vermijdt hoogfrequente anomalie veroorzaakt door hoekversterking"
 
 #: operations/common/newsprint.c:178
-msgid "Angle Boost"
+msgid "Angle boost"
 msgstr "Hoekversterking"
 
 #: operations/common/newsprint.c:180
@@ -3708,7 +3713,7 @@ msgstr "Waarde"
 msgid "Add HSV Noise"
 msgstr "Voeg HSV-ruis toe"
 
-#: operations/common/noise-hsv.c:281
+#: operations/common/noise-hsv.c:280
 msgid "Randomize hue, saturation and value independently"
 msgstr "Verander tint, verzadiging en waarde onafhankelijk en willekeurig"
 
@@ -3747,7 +3752,7 @@ msgstr "Perlinruisgenerator"
 msgid "Noise Pick"
 msgstr "Ruiskiezer"
 
-#: operations/common/noise-pick.c:148
+#: operations/common/noise-pick.c:147
 msgid "Randomly interchange some pixels with neighbors"
 msgstr "Verwissel sommige pixels willekeurig met hun buurpixels"
 
@@ -3810,7 +3815,7 @@ msgstr "Blauw"
 msgid "Add RGB Noise"
 msgstr "Voeg RGB-ruis toe"
 
-#: operations/common/noise-rgb.c:217
+#: operations/common/noise-rgb.c:216
 msgid "Distort colors by random amounts"
 msgstr "Verstoor kleuren met willekeurige hoeveelheden"
 
@@ -3834,7 +3839,7 @@ msgstr "Hoeveelheid verticale spreiding"
 msgid "Noise Spread"
 msgstr "Ruisspreiding"
 
-#: operations/common/noise-spread.c:187
+#: operations/common/noise-spread.c:186
 msgid "Move pixels around randomly"
 msgstr "Verplaats pixels willekeurig"
 
@@ -3843,7 +3848,7 @@ msgid "The amount by which to scale the height values"
 msgstr "De hoeveelheid waarmee de hoogtewaarden moeten worden geschaald"
 
 #: operations/common/normal-map.c:35
-msgid "X Component"
+msgid "X component"
 msgstr "X-component"
 
 #: operations/common/normal-map.c:38
@@ -3851,7 +3856,7 @@ msgid "The component used for the X coordinates"
 msgstr "De component die wordt gebruikt voor de X-coördinaten"
 
 #: operations/common/normal-map.c:40
-msgid "Y Component"
+msgid "Y component"
 msgstr "Y-component"
 
 #: operations/common/normal-map.c:43
@@ -3875,7 +3880,7 @@ msgid "Flip the Y coordinates"
 msgstr "Spiegel de Y-coördinaten"
 
 #: operations/common/normal-map.c:51
-msgid "Full Z Range"
+msgid "Full Z range"
 msgstr "Volledig Z-bereik"
 
 #: operations/common/normal-map.c:52
@@ -3895,7 +3900,7 @@ msgstr "Genereer een tegelbare kaart"
 msgid "Normal Map"
 msgstr "Genormaliseerde kaart"
 
-#: operations/common/normal-map.c:252
+#: operations/common/normal-map.c:251
 msgid "Generate a normal map from a height map"
 msgstr "Genereer een map met randdetectie vanuit een hoogtemap"
 
@@ -3963,7 +3968,7 @@ msgstr "Verpakt een afbeelding horizontaal of verticaal naast elkaar met optione
 msgid "Panorama Projection"
 msgstr "Panoramaprojectie"
 
-#: operations/common/panorama-projection.c:543
+#: operations/common/panorama-projection.c:542
 msgid ""
 "Do panorama viewer rendering mapping or its inverse for an equirectangular "
 "input image. (2:1 ratio containing 360x180 degree panorama)."
@@ -4020,7 +4025,7 @@ msgstr "Verticale grootte van een pixel binnen elk blok"
 #: operations/common/pixelize.c:75 operations/common-gpl3+/apply-lens.c:44
 #: operations/common-gpl3+/cubism.c:39
 #: operations/common-gpl3+/lens-distortion.c:57
-#: operations/common-gpl3+/tile-paper.c:76
+#: operations/common-gpl3+/maze.c:71 operations/common-gpl3+/tile-paper.c:76
 msgid "Background color"
 msgstr "Achtergrondkleur"
 
@@ -4052,7 +4057,7 @@ msgstr "Verminder het aantal niveaus in elke kleurcomponent van de afbeelding."
 msgid "Radial Gradient"
 msgstr "Radiaal verloop"
 
-#: operations/common/radial-gradient.c:128
+#: operations/common/radial-gradient.c:127
 msgid "Radial gradient renderer"
 msgstr "Radiaal verloopmaker"
 
@@ -4139,7 +4144,7 @@ msgstr "Mathematisch methode om de pixelwaarden te reconstrueren"
 msgid "Recursive Transform"
 msgstr "Omgekeerde transformatie"
 
-#: operations/common/recursive-transform.c:381
+#: operations/common/recursive-transform.c:382
 msgid "Apply a transformation recursively."
 msgstr "Pas een transformatie recursief toe."
 
@@ -4163,11 +4168,11 @@ msgstr "Lichtaanpassing"
 msgid "Adaptation to light variation across the image"
 msgstr "Aanpassing naar lichtvariatie over de afbeelding"
 
-#: operations/common/reinhard05.c:317
+#: operations/common/reinhard05.c:318
 msgid "Reinhard 2005 Tone Mapping"
 msgstr "Reinhard 2005 toonmappen"
 
-#: operations/common/reinhard05.c:322
+#: operations/common/reinhard05.c:323
 msgid ""
 "Adapt an image, which may have a high dynamic range, for presentation using "
 "a low dynamic range. This is an efficient global operator derived from "
@@ -4239,7 +4244,9 @@ msgstr "Pad van het bestand om te bewaren."
 msgid "Metadata"
 msgstr "Metadata"
 
-#: operations/common/save.c:29
+#: operations/common/save.c:29 operations/core/load.c:34
+#: operations/external/jpg-save.c:45 operations/external/png-load.c:37
+#: operations/external/png-save.c:35
 msgid "Object providing image metadata"
 msgstr "Object dat metadata van afbeeldingen levert"
 
@@ -5024,7 +5031,7 @@ msgstr "Schaalfactor van onscherptemasker, de kracht van het effect"
 msgid "Sharpen (Unsharp Mask)"
 msgstr "Verscherpen (Onscherp masker)"
 
-#: operations/common/unsharp-mask.c:148
+#: operations/common/unsharp-mask.c:147
 msgid ""
 "Sharpen image, by adding difference to blurred image, a technique for "
 "sharpening originally used in darkrooms."
@@ -5034,11 +5041,27 @@ msgstr "Verscherp afbeelding door verschil aan vervaagd beeld toe te voegen, een
 msgid "Value Invert"
 msgstr "Omkeren op waarde"
 
-#: operations/common/value-invert.c:154
+#: operations/common/value-invert.c:153
 msgid ""
 "Invert the value component, the result has the brightness inverted, keeping "
 "the color."
 msgstr "Inverteer de waardecomponent; het resultaat heeft de omgekeerde helderheid maar behoudt de kleur."
+
+#: operations/common/vibrance.c:24 operations/common/vibrance.c:77
+msgid "Vibrance"
+msgstr "Levendigheid"
+
+#: operations/common/vibrance.c:25
+msgid "Vibrance (chroma) adjustment"
+msgstr "Aanpassing Levendigheid (chroma)"
+
+#: operations/common/vibrance.c:31
+msgid "Saturation scale factor"
+msgstr "Schaalfactor verzadiging"
+
+#: operations/common/vibrance.c:79
+msgid "Adjusts the saturation and vibrance of the image."
+msgstr "Past de verzadiging en de levendigheid van de afbeelding aan."
 
 #: operations/common/vignette.c:32
 msgid "Vignette shape"
@@ -5094,7 +5117,7 @@ msgstr "Draaiing"
 msgid "Vignette"
 msgstr "Vignettering"
 
-#: operations/common/vignette.c:398
+#: operations/common/vignette.c:397
 msgid ""
 "Applies a vignette to an image. Simulates the luminance fall off at the edge "
 "of exposed film, and some other fuzzier border effects that can naturally "
@@ -5119,8 +5142,8 @@ msgstr "Ruimtelijke regularisatie"
 
 #: operations/common/waterpixels.c:49
 msgid ""
-"trade-off between superpixel regularity and adherence to object boundaries"
-msgstr "afweging tussen regulariteit van superpixels en hechting aan objectgrenzen"
+"Trade-off between superpixel regularity and adherence to object boundaries"
+msgstr "Afweging tussen regulariteit van superpixels en hechting aan objectgrenzen"
 
 #: operations/common/waterpixels.c:52
 msgid "Superpixels color"
@@ -5151,7 +5174,7 @@ msgstr "vlag"
 msgid "Pointer to flag value for unlabelled pixels"
 msgstr "Verwijzing naar waarde van vlag voor niet gelabelde pixels"
 
-#: operations/common/watershed-transform.c:489
+#: operations/common/watershed-transform.c:490
 msgid "Watershed Transform"
 msgstr "Transformatie Watershed"
 
@@ -5173,7 +5196,7 @@ msgstr "Radius golfjes-vervaging"
 msgid "1D Wavelet-blur"
 msgstr "1D golfjes-vervaging"
 
-#: operations/common/wavelet-blur-1d.c:277 operations/common/wavelet-blur.c:80
+#: operations/common/wavelet-blur-1d.c:276 operations/common/wavelet-blur.c:80
 msgid ""
 "This blur is used for the wavelet decomposition filter, each pixel is "
 "computed from another by the HAT transform"
@@ -5234,7 +5257,7 @@ msgid "Threshold high"
 msgstr "Hoge drempelwaarde"
 
 #: operations/common-cxx/distance-transform.cc:49
-msgid "Grayscale Averaging"
+msgid "Grayscale averaging"
 msgstr "Grijswaarden-middeling"
 
 #: operations/common-cxx/distance-transform.cc:50
@@ -5253,7 +5276,7 @@ msgstr "Afstandstransformatie"
 msgid "Calculate a distance transform"
 msgstr "Bereken een afstandstransformatie"
 
-#: operations/common-cxx/focus-blur.c:30 operations/common-cxx/lens-blur.cc:504
+#: operations/common-cxx/focus-blur.c:30 operations/common-cxx/lens-blur.cc:508
 msgid "Lens Blur"
 msgstr "Lensvervaging"
 
@@ -5265,23 +5288,23 @@ msgstr "Type vervaging"
 msgid "Out-of-focus blur radius"
 msgstr "Onscherpe vervagingsradius"
 
-#: operations/common-cxx/focus-blur.c:52 operations/common-cxx/lens-blur.cc:31
+#: operations/common-cxx/focus-blur.c:52 operations/common-cxx/lens-blur.cc:35
 msgid "Highlight factor"
 msgstr "Markeringsfactor"
 
-#: operations/common-cxx/focus-blur.c:53 operations/common-cxx/lens-blur.cc:32
+#: operations/common-cxx/focus-blur.c:53 operations/common-cxx/lens-blur.cc:36
 msgid "Relative highlight strength"
 msgstr "Relatieve markeringssterkte"
 
-#: operations/common-cxx/focus-blur.c:57 operations/common-cxx/lens-blur.cc:35
+#: operations/common-cxx/focus-blur.c:57 operations/common-cxx/lens-blur.cc:39
 msgid "Highlight threshold (low)"
 msgstr "Markeringsdrempel (laag)"
 
-#: operations/common-cxx/focus-blur.c:61 operations/common-cxx/lens-blur.cc:39
+#: operations/common-cxx/focus-blur.c:61 operations/common-cxx/lens-blur.cc:43
 msgid "Highlight threshold"
 msgstr "Markeringsdrempel"
 
-#: operations/common-cxx/focus-blur.c:64 operations/common-cxx/lens-blur.cc:41
+#: operations/common-cxx/focus-blur.c:64 operations/common-cxx/lens-blur.cc:45
 msgid "Highlight threshold (high)"
 msgstr "Markeringsdrempel (hoog)"
 
@@ -5364,27 +5387,27 @@ msgstr "Ruis verwijderen DCT"
 msgid "Denoising algorithm using a per-patch DCT thresholding"
 msgstr "Algoritme voor verwijderen van ruis met een per-vlak DCT-drempelwaarde"
 
-#: operations/common-cxx/lens-blur.cc:46
+#: operations/common-cxx/lens-blur.cc:50
 msgid "Clip to input extents"
 msgstr "Knippen naar invoerbereik"
 
-#: operations/common-cxx/lens-blur.cc:47
+#: operations/common-cxx/lens-blur.cc:51
 msgid "Clip output to the input extents"
 msgstr "Uitvoer van knippen naar het invoerbereik"
 
-#: operations/common-cxx/lens-blur.cc:49
+#: operations/common-cxx/lens-blur.cc:53
 #: operations/common-cxx/piecewise-blend.cc:38
 #: operations/common-cxx/variable-blur.c:37
 msgid "Linear mask"
 msgstr "Lineair masker"
 
-#: operations/common-cxx/lens-blur.cc:50
+#: operations/common-cxx/lens-blur.cc:54
 #: operations/common-cxx/piecewise-blend.cc:39
 #: operations/common-cxx/variable-blur.c:38
 msgid "Use linear mask values"
 msgstr "Lineaire maskerwaarden gebruiken"
 
-#: operations/common-cxx/lens-blur.cc:507
+#: operations/common-cxx/lens-blur.cc:511
 msgid "Simulate out-of-focus lens blur"
 msgstr "Onscherpe lensonscherpte simuleren"
 
@@ -5400,7 +5423,7 @@ msgstr "Gammafactor voor spatiëring op mengniveau"
 msgid "Piecewise Blend"
 msgstr "Stuksgewijze mix"
 
-#: operations/common-cxx/piecewise-blend.cc:348
+#: operations/common-cxx/piecewise-blend.cc:349
 msgid "Blend a chain of inputs using a mask"
 msgstr "Meng een invoerreeks met behulp van een masker"
 
@@ -5469,7 +5492,7 @@ msgstr "Gedrag van de op"
 msgid "Warp"
 msgstr "Werpen"
 
-#: operations/common-cxx/warp.cc:988
+#: operations/common-cxx/warp.cc:989
 msgid "Compute a relative displacement mapping from a stroke"
 msgstr "Bereken een relatieve verplaatsing van een streek"
 
@@ -5497,7 +5520,7 @@ msgstr "Beeld niet veranderen waar dit niet beïnvloed wordt door het objectief.
 msgid "Apply Lens"
 msgstr "Objectief toepassen"
 
-#: operations/common-gpl3+/apply-lens.c:306
+#: operations/common-gpl3+/apply-lens.c:305
 msgid ""
 "Simulates the optical distortion caused by having an elliptical lens over "
 "the image"
@@ -5512,16 +5535,16 @@ msgid "Number of subdivisions"
 msgstr "Aantal onderverdelingen"
 
 #: operations/common-gpl3+/bayer-matrix.c:29 operations/common-gpl3+/sinus.c:31
-msgid "X Scale"
-msgstr "X-schaal"
+msgid "Scale X"
+msgstr "Schaal X"
 
 #: operations/common-gpl3+/bayer-matrix.c:30
 msgid "Horizontal pattern scale"
 msgstr "Schaal van het horizontale patroon"
 
 #: operations/common-gpl3+/bayer-matrix.c:36 operations/common-gpl3+/sinus.c:38
-msgid "Y Scale"
-msgstr "Y-schaal"
+msgid "Scale Y"
+msgstr "Schaal Y"
 
 #: operations/common-gpl3+/bayer-matrix.c:37
 msgid "Vertical pattern scale"
@@ -5581,20 +5604,10 @@ msgstr "Exponent"
 msgid "Value exponent (logarithmic scale)"
 msgstr "Waarde-exponent (logaritmische schaal)"
 
-#: operations/common-gpl3+/bayer-matrix.c:73
-#: operations/common-gpl3+/linear-sinusoid.c:81
-msgid "X Offset"
-msgstr "X-verschuiving"
-
 #: operations/common-gpl3+/bayer-matrix.c:74
 #: operations/common-gpl3+/linear-sinusoid.c:82
 msgid "Offset for X axis"
 msgstr "Verschuiving van de X-as"
-
-#: operations/common-gpl3+/bayer-matrix.c:80
-#: operations/common-gpl3+/linear-sinusoid.c:88
-msgid "Y Offset"
-msgstr "Y-verschuiving"
 
 #: operations/common-gpl3+/bayer-matrix.c:81
 #: operations/common-gpl3+/linear-sinusoid.c:89
@@ -5662,15 +5675,14 @@ msgid "Ambient lighting factor"
 msgstr "Factor omgevingslicht"
 
 #: operations/common-gpl3+/bump-map.c:472
-msgid "Height Map"
-msgstr "Hoogtemap"
+msgid "Height map"
+msgstr "Hoogtekaart"
 
 #: operations/common-gpl3+/bump-map.c:476
 msgid "Bump Map"
 msgstr "Bump-map"
 
-#. "reference-hash", "8d3700ec06e9cbba3cb2b4a9f3061a10",
-#: operations/common-gpl3+/bump-map.c:482
+#: operations/common-gpl3+/bump-map.c:481
 msgid ""
 "This plug-in uses the algorithm described by John Schlag, \"Fast Embossing "
 "Effects on Raster Image Data\" in Graphics GEMS IV (ISBN 0-12-336155-9). It "
@@ -5678,11 +5690,12 @@ msgid ""
 "nice embossing effect."
 msgstr "Deze plug-in gebruikt het algoritme dat werd beschreven door John Schlag, \"Fast Embossing Effects on Raster Image Data\" in Graphics GEMS IV (ISBN 0-12-336155-9). Het neemt een buffer om te worden toegepast als een bumpmap voor een andere buffer en produceert een leuk effect van embossen."
 
-#: operations/common-gpl3+/cartoon.c:28
+#: operations/common-gpl3+/cartoon.c:28 operations/common-gpl3+/oilify.c:28
+#: operations/common-gpl3+/photocopy.c:26
 msgid "Mask radius"
 msgstr "Maskerstraal"
 
-#: operations/common-gpl3+/cartoon.c:31
+#: operations/common-gpl3+/cartoon.c:31 operations/common-gpl3+/photocopy.c:32
 msgid "Percent black"
 msgstr "Percentage zwart"
 
@@ -5690,7 +5703,7 @@ msgstr "Percentage zwart"
 msgid "Cartoon"
 msgstr "Striptekening"
 
-#: operations/common-gpl3+/cartoon.c:326
+#: operations/common-gpl3+/cartoon.c:325
 msgid ""
 "Simulates a cartoon, its result is similar to a black felt pen drawing "
 "subsequently shaded with color. This is achieved by enhancing edges and "
@@ -5782,7 +5795,7 @@ msgid ""
 msgstr "Verander kleuren door de relatieve bijdragen van de broncomponenten te wijzigen."
 
 #: operations/common-gpl3+/color-exchange.c:31
-msgid "From Color"
+msgid "From color"
 msgstr "Van kleur"
 
 #: operations/common-gpl3+/color-exchange.c:32
@@ -5790,7 +5803,7 @@ msgid "The color to change."
 msgstr "De te veranderen kleur."
 
 #: operations/common-gpl3+/color-exchange.c:34
-msgid "To Color"
+msgid "To color"
 msgstr "Naar kleur"
 
 #: operations/common-gpl3+/color-exchange.c:35
@@ -5798,7 +5811,7 @@ msgid "Replacement color."
 msgstr "Vervangingskleur."
 
 #: operations/common-gpl3+/color-exchange.c:37
-msgid "Red Threshold"
+msgid "Red threshold"
 msgstr "Drempel rood"
 
 #: operations/common-gpl3+/color-exchange.c:38
@@ -5806,7 +5819,7 @@ msgid "Red threshold of the input color"
 msgstr "Rode drempel van de invoerkleur"
 
 #: operations/common-gpl3+/color-exchange.c:41
-msgid "Green Threshold"
+msgid "Green threshold"
 msgstr "Drempel groen"
 
 #: operations/common-gpl3+/color-exchange.c:42
@@ -5814,7 +5827,7 @@ msgid "Green threshold of the input color"
 msgstr "Groene drempel van de invoerkleur"
 
 #: operations/common-gpl3+/color-exchange.c:45
-msgid "Blue Threshold"
+msgid "Blue threshold"
 msgstr "Drempel blauw"
 
 #: operations/common-gpl3+/color-exchange.c:46
@@ -5860,11 +5873,11 @@ msgstr "Kleur naar alfa"
 msgid "Convert a specified color to transparency, works best with white."
 msgstr "Converteer een zekere kleur naar transparant, werkt het best met wit."
 
-#: operations/common-gpl3+/cubism.c:30 operations/common-gpl3+/mosaic.c:43
+#: operations/common-gpl3+/cubism.c:30 operations/common-gpl3+/mosaic.c:45
 msgid "Tile size"
 msgstr "Tegelgrootte"
 
-#: operations/common-gpl3+/cubism.c:31 operations/common-gpl3+/mosaic.c:44
+#: operations/common-gpl3+/cubism.c:31 operations/common-gpl3+/mosaic.c:46
 msgid "Average diameter of each tile (in pixels)"
 msgstr "Gemiddelde diameter van elke tegel (in pixels)"
 
@@ -5884,7 +5897,7 @@ msgstr "Achtergrondkleur tegels"
 msgid "Cubism"
 msgstr "Kubisme"
 
-#: operations/common-gpl3+/cubism.c:655
+#: operations/common-gpl3+/cubism.c:654
 msgid ""
 "Convert the image into randomly rotated square blobs, somehow resembling a "
 "cubist painting style"
@@ -6182,7 +6195,7 @@ msgstr "Randdetectie gedrag"
 msgid "Edge Detection"
 msgstr "Randdetectie"
 
-#: operations/common-gpl3+/edge.c:371
+#: operations/common-gpl3+/edge.c:370
 msgid "Several simple methods for detecting edges"
 msgstr "Verschillende eenvoudige methoden voor randdetectie"
 
@@ -6190,7 +6203,7 @@ msgstr "Verschillende eenvoudige methoden voor randdetectie"
 msgid "Laplacian Edge Detection"
 msgstr "Laplace randdetectie"
 
-#: operations/common-gpl3+/edge-laplace.c:416
+#: operations/common-gpl3+/edge-laplace.c:415
 msgid "High-resolution edge detection"
 msgstr "Hoge resolutie randdetectie"
 
@@ -6203,7 +6216,7 @@ msgid "Bumpmap (preserve original colors)"
 msgstr "Bumpmap (behoud originele kleuren)"
 
 #: operations/common-gpl3+/emboss.c:30
-msgid "Emboss Type"
+msgid "Emboss type"
 msgstr "Reliëftype"
 
 #: operations/common-gpl3+/emboss.c:32
@@ -6445,7 +6458,7 @@ msgstr "Niet-ondersteund fractaaltype"
 msgid "Fractal Trace"
 msgstr "Fractaalsporen"
 
-#: operations/common-gpl3+/fractal-trace.c:285
+#: operations/common-gpl3+/fractal-trace.c:284
 msgid "Transform the image with the fractals"
 msgstr "Transformeer het beeld met de fractalen"
 
@@ -6537,7 +6550,7 @@ msgstr "Pas helderheid in hoeken aan"
 msgid "Lens Distortion"
 msgstr "Lensvervorming"
 
-#: operations/common-gpl3+/lens-distortion.c:504
+#: operations/common-gpl3+/lens-distortion.c:503
 msgid "Corrects barrel or pincushion lens distortion."
 msgstr "Corrigeert vervorming ton of speldenkussen van de lens."
 
@@ -6561,53 +6574,53 @@ msgstr "Y-coördinaat van het fonkelcentrum"
 msgid "Lens Flare"
 msgstr "Lensschittering"
 
-#: operations/common-gpl3+/lens-flare.c:515
+#: operations/common-gpl3+/lens-flare.c:514
 msgid "Adds a lens flare effect."
 msgstr "Voeg het effect van lensschittering toe."
 
 #: operations/common-gpl3+/linear-sinusoid.c:25
-msgid "X Period"
-msgstr "X-periode"
+msgid "Period X"
+msgstr "Periode X"
 
 #: operations/common-gpl3+/linear-sinusoid.c:26
 msgid "Period for X axis"
 msgstr "Periode voor de x-as"
 
 #: operations/common-gpl3+/linear-sinusoid.c:32
-msgid "Y Period"
-msgstr "Y-periode"
+msgid "Period Y"
+msgstr "Periode Y"
 
 #: operations/common-gpl3+/linear-sinusoid.c:33
 msgid "Period for Y axis"
 msgstr "Periode voor de y-as"
 
 #: operations/common-gpl3+/linear-sinusoid.c:39
-msgid "X Amplitude"
-msgstr "X-amplitude"
+msgid "Amplitude X"
+msgstr "Amplitude X"
 
 #: operations/common-gpl3+/linear-sinusoid.c:40
 msgid "Amplitude for X axis (logarithmic scale)"
 msgstr "Amplitude voor x-as (logaritmisch)"
 
 #: operations/common-gpl3+/linear-sinusoid.c:45
-msgid "Y Amplitude"
-msgstr "Y-amplitude"
+msgid "Amplitude Y"
+msgstr "Amplitude Y"
 
 #: operations/common-gpl3+/linear-sinusoid.c:46
 msgid "Amplitude for Y axis (logarithmic scale)"
 msgstr "Amplitude voor y-as (logaritmisch)"
 
 #: operations/common-gpl3+/linear-sinusoid.c:51
-msgid "X Phase"
-msgstr "X-fase"
+msgid "Phase X"
+msgstr "Fase X"
 
 #: operations/common-gpl3+/linear-sinusoid.c:52
 msgid "Phase for X axis"
 msgstr "Fase voor de x-as"
 
 #: operations/common-gpl3+/linear-sinusoid.c:58
-msgid "Y Phase"
-msgstr "Y-fase"
+msgid "Phase Y"
+msgstr "Fase Y"
 
 #: operations/common-gpl3+/linear-sinusoid.c:59
 msgid "Phase for Y axis"
@@ -6650,16 +6663,12 @@ msgid "Maze algorithm type"
 msgstr "Type algoritme Doolhof"
 
 #: operations/common-gpl3+/maze.c:67
-msgid "Foreground Color"
+msgid "Foreground color"
 msgstr "Voorgrondkleur"
 
 #: operations/common-gpl3+/maze.c:68
 msgid "The foreground color"
 msgstr "De voorgrondkleur"
-
-#: operations/common-gpl3+/maze.c:71
-msgid "Background Color"
-msgstr "Achtergrondkleur"
 
 #: operations/common-gpl3+/maze.c:72
 msgid "The background color"
@@ -6673,111 +6682,112 @@ msgstr "Doolhof"
 msgid "Draw a labyrinth"
 msgstr "Teken een labyrint"
 
-#: operations/common-gpl3+/mosaic.c:33
+#: operations/common-gpl3+/mosaic.c:35
 msgid "Squares"
 msgstr "Vierkanten"
 
-#: operations/common-gpl3+/mosaic.c:34
+#: operations/common-gpl3+/mosaic.c:36
 msgid "Hexagons"
 msgstr "Zeshoeken"
 
-#: operations/common-gpl3+/mosaic.c:35
+#: operations/common-gpl3+/mosaic.c:37
 msgid "Octagons"
 msgstr "Achthoeken"
 
-#: operations/common-gpl3+/mosaic.c:36
+#: operations/common-gpl3+/mosaic.c:38
 msgid "Triangles"
 msgstr "Driehoeken"
 
-#: operations/common-gpl3+/mosaic.c:39
+#: operations/common-gpl3+/mosaic.c:41
 msgid "Tile geometry"
 msgstr "Tegelgeometrie"
 
-#: operations/common-gpl3+/mosaic.c:41
+#: operations/common-gpl3+/mosaic.c:43
 msgid "What shape to use for tiles"
 msgstr "De vorm van de tegels"
 
-#: operations/common-gpl3+/mosaic.c:49
+#: operations/common-gpl3+/mosaic.c:51 operations/common-gpl3+/tile-glass.c:34
+#: operations/common-gpl3+/tile-paper.c:47
 msgid "Tile height"
 msgstr "Tegelhoogte"
 
-#: operations/common-gpl3+/mosaic.c:50
+#: operations/common-gpl3+/mosaic.c:52
 msgid "Apparent height of each tile (in pixels)"
 msgstr "Schijnbare hoogte van elke tegel (in pixels)"
 
-#: operations/common-gpl3+/mosaic.c:54
+#: operations/common-gpl3+/mosaic.c:56
 msgid "Tile neatness"
 msgstr "Netheid tegels"
 
-#: operations/common-gpl3+/mosaic.c:55
+#: operations/common-gpl3+/mosaic.c:57
 msgid "Deviation from perfectly formed tiles"
 msgstr "Afwijking van perfect gevormde tegels"
 
-#: operations/common-gpl3+/mosaic.c:58
+#: operations/common-gpl3+/mosaic.c:60
 msgid "Tile color variation"
 msgstr "Kleurvariatie tegel"
 
-#: operations/common-gpl3+/mosaic.c:59
+#: operations/common-gpl3+/mosaic.c:61
 msgid "Magnitude of random color variations"
 msgstr "Kracht van willekeurige kleurvariaties"
 
-#: operations/common-gpl3+/mosaic.c:62
+#: operations/common-gpl3+/mosaic.c:64
 msgid "Color averaging"
 msgstr "Kleurmiddeling"
 
-#: operations/common-gpl3+/mosaic.c:63
+#: operations/common-gpl3+/mosaic.c:65
 msgid "Tile color based on average of subsumed pixels"
 msgstr "Tegelkleur gebaseerd op het gemiddelde van de onderliggende pixels"
 
-#: operations/common-gpl3+/mosaic.c:65
+#: operations/common-gpl3+/mosaic.c:67
 msgid "Rough tile surface"
 msgstr "Ruw tegeloppervlak"
 
-#: operations/common-gpl3+/mosaic.c:66
+#: operations/common-gpl3+/mosaic.c:68
 msgid "Surface characteristics"
 msgstr "Kenmerken oppervlak"
 
-#: operations/common-gpl3+/mosaic.c:68
+#: operations/common-gpl3+/mosaic.c:70
 msgid "Allow splitting tiles"
 msgstr "Sta opdelen tegels toe"
 
-#: operations/common-gpl3+/mosaic.c:69
+#: operations/common-gpl3+/mosaic.c:71
 msgid "Allows splitting tiles at hard edges"
 msgstr "Sta opdelen tegels aan harde randen toe"
 
-#: operations/common-gpl3+/mosaic.c:71
+#: operations/common-gpl3+/mosaic.c:73
 msgid "Tile spacing"
 msgstr "Tegelspatiëring"
 
-#: operations/common-gpl3+/mosaic.c:72
+#: operations/common-gpl3+/mosaic.c:74
 msgid "Inter-tile spacing (in pixels)"
 msgstr "Ruimte tussen de tegels (in pixels)"
 
-#: operations/common-gpl3+/mosaic.c:77
+#: operations/common-gpl3+/mosaic.c:79
 msgid "Joints color"
 msgstr "Randkleur"
 
-#: operations/common-gpl3+/mosaic.c:79
+#: operations/common-gpl3+/mosaic.c:81
 msgid "Light color"
 msgstr "Lichtkleur"
 
-#: operations/common-gpl3+/mosaic.c:81
+#: operations/common-gpl3+/mosaic.c:83
 msgid "Light direction"
 msgstr "Lichtrichting"
 
-#: operations/common-gpl3+/mosaic.c:82
+#: operations/common-gpl3+/mosaic.c:84
 msgid "Direction of light-source (in degrees)"
 msgstr "Richting van de lichtbron (in graden)"
 
-#: operations/common-gpl3+/mosaic.c:88
+#: operations/common-gpl3+/mosaic.c:90
 msgid "Enables smoother tile output"
 msgstr "Produceert gladdere tegels"
 
-#: operations/common-gpl3+/mosaic.c:2472
+#: operations/common-gpl3+/mosaic.c:2474
 msgid "Mosaic"
 msgstr "Mozaïek"
 
-#: operations/common-gpl3+/mosaic.c:2477
+#: operations/common-gpl3+/mosaic.c:2478
 msgid ""
 "Mosaic is a filter which transforms an image into what appears to be a "
 "mosaic, composed of small primitives, each of constant color and of an "
@@ -6804,7 +6814,7 @@ msgstr "Vervaagfactor"
 msgid "Zooming Motion Blur"
 msgstr "Zoomvervaging"
 
-#: operations/common-gpl3+/motion-blur-zoom.c:277
+#: operations/common-gpl3+/motion-blur-zoom.c:276
 msgid "Zoom motion blur"
 msgstr "Zoomvervaging"
 
@@ -6817,7 +6827,7 @@ msgid "Randomly slide some pixels downward (similar to melting)"
 msgstr "Schuif sommige pixels willekeurig omlaag (soort smelteffect)"
 
 #: operations/common-gpl3+/noise-solid.c:36
-msgid "X Size"
+msgid "X size"
 msgstr "X-grootte"
 
 #: operations/common-gpl3+/noise-solid.c:37
@@ -6825,7 +6835,7 @@ msgid "Horizontal texture size"
 msgstr "Horizontale textuurgrootte"
 
 #: operations/common-gpl3+/noise-solid.c:43
-msgid "Y Size"
+msgid "Y size"
 msgstr "Y-grootte"
 
 #: operations/common-gpl3+/noise-solid.c:44
@@ -6856,10 +6866,6 @@ msgstr "Solide ruis"
 msgid "Create a random cloud-like texture"
 msgstr "Maak een willekeurige wolkachtige textuur"
 
-#: operations/common-gpl3+/oilify.c:28 operations/common-gpl3+/photocopy.c:26
-msgid "Mask Radius"
-msgstr "Maskerstraal"
-
 #: operations/common-gpl3+/oilify.c:29
 msgid ""
 "Radius of circle around pixel, can also be scaled per pixel by a buffer on "
@@ -6881,7 +6887,7 @@ msgid "Histogram size"
 msgstr "Histogramgrootte"
 
 #: operations/common-gpl3+/oilify.c:44
-msgid "Intensity Mode"
+msgid "Intensity mode"
 msgstr "Intensiteitsmodus"
 
 #: operations/common-gpl3+/oilify.c:45
@@ -6912,23 +6918,19 @@ msgstr "Per-pixel buffer om de parameter exponent te moduleren, verwacht een sch
 msgid "Oilify"
 msgstr "Olieverf"
 
-#: operations/common-gpl3+/oilify.c:632
+#: operations/common-gpl3+/oilify.c:631
 msgid "Emulate an oil painting"
 msgstr "Emuleer een olieverfschilderij"
 
-#: operations/common-gpl3+/photocopy.c:32
-msgid "Percent Black"
-msgstr "Percentage zwart"
-
 #: operations/common-gpl3+/photocopy.c:35
-msgid "Percent White"
+msgid "Percent white"
 msgstr "Procent wit"
 
 #: operations/common-gpl3+/photocopy.c:329
 msgid "Photocopy"
 msgstr "Fotokopie"
 
-#: operations/common-gpl3+/photocopy.c:332
+#: operations/common-gpl3+/photocopy.c:331
 msgid "Simulate color distortion produced by a copy machine"
 msgstr "Kleurvervorming van een fotokopieerapparaat nabootsen"
 
@@ -6948,7 +6950,7 @@ msgstr "Y-start van de gegenereerde buffer"
 msgid "Plasma"
 msgstr "Plasma"
 
-#: operations/common-gpl3+/plasma.c:451
+#: operations/common-gpl3+/plasma.c:450
 msgid "Creates an image filled with a plasma effect."
 msgstr "Creëert afbeelding met plasma-effect."
 
@@ -7013,7 +7015,7 @@ msgstr "Drempel rode ogen"
 msgid "Red Eye Removal"
 msgstr "Rode ogen verwijderen"
 
-#: operations/common-gpl3+/red-eye-removal.c:175
+#: operations/common-gpl3+/red-eye-removal.c:174
 msgid "Remove the red eye effect caused by camera flashes"
 msgstr "Het rode-ogeneffect veroorzaakt door cameraflits verwijderen"
 
@@ -7041,7 +7043,7 @@ msgstr "Behoud tegelbaarheid"
 msgid "Ripple"
 msgstr "Rimpeling"
 
-#: operations/common-gpl3+/ripple.c:264
+#: operations/common-gpl3+/ripple.c:263
 msgid "Displace pixels in a ripple pattern"
 msgstr "Verplaats pixels in een rimpelpatroon"
 
@@ -7133,7 +7135,7 @@ msgstr "Maximale verschuiving"
 msgid "Shift direction"
 msgstr "Verschuivingsrichting"
 
-#: operations/common-gpl3+/shift.c:149
+#: operations/common-gpl3+/shift.c:148
 msgid "Shift each row or column of pixels by a random amount"
 msgstr "Verschuif elke pixelrij of -kolom met een willekeurige waarde"
 
@@ -7330,19 +7332,14 @@ msgstr "Voeg textuur aan afbeelding toe, gelijkend op het canvas van een schilde
 
 #: operations/common-gpl3+/tile-glass.c:28
 #: operations/common-gpl3+/tile-paper.c:40
-msgid "Tile Width"
+msgid "Tile width"
 msgstr "Tegelbreedte"
 
-#: operations/common-gpl3+/tile-glass.c:34
-#: operations/common-gpl3+/tile-paper.c:47
-msgid "Tile Height"
-msgstr "Tegelhoogte"
-
-#: operations/common-gpl3+/tile-glass.c:233
+#: operations/common-gpl3+/tile-glass.c:228
 msgid "Tile Glass"
 msgstr "Glazen tegel"
 
-#: operations/common-gpl3+/tile-glass.c:239
+#: operations/common-gpl3+/tile-glass.c:233
 msgid "Simulate distortion caused by rectangular glass tiles"
 msgstr "Simuleert vervorming veroorzaakt door rechthoekige glazen tegels"
 
@@ -7627,7 +7624,7 @@ msgstr "Beperk vervorming tot de afbeelding."
 msgid "Waves"
 msgstr "Golven"
 
-#: operations/common-gpl3+/waves.c:201
+#: operations/common-gpl3+/waves.c:200
 msgid "Distort the image with waves"
 msgstr "Vervorm de afbeelding met golven"
 
@@ -7650,7 +7647,7 @@ msgstr "Straal (1,0 is de grootste cirkel die op de afbeelding past en 2,0 gaat 
 msgid "Whirl Pinch"
 msgstr "Golven en indrukken"
 
-#: operations/common-gpl3+/whirl-pinch.c:299
+#: operations/common-gpl3+/whirl-pinch.c:298
 msgid "Distort an image by whirling and pinching"
 msgstr "Vervorm een afbeelding met golven en drukkracht"
 
@@ -7695,7 +7692,7 @@ msgid "Direction of the effect"
 msgstr "Effectrichting"
 
 #: operations/common-gpl3+/wind.c:55
-msgid "Edge Affected"
+msgid "Edge affected"
 msgstr "Randbeïnvloeding"
 
 #: operations/common-gpl3+/wind.c:58
@@ -7858,11 +7855,6 @@ msgstr "URI"
 #: operations/core/load.c:32
 msgid "URI of file to load."
 msgstr "De URI van het te laden bestand."
-
-#: operations/core/load.c:34 operations/external/jpg-save.c:45
-#: operations/external/png-load.c:37 operations/external/png-save.c:35
-msgid "Object to supply image metadata"
-msgstr "Object om metadata van afbeeldingen te leveren"
 
 #: operations/core/load.c:372
 msgid ""
@@ -8076,11 +8068,11 @@ msgstr "i-quant-offset"
 msgid "me-subpel-quality"
 msgstr "me-subpel-quality"
 
-#: operations/external/ff-save.c:1244
+#: operations/external/ff-save.c:1262
 msgid "FFmpeg Frame Saver"
 msgstr "FFmpeg Frame Saver"
 
-#: operations/external/ff-save.c:1246
+#: operations/external/ff-save.c:1264
 msgid "FFmpeg video output sink"
 msgstr "FFmpeg video output"
 
@@ -8104,11 +8096,11 @@ msgstr "frame-delay"
 msgid "Delay in ms for last decoded frame"
 msgstr "Vertraging in ms voor laatst gedecodeerde frame"
 
-#: operations/external/gif-load.c:244
+#: operations/external/gif-load.c:248
 msgid "GIF File Loader"
 msgstr "GIF bestandslader"
 
-#: operations/external/gif-load.c:246
+#: operations/external/gif-load.c:250
 msgid "GIF image loader."
 msgstr "GIF afbeeldingslader."
 
@@ -8544,11 +8536,11 @@ msgstr "Gebruik de GdkPixbuf op geheugenlocatie <em>pixbuf</em>."
 msgid "URI for file to load."
 msgstr "URI van te laden bestand."
 
-#: operations/external/png-load.c:656
+#: operations/external/png-load.c:689
 msgid "PNG File Loader"
 msgstr "PNG bestandslader"
 
-#: operations/external/png-load.c:658
+#: operations/external/png-load.c:691
 msgid "PNG image loader."
 msgstr "PNG bestandslader."
 
@@ -8569,11 +8561,11 @@ msgstr "Bitdiepte"
 msgid "8 and 16 are the currently accepted values."
 msgstr "8 en 16 zijn momenteel geaccepteerde waarden."
 
-#: operations/external/png-save.c:418
+#: operations/external/png-save.c:449
 msgid "PNG File Saver"
 msgstr "PNG bestandsopslag"
 
-#: operations/external/png-save.c:420
+#: operations/external/png-save.c:451
 msgid "PNG image saver, using libpng"
 msgstr "PNG bestandsopslag, met gebruikmaking van libpng"
 
@@ -8581,11 +8573,11 @@ msgstr "PNG bestandsopslag, met gebruikmaking van libpng"
 msgid "URI of image to load."
 msgstr "URI van te laden bestand."
 
-#: operations/external/ppm-load.c:460
+#: operations/external/ppm-load.c:474
 msgid "PPM File Loader"
 msgstr "PPM bestandslader"
 
-#: operations/external/ppm-load.c:462
+#: operations/external/ppm-load.c:476
 msgid "PPM image loader."
 msgstr "PPM bestandslader."
 
@@ -8593,11 +8585,11 @@ msgstr "PPM bestandslader."
 msgid "Raw format"
 msgstr "RAW-formaat"
 
-#: operations/external/ppm-save.c:190
+#: operations/external/ppm-save.c:201
 msgid "PPM File Saver"
 msgstr "PPM bestandsopslag"
 
-#: operations/external/ppm-save.c:193
+#: operations/external/ppm-save.c:204
 msgid "PPM image saver (Portable pixmap saver.)"
 msgstr "PPM bestandsopslag (Portable pixmap saver)."
 
@@ -9172,7 +9164,7 @@ msgid ""
 "that is defined by the x and y properties. "
 msgstr "Reflecteer de afbeelding op een lijn, waarvan de richting bepaald is door de vector met x- en y-eigenschappen. "
 
-#: operations/transform/reset-origin.c:98
+#: operations/transform/reset-origin.c:99
 msgid "Translate top-left to 0,0."
 msgstr "Verplaats linksboven naar 0,0."
 
@@ -9368,7 +9360,7 @@ msgstr "Randband"
 msgid ""
 "Features size for edge band, used to compensate for loss of edges in detail "
 "pass."
-msgstr "Vooezien van grootte voor randband, gebruikt om verlies van randen in detail te compenseren."
+msgstr "Voorzien van grootte voor randband, gebruikt om verlies van randen in detail te compenseren."
 
 #: operations/workshop/band-tune.c:45
 msgid ""
@@ -9407,7 +9399,7 @@ msgstr "Mate van gladheid"
 msgid "Bilateral Box Filter"
 msgstr "Bilateraal boxfilter"
 
-#: operations/workshop/bilateral-filter-fast.c:510
+#: operations/workshop/bilateral-filter-fast.c:508
 msgid ""
 "A fast approximation of bilateral filter, using a box-filter instead of a "
 "gaussian blur."
@@ -9461,7 +9453,7 @@ msgstr "Normaliseer uitvoer naar het bereik [basis, basis + stap]"
 msgid "Connected Components"
 msgstr "Verbonden componenten"
 
-#: operations/workshop/connected-components.c:292
+#: operations/workshop/connected-components.c:284
 msgid ""
 "Fills each connected region of the input, separated from the rest of the "
 "input by a given color, with a unique color."
@@ -9773,15 +9765,12 @@ msgid "EPITROCHOID"
 msgstr "Epitrochoïde"
 
 #: operations/workshop/external/spyrograph.c:31
-msgid "Curve Type"
-msgstr "Type kromme"
-
 #: operations/workshop/external/spyrograph.c:34
 msgid "Curve type"
 msgstr "Type kromme"
 
 #: operations/workshop/external/spyrograph.c:36
-msgid "Fixed Gear Teeth"
+msgid "Fixed gear teeth"
 msgstr "Tanden vaste tandwiel"
 
 #: operations/workshop/external/spyrograph.c:37
@@ -9789,7 +9778,7 @@ msgid "Number of teeth in fixed gear."
 msgstr "Aantal tanden van vaste tandwiel."
 
 #: operations/workshop/external/spyrograph.c:40
-msgid "Moving Gear Teeth"
+msgid "Moving gear teeth"
 msgstr "Tanden bewegend tandwiel"
 
 #: operations/workshop/external/spyrograph.c:41
@@ -9800,7 +9789,7 @@ msgid ""
 msgstr "Aantal tanden van bewegend tandwiel. Straal van bewegend tandwiel, relatief ten opzichte van stilstaand tandwiel, wordt bepaald door de verhouding tussen het aantal tanden in de tandwielen."
 
 #: operations/workshop/external/spyrograph.c:46
-msgid "Hole Percent"
+msgid "Hole percent"
 msgstr "Percentage gat"
 
 #: operations/workshop/external/spyrograph.c:47
@@ -9940,7 +9929,7 @@ msgstr "Stop 5"
 msgid "Gradient Map"
 msgstr "Kleurverloopkaart"
 
-#: operations/workshop/gradient-map.c:245
+#: operations/workshop/gradient-map.c:243
 msgid "Applies a color gradient."
 msgstr "Past een kleurverloop toe."
 
@@ -10050,6 +10039,63 @@ msgid ""
 "Shuffles pixels, and quantization with neighbors to optimize dither, by "
 "shuffling neighboring pixels."
 msgstr "Verschuift beeldpunten en kwantiseert met buren om rasteren te optimaliseren, door het verschuiven van naburige beeldpunten."
+
+#~ msgid "Std. Dev."
+#~ msgstr "Std. Afw."
+
+#~ msgid "X Scale"
+#~ msgstr "X-schaal"
+
+#~ msgid "Y Scale"
+#~ msgstr "Y-schaal"
+
+#~ msgid "X Offset"
+#~ msgstr "X-verschuiving"
+
+#~ msgid "Y Offset"
+#~ msgstr "Y-verschuiving"
+
+#~ msgid "X Period"
+#~ msgstr "X-periode"
+
+#~ msgid "Y Period"
+#~ msgstr "Y-periode"
+
+#~ msgid "X Amplitude"
+#~ msgstr "X-amplitude"
+
+#~ msgid "Y Amplitude"
+#~ msgstr "Y-amplitude"
+
+#~ msgid "X Phase"
+#~ msgstr "X-fase"
+
+#~ msgid "Y Phase"
+#~ msgstr "Y-fase"
+
+#~ msgid "Background Color"
+#~ msgstr "Achtergrondkleur"
+
+#~ msgid "X Size"
+#~ msgstr "X-grootte"
+
+#~ msgid "Y Size"
+#~ msgstr "Y-grootte"
+
+#~ msgid "Mask Radius"
+#~ msgstr "Maskerstraal"
+
+#~ msgid "Percent Black"
+#~ msgstr "Percentage zwart"
+
+#~ msgid "Tile Height"
+#~ msgstr "Tegelhoogte"
+
+#~ msgid "Object to supply image metadata"
+#~ msgstr "Object om metadata van afbeeldingen te leveren"
+
+#~ msgid "Curve Type"
+#~ msgstr "Type kromme"
 
 #~ msgid ""
 #~ "Scalar threshold level (overridden if an auxiliary input buffer is "
