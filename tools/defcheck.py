@@ -56,7 +56,8 @@ ignore_sorting_errors = [
 have_errors = 0
 
 libextension   = ".so"
-command        = getenv("NM", default="nm") + " --defined-only --extern-only "
+#command        = getenv("NM", default="nm") + " --defined-only --extern-only "
+command        = getenv("NM", default="nm") + " -D "
 libprefix      = "lib"
 platform_linux = True
 
@@ -109,8 +110,18 @@ for df in def_files:
 
    nmsymbols = ""
    if platform_linux:
-      nmsymbols = nm
-   
+      #nmsymbols = nm
+
+      lines = nm.split(sep='\n')
+
+      for line in lines:
+         parts = line.split()
+         if len(parts) == 3 and parts[1].upper() in "TDBR":
+            nmsymbols += " 0 0 " + parts[2].split('@')[0]
+         elif len(parts) == 2 and parts[0].upper() in "TDBR":
+            #If the address is omitted for certain sections
+            nmsymbols += " 0 0 " + parts[1].split('@')[0]
+
    elif not shutil.which("dumpbin"): # Windows MSYS2
       # remove parts of objdump output we don't need: anything up to a few lines
       # after Export Table: ' Ordinal      RVA  Name'
