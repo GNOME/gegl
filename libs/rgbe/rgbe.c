@@ -1036,6 +1036,10 @@ rgbe_read_scanlines (rgbe_file *file)
   g_return_val_if_fail (file,            NULL);
   g_return_val_if_fail (file->scanlines, NULL);
 
+  if (file->header.x_axis.size > RGBE_MAX_SCANLINE_WIDTH ||
+      file->header.y_axis.size > RGBE_MAX_SCANLINE_WIDTH)
+    return NULL;
+
   pixels = pixel_cursor = g_new (gfloat, file->header.x_axis.size *
                                          file->header.y_axis.size *
                                          RGBE_NUM_RGBE);

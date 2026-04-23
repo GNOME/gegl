@@ -3820,6 +3820,9 @@ extern float ctx_target_fps;
 #endif
 #endif
 
+/* color management, slightly increases CtxColor struct size, should
+ * be disabled for microcontrollers.
+ */
 #if CTX_BABL
   #ifndef CTX_ENABLE_CM
     #define CTX_ENABLE_CM           1
@@ -3829,6 +3832,13 @@ extern float ctx_target_fps;
     #define CTX_ENABLE_CM           0
   #endif
 #endif
+
+/* if set to 1, then we avoid various fast paths
+ */
+#ifndef CTX_ONLY_GENERIC
+#define CTX_ONLY_GENERIC 0
+#endif
+
 
 // sdl included first causes sdl support to be enabled
 #ifndef CTX_SDL
@@ -3850,24 +3860,15 @@ extern float ctx_target_fps;
 #define CTX_FB 0
 #endif
 
+// kms support relies on drm headers being available
 #ifndef CTX_KMS
 #define CTX_KMS 0
 #endif
 
-
-/* whether the font rendering happens in backend or front-end of API, the
- * option is used set to 0 by the tool that converts ttf fonts to ctx internal
- * representation - both should be possible so that this tool can be made
- * into a TTF/OTF font import at runtime (perhaps even with live subsetting).
- *
- * improving this feature and making it runtime selectable could also
- * be part of encoding all text as beziers upon pdf export
- */
-
-#ifndef CTX_MAX_SCANLINES
-#define CTX_MAX_SCANLINES 2048
+// 3 5 or 15 - this is the AA used for worst-case scanlines; with crossings or edge start|ends
+#ifndef CTX_RASTERIZER_AA
+#define CTX_RASTERIZER_AA  5  // vertical-AA of CTX_ANTIALIAS_DEFAULT
 #endif
-
 
 /* subpixel-aa coordinates used in BITPACKing of drawlist
  *
@@ -3923,11 +3924,6 @@ extern float ctx_target_fps;
 #define CTX_RASTERIZER_BEZIER_FIXED_POINT 1
 #endif
 
-#ifndef CTX_SMALLER_RASTERIZER
-#define CTX_SMALLER_RASTERIZER 0
-#endif
-
-
 #ifndef CTX_FAST_FILL_RECT
 #define CTX_FAST_FILL_RECT 1    /*  matters most for tiny rectangles where it shaves overhead, for larger rectangles
                                     a ~15-20% performance win can be seen. */
@@ -3957,13 +3953,6 @@ extern float ctx_target_fps;
  */
 #ifndef CTX_1BIT_CLIP
 #define CTX_1BIT_CLIP             0
-#endif
-
-
-// fudge geomtry slightly with smoother blend between edges,
-// busting some SDF artifacts apparent in acute angles
-#ifndef CTX_RASTERIZER_BLUR_FUDGE
-#define CTX_RASTERIZER_BLUR_FUDGE 0
 #endif
 
 #ifndef CTX_GRADIENTS
@@ -4006,27 +3995,24 @@ extern float ctx_target_fps;
 #define CTX_FORMATTER       1
 #endif
 
+/* include the ctx svg path data superset parser
+ */
 #ifndef CTX_PARSER
 #define CTX_PARSER          1
 #endif
 
+/* keep track of current path (needed for some features/event handling)
+ */
 #ifndef CTX_CURRENT_PATH
 #define CTX_CURRENT_PATH    1
 #endif
 
+/* include terminal emulator engine in build
+ */
 #ifndef CTX_VT
 #define CTX_VT              0
 #endif
 
-/* when ctx_math is defined, which it is by default, we use ctx' own
- * implementations of math functions, instead of relying on math.h
- * the possible inlining gives us a slight speed-gain, and on
- * embedded platforms guarantees that we do not do double precision
- * math.
- */
-#ifndef CTX_MATH
-#define CTX_MATH            1  // use internal fast math for sqrt,sin,cos,atan2f etc.
-#endif
 
 #define ctx_log(fmt, ...)
 //#define ctx_log(str, a...) fprintf(stderr, str, ##a)
@@ -4046,37 +4032,38 @@ extern float ctx_target_fps;
 #define CTX_MAX_JOURNAL_SIZE 1024*1024*8
 #endif
 
+/* for really constrained micro controllers with only one context, use a static drawlist
+ */
 #ifndef CTX_DRAWLIST_STATIC
 #define CTX_DRAWLIST_STATIC  0
 #endif
 
+/* the starting size of rasterizer edge buffers
+ */
 #ifndef CTX_MIN_EDGE_LIST_SIZE
 #define CTX_MIN_EDGE_LIST_SIZE   1024*4
 #endif
 
 
-// 3 5 or 15 - this is the AA used for worst-case scanlines; with crossings or edge start|ends
-#ifndef CTX_RASTERIZER_AA
-#define CTX_RASTERIZER_AA  5  // vertical-AA of CTX_ANTIALIAS_DEFAULT
-#endif
-
-/* The maximum complexity of a single path
+/* The maximum complexity of a single path (shape) to be rasterizerd
  */
 #ifndef CTX_MAX_EDGE_LIST_SIZE
 #define CTX_MAX_EDGE_LIST_SIZE  CTX_MIN_EDGE_LIST_SIZE
 #endif
 
+/* The number of entries in the key-value data-base used for seldomly used
+ * graphics attributes, these are sparse and copy-on-write.
+ */
 #ifndef CTX_MAX_KEYDB
-#define CTX_MAX_KEYDB 64 // number of entries in keydb
-                         // entries are "copy-on-change" between states
+#define CTX_MAX_KEYDB 64 
 #endif
 
+/* Use 32bit integers rather than 16bit for segments during rasterization,
+ * this saves memory on micro controllers but the some clipping/overflow issues
+ * can occur with extreme geometry.
+ */
 #ifndef CTX_32BIT_SEGMENTS
-#define CTX_32BIT_SEGMENTS 1  // without this clipping problems might
-                              // occur when drawing far outside the viewport
-                              // or with large translate amounts
-                              // on micro controllers you most often will
-                              // want this set to 0
+#define CTX_32BIT_SEGMENTS 1  
 #endif
 
 /* whether we dither or not for gradients
@@ -4115,12 +4102,8 @@ extern float ctx_target_fps;
 #define CTX_INLINED_NORMAL_RGBA8  0
 #endif
 
-#undef CTX_RASTERIZER_SWITCH_DISPATCH
-#ifndef CTX_RASTERIZER_SWITCH_DISPATCH
-#define CTX_RASTERIZER_SWITCH_DISPATCH  1 // marginal improvement for some
-                                          // modes, maybe get rid of this?
-#endif
-
+/* Use a lut for u8->float conversions
+ */
 #ifndef CTX_U8_TO_FLOAT_LUT
 #define CTX_U8_TO_FLOAT_LUT  0
 #endif
@@ -4143,12 +4126,9 @@ extern float ctx_target_fps;
 /* enable CMYK rasterization targets
  */
 #ifndef CTX_ENABLE_CMYK
-#define CTX_ENABLE_CMYK         1
+#define CTX_ENABLE_CMYK         0
 #endif
 
-/* enable color management, slightly increases CtxColor struct size, should
- * be disabled for microcontrollers.
- */
 
 
 #ifndef CTX_EVENTS
@@ -4740,11 +4720,6 @@ extern float ctx_target_fps;
 #define CTX_ASSERT               0
 #endif
 
-
-#ifndef CTX_SCANBIN
-#define CTX_SCANBIN 0
-#endif
-
 #ifndef CTX_LOAD_FILE
 #define CTX_LOAD_FILE ___ctx_file_get_contents
 #endif
@@ -4819,14 +4794,6 @@ extern float ctx_target_fps;
 #define CTX_FONTGEN 0
 #endif
 
-#if 0
-#if CTX_FONT_ENGINE_HARFBUZZ==0
-#undef CTX_FONTGEN
-#define CTX_FONTGEN 0
-#endif
-#endif
-
-
 #ifndef CTX_DECOMPRESSOR
 #define CTX_DECOMPRESSOR 0
 #endif
@@ -4864,7 +4831,6 @@ extern float ctx_target_fps;
 #define CTX_NET 0
 #endif
 
-
 #ifndef CTX_VT_SCROLL_LIMIT
 #if CTX_PTY
 #define CTX_VT_SCROLL_LIMIT   (1<<12)
@@ -4890,7 +4856,6 @@ extern float ctx_target_fps;
 #define CTX_HOST 1
 #endif
 
-
 #ifndef CTX_SOCKETS
 #define CTX_SOCKETS 0
 #endif
@@ -4907,6 +4872,19 @@ extern float ctx_target_fps;
 #define CTX_MIPMAP 0
 #endif
 
+/* when ctx_math is defined, which it is by default, we use ctx' own
+ * implementations of math functions, instead of relying on math.h
+ * the possible inlining gives us a slight speed-gain, and on
+ * embedded platforms guarantees that we do not do double precision
+ * math.
+ */
+#ifndef CTX_MATH
+#define CTX_MATH            1  // use internal fast math for sqrt,sin,cos,atan2f etc.
+#endif
+
+/* the libc functions used by the ctx core, though not all of ctx are provided as inline
+ * variants they are all short and inlining them at each call site is what we want.
+ */
 #ifndef CTX_LIBC
 #define CTX_LIBC 1
 #endif
@@ -13495,6 +13473,12 @@ struct _CtxInternalFsEntry
 
 
 typedef void (*ctx_apply_coverage_fun) (unsigned int count, uint8_t * __restrict__ dst, uint8_t * __restrict__ src, uint8_t *coverage, CtxRasterizer *r, int x);
+typedef void (*ctx_apply_grads_fun) (CtxRasterizer *rasterizer,
+                            const int      minx,
+                            const int      maxx,
+                            uint8_t       *coverage,
+                            const int      is_winding,
+                            ctx_apply_coverage_fun apply_coverage);
 
 struct _CtxPixelFormatInfo
 {
@@ -13696,16 +13680,6 @@ struct _CtxRasterizer
   unsigned int shadow_active_edges;
   unsigned int shadow_edge_pos;
   int shadow_edges[CTX_MAX_EDGES*2];
-
-#if CTX_SCANBIN
-  uint32_t scan_bins[CTX_MAX_SCANLINES][CTX_MAX_EDGES];
-#if CTX_MAX_EDGES>255
-  uint32_t scan_bin_count[CTX_MAX_SCANLINES];
-#else
-  uint8_t scan_bin_count[CTX_MAX_SCANLINES];
-#endif
-#endif
-
 
 };
 
@@ -23367,22 +23341,12 @@ inline static int ctx_rasterizer_feed_edges_full (CtxRasterizer *rasterizer,
   int active_edges = rasterizer->active_edges;
   int horizontal_edges = 0;
 
-#if CTX_SCANBIN
-   int scan = scanline / CTX_FULL_AA;
-   int count = rasterizer->scan_bin_count[scan];
-   if (count)
-   for (int i = 0; i < count; i++)
-   {
-       int edge_pos = rasterizer->scan_bins[scan][i];
-       miny = entries[edge_pos].y0;
-#else
   int next_scanline = scanline + CTX_FULL_AA;
   unsigned int edge_pos = rasterizer->edge_pos;
   unsigned int edge_count = rasterizer->edge_list.count;
   while ((edge_pos < edge_count &&
          (miny=entries[edge_pos].y0)  <= next_scanline))
   {
-#endif
       int y1 = entries[edge_pos].y1;
       if ((active_edges < CTX_MAX_EDGES-2) &
         (y1 >= scanline))
@@ -23417,17 +23381,17 @@ inline static int ctx_rasterizer_feed_edges_full (CtxRasterizer *rasterizer,
 #endif
 #endif
 
-                int aa = 0;
-                if (max_vaa > 5)
-                aa = (dx_dy > CTX_RASTERIZER_AA_SLOPE_LIMIT3) 
-                   +  (dx_dy > CTX_RASTERIZER_AA_SLOPE_LIMIT5) 
-                   +  (dx_dy > CTX_RASTERIZER_AA_SLOPE_LIMIT15);
-                else
-                aa = (dx_dy > CTX_RASTERIZER_AA_SLOPE_LIMIT3) 
-                   +  (dx_dy > CTX_RASTERIZER_AA_SLOPE_LIMIT5) * (max_vaa>3);
-                
-                rasterizer->scan_aa[aa]++;
-                entries[index].aa = aa;
+                 int aa = 0;
+                 if (max_vaa > 5)
+                    aa = (dx_dy > CTX_RASTERIZER_AA_SLOPE_LIMIT3) 
+                       +  (dx_dy > CTX_RASTERIZER_AA_SLOPE_LIMIT5) 
+                       +  (dx_dy > CTX_RASTERIZER_AA_SLOPE_LIMIT15);
+                 else
+                    aa = (dx_dy > CTX_RASTERIZER_AA_SLOPE_LIMIT3) 
+                       +  (dx_dy > CTX_RASTERIZER_AA_SLOPE_LIMIT5) * (max_vaa>3);
+               
+                 entries[index].aa = aa;
+                 rasterizer->scan_aa[aa]++;
               }
 
               if ((miny > scanline) &
@@ -23448,20 +23412,16 @@ inline static int ctx_rasterizer_feed_edges_full (CtxRasterizer *rasterizer,
               horizontal_edges++;
             }
         }
-#if CTX_SCANBIN
-#else
       edge_pos++;
-#endif
   }
-#if CTX_SCANBIN==0
     rasterizer->edge_pos         = edge_pos;
-#endif
     rasterizer->active_edges     = active_edges;
     rasterizer->pending_edges    = pending_edges;
+
     if (active_edges + pending_edges == 0)
       return -1;
 
-    if (rasterizer->ending_edges|pending_edges|horizontal_edges)
+    if ((rasterizer->ending_edges != pending_edges)|horizontal_edges)
     {
       const unsigned int *scan_aa = rasterizer->scan_aa;
       int aa = scan_aa[3]?15:scan_aa[2]?5:3;
@@ -23639,18 +23599,11 @@ static CTX_INLINE float ctx_sdf_f (CtxSegment *entries, int u, int v, float sign
   float min_dist = 2048 * 15;
   for (int j = 0; j < edge_count; j++)
   {
-#if CTX_RASTERIZER_BLUR_FUDGE
-     float dist = dist_to_edge(u, v, entries, edges[j]);
-     min_dist = smin_cubic(min_dist,dist, blur/2);
-#else
      float sq_dist = dist_to_edge_sq(u, v, entries, edges[j]);
      min_dist_sq = ctx_minf(min_dist_sq, sq_dist);
-#endif
   }
 
-#if CTX_RASTERIZER_BLUR_FUDGE==0
   min_dist = ctx_sqrtf_fast (min_dist_sq);
-#endif
   return min_dist * sign;
 }
 static inline float ctx_erf2(float x)
@@ -23716,10 +23669,8 @@ ctx_rasterizer_generate_sdf (CtxRasterizer *rasterizer,
       int first     = graystart >> 8;
       int last      = grayend   >> 8;
 
-      if (first < minx)
-        first = minx;
-      if (last > maxx)
-        last = maxx;
+      first = ctx_maxi (first, minx);
+      last = ctx_mini (last, maxx);
 
       if (first <= last)
       {
@@ -24134,11 +24085,11 @@ ctx_rasterizer_apply_grads_generic (CtxRasterizer *rasterizer,
 
 inline static void
 ctx_rasterizer_apply_grads_RGBA8_copy_normal_color (CtxRasterizer *rasterizer,
-                                                                     const int      minx,
-                                                                     const int      maxx,
-                                                                     uint8_t       *coverage,
-                                                                     const int      is_winding,
-                                                                     ctx_apply_coverage_fun apply_coverage)
+                                                    const int      minx,
+                                                    const int      maxx,
+                                                    uint8_t       *coverage,
+                                                    const int      is_winding,
+                                                    ctx_apply_coverage_fun apply_coverage)
 {
   CTX_APPLY_GRAD_A
   uint32_t src_pix = ((uint32_t*)rasterizer_src)[0];
@@ -24178,7 +24129,7 @@ ctx_rasterizer_apply_grads_copy_normal_color (CtxRasterizer *rasterizer,
                                                                      const int      maxx,
                                                                      uint8_t       *coverage,
                                                                      const int      is_winding,
-                                                                     const CtxCovPath comp,
+                                              //                       const CtxCovPath comp,
                                                                      ctx_apply_coverage_fun apply_coverage)
 {
   CTX_APPLY_GRAD_A
@@ -24287,55 +24238,10 @@ ctx_rasterizer_apply_grads_RGBA8_over_fragment (CtxRasterizer *rasterizer,
 #undef CTX_APPLY_GRAD_C
 
 
-inline static void
-ctx_rasterizer_apply_grads (CtxRasterizer *rasterizer,
-                                             const int      minx,
-                                             const int      maxx,
-                                             uint8_t       *coverage,
-                                             const int      is_winding,
-                                             const CtxCovPath comp,
-                                             ctx_apply_coverage_fun apply_coverage)
-{
-  if (rasterizer->active_edges < 2) return;
-  switch (comp)
-  {
-#if CTX_RASTERIZER_SWITCH_DISPATCH
-    case CTX_COV_PATH_RGBA8_OVER:
-       ctx_rasterizer_apply_grads_RGBA8_over_normal_color (rasterizer, minx, maxx, coverage, is_winding, apply_coverage);
-       break;
-    case CTX_COV_PATH_RGBA8_COPY:
-       ctx_rasterizer_apply_grads_RGBA8_copy_normal_color (rasterizer, minx, maxx, coverage, is_winding, apply_coverage);
-       break;
-    case CTX_COV_PATH_RGB565_COPY:
-    case CTX_COV_PATH_RGBAF_COPY:
-    case CTX_COV_PATH_RGB332_COPY:
-    case CTX_COV_PATH_GRAY8_COPY:
-    case CTX_COV_PATH_RGB8_COPY:
-    case CTX_COV_PATH_GRAYA8_COPY:
-    case CTX_COV_PATH_GRAYAF_COPY:
-    case CTX_COV_PATH_CMYKAF_COPY:
-    case CTX_COV_PATH_CMYK8_COPY:
-    case CTX_COV_PATH_CMYKA8_COPY:
-       ctx_rasterizer_apply_grads_copy_normal_color (rasterizer, minx, maxx, coverage, is_winding, comp, apply_coverage);
-       break;
-    case CTX_COV_PATH_RGBA8_COPY_FRAGMENT:
-       ctx_rasterizer_apply_grads_RGBA8_copy_fragment (rasterizer, minx, maxx, coverage, is_winding, apply_coverage);
-       break;
-    case CTX_COV_PATH_RGBA8_OVER_FRAGMENT:
-       ctx_rasterizer_apply_grads_RGBA8_over_fragment (rasterizer, minx, maxx, coverage, is_winding, apply_coverage);
-       break;
-#endif
-     default:
-        ctx_rasterizer_apply_grads_generic (rasterizer, minx, maxx, coverage, is_winding, apply_coverage);
-  }
-}
-
 static inline void
 ctx_rasterizer_reset_soft (CtxRasterizer *rasterizer)
 {
-#if CTX_SCANBIN==0
   rasterizer->edge_pos        =   
-#endif
   rasterizer->shadow_edge_pos =   
   rasterizer->scanline        = 0;
   //rasterizer->comp_op       = NULL; // keep comp_op cached 
@@ -24351,9 +24257,7 @@ _ctx_rasterizer_reset (CtxRasterizer *rasterizer)
   rasterizer->first_edge = -1;
   rasterizer->has_prev        =   
   rasterizer->edge_list.count =    // ready for new edges
-#if CTX_SCANBIN==0
   rasterizer->edge_pos        =   
-#endif
   rasterizer->shadow_edge_pos =   
   rasterizer->scanline        = 0;
   if (CTX_LIKELY(!rasterizer->preserve))
@@ -24368,7 +24272,6 @@ _ctx_rasterizer_reset (CtxRasterizer *rasterizer)
   //     nonchanging
 }
 
-#if CTX_SCANBIN==0
 static CTX_INLINE int ctx_compare_edge (const void *ap, int by0)
 {
   return ((const CtxSegment *) ap)->y0 - by0;
@@ -24421,7 +24324,6 @@ static CTX_INLINE void ctx_sort_edges (CtxRasterizer *rasterizer)
 {
   ctx_edge_qsort ((CtxSegment*)& (rasterizer->edge_list.entries[0]), 0, rasterizer->edge_list.count-1);
 }
-#endif
 
 
 static inline void
@@ -24431,7 +24333,40 @@ ctx_rasterizer_rasterize_edges2 (CtxRasterizer *rasterizer, const int fill_rule,
   rasterizer->active_edges    =   0;
   CtxGState     *gstate     = &rasterizer->state->gstate;
   const int      is_winding  = fill_rule == CTX_FILL_RULE_WINDING;
-  const CtxCovPath comp = rasterizer->comp;
+
+  ctx_apply_grads_fun apply_grads = ctx_rasterizer_apply_grads_generic;
+#if CTX_ONLY_GENERIC==0
+  switch (rasterizer->comp)
+  {
+    case CTX_COV_PATH_RGBA8_OVER:
+       apply_grads = ctx_rasterizer_apply_grads_RGBA8_over_normal_color;
+       break;
+    case CTX_COV_PATH_RGBA8_COPY:
+       apply_grads = ctx_rasterizer_apply_grads_RGBA8_copy_normal_color;
+       break;
+    case CTX_COV_PATH_RGB565_COPY:
+    case CTX_COV_PATH_RGBAF_COPY:
+    case CTX_COV_PATH_RGB332_COPY:
+    case CTX_COV_PATH_GRAY8_COPY:
+    case CTX_COV_PATH_RGB8_COPY:
+    case CTX_COV_PATH_GRAYA8_COPY:
+    case CTX_COV_PATH_GRAYAF_COPY:
+    case CTX_COV_PATH_CMYKAF_COPY:
+    case CTX_COV_PATH_CMYK8_COPY:
+    case CTX_COV_PATH_CMYKA8_COPY:
+       apply_grads = ctx_rasterizer_apply_grads_copy_normal_color;
+       break;
+    case CTX_COV_PATH_RGBA8_COPY_FRAGMENT:
+       apply_grads = ctx_rasterizer_apply_grads_RGBA8_copy_fragment;
+       break;
+    case CTX_COV_PATH_RGBA8_OVER_FRAGMENT:
+       apply_grads = ctx_rasterizer_apply_grads_RGBA8_over_fragment;
+       break;
+     default:
+  }
+
+#endif
+
   uint8_t  *dst         = ((uint8_t *) rasterizer->buf);
   int       scan_start  = rasterizer->blit_y * CTX_FULL_AA;
   int       scan_end    = scan_start + (rasterizer->blit_height - 1) * CTX_FULL_AA;
@@ -24445,12 +24380,10 @@ ctx_rasterizer_rasterize_edges2 (CtxRasterizer *rasterizer, const int fill_rule,
 
   uint8_t *rasterizer_src = rasterizer->color;
 
-  if (maxx > blit_max_x - 1)
-    { maxx = blit_max_x - 1; }
-
+  maxx = ctx_mini (maxx, blit_max_x - 1);
   minx = ctx_maxi (gstate->clip_min_x, minx);
   maxx = ctx_mini (gstate->clip_max_x, maxx);
-  minx *= (minx>0);
+  minx *= (uint32_t)(minx>0);
  
   int pixs = maxx - minx + 1;
   if (pixs <= 0)
@@ -24487,30 +24420,12 @@ ctx_rasterizer_rasterize_edges2 (CtxRasterizer *rasterizer, const int fill_rule,
     /* not affecting this rasterizers scanlines */
     return;
   }
+
   rasterizer->scan_aa[1]=
   rasterizer->scan_aa[2]=
   rasterizer->scan_aa[3]=0;
 
-#if CTX_SCANBIN
-  int ss = scan_start/CTX_FULL_AA;
-  int se = scan_end/CTX_FULL_AA;
-  if (ss < 0)ss =0;
-  if (se >= CTX_MAX_SCANLINES) se = CTX_MAX_SCANLINES-1;
-
-  for (int i = ss; i < se; i++)
-    rasterizer->scan_bin_count[i]=0;
-
-  for (unsigned int i = 0; i < rasterizer->edge_list.count; i++)
-  {
-    CtxSegment *segment = & ((CtxSegment*)rasterizer->edge_list.entries)[i];
-    int scan = (segment->y0-CTX_FULL_AA+2) / CTX_FULL_AA;
-    if (scan < ss) scan = ss;
-    if (scan < se)
-      rasterizer->scan_bins[scan][rasterizer->scan_bin_count[scan]++]=i;
-  }
-#else
   ctx_sort_edges (rasterizer);
-#endif
 
   rasterizer->scanline = scan_start;
 
@@ -24536,7 +24451,8 @@ ctx_rasterizer_rasterize_edges2 (CtxRasterizer *rasterizer, const int fill_rule,
           memset (coverage, 0, pixs);
           if (allow_direct)
           {
-            ctx_rasterizer_apply_grads (rasterizer, minx, maxx, coverage, is_winding, comp, apply_coverage);
+	    if (rasterizer->active_edges > 1)
+              apply_grads (rasterizer, minx, maxx, coverage, is_winding, apply_coverage);
             rasterizer->scanline += CTX_AA_HALFSTEP;
             ctx_rasterizer_increment_edges (rasterizer, CTX_FULL_AA);
     
@@ -24548,7 +24464,7 @@ ctx_rasterizer_rasterize_edges2 (CtxRasterizer *rasterizer, const int fill_rule,
           ctx_rasterizer_increment_edges (rasterizer, CTX_FULL_AA);
           break;
         }
-#if 1
+#if CTX_ONLY_GENERIC==0
         case 3:
         { /* level of oversampling based on lowest steepness edges */
           int raa=3;
@@ -24609,7 +24525,7 @@ ctx_rasterizer_rasterize_edges2 (CtxRasterizer *rasterizer, const int fill_rule,
           }
         }
         break;
-#else // generic code for the above
+#else 
         default:
         { /* level of oversampling based on lowest steepness edges */
           const int raa=aa;
@@ -24732,23 +24648,19 @@ CTX_SIMD_SUFFIX (ctx_rasterizer_rasterize_edges) (CtxRasterizer *rasterizer, con
 #endif
          );
 #else
-  const int allow_direct = 0;  // temporarily disabled
-                               // we seem to overrrun our scans
+  const int allow_direct = 0;
 #endif
 
-#if 1
-    if (allow_direct)
-    {
-      if (fill_rule) ctx_rasterizer_rasterize_edges2 (rasterizer, 1, 1);
-      else           ctx_rasterizer_rasterize_edges2 (rasterizer, 0, 1);
-    }
-    else
-    {
-      if (fill_rule) ctx_rasterizer_rasterize_edges2 (rasterizer, 1, 0);
-      else           ctx_rasterizer_rasterize_edges2 (rasterizer, 0, 0);
-    }
-#else
-#endif
+     if (allow_direct)
+     {
+       if (fill_rule) ctx_rasterizer_rasterize_edges2 (rasterizer, 1, 1);
+       else           ctx_rasterizer_rasterize_edges2 (rasterizer, 0, 1);
+     }
+     else
+     {
+       if (fill_rule) ctx_rasterizer_rasterize_edges2 (rasterizer, 1, 0);
+       else           ctx_rasterizer_rasterize_edges2 (rasterizer, 0, 0);
+     }
 }
 #else
 
@@ -25989,10 +25901,10 @@ ctx_rasterizer_stroke (CtxRasterizer *rasterizer)
               y = segment->y1 * 1.0f/ CTX_FULL_AA;
               float dx = x - prev_x;
               float dy = y - prev_y;
-              float length = ctx_hypotf (dx, dy);
-              if ((length>CTX_MIN_STROKE_LEN) | (segment->code == CTX_NEW_EDGE))
+              float length_sq = (dx*dx+dy*dy);
+              if ((length_sq > (CTX_MIN_STROKE_LEN * CTX_MIN_STROKE_LEN)) | (segment->code == CTX_NEW_EDGE))
                 {
-                  float recip_length = 1.0f/length;
+                  float recip_length = 1.0f/ctx_sqrtf (length_sq);
                   dx = dx * recip_length * half_width_x;
                   dy = dy * recip_length * half_width_y;
                   if (segment->code == CTX_NEW_EDGE)
@@ -26017,10 +25929,10 @@ foo:
               y = segment->y1 * 1.0f / CTX_FULL_AA;
               dx = x - prev_x;
               dy = y - prev_y;
-              float length = ctx_hypotf (dx, dy);
-              if (length>CTX_MIN_STROKE_LEN)
+              float length_sq = dx * dx  +dy * dy;
+              if (length_sq > CTX_MIN_STROKE_LEN * CTX_MIN_STROKE_LEN)
                 {
-                  float recip_length = 1.0f/length;
+                  float recip_length = 1.0f/ctx_sqrtf (length_sq);
                   dx = dx * recip_length * half_width_x;
                   dy = dy * recip_length * half_width_y;
                   _ctx_rasterizer_line_to (rasterizer, prev_x-dy, prev_y+dx);
@@ -26037,10 +25949,10 @@ foo:
                   y = segment->y0 * 1.0f / CTX_FULL_AA;
                   dx = x - prev_x;
                   dy = y - prev_y;
-                  length = ctx_hypotf (dx, dy);
-                  if (CTX_LIKELY(length>CTX_MIN_STROKE_LEN))
+                  length_sq = dx*dx + dy * dy;
+                  if (CTX_LIKELY(length_sq>CTX_MIN_STROKE_LEN * CTX_MIN_STROKE_LEN))
                     {
-                      float recip_length = 1.0f/length;
+                      float recip_length = 1.0f/ctx_sqrtf (length_sq);
                       dx = dx * recip_length * half_width_x;
                       dy = dy * recip_length * half_width_y;
                       _ctx_rasterizer_line_to (rasterizer, prev_x-dy, prev_y+dx);
@@ -45984,9 +45896,8 @@ static int ctx_parser_resolve_command (CtxParser *parser, const uint8_t *str)
       case 'r': return ctx_parser_set_command (parser, CTX_FILL_RULE);
     }
   }
-
-  if (str[0] && str[1])
-    {
+  else if (str[0] && str[1])
+  {
       uint32_t str_hash;
       /* trim ctx_ and CTX_ prefix */
       if ( (str[0] == 'c' && str[1] == 't' && str[2] == 'x' && str[3] == '_') ||
@@ -46276,11 +46187,11 @@ static int ctx_parser_resolve_command (CtxParser *parser, const uint8_t *str)
           default:
             ret = str_hash;
         }
-    }
-  if (ret == CTX_CLOSE_PATH2)
-   {
+  }
+  else if (ret == CTX_CLOSE_PATH2)
+  {
      ret = CTX_CLOSE_PATH;
-   }
+  }
 
   return ctx_parser_set_command (parser, (CtxCode) ret);
 }
@@ -47353,13 +47264,9 @@ const char *ctx_resource_parse_header (CtxResource *r,
   if (p[0] == '\033')
     p++;
 
-  if (p[0] != '_')
+  if (p[0] != '_' || p[1] != '_')
     return NULL;
-  p++;
-
-  if (p[0] != '_')
-    return NULL;
-  p++;
+  p+=2;
 
   r->id = ctx_atoi(p);
   while (p[0] >= '0' && p[0] <= '9')
@@ -49589,7 +49496,7 @@ static inline void murmur3_32_process(CtxMurmur *murmur, const uint8_t* key, siz
         key += sizeof(uint32_t);
         h ^= murmur_32_scramble(k);
         h = (h << 13) | (h >> 19);
-        h = h * 5 + 0xe6546b64;
+	h = (h << 2) + h + 0xe6546b64; // slightly better codegen for mcus
     }
     /* Read the rest. */
     k = 0;
