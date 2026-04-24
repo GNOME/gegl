@@ -49,8 +49,19 @@ extern "C" {
 #include <stdint.h>
 #include <stdbool.h>
 #include <string.h>
+#ifndef _WIN32
 #include <strings.h>
+#endif
 #include <stdio.h>
+
+#ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#define usleep(usec) Sleep((usec) / 1000)
+#include <basetsd.h>
+typedef SSIZE_T ssize_t;
+typedef int pid_t;
+#endif
 
 /*** h2: context management */
 
@@ -41022,7 +41033,71 @@ int vt_special_glyph (Ctx *ctx, VT *vt, float x, float y, float cw, float ch, in
 
 
 #if !__COSMOPOLITAN__
+#ifndef _WIN32
 #include <sys/time.h>
+#else
+#include <time.h>
+#include <winsock2.h>
+#if defined(_MSC_VER) || defined(_MSC_EXTENSIONS)
+#define DELTA_EPOCH_IN_MICROSECS 11644473600000000Ui64
+#else
+#define DELTA_EPOCH_IN_MICROSECS 11644473600000000ULL
+#endif
+
+struct timezone
+{
+  int tz_minuteswest; /* minutes W of Greenwich */
+  int tz_dsttime;     /* type of dst correction */
+};
+
+static int
+gettimeofday (struct timeval *tv, struct timezone *tz)
+{
+  FILETIME         ft;
+  unsigned __int64 tmpres = 0;
+  static int       tzflag = 0;
+
+  if (NULL != tv)
+    {
+      GetSystemTimeAsFileTime (&ft);
+
+      tmpres |= ft.dwHighDateTime;
+      tmpres <<= 32;
+      tmpres |= ft.dwLowDateTime;
+
+      tmpres /= 10; /*convert into microseconds*/
+      /*converting file time to unix epoch*/
+      tmpres -= DELTA_EPOCH_IN_MICROSECS;
+      tv->tv_sec  = (long) (tmpres / 1000000UL);
+      tv->tv_usec = (long) (tmpres % 1000000UL);
+    }
+
+  if (NULL != tz)
+    {
+#ifdef _UCRT
+      long timezone_val;
+      int  daylight_val;
+#endif
+
+      if (! tzflag)
+        {
+          _tzset ();
+          tzflag++;
+        }
+#ifndef _UCRT
+      tz->tz_minuteswest = _timezone / 60;
+      tz->tz_dsttime     = _daylight;
+#else
+      _get_timezone (&timezone_val);
+      tz->tz_minuteswest = timezone_val / 60;
+      _get_daylight (&daylight_val);
+      tz->tz_dsttime     = daylight_val;
+#endif
+    }
+
+  return 0;
+}
+#endif
 #endif
 
 #ifdef EMSCRIPTEN
@@ -52339,16 +52414,16 @@ static int ctx_render_cb (CtxCbBackend *backend_cb,
              uint8_t *inp2 = inp1 + rowstride;
 
              #define INP(pos)  (prev0[pos]+prev1[pos]+prev2[pos])
-             #define IN(pos)   (inp0[pos]+inp1[pos]+inp2[pos])
-             #define NEXT(pos) ((x<width)?IN(pos+12):IN(pos))
-             #define C(u)  ((u < 0) ? (INP(u + 12)) :  ((u >= 12) ? (NEXT(u-12)) : IN(u)))
+             #define INC(pos)   (inp0[pos]+inp1[pos]+inp2[pos])
+             #define NEXT(pos) ((x<width)?INC(pos+12):INC(pos))
+             #define C(u)  ((u < 0) ? (INP(u + 12)) :  ((u >= 12) ? (NEXT(u-12)) : INC(u)))
 	        
              out[0] = (C(-8) * w[0] + C(-4) * w[1] + C(0) * w[2] + C(4) * w[3] + C(8)  * w[4]) >> 12;
              out[1] = (C(-7) * w[0] + C(1)  * w[1] + C(5) * w[2] + C(9) * w[3] + C(13) * w[4]) >> 12;
              out[2] = (C(-2) * w[0] + C(2)  * w[1] + C(6) * w[2] + C(10)* w[3] + C(14) * w[4]) >> 12;
 
              #undef C
-             #undef IN
+             #undef INC
              #undef INP
              #undef NEXT
 
@@ -76847,7 +76922,9 @@ void vt_set_ctx (VT *vt, Ctx *ctx, CtxClient *client)
 #endif
 
 #if !__COSMOPOLITAN__
+#ifndef _WIN32
 #include <unistd.h>
+#endif
 #include <assert.h>
 #include <stdlib.h>
 #include <stdio.h>
