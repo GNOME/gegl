@@ -1,6 +1,6 @@
 
 
-gegl_operations += shared_library('voroni_diagram',
+gegl_operations += shared_module('voroni_diagram',
   'voronoi-diagram.cc',
     include_directories: [ rootInclude, geglInclude, seamlessInclude, ],
     dependencies: [
@@ -19,7 +19,7 @@ gegl_operations += shared_library('voroni_diagram',
 
 
 if lua.found()
-  gegl_operations += shared_library('gluas',
+  gegl_operations += shared_module('gluas',
     'gluas.c',
     include_directories: [ rootInclude, geglInclude, seamlessInclude, ],
     dependencies: [
@@ -39,7 +39,7 @@ if lua.found()
 endif
 
 if lensfun.found()
-  gegl_operations += shared_library('lens-correct',
+  gegl_operations += shared_module('lens-correct',
     'lens-correct.c',
     include_directories: [ rootInclude, geglInclude, seamlessInclude, ],
     dependencies: [
@@ -59,7 +59,7 @@ if lensfun.found()
 endif
 
 if cairo.found()
-  gegl_operations += shared_library('line-profile',
+  gegl_operations += shared_module('line-profile',
     'line-profile.c',
     include_directories: [ rootInclude, geglInclude, seamlessInclude, ],
     dependencies: [
@@ -79,7 +79,7 @@ if cairo.found()
 endif
 
 if libv4l2.found()
-  gegl_operations += shared_library('v4l2',
+  gegl_operations += shared_module('v4l2',
     'v4l2.c',
     include_directories: [ rootInclude, geglInclude, seamlessInclude, ],
     dependencies: [
@@ -99,7 +99,7 @@ if libv4l2.found()
 endif
 
 if maxflow.found()
-  gegl_operations += shared_library('paint-select',
+  gegl_operations += shared_module('paint-select',
     'paint-select.cc',
     include_directories: [ rootInclude, geglInclude, seamlessInclude, ],
     dependencies: [
@@ -118,7 +118,7 @@ if maxflow.found()
   )
 endif
 
-gegl_operations+=shared_library('ctx-script',
+gegl_operations+=shared_module('ctx-script',
    'ctx-script.c', include_directories: [rootInclude, geglInclude],
    dependencies:[babl,glib,gobject,math,libgegl_ctx],
    link_with:[gegl_lib],

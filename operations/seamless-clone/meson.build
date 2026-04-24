@@ -5,7 +5,7 @@ seamless_clone_libs = [
 ]
 
 foreach lib : seamless_clone_libs
-  gegl_operations += shared_library(lib,
+  gegl_operations += shared_module(lib,
     files(lib + '.c'),
     include_directories: [ rootInclude, geglInclude, seamlessInclude, ],
     dependencies: [

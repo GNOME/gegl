@@ -15,7 +15,7 @@ gegl_transformops_sources = files(
   'translate.c',
 )
 
-gegl_transformops = shared_library('transformops',
+gegl_transformops = shared_module('transformops',
   gegl_transformops_sources,
   include_directories: [ rootInclude, geglInclude, ],
   dependencies: [
@@ -36,7 +36,7 @@ gegl_operations += gegl_transformops
 
 if host_cpu_family == 'x86_64'
 
-  gegl_transformops_x86_64_v2 = shared_library('gegl-transformops-x86_64-v2',
+  gegl_transformops_x86_64_v2 = shared_module('gegl-transformops-x86_64-v2',
     gegl_transformops_sources, opencl_headers,
     include_directories: [ rootInclude, geglInclude, ],
     dependencies: [ babl, glib, json_glib, math, ],
@@ -48,7 +48,7 @@ if host_cpu_family == 'x86_64'
   )
   gegl_operations += gegl_transformops_x86_64_v2
   
-  gegl_transformops_x86_64_v3 = shared_library('gegl-transformops-x86_64-v3',
+  gegl_transformops_x86_64_v3 = shared_module('gegl-transformops-x86_64-v3',
     gegl_transformops_sources, opencl_headers,
     include_directories: [ rootInclude, geglInclude, ],
     dependencies: [ babl, glib, json_glib, math, ],
@@ -62,7 +62,7 @@ if host_cpu_family == 'x86_64'
 
 elif host_cpu_family == 'arm'
 
-  gegl_transformops_arm_neon = shared_library('gegl-transformops-arm-neon',
+  gegl_transformops_arm_neon = shared_module('gegl-transformops-arm-neon',
     gegl_transformops_sources, opencl_headers,
     include_directories: [ rootInclude, geglInclude, ],
     dependencies: [ babl, glib, json_glib, math, ],
