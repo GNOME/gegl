@@ -26096,7 +26096,7 @@ foo:
 #endif
   if (preserved)
     {
-      memcpy (rasterizer->edge_list.entries, temp, sizeof (temp) );
+      memcpy (rasterizer->edge_list.entries, temp, sizeof (CtxSegment) * count);
       rasterizer->edge_list.count = count;
       rasterizer->preserve = 0;
     }
@@ -57233,6 +57233,7 @@ static int _ctx_resolve_font (const char *name)
 #endif
 
   char *temp = (char *) alloca (sizeof (char) * (size_t) (ctx_strlen (name) + 8));
+  memset(temp,0, (sizeof (char) * (size_t) (ctx_strlen (name) + 8)));
   /* first we look for exact */
   for (int i = 0; ret < 0 && i < ctx_font_count; i ++)
     {
@@ -57251,21 +57252,18 @@ static int _ctx_resolve_font (const char *name)
   /* then we normalize some names */
   if (!ctx_strncmp (name, "Helvetica", 9))
   {
-     memset(temp,0,sizeof(temp));
      ctx_strncpy (temp, name + 4, sizeof(temp)-1);
      memcpy (temp, "Arrrr", 5);  // this matches Arial and Arimo
      name = temp;
   }
   else if (!ctx_strncmp (name, "Monospace", 9))
   {
-     memset(temp,0,sizeof(temp));
      ctx_strncpy (temp, name + 2, sizeof(temp)-1);
      memcpy (temp, "Courier", 7); 
      name = temp;
   }
   else if (!ctx_strncmp (name, "Mono ", 5))
   {
-    memset(temp,0,sizeof(temp));
     ctx_strncpy (temp+ 3, name, sizeof(temp)-1-3);
     memcpy (temp, "Courier ", 8); 
     name = temp;
