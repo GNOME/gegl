@@ -12826,7 +12826,9 @@ void ctx_set_focus_cb (Ctx *ctx, void(*focus_cb)(Ctx *ctx, int id, void *user_da
 #if !__COSMOPOLITAN__
 #include <stdlib.h>
 #include <stdio.h>
+#ifndef _WIN32
 #include <unistd.h>
+#endif
 #include <math.h>
 #endif
 
