@@ -90,7 +90,7 @@ struct _GeglOperationClass
                                   in the sub-classes of these.
                                 */
   guint           cache_policy:2; /* cache policy for this operation */
-  guint64         bit_pad:58;
+  unsigned long long         bit_pad:58;
 
   /* attach this operation with a GeglNode, override this if you are creating a
    * GeglGraph, it is already defined for Filters/Sources/Composers.

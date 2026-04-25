@@ -28,7 +28,7 @@ gegl_workshop_sources += custom_target('module_workshop.c',
   capture: true
 )
 
-gegl_workshop = shared_library('gegl-workshop',
+gegl_workshop = shared_module('gegl-workshop',
   gegl_workshop_sources,
   include_directories: [ rootInclude, geglInclude],
   dependencies: [

@@ -35,7 +35,7 @@ gegl_generated_sources += custom_target('module_generated_gpl3.c',
   capture: true
 )
 
-gegl_generated = shared_library('gegl-generated',
+gegl_generated = shared_module('gegl-generated',
   gegl_generated_sources,
   include_directories: [ rootInclude, geglInclude, ],
   dependencies: [
@@ -59,7 +59,7 @@ gegl_operations += gegl_generated
 
 if host_cpu_family == 'x86_64'
 
-  gegl_generated_x86_64_v2 = shared_library('gegl-generated-x86_64-v2',
+  gegl_generated_x86_64_v2 = shared_module('gegl-generated-x86_64-v2',
     gegl_generated_sources, opencl_headers,
     include_directories: [ rootInclude, geglInclude, ],
     dependencies: [ babl, glib, json_glib, math, ],
@@ -71,7 +71,7 @@ if host_cpu_family == 'x86_64'
   )
   gegl_operations += gegl_generated_x86_64_v2
   
-  gegl_generated_x86_64_v3 = shared_library('gegl-generated-x86_64-v3',
+  gegl_generated_x86_64_v3 = shared_module('gegl-generated-x86_64-v3',
     gegl_generated_sources, opencl_headers,
     include_directories: [ rootInclude, geglInclude, ],
     dependencies: [ babl, glib, json_glib, math, ],
@@ -85,7 +85,7 @@ if host_cpu_family == 'x86_64'
 
 elif host_cpu_family == 'arm'
 
-  gegl_generated_arm_neon = shared_library('gegl-generated-arm-neon',
+  gegl_generated_arm_neon = shared_module('gegl-generated-arm-neon',
     gegl_generated_sources, opencl_headers,
     include_directories: [ rootInclude, geglInclude, ],
     dependencies: [ babl, glib, json_glib, math, ],

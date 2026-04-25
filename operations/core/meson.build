@@ -19,7 +19,7 @@ gegl_core_sources += custom_target('module_core.c',
   capture: true
 )
 
-gegl_core = shared_library('gegl-core',
+gegl_core = shared_module('gegl-core',
   gegl_core_sources,
   include_directories: [ rootInclude, geglInclude, ],
   dependencies: [

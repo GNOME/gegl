@@ -61,7 +61,7 @@ gegl_common_gpl3_sources += custom_target('module_common_gpl3.c',
   capture: true
 )
 
-gegl_common_gpl3 = shared_library('gegl-common-gpl3',
+gegl_common_gpl3 = shared_module('gegl-common-gpl3',
   [ gegl_common_gpl3_sources, opencl_headers, ],
   include_directories: [ rootInclude, geglInclude, ],
   dependencies: [
@@ -85,7 +85,7 @@ gegl_operations += gegl_common_gpl3
 
 if host_cpu_family == 'x86_64'
 
-  gegl_common_gpl3_x86_64_v2 = shared_library('gegl-common-gpl3-x86_64-v2',
+  gegl_common_gpl3_x86_64_v2 = shared_module('gegl-common-gpl3-x86_64-v2',
     gegl_common_gpl3_sources,
     opencl_headers,
     include_directories: [ rootInclude, geglInclude, ],
@@ -105,7 +105,7 @@ if host_cpu_family == 'x86_64'
   )
   gegl_operations += gegl_common_gpl3_x86_64_v2
   
-  gegl_common_gpl3_x86_64_v3 = shared_library('gegl-common-gpl3-x86_64-v3',
+  gegl_common_gpl3_x86_64_v3 = shared_module('gegl-common-gpl3-x86_64-v3',
     gegl_common_gpl3_sources,
     opencl_headers,
     include_directories: [ rootInclude, geglInclude, ],
@@ -127,7 +127,7 @@ if host_cpu_family == 'x86_64'
 
 elif host_cpu_family == 'arm'
 
-  gegl_common_gpl3_arm_neon = shared_library('gegl-common-gpl3-arm-neon',
+  gegl_common_gpl3_arm_neon = shared_module('gegl-common-gpl3-arm-neon',
     gegl_common_gpl3_sources,
     opencl_headers,
     include_directories: [ rootInclude, geglInclude, ],

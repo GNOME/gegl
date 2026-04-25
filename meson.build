@@ -330,7 +330,7 @@ w3m               = find_program('w3m',
 config.set('HAVE_UNISTD_H',    cc.has_header('unistd.h'))
 config.set('HAVE_EXECINFO_H',  cc.has_header('execinfo.h'))
 config.set('HAVE_FSYNC',       cc.has_function('fsync'))
-config.set('HAVE_MALLOC_TRIM', cc.has_function('malloc_trim'))
+config.set('HAVE_MALLOC_TRIM', cc.has_function('malloc_trim') and host_machine.system() != 'emscripten')
 config.set('HAVE_STRPTIME',    cc.has_function('strptime'))
 
 math    = cc.find_library('m',  required: false)
@@ -665,7 +665,7 @@ subdir('po')
 subdir('docs')
 
 
-if not os_osx and host_cpu_family != 'x86'
+if not os_osx and host_machine.system() != 'emscripten'
   nm = find_program('nm', required: false)
 
   # Verify .def files for Windows linking.
