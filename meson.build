@@ -328,7 +328,7 @@ w3m               = find_program('w3m',
 # Required Dependencies
 
 config.set('HAVE_UNISTD_H',    cc.has_header('unistd.h'))
-config.set('HAVE_EXECINFO_H',  cc.has_header('execinfo.h'))
+config.set('HAVE_EXECINFO_H',  cc.has_header('execinfo.h') and target_machine.system() != 'android')
 config.set('HAVE_FSYNC',       cc.has_function('fsync'))
 config.set('HAVE_MALLOC_TRIM', cc.has_function('malloc_trim') and host_machine.system() != 'emscripten')
 config.set('HAVE_STRPTIME',    cc.has_function('strptime'))
