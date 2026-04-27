@@ -371,7 +371,7 @@ gio       = [
 json_glib = dependency('json-glib-1.0',
   version: dep_ver.get('json-glib')
 )
-libjpeg   = dependency('libjpeg',     version: dep_ver.get('libjpeg'))
+libjpeg   = dependency(['libjpeg', 'libjpeg-turbo'], version: dep_ver.get('libjpeg'))
 libpng    = dependency('libpng',      version: dep_ver.get('libpng'))
 
 # Required libraries eventually provided in subprojects/ subdir
@@ -506,7 +506,7 @@ sdl1      = dependency('sdl',
   version: dep_ver.get('sdl1'),
   required: get_option('sdl1')
 )
-sdl2      = dependency('sdl2',
+sdl2      = dependency(['sdl2', 'SDL2'],
   version: dep_ver.get('sdl2'),
   required: get_option('sdl2')
 )
