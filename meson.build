@@ -405,6 +405,11 @@ if g_ir.found()
 else
   vapigen = disabler()
 endif
+if g_ir.found() and get_option('default_library') == 'static'
+  warning('Introspection is not supported with static libraries. See: https://gitlab.gnome.org/GNOME/gobject-introspection/-/issues/187')
+  g_ir = disabler()
+  vapigen = disabler()
+endif
 
 # GEGL binary
 gexiv2    = dependency('gexiv2',
