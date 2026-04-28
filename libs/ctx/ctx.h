@@ -20185,7 +20185,7 @@ ctx_float_porter_duff (CtxRasterizer         *rasterizer,
         continue;
       }
 #endif
-      memcpy (tsrc, rasterizer->color, sizeof(tsrc));
+      memcpy (tsrc, rasterizer->color, sizeof(CtxColor));
 
       if (blend != CTX_BLEND_NORMAL)
         ctx_float_blend (components, blend, dstf, tsrc, tsrc);
