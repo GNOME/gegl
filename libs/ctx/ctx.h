@@ -57,7 +57,7 @@ extern "C" {
 #endif
 #include <stdio.h>
 
-#ifdef _WIN32
+#ifdef _MSC_VER
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #define usleep(usec) Sleep((usec) / 1000)
@@ -41053,7 +41053,7 @@ int vt_special_glyph (Ctx *ctx, VT *vt, float x, float y, float cw, float ch, in
 
 
 #if !__COSMOPOLITAN__
-#ifndef _WIN32
+#ifndef _MSC_VER
 #include <sys/time.h>
 #else
 #include <time.h>
