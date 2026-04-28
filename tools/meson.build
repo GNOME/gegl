@@ -9,10 +9,15 @@ tools_c_args = [
   '-DTOP_SRCDIR="' + project_source_root + '"',
 ]
 
+toolsInclude = [
+  rootInclude,
+  geglInclude,
+]
+
 detect_opencl = executable(
   'detect_opencl',
   'detect_opencl.c',
-  include_directories: [ rootInclude, geglInclude, ],
+  include_directories: toolsInclude,
   dependencies: [ tools_deps, ],
   link_with: [ gegl_lib, ],
   c_args: [ tools_c_args ],
@@ -21,7 +26,7 @@ detect_opencl = executable(
 gegl_imgcmp = executable(
   'gegl-imgcmp',
   'gegl-imgcmp.c',
-  include_directories: [ rootInclude, geglInclude, ],
+  include_directories: toolsInclude,
   dependencies: [ tools_deps, ],
   link_with: [ gegl_lib, ],
   c_args: [ tools_c_args ],
@@ -30,7 +35,7 @@ gegl_imgcmp = executable(
 gegl_tester = executable(
   'gegl-tester',
   'gegl-tester.c',
-  include_directories: [ rootInclude, geglInclude, ],
+  include_directories: toolsInclude,
   dependencies: [ gio, tools_deps, ],
   link_with: [ gegl_lib, ],
   c_args: [ tools_c_args ],
@@ -39,7 +44,7 @@ gegl_tester = executable(
 introspect = executable(
   'introspect',
   'introspect.c',
-  include_directories: [ rootInclude, geglInclude, ],
+  include_directories: toolsInclude,
   dependencies: [ tools_deps, ],
   link_with: [ gegl_lib, ],
   c_args: [ tools_c_args ],
@@ -48,7 +53,7 @@ introspect = executable(
 operation_reference = executable(
   'operation_reference',
   'operation_reference.c',
-  include_directories: [ rootInclude, geglInclude, ],
+  include_directories: toolsInclude,
   dependencies: [ tools_deps, ],
   link_with: [ gegl_lib, ],
   c_args: [ tools_c_args ],
@@ -57,7 +62,7 @@ operation_reference = executable(
 operations_html = executable(
   'operations_html',
   'operations_html.c',
-  include_directories: [ rootInclude, geglInclude, ],
+  include_directories: toolsInclude,
   dependencies: [ tools_deps, ],
   link_with: [ gegl_lib, ],
   c_args: [ tools_c_args ],
@@ -68,7 +73,7 @@ if gexiv2.found()
   exp_combine = executable(
     'exp_combine',
     'exp_combine.cpp',
-    include_directories: [ rootInclude, geglInclude, ],
+    include_directories: toolsInclude,
     dependencies: [ tools_deps, gexiv2, ],
     link_with: [ gegl_lib, ],
     c_args: [ tools_c_args ],
