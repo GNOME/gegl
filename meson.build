@@ -625,7 +625,7 @@ rootInclude = include_directories('.')
 argvs_extract = find_program('tools/argvs_extract.sh')
 
 subdir('libs/rgbe')
-subdir('opencl')
+subdir('operations/opencl')
 subdir('gegl')
 subdir('libs/npd')
 subdir('libs/ctx')

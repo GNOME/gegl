@@ -91,11 +91,6 @@ install_headers(gegl_headers,
 
 gegl_ldflags = os_osx ? ['-framework', 'OpenCL'] : []
 
-opencl_dep = declare_dependency(
-  sources : [opencl_headers],
-)
-
-
 gegl_def = 'gegl-generic.def'
 if host_cpu_family == 'x86_64'
   simd_extra = [lib_gegl_x86_64_v2, lib_gegl_x86_64_v3]
@@ -129,7 +124,7 @@ gegl_lib_args = {
     gio,
     math,
     gmodule,
-    opencl_dep,
+    gegl_operations_opencl_dep,
   ],
   'c_args': gegl_cflags,
 
