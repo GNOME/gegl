@@ -135,8 +135,8 @@ gegl_common_sources += custom_target('module_common.c',
 
 gegl_common = shared_module('gegl-common',
   gegl_common_sources,
-  opencl_headers,
-  include_directories: [ rootInclude, geglInclude, ],
+  gegl_operations_opencl_headers,
+  include_directories: geglOperationsInclude,
   dependencies: [
     babl,
     glib,
@@ -160,8 +160,8 @@ gegl_operations += gegl_common
 if host_cpu_family == 'x86_64'
 
   gegl_common_x86_64_v2 = shared_module('gegl-common-x86_64-v2',
-    gegl_common_sources, opencl_headers,
-    include_directories: [ rootInclude, geglInclude, ],
+    gegl_common_sources, gegl_operations_opencl_headers,
+    include_directories: geglOperationsInclude,
     dependencies: [ babl, glib, json_glib, math, openmp, ],
     link_with: [ gegl_lib, ],
     c_args: [ '-DGEGL_OP_BUNDLE' ] + x86_64_v2_flags,
@@ -172,8 +172,8 @@ if host_cpu_family == 'x86_64'
   gegl_operations += gegl_common_x86_64_v2
 
   gegl_common_x86_64_v3 = shared_module('gegl-common-x86_64-v3',
-    gegl_common_sources, opencl_headers,
-    include_directories: [ rootInclude, geglInclude, ],
+    gegl_common_sources, gegl_operations_opencl_headers,
+    include_directories: geglOperationsInclude,
     dependencies: [ babl, glib, json_glib, math, openmp, ],
     link_with: [ gegl_lib, ],
     c_args: [ '-DGEGL_OP_BUNDLE' ] + x86_64_v3_flags,
@@ -186,8 +186,8 @@ if host_cpu_family == 'x86_64'
 elif host_cpu_family == 'arm'
 
   gegl_common_arm_neon = shared_module('gegl-common-arm-neon',
-    gegl_common_sources, opencl_headers,
-    include_directories: [ rootInclude, geglInclude, ],
+    gegl_common_sources, gegl_operations_opencl_headers,
+    include_directories: geglOperationsInclude,
     dependencies: [ babl, glib, json_glib, math, openmp, ],
     link_with: [ gegl_lib, ],
     c_args: [ '-DGEGL_OP_BUNDLE' ] + arm_neon_flags,

@@ -1,5 +1,4 @@
-
-opencl_sources = [
+gegl_operations_opencl_sources = [
   'alien-map.cl',
   'bilateral-filter-fast.cl',
   'bilateral-filter.cl',
@@ -52,11 +51,16 @@ opencl_sources = [
 
 cltostring = files('cltostring.py')
 
-opencl_headers = files()
-foreach source : opencl_sources
-  opencl_headers += custom_target(source + '.h',
+gegl_operations_opencl_headers = files()
+foreach source : gegl_operations_opencl_sources
+  gegl_operations_opencl_headers += custom_target(source + '.h',
     input : source,
     output: source +'.h',
     command: [ python, cltostring, '@INPUT@', '@OUTPUT@' ],
   )
 endforeach
+
+gegl_operations_opencl_dep = declare_dependency(
+  sources : [gegl_operations_opencl_headers],
+)
+

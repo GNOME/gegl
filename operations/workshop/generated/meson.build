@@ -11,7 +11,7 @@ libraries = [
 foreach lib : libraries
   gegl_operations += shared_module(lib,
     lib + '.c',
-    include_directories: [ rootInclude, geglInclude, seamlessInclude, ],
+    include_directories: geglWorkshopInclude
     dependencies: [
       babl,
       glib,

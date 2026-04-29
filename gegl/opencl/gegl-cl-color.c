@@ -29,8 +29,8 @@
 #include "gegl-cl.h"
 #include "gegl-cl-color.h"
 
-#include "opencl/colors.cl.h"
-#include "opencl/colors-8bit-lut.cl.h"
+#include "operations/opencl/colors.cl.h"
+#include "operations/opencl/colors-8bit-lut.cl.h"
 
 static GHashTable  *color_kernels_hash = NULL;
 

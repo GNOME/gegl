@@ -20,8 +20,8 @@ gegl_common_cxx_sources += custom_target('module_common_gpl3.c',
 )
 
 gegl_common_cxx = shared_module('gegl-common-cxx',
-  [ gegl_common_cxx_sources, opencl_headers, ],
-  include_directories: [ rootInclude, geglInclude, ],
+  [ gegl_common_cxx_sources, gegl_operations_opencl_headers, ],
+  include_directories: geglOperationsInclude,
   dependencies: [
     babl,
     glib,
@@ -43,8 +43,8 @@ gegl_operations += gegl_common_cxx
 if host_cpu_family == 'x86_64'
 
   gegl_common_cxx_x86_64_v2 = shared_module('gegl-common-cxx-x86_64-v2',
-    gegl_common_cxx_sources, opencl_headers,
-    include_directories: [ rootInclude, geglInclude, ],
+    gegl_common_cxx_sources, gegl_operations_opencl_headers,
+    include_directories: geglOperationsInclude,
     dependencies: [
       babl,
       glib,
@@ -61,10 +61,10 @@ if host_cpu_family == 'x86_64'
     install_dir: get_option('libdir') / api_name,
   )
   gegl_operations += gegl_common_cxx_x86_64_v2
-  
+
   gegl_common_cxx_x86_64_v3 = shared_module('gegl-common-cxx-x86_64-v3',
-    gegl_common_cxx_sources, opencl_headers,
-    include_directories: [ rootInclude, geglInclude, ],
+    gegl_common_cxx_sources, gegl_operations_opencl_headers,
+    include_directories: geglOperationsInclude,
     dependencies: [
       babl,
       glib,
@@ -85,8 +85,8 @@ if host_cpu_family == 'x86_64'
 elif host_cpu_family == 'arm'
 
   gegl_common_cxx_arm_neon = shared_module('gegl-common-cxx-arm-neon',
-    gegl_common_cxx_sources, opencl_headers,
-    include_directories: [ rootInclude, geglInclude, ],
+    gegl_common_cxx_sources, gegl_operations_opencl_headers,
+    include_directories: geglOperationsInclude,
     dependencies: [
       babl,
       glib,

@@ -36,14 +36,13 @@
 #endif
 #include <stdio.h>
 
-#include "gegl-cl.h"
-#include "gegl-cl-color.h"
-#include "opencl/random.cl.h"
-
 #include "gegl/gegl-debug.h"
-
+#include "gegl/buffer/gegl-buffer.h"
 #include "gegl/buffer/gegl-buffer-private.h"
+#include "operations/opencl/random.cl.h"
 #include "gegl-buffer-cl-cache.h"
+#include "gegl-cl-color.h"
+#include "gegl-cl.h"
 
 GQuark gegl_opencl_error_quark (void);
 
