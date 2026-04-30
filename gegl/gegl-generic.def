@@ -254,6 +254,7 @@ EXPORTS
   gegl_clSVMFree
   gegl_clUnloadPlatformCompiler
   gegl_clWaitForEvents
+  gegl_color_cmp
   gegl_color_duplicate
   gegl_color_get_bytes
   gegl_color_get_cmyk

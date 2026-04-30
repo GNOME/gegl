@@ -321,6 +321,16 @@ void         gegl_color_set_bytes              (GeglColor   *color,
 GBytes     * gegl_color_get_bytes              (GeglColor   *color,
                                                 const Babl  *format);
 
+/**
+ * gegl_color_cmp:
+ * @color1: a #GeglColor
+ * @color2: a #GeglColor
+ *
+ * Return: Zero if identical. Non-zero otherwise.
+ */
+gint
+gegl_color_cmp (GeglColor *color1, GeglColor *color2);
+
 /***
  */
 

@@ -750,6 +750,22 @@ gegl_color_duplicate (GeglColor *color)
   return new;
 }
 
+gint
+gegl_color_cmp (GeglColor *color1, GeglColor *color2)
+{
+  if (color1 == NULL || color2 == NULL)
+    return color2 ? -1 : (color1 ? 1 : 0);
+
+  g_return_val_if_fail (GEGL_IS_COLOR (color1), -1);
+  g_return_val_if_fail (GEGL_IS_COLOR (color2), -1);
+
+  if (color1->priv->format != color2->priv->format)
+    return 1;
+  else
+    return memcmp (color1->priv->pixel, color2->priv->pixel,
+                   babl_format_get_bytes_per_pixel (color1->priv->format));
+}
+
 /* --------------------------------------------------------------------------
  * A GParamSpec class to describe behavior of GeglColor as an object property
  * follows.
@@ -809,14 +825,7 @@ gegl_param_color_cmp (GParamSpec   *param_spec,
   GeglColor *color1 = g_value_get_object (value1);
   GeglColor *color2 = g_value_get_object (value2);
 
-  if (! color1 || ! color2)
-    return color2 ? -1 : (color1 ? 1 : 0);
-
-  if (color1->priv->format != color2->priv->format)
-    return 1;
-  else
-    return memcmp (color1->priv->pixel, color2->priv->pixel,
-                   babl_format_get_bytes_per_pixel (color1->priv->format));
+  return gegl_color_cmp (color1, color2);
 }
 
 GType
