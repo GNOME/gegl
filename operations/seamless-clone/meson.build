@@ -8,13 +8,7 @@ foreach lib : seamless_clone_libs
   gegl_operations += shared_module(lib,
     files(lib + '.c'),
     include_directories: [ rootInclude, geglInclude, seamlessInclude, ],
-    dependencies: [
-      babl,
-      glib,
-      json_glib,
-      poly2tri_c,
-      math,
-    ],
+    dependencies: gegl_operations_common_deps + poly2tri_c,
     link_with: [
       gegl_lib,
       seamlessclone_lib,

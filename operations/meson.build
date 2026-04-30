@@ -1,6 +1,13 @@
 
 gegl_operations_build_dir = meson.current_build_dir()
 gegl_operations = []
+gegl_operations_common_deps = [
+  babl,
+  glib,
+  gmodule,
+  json_glib,
+  math,
+]
 
 # This is commented on purpose because the directory gets configured before
 # even configuring 'gegl'. This is because GEGL lib itself uses some OpenCL
