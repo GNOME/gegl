@@ -22,15 +22,16 @@
 
 #include "gegl.h"
 #include "gegl-types-internal.h"
-#include "buffer/gegl-buffer-types.h"
-#include "buffer/gegl-scratch-private.h"
-#include "buffer/gegl-tile-alloc.h"
-#include "buffer/gegl-tile-handler-cache.h"
-#include "buffer/gegl-tile-backend-swap.h"
-#include "buffer/gegl-tile-handler-zoom.h"
 #include "gegl-parallel-private.h"
-#include "gegl-stats.h"
 
+#include "buffer/gegl-buffer-types-private.h"
+#include "buffer/gegl-scratch-private.h"
+#include "buffer/gegl-tile-alloc-private.h"
+#include "buffer/gegl-tile-backend-swap-private.h"
+#include "buffer/gegl-tile-handler-cache-private.h"
+#include "buffer/gegl-tile-handler-zoom-private.h"
+
+#include "gegl-stats-private.h"
 
 enum
 {

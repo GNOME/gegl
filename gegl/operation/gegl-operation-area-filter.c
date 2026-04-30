@@ -18,14 +18,16 @@
 
 #include "config.h"
 
-#include <glib-object.h>
 #include <string.h>
 
-#include "gegl.h"
-#include "gegl-operation-area-filter.h"
-#include "gegl-operation-context.h"
+#include <glib-object.h>
+
 #include "gegl-types-internal.h"
 
+#include "gegl.h"
+#include "gegl-operation-context-private.h"
+
+#include "gegl-operation-area-filter.h"
 
 static void          prepare                  (GeglOperation       *operation);
 static GeglRectangle get_bounding_box          (GeglOperation       *operation);

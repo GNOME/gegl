@@ -17,9 +17,12 @@
  */
 
 #include "config.h"
+
 #include <glib.h>
+
+#include "gegl-operation-handlers-private.h"
+
 #include "gegl-extension-handler.h"
-#include "gegl-operation-handlers.h"
 
 void
 gegl_extension_handler_register (const gchar *extension,

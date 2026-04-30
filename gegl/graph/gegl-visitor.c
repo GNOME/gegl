@@ -24,11 +24,11 @@
 #include "gegl-types-internal.h"
 
 #include "gegl.h"
-#include "graph/gegl-node-private.h"
-#include "graph/gegl-pad.h"
-#include "gegl-visitor.h"
-#include "gegl-visitable.h"
+#include "gegl-visitor-private.h"
+#include "gegl-visitable-private.h"
 
+#include "graph/gegl-node-private.h"
+#include "graph/gegl-pad-private.h"
 
 static void       gegl_visitor_class_init                        (GeglVisitorClass  *klass);
 static void       gegl_visitor_init                              (GeglVisitor       *self);

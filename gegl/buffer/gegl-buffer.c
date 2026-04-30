@@ -31,20 +31,19 @@
 #include <glib-object.h>
 #include <glib/gstdio.h>
 
-#include "gegl-debug.h"
-#include "gegl-buffer.h"
-#include "gegl-buffer-types.h"
-#include "gegl-buffer-config.h"
+#include "gegl-algorithms-private.h"
+#include "gegl-buffer-formats-private.h"
+#include "gegl-buffer-types-private.h"
+#include "gegl-buffer-config-private.h"
 #include "gegl-buffer-private.h"
+#include "gegl-debug.h"
 #include "gegl-rectangle.h"
-#include "gegl-tile-handler-cache.h"
+#include "gegl-tile-handler-cache-private.h"
 #include "gegl-tile-handler-private.h"
-#include "gegl-tile-storage.h"
-#include "gegl-tile-backend-file.h"
-#include "gegl-tile-backend-swap.h"
-#include "gegl-tile-backend-ram.h"
-#include "gegl-buffer-formats.h"
-#include "gegl-algorithms.h"
+#include "gegl-tile-storage-private.h"
+#include "gegl-tile-backend-file-private.h"
+#include "gegl-tile-backend-swap-private.h"
+#include "gegl-tile-backend-ram-private.h"
 
 #ifdef GEGL_ENABLE_DEBUG
 #define DEBUG_ALLOCATIONS (gegl_debug_flags & GEGL_DEBUG_BUFFER_ALLOC)

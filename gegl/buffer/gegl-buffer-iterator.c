@@ -18,20 +18,19 @@
  */
 
 #include "config.h"
+
+#include <math.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
 
 #include <glib-object.h>
 #include <glib/gprintf.h>
 
-#include "gegl-buffer.h"
-#include "gegl-buffer-types.h"
-#include "gegl-rectangle.h"
-#include "gegl-buffer-iterator.h"
 #include "gegl-buffer-iterator-private.h"
 #include "gegl-buffer-private.h"
-#include "gegl-tile-storage.h"
+#include "gegl-buffer-types-private.h"
+#include "gegl-rectangle.h"
+#include "gegl-tile-storage-private.h"
 
 typedef enum {
   GeglIteratorState_Start,

@@ -20,18 +20,16 @@
 #include "config.h"
 #define __GEGL_INIT_C
 
-#include <babl/babl.h>
-
-#include <glib-object.h>
-#include <glib/gstdio.h>
-#include <glib/gi18n-lib.h>
-
 #include <locale.h>
-
 #include <stdlib.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+
+#include <babl/babl.h>
+#include <glib-object.h>
+#include <glib/gstdio.h>
+#include <glib/gi18n-lib.h>
 
 #ifdef G_OS_WIN32
 
@@ -70,34 +68,34 @@ DllMain (HINSTANCE hinstDLL,
 #include <libgen.h>
 #endif
 
+#include "gegl-config-private.h"
+#include "gegl-cpuaccel-private.h"
 #include "gegl-debug.h"
+#include "gegl-init-private.h"
+#include "gegl-instrument-private.h"
+#include "gegl-parallel-private.h"
+#include "gegl-random-private.h"
+#include "gegl-stats-private.h"
+#include "gegl-types-internal.h"
+
+#include "buffer/gegl-buffer-iterator-private.h"
+#include "buffer/gegl-buffer-private.h"
+#include "buffer/gegl-buffer-swap-private.h"
+#include "buffer/gegl-compression-private.h"
+#include "buffer/gegl-tile-alloc-private.h"
+#include "buffer/gegl-tile-backend-file-private.h"
+#include "buffer/gegl-tile-backend-ram-private.h"
+
+#include "graph/gegl-node-private.h"
+
+#include "module/geglmodule-private.h"
+#include "module/geglmoduledb-private.h"
+
+#include "operation/gegl-operation-private.h"
+#include "operation/gegl-operation-handlers-private.h"
+#include "operation/gegl-operations.h"
 
 guint gegl_debug_flags = 0;
-
-#include "gegl-types.h"
-#include "gegl-types-internal.h"
-#include "gegl-instrument.h"
-#include "gegl-init.h"
-#include "gegl-init-private.h"
-#include "module/geglmodule.h"
-#include "module/geglmoduledb.h"
-#include "buffer/gegl-buffer.h"
-#include "operation/gegl-operation.h"
-#include "operation/gegl-operations.h"
-#include "operation/gegl-operation-handlers-private.h"
-#include "buffer/gegl-buffer-private.h"
-#include "buffer/gegl-buffer-iterator-private.h"
-#include "buffer/gegl-buffer-swap-private.h"
-#include "buffer/gegl-compression.h"
-#include "buffer/gegl-tile-alloc.h"
-#include "buffer/gegl-tile-backend-ram.h"
-#include "buffer/gegl-tile-backend-file.h"
-#include "gegl-config.h"
-#include "gegl-stats.h"
-#include "graph/gegl-node-private.h"
-#include "gegl-random-private.h"
-#include "gegl-parallel-private.h"
-#include "gegl-cpuaccel.h"
 
 static gboolean      gegl_post_parse_hook      (GOptionContext *context,
                                                 GOptionGroup   *group,

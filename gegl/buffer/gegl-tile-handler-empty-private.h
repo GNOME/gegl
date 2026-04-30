@@ -19,8 +19,8 @@
 #ifndef __GEGL_TILE_HANDLER_EMPTY_H__
 #define __GEGL_TILE_HANDLER_EMPTY_H__
 
-#include "gegl-tile-handler.h"
-#include "gegl-tile-handler-cache.h"
+#include "gegl-tile-handler-private.h"
+#include "gegl-tile-handler-cache-private.h"
 
 /***
  * GeglTileHandlerEmpty is a GeglTileHandler that create COW tiles sharing data

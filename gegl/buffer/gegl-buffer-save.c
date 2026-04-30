@@ -33,16 +33,16 @@
 #endif
 #include <errno.h>
 
+#include <babl/babl.h>
 #include <glib-object.h>
 #include <glib/gstdio.h>
 
-#include "gegl-buffer.h"
-#include "gegl-buffer-types.h"
+#include "gegl-buffer-index-private.h"
 #include "gegl-buffer-private.h"
+#include "gegl-buffer-types-private.h"
 #include "gegl-debug.h"
-#include "gegl-tile-storage.h"
 #include "gegl-tile.h"
-#include "gegl-buffer-index.h"
+#include "gegl-tile-storage-private.h"
 
 #ifdef _WIN32
 #define BINARY_FLAG O_BINARY

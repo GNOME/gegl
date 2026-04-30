@@ -20,6 +20,8 @@
 #ifndef __GEGL_TYPES_INTERNAL_H__
 #define __GEGL_TYPES_INTERNAL_H__
 
+#include "gegl-types.h"
+
 #include <babl/babl.h>
 #include <glib-object.h>
 

@@ -16,7 +16,8 @@
  * Copyright 2014 Jon Nordby, The Grid <jononor@gmail.com>
  */
 
-#include <gegl-gio-private.h>
+#include "config.h"
+
 #include <string.h>
 #include <stdio.h>
 
@@ -28,6 +29,8 @@
 #include <gio/gunixinputstream.h>
 #include <gio/gunixoutputstream.h>
 #endif
+
+#include <gegl-gio-private.h>
 
 /**
  * datauri_parse_header:

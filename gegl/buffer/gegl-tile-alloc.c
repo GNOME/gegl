@@ -28,11 +28,9 @@
 
 #include <glib-object.h>
 
-#include "gegl-buffer-config.h"
-#include "gegl-memory.h"
+#include "gegl-buffer-config-private.h"
 #include "gegl-memory-private.h"
-#include "gegl-tile-alloc.h"
-
+#include "gegl-tile-alloc-private.h"
 
 #define GEGL_TILE_MIN_SIZE            sizeof (gpointer)
 #define GEGL_TILE_MAX_SIZE_LOG2       24

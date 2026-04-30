@@ -16,9 +16,8 @@
 
 #include "config.h"
 
-#include "gegl-compression.h"
-#include "gegl-compression-zlib.h"
-
+#include "gegl-compression-private.h"
+#include "gegl-compression-zlib-private.h"
 
 #ifdef HAVE_ZLIB
 

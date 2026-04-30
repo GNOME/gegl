@@ -61,7 +61,7 @@ GEGL_DEFINE_DYNAMIC_OPERATION(GEGL_TYPE_OPERATION_FILTER)
 
 #include "gegl-debug.h"
 #include "graph/gegl-node-private.h"
-#include "graph/gegl-pad.h"
+#include "graph/gegl-pad-private.h"
 
 static const gchar *PAD_FORMAT = "R'G'B' float";
 static const gchar *EXP_PREFIX = "exposure-";

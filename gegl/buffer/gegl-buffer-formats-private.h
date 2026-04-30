@@ -19,11 +19,10 @@
 #ifndef __GEGL_BUFFER_FORMATS_H__
 #define __GEGL_BUFFER_FORMATS_H__
 
-
-G_BEGIN_DECLS
-
 #include <babl/babl.h>
 #include <glib-object.h>
+
+G_BEGIN_DECLS
 
 /* the code in babl for looking up models, formats and types is quick -
    but when formats end up being used as consts for comparisons in the core of

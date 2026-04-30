@@ -19,6 +19,7 @@
 #ifndef __GEGL_TILE_BACKEND_H__
 #define __GEGL_TILE_BACKEND_H__
 
+#include "gegl-types.h"
 #include "gegl-tile-source.h"
 
 /***

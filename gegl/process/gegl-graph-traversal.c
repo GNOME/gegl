@@ -24,18 +24,17 @@
 #include "gegl-types-internal.h"
 #include "gegl.h"
 #include "gegl-debug.h"
-#include "gegl-instrument.h"
+#include "gegl-instrument-private.h"
 
-#include "gegl-region.h"
+#include "gegl-region-private.h"
 
+#include "graph/gegl-callback-visitor-private.h"
+#include "graph/gegl-connection-private.h"
 #include "graph/gegl-node-private.h"
-#include "graph/gegl-pad.h"
-#include "graph/gegl-visitor.h"
-#include "graph/gegl-callback-visitor.h"
-#include "graph/gegl-visitable.h"
-#include "graph/gegl-connection.h"
+#include "graph/gegl-pad-private.h"
+#include "graph/gegl-visitor-private.h"
+#include "graph/gegl-visitable-private.h"
 
-#include "process/gegl-graph-traversal.h"
 #include "process/gegl-graph-traversal-private.h"
 
 #include "operation/gegl-operation.h"

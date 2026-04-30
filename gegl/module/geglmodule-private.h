@@ -21,6 +21,7 @@
 #define __GEGL_MODULE_H__
 
 #include <gmodule.h>
+
 #include "gegl-plugin.h"
 
 G_BEGIN_DECLS

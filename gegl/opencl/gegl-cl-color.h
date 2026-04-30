@@ -20,6 +20,7 @@
 #define __GEGL_CL_COLOR_H__
 
 #include <gegl.h>
+
 #include "gegl-cl-types.h"
 
 G_BEGIN_DECLS

@@ -15,16 +15,18 @@
  */
 
 #include "config.h"
+
 #include <string.h>
 
 #include <glib-object.h>
-#include "gegl-plugin.h"
-#include "geglmodule.h"
-#include "geglmoduledb.h"
-#include "gegldatafiles.h"
-#include "gegl-cpuaccel.h"
-#include "gegl-config.h"
 
+#include "gegl-config-private.h"
+#include "gegl-cpuaccel-private.h"
+#include "gegl-plugin.h"
+
+#include "geglmodule-private.h"
+#include "geglmoduledb-private.h"
+#include "gegldatafiles-private.h"
 
 #ifdef ARCH_X86_64
 #define ARCH_SIMD

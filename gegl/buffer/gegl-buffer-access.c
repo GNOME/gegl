@@ -18,28 +18,28 @@
  */
 
 #include "config.h"
-#include <string.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <math.h>
 
-#include <glib-object.h>
-#include <glib/gprintf.h>
-#include <gio/gio.h>
+#include <math.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include <babl/babl.h>
-#include "gegl-algorithms.h"
-#include "gegl-buffer-types.h"
-#include "gegl-buffer.h"
-#include "gegl-buffer-private.h"
-#include "gegl-tile-storage.h"
-#include "gegl-tile-handler-empty.h"
-#include "gegl-sampler.h"
-#include "gegl-tile-backend.h"
-#include "gegl-buffer-iterator.h"
-#include "gegl-rectangle.h"
+#include <gio/gio.h>
+#include <glib-object.h>
+#include <glib/gprintf.h>
+
+#include "gegl-algorithms-private.h"
+#include "gegl-buffer-formats-private.h"
 #include "gegl-buffer-iterator-private.h"
-#include "gegl-buffer-formats.h"
+#include "gegl-buffer-private.h"
+#include "gegl-buffer-types-private.h"
+#include "gegl-tile-backend.h"
+#include "gegl-tile-handler-empty-private.h"
+#include "gegl-tile-storage-private.h"
+#include "gegl-sampler-private.h"
+
+#include "gegl-rectangle.h"
 
 static void gegl_buffer_iterate_read_fringed (GeglBuffer          *buffer,
                                               const GeglRectangle *roi,

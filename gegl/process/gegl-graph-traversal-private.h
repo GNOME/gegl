@@ -29,6 +29,22 @@ struct _GeglGraphTraversal
   GeglBuffer *shared_empty;
 };
 
+typedef struct _GeglGraphTraversal GeglGraphTraversal;
+
+GeglGraphTraversal *gegl_graph_build            (GeglNode            *node);
+void                gegl_graph_rebuild          (GeglGraphTraversal  *path,
+                                                 GeglNode            *node);
+void                gegl_graph_free             (GeglGraphTraversal  *path);
+
+void                gegl_graph_prepare          (GeglGraphTraversal  *path);
+void                gegl_graph_prepare_request  (GeglGraphTraversal  *path,
+                                                 const GeglRectangle *roi,
+                                                 gint                 level);
+GeglBuffer         *gegl_graph_process          (GeglGraphTraversal  *path,
+                                                 gint                 level);
+
+GeglRectangle       gegl_graph_get_bounding_box (GeglGraphTraversal  *path);
+
 G_END_DECLS
 
 #endif /* __GEGL_GRAPH_TRAVERSAL_PRIVATE_H__ */

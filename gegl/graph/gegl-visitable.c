@@ -24,8 +24,7 @@
 
 #include "gegl-types-internal.h"
 
-#include "gegl-visitable.h"
-
+#include "gegl-visitable-private.h"
 
 GType
 gegl_visitable_get_type (void)

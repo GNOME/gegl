@@ -21,6 +21,7 @@
 
 #include <glib-object.h>
 #include <babl/babl.h>
+
 #include "gegl-buffer-matrix2.h"
 #include "gegl-buffer-enums.h"
 

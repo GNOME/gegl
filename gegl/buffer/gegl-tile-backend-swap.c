@@ -38,20 +38,18 @@
 #include <glib/gprintf.h>
 #include <glib/gstdio.h>
 
-#include "gegl-buffer.h"
-#include "gegl-buffer-types.h"
 #include "gegl-buffer-backend.h"
+#include "gegl-buffer-config-private.h"
 #include "gegl-buffer-private.h"
-#include "gegl-buffer-swap.h"
-#include "gegl-compression.h"
-#include "gegl-scratch.h"
-#include "gegl-tile-alloc.h"
-#include "gegl-tile-backend.h"
-#include "gegl-tile-backend-swap.h"
-#include "gegl-tile-handler-empty.h"
+#include "gegl-buffer-swap-private.h"
+#include "gegl-buffer-types-private.h"
+#include "gegl-compression-private.h"
 #include "gegl-debug.h"
-#include "gegl-buffer-config.h"
-
+#include "gegl-scratch-private.h"
+#include "gegl-tile-alloc-private.h"
+#include "gegl-tile-backend.h"
+#include "gegl-tile-backend-swap-private.h"
+#include "gegl-tile-handler-empty-private.h"
 
 #ifndef HAVE_FSYNC
 

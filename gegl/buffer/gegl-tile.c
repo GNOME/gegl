@@ -26,11 +26,10 @@
 
 #include <glib-object.h>
 
-#include "gegl-buffer.h"
-#include "gegl-tile.h"
-#include "gegl-tile-alloc.h"
 #include "gegl-buffer-private.h"
-#include "gegl-tile-storage.h"
+#include "gegl-tile.h"
+#include "gegl-tile-alloc-private.h"
+#include "gegl-tile-storage-private.h"
 
 /* the offset of the n_clones array, relative to the tile data, when it shares
  * the same buffer as the data.

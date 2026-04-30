@@ -35,9 +35,11 @@
  * there is about 533 * 532 * 531 different seeds achivable.
  */
 
+#include "config.h"
+
 #include <glib.h>
+
 #include <gegl.h>
-#include "gegl-random.h"
 #include "gegl-random-private.h"
 
 /* a set of reasonably large primes to choose from for array sizes

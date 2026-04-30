@@ -16,15 +16,15 @@
  * Copyright 2006 Øyvind Kolås
  */
 
-
 #include "config.h"
 
 #include <glib-object.h>
 
-#include "gegl.h"
-#include "gegl-operation-point-render.h"
-#include "gegl-operation-context.h"
 #include "gegl-types-internal.h"
+
+#include "gegl.h"
+#include "gegl-operation-context-private.h"
+#include "gegl-operation-point-render.h"
 
 static gboolean gegl_operation_point_render_process
                               (GeglOperation       *operation,

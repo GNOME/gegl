@@ -19,6 +19,9 @@
 #ifndef __GEGL_TILE_HANDLER_PRIVATE_H__
 #define __GEGL_TILE_HANDLER_PRIVATE_H__
 
+#include "gegl-tile-handler-private.h"
+#include "gegl-tile-handler-cache-private.h"
+
 G_BEGIN_DECLS
 
 void   _gegl_tile_handler_set_tile_storage (GeglTileHandler      *handler,

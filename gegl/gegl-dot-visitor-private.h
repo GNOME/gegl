@@ -19,10 +19,9 @@
 #ifndef __GEGL_DOT_VISITOR_H__
 #define __GEGL_DOT_VISITOR_H__
 
-#include "graph/gegl-visitor.h"
+#include "gegl-visitor-private.h"
 
 G_BEGIN_DECLS
-
 
 #define GEGL_TYPE_DOT_VISITOR            (gegl_dot_visitor_get_type ())
 #define GEGL_DOT_VISITOR(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), GEGL_TYPE_DOT_VISITOR, GeglDotVisitor))

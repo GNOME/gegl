@@ -19,17 +19,16 @@
 
 #include "config.h"
 
-#include <string.h>
+#include <math.h>
 #include <stdint.h>
-#include <glib-object.h>
+#include <string.h>
 
 #include <babl/babl.h>
+#include <glib-object.h>
 
-#include "gegl-buffer.h"
-#include "gegl-buffer-formats.h"
-#include "gegl-algorithms.h"
-
-#include <math.h>
+#include "gegl-algorithms-private.h"
+#include "gegl-buffer-formats-private.h"
+#include "gegl-buffer-private.h"
 
 void
 GEGL_SIMD_SUFFIX(gegl_downscale_2x2) (const Babl *format,

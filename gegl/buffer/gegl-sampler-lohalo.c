@@ -112,11 +112,12 @@
  */
 
 #include "config.h"
+
 #include <math.h>
 
-#include "gegl-buffer.h"
-#include "gegl-buffer-formats.h"
-#include "gegl-sampler-lohalo.h"
+#include "gegl-buffer-formats-private.h"
+#include "gegl-buffer-private.h"
+#include "gegl-sampler-lohalo-private.h"
 
 /*
  * Macros set up so the likely winner in in the first argument

@@ -17,6 +17,8 @@
 #ifndef __GEGL_MEMORY_PRIVATE_H__
 #define __GEGL_MEMORY_PRIVATE_H__
 
+#include "gegl-memory.h"
+
 G_BEGIN_DECLS
 
 #define GEGL_ALIGNMENT 16

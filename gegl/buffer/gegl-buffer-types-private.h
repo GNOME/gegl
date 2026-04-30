@@ -46,10 +46,10 @@ struct _GeglTileBackendPrivate
   GeglTileSourceCommand  command;
 };
 
+typedef struct _GeglTileHandlerCache      GeglTileHandlerCache;
 typedef struct _GeglTileHandlerChain      GeglTileHandlerChain;
 
 typedef struct _GeglTileStorage           GeglTileStorage;
-
 
 G_END_DECLS
 

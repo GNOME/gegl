@@ -19,25 +19,28 @@
 
 #include "config.h"
 
-#include <glib-object.h>
-
-#include "gegl.h"
-#include "gegl-debug.h"
-#include "gegl-operation-point-filter.h"
-#include "gegl-operation-context.h"
-#include "gegl-config.h"
-#include "gegl-types-internal.h"
-#include "gegl-buffer-private.h"
-#include "gegl-tile-storage.h"
-#include <sys/types.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 #include <string.h>
+#include <sys/types.h>
 
+#include <glib-object.h>
+
+#include "gegl-types-internal.h"
+
+#include "gegl.h"
+#include "gegl-buffer-private.h"
+#include "gegl-config-private.h"
+#include "gegl-debug.h"
+#include "gegl-operation-context-private.h"
+#include "gegl-tile-storage-private.h"
+
+#include "opencl/gegl-buffer-cl-iterator.h"
+#include "opencl/gegl-buffer-cl-cache.h"
 #include "opencl/gegl-cl.h"
-#include "gegl-buffer-cl-iterator.h"
-#include "gegl-buffer-cl-cache.h"
+
+#include "gegl-operation-point-filter.h"
 
 typedef struct ThreadData
 {

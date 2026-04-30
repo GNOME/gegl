@@ -20,11 +20,8 @@
 #define __GEGL_BUFFER_CL_CACHE_H__
 
 #include "gegl.h"
-#include "gegl-types-internal.h"
-#include "gegl-buffer-types.h"
+#include "gegl-types.h"
 #include "gegl-buffer.h"
-#include "gegl-tile-handler-cache.h"
-#include "gegl-tile-storage.h"
 
 #include "opencl/gegl-cl.h"
 
@@ -45,10 +42,6 @@ gegl_buffer_cl_cache_new (GeglBuffer            *buffer,
 gboolean
 gegl_buffer_cl_cache_flush  (GeglBuffer          *buffer,
                              const GeglRectangle *roi);
-
-gboolean
-gegl_buffer_cl_cache_flush2 (GeglTileHandlerCache *cache,
-                             const GeglRectangle  *roi);
 
 void
 gegl_buffer_cl_cache_invalidate (GeglBuffer          *buffer,

@@ -20,7 +20,6 @@
 
 #include <glib-object.h>
 
-#include "gegl-memory.h"
 #include "gegl-memory-private.h"
 
 

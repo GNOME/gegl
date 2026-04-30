@@ -22,12 +22,11 @@
 #include <glib-object.h>
 #include <glib/gstdio.h>
 
-#include "gegl-buffer.h"
-#include "gegl-buffer-types.h"
+#include "gegl-buffer-config-private.h"
 #include "gegl-buffer-private.h"
-#include "gegl-tile-source.h"
+#include "gegl-buffer-types-private.h"
 #include "gegl-tile-backend.h"
-#include "gegl-buffer-config.h"
+#include "gegl-tile-source.h"
 
 G_DEFINE_TYPE_WITH_PRIVATE (GeglTileBackend, gegl_tile_backend,
                             GEGL_TYPE_TILE_SOURCE)

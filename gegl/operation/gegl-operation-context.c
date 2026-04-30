@@ -20,22 +20,23 @@
 
 #include "config.h"
 
+#include <math.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
 
 #include <glib-object.h>
 
-#include "gegl.h"
 #include "gegl-types-internal.h"
-#include "gegl-operation-context.h"
-#include "gegl-operation-context-private.h"
-#include "gegl-node-private.h"
-#include "gegl-buffer-private.h"
-#include "gegl-tile-backend-buffer.h"
-#include "gegl-config.h"
 
-#include "operation/gegl-operation.h"
+#include "gegl.h"
+#include "gegl-buffer-private.h"
+#include "gegl-config-private.h"
+#include "gegl-node-private.h"
+#include "gegl-tile-backend-buffer-private.h"
+
+#include "operation/gegl-operation-private.h"
+
+#include "gegl-operation-context-private.h"
 
 static GValue *
 gegl_operation_context_add_value (GeglOperationContext *self,

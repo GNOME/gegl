@@ -23,17 +23,15 @@
 #include <babl/babl.h>
 #include <glib-object.h>
 
-#include "gegl-buffer.h"
-#include "gegl-buffer-types.h"
-#include "gegl-tile-handler.h"
-#include "gegl-tile-handler-cache.h"
-#include "gegl-tile-handler-private.h"
-#include "gegl-tile-handler-zoom.h"
-#include "gegl-tile-storage.h"
+#include "gegl-algorithms-private.h"
 #include "gegl-buffer-private.h"
-#include "gegl-algorithms.h"
-#include "gegl-cpuaccel.h"
+#include "gegl-buffer-types-private.h"
+#include "gegl-cpuaccel-private.h"
+#include "gegl-tile-handler-cache-private.h"
+#include "gegl-tile-handler-private.h"
+#include "gegl-tile-storage-private.h"
 
+#include "gegl-tile-handler-zoom-private.h"
 
 G_DEFINE_TYPE (GeglTileHandlerZoom, gegl_tile_handler_zoom,
                GEGL_TYPE_TILE_HANDLER)

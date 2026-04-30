@@ -23,7 +23,6 @@
 #include "config.h"
 
 #include <string.h>
-
 #include <sys/types.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
@@ -44,10 +43,7 @@
 #endif
 #endif
 
-/*
-#include "geglbasetypes.h"*/
-
-#include "gegldatafiles.h"
+#include "gegldatafiles-private.h"
 
 gboolean
 gegl_datafiles_check_extension (const gchar *filename,

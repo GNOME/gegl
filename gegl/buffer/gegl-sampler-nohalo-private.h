@@ -18,7 +18,7 @@
 #ifndef __GEGL_SAMPLER_NOHALO_H__
 #define __GEGL_SAMPLER_NOHALO_H__
 
-#include "gegl-sampler.h"
+#include "gegl-sampler-private.h"
 
 G_BEGIN_DECLS
 

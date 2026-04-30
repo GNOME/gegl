@@ -18,10 +18,11 @@
  *  */
 
 #include "config.h"
+
 #include <glib.h>
 
 #include "gegl.h"
-#include "gegl-operation-handlers.h"
+
 #include "gegl-operation-handlers-private.h"
 
 static GHashTable *load_handlers = NULL;

@@ -19,8 +19,8 @@
 #ifndef __GEGL_TILE_HANDLER_ZOOM_H__
 #define __GEGL_TILE_HANDLER_ZOOM_H__
 
-#include "gegl-tile-handler.h"
-#include "gegl-tile-handler-cache.h"
+#include "gegl-tile-handler-private.h"
+#include "gegl-tile-handler-cache-private.h"
 
 /***
  * GeglTileHandlerZoom is a GeglTileHandler that handle the mipmapping process.

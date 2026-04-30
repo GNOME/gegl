@@ -19,6 +19,8 @@
 #ifndef __GEGL_RANDOM_PRIV_H__
 #define __GEGL_RANDOM_PRIV_H__
 
+#include "gegl-random.h"
+
 G_BEGIN_DECLS
 
 #define RANDOM_DATA_SIZE (15101 * 3)

@@ -17,12 +17,13 @@
  */
 
 #include "config.h"
+
 #include <glib/gi18n-lib.h>
 
 #include <gegl.h>
 #include <gegl-plugin.h>
 
-#include "gegl-config.h"
+#include "gegl-config-private.h"
 
 #include "scale.h"
 #include "module.h"

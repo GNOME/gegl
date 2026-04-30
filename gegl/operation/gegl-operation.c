@@ -19,25 +19,25 @@
 
 #include "config.h"
 
-#include <glib-object.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include "gegl.h"
-#include "gegl-config.h"
-#include "gegl-types-internal.h"
-#include "gegl-parallel-private.h"
-#include "gegl-operation.h"
-#include "gegl-operation-private.h"
-#include "gegl-operation-context.h"
-#include "gegl-operation-context-private.h"
-#include "gegl-operations-util.h"
-#include "gegl-operation-meta.h"
-#include "graph/gegl-node-private.h"
-#include "graph/gegl-connection.h"
-#include "graph/gegl-pad.h"
-#include "gegl-operations.h"
+#include <glib-object.h>
 
+#include "gegl-types-internal.h"
+
+#include "gegl.h"
+#include "gegl-config-private.h"
+#include "gegl-operation-context-private.h"
+#include "gegl-operation-meta.h"
+#include "gegl-operation-private.h"
+#include "gegl-operations.h"
+#include "gegl-operations-util.h"
+#include "gegl-parallel-private.h"
+
+#include "graph/gegl-connection-private.h"
+#include "graph/gegl-node-private.h"
+#include "graph/gegl-pad-private.h"
 
 #define GEGL_OPERATION_MIN_PIXELS_PER_PIXEL_TIME_UPDATE ( 32 *  32)
 #define GEGL_OPERATION_DEFAULT_PIXELS_PER_THREAD        ( 64 *  64)

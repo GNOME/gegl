@@ -18,13 +18,14 @@
 
 #include "config.h"
 
-#include <glib-object.h>
 #include <string.h>
 
+#include <glib-object.h>
+
 #include "gegl.h"
-#include "gegl-operation.h"
-#include "gegl-operations.h"
+#include "gegl-operation-private.h"
 #include "gegl-operation-property-keys.h"
+#include "gegl-operations.h"
 
 static GHashTable *
 gegl_param_spec_get_property_key_ht (GParamSpec  *pspec,

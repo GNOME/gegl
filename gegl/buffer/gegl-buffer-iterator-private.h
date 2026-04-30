@@ -19,6 +19,8 @@
 #ifndef __GEGL_BUFFER_ITERATOR_PRIVATE_H__
 #define __GEGL_BUFFER_ITERATOR_PRIVATE_H__
 
+#include "gegl-buffer-iterator.h"
+
 G_BEGIN_DECLS
 
 G_STATIC_ASSERT (GEGL_BUFFER_READWRITE == 0x3);

@@ -22,14 +22,15 @@
 
 #include <glib-object.h>
 
-#include "gegl.h"
 #include "gegl-types-internal.h"
-#include "gegl-eval-manager.h"
-#include "gegl-instrument.h"
+
+#include "gegl.h"
+#include "gegl-eval-manager-private.h"
+#include "gegl-instrument-private.h"
 
 #include "graph/gegl-node-private.h"
 
-#include "process/gegl-graph-traversal.h"
+#include "process/gegl-graph-traversal-private.h"
 
 static void gegl_eval_manager_class_init (GeglEvalManagerClass *klass);
 static void gegl_eval_manager_init (GeglEvalManager *self);

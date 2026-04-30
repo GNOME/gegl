@@ -12,21 +12,16 @@
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with GEGL; if not, see <https://www.gnu.org/licenses/>.
+ *
+ * Copyright 2012 Victor Oliveira (victormatheus@gmail.com)
  */
 
-#ifndef __GEGL_BUFFER_SWAP_PRIVATE_H__
-#define __GEGL_BUFFER_SWAP_PRIVATE_H__
+#pragma once
 
-#include "gegl-buffer-swap.h"
+#include "gegl-buffer-cl-cache.h"
 
-#include <glib.h>
-#include <glib-object.h>
+#include "gegl-tile-handler-cache-private.h"
 
-G_BEGIN_DECLS
-
-void   gegl_buffer_swap_init    (void);
-void   gegl_buffer_swap_cleanup (void);
-
-G_END_DECLS
-
-#endif
+gboolean
+gegl_buffer_cl_cache_flush2 (GeglTileHandlerCache *cache,
+                             const GeglRectangle  *roi);

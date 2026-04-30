@@ -17,12 +17,16 @@
  */
 
 #include "config.h"
-#include "gegl.h"
-#include <glib/gi18n-lib.h>
-#include <string.h>
+
 #include <limits.h>
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include <glib/gi18n-lib.h>
+
+#include "gegl.h"
+
 #include "property-types/gegl-paramspecs.h"
 #include "property-types/gegl-audio-fragment.h"
 

@@ -20,6 +20,8 @@
 #ifndef __GEGL_INIT_PRIVATE_H__
 #define __GEGL_INIT_PRIVATE_H__
 
+#include "gegl-init.h"
+
 G_BEGIN_DECLS
 
 /**

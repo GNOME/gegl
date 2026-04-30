@@ -18,14 +18,15 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include <glib-object.h>
 #include <glib/gi18n-lib.h>
-#include <string.h>
 
 #include "gegl.h"
 #include "gegl-operation-filter.h"
 #include "gegl-operation-context.h"
-#include "gegl-config.h"
+#include "gegl-config-private.h"
 
 static gboolean gegl_operation_filter_process
                                       (GeglOperation        *operation,

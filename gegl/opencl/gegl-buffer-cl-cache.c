@@ -17,19 +17,20 @@
  */
 
 #include "config.h"
+
 #include <string.h>
+
 #include <glib.h>
 
 #include "gegl.h"
 #include "gegl-debug.h"
-#include "gegl-buffer-types.h"
-#include "gegl-buffer.h"
-#include "gegl-buffer-private.h"
-#include "gegl-tile-handler-cache.h"
-#include "gegl-tile-storage.h"
+#include "gegl-buffer-cl-cache-private.h"
+#include "gegl-cl.h"
 
-#include "gegl-buffer-cl-cache.h"
-#include "opencl/gegl-cl.h"
+#include "buffer/gegl-buffer-private.h"
+#include "buffer/gegl-buffer-types-private.h"
+#include "buffer/gegl-tile-handler-cache-private.h"
+#include "buffer/gegl-tile-storage-private.h"
 
 typedef struct
 {

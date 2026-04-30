@@ -21,13 +21,12 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include "gegl-buffer-config.h"
-#include "gegl-buffer.h"
+#include "gegl-buffer-config-private.h"
 #include "gegl-buffer-private.h"
-#include "gegl-tile.h"
-#include "gegl-tile-handler-cache.h"
-#include "gegl-tile-storage.h"
 #include "gegl-debug.h"
+#include "gegl-tile.h"
+#include "gegl-tile-handler-cache-private.h"
+#include "gegl-tile-storage-private.h"
 
 /*
 #define GEGL_DEBUG_CACHE_HITS

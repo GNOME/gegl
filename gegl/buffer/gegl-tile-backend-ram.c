@@ -21,13 +21,10 @@
 
 #include <glib-object.h>
 
-#include "gegl-buffer.h"
 #include "gegl-buffer-backend.h"
-#include "gegl-tile-backend.h"
-#include "gegl-tile-backend-ram.h"
-
-/* We need the private header so we can check the ref_count of tiles */
 #include "gegl-buffer-private.h"
+#include "gegl-tile-backend.h"
+#include "gegl-tile-backend-ram-private.h"
 
 typedef struct _RamEntry RamEntry;
 
