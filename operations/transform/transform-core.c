@@ -26,14 +26,14 @@
 
 
 #include "config.h"
+
 #include <glib/gi18n-lib.h>
 
 #include <gegl.h>
 #include <gegl-plugin.h>
+#include "gegl-config-private.h"
 
 #include "opencl/gegl-buffer-cl-cache.h"
-
-#include "gegl-config.h"
 
 #include "transform-core.h"
 #include "module.h"

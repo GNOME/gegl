@@ -20,7 +20,8 @@
 #define __GEGL_TILE_BACKEND_FILE_H__
 
 #include "gegl-tile-backend.h"
-#include "gegl-buffer-index.h"
+
+#include "gegl-buffer-index-private.h"
 
 /***
  * GeglTileBackendFile is a GeglTileBackend that store tiles in a unique file.

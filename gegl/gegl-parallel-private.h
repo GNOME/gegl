@@ -19,6 +19,7 @@
 #ifndef __GEGL_PARALLEL_PRIVATE_H__
 #define __GEGL_PARALLEL_PRIVATE_H__
 
+#include "gegl-parallel.h"
 
 G_BEGIN_DECLS
 

@@ -21,6 +21,7 @@
 
 #include <glib-object.h>
 #include <babl/babl.h>
+
 #include "gegl-tile.h"
 
 /***

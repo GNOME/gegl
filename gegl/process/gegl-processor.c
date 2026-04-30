@@ -22,24 +22,23 @@
 #include <glib-object.h>
 
 #include "gegl.h"
-#include "gegl-types-internal.h"
+#include "gegl-config-private.h"
 #include "gegl-debug.h"
-#include "gegl-region.h"
-#include "graph/gegl-node-private.h"
+#include "gegl-region-private.h"
+#include "gegl-types-internal.h"
 
 #include "operation/gegl-operation-context.h"
 #include "operation/gegl-operation-context-private.h"
 #include "operation/gegl-operation-sink.h"
 
-#include "gegl-config.h"
-#include "gegl-processor.h"
-#include "gegl-processor-private.h"
-
-#include "graph/gegl-visitor.h"
-#include "graph/gegl-callback-visitor.h"
-#include "graph/gegl-visitable.h"
+#include "graph/gegl-callback-visitor-private.h"
+#include "graph/gegl-node-private.h"
+#include "graph/gegl-visitable-private.h"
+#include "graph/gegl-visitor-private.h"
 
 #include "opencl/gegl-cl.h"
+
+#include "gegl-processor-private.h"
 
 enum
 {

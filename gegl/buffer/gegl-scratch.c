@@ -23,7 +23,6 @@
 #include <glib-object.h>
 
 #include "gegl-memory-private.h"
-#include "gegl-scratch.h"
 #include "gegl-scratch-private.h"
 
 

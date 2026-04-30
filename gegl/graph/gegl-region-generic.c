@@ -69,14 +69,16 @@
  */
 
 #include <config.h>
+
 #include <stdlib.h>
 #include <string.h>
 
 #include <glib.h>
 #include <glib-object.h>
 
-#include "gegl-region.h"
-#include "gegl-region-generic.h"
+#include "gegl-region-private.h"
+
+#include "gegl-region-generic-private.h"
 
 typedef void (* overlapFunc)    (GeglRegion    *pReg,
                                  GeglRegionBox *r1,

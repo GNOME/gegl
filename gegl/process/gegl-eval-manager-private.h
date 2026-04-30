@@ -21,8 +21,10 @@
 #define __GEGL_EVAL_MANAGER_H__
 
 #include "gegl-types-internal.h"
-#include "buffer/gegl-buffer-types.h"
-#include "process/gegl-graph-traversal.h"
+
+#include "process/gegl-graph-traversal-private.h"
+
+// #include "buffer/gegl-buffer-types.h"
 
 G_BEGIN_DECLS
 

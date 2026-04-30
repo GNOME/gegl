@@ -17,19 +17,20 @@
  */
 
 #include "config.h"
+
 #include <string.h>
 
 #include <glib-object.h>
 
-#include "gegl.h"
 #include "gegl-types-internal.h"
-#include "gegl-buffer-types.h"
-#include "gegl-node-private.h"
-#include "gegl-pad.h"
-#include "gegl-visitor.h"
-#include "gegl-connection.h"
-#include "gegl-visitable.h"
 
+#include "gegl.h"
+#include "gegl-buffer-types-private.h"
+#include "gegl-connection-private.h"
+#include "gegl-node-private.h"
+#include "gegl-pad-private.h"
+#include "gegl-visitable-private.h"
+#include "gegl-visitor-private.h"
 
 static void       gegl_pad_class_init      (GeglPadClass  *klass);
 static void       gegl_pad_init            (GeglPad       *self);

@@ -20,6 +20,8 @@
 #ifndef __GEGL_INIT_H__
 #define __GEGL_INIT_H__
 
+#include "gegl-types.h"
+
 G_BEGIN_DECLS
 
 /***

@@ -28,9 +28,10 @@
 #include "gegl-cl-init.h"
 #undef __GEGL_CL_INIT_MAIN__
 
+#include <string.h>
+
 #include <glib.h>
 #include <gmodule.h>
-#include <string.h>
 #ifdef _WIN32
 #define strdup _strdup
 #endif
@@ -43,7 +44,7 @@
 #include "gegl/gegl-debug.h"
 
 #include "gegl/buffer/gegl-buffer-private.h"
-#include "gegl-buffer-cl-cache.h"
+#include "gegl-buffer-cl-cache-private.h"
 
 const char *gegl_cl_errstring(cl_int err) {
   static const char* strings[] =

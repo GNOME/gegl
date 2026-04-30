@@ -25,10 +25,12 @@
 #include <glib-object.h>
 #include <glib/gprintf.h>
 
-#include "gegl.h"
 #include "gegl-types-internal.h"
-#include "gegl-config.h"
-#include "gegl-buffer-config.h"
+
+#include "gegl.h"
+#include "gegl-config-private.h"
+
+#include "buffer/gegl-buffer-config-private.h"
 
 #include "opencl/gegl-cl.h"
 

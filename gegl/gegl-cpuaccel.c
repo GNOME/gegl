@@ -30,14 +30,13 @@
 
 #include "config.h"
 
-#include <string.h>
-#include <signal.h>
 #include <setjmp.h>
+#include <signal.h>
+#include <string.h>
 
 #include <glib.h>
 
 #include "gegl-cpuaccel-private.h"
-
 
 static GeglCpuAccelFlags  cpu_accel (void) G_GNUC_CONST;
 

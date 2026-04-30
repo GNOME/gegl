@@ -19,6 +19,8 @@
 #ifndef __GEGL_PROCESSOR_PRIVATE_H__
 #define __GEGL_PROCESSOR_PRIVATE_H__
 
+#include "gegl-processor.h"
+
 G_BEGIN_DECLS
 
 #define GEGL_PROCESSOR_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass),  GEGL_TYPE_PROCESSOR, GeglProcessorClass))

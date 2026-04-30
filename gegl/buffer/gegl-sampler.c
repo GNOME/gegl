@@ -24,16 +24,14 @@
 #include <string.h>
 #include <math.h>
 
-#include "gegl-buffer.h"
-#include "gegl-buffer-types.h"
+#include "gegl-buffer-formats-private.h"
 #include "gegl-buffer-private.h"
-
-#include "gegl-sampler-nearest.h"
-#include "gegl-sampler-linear.h"
-#include "gegl-sampler-cubic.h"
-#include "gegl-sampler-nohalo.h"
-#include "gegl-sampler-lohalo.h"
-#include "gegl-buffer-formats.h"
+#include "gegl-buffer-types-private.h"
+#include "gegl-sampler-nearest-private.h"
+#include "gegl-sampler-linear-private.h"
+#include "gegl-sampler-cubic-private.h"
+#include "gegl-sampler-nohalo-private.h"
+#include "gegl-sampler-lohalo-private.h"
 
 
 enum

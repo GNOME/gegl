@@ -20,7 +20,7 @@
 
 #include <string.h>
 #include <glib-object.h>
-#include "gegl-buffer.h"
+
 #include "gegl-buffer-private.h"
 #include "gegl-rectangle.h"
 

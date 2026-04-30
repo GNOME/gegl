@@ -24,10 +24,8 @@
 #include <glib.h>
 
 #include "gegl.h"
-#include "gegl-config.h"
-#include "gegl-parallel.h"
+#include "gegl-config-private.h"
 #include "gegl-parallel-private.h"
-
 
 #define GEGL_PARALLEL_DISTRIBUTE_MAX_THREADS           GEGL_MAX_THREADS
 #define GEGL_PARALLEL_DISTRIBUTE_THREAD_TIME_N_SAMPLES 10

@@ -20,11 +20,12 @@
 #ifndef __GEGL_SC_CONTEXT_PRIVATE_H__
 #define __GEGL_SC_CONTEXT_PRIVATE_H__
 
+#include "sc-context.h"
+
 #include <gegl.h>
 #include <poly2tri-c/refine/refine.h>
 
 #include "sc-outline.h"
-#include "sc-context.h"
 #include "sc-sample.h"
 
 typedef struct

@@ -20,6 +20,7 @@
 #define __GEGL_TILE_H__
 
 #include <glib-object.h>
+
 #include "gegl-buffer-backend.h"
 
 G_BEGIN_DECLS

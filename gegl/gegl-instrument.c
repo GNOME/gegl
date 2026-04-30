@@ -17,9 +17,12 @@
  */
 
 #include "config.h"
-#include <glib.h>
+
 #include <string.h>
-#include "gegl-instrument.h"
+
+#include <glib.h>
+
+#include "gegl-instrument-private.h"
 
 long babl_ticks (void);
 

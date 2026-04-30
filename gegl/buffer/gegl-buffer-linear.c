@@ -1,17 +1,17 @@
 #include "config.h"
-#include <string.h>
+
 #include <math.h>
+#include <string.h>
 
 #include <glib-object.h>
 #include <glib/gprintf.h>
 
-#include "gegl-buffer.h"
-#include "gegl-buffer-formats.h"
-#include "gegl-buffer-types.h"
-#include "gegl-rectangle.h"
+#include "gegl-buffer-formats-private.h"
 #include "gegl-buffer-private.h"
-#include "gegl-tile-storage.h"
-#include "gegl-tile-handler-cache.h"
+#include "gegl-buffer-types-private.h"
+#include "gegl-rectangle.h"
+#include "gegl-tile-storage-private.h"
+#include "gegl-tile-handler-cache-private.h"
 
 GeglBuffer *
 gegl_buffer_linear_new (const GeglRectangle *extent,

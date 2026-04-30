@@ -19,10 +19,11 @@
 #ifndef __GEGL_BUFFER_PRIVATE_H__
 #define __GEGL_BUFFER_PRIVATE_H__
 
-#include "gegl-buffer-types.h"
 #include "gegl-buffer.h"
-#include "gegl-tile-handler.h"
-#include "gegl-buffer-iterator.h"
+
+#include "gegl-buffer-types-private.h"
+#include "gegl-tile-handler-private.h"
+#include "gegl-buffer-iterator-private.h"
 
 G_BEGIN_DECLS
 

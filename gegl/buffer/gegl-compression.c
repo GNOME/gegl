@@ -20,11 +20,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "gegl-compression.h"
-#include "gegl-compression-nop.h"
-#include "gegl-compression-rle.h"
-#include "gegl-compression-zlib.h"
-
+#include "gegl-compression-private.h"
+#include "gegl-compression-nop-private.h"
+#include "gegl-compression-rle-private.h"
+#include "gegl-compression-zlib-private.h"
 
 /*  local function prototypes  */
 

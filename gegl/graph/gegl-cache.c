@@ -20,15 +20,15 @@
 
 #include <string.h>
 
+#include <babl/babl.h>
 #include <glib-object.h>
 #include <glib/gstdio.h>
 
-#include <babl/babl.h>
-
 #include "gegl-types-internal.h"
-#include "gegl-cache.h"
-#include "gegl-region.h"
-#include "gegl-buffer.h" /* for GeglRectangle XXX ... */
+
+#include "gegl-buffer-private.h"
+#include "gegl-cache-private.h"
+#include "gegl-region-private.h"
 
 enum
 {

@@ -21,7 +21,7 @@
 #include <string.h>
 
 #include "gegl.h"
-#include "buffer/gegl-compression.h"
+#include "buffer/gegl-compression-private.h"
 
 #define SUCCESS  0
 #define FAILURE -1

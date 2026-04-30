@@ -18,12 +18,14 @@
 
 #include "config.h"
 
-#include <glib-object.h>
 #include <string.h>
 
+#include <glib-object.h>
+
 #include "gegl.h"
+#include "gegl-operation-context-private.h"
+
 #include "gegl-operation-temporal.h"
-#include "gegl-operation-context.h"
 
 struct _GeglOperationTemporalPrivate
 {

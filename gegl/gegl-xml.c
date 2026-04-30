@@ -17,18 +17,21 @@
  */
 #include "config.h"
 
-#include <glib.h>
-#include <glib-object.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <limits.h>
 
+#include <glib.h>
+#include <glib-object.h>
+
 #include "gegl.h"
+#include "gegl-instrument-private.h"
+
+#include "property-types/gegl-audio-fragment.h"
 #include "property-types/gegl-paramspecs.h"
-#include "gegl-instrument.h"
-#include "gegl-xml.h"
-#include "gegl-audio-fragment.h"
+
+#include "gegl-xml-private.h"
 
 #ifdef G_OS_WIN32
 #define realpath(a, b)    _fullpath (b, a, _MAX_PATH)

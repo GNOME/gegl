@@ -19,6 +19,7 @@
 #ifndef __GEGL_BUFFER_BACKEND_H__
 #define __GEGL_BUFFER_BACKEND_H__
 
+#include "gegl-buffer.h"
 
 G_BEGIN_DECLS
 

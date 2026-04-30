@@ -16,13 +16,14 @@
  * Copyright 2006,2007 Øyvind Kolås <pippin@gimp.org>
  */
 #include "config.h"
-#include <glib.h>
-#include <glib-object.h>
+
 #include <string.h>
 
-#include "gegl-buffer.h"
+#include <glib.h>
+#include <glib-object.h>
+
 #include "gegl-buffer-private.h"
-#include "gegl-tile-handler-empty.h"
+#include "gegl-tile-handler-empty-private.h"
 
 G_DEFINE_TYPE (GeglTileHandlerEmpty, gegl_tile_handler_empty,
                GEGL_TYPE_TILE_HANDLER)

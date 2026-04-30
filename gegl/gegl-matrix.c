@@ -17,9 +17,10 @@
  */
 
 #include "config.h"
+
 #include <math.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "gegl-matrix.h"
 

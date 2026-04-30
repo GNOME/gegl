@@ -21,9 +21,12 @@
 #ifndef __GEGL_OPERATION_CONTEXT_PRIVATE_H__
 #define __GEGL_OPERATION_CONTEXT_PRIVATE_H__
 
-G_BEGIN_DECLS
+#include "gegl-operation-context.h"
 
 #include "gegl-operation.h"
+
+G_BEGIN_DECLS
+
 
 /**
  * When a node in a GEGL graph does processing, it needs context such

@@ -42,9 +42,9 @@ dropshadow a good initial testcase?
 
 // For module paths
 #include <gegl-init-private.h>
-#include <gegldatafiles.h>
+#include <gegldatafiles-private.h>
 /* For forcing module to be persistent */
-#include <geglmodule.h>
+#include <geglmodule-private.h>
 
 /* JsonOp: Meta-operation base class for ops defined by .json file */
 #include <operation/gegl-operation-meta-json.h>

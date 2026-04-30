@@ -23,8 +23,8 @@
 #include <glib-object.h>
 #include <glib/gprintf.h>
 
-#include "gegl-buffer.h"
-#include "gegl-buffer-config.h"
+#include "gegl-buffer-config-private.h"
+#include "gegl-buffer-private.h"
 
 
 G_DEFINE_TYPE (GeglBufferConfig, gegl_buffer_config, G_TYPE_OBJECT)

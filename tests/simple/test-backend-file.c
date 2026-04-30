@@ -14,15 +14,16 @@
  *
  * Copyright (C) 2014 Daniel Sabo
  */
-#include "gegl.h"
-#include "gegl-buffer-backend.h"
-#include "gegl-tile-backend-file.h"
-
-#include <glib/gstdio.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include <glib/gstdio.h>
+
+#include "gegl.h"
+#include "gegl-buffer-backend.h"
+#include "gegl-tile-backend-file-private.h"
 
 static gboolean
 test_buffer_path (void)

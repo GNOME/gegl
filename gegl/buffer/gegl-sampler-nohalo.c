@@ -150,11 +150,12 @@
  */
 
 #include "config.h"
+
 #include <math.h>
 
-#include "gegl-buffer.h"
-#include "gegl-buffer-formats.h"
-#include "gegl-sampler-nohalo.h"
+#include "gegl-buffer-formats-private.h"
+#include "gegl-buffer-private.h"
+#include "gegl-sampler-nohalo-private.h"
 
 /*
  * NOHALO_MINMOD is a novel implementation of the minmod function

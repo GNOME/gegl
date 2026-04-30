@@ -18,17 +18,16 @@
 
 #include "config.h"
 
-#include <string.h>
 #include <math.h>
+#include <string.h>
 
 #include <glib-object.h>
 
-#include "gegl-buffer.h"
-#include "gegl-buffer-types.h"
-#include "gegl-tile-handler-cache.h"
-#include "gegl-tile-handler-private.h"
-#include "gegl-tile-storage.h"
 #include "gegl-buffer-private.h"
+#include "gegl-buffer-types-private.h"
+#include "gegl-tile-handler-cache-private.h"
+#include "gegl-tile-handler-private.h"
+#include "gegl-tile-storage-private.h"
 
 struct _GeglTileHandlerPrivate
 {

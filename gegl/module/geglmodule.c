@@ -23,7 +23,7 @@
 #include <glib-object.h>
 #include <glib/gi18n-lib.h>
 
-#include "geglmodule.h"
+#include "geglmodule-private.h"
 
 
 #define gegl_filename_to_utf8(filename) (filename)

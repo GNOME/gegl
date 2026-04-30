@@ -43,10 +43,8 @@
 #include <signal.h>
 #endif
 
-#include "gegl-buffer-config.h"
-#include "gegl-buffer-swap.h"
+#include "gegl-buffer-config-private.h"
 #include "gegl-buffer-swap-private.h"
-
 
 #define SWAP_PREFIX        "gegl-swap-"
 

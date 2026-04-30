@@ -17,12 +17,13 @@
  */
 
 #include "config.h"
+
 #include <glib-object.h>
 
-#include "gegl.h"
 #include "gegl-types-internal.h"
-#include "gegl-connection.h"
 
+#include "gegl.h"
+#include "gegl-connection-private.h"
 
 struct _GeglConnection
 {

@@ -18,14 +18,16 @@
 
 #include "config.h"
 
-#include <glib-object.h>
 #include <string.h>
 
-#include "gegl.h"
-#include "gegl-operation-composer.h"
-#include "gegl-operation-context.h"
-#include "gegl-config.h"
+#include <glib-object.h>
 #include <glib/gi18n-lib.h>
+
+#include "gegl.h"
+#include "gegl-operation-context-private.h"
+#include "gegl-config-private.h"
+
+#include "gegl-operation-composer.h"
 
 static gboolean gegl_operation_composer_process (GeglOperation       *operation,
                               GeglOperationContext     *context,

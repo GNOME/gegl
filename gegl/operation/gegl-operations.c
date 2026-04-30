@@ -20,15 +20,17 @@
 
 #include "config.h"
 
-#include <glib-object.h>
 #include <string.h>
 
-#include "gegl.h"
+#include <glib-object.h>
+
 #include "gegl-types-internal.h"
+
+#include "gegl.h"
 #include "gegl-debug.h"
-#include "gegl-operation.h"
+#include "gegl-operation-context-private.h"
+#include "gegl-operation-private.h"
 #include "gegl-operations.h"
-#include "gegl-operation-context.h"
 
 static gchar     **accepted_licenses       = NULL;
 static GHashTable *known_operation_names   = NULL;

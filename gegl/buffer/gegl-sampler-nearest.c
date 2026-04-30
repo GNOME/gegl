@@ -16,17 +16,16 @@
  */
 
 #include "config.h"
+
 #include <math.h>
 #include <string.h>
 
-#include "gegl-buffer.h"
-#include "gegl-buffer-formats.h"
-#include "gegl-buffer-types.h"
-#include "gegl-buffer.h"
+#include "gegl-buffer-formats-private.h"
 #include "gegl-buffer-private.h"
-#include "gegl-tile-storage.h"
+#include "gegl-buffer-types-private.h"
+#include "gegl-sampler-nearest-private.h"
 #include "gegl-tile-backend.h"
-#include "gegl-sampler-nearest.h"
+#include "gegl-tile-storage-private.h"
 
 enum
 {

@@ -34,9 +34,8 @@
 #define lseek _lseek
 #endif
 
-#include "gegl-buffer.h"
 #include "gegl-buffer-private.h"
-#include "gegl-buffer-index.h"
+#include "gegl-buffer-index-private.h"
 #include "gegl-debug.h"
 
 #include <glib/gprintf.h>

@@ -17,22 +17,24 @@
  */
 
 #include "config.h"
+
+#include <math.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
 
 #include <glib-object.h>
 #include <glib/gprintf.h>
 
 #include "gegl.h"
 #include "gegl/gegl-debug.h"
-#include "gegl-buffer-types.h"
+
 #include "gegl-buffer-cl-iterator.h"
 #include "gegl-buffer-cl-cache.h"
-#include "gegl-buffer-private.h"
-#include "gegl-tile-storage.h"
+#include "gegl-cl.h"
 
-#include "opencl/gegl-cl.h"
+#include "buffer/gegl-buffer-private.h"
+#include "buffer/gegl-buffer-types-private.h"
+#include "buffer/gegl-tile-storage-private.h"
 
 typedef struct GeglBufferClIterators
 {

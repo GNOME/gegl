@@ -19,12 +19,13 @@
  */
 
 #include "config.h"
-#include <string.h>
-#include <math.h>
 
-#include "gegl-buffer.h"
-#include "gegl-buffer-formats.h"
-#include "gegl-sampler-cubic.h"
+#include <math.h>
+#include <string.h>
+
+#include "gegl-buffer-formats-private.h"
+#include "gegl-buffer-private.h"
+#include "gegl-sampler-cubic-private.h"
 
 enum
 {
