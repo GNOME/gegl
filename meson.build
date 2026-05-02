@@ -139,7 +139,11 @@ interface_age = 1
 binary_age  = 100 * minor_version + micro_version
 lt_current  = binary_age - interface_age
 lt_revision = interface_age
+
+#Computed differently but same as so_version of gimp meson.build
 so_version  = '@0@.@1@.@2@'.format(0, lt_current, lt_revision)
+#Same as darwin_versions of glib meson.build which also follows libtool versioning
+darwin_versions = [lt_current + 1, '@0@.@1@'.format(lt_current + 1, lt_revision)]
 
 ################################################################################
 # Host system detection
