@@ -136,9 +136,10 @@ config.set_quoted ('GETTEXT_PACKAGE',     '@0@'.format(gettext_package))
 # Libtool versionning
 interface_age = 1
 
-binary_age = 100 * minor_version + micro_version
-lt_current = binary_age - interface_age
-so_version  = '@0@.@1@.@2@'.format(0, lt_current, interface_age)
+binary_age  = 100 * minor_version + micro_version
+lt_current  = binary_age - interface_age
+lt_revision = interface_age
+so_version  = '@0@.@1@.@2@'.format(0, lt_current, lt_revision)
 
 ################################################################################
 # Host system detection
