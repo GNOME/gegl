@@ -137,6 +137,7 @@ gegl_lib_args = {
   'link_args': gegl_ldflags,
   'install': true,
   'version': so_version,
+  'darwin_versions': darwin_versions,
 }
 #FIXME: some symbols are unreliable on Windows GNU compilers. See: #445
 if cc.get_argument_syntax() == 'msvc'
