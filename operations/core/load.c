@@ -31,6 +31,8 @@
 #define realpath(a,b) _fullpath(b,a,_MAX_PATH)
 #endif
 
+#define SNIFFING_LENGTH 4096
+
 #ifdef GEGL_PROPERTIES
 
 property_file_path (path, _("File"), "")
@@ -42,29 +44,15 @@ property_object (metadata, _("Metadata"), GEGL_TYPE_METADATA)
 
 #else
 
-#define GEGL_OP_NAME     load
-#define GEGL_OP_C_SOURCE load.c
-
-#include <gegl-plugin.h>
-
-struct _GeglOp
-{
-  GeglOperationMeta parent_instance;
-  gpointer          properties;
-
+typedef struct LoadOpData {
   GeglNode *output;
   GeglNode *load;
-};
+} LoadOpData;
 
-typedef struct
-{
-  GeglOperationMetaClass parent_class;
-} GeglOpClass;
-
+#define GEGL_OP_META
+#define GEGL_OP_NAME        load
+#define GEGL_OP_C_SOURCE    load.c
 #include <gegl-op.h>
-GEGL_DEFINE_DYNAMIC_OPERATION(GEGL_TYPE_OPERATION_META)
-
-#define SNIFFING_LENGTH 4096
 
 static gboolean
 read_from_stream (GInputStream *stream,
@@ -85,21 +73,23 @@ read_from_stream (GInputStream *stream,
 static void
 do_setup (GeglOperation *operation, const gchar *path, const gchar *uri)
 {
-  GeglOp  *self = GEGL_OP (operation);
-  GeglProperties *o = GEGL_PROPERTIES (operation);
-  const gchar *handler = NULL;
-  gchar *content_type = NULL, *filename = NULL, *message;
-  gboolean load_from_uri, uncertain;
-  GInputStream *stream = NULL;
-  GError *error = NULL;
-  GFile *file = NULL;
-  guchar *buffer = NULL;
-  gsize size;
+  GeglProperties *props        = GEGL_PROPERTIES (operation);
+  LoadOpData     *data         = (LoadOpData *) (props->user_data);
+  GInputStream   *stream       = NULL;
+  GFile          *file         = NULL;
+  const gchar    *handler      = NULL;
+  gchar          *content_type = NULL;
+  gchar          *filename     = NULL;
+  guchar         *buffer       = NULL;
+  gboolean        load_from_uri;
 
   if (uri != NULL && strlen (uri) > 0)
     {
+      GError *error = NULL;
+
       if (!gegl_gio_uri_is_datauri (uri))
         filename = g_filename_display_name (uri);
+
       stream = gegl_gio_open_input_stream (uri, NULL, &file, &error);
       if (stream == NULL || (file == NULL && !gegl_gio_uri_is_datauri (uri)))
         {
@@ -107,8 +97,10 @@ do_setup (GeglOperation *operation, const gchar *path, const gchar *uri)
             {
               if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND))
                 {
+                  gchar *message = NULL;
+
                   message = g_strdup_printf ("%s does not exist", filename);
-                  gegl_node_set (self->load,
+                  gegl_node_set (data->load,
                                  "operation", "gegl:text",
                                  "string", message,
                                  "size", 12.0,
@@ -128,7 +120,9 @@ do_setup (GeglOperation *operation, const gchar *path, const gchar *uri)
     }
   else if (path != NULL && strlen (path) > 0)
     {
-      gchar *resolved_path = realpath (path, NULL);
+      GError *error         = NULL;
+      gchar  *resolved_path = realpath (path, NULL);
+
       if (resolved_path)
         {
           filename = g_filename_display_name (resolved_path);
@@ -138,8 +132,10 @@ do_setup (GeglOperation *operation, const gchar *path, const gchar *uri)
             {
               if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND))
                 {
+                  gchar *message = NULL;
+
                   message = g_strdup_printf ("%s does not exist", filename);
-                  gegl_node_set (self->load,
+                  gegl_node_set (data->load,
                                  "operation", "gegl:text",
                                  "string", message,
                                  "size", 12.0,
@@ -156,7 +152,7 @@ do_setup (GeglOperation *operation, const gchar *path, const gchar *uri)
         }
       else
         {
-          gegl_node_set (self->load,
+          gegl_node_set (data->load,
                          "operation", "gegl:text",
                          "string", "load failed",
                          "size", 12.0,
@@ -166,7 +162,7 @@ do_setup (GeglOperation *operation, const gchar *path, const gchar *uri)
     }
   else
     {
-      gegl_node_set (self->load,
+      gegl_node_set (data->load,
                      "operation", "gegl:text",
                      "string", "No path or URI specified",
                      "size", 12.0,
@@ -178,6 +174,10 @@ do_setup (GeglOperation *operation, const gchar *path, const gchar *uri)
 
   if (load_from_uri)
     {
+      GError   *error = NULL;
+      gboolean  uncertain;
+      gsize     size;
+
       if (!read_from_stream (stream, &buffer, &size, &error))
         {
           g_warning ("%s", error->message);
@@ -212,6 +212,9 @@ do_setup (GeglOperation *operation, const gchar *path, const gchar *uri)
        * GLib first looks at the filename, and sniffs the content only
        * if it is inconclusive.
        */
+      GError   *error = NULL;
+      gboolean  uncertain;
+      gsize     size;
 
       content_type = g_content_type_guess (filename, NULL, 0, &uncertain);
       if ((!g_str_has_prefix (content_type, "image/") &&
@@ -242,7 +245,7 @@ do_setup (GeglOperation *operation, const gchar *path, const gchar *uri)
 
   if (content_type == NULL)
     {
-      gegl_node_set (self->load,
+      gegl_node_set (data->load,
                      "operation", "gegl:text",
                      "string", "Failed to detect content type",
                      "size", 12.0,
@@ -253,7 +256,7 @@ do_setup (GeglOperation *operation, const gchar *path, const gchar *uri)
   handler = gegl_operation_handlers_get_loader (content_type);
   if (handler == NULL)
     {
-      gegl_node_set (self->load,
+      gegl_node_set (data->load,
                      "operation", "gegl:text",
                      "string", "Failed to find a loader",
                      "size", 12.0,
@@ -261,16 +264,16 @@ do_setup (GeglOperation *operation, const gchar *path, const gchar *uri)
       goto cleanup;
     }
 
-  gegl_node_set (self->load, "operation", handler, NULL);
+  gegl_node_set (data->load, "operation", handler, NULL);
 
-  if (o->metadata &&
+  if (props->metadata &&
       gegl_operation_find_property (handler, "metadata") != NULL)
-    gegl_node_set (self->load, "metadata", o->metadata, NULL);
+    gegl_node_set (data->load, "metadata", props->metadata, NULL);
 
   if (load_from_uri == TRUE)
-    gegl_node_set (self->load, "uri", uri, NULL);
+    gegl_node_set (data->load, "uri", uri, NULL);
   else
-    gegl_node_set (self->load, "path", path, NULL);
+    gegl_node_set (data->load, "path", path, NULL);
 
 cleanup:
 
@@ -291,18 +294,18 @@ cleanup:
 static void
 attach (GeglOperation *operation)
 {
-  GeglOp         *self = GEGL_OP (operation);
-  GeglProperties *o    = GEGL_PROPERTIES (operation);
+  GeglProperties *props = GEGL_PROPERTIES (operation);
+  LoadOpData     *data  = (LoadOpData *) (props->user_data);
 
-  self->output = gegl_node_get_output_proxy (operation->node, "output");
+  data->output = gegl_node_get_output_proxy (operation->node, "output");
 
-  self->load = gegl_node_new_child (operation->node,
+  data->load = gegl_node_new_child (operation->node,
                                     "operation", "gegl:text",
                                     NULL);
 
-  do_setup (operation, o->path, o->uri);
+  do_setup (operation, props->path, props->uri);
 
-  gegl_node_link (self->load, self->output);
+  gegl_node_link (data->load, data->output);
 }
 
 static GeglNode *
@@ -310,15 +313,15 @@ detect (GeglOperation *operation,
         gint           x,
         gint           y)
 {
-  GeglOp *self = GEGL_OP (operation);
-  GeglNode *output = self->output;
-  GeglRectangle bounds;
+  GeglProperties *props     = GEGL_PROPERTIES (operation);
+  LoadOpData     *data      = (LoadOpData *) (props->user_data);
+  GeglRectangle   bounds;
 
-  bounds = gegl_node_get_bounding_box (output); /* hopefully this is
-                                                   as correct as original
-                                                   which was peeking
-                                                   directly into output->have_rect
-                                                   */
+  bounds = gegl_node_get_bounding_box (data->output); /* hopefully this is
+                                                       * as correct as original
+                                                       * which was peeking
+                                                       * directly into output->have_rect
+                                                       */
 
   if (x >= bounds.x &&
       y >= bounds.y &&
@@ -330,29 +333,40 @@ detect (GeglOperation *operation,
 }
 
 static void
+finalize (GObject *object)
+{
+  GeglProperties *props = GEGL_PROPERTIES (GEGL_OPERATION (object));
+  LoadOpData     *data  = (LoadOpData *) (props->user_data);
+
+  g_free (data);
+}
+
+static void
 my_set_property (GObject      *gobject,
                  guint         property_id,
                  const GValue *value,
                  GParamSpec   *pspec)
 {
-  GeglOperation  *operation = GEGL_OPERATION (gobject);
-  GeglOp         *self      = GEGL_OP (operation);
-  GeglProperties *o         = GEGL_PROPERTIES (operation);
+  GeglOperation  *operation    = GEGL_OPERATION (gobject);
+  GeglProperties *props        = GEGL_PROPERTIES (operation);
+  LoadOpData     *data         = NULL;
+  gchar          *old_path     = g_strdup (props->path);
+  gchar          *old_uri      = g_strdup (props->uri);
+  void           *old_metadata = props->metadata;
+  gboolean        props_changed;
 
-  gchar *old_path = g_strdup (o->path);
-  gchar *old_uri = g_strdup (o->uri);
-  void  *old_metadata = o->metadata;
-
-  gboolean props_changed;
+  if (props->user_data == NULL)
+    props->user_data = g_new0 (LoadOpData, 1);
+  data = props->user_data;
 
   /* The set_property provided by the chant system does the
    * storing and reffing/unreffing of the input properties
    */
   set_property (gobject, property_id, value, pspec);
-  props_changed = g_strcmp0 (o->path, old_path) || g_strcmp0 (o->uri, old_uri) || (old_metadata != o->metadata);
+  props_changed = g_strcmp0 (props->path, old_path) || g_strcmp0 (props->uri, old_uri) || (old_metadata != props->metadata);
 
-  if (self->load && props_changed)
-    do_setup (operation, o->path, o->uri);
+  if (data->load && props_changed)
+    do_setup (operation, props->path, props->uri);
   g_free (old_path);
   g_free (old_uri);
 }
@@ -363,10 +377,11 @@ gegl_op_class_init (GeglOpClass *klass)
   GObjectClass       *object_class    = G_OBJECT_CLASS (klass);
   GeglOperationClass *operation_class = GEGL_OPERATION_CLASS (klass);
 
+  object_class->finalize     = finalize;
   object_class->set_property = my_set_property;
 
-  operation_class->attach = attach;
-  operation_class->detect = detect;
+  operation_class->attach  = attach;
+  operation_class->detect  = detect;
 
   gegl_operation_class_set_keys (operation_class,
     "name"       , "gegl:load",

@@ -17,9 +17,12 @@
  */
 
 #include "config.h"
-#include <glib/gi18n-lib.h>
-#include <gegl-metadata.h>
 
+#include <stdio.h>
+
+#include <glib/gi18n-lib.h>
+#include <gegl.h>
+#include <gegl-metadata.h>
 
 #ifdef GEGL_PROPERTIES
 
@@ -30,77 +33,63 @@ property_object (metadata, _("Metadata"), GEGL_TYPE_METADATA)
 
 #else
 
-#define GEGL_OP_NAME     save
-#define GEGL_OP_C_SOURCE save.c
-
-#include "gegl-plugin.h"
-
-struct _GeglOp
+typedef struct _SaveOpData
 {
-  GeglOperationSink  parent_instance;
-  gpointer           properties;
+  GeglNode *input;
+  GeglNode *save;
+  gchar    *cached_path;
+} SaveOpData;
 
-  GeglNode          *input;
-  GeglNode          *save;
-  gchar             *cached_path;
-};
-
-typedef struct
-{
-  GeglOperationSinkClass parent_class;
-} GeglOpClass;
-
+#define GEGL_OP_SINK
+#define GEGL_OP_NAME        save
+#define GEGL_OP_C_SOURCE    save.c
 #include "gegl-op.h"
-GEGL_DEFINE_DYNAMIC_OPERATION(GEGL_TYPE_OPERATION_SINK)
-
-#include <stdio.h>
-
 
 static void
 gegl_save_set_saver (GeglOperation *operation)
 {
-  GeglProperties  *o    = GEGL_PROPERTIES (operation);
-  GeglOp   *self = GEGL_OP (operation);
-  const gchar *extension, *handler;
+  const gchar    *extension = NULL;
+  const gchar    *handler   = NULL;
+  GeglProperties *props     = GEGL_PROPERTIES (operation);
+  SaveOpData     *data      = (SaveOpData *) (props->user_data);
 
   /* If prepare has already been invoked, bail out early */
-  if (self->cached_path && o->path && !strcmp (o->path, self->cached_path))
+  if (data->cached_path && props->path && !strcmp (props->path, data->cached_path))
       return;
-  if (o->path == NULL || *o->path == '\0')
+  if (props->path == NULL || *props->path == '\0')
     return;
-  g_free (self->cached_path);
+  g_free (data->cached_path);
 
   /* Find an extension handler and put it into the graph. The path can be
    * empty, which indicates an error, but not null. Ideally we'd like to
    * report an error here, but there's no way to pass it back to GEGL or the
    * user in prepare()...
    */
-  g_assert (o->path);
-  extension = strrchr (o->path, '.');
+  g_assert (props->path);
+  extension = strrchr (props->path, '.');
   handler   = extension ? gegl_operation_handlers_get_saver (extension) : NULL;
 
   if (handler)
     {
-      gegl_node_set (self->save,
+      gegl_node_set (data->save,
                      "operation", handler,
-                     "path",      o->path,
+                     "path",      props->path,
                      NULL);
 
-      if (o->metadata &&
+      if (props->metadata &&
           gegl_operation_find_property (handler, "metadata") != NULL)
-        gegl_node_set (self->save, "metadata", o->metadata, NULL);
+        gegl_node_set (data->save, "metadata", props->metadata, NULL);
 
     }
   else
     {
-      g_warning ("Unable to find suitable save handler for path '%s'", o->path);
-      gegl_node_set (self->save,
+      g_warning ("Unable to find suitable save handler for path '%s'", props->path);
+      gegl_node_set (data->save,
                      "operation", "gegl:nop",
                      NULL);
     }
 
-  self->cached_path = g_strdup (o->path);
-  return;
+  data->cached_path = g_strdup (props->path);
 }
 
 
@@ -110,17 +99,19 @@ gegl_save_set_saver (GeglOperation *operation)
 static void
 gegl_save_attach (GeglOperation *operation)
 {
-  GeglOp   *self = GEGL_OP (operation);
+  GeglProperties *props = GEGL_PROPERTIES (operation);
+  SaveOpData     *data  = (SaveOpData *) (props->user_data);
+
   /* const gchar *nodename; */
   /* gchar       *childname; */
 
-  g_assert (!self->input);
-  g_assert (!self->save);
-  g_assert (!self->cached_path);
+  g_assert (!data->input);
+  g_assert (!data->save);
+  g_assert (!data->cached_path);
 
   /* Initialise and attach child nodes */
-  self->input  = gegl_node_get_input_proxy (operation->node, "input");
-  self->save   = gegl_node_new_child (operation->node,
+  data->input  = gegl_node_get_input_proxy (operation->node, "input");
+  data->save   = gegl_node_new_child (operation->node,
                                       "operation", "gegl:nop",
                                       NULL);
 
@@ -139,7 +130,7 @@ gegl_save_attach (GeglOperation *operation)
   /* Link the saving node and attempt to set an appropriate save operation,
    * might as well at least try to do this before prepare.
    */
-  gegl_node_link (self->input, self->save);
+  gegl_node_link (data->input, data->save);
   gegl_save_set_saver (operation);
 }
 
@@ -149,17 +140,21 @@ gegl_save_set_property (GObject      *gobject,
                         const GValue *value,
                         GParamSpec   *pspec)
 {
-  GeglOperation *operation = GEGL_OPERATION (gobject);
-  GeglOp     *self = GEGL_OP (operation);
+  GeglOperation  *operation = GEGL_OPERATION (gobject);
+  GeglProperties *props     = GEGL_PROPERTIES (operation);
+  SaveOpData     *data      = NULL;
+
+  if (props->user_data == NULL)
+    props->user_data = g_new0 (SaveOpData, 1);
+  data = props->user_data;
 
   /* The set_property provided by the chant system does the
    * storing and reffing/unreffing of the input properties */
-  set_property(gobject, property_id, value, pspec);
+  set_property (gobject, property_id, value, pspec);
 
-  if (self->save)
+  if (data->save)
     gegl_save_set_saver (operation);
 }
-
 
 static gboolean
 gegl_save_process (GeglOperation        *operation,
@@ -168,9 +163,10 @@ gegl_save_process (GeglOperation        *operation,
                    const GeglRectangle  *roi,
                    gint                  level)
 {
-  GeglOp *self = GEGL_OP (operation);
+  GeglProperties *props = GEGL_PROPERTIES (operation);
+  SaveOpData     *data  = (SaveOpData *) (props->user_data);
 
-  return gegl_operation_process (gegl_node_get_gegl_operation (self->save),
+  return gegl_operation_process (gegl_node_get_gegl_operation (data->save),
                                  context,
                                  output_pad,
                                  roi,
@@ -180,13 +176,22 @@ gegl_save_process (GeglOperation        *operation,
 static void
 gegl_save_dispose (GObject *object)
 {
-  GeglOp *self = GEGL_OP (object);
+  GeglProperties *props = GEGL_PROPERTIES (GEGL_OPERATION (object));
+  SaveOpData     *data  = (SaveOpData *) (props->user_data);
 
-  g_clear_pointer (&self->cached_path, g_free);
+  g_clear_pointer (&data->cached_path, g_free);
 
   G_OBJECT_CLASS (gegl_op_parent_class)->dispose (object);
 }
 
+static void
+gegl_save_finalize (GObject *object)
+{
+  GeglProperties *props = GEGL_PROPERTIES (GEGL_OPERATION (object));
+  SaveOpData     *data  = (SaveOpData *) (props->user_data);
+
+  g_free (data);
+}
 
 static void
 gegl_op_class_init (GeglOpClass *klass)
@@ -196,6 +201,7 @@ gegl_op_class_init (GeglOpClass *klass)
   GeglOperationClass     *operation_class = GEGL_OPERATION_CLASS (klass);
 
   object_class->dispose      = gegl_save_dispose;
+  object_class->finalize     = gegl_save_finalize;
   object_class->set_property = gegl_save_set_property;
 
   operation_class->attach  = gegl_save_attach;

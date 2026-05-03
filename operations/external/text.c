@@ -17,8 +17,13 @@
  */
 
 #include "config.h"
+
 #include <glib/gi18n-lib.h>
 
+#include <cairo.h>
+#include <gegl.h>
+#include <pango/pango-attributes.h>
+#include <pango/pangocairo.h>
 
 #ifdef GEGL_PROPERTIES
 
@@ -58,21 +63,13 @@ property_int    (vertical_alignment, _("Vertical justification"), 0)
     value_range (0, 2)
     description (_("Vertical text alignment (0=Top, 1=Middle, 2=Bottom)"))
 
-property_int (width, _("Width"), 0)
+property_int (width, _("Width"), 1)
     description (_("Rendered width in pixels. (read only)"))
 property_int    (height, _("Height"), 0)
     description (_("Rendered height in pixels. (read only)"))
 
 #else
 
-#include <gegl-plugin.h>
-#include <cairo.h>
-#include <pango/pango-attributes.h>
-#include <pango/pangocairo.h>
-
-/* XXX: this struct is unneeded and could be folded directly into
- * struct _GeglOp
- */
 typedef struct {
   gchar         *string;
   gchar         *font;
@@ -82,36 +79,20 @@ typedef struct {
   gint           alignment;
   gint           vertical_alignment;
   GeglRectangle  defined;
-} CachedExtent;
+} TextOpData;
 
-struct _GeglOp
-{
-  GeglOperationSource parent_instance;
-  gpointer            properties;
-  CachedExtent        cex;
-};
-
-typedef struct
-{
-  GeglOperationSourceClass parent_class;
-} GeglOpClass;
-
+#define GEGL_OP_SOURCE
 #define GEGL_OP_NAME     text
 #define GEGL_OP_C_SOURCE text.c
 #include "gegl-op.h"
-GEGL_DEFINE_DYNAMIC_OPERATION (GEGL_TYPE_OPERATION_SOURCE)
 
-
-
-
-
-static void text_layout_text (GeglOp        *self,
+static void text_layout_text (GeglOperation *operation,
                               cairo_t       *cr,
                               gdouble        rowstride,
                               GeglRectangle *bounds,
                               int            component_set)
 {
-  GeglProperties       *o = GEGL_PROPERTIES (self);
+  GeglProperties       *props = GEGL_PROPERTIES (operation);
   PangoFontDescription *desc;
   PangoLayout          *layout;
   PangoAttrList        *attrs;
@@ -125,15 +106,15 @@ static void text_layout_text (GeglOp        *self,
   /* Create a PangoLayout, set the font and text */
   layout = pango_cairo_create_layout (cr);
 
-  string = g_strcompress (o->string);
+  string = g_strcompress (props->string);
   pango_layout_set_text (layout, string, -1);
   g_free (string);
 
-  desc = pango_font_description_from_string (o->font);
-  pango_font_description_set_absolute_size (desc, o->size * PANGO_SCALE);
+  desc = pango_font_description_from_string (props->font);
+  pango_font_description_set_absolute_size (desc, props->size * PANGO_SCALE);
   pango_layout_set_font_description (layout, desc);
 
-  switch (o->alignment)
+  switch (props->alignment)
   {
   case 0:
     alignment = PANGO_ALIGN_LEFT;
@@ -146,20 +127,20 @@ static void text_layout_text (GeglOp        *self,
     break;
   }
   pango_layout_set_alignment (layout, alignment);
-  pango_layout_set_width (layout, o->wrap * PANGO_SCALE);
+  pango_layout_set_width (layout, props->wrap * PANGO_SCALE);
 
   attrs = pango_attr_list_new ();
 
   switch (component_set)
   {
     case 0:
-      gegl_color_get_pixel (o->color, babl_format ("R'G'B'A u16"), color);
+      gegl_color_get_pixel (props->color, babl_format ("R'G'B'A u16"), color);
       break;
     case 1:
-      gegl_color_get_pixel (o->color, babl_format ("cykA u16"), color);
+      gegl_color_get_pixel (props->color, babl_format ("cykA u16"), color);
       break;
     case 2:
-      gegl_color_get_pixel (o->color, babl_format ("cmkA u16"), color);
+      gegl_color_get_pixel (props->color, babl_format ("cmkA u16"), color);
       break;
   }
 
@@ -177,18 +158,18 @@ static void text_layout_text (GeglOp        *self,
   pango_cairo_update_layout (cr, layout);
 
   pango_layout_get_pixel_extents (layout, &ink_rect, &logical_rect);
-  if (o->vertical_wrap >= 0)
+  if (props->vertical_wrap >= 0)
     {
-      switch (o->vertical_alignment)
+      switch (props->vertical_alignment)
       {
       case 0: /* top */
         vertical_offset = 0;
         break;
       case 1: /* middle */
-        vertical_offset = (o->vertical_wrap - logical_rect.height) / 2;
+        vertical_offset = (props->vertical_wrap - logical_rect.height) / 2;
         break;
       case 2: /* bottom */
-        vertical_offset = o->vertical_wrap - logical_rect.height;
+        vertical_offset = props->vertical_wrap - logical_rect.height;
         break;
       }
     }
@@ -220,10 +201,9 @@ process (GeglOperation       *operation,
          const GeglRectangle *result,
          gint                 level)
 {
-  GeglOp *self = GEGL_OP (operation);
-  const Babl *format =  gegl_operation_get_format (operation, "output");
+  const Babl *format     =  gegl_operation_get_format (operation, "output");
   const Babl *formats[4] = {NULL, NULL, NULL, NULL};
-  int is_cmyk = babl_get_model_flags (format) & BABL_MODEL_FLAG_CMYK ? 1 : 0;
+  int is_cmyk            = babl_get_model_flags (format) & BABL_MODEL_FLAG_CMYK ? 1 : 0;
 
   cairo_t         *cr;
   cairo_surface_t *surface;
@@ -249,7 +229,7 @@ process (GeglOperation       *operation,
                                                  result->width * 4);
     cr = cairo_create (surface);
     cairo_translate (cr, -result->x, -result->y);
-    text_layout_text (self, cr, 0, NULL, i+is_cmyk);
+    text_layout_text (operation, cr, 0, NULL, i+is_cmyk);
 
     gegl_buffer_set (output, result, 0, formats[i], data,
                      GEGL_AUTO_ROWSTRIDE);
@@ -265,66 +245,59 @@ process (GeglOperation       *operation,
 static GeglRectangle
 get_bounding_box (GeglOperation *operation)
 {
-  GeglOp *self = GEGL_OP (operation);
-  GeglProperties           *o = GEGL_PROPERTIES (self);
-  CachedExtent *extent;
-  gint status = FALSE;
+  GeglProperties *props  = GEGL_PROPERTIES (operation);
+  TextOpData     *data   = (TextOpData *) props->user_data;
+  gint            status = FALSE;
 
-  extent = (CachedExtent*)&self->cex;
-  /*if (!self->priv)
-    {
-      self->priv = g_malloc0 (sizeof (CachedExtent));
-      extent = (CachedExtent*)self->priv;
-      extent->string = g_strdup ("");
-      extent->font = g_strdup ("");
-    }*/
-
-  if ((extent->string && strcmp (extent->string, o->string)) ||
-      (extent->font && strcmp (extent->font, o->font)) ||
-      extent->size != o->size ||
-      extent->wrap != o->wrap ||
-      extent->vertical_wrap != o->vertical_wrap ||
-      extent->alignment != o->alignment ||
-      extent->vertical_alignment != o->vertical_alignment)
+  if ((data->string && strcmp (data->string, props->string)) ||
+      (data->font && strcmp (data->font, props->font)) ||
+      data->size != props->size ||
+      data->wrap != props->wrap ||
+      data->vertical_wrap != props->vertical_wrap ||
+      data->alignment != props->alignment ||
+      data->vertical_alignment != props->vertical_alignment)
     { /* get extents */
-      cairo_t *cr;
+      cairo_t         *cr      = NULL;
+      cairo_surface_t *surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, 1, 1);
 
-      cairo_surface_t *surface  = cairo_image_surface_create (CAIRO_FORMAT_ARGB32,
-          1, 1);
       cr = cairo_create (surface);
-      text_layout_text (self, cr, 0, &extent->defined, 0);
+      text_layout_text (operation, cr, 0, &data->defined, 0);
       cairo_destroy (cr);
       cairo_surface_destroy (surface);
 
-      g_free (extent->string);
-      extent->string = g_strdup (o->string);
-      g_free (extent->font);
-      extent->font = g_strdup (o->font);
-      extent->size = o->size;
-      extent->wrap = o->wrap;
-      extent->vertical_wrap = o->vertical_wrap;
-      extent->vertical_alignment = o->vertical_alignment;
+      g_free (data->string);
+      data->string = g_strdup (props->string);
+      g_free (data->font);
+      data->font = g_strdup (props->font);
+      data->size = props->size;
+      data->wrap = props->wrap;
+      data->vertical_wrap = props->vertical_wrap;
+      data->vertical_alignment = props->vertical_alignment;
 
       /* store the measured size for later use */
-      o->width  = extent->defined.width  - extent->defined.x;
-      o->height = extent->defined.height - extent->defined.y;
+      props->width  = data->defined.width  - data->defined.x;
+      props->height = data->defined.height - data->defined.y;
     }
 
   if (status)
     {
-      g_warning ("get defined region for text '%s' failed", o->string);
+      g_warning ("get defined region for text '%s' failed", props->string);
     }
 
-  return extent->defined;
+  return data->defined;
 }
 
 static void
 finalize (GObject *object)
 {
-  GeglOp *self = GEGL_OP (object);
+  TextOpData *data = (TextOpData *) GEGL_PROPERTIES (object)->user_data;
 
-  g_free (self->cex.string);
-  g_free (self->cex.font);
+  if (data != NULL)
+    {
+      g_free (data->string);
+      g_free (data->font);
+    }
+  g_free (data);
 
   G_OBJECT_CLASS (gegl_op_parent_class)->finalize (object);
 }
@@ -332,9 +305,9 @@ finalize (GObject *object)
 static void
 prepare (GeglOperation *operation)
 {
-  GeglProperties *o = GEGL_PROPERTIES (operation);
-  const Babl *color_format = gegl_color_get_format (o->color);
-  BablModelFlag model_flags = babl_get_model_flags (color_format);
+  GeglProperties *props        = GEGL_PROPERTIES (operation);
+  const Babl     *color_format = gegl_color_get_format (props->color);
+  BablModelFlag   model_flags  = babl_get_model_flags (color_format);
 
   if (model_flags & BABL_MODEL_FLAG_CMYK)
   {
@@ -346,6 +319,9 @@ prepare (GeglOperation *operation)
     gegl_operation_set_format (operation, "output",
                                babl_format ("RaGaBaA float"));
   }
+
+  if (props->user_data == NULL)
+    props->user_data = g_new0 (TextOpData, 1);
 }
 
 static const gchar *composition =
@@ -365,17 +341,15 @@ static const gchar *composition =
 static void
 gegl_op_class_init (GeglOpClass *klass)
 {
-  GObjectClass             *object_class;
-  GeglOperationClass       *operation_class;
-  GeglOperationSourceClass *operation_source_class;
-
-  object_class    = G_OBJECT_CLASS (klass);
-  operation_class = GEGL_OPERATION_CLASS (klass);
-  operation_source_class = GEGL_OPERATION_SOURCE_CLASS (klass);
+  GObjectClass             *object_class           = G_OBJECT_CLASS (klass);
+  GeglOperationClass       *operation_class        = GEGL_OPERATION_CLASS (klass);
+  GeglOperationSourceClass *operation_source_class = GEGL_OPERATION_SOURCE_CLASS (klass);
 
   object_class->finalize = finalize;
-  operation_class->prepare = prepare;
+
+  operation_class->prepare          = prepare;
   operation_class->get_bounding_box = get_bounding_box;
+
   operation_source_class->process = process;
 
   gegl_operation_class_set_keys (operation_class,
