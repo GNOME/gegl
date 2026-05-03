@@ -19,8 +19,12 @@
 
 #include "config.h"
 
+#include <errno.h>
+#include <stdio.h>
 #include <stdlib.h>
 
+#include <gegl.h>
+#include <gegl-debug.h>
 #include <glib/gi18n-lib.h>
 
 #ifdef GEGL_PROPERTIES
@@ -41,28 +45,10 @@ property_double (sigma, _("Weight sigma"), 8.0f)
 /*#define DEBUG_LINEARIZE*/
 /*#define DEBUG_SAVE_CURVES*/
 
-#include <gegl-plugin.h>
-struct _GeglOp
-{
-  GeglOperationFilter parent_instance;
-  gpointer            properties;
-};
-
-typedef struct
-{
-  GeglOperationFilterClass parent_class;
-} GeglOpClass;
-
-
+#define GEGL_OP_FILTER
 #define GEGL_OP_C_SOURCE exp-combine.c
 #define GEGL_OP_NAME     exp_combine
 #include "gegl-op.h"
-GEGL_DEFINE_DYNAMIC_OPERATION(GEGL_TYPE_OPERATION_FILTER)
-
-#include <errno.h>
-#include <stdio.h>
-
-#include "gegl-debug.h"
 
 static const gchar *PAD_FORMAT = "R'G'B' float";
 static const gchar *EXP_PREFIX = "exposure-";

@@ -43,22 +43,11 @@ property_int (quality, "quality", 10)
 
 #else
 
-#include "gegl-plugin.h"
-struct _GeglOp
-{
-  GeglOperationSource parent_instance;
-  gpointer            properties;
-};
-
-typedef struct
-{
-  GeglOperationSourceClass parent_class;
-} GeglOpClass;
-
+#define GEGL_OP_SOURCE
 #define GEGL_OP_NAME raw_load
 #define GEGL_OP_C_SOURCE raw-load.c
+
 #include "gegl-op.h"
-GEGL_DEFINE_DYNAMIC_OPERATION(GEGL_TYPE_OPERATION_SOURCE)
 
 #include <stdio.h>
 #include <libraw.h>
