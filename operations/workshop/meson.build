@@ -23,6 +23,7 @@ gegl_workshop_sources = files(
   'integral-image.c',
   'rawbayer-load.c',
   'segment-kmeans.c',
+  'sharpen.c',
   'shuffle-search.c',
   'selective-hue-saturation.c'
 )
