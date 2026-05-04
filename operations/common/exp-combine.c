@@ -759,18 +759,10 @@ gegl_expcombine_get_response (gfloat              *hdr,
  * identifier.
  */
 static inline gboolean
-gegl_expcombine_is_exposure_padname (const gchar *p)
+gegl_expcombine_is_exposure_padname (const gchar *pad_name)
 {
-  return g_str_has_prefix (p, EXP_PREFIX);
+  return g_str_has_prefix (pad_name, EXP_PREFIX);
 }
-
-
-static inline gboolean
-gegl_expcombine_is_exposure_pad (GeglPad *p)
-{
-  return gegl_expcombine_is_exposure_padname (gegl_pad_get_name (p));
-}
-
 
 /* XXX: We create a large quantity of pads for all the exposures, hoping we
  * create sufficient numbers and they don't utilise too many resources. This
@@ -814,18 +806,18 @@ gegl_expcombine_attach (GeglOperation *operation)
 static void
 gegl_expcombine_prepare (GeglOperation *operation)
 {
-  const Babl *space = gegl_operation_get_source_space (operation, "exposure_0");
-  GSList *inputs = gegl_node_get_input_pads (operation->node);
+  const Babl  *space  = gegl_operation_get_source_space (operation, "exposure_0");
+  const Babl  *format = babl_format_with_space (PAD_FORMAT, space);
+  gchar      **inputs = gegl_node_list_input_pads (operation->node);
 
-  /* Set all the pads output formats */
-  for (; inputs; inputs = inputs->next)
+  for (gint i = 0; inputs[i] != NULL; i++)
     {
-      GeglPad *pad = inputs->data;
+      gchar *pad_name = inputs[i];
 
-      gegl_pad_set_format (pad, babl_format_with_space (PAD_FORMAT, space));
+      gegl_operation_set_format (operation, pad_name, space);
     }
 
-  gegl_operation_set_format (operation, "output", babl_format_with_space (PAD_FORMAT, space));
+  gegl_operation_set_format (operation, "output", format);
 }
 
 
@@ -834,10 +826,12 @@ gegl_expcombine_prepare (GeglOperation *operation)
  * ordered exposure pads.
  */
 static int
-gegl_expcombine_pad_cmp (gconstpointer _a, gconstpointer _b)
+gegl_expcombine_pad_cmp (gconstpointer _a,
+                         gconstpointer _b,
+                         gpointer user_data)
 {
-  const gchar *a = gegl_pad_get_name (GEGL_PAD (_a)),
-              *b = gegl_pad_get_name (GEGL_PAD (_b));
+  const gchar *a = _a;
+  const gchar *b = _b;
   guint64      x, y;
 
   if (!g_str_has_prefix (b, EXP_PREFIX)) return  1;
@@ -870,14 +864,13 @@ gegl_expcombine_get_exposures (GeglOperation        *operation,
                                const GeglRectangle  *full_roi,
                                GeglRectangle        *scaled_roi)
 {
-  const Babl *space = gegl_operation_get_source_space (operation, "input");
-  GeglProperties    *o          = GEGL_PROPERTIES (operation);
-  gchar         *ev_cursor  = o->exposures;
-  GSList        *exposures  = NULL,
-                *inputs,
-                *cursor;
-  guint          components = babl_format_get_n_components (babl_format (PAD_FORMAT));
-  gfloat         scale;
+  const Babl      *space           = gegl_operation_get_source_space (operation, "input");
+  GeglProperties  *o               = GEGL_PROPERTIES (operation);
+  GSList          *exposures       = NULL;
+  gchar          **inputs          = NULL;
+  gchar           *ev_cursor       = o->exposures;
+  guint            components      = babl_format_get_n_components (babl_format (PAD_FORMAT));
+  gfloat           scale;
 
   g_return_val_if_fail (operation, NULL);
   g_return_val_if_fail (context, NULL);
@@ -907,35 +900,38 @@ gegl_expcombine_get_exposures (GeglOperation        *operation,
       }
   }
 
-  inputs = g_slist_copy (gegl_node_get_input_pads (operation->node));
-  inputs = g_slist_sort (inputs, gegl_expcombine_pad_cmp);
+  inputs = g_strdupv (gegl_node_list_input_pads (operation->node));
+  g_sort_array (inputs,
+                g_strv_length (inputs),
+                sizeof (gchar *),
+                gegl_expcombine_pad_cmp,
+                NULL);
 
   /* Read in each of the exposure buffers */
-  for (cursor = inputs; cursor; cursor = cursor->next)
+  for (gint i = 0; inputs[i] != NULL; i++)
     {
-      GeglBuffer *buffer;
-      GeglPad    *pad = cursor->data;
-      exposure   *e;
+      GeglBuffer *buffer   = NULL;
+      exposure   *e        = NULL;
+      gchar      *pad_name = inputs[i];
 
       /* Weed out non-exposure pads */
-      if (!gegl_expcombine_is_exposure_pad (pad))
+      if (!gegl_expcombine_is_exposure_padname (pad_name))
         {
-          if (strcmp (gegl_pad_get_name (pad), "aux"))
+          if (strcmp (pad_name, "aux"))
               g_warning ("Unexpected pad name '%s' in exp-combine",
-                         gegl_pad_get_name (pad));
+                         pad_name);
           continue;
         }
 
       /* Add exposure to list */
-      buffer = (GeglBuffer*)gegl_operation_context_dup_object (context,
-                                                   gegl_pad_get_name (pad));
+      buffer = (GeglBuffer*) gegl_operation_context_dup_object (context, pad_name);
       if (!buffer)
           continue;
 
-      e                = gegl_expcombine_new_exposure ();
-      e->pixels[PIXELS_FULL]   = g_new (gfloat, full_roi->width  *
-                                                full_roi->height *
-                                                components);
+      e = gegl_expcombine_new_exposure ();
+      e->pixels[PIXELS_FULL] = g_new (gfloat, full_roi->width  *
+                                              full_roi->height *
+                                              components);
       gegl_buffer_get (buffer, full_roi, 1.0, babl_format_with_space (PAD_FORMAT, space),
                        e->pixels[PIXELS_FULL], GEGL_AUTO_ROWSTRIDE,
                        GEGL_ABYSS_NONE);
@@ -984,7 +980,6 @@ gegl_expcombine_get_exposures (GeglOperation        *operation,
         {
           g_warning ("Invalid exposure values specified for exp-combine");
           g_slist_free_full (exposures, (GDestroyNotify) gegl_expcombine_destroy_exposure);
-          g_slist_free (inputs);
           gegl_expcombine_destroy_exposure (e);
 
           return NULL;
@@ -999,7 +994,7 @@ gegl_expcombine_get_exposures (GeglOperation        *operation,
   exposures = g_slist_sort (exposures, gegl_expcombine_exposure_cmp);
   {
     exposure *prev = exposures->data;
-    for (cursor = exposures; cursor; cursor = cursor->next)
+    for (GSList *cursor = exposures; cursor; cursor = cursor->next)
       {
         exposure *e = cursor->data;
 
@@ -1014,7 +1009,6 @@ gegl_expcombine_get_exposures (GeglOperation        *operation,
   if (*ev_cursor != '\0')
       g_warning ("too many supplied EVs for input pads");
 
-  g_slist_free (inputs);
   return exposures;
 }
 
@@ -1202,20 +1196,20 @@ gegl_expcombine_process (GeglOperation        *operation,
 static GeglRectangle
 gegl_expcombine_get_bounding_box (GeglOperation *operation)
 {
-  GeglRectangle  result = {0,0,0,0};
-  GSList        *inputs = gegl_node_get_input_pads (operation->node);
+  GeglRectangle  result = { 0 };
+  gchar        **inputs = gegl_node_list_input_pads (operation->node);
 
-  for (; inputs; inputs = inputs->next)
+  for (gint i = 0; inputs[i] != NULL; i++)
     {
-      GeglPad             *pad = inputs->data;
-      const GeglRectangle *newrect;
+      const GeglRectangle *newrect  = NULL;
+      gchar               *pad_name = inputs[i];
 
-      if (!gegl_expcombine_is_exposure_pad (pad))
+      if (!gegl_expcombine_is_exposure_padname (pad_name))
         continue;
 
       /* Get the source bounds and update with the union */
       newrect = gegl_operation_source_get_bounding_box (operation,
-                                                        gegl_pad_get_name (pad));
+                                                        pad_name);
       if (!newrect)
         continue;
 
