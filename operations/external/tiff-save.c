@@ -17,8 +17,14 @@
  */
 
 #include "config.h"
+
 #include <glib/gi18n-lib.h>
+#include <glib/gprintf.h>
+#include <tiffio.h>
+
 #include <gegl-metadata.h>
+
+#include "gegl-op-utils.h"
 
 #ifdef GEGL_PROPERTIES
 
@@ -41,9 +47,6 @@ property_object(metadata, _("Metadata"), GEGL_TYPE_METADATA)
 #define GEGL_OP_C_SOURCE tiff-save.c
 
 #include <gegl-op.h>
-#include <gegl-gio-private.h>
-#include <glib/gprintf.h>
-#include <tiffio.h>
 
 typedef struct
 {

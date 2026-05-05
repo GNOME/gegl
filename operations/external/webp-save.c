@@ -17,8 +17,11 @@
  */
 
 #include "config.h"
-#include <glib/gi18n-lib.h>
 
+#include <glib/gi18n-lib.h>
+#include <webp/encode.h>
+
+#include "gegl-op-utils.h"
 
 #ifdef GEGL_PROPERTIES
 
@@ -36,8 +39,6 @@ property_int (quality, _("Quality"), 90)
 #define GEGL_OP_C_SOURCE webp-save.c
 
 #include <gegl-op.h>
-#include <gegl-gio-private.h>
-#include <webp/encode.h>
 
 static int
 write_to_stream (const uint8_t*     data,

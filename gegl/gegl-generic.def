@@ -350,10 +350,6 @@ EXPORTS
   gegl_get_default_module_paths
   gegl_get_option_group
   gegl_get_version
-  gegl_gio_datauri_get_content_type
-  gegl_gio_open_input_stream
-  gegl_gio_open_output_stream
-  gegl_gio_uri_is_datauri
   gegl_graph_build
   gegl_graph_dump_outputs
   gegl_graph_dump_request

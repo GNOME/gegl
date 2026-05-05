@@ -58,7 +58,6 @@ gegl_sources = files(
   'gegl-dot-visitor.c',
   'gegl-dot.c',
   'gegl-enums.c',
-  'gegl-gio.c',
   'gegl-init.c',
   'gegl-instrument.c',
   'gegl-introspection-support.c',

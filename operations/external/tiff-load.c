@@ -17,12 +17,19 @@
  */
 
 #include "config.h"
+
 #ifdef HAVE_STRPTIME
 #define _XOPEN_SOURCE
 #include <time.h>
 #endif
+
 #include <glib/gi18n-lib.h>
+#include <glib/gprintf.h>
+#include <tiffio.h>
+
 #include <gegl-metadata.h>
+
+#include "gegl-op-utils.h"
 
 #ifdef GEGL_PROPERTIES
 
@@ -45,11 +52,7 @@ property_object(metadata, _("Metadata"), GEGL_TYPE_METADATA)
 #define GEGL_OP_NAME     tiff_load
 #define GEGL_OP_C_SOURCE tiff-load.c
 
-
 #include <gegl-op.h>
-#include <gegl-gio-private.h>
-#include <glib/gprintf.h>
-#include <tiffio.h>
 
 typedef enum {
   TIFF_LOADING_RGBA,

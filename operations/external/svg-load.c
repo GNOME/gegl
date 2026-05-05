@@ -17,8 +17,12 @@
  */
 
 #include "config.h"
-#include <glib/gi18n-lib.h>
 
+#include <cairo.h>
+#include <glib/gi18n-lib.h>
+#include <librsvg/rsvg.h>
+
+#include "gegl-op-utils.h"
 
 #ifdef GEGL_PROPERTIES
 
@@ -39,9 +43,6 @@ property_int (height, _("Height"), -1)
 #define GEGL_OP_C_SOURCE svg-load.c
 
 #include <gegl-op.h>
-#include <cairo.h>
-#include <gegl-gio-private.h>
-#include <librsvg/rsvg.h>
 
 typedef struct
 {

@@ -17,8 +17,14 @@
  */
 
 #include "config.h"
-#include <glib/gi18n-lib.h>
+
+#include <stdio.h> /* jpeglib.h needs FILE... */
+
 #include <gegl-metadata.h>
+#include <glib/gi18n-lib.h>
+#include <jpeglib.h>
+
+#include "gegl-op-utils.h"
 
 #ifdef GEGL_PROPERTIES
 
@@ -51,9 +57,6 @@ property_object(metadata, _("Metadata"), GEGL_TYPE_METADATA)
 #define GEGL_OP_C_SOURCE jpg-save.c
 
 #include <gegl-op.h>
-#include <gegl-gio-private.h>
-#include <stdio.h> /* jpeglib.h needs FILE... */
-#include <jpeglib.h>
 
 static const gsize buffer_size = 4096;
 

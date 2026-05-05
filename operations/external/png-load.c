@@ -28,9 +28,13 @@
 #define _XOPEN_SOURCE
 #include <time.h>
 #endif
+
 #include <glib/gi18n-lib.h>
-#include <gegl-gio-private.h>
+#include <png.h>
+
 #include <gegl-metadata.h>
+
+#include "gegl-op-utils.h"
 
 #ifdef GEGL_PROPERTIES
 
@@ -48,8 +52,6 @@ property_object (metadata, _("Metadata"), GEGL_TYPE_METADATA)
 #define GEGL_OP_C_SOURCE png-load.c
 
 #include "gegl-op.h"
-#include <png.h>
-
 
 #define WARN_IF_ERROR(gerror) \
 do { \

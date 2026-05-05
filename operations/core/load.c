@@ -17,8 +17,15 @@
  */
 
 #include "config.h"
-#include <glib/gi18n-lib.h>
+
+#include <stdio.h>
+#include <stdlib.h>
+
+#include <gegl.h>
 #include <gegl-metadata.h>
+#include <glib/gi18n-lib.h>
+
+#include "gegl-op-utils.h"
 
 #ifdef G_OS_WIN32
 #define realpath(a,b) _fullpath(b,a,_MAX_PATH)
@@ -39,7 +46,6 @@ property_object (metadata, _("Metadata"), GEGL_TYPE_METADATA)
 #define GEGL_OP_C_SOURCE load.c
 
 #include <gegl-plugin.h>
-#include <gegl-gio-private.h>
 
 struct _GeglOp
 {
@@ -58,8 +64,6 @@ typedef struct
 #include <gegl-op.h>
 GEGL_DEFINE_DYNAMIC_OPERATION(GEGL_TYPE_OPERATION_META)
 
-#include <stdio.h>
-#include <stdlib.h>
 #define SNIFFING_LENGTH 4096
 
 static gboolean

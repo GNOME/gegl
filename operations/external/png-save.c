@@ -19,12 +19,15 @@
 
 #include "config.h"
 
+#include <gegl-metadata.h>
+#include <glib/gi18n-lib.h>
+#include <png.h>
+
+#include "gegl-op-utils.h"
+
 #ifndef __PRETTY_FUNCTION__
 #define __PRETTY_FUNCTION__ __FUNCTION__
 #endif
-
-#include <glib/gi18n-lib.h>
-#include <gegl-metadata.h>
 
 #ifdef GEGL_PROPERTIES
 
@@ -46,8 +49,6 @@ property_object(metadata, _("Metadata"), GEGL_TYPE_METADATA)
 #define GEGL_OP_C_SOURCE png-save.c
 
 #include <gegl-op.h>
-#include <gegl-gio-private.h>
-#include <png.h>
 
 static void
 png_format_timestamp (const GValue *src_value, GValue *dest_value)

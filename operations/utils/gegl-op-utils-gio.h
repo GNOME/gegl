@@ -16,26 +16,25 @@
  * Copyright 2014 Jon Nordby, The Grid <jononor@gmail.com>
  */
 
+#pragma once
+
 #include <glib.h>
 #include <gio/gio.h>
 
 G_BEGIN_DECLS
 
-#ifndef __GEGL_GIO_PRIVATE_H__
-#define __GEGL_GIO_PRIVATE_H__
+GInputStream  * gegl_gio_open_input_stream        (const gchar  *uri,
+                                                   const gchar  *path,
+                                                   GFile       **out_file,
+                                                   GError      **err);
 
-GInputStream *
-gegl_gio_open_input_stream(const gchar *uri, const gchar *path, GFile **out_file, GError **err);
+GOutputStream * gegl_gio_open_output_stream       (const gchar  *uri,
+                                                   const gchar  *path,
+                                                   GFile       **out_file,
+                                                   GError      **err);
 
-GOutputStream *
-gegl_gio_open_output_stream(const gchar *uri, const gchar *path, GFile **out_file, GError **err);
+gboolean        gegl_gio_uri_is_datauri           (const gchar  *uri);
 
-gboolean
-gegl_gio_uri_is_datauri(const gchar *uri);
-
-gchar *
-gegl_gio_datauri_get_content_type(const gchar *uri);
-
-#endif // __GEGL_GIO_PRIVATE_H__
+gchar         * gegl_gio_datauri_get_content_type (const gchar  *uri);
 
 G_END_DECLS

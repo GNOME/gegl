@@ -26,8 +26,11 @@
  */
 
 #include "config.h"
-#include <glib/gi18n-lib.h>
 
+#include <glib/gi18n-lib.h>
+#include <nsgif.h>
+
+#include "gegl-op-utils.h"
 
 #ifdef GEGL_PROPERTIES
 
@@ -47,9 +50,6 @@ property_int (frame_delay, _("frame-delay"), 100)
 #define GEGL_OP_C_SOURCE gif-load.c
 
 #include <gegl-op.h>
-#include <gegl-gio-private.h>
-
-#include <nsgif.h>
 
 #define IO_BUFFER_SIZE 4096
 

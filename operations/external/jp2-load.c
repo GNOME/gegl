@@ -17,8 +17,11 @@
  */
 
 #include "config.h"
-#include <glib/gi18n-lib.h>
 
+#include <glib/gi18n-lib.h>
+#include <jasper/jasper.h>
+
+#include "gegl-op-utils.h"
 
 #ifdef GEGL_PROPERTIES
 
@@ -34,8 +37,6 @@ property_uri (uri, _("URI"), "")
 #define GEGL_OP_C_SOURCE jp2-load.c
 
 #include <gegl-op.h>
-#include <gegl-gio-private.h>
-#include <jasper/jasper.h>
 
 typedef struct
 {

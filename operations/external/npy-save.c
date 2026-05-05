@@ -23,8 +23,12 @@
  */
 
 #include "config.h"
+
+#include <string.h>
+
 #include <glib/gi18n-lib.h>
 
+#include "gegl-op-utils.h"
 
 #ifdef GEGL_PROPERTIES
 
@@ -38,8 +42,6 @@ property_file_path (path, _("File"), "")
 #define GEGL_OP_C_SOURCE npy-save.c
 
 #include <gegl-op.h>
-#include <gegl-gio-private.h>
-#include <string.h>
 
 static gsize
 write_to_stream (GOutputStream     *stream,

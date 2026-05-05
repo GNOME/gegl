@@ -17,8 +17,14 @@
  */
 
 #include "config.h"
+
+#include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 #include <glib/gi18n-lib.h>
 
+#include "gegl-op-utils.h"
 
 #ifdef GEGL_PROPERTIES
 
@@ -39,10 +45,6 @@ property_file_path (uri, _("URI"), "")
 #define ASCII_P                 'P'
 
 #include "gegl-op.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <errno.h>
-#include <gegl-gio-private.h>
 
 typedef enum {
   PIXMAP_ASCII_GRAY = '2',

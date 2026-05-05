@@ -18,11 +18,16 @@
 
 #include "config.h"
 
+#include <stdio.h>
+
+#include <glib/gi18n-lib.h>
+#include <jpeglib.h>
+
+#include "gegl-op-utils.h"
+
 #ifndef __PRETTY_FUNCTION__
 #define __PRETTY_FUNCTION__ __FUNCTION__
 #endif
-
-#include <glib/gi18n-lib.h>
 
 #ifdef GEGL_PROPERTIES
 
@@ -38,9 +43,6 @@ property_uri (uri, _("URI"), "")
 #define GEGL_OP_C_SOURCE jpg-load.c
 
 #include "gegl-op.h"
-#include <stdio.h>
-#include <jpeglib.h>
-#include <gegl-gio-private.h>
 
 /* icc-loading code from:  http://www.littlecms.com/1/iccjpeg.c */
 
