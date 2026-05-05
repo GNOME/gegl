@@ -29,7 +29,7 @@
 #ifndef OPENCL_CL_HALF_H
 #define OPENCL_CL_HALF_H
 
-#include <CL/cl_platform.h>
+#include "cl_platform.h"
 
 #include <stdint.h>
 
