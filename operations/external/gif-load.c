@@ -49,7 +49,6 @@ property_int (frame_delay, _("frame-delay"), 100)
 #include <gegl-op.h>
 #include <gegl-gio-private.h>
 
-#include <assert.h>
 #include <nsgif.h>
 
 #define IO_BUFFER_SIZE 4096
@@ -98,13 +97,15 @@ static void *bitmap_create(int width, int height)
 
 static unsigned char *bitmap_get_buffer(void *bitmap)
 {
-  assert(bitmap);
+  g_assert (bitmap != NULL);
+
   return bitmap;
 }
 
 static void bitmap_destroy(void *bitmap)
 {
-  assert(bitmap);
+  g_assert (bitmap != NULL);
+
   free(bitmap);
 }
 

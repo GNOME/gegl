@@ -43,7 +43,6 @@ property_int  (fps, _("FPS"),  0)
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
 
 #include <getopt.h>             /* getopt_long() */
 
@@ -183,7 +182,7 @@ static int read_frame(GeglOperation *operation, GeglBuffer *output)
 			}
 		}
 
-		assert(buf.index < p->n_buffers);
+		g_assert (buf.index < p->n_buffers);
 
 		//process_image(priv, p->buffers[buf.index].start, buf.bytesused);
     //
@@ -288,7 +287,7 @@ static int read_frame(GeglOperation *operation, GeglBuffer *output)
 			    && buf.length == p->buffers[i].length)
 				break;
 
-		assert(i < p->n_buffers);
+		g_assert (i < p->n_buffers);
 
 		//process_image(priv, (void *)buf.m.userptr, buf.bytesused);
     gegl_buffer_set (output, NULL, 0, NULL, (void*)buf.m.userptr, GEGL_AUTO_ROWSTRIDE);
