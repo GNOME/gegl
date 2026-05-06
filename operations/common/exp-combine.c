@@ -18,6 +18,9 @@
  */
 
 #include "config.h"
+
+#include <stdlib.h>
+
 #include <glib/gi18n-lib.h>
 
 #ifdef GEGL_PROPERTIES
@@ -826,9 +829,8 @@ gegl_expcombine_prepare (GeglOperation *operation)
  * ordered exposure pads.
  */
 static int
-gegl_expcombine_pad_cmp (gconstpointer _a,
-                         gconstpointer _b,
-                         gpointer user_data)
+gegl_expcombine_pad_cmp (const void *_a,
+                         const void *_b)
 {
   const gchar *a = _a;
   const gchar *b = _b;
@@ -901,11 +903,10 @@ gegl_expcombine_get_exposures (GeglOperation        *operation,
   }
 
   inputs = g_strdupv (gegl_node_list_input_pads (operation->node));
-  g_sort_array (inputs,
-                g_strv_length (inputs),
-                sizeof (gchar *),
-                gegl_expcombine_pad_cmp,
-                NULL);
+  qsort (inputs,
+         g_strv_length (inputs),
+         sizeof (gchar *),
+         gegl_expcombine_pad_cmp);
 
   /* Read in each of the exposure buffers */
   for (gint i = 0; inputs[i] != NULL; i++)
