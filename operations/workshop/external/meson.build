@@ -2,7 +2,7 @@
 
 gegl_operations += shared_module('voroni_diagram',
   'voronoi-diagram.cc',
-    include_directories: geglWorkshopInclude
+    include_directories: geglWorkshopInclude,
     dependencies: gegl_operations_common_deps,
     link_with: [
       gegl_lib,
@@ -16,7 +16,7 @@ gegl_operations += shared_module('voroni_diagram',
 if lua.found()
   gegl_operations += shared_module('gluas',
     'gluas.c',
-    include_directories: geglWorkshopInclude
+    include_directories: geglWorkshopInclude,
     dependencies: gegl_operations_common_deps + lua,
     link_with: [
       gegl_lib,
@@ -30,7 +30,7 @@ endif
 if lensfun.found()
   gegl_operations += shared_module('lens-correct',
     'lens-correct.c',
-    include_directories: geglWorkshopInclude
+    include_directories: geglWorkshopInclude,
     dependencies: gegl_operations_common_deps + lensfun,
     link_with: [
       gegl_lib,
@@ -44,7 +44,7 @@ endif
 if cairo.found()
   gegl_operations += shared_module('line-profile',
     'line-profile.c',
-    include_directories: geglWorkshopInclude
+    include_directories: geglWorkshopInclude,
     dependencies: gegl_operations_common_deps + cairo,
     link_with: [
       gegl_lib,
@@ -58,7 +58,7 @@ endif
 if libv4l2.found()
   gegl_operations += shared_module('v4l2',
     'v4l2.c',
-    include_directories: geglWorkshopInclude
+    include_directories: geglWorkshopInclude,
     dependencies: gegl_operations_common_deps + libv4l2,
     link_with: [
       gegl_lib,
@@ -72,7 +72,7 @@ endif
 if maxflow.found()
   gegl_operations += shared_module('paint-select',
     'paint-select.cc',
-    include_directories: geglWorkshopInclude
+    include_directories: geglWorkshopInclude,
     dependencies: gegl_operations_common_deps + maxflow,
     link_with: [
       gegl_lib,
