@@ -13,6 +13,7 @@ foreach lib : seamless_clone_libs
       gegl_lib,
       seamlessclone_lib,
     ],
+    install_rpath: gegl_prefix / gegl_libdir,
     name_prefix: '',
     install: true,
     install_dir: get_option('libdir') / api_name,

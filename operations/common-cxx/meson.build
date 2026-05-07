@@ -26,6 +26,7 @@ gegl_common_cxx = shared_module('gegl-common-cxx',
   link_with: [
     gegl_lib,
   ],
+  install_rpath: gegl_prefix / gegl_libdir,
   c_args: [   '-DGEGL_OP_BUNDLE', ],
   cpp_args: [ '-DGEGL_OP_BUNDLE', ],
   name_prefix: '',
@@ -44,6 +45,7 @@ if host_cpu_family == 'x86_64'
     link_with: [
       gegl_lib,
     ],
+    install_rpath: gegl_prefix / gegl_libdir,
     c_args: [ '-DGEGL_OP_BUNDLE' ] + x86_64_v2_flags,
     cpp_args: [ '-DGEGL_OP_BUNDLE' ] + x86_64_v2_flags,
     name_prefix: '',
@@ -59,6 +61,7 @@ if host_cpu_family == 'x86_64'
     link_with: [
       gegl_lib,
     ],
+    install_rpath: gegl_prefix / gegl_libdir,
     c_args: [ '-DGEGL_OP_BUNDLE' ] + x86_64_v3_flags,
     cpp_args: [ '-DGEGL_OP_BUNDLE' ] + x86_64_v3_flags,
     name_prefix: '',
@@ -76,6 +79,7 @@ elif host_cpu_family == 'arm'
     link_with: [
       gegl_lib,
     ],
+    install_rpath: gegl_prefix / gegl_libdir,
     c_args: [ '-DGEGL_OP_BUNDLE' ] + arm_neon_flags,
     cpp_args: [ '-DGEGL_OP_BUNDLE' ] + arm_neon_flags,
     name_prefix: '',

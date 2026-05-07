@@ -126,6 +126,7 @@ foreach operation : operations
     dependencies: gegl_operations_common_deps + libdeps,
     include_directories: geglOperationsInclude,
     link_with: [ gegl_lib, ],
+    install_rpath: gegl_prefix / gegl_libdir,
     name_prefix: '',
     install: true,
     install_dir: get_option('libdir') / api_name,

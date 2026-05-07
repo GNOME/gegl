@@ -68,6 +68,7 @@ gegl_common_gpl3 = shared_module('gegl-common-gpl3',
   link_with: [
     gegl_lib,
   ],
+  install_rpath: gegl_prefix / gegl_libdir,
   c_args: [
     '-DGEGL_OP_BUNDLE',
   ],
@@ -88,6 +89,7 @@ if host_cpu_family == 'x86_64'
     link_with: [
       gegl_lib,
     ],
+    install_rpath: gegl_prefix / gegl_libdir,
     c_args: [ '-DGEGL_OP_BUNDLE' ] + x86_64_v2_flags,
     name_prefix: '',
     install: true,
@@ -103,6 +105,7 @@ if host_cpu_family == 'x86_64'
     link_with: [
       gegl_lib,
     ],
+    install_rpath: gegl_prefix / gegl_libdir,
     c_args: [ '-DGEGL_OP_BUNDLE' ] + x86_64_v3_flags,
     name_prefix: '',
     install: true,
@@ -120,6 +123,7 @@ elif host_cpu_family == 'arm'
     link_with: [
       gegl_lib,
     ],
+    install_rpath: gegl_prefix / gegl_libdir,
     c_args: [ '-DGEGL_OP_BUNDLE' ] + arm_neon_flags,
     name_prefix: '',
     install: true,

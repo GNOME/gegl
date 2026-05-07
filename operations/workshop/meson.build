@@ -41,6 +41,7 @@ gegl_workshop = shared_module('gegl-workshop',
   link_with: [
     gegl_lib,
   ],
+  install_rpath: gegl_prefix / gegl_libdir,
   c_args: [
     '-DGEGL_OP_BUNDLE',
   ],
