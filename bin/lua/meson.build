@@ -44,8 +44,16 @@ foreach _link, _file : lua_symlink_files
 endforeach
 
 if lua.found()
-  install_data(
-    lua_files,
-    install_dir: get_option('datadir') / api_name / 'lua'
-  )
+  if meson.version().version_compare('>=1.3')
+    install_data(
+      lua_files,
+      install_dir: get_option('datadir') / api_name / 'lua',
+      follow_symlinks: true
+    )
+  else
+    install_data(
+      lua_files,
+      install_dir: get_option('datadir') / api_name / 'lua',
+    )
+  endif
 endif
