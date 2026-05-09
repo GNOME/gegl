@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
 "POT-Creation-Date: 2026-04-30 08:09+0000\n"
-"PO-Revision-Date: 2026-05-09 02:26+0700\n"
+"PO-Revision-Date: 2026-05-09 21:55+0700\n"
 "Last-Translator: \n"
 "Language-Team: Thai <th@li.org>\n"
 "Language: th\n"
@@ -5066,1454 +5066,1456 @@ msgstr "การทำงานของ op"
 
 #: operations/common-cxx/warp.cc:986
 msgid "Warp"
-msgstr ""
+msgstr "บิดงอ"
 
 #: operations/common-cxx/warp.cc:989
 msgid "Compute a relative displacement mapping from a stroke"
-msgstr ""
+msgstr "คำนวณแผนผังการบิดเบี้ยวของภาพโดยอิงตามรอยลากเส้น"
 
 #: operations/common-gpl3+/antialias.c:293
 msgid "Scale3X Antialiasing"
-msgstr ""
+msgstr "การลบรอยหยักด้วย Scale3X"
 
 #: operations/common-gpl3+/antialias.c:298
 msgid "Antialias using the Scale3X edge-extrapolation algorithm"
-msgstr ""
+msgstr "การลบรอยหยักโดยใช้อัลกอริทึม Scale3X เพื่อสร้างขอบภาพใหม่"
 
 #: operations/common-gpl3+/apply-lens.c:36
 msgid "Lens refraction index"
-msgstr ""
+msgstr "ดัชนีการหักเหของเลนส์"
 
 #: operations/common-gpl3+/apply-lens.c:41
 msgid "Keep original surroundings"
-msgstr ""
+msgstr "รักษาสภาพแวดล้อมเดิม"
 
 #: operations/common-gpl3+/apply-lens.c:42
 msgid "Keep image unchanged, where not affected by the lens."
-msgstr ""
+msgstr "คงภาพเดิมไม่ให้เปลี่ยนแปลงในส่วนที่ไม่ได้รับผลกระทบจากเลนส์"
 
 #: operations/common-gpl3+/apply-lens.c:301
 msgid "Apply Lens"
-msgstr ""
+msgstr "นำเลนส์ไปใช้"
 
 #: operations/common-gpl3+/apply-lens.c:305
 msgid "Simulates the optical distortion caused by having an elliptical lens over the image"
-msgstr ""
+msgstr "จำลองการบิดเบี้ยวทางแสงที่เกิดจากการมีเลนส์รูปไข่อยู่บนภาพ"
 
 #: operations/common-gpl3+/bayer-matrix.c:25
 msgid "Subdivisions"
-msgstr ""
+msgstr "การแบ่งย่อย"
 
 #: operations/common-gpl3+/bayer-matrix.c:26
 msgid "Number of subdivisions"
-msgstr ""
+msgstr "จำนวนการแบ่งย่อย"
 
 #: operations/common-gpl3+/bayer-matrix.c:29 operations/common-gpl3+/sinus.c:31
 msgid "Scale X"
-msgstr ""
+msgstr "สัดส่วนแกน X"
 
 #: operations/common-gpl3+/bayer-matrix.c:30
 msgid "Horizontal pattern scale"
-msgstr ""
+msgstr "สัดส่วนลวดลายแนวนอน"
 
 #: operations/common-gpl3+/bayer-matrix.c:36 operations/common-gpl3+/sinus.c:38
 msgid "Scale Y"
-msgstr ""
+msgstr "สัดส่วนแกน Y"
 
 #: operations/common-gpl3+/bayer-matrix.c:37
 msgid "Vertical pattern scale"
-msgstr ""
+msgstr "สัดส่วนลวดลายแนวตั้ง"
 
 #: operations/common-gpl3+/bayer-matrix.c:44
 msgid "0°"
-msgstr ""
+msgstr "0°"
 
 #: operations/common-gpl3+/bayer-matrix.c:45
 msgid "90°"
-msgstr ""
+msgstr "90°"
 
 #: operations/common-gpl3+/bayer-matrix.c:46
 msgid "180°"
-msgstr ""
+msgstr "180°"
 
 #: operations/common-gpl3+/bayer-matrix.c:47
 msgid "270°"
-msgstr ""
+msgstr "270°"
 
 #: operations/common-gpl3+/bayer-matrix.c:53 operations/common-gpl3+/linear-sinusoid.c:96
 msgid "Pattern rotation angle"
-msgstr ""
+msgstr "มุมหมุนของลวดลาย"
 
 #: operations/common-gpl3+/bayer-matrix.c:55 operations/transform/reflect.c:105
 msgid "Reflect"
-msgstr ""
+msgstr "สะท้อน"
 
 #: operations/common-gpl3+/bayer-matrix.c:56
 msgid "Reflect the pattern horizontally"
-msgstr ""
+msgstr "สะท้อนลวดลายตามแนวนอน"
 
 #: operations/common-gpl3+/bayer-matrix.c:58 operations/common-gpl3+/ripple.c:34 operations/common-gpl3+/waves.c:35
 msgid "Amplitude"
-msgstr ""
+msgstr "แอมพลิจูด"
 
 #: operations/common-gpl3+/bayer-matrix.c:59
 msgid "Pattern amplitude (logarithmic scale)"
-msgstr ""
+msgstr "แอมพลิจูดของลวดลาย (สัดส่วนลอการิทึม)"
 
 #: operations/common-gpl3+/bayer-matrix.c:64 operations/common-gpl3+/linear-sinusoid.c:72
 msgid "Value offset"
-msgstr ""
+msgstr "ออฟเซตของค่า"
 
 #: operations/common-gpl3+/bayer-matrix.c:68 operations/common-gpl3+/linear-sinusoid.c:76 operations/common-gpl3+/oilify.c:35 operations/common-gpl3+/sinus.c:71
 msgid "Exponent"
-msgstr ""
+msgstr "เลขชี้กำลัง"
 
 #: operations/common-gpl3+/bayer-matrix.c:69 operations/common-gpl3+/linear-sinusoid.c:77
 msgid "Value exponent (logarithmic scale)"
-msgstr ""
+msgstr "เลขชี้กำลังของค่า (สัดส่วนลอการิทึม)"
 
 #: operations/common-gpl3+/bayer-matrix.c:74 operations/common-gpl3+/linear-sinusoid.c:82
 msgid "Offset for X axis"
-msgstr ""
+msgstr "ออฟเซตสำหรับแกน X"
 
 #: operations/common-gpl3+/bayer-matrix.c:81 operations/common-gpl3+/linear-sinusoid.c:89
 msgid "Offset for Y axis"
-msgstr ""
+msgstr "ออฟเซตสำหรับแกน Y"
 
 #: operations/common-gpl3+/bayer-matrix.c:323
 msgid "Bayer Matrix"
-msgstr ""
+msgstr "เมทริกซ์เบเยอร์"
 
 #: operations/common-gpl3+/bayer-matrix.c:328
 msgid "Generate a Bayer matrix pattern"
-msgstr ""
+msgstr "สร้างลวดลายเมทริกซ์เบเยอร์"
 
 #: operations/common-gpl3+/bump-map.c:34
 msgid "Spherical"
-msgstr ""
+msgstr "ทรงกลม"
 
 #: operations/common-gpl3+/bump-map.c:35 operations/common-gpl3+/sinus.c:64
 msgid "Sinusoidal"
-msgstr ""
+msgstr "รูปไซน์"
 
 #: operations/common-gpl3+/bump-map.c:38 operations/common-gpl3+/spiral.c:30
 msgid "Type"
-msgstr ""
+msgstr "ชนิด"
 
 #: operations/common-gpl3+/bump-map.c:40
 msgid "Type of map"
-msgstr ""
+msgstr "ชนิดของแมป"
 
 #: operations/common-gpl3+/bump-map.c:42
 msgid "Compensate"
-msgstr ""
+msgstr "ชดเชย"
 
 #: operations/common-gpl3+/bump-map.c:43
 msgid "Compensate for darkening"
-msgstr ""
+msgstr "ชดเชยการทำให้มืดลง"
 
 #: operations/common-gpl3+/bump-map.c:46
 msgid "Invert bumpmap"
-msgstr ""
+msgstr "กลับด้านแมปความนูน"
 
 #: operations/common-gpl3+/bump-map.c:48
 msgid "Tiled"
-msgstr ""
+msgstr "ต่อกัน"
 
 #: operations/common-gpl3+/bump-map.c:49
 msgid "Tiled bumpmap"
-msgstr ""
+msgstr "แมปความนูนแบบวางเรียงต่อกัน"
 
 #: operations/common-gpl3+/bump-map.c:51 operations/common-gpl3+/emboss.c:34
 msgid "Azimuth"
-msgstr ""
+msgstr "แอซิมัท"
 
 #: operations/common-gpl3+/bump-map.c:74
 msgid "Waterlevel"
-msgstr ""
+msgstr "ระดับน้ำ"
 
 #: operations/common-gpl3+/bump-map.c:75
 msgid "Level that full transparency should represent"
-msgstr ""
+msgstr "ระดับที่ความโปร่งใสเต็มที่ควรแสดง"
 
 #: operations/common-gpl3+/bump-map.c:78
 msgid "Ambient lighting factor"
-msgstr ""
+msgstr "ตัวคูณแสงรอบข้าง"
 
 #: operations/common-gpl3+/bump-map.c:472
 msgid "Height map"
-msgstr ""
+msgstr "แมปความสูง"
 
 #: operations/common-gpl3+/bump-map.c:476
 msgid "Bump Map"
-msgstr ""
+msgstr "แมปความนูน"
 
 #: operations/common-gpl3+/bump-map.c:481
 msgid ""
 "This plug-in uses the algorithm described by John Schlag, \"Fast Embossing Effects on Raster Image Data\" in Graphics GEMS IV (ISBN 0-12-336155-9). It takes a "
 "buffer to be applied as a bump map to another buffer and produces a nice embossing effect."
 msgstr ""
+"ปลั๊กอินนี้ใช้อัลกอริทึมที่อธิบายโดย John Schlag ใน \"Fast Embossing Effects on Raster Image Data\" จากหนังสือ Graphics GEMS IV (ISBN 0-12-336155-9) "
+"โดยใช้บัฟเฟอร์หนึ่งเป็นแมปความนูนสำหรับอีกบัฟเฟอร์หนึ่ง เพื่อสร้างเอฟเฟกต์ปั๊มนูนที่สวยงาม"
 
 #: operations/common-gpl3+/cartoon.c:28 operations/common-gpl3+/oilify.c:28 operations/common-gpl3+/photocopy.c:26
 msgid "Mask radius"
-msgstr ""
+msgstr "รัศมีมาสก์"
 
 #: operations/common-gpl3+/cartoon.c:31 operations/common-gpl3+/photocopy.c:32
 msgid "Percent black"
-msgstr ""
+msgstr "เปอร์เซ็นต์สีดำ"
 
 #: operations/common-gpl3+/cartoon.c:322
 msgid "Cartoon"
-msgstr ""
+msgstr "การ์ตูน"
 
 #: operations/common-gpl3+/cartoon.c:325
 msgid ""
 "Simulates a cartoon, its result is similar to a black felt pen drawing subsequently shaded with color. This is achieved by enhancing edges and darkening areas that "
 "are already distinctly darker than their neighborhood"
-msgstr ""
+msgstr "จำลองภาพแบบการ์ตูน โดยให้ผลลัพธ์คล้ายคลึงกับภาพวาดด้วยปากกาสีดำที่ลงสีเงาเอาไว้ เทคนิคนี้ทำงานโดยเน้นขอบให้คมชัดขึ้น และทำให้บริเวณที่มืดอยู่แล้วเข้มขึ้นเมื่อเทียบกับพื้นที่รอบข้าง"
 
 #. Red channel
 #: operations/common-gpl3+/channel-mixer.c:33
 msgid "Red in Red channel"
-msgstr ""
+msgstr "สีแดงในแชนเนลสีแดง"
 
 #: operations/common-gpl3+/channel-mixer.c:34
 msgid "Set the red amount for the red channel"
-msgstr ""
+msgstr "ตั้งปริมาณสีแดงสำหรับแชนเนลสีแดง"
 
 #: operations/common-gpl3+/channel-mixer.c:37
 msgid "Green in Red channel"
-msgstr ""
+msgstr "สีเขียวในแชนเนลสีแดง"
 
 #: operations/common-gpl3+/channel-mixer.c:38
 msgid "Set the green amount for the red channel"
-msgstr ""
+msgstr "ตั้งปริมาณสีเขียวสำหรับแชนเนลสีแดง"
 
 #: operations/common-gpl3+/channel-mixer.c:41
 msgid "Blue in Red channel"
-msgstr ""
+msgstr "สีน้ำเงินในแชนเนลสีแดง"
 
 #: operations/common-gpl3+/channel-mixer.c:42
 msgid "Set the blue amount for the red channel"
-msgstr ""
+msgstr "ตั้งปริมาณสีน้ำเงินสำหรับแชนเนลสีแดง"
 
 #. Green channel
 #: operations/common-gpl3+/channel-mixer.c:46
 msgid "Red in Green channel"
-msgstr ""
+msgstr "สีแดงในแชนเนลสีเขียว"
 
 #: operations/common-gpl3+/channel-mixer.c:47
 msgid "Set the red amount for the green channel"
-msgstr ""
+msgstr "ตั้งปริมาณสีแดงสำหรับแชนเนลสีเขียว"
 
 #: operations/common-gpl3+/channel-mixer.c:50
 msgid "Green for Green channel"
-msgstr ""
+msgstr "สีเขียวในแชนเนลสีเขียว"
 
 #: operations/common-gpl3+/channel-mixer.c:51
 msgid "Set the green amount for the green channel"
-msgstr ""
+msgstr "ตั้งปริมาณสีเขียวสำหรับแชนเนลสีเขียว"
 
 #: operations/common-gpl3+/channel-mixer.c:54
 msgid "Blue in Green channel"
-msgstr ""
+msgstr "สีน้ำเงินในแชนเนลสีเขียว"
 
 #: operations/common-gpl3+/channel-mixer.c:55
 msgid "Set the blue amount for the green channel"
-msgstr ""
+msgstr "ตั้งปริมาณสีน้ำเงินสำหรับแชนเนลสีเขียว"
 
 #. Blue channel
 #: operations/common-gpl3+/channel-mixer.c:59
 msgid "Red in Blue channel"
-msgstr ""
+msgstr "สีแดงในแชนเนลสีน้ำเงิน"
 
 #: operations/common-gpl3+/channel-mixer.c:60
 msgid "Set the red amount for the blue channel"
-msgstr ""
+msgstr "ตั้งปริมาณสีแดงสำหรับแชนเนลสีน้ำเงิน"
 
 #: operations/common-gpl3+/channel-mixer.c:63
 msgid "Green in Blue channel"
-msgstr ""
+msgstr "สีเขียวในแชนเนลสีน้ำเงิน"
 
 #: operations/common-gpl3+/channel-mixer.c:64
 msgid "Set the green amount for the blue channel"
-msgstr ""
+msgstr "ตั้งปริมาณสีเขียวสำหรับแชนเนลสีน้ำเงิน"
 
 #: operations/common-gpl3+/channel-mixer.c:67
 msgid "Blue in Blue channel"
-msgstr ""
+msgstr "สีน้ำเงินในแชนเนลสีน้ำเงิน"
 
 #: operations/common-gpl3+/channel-mixer.c:68
 msgid "Set the blue amount for the blue channel"
-msgstr ""
+msgstr "ตั้งปริมาณสีน้ำเงินสำหรับแชนเนลสีน้ำเงิน"
 
 #: operations/common-gpl3+/channel-mixer.c:292
 msgid "Channel Mixer"
-msgstr ""
+msgstr "ผสมแชนเนล"
 
 #: operations/common-gpl3+/channel-mixer.c:297
 msgid "Remix colors; by defining relative contributions from source components."
-msgstr ""
+msgstr "ผสมสีใหม่โดยกำหนดสัดส่วนของสีที่นำมาจากองค์ประกอบต้นฉบับ"
 
 #: operations/common-gpl3+/color-exchange.c:31
 msgid "From color"
-msgstr ""
+msgstr "จากสี"
 
 #: operations/common-gpl3+/color-exchange.c:32
 msgid "The color to change."
-msgstr ""
+msgstr "สีที่จะเปลี่ยน"
 
 #: operations/common-gpl3+/color-exchange.c:34
 msgid "To color"
-msgstr ""
+msgstr "ไปเป็นสี"
 
 #: operations/common-gpl3+/color-exchange.c:35
 msgid "Replacement color."
-msgstr ""
+msgstr "สีที่ใช้แทน"
 
 #: operations/common-gpl3+/color-exchange.c:37
 msgid "Red threshold"
-msgstr ""
+msgstr "ค่าเกณฑ์สีแดง"
 
 #: operations/common-gpl3+/color-exchange.c:38
 msgid "Red threshold of the input color"
-msgstr ""
+msgstr "ค่าเกณฑ์สีแดงของสีอินพุต"
 
 #: operations/common-gpl3+/color-exchange.c:41
 msgid "Green threshold"
-msgstr ""
+msgstr "ค่าเกณฑ์สีเขียว"
 
 #: operations/common-gpl3+/color-exchange.c:42
 msgid "Green threshold of the input color"
-msgstr ""
+msgstr "ค่าเกณฑ์สีเขียวของสีอินพุต"
 
 #: operations/common-gpl3+/color-exchange.c:45
 msgid "Blue threshold"
-msgstr ""
+msgstr "ค่าเกณฑ์สีน้ำเงิน"
 
 #: operations/common-gpl3+/color-exchange.c:46
 msgid "Blue threshold of the input color"
-msgstr ""
+msgstr "ค่าเกณฑ์สีน้ำเงินของสีอินพุต"
 
 #: operations/common-gpl3+/color-exchange.c:267
 msgid "Exchange color"
-msgstr ""
+msgstr "แลกเปลี่ยนสี"
 
 #: operations/common-gpl3+/color-exchange.c:272
 msgid "Exchange one color with another, optionally setting a threshold to convert from one shade to another."
-msgstr ""
+msgstr "แลกเปลี่ยนสีหนึ่งกับอีกสีหนึ่ง โดยสามารถตั้งค่าเกณฑ์เพื่อแปลงจากสีเฉดหนึ่งไปอีกเฉดหนึ่งได้"
 
 #: operations/common-gpl3+/color-to-alpha.c:30
 msgid "The color to make transparent."
-msgstr ""
+msgstr "สีที่จะทำให้โปร่งใส"
 
 #: operations/common-gpl3+/color-to-alpha.c:32
 msgid "Transparency threshold"
-msgstr ""
+msgstr "ค่าเกณฑ์ความโปร่งใส"
 
 #: operations/common-gpl3+/color-to-alpha.c:33
 msgid "The limit below which colors become transparent."
-msgstr ""
+msgstr "ขีดจำกัดที่ต่ำกว่านั้น สีจะกลายเป็นโปร่งใส"
 
 #: operations/common-gpl3+/color-to-alpha.c:36
 msgid "Opacity threshold"
-msgstr ""
+msgstr "ค่าเกณฑ์ความทึบ"
 
 #: operations/common-gpl3+/color-to-alpha.c:37
 msgid "The limit above which colors remain opaque."
-msgstr ""
+msgstr "ขีดจำกัดที่สูงกว่านั้น สีจะยังคงทึบ"
 
 #: operations/common-gpl3+/color-to-alpha.c:283
 msgid "Color to Alpha"
-msgstr ""
+msgstr "แปลงสีเป็นอัลฟา"
 
 #: operations/common-gpl3+/color-to-alpha.c:289
 msgid "Convert a specified color to transparency, works best with white."
-msgstr ""
+msgstr "แปลงสีที่ระบุให้เป็นส่วนที่โปร่งใส ทำงานได้ดีที่สุดกับสีขาว"
 
 #: operations/common-gpl3+/cubism.c:30 operations/common-gpl3+/mosaic.c:45
 msgid "Tile size"
-msgstr ""
+msgstr "ขนาดไทล์"
 
 #: operations/common-gpl3+/cubism.c:31 operations/common-gpl3+/mosaic.c:46
 msgid "Average diameter of each tile (in pixels)"
-msgstr ""
+msgstr "เส้นผ่านศูนย์กลางเฉลี่ยของแต่ละไทล์ (เป็นพิกเซล)"
 
 #: operations/common-gpl3+/cubism.c:35
 msgid "Tile saturation"
-msgstr ""
+msgstr "ความอิ่มสีของไทล์"
 
 #: operations/common-gpl3+/cubism.c:36
 msgid "Expand tiles by this amount"
-msgstr ""
+msgstr "ขยายไทล์ด้วยปริมาณนี้"
 
 #: operations/common-gpl3+/cubism.c:40 operations/common-gpl3+/tile-paper.c:77
 msgid "The tiles' background color"
-msgstr ""
+msgstr "สีพื้นหลังของไทล์"
 
 #: operations/common-gpl3+/cubism.c:649
 msgid "Cubism"
-msgstr ""
+msgstr "คิวบิสม์"
 
 #: operations/common-gpl3+/cubism.c:654
 msgid "Convert the image into randomly rotated square blobs, somehow resembling a cubist painting style"
-msgstr ""
+msgstr "แปลงภาพให้เป็นก้อนสี่เหลี่ยมที่หมุนแบบสุ่ม ซึ่งคล้ายคลึงกับรูปแบบภาพวาดแบบคิวบิสม์"
 
 #: operations/common-gpl3+/deinterlace.c:31
 msgid "Keep even fields"
-msgstr ""
+msgstr "เก็บเส้นเลขคู่เอาไว้"
 
 #: operations/common-gpl3+/deinterlace.c:32
 msgid "Keep odd fields"
-msgstr ""
+msgstr "เก็บเส้นเลขคี่เอาไว้"
 
 #: operations/common-gpl3+/deinterlace.c:35
 msgid "Keep"
-msgstr ""
+msgstr "เก็บไว้"
 
 #: operations/common-gpl3+/deinterlace.c:38
 msgid "Keep even or odd fields"
-msgstr ""
+msgstr "เก็บเส้นเลขคู่หรือเลขคี่เอาไว้"
 
 #: operations/common-gpl3+/deinterlace.c:43
 msgid "Deinterlace horizontally or vertically"
-msgstr ""
+msgstr "ดีอินเทอร์เลซตามแนวนอนหรือแนวตั้ง"
 
 #: operations/common-gpl3+/deinterlace.c:45
 msgid "Block size"
-msgstr ""
+msgstr "ขนาดบล็อก"
 
 #: operations/common-gpl3+/deinterlace.c:47
 msgid "Block size of deinterlacing rows/columns"
-msgstr ""
+msgstr "ขนาดบล็อกของแถว/คอลัมน์ที่ดีอินเทอร์เลซ"
 
 #: operations/common-gpl3+/deinterlace.c:311
 msgid "Deinterlace"
-msgstr ""
+msgstr "ดีอินเทอร์เลซ"
 
 #: operations/common-gpl3+/deinterlace.c:316
 msgid "Fix images where every other row or column is missing"
-msgstr ""
+msgstr "ซ่อมแซมภาพที่หายไปแบบแถวเว้นแถว หรือคอลัมน์เว้นคอลัมน์"
 
 #: operations/common-gpl3+/diffraction-patterns.c:30
 msgid "Light frequency (red)"
-msgstr ""
+msgstr "ความถี่แสง (สีแดง)"
 
 #: operations/common-gpl3+/diffraction-patterns.c:34
 msgid "Light frequency (green)"
-msgstr ""
+msgstr "ความถี่แสง (สีเขียว)"
 
 #: operations/common-gpl3+/diffraction-patterns.c:38
 msgid "Light frequency (blue)"
-msgstr ""
+msgstr "ความถี่แสง (สีน้ำเงิน)"
 
 #: operations/common-gpl3+/diffraction-patterns.c:41
 msgid "Red contours"
-msgstr ""
+msgstr "คอนทัวร์สีแดง"
 
 #: operations/common-gpl3+/diffraction-patterns.c:42
 msgid "Number of contours (red)"
-msgstr ""
+msgstr "จำนวนคอนทัวร์ (สีแดง)"
 
 #: operations/common-gpl3+/diffraction-patterns.c:45
 msgid "Green contours"
-msgstr ""
+msgstr "คอนทัวร์สีเขียว"
 
 #: operations/common-gpl3+/diffraction-patterns.c:46
 msgid "Number of contours (green)"
-msgstr ""
+msgstr "จำนวนคอนทัวร์ (สีเขียว)"
 
 #: operations/common-gpl3+/diffraction-patterns.c:49
 msgid "Blue contours"
-msgstr ""
+msgstr "คอนทัวร์สีน้ำเงิน"
 
 #: operations/common-gpl3+/diffraction-patterns.c:50
 msgid "Number of contours (blue)"
-msgstr ""
+msgstr "จำนวนคอนทัวร์ (สีน้ำเงิน)"
 
 #: operations/common-gpl3+/diffraction-patterns.c:53
 msgid "Red sharp edges"
-msgstr ""
+msgstr "ขอบคมสีแดง"
 
 #: operations/common-gpl3+/diffraction-patterns.c:54
 msgid "Number of sharp edges (red)"
-msgstr ""
+msgstr "จำนวนขอบคม (สีแดง)"
 
 #: operations/common-gpl3+/diffraction-patterns.c:57
 msgid "Green sharp edges"
-msgstr ""
+msgstr "ขอบคมสีเขียว"
 
 #: operations/common-gpl3+/diffraction-patterns.c:58
 msgid "Number of sharp edges (green)"
-msgstr ""
+msgstr "จำนวนขอบคม (สีเขียว)"
 
 #: operations/common-gpl3+/diffraction-patterns.c:61
 msgid "Blue sharp edges"
-msgstr ""
+msgstr "ขอบคมสีน้ำเงิน"
 
 #: operations/common-gpl3+/diffraction-patterns.c:62
 msgid "Number of sharp edges (blue)"
-msgstr ""
+msgstr "จำนวนขอบคม (สีน้ำเงิน)"
 
 #: operations/common-gpl3+/diffraction-patterns.c:66
 msgid "Brightness and shifting/fattening of contours"
-msgstr ""
+msgstr "ความสว่างและการเลื่อน/ทำให้หนาขึ้นของคอนทัวร์"
 
 #: operations/common-gpl3+/diffraction-patterns.c:69
 msgid "Scattering"
-msgstr ""
+msgstr "การกระจาย"
 
 #: operations/common-gpl3+/diffraction-patterns.c:70
 msgid "Scattering (speed vs. quality)"
-msgstr ""
+msgstr "การกระจาย (ความเร็วเทียบกับคุณภาพ)"
 
 #: operations/common-gpl3+/diffraction-patterns.c:73 operations/common-gpl3+/diffraction-patterns.c:74
 msgid "Polarization"
-msgstr ""
+msgstr "โพลาไรเซชัน"
 
 #: operations/common-gpl3+/diffraction-patterns.c:78 operations/common-gpl3+/noise-solid.c:64 operations/common-gpl3+/plasma.c:55 operations/common-gpl3+/sinus.c:76
 #: operations/common-gpl3+/spiral.c:87
 msgid "Width of the generated buffer"
-msgstr ""
+msgstr "ความกว้างของบัฟเฟอร์ที่สร้างขึ้น"
 
 #: operations/common-gpl3+/diffraction-patterns.c:86 operations/common-gpl3+/noise-solid.c:72 operations/common-gpl3+/plasma.c:63 operations/common-gpl3+/sinus.c:84
 #: operations/common-gpl3+/spiral.c:95
 msgid "Height of the generated buffer"
-msgstr ""
+msgstr "ความสูงของบัฟเฟอร์ที่สร้างขึ้น"
 
 #: operations/common-gpl3+/diffraction-patterns.c:383
 msgid "Diffraction Patterns"
-msgstr ""
+msgstr "รูปแบบการเบี่ยงเบน"
 
 #: operations/common-gpl3+/diffraction-patterns.c:388
 msgid "Generate diffraction patterns"
-msgstr ""
+msgstr "สร้างรูปแบบการเบี่ยงเบน"
 
 #: operations/common-gpl3+/displace.c:29
 msgid "Cartesian"
-msgstr ""
+msgstr "คาร์ทีเซียน"
 
 #: operations/common-gpl3+/displace.c:30
 msgid "Polar"
-msgstr ""
+msgstr "เชิงขั้ว"
 
 #: operations/common-gpl3+/displace.c:36
 msgid "Mode of displacement"
-msgstr ""
+msgstr "โหมดการเลื่อนตำแหน่ง"
 
 #: operations/common-gpl3+/displace.c:38 operations/external/npd.c:47 operations/transform/transform-core.c:234 operations/workshop/ditto.c:27
 msgid "Sampler"
-msgstr ""
+msgstr "ตัวเก็บตัวอย่าง"
 
 #: operations/common-gpl3+/displace.c:41
 msgid "Type of GeglSampler used to fetch input pixels"
-msgstr ""
+msgstr "ชนิดของ GeglSampler ที่ใช้ในการดึงเอาพิกเซลอินพุต"
 
 #: operations/common-gpl3+/displace.c:48
 msgid "X displacement"
-msgstr ""
+msgstr "การเลื่อนตำแหน่งแกน X"
 
 #: operations/common-gpl3+/displace.c:49
 msgid "Displace multiplier for X or radial direction"
-msgstr ""
+msgstr "ตัวคูณการเลื่อนตำแหน่งสำหรับแกน X หรือทิศทางรัศมี"
 
 #: operations/common-gpl3+/displace.c:56
 msgid "Horizontal displacement"
-msgstr ""
+msgstr "การเลื่อนตำแหน่งแนวนอน"
 
 #: operations/common-gpl3+/displace.c:57 operations/common-gpl3+/whirl-pinch.c:42
 msgid "Pinch"
-msgstr ""
+msgstr "บีบ"
 
 #: operations/common-gpl3+/displace.c:60
 msgid "Displacement multiplier for the horizontal direction"
-msgstr ""
+msgstr "ตัวคูณการเลื่อนตำแหน่งสำหรับทิศทางแนวนอน"
 
 #: operations/common-gpl3+/displace.c:61
 msgid "Displacement multiplier for the radial direction"
-msgstr ""
+msgstr "ตัวคูณการเลื่อนตำแหน่งสำหรับทิศทางรัศมี"
 
 #: operations/common-gpl3+/displace.c:63
 msgid "Y displacement"
-msgstr ""
+msgstr "การเลื่อนตำแหน่งแกน Y"
 
 #: operations/common-gpl3+/displace.c:64
 msgid "Displace multiplier for Y or tangent (degrees) direction"
-msgstr ""
+msgstr "ตัวคูณการเลื่อนตำแหน่งสำหรับแกน Y หรือทิศทางเส้นสัมผัส (องศา)"
 
 #: operations/common-gpl3+/displace.c:71
 msgid "Vertical displacement"
-msgstr ""
+msgstr "การเลื่อนตำแหน่งแนวตั้ง"
 
 #: operations/common-gpl3+/displace.c:72 operations/common-gpl3+/whirl-pinch.c:36
 msgid "Whirl"
-msgstr ""
+msgstr "หมุน"
 
 #: operations/common-gpl3+/displace.c:75
 msgid "Displacement multiplier for the vertical direction"
-msgstr ""
+msgstr "ตัวคูณการเลื่อนตำแหน่งสำหรับทิศทางแนวตั้ง"
 
 #: operations/common-gpl3+/displace.c:76
 msgid "Displacement multiplier for the angular offset"
-msgstr ""
+msgstr "ตัวคูณการเลื่อนตำแหน่งสำหรับออฟเซตเชิงมุม"
 
 #: operations/common-gpl3+/displace.c:78
 msgid "Center displacement"
-msgstr ""
+msgstr "การเลื่อนตำแหน่งจุดศูนย์กลาง"
 
 #: operations/common-gpl3+/displace.c:79
 msgid "Center the displacement around a specified point"
-msgstr ""
+msgstr "จัดการเลื่อนตำแหน่งให้อยู่รอบจุดที่กำหนด"
 
 #: operations/common-gpl3+/displace.c:82
 msgid "X coordinate of the displacement center"
-msgstr ""
+msgstr "พิกัดแกน X ของจุดศูนย์กลางการเลื่อนตำแหน่ง"
 
 #: operations/common-gpl3+/displace.c:89
 msgid "Y coordinate of the displacement center"
-msgstr ""
+msgstr "พิกัดแกน Y ของจุดศูนย์กลางการเลื่อนตำแหน่ง"
 
 #: operations/common-gpl3+/displace.c:190
 msgid "Horizontal/Radial"
-msgstr ""
+msgstr "แนวนอน/รัศมี"
 
 #: operations/common-gpl3+/displace.c:191
 msgid "Horizontal or radial per pixel input"
-msgstr ""
+msgstr "อินพุตแนวนอนหรือรัศมีต่อพิกเซล"
 
 #: operations/common-gpl3+/displace.c:199
 msgid "Vertical/Angular"
-msgstr ""
+msgstr "แนวตั้ง/เชิงมุม"
 
 #: operations/common-gpl3+/displace.c:200
 msgid "Vertical or angular per pixel input"
-msgstr ""
+msgstr "อินพุตแนวตั้งหรือเชิงมุมต่อพิกเซล"
 
 #: operations/common-gpl3+/displace.c:479
 msgid "Displace"
-msgstr ""
+msgstr "เลื่อนตำแหน่ง"
 
 #: operations/common-gpl3+/displace.c:482
 msgid "Displace pixels as indicated by displacement maps"
-msgstr ""
+msgstr "เลื่อนตำแหน่งพิกเซลตามที่ระบุในแมปการเลื่อนตำแหน่ง"
 
 #: operations/common-gpl3+/edge.c:29
 msgid "Sobel"
-msgstr ""
+msgstr "โซเบล"
 
 #: operations/common-gpl3+/edge.c:30
 msgid "Prewitt compass"
-msgstr ""
+msgstr "เข็มทิศพรีวิตต์"
 
 #: operations/common-gpl3+/edge.c:31
 msgid "Gradient"
-msgstr ""
+msgstr "เกรเดียนต์"
 
 #: operations/common-gpl3+/edge.c:32
 msgid "Roberts"
-msgstr ""
+msgstr "โรเบิร์ตส์"
 
 #: operations/common-gpl3+/edge.c:33
 msgid "Differential"
-msgstr ""
+msgstr "ดิฟเฟอเรนเชียล"
 
 #: operations/common-gpl3+/edge.c:34
 msgid "Laplace"
-msgstr ""
+msgstr "ลาปลาซ"
 
 #: operations/common-gpl3+/edge.c:37
 msgid "Algorithm"
-msgstr ""
+msgstr "อัลกอริทึม"
 
 #: operations/common-gpl3+/edge.c:40
 msgid "Edge detection algorithm"
-msgstr ""
+msgstr "อัลกอริทึมการตรวจจับขอบ"
 
 #: operations/common-gpl3+/edge.c:43
 msgid "Edge detection amount"
-msgstr ""
+msgstr "ปริมาณการตรวจจับขอบ"
 
 #: operations/common-gpl3+/edge.c:47
 msgid "Border behavior"
-msgstr ""
+msgstr "พฤติกรรมขอบ"
 
 #: operations/common-gpl3+/edge.c:50
 msgid "Edge detection behavior"
-msgstr ""
+msgstr "พฤติกรรมการตรวจจับขอบ"
 
 #: operations/common-gpl3+/edge.c:366
 msgid "Edge Detection"
-msgstr ""
+msgstr "การตรวจจับขอบ"
 
 #: operations/common-gpl3+/edge.c:370
 msgid "Several simple methods for detecting edges"
-msgstr ""
+msgstr "หลายวิธีง่าย ๆ ในการตรวจจับขอบ"
 
 #: operations/common-gpl3+/edge-laplace.c:411
 msgid "Laplacian Edge Detection"
-msgstr ""
+msgstr "การตรวจจับขอบแบบลาปลาสเซียน"
 
 #: operations/common-gpl3+/edge-laplace.c:415
 msgid "High-resolution edge detection"
-msgstr ""
+msgstr "การตรวจจับขอบความละเอียดสูง"
 
 #: operations/common-gpl3+/emboss.c:26 operations/common-gpl3+/emboss.c:279
 msgid "Emboss"
-msgstr ""
+msgstr "ปั๊มนูน"
 
 #: operations/common-gpl3+/emboss.c:27
 msgid "Bumpmap (preserve original colors)"
-msgstr ""
+msgstr "แมปความนูน (รักษาสีเดิม)"
 
 #: operations/common-gpl3+/emboss.c:30
 msgid "Emboss type"
-msgstr ""
+msgstr "ชนิดการปั๊มนูน"
 
 #: operations/common-gpl3+/emboss.c:32
 msgid "Rendering type"
-msgstr ""
+msgstr "ชนิดการเรนเดอร์"
 
 #: operations/common-gpl3+/emboss.c:35
 msgid "Light angle (degrees)"
-msgstr ""
+msgstr "มุมแสง (องศา)"
 
 #: operations/common-gpl3+/emboss.c:41
 msgid "Elevation angle (degrees)"
-msgstr ""
+msgstr "มุมยกตัว (องศา)"
 
 #: operations/common-gpl3+/emboss.c:46
 msgid "Filter width"
-msgstr ""
+msgstr "ความกว้างของฟิลเตอร์"
 
 #: operations/common-gpl3+/emboss.c:283
 msgid "Simulates an image created by embossing"
-msgstr ""
+msgstr "จำลองภาพที่สร้างขึ้นโดยการปั๊มนูน"
 
 #: operations/common-gpl3+/engrave.c:32
 msgid "Resolution in pixels"
-msgstr ""
+msgstr "ความละเอียดเป็นพิกเซล"
 
 #: operations/common-gpl3+/engrave.c:36 operations/common-gpl3+/engrave.c:37
 msgid "Limit line width"
-msgstr ""
+msgstr "จำกัดความกว้างของเส้น"
 
 #: operations/common-gpl3+/engrave.c:220
 msgid "Engrave"
-msgstr ""
+msgstr "สลัก"
 
 #: operations/common-gpl3+/engrave.c:225
 msgid "Simulate an antique engraving"
-msgstr ""
+msgstr "จำลองการสลักแบบโบราณ"
 
 #: operations/common-gpl3+/fractal-explorer.c:31 operations/common-gpl3+/fractal-trace.c:26
 msgid "Mandelbrot"
-msgstr ""
+msgstr "Mandelbrot"
 
 #: operations/common-gpl3+/fractal-explorer.c:33 operations/common-gpl3+/fractal-trace.c:27
 msgid "Julia"
-msgstr ""
+msgstr "Julia"
 
 #: operations/common-gpl3+/fractal-explorer.c:35
 msgid "Barnsley 1"
-msgstr ""
+msgstr "Barnsley 1"
 
 #: operations/common-gpl3+/fractal-explorer.c:37
 msgid "Barnsley 2"
-msgstr ""
+msgstr "Barnsley 2"
 
 #: operations/common-gpl3+/fractal-explorer.c:39
 msgid "Barnsley 3"
-msgstr ""
+msgstr "Barnsley 3"
 
 #: operations/common-gpl3+/fractal-explorer.c:41
 msgid "Spider"
-msgstr ""
+msgstr "Spider"
 
 #: operations/common-gpl3+/fractal-explorer.c:43
 msgid "Man O War"
-msgstr ""
+msgstr "Man O War"
 
 #: operations/common-gpl3+/fractal-explorer.c:45 operations/external/matting-levin.c:37
 msgid "Lambda"
-msgstr ""
+msgstr "Lambda"
 
 #: operations/common-gpl3+/fractal-explorer.c:47
 msgid "Sierpinski"
-msgstr ""
+msgstr "Sierpinski"
 
 #: operations/common-gpl3+/fractal-explorer.c:50 operations/common-gpl3+/fractal-trace.c:30
 msgid "Fractal type"
-msgstr ""
+msgstr "ชนิดแฟรคทัล"
 
 #: operations/common-gpl3+/fractal-explorer.c:53
 msgid "Type of a fractal"
-msgstr ""
+msgstr "ชนิดของแฟรคทัล"
 
 #: operations/common-gpl3+/fractal-explorer.c:59
 msgid "Zoom in the fractal space"
-msgstr ""
+msgstr "ซูมเข้าในพื้นที่แฟรคทัล"
 
 #: operations/common-gpl3+/fractal-explorer.c:64 operations/common-gpl3+/lens-distortion.c:45
 msgid "Shift X"
-msgstr ""
+msgstr "เลื่อนแกน X"
 
 #: operations/common-gpl3+/fractal-explorer.c:65
 msgid "X shift in the fractal space"
-msgstr ""
+msgstr "การเลื่อนแกน X ในพื้นที่แฟรคทัล"
 
 #: operations/common-gpl3+/fractal-explorer.c:68 operations/common-gpl3+/lens-distortion.c:49
 msgid "Shift Y"
-msgstr ""
+msgstr "เลื่อนแกน Y"
 
 #: operations/common-gpl3+/fractal-explorer.c:69
 msgid "Y shift in the fractal space"
-msgstr ""
+msgstr "การเลื่อนแกน Y ในพื้นที่แฟรคทัล"
 
 #: operations/common-gpl3+/fractal-explorer.c:72
 msgid "CX"
-msgstr ""
+msgstr "CX"
 
 #: operations/common-gpl3+/fractal-explorer.c:73
 msgid "CX (No effect in Mandelbrot and Sierpinski)"
-msgstr ""
+msgstr "CX (ไม่มีผลในแมนเดลบร็อตและเซอร์ปินสกี)"
 
 #: operations/common-gpl3+/fractal-explorer.c:78
 msgid "CY"
-msgstr ""
+msgstr "CY"
 
 #: operations/common-gpl3+/fractal-explorer.c:79
 msgid "CY (No effect in Mandelbrot and Sierpinski)"
-msgstr ""
+msgstr "CY (ไม่มีผลในแมนเดลบร็อตและเซอร์ปินสกี)"
 
 #: operations/common-gpl3+/fractal-explorer.c:84
 msgid "Red stretching factor"
-msgstr ""
+msgstr "ตัวคูณการยืดช่วงสีแดง"
 
 #: operations/common-gpl3+/fractal-explorer.c:87
 msgid "Green stretching factor"
-msgstr ""
+msgstr "ตัวคูณการยืดช่วงสีเขียว"
 
 #: operations/common-gpl3+/fractal-explorer.c:90
 msgid "Blue stretching factor"
-msgstr ""
+msgstr "ตัวคูณการยืดช่วงสีน้ำเงิน"
 
 #: operations/common-gpl3+/fractal-explorer.c:94 operations/common-gpl3+/ripple.c:29
 msgid "Sine"
-msgstr ""
+msgstr "ไซน์"
 
 #: operations/common-gpl3+/fractal-explorer.c:95
 msgid "Cosine"
-msgstr ""
+msgstr "โคไซน์"
 
 #: operations/common-gpl3+/fractal-explorer.c:99
 msgid "Red application mode"
-msgstr ""
+msgstr "รูปแบบการนำสีแดงไปใช้"
 
 #: operations/common-gpl3+/fractal-explorer.c:103
 msgid "Green application mode"
-msgstr ""
+msgstr "รูปแบบการนำสีเขียวไปใช้"
 
 #: operations/common-gpl3+/fractal-explorer.c:107
 msgid "Blue application mode"
-msgstr ""
+msgstr "รูปแบบการนำสีน้ำเงินไปใช้"
 
 #: operations/common-gpl3+/fractal-explorer.c:111
 msgid "Red inversion"
-msgstr ""
+msgstr "การกลับค่าสีแดง"
 
 #: operations/common-gpl3+/fractal-explorer.c:112
 msgid "Green inversion"
-msgstr ""
+msgstr "การกลับค่าสีเขียว"
 
 #: operations/common-gpl3+/fractal-explorer.c:113
 msgid "Blue inversion"
-msgstr ""
+msgstr "การกลับค่าสีน้ำเงิน"
 
 #: operations/common-gpl3+/fractal-explorer.c:115
 msgid "Number of colors"
-msgstr ""
+msgstr "จำนวนสี"
 
 #: operations/common-gpl3+/fractal-explorer.c:118
 msgid "Loglog smoothing"
-msgstr ""
+msgstr "การเกลี่ยค่าให้เนียนแบบลอการิทึมคู่"
 
 #: operations/common-gpl3+/fractal-explorer.c:374
 #, c-format
 msgid "Unsupported fractal type: %d"
-msgstr ""
+msgstr "ไม่รองรับชนิดแฟรคทัล: %d"
 
 #: operations/common-gpl3+/fractal-explorer.c:431
 msgid "Fractal Explorer"
-msgstr ""
+msgstr "ตัวสำรวจแฟรคทัล"
 
 #: operations/common-gpl3+/fractal-explorer.c:436
 msgid "Rendering of multiple different fractal systems, with configurable coloring options."
-msgstr ""
+msgstr "การแสดงผลของระบบแฟรคทัลที่แตกต่างกัน พร้อมด้วยตัวเลือกการใส่สีที่สามารถกำหนดได้"
 
 #: operations/common-gpl3+/fractal-trace.c:35
 msgid "X1 value, position"
-msgstr ""
+msgstr "ค่าและตำแหน่งของ X1"
 
 #: operations/common-gpl3+/fractal-trace.c:40
 msgid "X2 value, position"
-msgstr ""
+msgstr "ค่าและตำแหน่งของ X2"
 
 #: operations/common-gpl3+/fractal-trace.c:45
 msgid "Y1 value, position"
-msgstr ""
+msgstr "ค่าและตำแหน่งของ Y1"
 
 #: operations/common-gpl3+/fractal-trace.c:50
 msgid "Y2 value, position"
-msgstr ""
+msgstr "ค่าและตำแหน่งของ Y2"
 
 #: operations/common-gpl3+/fractal-trace.c:54
 msgid "JX"
-msgstr ""
+msgstr "JX"
 
 #: operations/common-gpl3+/fractal-trace.c:55
 msgid "Julia seed X value, position"
-msgstr ""
+msgstr "ค่าและตำแหน่งของ Julia seed แกน X"
 
 #: operations/common-gpl3+/fractal-trace.c:60
 msgid "JY"
-msgstr ""
+msgstr "JY"
 
 #: operations/common-gpl3+/fractal-trace.c:61
 msgid "Julia seed Y value, position"
-msgstr ""
+msgstr "ค่าและตำแหน่งของ Julia seed แกน Y"
 
 #: operations/common-gpl3+/fractal-trace.c:70
 msgid "Bailout length"
-msgstr ""
+msgstr "ความยาวการออกจากวงจร"
 
 #: operations/common-gpl3+/fractal-trace.c:76
 msgid "How to deal with pixels outside of the input buffer"
-msgstr ""
+msgstr "วิธีจัดการกับพิกเซลที่อยู่นอกบัฟเฟอร์อินพุต"
 
 #: operations/common-gpl3+/fractal-trace.c:182
 msgid "Unsupported fractal type"
-msgstr ""
+msgstr "ไม่รองรับชนิดแฟรคทัล"
 
 #: operations/common-gpl3+/fractal-trace.c:279
 msgid "Fractal Trace"
-msgstr ""
+msgstr "ติดตามแฟรคทัล"
 
 #: operations/common-gpl3+/fractal-trace.c:284
 msgid "Transform the image with the fractals"
-msgstr ""
+msgstr "แปลงลักษณะภาพด้วยแฟรคทัล"
 
 #: operations/common-gpl3+/gaussian-blur-selective.c:34
 msgid "Max. delta"
-msgstr ""
+msgstr "เดลตาสูงสุด"
 
 #: operations/common-gpl3+/gaussian-blur-selective.c:35
 msgid "Maximum delta"
-msgstr ""
+msgstr "เดลตาสูงสุด"
 
 #: operations/common-gpl3+/gaussian-blur-selective.c:376
 msgid "Selective Gaussian Blur"
-msgstr ""
+msgstr "เกาส์เซียนเบลอแบบเลือกได้"
 
 #: operations/common-gpl3+/gaussian-blur-selective.c:380
 msgid "Blur neighboring pixels, but only in low-contrast areas"
-msgstr ""
+msgstr "เบลอพิกเซลใกล้เคียง แต่เฉพาะในบริเวณที่มีความเปรียบต่างต่ำ"
 
 #: operations/common-gpl3+/illusion.c:28
 msgid "Type 1"
-msgstr ""
+msgstr "ชนิด 1"
 
 #: operations/common-gpl3+/illusion.c:29
 msgid "Type 2"
-msgstr ""
+msgstr "ชนิด 2"
 
 #: operations/common-gpl3+/illusion.c:32
 msgid "Division"
-msgstr ""
+msgstr "การแบ่ง"
 
 #: operations/common-gpl3+/illusion.c:33
 msgid "The number of divisions"
-msgstr ""
+msgstr "จำนวนการแบ่ง"
 
 #: operations/common-gpl3+/illusion.c:37
 msgid "Illusion type"
-msgstr ""
+msgstr "ชนิดภาพลวงตา"
 
 #: operations/common-gpl3+/illusion.c:40
 msgid "Type of illusion"
-msgstr ""
+msgstr "ชนิดของภาพลวงตา"
 
 #: operations/common-gpl3+/illusion.c:278
 msgid "Illusion"
-msgstr ""
+msgstr "ภาพลวงตา"
 
 #: operations/common-gpl3+/illusion.c:283
 msgid "Superimpose many altered copies of the image."
-msgstr ""
+msgstr "ซ้อนสำเนาภาพที่ถูกเปลี่ยนแปลงหลายอัน"
 
 #: operations/common-gpl3+/lens-distortion.c:33
 msgid "Main"
-msgstr ""
+msgstr "หลัก"
 
 #: operations/common-gpl3+/lens-distortion.c:34
 msgid "Amount of second-order distortion"
-msgstr ""
+msgstr "ปริมาณความบิดเบี้ยวอันดับสอง"
 
 #: operations/common-gpl3+/lens-distortion.c:37
 msgid "Edge"
-msgstr ""
+msgstr "ขอบ"
 
 #: operations/common-gpl3+/lens-distortion.c:38
 msgid "Amount of fourth-order distortion"
-msgstr ""
+msgstr "ปริมาณความบิดเบี้ยวอันดับสี่"
 
 #: operations/common-gpl3+/lens-distortion.c:42
 msgid "Rescale overall image size"
-msgstr ""
+msgstr "ปรับขนาดภาพโดยรวม"
 
 #: operations/common-gpl3+/lens-distortion.c:46
 msgid "Effect center offset in X"
-msgstr ""
+msgstr "ออฟเซตจุดศูนย์กลางของเอฟเฟกต์ในแกน X"
 
 #: operations/common-gpl3+/lens-distortion.c:50
 msgid "Effect center offset in Y"
-msgstr ""
+msgstr "ออฟเซตจุดศูนย์กลางของเอฟเฟกต์ในแกน Y"
 
 #: operations/common-gpl3+/lens-distortion.c:53
 msgid "Brighten"
-msgstr ""
+msgstr "ทำให้สว่างขึ้น"
 
 #: operations/common-gpl3+/lens-distortion.c:54
 msgid "Adjust brightness in corners"
-msgstr ""
+msgstr "ปรับความสว่างในมุม"
 
 #: operations/common-gpl3+/lens-distortion.c:497
 msgid "Lens Distortion"
-msgstr ""
+msgstr "ความบิดเบี้ยวของเลนส์"
 
 #: operations/common-gpl3+/lens-distortion.c:503
 msgid "Corrects barrel or pincushion lens distortion."
-msgstr ""
+msgstr "แก้ไขการบิดเบี้ยวของเลนส์แบบพองออกหรือแบบบุ๋มเข้า"
 
 #: operations/common-gpl3+/lens-flare.c:27
 msgid "X position"
-msgstr ""
+msgstr "ตำแหน่งแกน X"
 
 #: operations/common-gpl3+/lens-flare.c:28
 msgid "X coordinates of the flare center"
-msgstr ""
+msgstr "พิกัดแกน X ของจุดศูนย์กลางแสงแฟลร์"
 
 #: operations/common-gpl3+/lens-flare.c:33
 msgid "Y position"
-msgstr ""
+msgstr "ตำแหน่งแกน Y"
 
 #: operations/common-gpl3+/lens-flare.c:34
 msgid "Y coordinates of the flare center"
-msgstr ""
+msgstr "พิกัดแกน Y ของจุดศูนย์กลางแสงแฟลร์"
 
 #: operations/common-gpl3+/lens-flare.c:510
 msgid "Lens Flare"
-msgstr ""
+msgstr "แสงแฟลร์จากเลนส์"
 
 #: operations/common-gpl3+/lens-flare.c:514
 msgid "Adds a lens flare effect."
-msgstr ""
+msgstr "เพิ่มเอฟเฟกต์แสงแฟลร์จากเลนส์"
 
 #: operations/common-gpl3+/linear-sinusoid.c:25
 msgid "Period X"
-msgstr ""
+msgstr "คาบแกน X"
 
 #: operations/common-gpl3+/linear-sinusoid.c:26
 msgid "Period for X axis"
-msgstr ""
+msgstr "คาบสำหรับแกน X"
 
 #: operations/common-gpl3+/linear-sinusoid.c:32
 msgid "Period Y"
-msgstr ""
+msgstr "คาบแกน Y"
 
 #: operations/common-gpl3+/linear-sinusoid.c:33
 msgid "Period for Y axis"
-msgstr ""
+msgstr "คาบสำหรับแกน Y"
 
 #: operations/common-gpl3+/linear-sinusoid.c:39
 msgid "Amplitude X"
-msgstr ""
+msgstr "แอมพลิจูดแกน X"
 
 #: operations/common-gpl3+/linear-sinusoid.c:40
 msgid "Amplitude for X axis (logarithmic scale)"
-msgstr ""
+msgstr "แอมพลิจูดสำหรับแกน X (สัดส่วนลอการิทึม)"
 
 #: operations/common-gpl3+/linear-sinusoid.c:45
 msgid "Amplitude Y"
-msgstr ""
+msgstr "แอมพลิจูดแกน Y"
 
 #: operations/common-gpl3+/linear-sinusoid.c:46
 msgid "Amplitude for Y axis (logarithmic scale)"
-msgstr ""
+msgstr "แอมพลิจูดสำหรับแกน Y (สัดส่วนลอการิทึม)"
 
 #: operations/common-gpl3+/linear-sinusoid.c:51
 msgid "Phase X"
-msgstr ""
+msgstr "เฟสแกน X"
 
 #: operations/common-gpl3+/linear-sinusoid.c:52
 msgid "Phase for X axis"
-msgstr ""
+msgstr "เฟสสำหรับแกน X"
 
 #: operations/common-gpl3+/linear-sinusoid.c:58
 msgid "Phase Y"
-msgstr ""
+msgstr "เฟสแกน Y"
 
 #: operations/common-gpl3+/linear-sinusoid.c:59
 msgid "Phase for Y axis"
-msgstr ""
+msgstr "เฟสสำหรับแกน Y"
 
 #: operations/common-gpl3+/linear-sinusoid.c:66
 msgid "Axis separation angle"
-msgstr ""
+msgstr "มุมแยกแกน"
 
 #: operations/common-gpl3+/linear-sinusoid.c:101
 msgid "Supersampling"
-msgstr ""
+msgstr "การสุ่มตัวอย่างเกิน"
 
 #: operations/common-gpl3+/linear-sinusoid.c:102
 msgid "Number of samples along each axis per pixel"
-msgstr ""
+msgstr "จำนวนตัวอย่างตามแต่ละแกนต่อพิกเซล"
 
 #: operations/common-gpl3+/linear-sinusoid.c:298
 msgid "Linear Sinusoid"
-msgstr ""
+msgstr "คลื่นรูปไซน์เชิงเส้น"
 
 #: operations/common-gpl3+/linear-sinusoid.c:303
 msgid "Generate a linear sinusoid pattern"
-msgstr ""
+msgstr "สร้างรูปแบบคลื่นรูปไซน์เชิงเส้น"
 
 #: operations/common-gpl3+/maze.c:38
 msgid "Depth first"
-msgstr ""
+msgstr "ความลึกก่อน"
 
 #: operations/common-gpl3+/maze.c:39
 msgid "Prim's algorithm"
-msgstr ""
+msgstr "อัลกอริทึมของพริม"
 
 #: operations/common-gpl3+/maze.c:58
 msgid "Algorithm type"
-msgstr ""
+msgstr "ชนิดอัลกอริทึม"
 
 #: operations/common-gpl3+/maze.c:61
 msgid "Maze algorithm type"
-msgstr ""
+msgstr "ชนิดอัลกอริทึมเขาวงกต"
 
 #: operations/common-gpl3+/maze.c:67
 msgid "Foreground color"
-msgstr ""
+msgstr "สีพื้นหน้า"
 
 #: operations/common-gpl3+/maze.c:68
 msgid "The foreground color"
-msgstr ""
+msgstr "สีพื้นหน้า"
 
 #: operations/common-gpl3+/maze.c:72
 msgid "The background color"
-msgstr ""
+msgstr "สีพื้นหลัง"
 
 #: operations/common-gpl3+/maze.c:822
 msgid "Maze"
-msgstr ""
+msgstr "เขาวงกต"
 
 #: operations/common-gpl3+/maze.c:827
 msgid "Draw a labyrinth"
-msgstr ""
+msgstr "วาดรูปเขาวงกต"
 
 #: operations/common-gpl3+/mosaic.c:35
 msgid "Squares"
-msgstr ""
+msgstr "สี่เหลี่ยม"
 
 #: operations/common-gpl3+/mosaic.c:36
 msgid "Hexagons"
-msgstr ""
+msgstr "หกเหลี่ยม"
 
 #: operations/common-gpl3+/mosaic.c:37
 msgid "Octagons"
-msgstr ""
+msgstr "แปดเหลี่ยม"
 
 #: operations/common-gpl3+/mosaic.c:38
 msgid "Triangles"
-msgstr ""
+msgstr "สามเหลี่ยม"
 
 #: operations/common-gpl3+/mosaic.c:41
 msgid "Tile geometry"
-msgstr ""
+msgstr "รูปร่างไทล์"
 
 #: operations/common-gpl3+/mosaic.c:43
 msgid "What shape to use for tiles"
-msgstr ""
+msgstr "รูปร่างที่จะใช้สำหรับไทล์"
 
 #: operations/common-gpl3+/mosaic.c:51 operations/common-gpl3+/tile-glass.c:34 operations/common-gpl3+/tile-paper.c:47
 msgid "Tile height"
-msgstr ""
+msgstr "ความสูงไทล์"
 
 #: operations/common-gpl3+/mosaic.c:52
 msgid "Apparent height of each tile (in pixels)"
-msgstr ""
+msgstr "ความสูงที่ปรากฏของแต่ละไทล์ (เป็นพิกเซล)"
 
 #: operations/common-gpl3+/mosaic.c:56
 msgid "Tile neatness"
-msgstr ""
+msgstr "ความเป็นระเบียบของไทล์"
 
 #: operations/common-gpl3+/mosaic.c:57
 msgid "Deviation from perfectly formed tiles"
-msgstr ""
+msgstr "การเบี่ยงเบนจากไทล์ที่มีรูปร่างสมบูรณ์"
 
 #: operations/common-gpl3+/mosaic.c:60
 msgid "Tile color variation"
-msgstr ""
+msgstr "ความหลากหลายของสีในไทล์"
 
 #: operations/common-gpl3+/mosaic.c:61
 msgid "Magnitude of random color variations"
-msgstr ""
+msgstr "ระดับความหลากหลายของสีแบบสุ่ม"
 
 #: operations/common-gpl3+/mosaic.c:64
 msgid "Color averaging"
-msgstr ""
+msgstr "การเฉลี่ยสี"
 
 #: operations/common-gpl3+/mosaic.c:65
 msgid "Tile color based on average of subsumed pixels"
-msgstr ""
+msgstr "สีไทล์อิงจากค่าเฉลี่ยของพิกเซลที่รวมอยู่"
 
 #: operations/common-gpl3+/mosaic.c:67
 msgid "Rough tile surface"
-msgstr ""
+msgstr "พื้นผิวไทล์ที่หยาบ"
 
 #: operations/common-gpl3+/mosaic.c:68
 msgid "Surface characteristics"
-msgstr ""
+msgstr "คุณลักษณะพื้นผิว"
 
 #: operations/common-gpl3+/mosaic.c:70
 msgid "Allow splitting tiles"
-msgstr ""
+msgstr "เปิดให้แบ่งไทล์ได้"
 
 #: operations/common-gpl3+/mosaic.c:71
 msgid "Allows splitting tiles at hard edges"
-msgstr ""
+msgstr "เปิดให้แบ่งไทล์ที่ขอบแข็งได้"
 
 #: operations/common-gpl3+/mosaic.c:73
 msgid "Tile spacing"
-msgstr ""
+msgstr "ระยะห่างไทล์"
 
 #: operations/common-gpl3+/mosaic.c:74
 msgid "Inter-tile spacing (in pixels)"
-msgstr ""
+msgstr "ระยะห่างระหว่างไทล์ (เป็นพิกเซล)"
 
 #: operations/common-gpl3+/mosaic.c:79
 msgid "Joints color"
-msgstr ""
+msgstr "สีรอยต่อ"
 
 #: operations/common-gpl3+/mosaic.c:81
 msgid "Light color"
-msgstr ""
+msgstr "สีแสง"
 
 #: operations/common-gpl3+/mosaic.c:83
 msgid "Light direction"
-msgstr ""
+msgstr "ทิศทางแสง"
 
 #: operations/common-gpl3+/mosaic.c:84
 msgid "Direction of light-source (in degrees)"
-msgstr ""
+msgstr "ทิศทางของแหล่งกำเนิดแสง (เป็นองศา)"
 
 #: operations/common-gpl3+/mosaic.c:90
 msgid "Enables smoother tile output"
-msgstr ""
+msgstr "ทำให้เอาต์พุตของไทล์เนียนขึ้น"
 
 #: operations/common-gpl3+/mosaic.c:2474
 msgid "Mosaic"
-msgstr ""
+msgstr "โมเสก"
 
 #: operations/common-gpl3+/mosaic.c:2478
 msgid ""
 "Mosaic is a filter which transforms an image into what appears to be a mosaic, composed of small primitives, each of constant color and of an approximate size."
-msgstr ""
+msgstr "โมเสกคือฟิลเตอร์ที่แปลงลักษณะภาพให้ดูเหมือนโมเสก ประกอบด้วยองค์ประกอบเล็ก ๆ แต่ละอันมีสีคงที่และขนาดโดยประมาณ"
 
 #: operations/common-gpl3+/motion-blur-circular.c:52
 msgid "Rotation blur angle. A large angle may take some time to render"
-msgstr ""
+msgstr "มุมเบลอการหมุน มุมใหญ่อาจใช้เวลาในการแสดงผล"
 
 #: operations/common-gpl3+/motion-blur-circular.c:448
 msgid "Circular Motion Blur"
-msgstr ""
+msgstr "เบลอการเคลื่อนที่แบบวงกลม"
 
 #: operations/common-gpl3+/motion-blur-circular.c:453
 msgid "Circular motion blur"
-msgstr ""
+msgstr "เบลอการเคลื่อนที่แบบวงกลม"
 
 #: operations/common-gpl3+/motion-blur-zoom.c:51
 msgid "Blurring factor"
-msgstr ""
+msgstr "ตัวคูณการเบลอ"
 
 #: operations/common-gpl3+/motion-blur-zoom.c:271
 msgid "Zooming Motion Blur"
-msgstr ""
+msgstr "เบลอการเคลื่อนที่แบบซูม"
 
 #: operations/common-gpl3+/motion-blur-zoom.c:276
 msgid "Zoom motion blur"
-msgstr ""
+msgstr "เบลอการเคลื่อนที่แบบซูม"
 
 #: operations/common-gpl3+/noise-slur.c:157
 msgid "Noise Slur"
-msgstr ""
+msgstr "จุดรบกวนแบบย้วย"
 
 #: operations/common-gpl3+/noise-slur.c:161
 msgid "Randomly slide some pixels downward (similar to melting)"
-msgstr ""
+msgstr "เลื่อนบางพิกเซลลงแบบสุ่ม (คล้ายคลึงกับการละลาย)"
 
 #: operations/common-gpl3+/noise-solid.c:36
 msgid "X size"
-msgstr ""
+msgstr "ขนาดแกน X"
 
 #: operations/common-gpl3+/noise-solid.c:37
 msgid "Horizontal texture size"
-msgstr ""
+msgstr "ขนาดลวดลายในแนวนอน"
 
 #: operations/common-gpl3+/noise-solid.c:43
 msgid "Y size"
-msgstr ""
+msgstr "ขนาดแกน Y"
 
 #: operations/common-gpl3+/noise-solid.c:44
 msgid "Vertical texture size"
-msgstr ""
+msgstr "ขนาดลวดลายในแนวตั้ง"
 
 #: operations/common-gpl3+/noise-solid.c:51
 msgid "Detail level"
-msgstr ""
+msgstr "ระดับรายละเอียด"
 
 #: operations/common-gpl3+/noise-solid.c:56
 msgid "Create a tileable output"
-msgstr ""
+msgstr "สร้างเอาต์พุตที่สามารถเรียงต่อกันได้"
 
 #: operations/common-gpl3+/noise-solid.c:58
 msgid "Turbulent"
-msgstr ""
+msgstr "ปั่นป่วน"
 
 #: operations/common-gpl3+/noise-solid.c:59
 msgid "Make a turbulent noise"
-msgstr ""
+msgstr "สร้างจุดรบกวนที่ปั่นป่วน"
 
 #: operations/common-gpl3+/noise-solid.c:345
 msgid "Solid Noise"
-msgstr ""
+msgstr "จุดรบกวนแบบโซลิด"
 
 #: operations/common-gpl3+/noise-solid.c:350
 msgid "Create a random cloud-like texture"
-msgstr ""
+msgstr "สร้างลวดลายแบบก้อนเมฆแบบสุ่ม"
 
 #: operations/common-gpl3+/oilify.c:29
 msgid "Radius of circle around pixel, can also be scaled per pixel by a buffer on the aux pad."
-msgstr ""
+msgstr "รัศมีของวงกลมรอบพิกเซล ซึ่งสามารถปรับขนาดในแต่ละพิกเซลได้โดยใช้บัฟเฟอร์ในแพดเสริม"
 
 #: operations/common-gpl3+/oilify.c:36
 msgid "Exponent for processing; controls smoothness - can be scaled per pixel with a buffer on the aux2 pad."
-msgstr ""
+msgstr "เลขชี้กำลังสำหรับการประมวลผล ใช้สำหรับควบคุมความเนียน ซึ่งสามารถปรับขนาดในแต่ละพิกเซลได้โดยใช้บัฟเฟอร์บนแพดเสริมตัวที่ 2"
 
 #: operations/common-gpl3+/oilify.c:40
 msgid "Number of intensities"
-msgstr ""
+msgstr "จำนวนระดับความเข้มข้น"
 
 #: operations/common-gpl3+/oilify.c:41
 msgid "Histogram size"
-msgstr ""
+msgstr "ขนาดฮิสโตแกรม"
 
 #: operations/common-gpl3+/oilify.c:44
 msgid "Intensity mode"
-msgstr ""
+msgstr "โหมดความเข้มข้น"
 
 #: operations/common-gpl3+/oilify.c:45
 msgid "Use pixel luminance values"
-msgstr ""
+msgstr "ใช้ค่าความส่องสว่างของพิกเซล"
 
 #: operations/common-gpl3+/oilify.c:612
 msgid "Mask radius buffer"
-msgstr ""
+msgstr "บัฟเฟอร์รัศมีมาสก์"
 
 #: operations/common-gpl3+/oilify.c:613
 msgid "Per pixel buffer for modulating the mask radius, expecting a scaling factor in range 0.0-1.0"
-msgstr ""
+msgstr "บัฟเฟอร์ในแต่ละพิกเซลสำหรับปรับค่ารัศมีมาสก์ โดยต้องการตัวคูณมาตราส่วนในช่วง 0.0-1.0"
 
 #: operations/common-gpl3+/oilify.c:616
 msgid "Exponent buffer"
-msgstr ""
+msgstr "บัฟเฟอร์เลขชี้กำลัง"
 
 #: operations/common-gpl3+/oilify.c:617
 msgid "Per pixel buffer for modulating the exponent parameter, expecting a scaling factor in range 0.0-1.0"
-msgstr ""
+msgstr "บัฟเฟอร์ในแต่ละพิกเซลสำหรับปรับค่าพารามิเตอร์เลขชี้กำลัง โดยต้องการตัวคูณมาตราส่วนในช่วง 0.0-1.0"
 
 #: operations/common-gpl3+/oilify.c:628
 msgid "Oilify"
-msgstr ""
+msgstr "Oilify"
 
 #: operations/common-gpl3+/oilify.c:631
 msgid "Emulate an oil painting"
-msgstr ""
+msgstr "จำลองภาพวาดสีน้ำมัน"
 
 #: operations/common-gpl3+/photocopy.c:35
 msgid "Percent white"
-msgstr ""
+msgstr "เปอร์เซ็นต์สีขาว"
 
 #: operations/common-gpl3+/photocopy.c:329
 msgid "Photocopy"
-msgstr ""
+msgstr "โฟโต้ก๊อบปี้"
 
 #: operations/common-gpl3+/photocopy.c:331
 msgid "Simulate color distortion produced by a copy machine"
-msgstr ""
+msgstr "จำลองความบิดเบี้ยวสีที่เกิดจากเครื่องสำเนาเอกสาร"
 
 #: operations/common-gpl3+/plasma.c:37
 msgid "High values give more variation in details"
-msgstr ""
+msgstr "ค่าสูงทำให้มีรายละเอียดที่หลากหลายขึ้น"
 
 #: operations/common-gpl3+/plasma.c:41
 msgid "X start of the generated buffer"
-msgstr ""
+msgstr "จุดเริ่มต้นในแกน X ของบัฟเฟอร์ที่จะสร้างขึ้น"
 
 #: operations/common-gpl3+/plasma.c:48
 msgid "Y start of the generated buffer"
-msgstr ""
+msgstr "จุดเริ่มต้นในแกน Y ของบัฟเฟอร์ที่จะสร้างขึ้น"
 
 #: operations/common-gpl3+/plasma.c:445
 msgid "Plasma"
-msgstr ""
+msgstr "พลาสมา"
 
 #: operations/common-gpl3+/plasma.c:450
 msgid "Creates an image filled with a plasma effect."
-msgstr ""
+msgstr "สร้างภาพที่เต็มไปด้วยเอฟเฟกต์พลาสมา"
 
 #: operations/common-gpl3+/polar-coordinates.c:34
 msgid "Circle depth in percent"
-msgstr ""
+msgstr "ความลึกของวงกลมเป็นเปอร์เซ็นต์"
 
 #: operations/common-gpl3+/polar-coordinates.c:38
 msgid "Offset angle"
-msgstr ""
+msgstr "มุมออฟเซต"
 
 #: operations/common-gpl3+/polar-coordinates.c:43
 msgid "Map backwards"
-msgstr ""
+msgstr "แมปย้อนกลับ"
 
 #: operations/common-gpl3+/polar-coordinates.c:44
 msgid "Start from the right instead of the left"
-msgstr ""
+msgstr "เริ่มจากด้านขวาแทนที่จะเป็นด้านซ้าย"
 
 #: operations/common-gpl3+/polar-coordinates.c:46
 msgid "Map from top"
-msgstr ""
+msgstr "แมปจากด้านบน"
 
 #: operations/common-gpl3+/polar-coordinates.c:47
 msgid "Put the top row in the middle and the bottom row on the outside"
-msgstr ""
+msgstr "วางแถวด้านบนไว้ตรงกลาง และแถวด้านล่างไว้ข้างนอก"
 
 #: operations/common-gpl3+/polar-coordinates.c:49
 msgid "To polar"
-msgstr ""
+msgstr "เข้าสู่ขั้ว"
 
 #: operations/common-gpl3+/polar-coordinates.c:50
 msgid "Map the image to a circle"
-msgstr ""
+msgstr "ม้วนภาพให้เป็นรูปวงกลม"
 
 #: operations/common-gpl3+/polar-coordinates.c:53 operations/common-gpl3+/polar-coordinates.c:60
 msgid "Origin point for the polar coordinates"
