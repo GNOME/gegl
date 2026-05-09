@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
 "POT-Creation-Date: 2026-04-30 08:09+0000\n"
-"PO-Revision-Date: 2026-05-09 21:55+0700\n"
+"PO-Revision-Date: 2026-05-10 02:08+0700\n"
 "Last-Translator: \n"
 "Language-Team: Thai <th@li.org>\n"
 "Language: th\n"
@@ -799,7 +799,7 @@ msgstr "จำกัดการรับแสง"
 
 #: operations/common/bloom.c:48
 msgid "Don't over-expose highlights"
-msgstr "ไม่ให้ส่วนไฮไลต์สว่างเกินไป"
+msgstr "ไม่ให้ส่วนสว่างจ้าเกินไป"
 
 #: operations/common/bloom.c:203
 msgid "Bloom"
@@ -2477,7 +2477,7 @@ msgstr "ค่าต่ำ"
 
 #: operations/common/local-threshold.c:38
 msgid "Thresholding level, 0.5 towards 0 to minimize shadows and towards 1.0 to minimize highlights."
-msgstr "ระดับขีดเริ่ม โดยเลื่อนจาก 0.5 ไปทาง 0 เพื่อลดเงา และไปทาง 1.0 เพื่อลดไฮไลต์"
+msgstr "ระดับค่าเกณฑ์ โดยเลื่อนจาก 0.5 ไปทาง 0 เพื่อลดเงา และไปทาง 1.0 เพื่อลดส่วนสว่าง"
 
 #: operations/common/local-threshold.c:43
 msgid "Threshold level"
@@ -4814,11 +4814,11 @@ msgstr "เขียนข้อมูลอินพุตลงในพื้
 
 #: operations/common-cxx/distance-transform.cc:31
 msgid "Above threshold"
-msgstr "สูงกว่าขีดเริ่ม"
+msgstr "สูงกว่าค่าเกณฑ์"
 
 #: operations/common-cxx/distance-transform.cc:32
 msgid "Below threshold"
-msgstr "ต่ำกว่าขีดเริ่ม"
+msgstr "ต่ำกว่าค่าเกณฑ์"
 
 #: operations/common-cxx/distance-transform.cc:35 operations/workshop/external/voronoi-diagram.cc:24
 msgid "Metric"
@@ -4838,11 +4838,11 @@ msgstr "วิธีการจัดการกับพื้นที่ท
 
 #: operations/common-cxx/distance-transform.cc:43
 msgid "Threshold low"
-msgstr "ขีดเริ่มต่ำ"
+msgstr "ค่าเกณฑ์ต่ำ"
 
 #: operations/common-cxx/distance-transform.cc:46
 msgid "Threshold high"
-msgstr "ขีดเริ่มสูง"
+msgstr "ค่าเกณฑ์สูง"
 
 #: operations/common-cxx/distance-transform.cc:49
 msgid "Grayscale averaging"
@@ -4878,23 +4878,23 @@ msgstr "รัศมีการเบลอในส่วนที่หลุ
 
 #: operations/common-cxx/focus-blur.c:52 operations/common-cxx/lens-blur.cc:35
 msgid "Highlight factor"
-msgstr "ตัวคูณไฮไลต์"
+msgstr "ตัวคูณส่วนสว่าง"
 
 #: operations/common-cxx/focus-blur.c:53 operations/common-cxx/lens-blur.cc:36
 msgid "Relative highlight strength"
-msgstr "ความแรงสัมพัทธ์ของไฮไลต์"
+msgstr "ความแรงสัมพัทธ์ของส่วนสว่าง"
 
 #: operations/common-cxx/focus-blur.c:57 operations/common-cxx/lens-blur.cc:39
 msgid "Highlight threshold (low)"
-msgstr "ขีดเริ่มไฮไลต์ (ต่ำ)"
+msgstr "ค่าเกณฑ์ส่วนสว่าง (ต่ำ)"
 
 #: operations/common-cxx/focus-blur.c:61 operations/common-cxx/lens-blur.cc:43
 msgid "Highlight threshold"
-msgstr "ขีดเริ่มไฮไลต์"
+msgstr "ค่าเกณฑ์ส่วนสว่าง"
 
 #: operations/common-cxx/focus-blur.c:64 operations/common-cxx/lens-blur.cc:45
 msgid "Highlight threshold (high)"
-msgstr "ขีดเริ่มไฮไลต์ (สูง)"
+msgstr "ค่าเกณฑ์ส่วนสว่าง (สูง)"
 
 #: operations/common-cxx/focus-blur.c:86
 msgid "Focus-region outer radius"
@@ -5447,7 +5447,7 @@ msgstr "ความอิ่มสีของไทล์"
 
 #: operations/common-gpl3+/cubism.c:36
 msgid "Expand tiles by this amount"
-msgstr "ขยายไทล์ด้วยปริมาณนี้"
+msgstr "ขยายไทล์ตามระยะทางนี้"
 
 #: operations/common-gpl3+/cubism.c:40 operations/common-gpl3+/tile-paper.c:77
 msgid "The tiles' background color"
@@ -5649,7 +5649,7 @@ msgstr "การเลื่อนตำแหน่งแนวตั้ง"
 
 #: operations/common-gpl3+/displace.c:72 operations/common-gpl3+/whirl-pinch.c:36
 msgid "Whirl"
-msgstr "หมุน"
+msgstr "หมุนวน"
 
 #: operations/common-gpl3+/displace.c:75
 msgid "Displacement multiplier for the vertical direction"
@@ -6058,7 +6058,7 @@ msgstr "หลัก"
 
 #: operations/common-gpl3+/lens-distortion.c:34
 msgid "Amount of second-order distortion"
-msgstr "ปริมาณความบิดเบี้ยวอันดับสอง"
+msgstr "ปริมาณความบิดเบี้ยวในอันดับสอง"
 
 #: operations/common-gpl3+/lens-distortion.c:37
 msgid "Edge"
@@ -6066,7 +6066,7 @@ msgstr "ขอบ"
 
 #: operations/common-gpl3+/lens-distortion.c:38
 msgid "Amount of fourth-order distortion"
-msgstr "ปริมาณความบิดเบี้ยวอันดับสี่"
+msgstr "ปริมาณความบิดเบี้ยวในอันดับสี่"
 
 #: operations/common-gpl3+/lens-distortion.c:42
 msgid "Rescale overall image size"
@@ -6519,633 +6519,633 @@ msgstr "ม้วนภาพให้เป็นรูปวงกลม"
 
 #: operations/common-gpl3+/polar-coordinates.c:53 operations/common-gpl3+/polar-coordinates.c:60
 msgid "Origin point for the polar coordinates"
-msgstr ""
+msgstr "จุดกำเนิดสำหรับพิกัดเชิงขั้ว"
 
 #: operations/common-gpl3+/polar-coordinates.c:66
 msgid "Choose middle"
-msgstr ""
+msgstr "เลือกกลาง"
 
 #: operations/common-gpl3+/polar-coordinates.c:67
 msgid "Let origin point to be the middle one"
-msgstr ""
+msgstr "ให้จุดกำเนิดเป็นจุดกลาง"
 
 #: operations/common-gpl3+/polar-coordinates.c:446
 msgid "Polar Coordinates"
-msgstr ""
+msgstr "พิกัดเชิงขั้ว"
 
 #: operations/common-gpl3+/polar-coordinates.c:451
 msgid "Convert image to or from polar coordinates"
-msgstr ""
+msgstr "แปลงภาพไปเป็นหรือจากพิกัดเชิงขั้ว"
 
 #: operations/common-gpl3+/red-eye-removal.c:32
 msgid "Red eye threshold"
-msgstr ""
+msgstr "ค่าเกณฑ์ตาแดง"
 
 #: operations/common-gpl3+/red-eye-removal.c:170
 msgid "Red Eye Removal"
-msgstr ""
+msgstr "ลบตาแดง"
 
 #: operations/common-gpl3+/red-eye-removal.c:174
 msgid "Remove the red eye effect caused by camera flashes"
-msgstr ""
+msgstr "ลบเอฟเฟกต์ตาแดงที่เกิดจากแสงแฟลชของกล้องถ่ายรูป"
 
 #: operations/common-gpl3+/ripple.c:30
 msgid "Triangle"
-msgstr ""
+msgstr "สามเหลี่ยม"
 
 #: operations/common-gpl3+/ripple.c:31
 msgid "Sawtooth"
-msgstr ""
+msgstr "ฟันเลื่อย"
 
 #: operations/common-gpl3+/ripple.c:42 operations/common-gpl3+/waves.c:43
 msgid "Phase shift"
-msgstr ""
+msgstr "การเลื่อนเฟส"
 
 #: operations/common-gpl3+/ripple.c:53
 msgid "Wave type"
-msgstr ""
+msgstr "ชนิดคลื่น"
 
 #: operations/common-gpl3+/ripple.c:62
 msgid "Retain tilebility"
-msgstr ""
+msgstr "รักษาความต่อเนื่อง"
 
 #: operations/common-gpl3+/ripple.c:258
 msgid "Ripple"
-msgstr ""
+msgstr "คลื่นกระเพื่อม"
 
 #: operations/common-gpl3+/ripple.c:263
 msgid "Displace pixels in a ripple pattern"
-msgstr ""
+msgstr "เลื่อนตำแหน่งพิกเซลให้เป็นลวดลายคลื่นกระเพื่อม"
 
 #: operations/common-gpl3+/shadows-highlights.c:28 operations/common-gpl3+/shadows-highlights-correction.c:29
 msgid "Shadows"
-msgstr ""
+msgstr "เงา"
 
 #: operations/common-gpl3+/shadows-highlights.c:29 operations/common-gpl3+/shadows-highlights-correction.c:30
 msgid "Adjust exposure of shadows"
-msgstr ""
+msgstr "ปรับการรับแสงของเงา"
 
 #: operations/common-gpl3+/shadows-highlights.c:32 operations/common-gpl3+/shadows-highlights-correction.c:33
 msgid "Highlights"
-msgstr ""
+msgstr "ส่วนสว่าง"
 
 #: operations/common-gpl3+/shadows-highlights.c:33 operations/common-gpl3+/shadows-highlights-correction.c:34
 msgid "Adjust exposure of highlights"
-msgstr ""
+msgstr "ปรับการรับแสงของส่วนสว่าง"
 
 #: operations/common-gpl3+/shadows-highlights.c:36 operations/common-gpl3+/shadows-highlights-correction.c:37
 msgid "White point adjustment"
-msgstr ""
+msgstr "การปรับจุดขาว"
 
 #: operations/common-gpl3+/shadows-highlights.c:37 operations/common-gpl3+/shadows-highlights-correction.c:38
 msgid "Shift white point"
-msgstr ""
+msgstr "เลื่อนจุดขาว"
 
 #: operations/common-gpl3+/shadows-highlights.c:41
 msgid "Spatial extent"
-msgstr ""
+msgstr "ขอบเขตพื้นที่"
 
 #: operations/common-gpl3+/shadows-highlights.c:45 operations/common-gpl3+/shadows-highlights-correction.c:41
 msgid "Compress"
-msgstr ""
+msgstr "บีบอัด"
 
 #: operations/common-gpl3+/shadows-highlights.c:46 operations/common-gpl3+/shadows-highlights-correction.c:42
 msgid "Compress the effect on shadows/highlights and preserve midtones"
-msgstr ""
+msgstr "บีบอัดเอฟเฟกต์ในเงา/ส่วนสว่าง แต่คงรายละเอียดในโทนกลางไว้"
 
 #: operations/common-gpl3+/shadows-highlights.c:49 operations/common-gpl3+/shadows-highlights-correction.c:45
 msgid "Shadows color adjustment"
-msgstr ""
+msgstr "การปรับสีเงา"
 
 #: operations/common-gpl3+/shadows-highlights.c:50 operations/common-gpl3+/shadows-highlights-correction.c:46
 msgid "Adjust saturation of shadows"
-msgstr ""
+msgstr "ปรับความอิ่มสีของเงา"
 
 #: operations/common-gpl3+/shadows-highlights.c:53 operations/common-gpl3+/shadows-highlights-correction.c:49
 msgid "Highlights color adjustment"
-msgstr ""
+msgstr "การปรับสีส่วนสว่าง"
 
 #: operations/common-gpl3+/shadows-highlights.c:54 operations/common-gpl3+/shadows-highlights-correction.c:50
 msgid "Adjust saturation of highlights"
-msgstr ""
+msgstr "ปรับความอิ่มสีของส่วนสว่าง"
 
 #: operations/common-gpl3+/shadows-highlights.c:242
 msgid "Shadows-Highlights"
-msgstr ""
+msgstr "เงา-ส่วนสว่าง"
 
 #: operations/common-gpl3+/shadows-highlights.c:245
 msgid "Perform shadows and highlights correction"
-msgstr ""
+msgstr "ดำเนินการแก้ไขเงาและส่วนสว่าง"
 
 #: operations/common-gpl3+/shadows-highlights-correction.c:364
 msgid "Lighten shadows and darken highlights"
-msgstr ""
+msgstr "ทำให้เงาสว่างขึ้นและทำให้ส่วนสว่างมืดลง"
 
 #: operations/common-gpl3+/shift.c:26 operations/common-gpl3+/shift.c:144
 msgid "Shift"
-msgstr ""
+msgstr "เลื่อน"
 
 #: operations/common-gpl3+/shift.c:27
 msgid "Maximum amount to shift"
-msgstr ""
+msgstr "ระยะทางสูงสุดที่ต้องการเลื่อน"
 
 #: operations/common-gpl3+/shift.c:31
 msgid "Shift direction"
-msgstr ""
+msgstr "ทิศทางการเลื่อน"
 
 #: operations/common-gpl3+/shift.c:148
 msgid "Shift each row or column of pixels by a random amount"
-msgstr ""
+msgstr "เลื่อนพิกเซลในแต่ละแถวหรือคอลัมน์ด้วยระยะทางแบบสุ่ม"
 
 #: operations/common-gpl3+/sinus.c:32
 msgid "Scale value for x axis"
-msgstr ""
+msgstr "ค่าสัดส่วนสำหรับแกน x"
 
 #: operations/common-gpl3+/sinus.c:39
 msgid "Scale value for y axis"
-msgstr ""
+msgstr "ค่าสัดส่วนสำหรับแกน y"
 
 #: operations/common-gpl3+/sinus.c:45
 msgid "Complexity"
-msgstr ""
+msgstr "ความซับซ้อน"
 
 #: operations/common-gpl3+/sinus.c:46
 msgid "Complexity factor"
-msgstr ""
+msgstr "ตัวคูณความซับซ้อน"
 
 #: operations/common-gpl3+/sinus.c:51
 msgid "Force tiling"
-msgstr ""
+msgstr "บังคับให้เรียงต่อกัน"
 
 #: operations/common-gpl3+/sinus.c:52
 msgid "If set, the pattern generated will tile"
-msgstr ""
+msgstr "ถ้าตั้งค่า ลวดลายที่สร้างขึ้นจะเรียงต่อกันได้"
 
 #: operations/common-gpl3+/sinus.c:54
 msgid "Distorted"
-msgstr ""
+msgstr "บิดเบี้ยว"
 
 #: operations/common-gpl3+/sinus.c:55
 msgid "If set, the pattern will be a little more distorted"
-msgstr ""
+msgstr "ถ้าตั้งค่า ลวดลายจะบิดเบี้ยวขึ้นเล็กน้อย"
 
 #: operations/common-gpl3+/sinus.c:63
 msgid "Bilinear"
-msgstr ""
+msgstr "เชิงเส้นคู่"
 
 #: operations/common-gpl3+/sinus.c:72
 msgid "Power used to stretch the blend"
-msgstr ""
+msgstr "กำลังที่ใช้ยืดการกลืนสี"
 
 #: operations/common-gpl3+/sinus.c:316
 msgid "Sinus"
-msgstr ""
+msgstr "คลื่นรูปไซน์"
 
 #: operations/common-gpl3+/sinus.c:321
 msgid "Generate complex sinusoidal textures"
-msgstr ""
+msgstr "สร้างพื้นผิวรูปไซน์ที่ซับซ้อน"
 
 #: operations/common-gpl3+/softglow.c:234
 msgid "Softglow"
-msgstr ""
+msgstr "แสงนุ่ม"
 
 #: operations/common-gpl3+/softglow.c:238
 msgid "Simulate glow by making highlights intense and fuzzy"
-msgstr ""
+msgstr "จำลองการเรืองแสงโดยการทำให้ส่วนสว่างเข้มและมัว"
 
 #: operations/common-gpl3+/spiral.c:27
 msgid "Logarithmic"
-msgstr ""
+msgstr "ลอการิทึม"
 
 #: operations/common-gpl3+/spiral.c:33
 msgid "Spiral type"
-msgstr ""
+msgstr "ชนิดเส้นก้นหอย"
 
 #: operations/common-gpl3+/spiral.c:36
 msgid "Spiral origin X coordinate"
-msgstr ""
+msgstr "พิกัดแกน X ของจุดกำเนิดเส้นก้นหอย"
 
 #: operations/common-gpl3+/spiral.c:42
 msgid "Spiral origin Y coordinate"
-msgstr ""
+msgstr "พิกัดแกน Y ของจุดกำเนิดเส้นก้นหอย"
 
 #: operations/common-gpl3+/spiral.c:48
 msgid "Spiral radius"
-msgstr ""
+msgstr "รัศมีเส้นก้นหอย"
 
 #: operations/common-gpl3+/spiral.c:53 operations/workshop/connected-components.c:31
 msgid "Base"
-msgstr ""
+msgstr "ฐาน"
 
 #: operations/common-gpl3+/spiral.c:54
 msgid "Logarithmic spiral base"
-msgstr ""
+msgstr "ค่าฐานของเส้นก้นหอยแบบลอการิทึม"
 
 #: operations/common-gpl3+/spiral.c:60
 msgid "Balance"
-msgstr ""
+msgstr "ความสมดุล"
 
 #: operations/common-gpl3+/spiral.c:61
 msgid "Area balance between the two colors"
-msgstr ""
+msgstr "การปรับความสมดุลของพื้นที่ระหว่างสองสี"
 
 #: operations/common-gpl3+/spiral.c:65
 msgid "Spiral rotation"
-msgstr ""
+msgstr "การหมุนเส้นก้นหอย"
 
 #: operations/common-gpl3+/spiral.c:72
 msgid "Counter-clockwise"
-msgstr ""
+msgstr "ทวนเข็มนาฬิกา"
 
 #: operations/common-gpl3+/spiral.c:78
 msgid "Spiral swirl direction"
-msgstr ""
+msgstr "ทิศทางการหมุนของเส้นก้นหอย"
 
 #: operations/common-gpl3+/spiral.c:443
 msgid "Spiral"
-msgstr ""
+msgstr "เส้นก้นหอย"
 
 #: operations/common-gpl3+/spiral.c:448
 msgid "Spiral renderer"
-msgstr ""
+msgstr "ตัวเรนเดอร์เส้นก้นหอย"
 
 #: operations/common-gpl3+/supernova.c:33
 msgid "X coordinates of the center of supernova"
-msgstr ""
+msgstr "พิกัดแกน X ของจุดศูนย์กลางซูเปอร์โนวา"
 
 #: operations/common-gpl3+/supernova.c:39
 msgid "Y coordinates of the center of supernova"
-msgstr ""
+msgstr "พิกัดแกน Y ของจุดศูนย์กลางซูเปอร์โนวา"
 
 #: operations/common-gpl3+/supernova.c:45
 msgid "Radius of supernova"
-msgstr ""
+msgstr "รัศมีของซูเปอร์โนวา"
 
 #: operations/common-gpl3+/supernova.c:50 operations/common-gpl3+/supernova.c:51
 msgid "Number of spokes"
-msgstr ""
+msgstr "จำนวนแฉก"
 
 #: operations/common-gpl3+/supernova.c:55 operations/common-gpl3+/supernova.c:56
 msgid "Random hue"
-msgstr ""
+msgstr "ธาตุสีแบบสุ่ม"
 
 #: operations/common-gpl3+/supernova.c:61
 msgid "The color of supernova."
-msgstr ""
+msgstr "สีของซูเปอร์โนวา"
 
 #: operations/common-gpl3+/supernova.c:64
 msgid "The random seed for spokes and random hue"
-msgstr ""
+msgstr "ค่า seed แบบสุ่มสำหรับแฉกและธาตุสีแบบสุ่ม"
 
 #: operations/common-gpl3+/supernova.c:342
 msgid "Supernova"
-msgstr ""
+msgstr "ซูเปอร์โนวา"
 
 #: operations/common-gpl3+/supernova.c:346
 msgid ""
 "This plug-in produces an effect like a supernova burst. The amount of the light effect is approximately in proportion to 1/r, where r is the distance from the "
 "center of the star."
-msgstr ""
+msgstr "ปลั๊กอินนี้สร้างเอฟเฟกต์เหมือนกับการระเบิดของซูเปอร์โนวา ปริมาณของเอฟเฟกต์แสงประมาณอัตราส่วนกับ 1/r โดยที่ r คือระยะห่างจากจุดศูนย์กลางของดาว"
 
 #: operations/common-gpl3+/texturize-canvas.c:29
 msgid "Top-right"
-msgstr ""
+msgstr "ขวาบน"
 
 #: operations/common-gpl3+/texturize-canvas.c:31
 msgid "Top-left"
-msgstr ""
+msgstr "ซ้ายบน"
 
 #: operations/common-gpl3+/texturize-canvas.c:33
 msgid "Bottom-left"
-msgstr ""
+msgstr "ซ้ายล่าง"
 
 #: operations/common-gpl3+/texturize-canvas.c:35
 msgid "Bottom-right"
-msgstr ""
+msgstr "ขวาล่าง"
 
 #: operations/common-gpl3+/texturize-canvas.c:41
 msgid "Position of the light source which lightens the canvas: Top-right, Top-left, Bottom-left or Bottom-right"
-msgstr ""
+msgstr "ตำแหน่งของแหล่งกำเนิดแสงที่ทำให้ผ้าใบสว่างขึ้น: ขวาบน, ซ้ายบน, ซ้ายล่าง หรือ ขวาล่าง"
 
 #: operations/common-gpl3+/texturize-canvas.c:45
 msgid "Apparent depth of the rendered canvas effect; from 1 (very flat) to 50 (very deep)"
-msgstr ""
+msgstr "ความลึกที่ปรากฏของเอฟเฟกต์ผ้าใบที่เรนเดอร์; ตั้งแต่ 1 (ตื้นมาก) ถึง 50 (ลึกมาก)"
 
 #: operations/common-gpl3+/texturize-canvas.c:4380
 msgid "Texturize Canvas"
-msgstr ""
+msgstr "ใส่พื้นผิวผ้าใบ"
 
 #: operations/common-gpl3+/texturize-canvas.c:4385
 msgid "Textures the image as if it were an artist's canvas."
-msgstr ""
+msgstr "ใส่พื้นผิวให้ภาพดูเหมือนวาดลงบนผืนผ้าใบของศิลปิน"
 
 #: operations/common-gpl3+/tile-glass.c:28 operations/common-gpl3+/tile-paper.c:40
 msgid "Tile width"
-msgstr ""
+msgstr "ความกว้างของกระเบื้อง"
 
 #: operations/common-gpl3+/tile-glass.c:228
 msgid "Tile Glass"
-msgstr ""
+msgstr "กระเบื้องแก้ว"
 
 #: operations/common-gpl3+/tile-glass.c:233
 msgid "Simulate distortion caused by rectangular glass tiles"
-msgstr ""
+msgstr "จำลองการบิดเบี้ยวที่เกิดจากกระเบื้องแก้วรูปสี่เหลี่ยม"
 
 #: operations/common-gpl3+/tile-paper.c:28
 msgid "Transparent"
-msgstr ""
+msgstr "โปร่งใส"
 
 #: operations/common-gpl3+/tile-paper.c:29
 msgid "Inverted image"
-msgstr ""
+msgstr "ภาพกลับด้าน"
 
 #: operations/common-gpl3+/tile-paper.c:30
 msgid "Image"
-msgstr ""
+msgstr "ภาพ"
 
 #: operations/common-gpl3+/tile-paper.c:35
 msgid "Background"
-msgstr ""
+msgstr "พื้นหลัง"
 
 #: operations/common-gpl3+/tile-paper.c:36
 msgid "Ignore"
-msgstr ""
+msgstr "เพิกเฉย"
 
 #: operations/common-gpl3+/tile-paper.c:37
 msgid "Force"
-msgstr ""
+msgstr "บังคับ"
 
 #: operations/common-gpl3+/tile-paper.c:41
 msgid "Width of the tile"
-msgstr ""
+msgstr "ความกว้างของกระเบื้อง"
 
 #: operations/common-gpl3+/tile-paper.c:48
 msgid "Height of the tile"
-msgstr ""
+msgstr "ความสูงของกระเบื้อง"
 
 #: operations/common-gpl3+/tile-paper.c:54 operations/common-gpl3+/tile-paper.c:55
 msgid "Move rate"
-msgstr ""
+msgstr "อัตราการเคลื่อนที่"
 
 #: operations/common-gpl3+/tile-paper.c:60
 msgid "Wrap around"
-msgstr ""
+msgstr "ม้วนรอบ"
 
 #: operations/common-gpl3+/tile-paper.c:61
 msgid "Wrap the fractional tiles"
-msgstr ""
+msgstr "ม้วนเศษของกระเบื้อง"
 
 #: operations/common-gpl3+/tile-paper.c:63
 msgid "Fractional type"
-msgstr ""
+msgstr "ชนิดเศษ"
 
 #: operations/common-gpl3+/tile-paper.c:66
 msgid "Fractional Type"
-msgstr ""
+msgstr "ชนิดเศษ"
 
 #: operations/common-gpl3+/tile-paper.c:68
 msgid "Centering"
-msgstr ""
+msgstr "การจัดกลาง"
 
 #: operations/common-gpl3+/tile-paper.c:69
 msgid "Centering of the tiles"
-msgstr ""
+msgstr "การจัดกลางของกระเบื้อง"
 
 #: operations/common-gpl3+/tile-paper.c:71 operations/common-gpl3+/tile-paper.c:74
 msgid "Background type"
-msgstr ""
+msgstr "ชนิดพื้นหลัง"
 
 #: operations/common-gpl3+/tile-paper.c:462
 msgid "Paper Tile"
-msgstr ""
+msgstr "กระเบื้องกระดาษ"
 
 #: operations/common-gpl3+/tile-paper.c:467
 msgid "Cut image into paper tiles, and slide them"
-msgstr ""
+msgstr "ตัดภาพเป็นกระเบื้องกระดาษ และเลื่อนพวกมัน"
 
 #: operations/common-gpl3+/value-propagate.c:28
 msgid "More white (larger value)"
-msgstr ""
+msgstr "ขาวขึ้น (ค่าใหญ่ขึ้น)"
 
 #: operations/common-gpl3+/value-propagate.c:29
 msgid "More black (smaller value)"
-msgstr ""
+msgstr "ดำขึ้น (ค่าเล็กลง)"
 
 #: operations/common-gpl3+/value-propagate.c:30
 msgid "Middle value to peaks"
-msgstr ""
+msgstr "ค่ากลางถึงจุดสูงสุด"
 
 #: operations/common-gpl3+/value-propagate.c:31
 msgid "Color to peaks"
-msgstr ""
+msgstr "สีถึงจุดสูงสุด"
 
 #: operations/common-gpl3+/value-propagate.c:32
 msgid "Only color"
-msgstr ""
+msgstr "เฉพาะสี"
 
 #: operations/common-gpl3+/value-propagate.c:33
 msgid "More opaque"
-msgstr ""
+msgstr "ทึบขึ้น"
 
 #: operations/common-gpl3+/value-propagate.c:34
 msgid "More transparent"
-msgstr ""
+msgstr "โปร่งใสขึ้น"
 
 #: operations/common-gpl3+/value-propagate.c:40
 msgid "Mode of value propagation"
-msgstr ""
+msgstr "โหมดการแผ่ขยายค่า"
 
 #: operations/common-gpl3+/value-propagate.c:42
 msgid "Lower threshold"
-msgstr ""
+msgstr "ค่าเกณฑ์ต่ำสุด"
 
 #: operations/common-gpl3+/value-propagate.c:43
 msgid "The minimum difference in value at which to propagate a pixel"
-msgstr ""
+msgstr "ผลต่างต่ำสุดของค่าที่จะแผ่ขยายพิกเซล"
 
 #: operations/common-gpl3+/value-propagate.c:46
 msgid "Upper threshold"
-msgstr ""
+msgstr "ค่าเกณฑ์สูงสุด"
 
 #: operations/common-gpl3+/value-propagate.c:47
 msgid "The maximum difference in value at which to propagate a pixel"
-msgstr ""
+msgstr "ผลต่างสูงสุดของค่าที่จะแผ่ขยายพิกเซล"
 
 #: operations/common-gpl3+/value-propagate.c:50
 msgid "Propagating rate"
-msgstr ""
+msgstr "อัตราการแผ่ขยาย"
 
 #: operations/common-gpl3+/value-propagate.c:51
 msgid "The strength with which to propagate a pixel to its neighbors"
-msgstr ""
+msgstr "ความแรงที่จะให้แผ่ขยายพิกเซลไปยังพิกเซลที่อยู่ติดกัน"
 
 #: operations/common-gpl3+/value-propagate.c:55
 msgid "Color to use for the \"Only color\" and \"Color to peaks\" modes"
-msgstr ""
+msgstr "สีที่ต้องการใช้สำหรับโหมด \"เฉพาะสี\" และ \"สีถึงจุดสูงสุด\""
 
 #: operations/common-gpl3+/value-propagate.c:60
 msgid "To top"
-msgstr ""
+msgstr "ไปด้านบน"
 
 #: operations/common-gpl3+/value-propagate.c:61
 msgid "Propagate to top"
-msgstr ""
+msgstr "แผ่ขยายไปด้านบน"
 
 #: operations/common-gpl3+/value-propagate.c:63
 msgid "To left"
-msgstr ""
+msgstr "ไปด้านซ้าย"
 
 #: operations/common-gpl3+/value-propagate.c:64
 msgid "Propagate to left"
-msgstr ""
+msgstr "แผ่ขยายไปด้านซ้าย"
 
 #: operations/common-gpl3+/value-propagate.c:66
 msgid "To right"
-msgstr ""
+msgstr "ไปด้านขวา"
 
 #: operations/common-gpl3+/value-propagate.c:67
 msgid "Propagate to right"
-msgstr ""
+msgstr "แผ่ขยายไปด้านขวา"
 
 #: operations/common-gpl3+/value-propagate.c:69
 msgid "To bottom"
-msgstr ""
+msgstr "ไปด้านล่าง"
 
 #: operations/common-gpl3+/value-propagate.c:70
 msgid "Propagate to bottom"
-msgstr ""
+msgstr "แผ่ขยายไปด้านล่าง"
 
 #: operations/common-gpl3+/value-propagate.c:72
 msgid "Propagating value channel"
-msgstr ""
+msgstr "แผ่ขยายแชนเนลค่า"
 
 #: operations/common-gpl3+/value-propagate.c:73
 msgid "Whether to propagate a pixel's color"
-msgstr ""
+msgstr "เลือกว่าจะแผ่ขยายสีของพิกเซลหรือไม่"
 
 #: operations/common-gpl3+/value-propagate.c:75
 msgid "Propagating alpha channel"
-msgstr ""
+msgstr "แผ่ขยายแชนเนลอัลฟา"
 
 #: operations/common-gpl3+/value-propagate.c:76
 msgid "Whether to propagate a pixel's opacity"
-msgstr ""
+msgstr "เลือกว่าจะแผ่ขยายความทึบของพิกเซลหรือไม่"
 
 #: operations/common-gpl3+/value-propagate.c:645
 msgid "Value Propagate"
-msgstr ""
+msgstr "แผ่ขยายค่า"
 
 #: operations/common-gpl3+/value-propagate.c:649
 msgid "Propagate certain values to neighboring pixels. Erode and dilate any color or opacity."
-msgstr ""
+msgstr "แผ่ขยายค่าบางอย่างไปยังพิกเซลที่อยู่ติดกัน กัดกร่อนและขยายสีหรือความทึบใด ๆ"
 
 #: operations/common-gpl3+/video-degradation.c:34
 msgid "Staggered"
-msgstr ""
+msgstr "สลับฟันปลา"
 
 #: operations/common-gpl3+/video-degradation.c:36
 msgid "Large staggered"
-msgstr ""
+msgstr "สลับฟันปลาขนาดใหญ่"
 
 #: operations/common-gpl3+/video-degradation.c:38
 msgid "Striped"
-msgstr ""
+msgstr "แบบลายเส้น"
 
 #: operations/common-gpl3+/video-degradation.c:40
 msgid "Wide striped"
-msgstr ""
+msgstr "แบบลายเส้นกว้าง"
 
 #: operations/common-gpl3+/video-degradation.c:42
 msgid "Long staggered"
-msgstr ""
+msgstr "สลับฟันปลาแนวยาว"
 
 #: operations/common-gpl3+/video-degradation.c:44
 msgid "3x3"
-msgstr ""
+msgstr "3x3"
 
 #: operations/common-gpl3+/video-degradation.c:46
 msgid "Large 3x3"
-msgstr ""
+msgstr "3x3 ขนาดใหญ่"
 
 #: operations/common-gpl3+/video-degradation.c:48
 msgid "Hex"
-msgstr ""
+msgstr "หกเหลี่ยม"
 
 #: operations/common-gpl3+/video-degradation.c:50
 msgid "Dots"
-msgstr ""
+msgstr "จุดกลม ๆ"
 
 #: operations/common-gpl3+/video-degradation.c:56
 msgid "Type of RGB pattern to use"
-msgstr ""
+msgstr "ชนิดลวดลาย RGB ที่ต้องการใช้"
 
 #: operations/common-gpl3+/video-degradation.c:58
 msgid "Additive"
-msgstr ""
+msgstr "แบบบวกแสง"
 
 #: operations/common-gpl3+/video-degradation.c:59
 msgid "Whether the function adds the result to the original image."
-msgstr ""
+msgstr "เลือกว่าจะให้นำผลลัพธ์ของเอฟเฟกต์ไปบวกเพิ่มลงบนภาพต้นฉบับหรือไม่"
 
 #: operations/common-gpl3+/video-degradation.c:61
 msgid "Rotated"
-msgstr ""
+msgstr "แบบหมุนทิศทาง"
 
 #: operations/common-gpl3+/video-degradation.c:62
 msgid "Whether to rotate the RGB pattern by ninety degrees."
-msgstr ""
+msgstr "เลือกว่าจะให้หมุนลวดลาย RGB ไป 90 องศาหรือไม่"
 
 #: operations/common-gpl3+/video-degradation.c:322
 msgid "Video Degradation"
-msgstr ""
+msgstr "ลดคุณภาพวิดีโอ"
 
 #: operations/common-gpl3+/video-degradation.c:326
 msgid "This function simulates the degradation of being on an old low-dotpitch RGB video monitor."
-msgstr ""
+msgstr "ฟังก์ชันนี้จำลองการลดคุณภาพเหมือนกับบนจอมอนิเตอร์วิดีโอแบบ RGB รุ่นเก่าที่มีความละเอียดต่ำ"
 
 #: operations/common-gpl3+/waves.c:36
 msgid "Amplitude of the ripple"
-msgstr ""
+msgstr "แอมพลิจูดของคลื่นกระเพื่อม"
 
 #: operations/common-gpl3+/waves.c:40
 msgid "Period (wavelength) of the ripple"
-msgstr ""
+msgstr "คาบ (ความยาวคลื่น) ของคลื่นกระเพื่อม"
 
 #: operations/common-gpl3+/waves.c:53
 msgid "Clamp deformation"
-msgstr ""
+msgstr "จำกัดการปรับรูปทรง"
 
 #: operations/common-gpl3+/waves.c:54
 msgid "Limit deformation in the image area."
-msgstr ""
+msgstr "จำกัดขอบเขตการปรับรูปทรงไว้ภายในพื้นที่ภาพ"
 
 #: operations/common-gpl3+/waves.c:195
 msgid "Waves"
-msgstr ""
+msgstr "คลื่น"
 
 #: operations/common-gpl3+/waves.c:200
 msgid "Distort the image with waves"
-msgstr ""
+msgstr "บิดเบี้ยวภาพด้วยคลื่น"
 
 #: operations/common-gpl3+/whirl-pinch.c:37
 msgid "Whirl angle (degrees)"
-msgstr ""
+msgstr "มุมหมุนวน (องศา)"
 
 #: operations/common-gpl3+/whirl-pinch.c:43
 msgid "Pinch amount"
-msgstr ""
+msgstr "ความแรงการบีบ"
 
 #: operations/common-gpl3+/whirl-pinch.c:47
 msgid "Radius (1.0 is the largest circle that fits in the image, and 2.0 goes all the way to the corners)"
-msgstr ""
+msgstr "รัศมี (1.0 คือค่าที่วงกลมขนาดใหญ่ที่สุดจะพอดีกับภาพ และ 2.0 คือค่าที่กว้างขึ้นจนครอบคลุมไปถึงมุมภาพ)"
 
 #: operations/common-gpl3+/whirl-pinch.c:293
 msgid "Whirl Pinch"
-msgstr ""
+msgstr "หมุนวน-บีบ"
 
 #: operations/common-gpl3+/whirl-pinch.c:298
 msgid "Distort an image by whirling and pinching"
-msgstr ""
+msgstr "บิดเบี้ยวภาพด้วยการหมุนวนและการบีบ"
 
 #: operations/common-gpl3+/wind.c:28 operations/common-gpl3+/wind.c:586
 msgid "Wind"
