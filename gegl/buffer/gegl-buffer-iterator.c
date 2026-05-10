@@ -168,11 +168,11 @@ _gegl_buffer_iterator_add (GeglBufferIterator  *iter,
                               GEGL_ACCESS_WRITE;
       sub->alias            = -1;
 
-      if (index > 0)
-        {
-          priv->sub_iter[index].full_rect.width  = priv->sub_iter[0].full_rect.width;
-          priv->sub_iter[index].full_rect.height = priv->sub_iter[0].full_rect.height;
-        }
+      gegl_rectangle_bounding_box (&priv->sub_iter[index].full_rect,
+                                   &priv->sub_iter[index].full_rect,
+                                   &priv->sub_iter[0].full_rect);
+      for (gint i = 0; i < index; i++)
+        priv->sub_iter[i].full_rect = priv->sub_iter[index].full_rect;
     }
 
   return index;
