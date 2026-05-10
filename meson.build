@@ -417,10 +417,13 @@ if g_ir.found() and get_option('default_library') == 'static'
 endif
 
 # GEGL binary
-gexiv2    = dependency('gexiv2',
+gexiv2    = dependency(['gexiv2', 'gexiv2-0.16'],
   version: dep_ver.get('gexiv2'),
   required: get_option('gexiv2')
 )
+if gexiv2.found() and gexiv2.version().version_compare('>= 0.15.0')
+  warning('gexiv2 0.15.0/0.16.0 API is not supported yet')
+endif
 config.set('HAVE_GEXIV2', gexiv2.found())
 lua       = dependency('luajit',
   version: dep_ver.get('luajit'),
