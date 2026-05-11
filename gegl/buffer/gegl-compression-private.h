@@ -17,8 +17,8 @@
 #ifndef __GEGL_COMPRESSION_H__
 #define __GEGL_COMPRESSION_H__
 
+#include "gegl-compression.h"
 
-#include <glib.h>
 #include <babl/babl.h>
 
 G_BEGIN_DECLS
@@ -50,7 +50,6 @@ void                     gegl_compression_cleanup    (void);
 
 void                     gegl_compression_register   (const gchar           *name,
                                                       const GeglCompression *compression);
-const gchar           ** gegl_compression_list       (void);
 
 const GeglCompression  * gegl_compression            (const gchar           *name);
 

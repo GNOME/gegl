@@ -69,6 +69,7 @@ gegl_introspectable_headers += files(
   'gegl-buffer-matrix2.h',
   'gegl-buffer-swap.h',
   'gegl-buffer.h',
+  'gegl-compression.h',
   'gegl-memory.h',
   'gegl-rectangle.h',
   'gegl-scratch.h',
