@@ -403,6 +403,11 @@ else
   g_ir = disabler()
 endif
 if g_ir.found()
+  g_ir_compiler = find_program('g-ir-compiler')
+  if os_osx
+    make_typelib = find_program('tools'/'make-mac-typelib.py')
+  endif
+
   vapigen   = dependency('vapigen',
     version: dep_ver.get('vapigen'),
     required: get_option('vapigen')

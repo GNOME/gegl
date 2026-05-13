@@ -177,6 +177,17 @@ if g_ir.found()
     )
   endif
 
+  if os_osx
+    custom_target('libgegl-macos-final-typelib.stamp',
+                  output: [ 'libgegl-macos-final-typelib.stamp' ],
+                  depends: [ gegl_gir ],
+                  command: [
+                    make_typelib, gegl_gir,
+                    meson.current_build_dir(), gegl_prefix, g_ir_compiler, 'nonreloc'
+                  ],
+                  build_by_default: true)
+  endif
+
   if vapigen.found()
     configure_file(
       input: 'Gegl.metadata.in',
