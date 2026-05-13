@@ -46,10 +46,6 @@ process (GeglOperation       *op,
   gfloat              center_weight;
   gfloat              neighbor_weight;
 
-  /* Clamping fact to avoid division by zero */
-  if (fact < 0.01f)
-    fact = 0.01f;
-
   /* In the legacy version, the center was (800/fact) and neighbors were
    * (pos - i*8)/8. In normalized float math, we set the center weight and
    * distribute the negative remainder among the 8 neighbors to preserve
