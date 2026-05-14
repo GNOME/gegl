@@ -812,7 +812,7 @@ gegl_transform_detect (GeglOperation *operation,
 {
   OpTransform   *transform = OP_TRANSFORM (operation);
   GeglNode      *source_node;
-  GeglMatrix3    inverse;
+  GeglMatrix3    inverse = { 0 };
   gdouble        need_points [2];
   GeglOperation *source;
 
