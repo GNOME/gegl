@@ -232,6 +232,7 @@ process (GeglOperation       *operation,
   const Babl  *labels_format   = gegl_buffer_get_format (input);
   gint         bpp             = babl_format_get_bytes_per_pixel (labels_format);
   gint         bpc             = bpp / babl_format_get_n_components (labels_format);
+  guint8      *label           = NULL;
 
   gint neighbors_coords[8][2] = {{-1, -1},{0, -1},{1, -1},
                                  {-1, 0},         {1, 0},
@@ -360,10 +361,11 @@ process (GeglOperation       *operation,
                                                          gradient_format,
                                                          GEGL_SAMPLER_NEAREST,
                                                          level);
+  label = g_newa (guint8, bpp);
+
   while (!HQ_is_empty (&hq))
     {
       PixelCoords *p = (PixelCoords *) HQ_pop (&hq);
-      guint8      *label = g_newa (guint8, bpp);
 
       GeglRectangle square_rect = {p->x - 1, p->y - 1, 3, 3};
 
