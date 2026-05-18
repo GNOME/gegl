@@ -342,6 +342,7 @@ _gegl_sampler_box_get (GeglSampler*    restrict  self,
               gdouble       y0            = absolute_y - (scale->coeff[1][0] - u_dy +
                                                           scale->coeff[1][1] - v_dy) /
                                                          2.0;
+              gfloat       *input         = g_newa (gfloat, channels);
               gint          u;
               gint          v;
 
@@ -355,7 +356,7 @@ _gegl_sampler_box_get (GeglSampler*    restrict  self,
                   for (u = 0; u < u_samples; u++)
                     {
                       int c;
-                      gfloat *input = g_newa (gfloat, channels);
+
                       self->interpolate (self, x, y, input, repeat_mode);
                       for (c = 0; c < channels; c++)
                         result[c] += input[c];
