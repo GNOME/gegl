@@ -111,6 +111,11 @@ process (GeglOperation       *operation,
 #endif
      )
     {
+      gfloat *coords_top    = NULL;
+      gfloat *coords_bottom = NULL;
+      gfloat *coords_left   = NULL;
+      gfloat *coords_right  = NULL;
+
       it = gegl_buffer_iterator_new (output, result, level, format_io,
                                      GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE, 3);
       index_out = 0;
@@ -184,10 +189,15 @@ process (GeglOperation       *operation,
           else
             {
               gint   stride = 2 * roi->width;
-              gfloat *coords_top = g_newa (gfloat, 2 * roi->width);
-              gfloat *coords_bottom = g_newa (gfloat, 2 * roi->width);
-              gfloat *coords_left = g_newa (gfloat, 2 * roi->height);
-              gfloat *coords_right = g_newa (gfloat, 2 * roi->height);
+
+              if (! coords_top)
+                coords_top = g_newa (gfloat, 2 * roi->width);
+              if (! coords_bottom)
+                coords_bottom = g_newa (gfloat, 2 * roi->width);
+              if (! coords_left)
+                coords_left = g_newa (gfloat, 2 * roi->height);
+              if (! coords_right)
+                coords_right = g_newa (gfloat, 2 * roi->height);
 
               gegl_buffer_get (aux,
                                GEGL_RECTANGLE (roi->x, roi->y - 1,
