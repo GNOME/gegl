@@ -767,6 +767,17 @@ gegl_buffer_iterator_next (GeglBufferIterator *iter)
       SubIterState *sub0    = &priv->sub_iter[index0];
       GeglBuffer   *primary = sub0->buffer;
 
+      prepare_iterator (iter);
+
+      if (gegl_buffer_ext_flush)
+        {
+          for (gint index = 0; index < priv->used_slots; index++)
+            {
+              SubIterState *sub = &priv->sub_iter[index];
+              gegl_buffer_ext_flush (sub->buffer, &sub->full_roi);
+            }
+        }
+
       if (primary->tile_width   == primary->extent.width  &&
           primary->tile_height  == primary->extent.height &&
           sub0->full_roi.width  == primary->tile_width    &&
@@ -776,30 +787,14 @@ gegl_buffer_iterator_next (GeglBufferIterator *iter)
           primary->shift_x      == 0                      &&
           primary->shift_y      == 0                      &&
           FALSE) /* XXX: conditions are not strict enough, GIMPs TIFF
-                       plug-in fails; but GEGLs buffer test suite passes
-
-                       XXX: still? */
+                         plug-in fails; but GEGLs buffer test suite passes
+                    XXX: still? */
       {
-        if (gegl_buffer_ext_flush)
-          for (gint index = 0; index < priv->used_slots; index++)
-            {
-              SubIterState *sub = &priv->sub_iter[index];
-              gegl_buffer_ext_flush (sub->buffer, &sub->full_roi);
-            }
         linear_shortcut (iter);
         return TRUE;
       }
 
-      prepare_iterator (iter);
-
-      if (gegl_buffer_ext_flush)
-        for (gint index = 0; index < priv->used_slots; index++)
-          {
-            SubIterState *sub = &priv->sub_iter[index];
-            gegl_buffer_ext_flush (sub->buffer, &sub->full_roi);
-          }
-
-      retile_subs (iter, priv->sub_iter[0].roi.x, priv->sub_iter[0].roi.y);
+      retile_subs (iter, priv->sub_iter[0].full_roi.x, priv->sub_iter[0].full_roi.y);
       load_rects (iter);
 
       return TRUE;
