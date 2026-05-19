@@ -468,7 +468,7 @@ needs_rows (GeglBufferIterator *iter,
 
 /* Do the final setup of the iter struct */
 static inline void
-prepare_iteration (GeglBufferIterator *iter)
+prepare_iterator (GeglBufferIterator *iter)
 {
   GeglBufferIteratorPriv *priv = iter->priv;
   gint *access_order = get_access_order (iter);
@@ -723,8 +723,8 @@ gegl_buffer_iterator_stop (GeglBufferIterator *iter)
   _gegl_buffer_iterator_stop (iter);
 }
 
-
-static void linear_shortcut (GeglBufferIterator *iter)
+static void
+linear_shortcut (GeglBufferIterator *iter)
 {
   GeglBufferIteratorPriv *priv         = iter->priv;
   const gint             *access_order = get_access_order (iter);
@@ -801,7 +801,7 @@ gegl_buffer_iterator_next (GeglBufferIterator *iter)
         return TRUE;
       }
 
-      prepare_iteration (iter);
+      prepare_iterator (iter);
 
       if (gegl_buffer_ext_flush)
         for (gint index = 0; index < priv->used_slots; index++)
