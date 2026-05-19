@@ -342,15 +342,15 @@ gegl_rectangle_copy (GeglRectangle       *to,
 }
 
 gboolean
-gegl_rectangle_contains (const GeglRectangle *r,
-                         const GeglRectangle *s)
+gegl_rectangle_contains (const GeglRectangle *parent,
+                         const GeglRectangle *child)
 {
-  g_return_val_if_fail (r && s, FALSE);
+  g_return_val_if_fail (parent && child, FALSE);
 
-  if (s->x >= r->x &&
-      s->y >= r->y &&
-      (s->x + s->width) <= (r->x + r->width) &&
-      (s->y + s->height) <= (r->y + r->height))
+  if (child->x >= parent->x &&
+      child->y >= parent->y &&
+      (child->x + child->width)  <= (parent->x + parent->width) &&
+      (child->y + child->height) <= (parent->y + parent->height))
     return TRUE;
   else
     return FALSE;
