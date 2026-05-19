@@ -309,17 +309,6 @@ retile_subs (GeglBufferIterator *iter,
 }
 
 static inline gboolean
-initialize_rects (GeglBufferIterator *iter)
-{
-  GeglBufferIteratorPriv *priv = iter->priv;
-  SubIterState           *sub  = &priv->sub_iter[0];
-
-  retile_subs (iter, sub->full_roi.x, sub->full_roi.y);
-
-  return TRUE;
-}
-
-static inline gboolean
 increment_rects (GeglBufferIterator *iter)
 {
   GeglBufferIteratorPriv *priv = iter->priv;
@@ -810,8 +799,8 @@ gegl_buffer_iterator_next (GeglBufferIterator *iter)
             gegl_buffer_ext_flush (sub->buffer, &sub->full_roi);
           }
 
-      initialize_rects (iter);
-
+      // Start tiling from the left-top corner of the first sub-iterator.
+      retile_subs (iter, priv->sub_iter[0].full_roi.x, priv->sub_iter[0].full_roi.y);
       load_rects (iter);
 
       return TRUE;
