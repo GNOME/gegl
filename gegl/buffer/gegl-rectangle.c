@@ -332,6 +332,22 @@ gegl_rectangle_xor (GeglRectangle        dest[4],
 }
 
 void
+gegl_rectangle_inset (GeglRectangle       *dest,
+                      const GeglRectangle *source,
+                      gint                 x,
+                      gint                 y)
+{
+  GeglRectangle r;
+
+  r.x      = source->x + x;
+  r.y      = source->y + y;
+  r.width  = MAX (source->width - 2 * x, 0);
+  r.height = MAX (source->height - 2 * y, 0);
+
+  gegl_rectangle_copy (dest, &r);
+}
+
+void
 gegl_rectangle_copy (GeglRectangle       *to,
                      const GeglRectangle *from)
 {

@@ -294,6 +294,34 @@ gint        gegl_rectangle_xor           (GeglRectangle        destination[4],
                                           const GeglRectangle *source2);
 
 /**
+ * gegl_rectangle_inset:
+ * @dest: a #GeglRectangle
+ * @source: a #GeglRectangle
+ * @x: the horizontal inset
+ * @y: the vertical inset
+ *
+ * Changes the given rectangle to be smaller, or larger depending on the given
+ * inset parameters.
+ *
+ * To create an inset rectangle, use positive @x or @y values; to create a
+ * larger, encompassing rectangle, use negative @x or @y values.
+ *
+ * The origin of the rectangle is offset by @x and @y, while the size is
+ * adjusted by (2 * @x, 2 * @y). If x and y are positive values, the
+ * size of the rectangle is decreased; if @x and @y are negative values, the
+ * size of the rectangle is increased.
+ *
+ * If the size of the resulting inset rectangle has a negative width or height
+ * then the size will be set to zero.
+ *
+ * @dest can be @source.
+ */
+void        gegl_rectangle_inset         (GeglRectangle       *dest,
+                                          const GeglRectangle *source,
+                                          gint                 x,
+                                          gint                 y);
+
+/**
  * gegl_rectangle_contains:
  * @parent: a #GeglRectangle
  * @child: a #GeglRectangle

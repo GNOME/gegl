@@ -746,6 +746,7 @@ EXPORTS
   gegl_rectangle_equal_coords
   gegl_rectangle_get_type
   gegl_rectangle_infinite_plane
+  gegl_rectangle_inset
   gegl_rectangle_intersect
   gegl_rectangle_is_empty
   gegl_rectangle_is_infinite_plane
