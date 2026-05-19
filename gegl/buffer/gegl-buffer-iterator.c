@@ -712,6 +712,9 @@ gegl_buffer_iterator_stop (GeglBufferIterator *iter)
   _gegl_buffer_iterator_stop (iter);
 }
 
+/* In the case when we get a perfect alignment of GeglBuffer, its extent and
+ * tile size, and the ROI, we can take a shortcut by not iterating through
+ * individual tiles because we can get all the contents in one step. */
 static void
 linear_shortcut (GeglBufferIterator *iter)
 {
@@ -765,7 +768,7 @@ gegl_buffer_iterator_next (GeglBufferIterator *iter)
     {
       gint          index0  = access_order[0];
       SubIterState *sub0    = &priv->sub_iter[index0];
-      GeglBuffer   *primary = sub0->buffer;
+      GeglBuffer   *buffer0 = sub0->buffer;
 
       prepare_iterator (iter);
 
@@ -778,14 +781,14 @@ gegl_buffer_iterator_next (GeglBufferIterator *iter)
             }
         }
 
-      if (primary->tile_width   == primary->extent.width  &&
-          primary->tile_height  == primary->extent.height &&
-          sub0->full_roi.width  == primary->tile_width    &&
-          sub0->full_roi.height == primary->tile_height   &&
-          sub0->full_roi.x      == primary->extent.x      &&
-          sub0->full_roi.y      == primary->extent.y      &&
-          primary->shift_x      == 0                      &&
-          primary->shift_y      == 0                      &&
+      if (buffer0->tile_width   == buffer0->extent.width  &&
+          buffer0->tile_height  == buffer0->extent.height &&
+          buffer0->shift_x      == 0                      &&
+          buffer0->shift_y      == 0                      &&
+          sub0->full_roi.width  == buffer0->tile_width    &&
+          sub0->full_roi.height == buffer0->tile_height   &&
+          sub0->full_roi.x      == buffer0->extent.x      &&
+          sub0->full_roi.y      == buffer0->extent.y      &&
           FALSE) /* XXX: conditions are not strict enough, GIMPs TIFF
                          plug-in fails; but GEGLs buffer test suite passes
                     XXX: still? */
