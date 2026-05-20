@@ -149,10 +149,10 @@ static gboolean
 is_in_inhibit_list (const gchar *filename,
                     const gchar *inhibit_list)
 {
-  gchar       *p;
-  gint         pathlen;
+  const gchar *p;
   const gchar *start;
   const gchar *end;
+  gint         pathlen;
 
   if (! inhibit_list || ! strlen (inhibit_list))
     return FALSE;
