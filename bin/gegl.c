@@ -64,7 +64,7 @@ int gegl_str_has_video_suffix (char *path);
 
 static gboolean file_is_gegl_composition (const gchar *path)
 {
-  gchar *extension;
+  const gchar *extension;
 
   extension = strrchr (path, '.');
   if (!extension)
