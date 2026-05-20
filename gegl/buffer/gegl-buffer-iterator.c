@@ -69,7 +69,6 @@ typedef struct _SubIterState {
   gpointer             real_data;
   /* Linear data members */
   GeglTile            *linear_tile;
-  gpointer             linear;
 } SubIterState;
 
 struct _GeglBufferIteratorPriv
