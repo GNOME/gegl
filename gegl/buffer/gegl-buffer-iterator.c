@@ -58,17 +58,20 @@ typedef struct _SubIterState {
   const Babl          *format;
   gint                 format_bpp;
   gint                 alias;
-  GeglIteratorTileMode current_tile_mode;
   gint                 row_stride;
   GeglRectangle        real_roi;
   gint                 level;
   gboolean             can_discard_data;
-  /* Direct data members */
-  GeglTile            *current_tile;
-  /* Indirect data members */
-  gpointer             real_data;
-  /* Linear data members */
-  GeglTile            *linear_tile;
+
+  GeglIteratorTileMode current_tile_mode;
+  union {
+    /* Direct data members */
+    GeglTile          *current_tile;
+    /* Indirect data members */
+    gpointer           real_data;
+    /* Linear data members */
+    GeglTile          *linear_tile;
+  };
 } SubIterState;
 
 struct _GeglBufferIteratorPriv
