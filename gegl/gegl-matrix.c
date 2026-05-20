@@ -266,14 +266,14 @@ gegl_matrix3_parse_string (GeglMatrix3 *matrix,
   gegl_matrix3_identity (matrix);
   if (strstr (string, "translate"))
     {
-      gchar *p = strchr (string, '(');
+      gchar *p = (gchar *)strchr (string, '(');
       gfloat a;
       gfloat b;
       if (!p) return;
       p++;
       a = g_ascii_strtod (p, &p);
       if (!p) return;
-      p = strchr (string, ',');
+      p = (gchar *)strchr (string, ',');
       if (!p) return;
       p++;
       b = g_ascii_strtod (p, &p);
@@ -284,7 +284,7 @@ gegl_matrix3_parse_string (GeglMatrix3 *matrix,
     }
   else if (strstr (string, "matrix"))
     {
-      gchar *p = strchr (string, '(');
+      gchar *p = (gchar *)strchr (string, '(');
       gfloat a;
       gint i,j;
       if (!p) return;
