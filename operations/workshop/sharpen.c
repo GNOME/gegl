@@ -177,6 +177,8 @@ gegl_op_class_init (GeglOpClass *klass)
                                  "description", _("Sharpens the image by enhancing "
                                                   "edge contrast using a standard "
                                                   "3x3 convolution kernel."),
+                                 "gimp:menu-path", "<Image>/Filters/Enhance",
+                                 "gimp:menu-label", _("Sharpen"),
                                  NULL);
 }
 
