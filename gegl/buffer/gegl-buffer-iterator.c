@@ -65,14 +65,13 @@ typedef struct _SubIterState {
   gint                  current_row_stride;
   GeglRectangle         current_roi; /* The ROI of the currently iterated over part of buffer. Contained by roi. */
   GeglIteratorTileMode  current_tile_mode;
-  union {
-    /* Direct data members */
-    GeglTile           *current_tile;
-    /* Indirect data members */
-    gpointer            indirect_data;
-    /* Linear data members */
-    GeglTile           *linear_tile;
-  };
+
+  /* Direct data members */
+  GeglTile            *current_tile;
+  /* Indirect data members */
+  gpointer             indirect_data;
+  /* Linear data members */
+  GeglTile            *linear_tile;
 } SubIterState;
 
 struct _GeglBufferIteratorPriv
