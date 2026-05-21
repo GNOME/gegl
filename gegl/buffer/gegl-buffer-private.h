@@ -46,7 +46,7 @@ struct _GeglBuffer
                                 be different from format */
 
   gint              shift_x; /* The relative offset of origins compared with */
-  gint              shift_y; /* anchestral tile_storage buffer, during       */
+  gint              shift_y; /* ancestral tile_storage buffer, during        */
                              /* construction relative to immediate source    */
 
   GeglRectangle     abyss;
