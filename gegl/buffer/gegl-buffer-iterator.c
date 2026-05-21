@@ -51,36 +51,40 @@ typedef enum {
 } GeglIteratorTileMode;
 
 typedef struct _SubIterState {
-  GeglRectangle        full_rect; /* The entire area we are iterating over */
-  GeglBuffer          *buffer;
-  GeglAccessMode       access_mode;
-  GeglAbyssPolicy      abyss_policy;
-  const Babl          *format;
-  gint                 format_bpp;
-  gint                 alias;
-  gint                 row_stride;
-  GeglRectangle        real_roi;
-  gint                 level;
-  gboolean             can_discard_data;
+  GeglBuffer           *buffer;
+  GeglAccessMode        access_mode;
+  GeglAbyssPolicy       abyss_policy;
+  const Babl           *format;
+  gint                  format_bpp;
+  GeglRectangle         full_rect; /* The entire area we are iterating over */
+  gint                  level;
 
-  GeglIteratorTileMode current_tile_mode;
+  gint                  alias;
+  gboolean              can_discard_data;
+
+  gint                  row_stride;
+  GeglRectangle         real_roi; /* The ROI of the currently iterated over part of buffer. Contained by roi. */
+  GeglIteratorTileMode  current_tile_mode;
   union {
     /* Direct data members */
-    GeglTile          *current_tile;
+    GeglTile           *current_tile;
     /* Indirect data members */
-    gpointer           real_data;
+    gpointer            real_data;
     /* Linear data members */
-    GeglTile          *linear_tile;
+    GeglTile           *linear_tile;
   };
 } SubIterState;
 
 struct _GeglBufferIteratorPriv
 {
-  gint              num_buffers;
   GeglIteratorState state;
+
+  gint              max_slots;
+  gint              num_buffers;
+
   GeglRectangle     origin_tile;
   gint              remaining_rows;
-  gint              max_slots;
+
   SubIterState      sub_iter[];
   /* gint           access_order[]; */ /* allocated, but accessed through
                                         * get_access_order().
