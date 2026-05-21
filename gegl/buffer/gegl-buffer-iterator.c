@@ -273,8 +273,8 @@ retile_subs (GeglBufferIterator *iter,
   current_roi.height = priv->origin_tile.height;
 
   /* Trim tile down to the iteration roi */
-  gegl_rectangle_intersect (&iter->items[0].roi, &current_roi, &priv->sub_iter[0].full_roi);
-  priv->sub_iter[0].current_roi = iter->items[0].roi;
+  gegl_rectangle_intersect (&priv->sub_iter[0].current_roi, &current_roi, &priv->sub_iter[0].full_roi);
+  iter->items[0].roi = priv->sub_iter[0].current_roi;
 
   for (gint index = 1; index < priv->used_slots; index++)
     {
@@ -284,11 +284,11 @@ retile_subs (GeglBufferIterator *iter,
       int roi_offset_x = sub->full_roi.x - lead_sub->full_roi.x;
       int roi_offset_y = sub->full_roi.y - lead_sub->full_roi.y;
 
-      iter->items[index].roi.x = iter->items[0].roi.x + roi_offset_x;
-      iter->items[index].roi.y = iter->items[0].roi.y + roi_offset_y;
-      iter->items[index].roi.width  = iter->items[0].roi.width;
-      iter->items[index].roi.height = iter->items[0].roi.height;
-      sub->current_roi = iter->items[index].roi;
+      sub->current_roi.x      = lead_sub->current_roi.x + roi_offset_x;
+      sub->current_roi.y      = lead_sub->current_roi.y + roi_offset_y;
+      sub->current_roi.width  = lead_sub->current_roi.width;
+      sub->current_roi.height = lead_sub->current_roi.height;
+      iter->items[index].roi = sub->current_roi;
     }
 }
 
