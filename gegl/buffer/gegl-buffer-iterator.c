@@ -474,7 +474,6 @@ prepare_iteration (GeglBufferIterator *iter)
   gint *access_order = get_access_order (iter);
   gint origin_offset_x;
   gint origin_offset_y;
-  gint i;
 
   /* Set up the origin tile */
   /* FIXME: Pick the most compatable buffer, not just the first */
@@ -494,11 +493,10 @@ prepare_iteration (GeglBufferIterator *iter)
   {
     gint i_write = 0;
     gint i_read  = priv->used_slots - 1;
-    gint index;
 
     /* Sort the write-access sub-iterators before the read-access ones */
 
-    for (index = 0; index < priv->used_slots; index++)
+    for (gint index = 0; index < priv->used_slots; index++)
       {
         SubIterState *sub = &priv->sub_iter[index];
 
@@ -509,14 +507,13 @@ prepare_iteration (GeglBufferIterator *iter)
       }
   }
 
-  for (i = 0; i < priv->used_slots; i++)
+  for (gint i = 0; i < priv->used_slots; i++)
     {
       gint          index = access_order[i];
       SubIterState *sub   = &priv->sub_iter[index];
       GeglBuffer   *buf   = sub->buffer;
       gint          current_offset_x;
       gint          current_offset_y;
-      gint          j;
 
       gegl_buffer_lock (sub->buffer);
 
@@ -531,7 +528,7 @@ prepare_iteration (GeglBufferIterator *iter)
        * If the two sub-iterators are compatible, make the second sub-iterator
        * an alias for the first, combining their access mode.
        */
-      for (j = i + 1; j < priv->used_slots; j++)
+      for (gint j = i + 1; j < priv->used_slots; j++)
         {
           gint          index2 = access_order[j];
           SubIterState *sub2   = &priv->sub_iter[index2];
@@ -608,9 +605,8 @@ load_rects (GeglBufferIterator *iter)
   GeglBufferIteratorPriv *priv = iter->priv;
   const gint *access_order = get_access_order (iter);
   GeglIteratorState next_state = GeglIteratorState_InTile;
-  gint i;
 
-  for (i = 0; i < priv->used_slots; i++)
+  for (gint i = 0; i < priv->used_slots; i++)
     {
       gint          index = access_order[i];
       SubIterState *sub   = &priv->sub_iter[index];
@@ -641,14 +637,12 @@ load_rects (GeglBufferIterator *iter)
 
   if (next_state == GeglIteratorState_InRows)
     {
-      gint index;
-
       if (iter->items[0].roi.height == 1)
         next_state = GeglIteratorState_InTile;
 
       priv->remaining_rows = iter->items[0].roi.height - 1;
 
-      for (index = 0; index < priv->used_slots; index++)
+      for (gint index = 0; index < priv->used_slots; index++)
         {
           SubIterState *sub = &priv->sub_iter[index];
 
@@ -669,13 +663,12 @@ _gegl_buffer_iterator_stop (GeglBufferIterator *iter)
 {
   GeglBufferIteratorPriv *priv = iter->priv;
   const gint *access_order = get_access_order (iter);
-  gint i;
 
   if (priv->state != GeglIteratorState_Invalid)
     {
       priv->state = GeglIteratorState_Invalid;
 
-      for (i = priv->used_slots - 1; i >= 0; i--)
+      for (gint i = priv->used_slots - 1; i >= 0; i--)
         {
           gint          index = access_order[i];
           SubIterState *sub   = &priv->sub_iter[index];
@@ -733,46 +726,41 @@ gegl_buffer_iterator_stop (GeglBufferIterator *iter)
 
 static void linear_shortcut (GeglBufferIterator *iter)
 {
-  GeglBufferIteratorPriv *priv = iter->priv;
-  const gint *access_order = get_access_order (iter);
-  gint index0 = access_order[0];
-  SubIterState *sub0 = &priv->sub_iter[index0];
-  gint i;
+  GeglBufferIteratorPriv *priv         = iter->priv;
+  const gint             *access_order = get_access_order (iter);
+  gint                    index0       = access_order[0];
+  SubIterState           *sub0         = &priv->sub_iter[index0];
 
-  for (i = 0; i < priv->used_slots; i++)
-  {
-    gint          index        = access_order[i];
-    SubIterState *sub          = &priv->sub_iter[index];
-
-    sub->current_roi    = sub0->full_roi;
-    sub->current_roi.x += sub->full_roi.x - sub0->full_roi.x;
-    sub->current_roi.y += sub->full_roi.y - sub0->full_roi.y;
-
-    iter->items[index].roi = sub->current_roi;
-
-    gegl_buffer_lock (sub->buffer);
-
-    if (index == index0)
+  for (gint i = 0; i < priv->used_slots; i++)
     {
-      get_tile (iter, index);
+      gint          index = access_order[i];
+      SubIterState *sub   = &priv->sub_iter[index];
+
+      sub->current_roi    = sub0->full_roi;
+      sub->current_roi.x += sub->full_roi.x - sub0->full_roi.x;
+      sub->current_roi.y += sub->full_roi.y - sub0->full_roi.y;
+
+      iter->items[index].roi = sub->current_roi;
+
+      gegl_buffer_lock (sub->buffer);
+
+      if (index == index0 ||
+          (sub->buffer->tile_width  == sub->buffer->extent.width  &&
+           sub->buffer->tile_height == sub->buffer->extent.height &&
+           sub->buffer->extent.x    == iter->items[index].roi.x   &&
+           sub->buffer->extent.y    == iter->items[index].roi.y))
+        {
+          get_tile (iter, index);
+        }
+      else if (sub->buffer == sub0->buffer && sub->format == sub0->format)
+        {
+          iter->items[index].data = iter->items[index0].data;
+        }
+      else
+        {
+          get_indirect (iter, index);
+        }
     }
-    else if (sub->buffer == sub0->buffer && sub->format == sub0->format)
-    {
-      g_print ("!\n");
-      iter->items[index].data = iter->items[index0].data;
-    }
-    else if (sub->buffer->tile_width == sub->buffer->extent.width
-             && sub->buffer->tile_height == sub->buffer->extent.height
-             && sub->buffer->extent.x == iter->items[index].roi.x
-             && sub->buffer->extent.y == iter->items[index].roi.y)
-    {
-      get_tile (iter, index);
-    }
-    else
-    {
-      get_indirect (iter, index);
-    }
-  }
 
   iter->length = iter->items[0].roi.width * iter->items[0].roi.height;
   priv->state  = GeglIteratorState_Stop; /* quit on next iterator_next */
@@ -789,7 +777,6 @@ gegl_buffer_iterator_next (GeglBufferIterator *iter)
       gint          index0  = access_order[0];
       SubIterState *sub0    = &priv->sub_iter[index0];
       GeglBuffer   *primary = sub0->buffer;
-      gint          index;
 
       if (primary->tile_width   == primary->extent.width  &&
           primary->tile_height  == primary->extent.height &&
@@ -805,7 +792,7 @@ gegl_buffer_iterator_next (GeglBufferIterator *iter)
                        XXX: still? */
       {
         if (gegl_buffer_ext_flush)
-          for (index = 0; index < priv->used_slots; index++)
+          for (gint index = 0; index < priv->used_slots; index++)
             {
               SubIterState *sub = &priv->sub_iter[index];
               gegl_buffer_ext_flush (sub->buffer, &sub->full_roi);
@@ -817,7 +804,7 @@ gegl_buffer_iterator_next (GeglBufferIterator *iter)
       prepare_iteration (iter);
 
       if (gegl_buffer_ext_flush)
-        for (index = 0; index < priv->used_slots; index++)
+        for (gint index = 0; index < priv->used_slots; index++)
           {
             SubIterState *sub = &priv->sub_iter[index];
             gegl_buffer_ext_flush (sub->buffer, &sub->full_roi);
@@ -831,9 +818,7 @@ gegl_buffer_iterator_next (GeglBufferIterator *iter)
     }
   else if (priv->state == GeglIteratorState_InRows)
     {
-      gint index;
-
-      for (index = 0; index < priv->used_slots; index++)
+      for (gint index = 0; index < priv->used_slots; index++)
         {
           iter->items[index].data   = ((char *)iter->items[index].data) + priv->sub_iter[index].current_row_stride;
           iter->items[index].roi.y += 1;
@@ -848,9 +833,7 @@ gegl_buffer_iterator_next (GeglBufferIterator *iter)
     }
   else if (priv->state == GeglIteratorState_InTile)
     {
-      gint i;
-
-      for (i = priv->used_slots - 1; i >= 0; i--)
+      for (gint i = priv->used_slots - 1; i >= 0; i--)
         {
           gint          index = access_order[i];
           SubIterState *sub   = &priv->sub_iter[index];
