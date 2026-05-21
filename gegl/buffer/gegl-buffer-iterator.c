@@ -98,8 +98,8 @@ get_access_order (GeglBufferIterator *iter)
   return (gint *) &priv->sub_iter[priv->max_slots];
 }
 
-static inline GeglBufferIterator *
-_gegl_buffer_iterator_empty_new (gint max_slots)
+GeglBufferIterator *
+gegl_buffer_iterator_empty_new (gint max_slots)
 {
   GeglBufferIterator *iter = gegl_scratch_alloc0 (
     sizeof (GeglBufferIterator)                 +
@@ -120,16 +120,8 @@ _gegl_buffer_iterator_empty_new (gint max_slots)
   return iter;
 }
 
-
-GeglBufferIterator *
-gegl_buffer_iterator_empty_new (gint max_slots)
-{
-  return _gegl_buffer_iterator_empty_new (max_slots);
-}
-
-
-static inline int
-_gegl_buffer_iterator_add (GeglBufferIterator  *iter,
+int
+gegl_buffer_iterator_add (GeglBufferIterator  *iter,
                           GeglBuffer          *buf,
                           const GeglRectangle *roi,
                           gint                 level,
@@ -181,20 +173,6 @@ _gegl_buffer_iterator_add (GeglBufferIterator  *iter,
   return index;
 }
 
-int
-gegl_buffer_iterator_add (GeglBufferIterator  *iter,
-                          GeglBuffer          *buf,
-                          const GeglRectangle *roi,
-                          gint                 level,
-                          const Babl          *format,
-                          GeglAccessMode       access_mode,
-                          GeglAbyssPolicy      abyss_policy)
-{
-  return _gegl_buffer_iterator_add (iter, buf, roi, level, format, access_mode,
-abyss_policy);
-}
-
-
 GeglBufferIterator *
 gegl_buffer_iterator_new (GeglBuffer          *buf,
                           const GeglRectangle *roi,
@@ -204,9 +182,9 @@ gegl_buffer_iterator_new (GeglBuffer          *buf,
                           GeglAbyssPolicy      abyss_policy,
                           gint                 max_slots)
 {
-  GeglBufferIterator *iter = _gegl_buffer_iterator_empty_new (max_slots);
-  _gegl_buffer_iterator_add (iter, buf, roi, level, format,
-                             access_mode, abyss_policy);
+  GeglBufferIterator *iter = gegl_buffer_iterator_empty_new (max_slots);
+  gegl_buffer_iterator_add (iter, buf, roi, level, format,
+                            access_mode, abyss_policy);
 
   return iter;
 }
@@ -643,8 +621,8 @@ load_rects (GeglBufferIterator *iter)
   priv->state  = next_state;
 }
 
-static inline void
-_gegl_buffer_iterator_stop (GeglBufferIterator *iter)
+void
+gegl_buffer_iterator_stop (GeglBufferIterator *iter)
 {
   GeglBufferIteratorPriv *priv = iter->priv;
   const gint *access_order = get_access_order (iter);
@@ -701,13 +679,6 @@ _gegl_buffer_iterator_stop (GeglBufferIterator *iter)
 
   gegl_scratch_free (iter);
 }
-
-void
-gegl_buffer_iterator_stop (GeglBufferIterator *iter)
-{
-  _gegl_buffer_iterator_stop (iter);
-}
-
 
 static void linear_shortcut (GeglBufferIterator *iter)
 {
@@ -828,7 +799,7 @@ gegl_buffer_iterator_next (GeglBufferIterator *iter)
 
       if (increment_rects (iter) == FALSE)
         {
-          _gegl_buffer_iterator_stop (iter);
+          gegl_buffer_iterator_stop (iter);
           return FALSE;
         }
 
@@ -838,7 +809,7 @@ gegl_buffer_iterator_next (GeglBufferIterator *iter)
     }
   else
     {
-      _gegl_buffer_iterator_stop (iter);
+      gegl_buffer_iterator_stop (iter);
       return FALSE;
     }
 }
