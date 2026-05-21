@@ -331,23 +331,21 @@ get_tile (GeglBufferIterator *iter,
   GeglBufferIteratorPriv *priv = iter->priv;
   SubIterState           *sub  = &priv->sub_iter[index];
 
-  GeglBuffer *buf = priv->sub_iter[index].buffer;
-
   if (sub->linear_tile)
     {
       sub->current_tile = sub->linear_tile;
 
-      sub->current_roi = buf->extent;
+      sub->current_roi = sub->buffer->extent;
 
       sub->current_tile_mode = GeglIteratorTileMode_LinearTile;
     }
   else
     {
-      int shift_x = buf->shift_x;
-      int shift_y = buf->shift_y;
+      int shift_x = sub->buffer->shift_x;
+      int shift_y = sub->buffer->shift_y;
 
-      int tile_width  = buf->tile_width;
-      int tile_height = buf->tile_height;
+      int tile_width  = sub->buffer->tile_width;
+      int tile_height = sub->buffer->tile_height;
 
       int tile_x = gegl_tile_indice (iter->items[index].roi.x + shift_x, tile_width);
       int tile_y = gegl_tile_indice (iter->items[index].roi.y + shift_y, tile_height);
@@ -357,15 +355,15 @@ get_tile (GeglBufferIterator *iter,
       sub->current_roi.width  = tile_width;
       sub->current_roi.height = tile_height;
 
-      g_rec_mutex_lock (&buf->tile_storage->mutex);
+      g_rec_mutex_lock (&sub->buffer->tile_storage->mutex);
 
       sub->current_tile = gegl_tile_handler_get_tile (
-        (GeglTileHandler *) buf,
+        (GeglTileHandler *) sub->buffer,
         tile_x, tile_y, sub->level,
         ! (sub->can_discard_data &&
            gegl_rectangle_contains (&sub->full_roi, &sub->current_roi)));
 
-      g_rec_mutex_unlock (&buf->tile_storage->mutex);
+      g_rec_mutex_unlock (&sub->buffer->tile_storage->mutex);
 
       if (sub->access_mode & GEGL_ACCESS_WRITE)
         gegl_tile_lock (sub->current_tile);
@@ -375,7 +373,7 @@ get_tile (GeglBufferIterator *iter,
       sub->current_tile_mode = GeglIteratorTileMode_DirectTile;
     }
 
-  sub->current_row_stride = buf->tile_width * sub->format_bpp;
+  sub->current_row_stride = sub->buffer->tile_width * sub->format_bpp;
 
   iter->items[index].data = gegl_tile_get_data (sub->current_tile);
 }
@@ -490,7 +488,6 @@ prepare_iterator (GeglBufferIterator *iter)
     {
       gint          index = access_order[i];
       SubIterState *sub   = &priv->sub_iter[index];
-      GeglBuffer   *buf   = sub->buffer;
       gint          current_offset_x;
       gint          current_offset_y;
 
@@ -499,8 +496,8 @@ prepare_iterator (GeglBufferIterator *iter)
       if (sub->alias >= 0)
         continue;
 
-      current_offset_x = buf->shift_x + sub->full_roi.x;
-      current_offset_y = buf->shift_y + sub->full_roi.y;
+      current_offset_x = sub->buffer->shift_x + sub->full_roi.x;
+      current_offset_y = sub->buffer->shift_y + sub->full_roi.y;
 
       /* Avoid discarding tile data through a write-only sub-iterator, if
        * another sub-iterator reads the same tile during the same iteration.
@@ -511,20 +508,19 @@ prepare_iterator (GeglBufferIterator *iter)
         {
           gint          index2 = access_order[j];
           SubIterState *sub2   = &priv->sub_iter[index2];
-          GeglBuffer   *buf2   = sub2->buffer;
           gint          current_offset2_x;
           gint          current_offset2_y;
 
           if (sub2->alias >= 0)
             continue;
 
-          current_offset2_x = buf2->shift_x + sub2->full_roi.x;
-          current_offset2_y = buf2->shift_y + sub2->full_roi.y;
+          current_offset2_x = sub2->buffer->shift_x + sub2->full_roi.x;
+          current_offset2_y = sub2->buffer->shift_y + sub2->full_roi.y;
 
-          if (sub2->level        == sub->level        &&
-              buf2->tile_storage == buf->tile_storage &&
-              current_offset2_x  == current_offset_x  &&
-              current_offset2_y  == current_offset_y)
+          if (sub2->level                == sub->level                &&
+              sub2->buffer->tile_storage == sub->buffer->tile_storage &&
+              current_offset2_x          == current_offset_x          &&
+              current_offset2_y          == current_offset_y)
             {
               if (sub2->access_mode & GEGL_ACCESS_READ)
                 sub->can_discard_data = FALSE;
@@ -546,23 +542,23 @@ prepare_iterator (GeglBufferIterator *iter)
       if (gegl_buffer_get_format (sub->buffer) != sub->format)
         sub->access_mode |= GEGL_ITERATOR_INCOMPATIBLE;
       /* Incompatiable tiles */
-      else if ((priv->origin_tile.width  != buf->tile_width) ||
-               (priv->origin_tile.height != buf->tile_height) ||
+      else if ((priv->origin_tile.width  != sub->buffer->tile_width)  ||
+               (priv->origin_tile.height != sub->buffer->tile_height) ||
                (abs(origin_offset_x - current_offset_x) % priv->origin_tile.width != 0) ||
                (abs(origin_offset_y - current_offset_y) % priv->origin_tile.height != 0))
         {
           /* Get the whole tile if the buffer is a linear buffer. */
-          if (g_object_get_data (G_OBJECT (buf), "is-linear"))
+          if (g_object_get_data (G_OBJECT (sub->buffer), "is-linear"))
             {
-              g_rec_mutex_lock (&buf->tile_storage->mutex);
+              g_rec_mutex_lock (&sub->buffer->tile_storage->mutex);
 
               sub->linear_tile = gegl_tile_handler_get_tile (
-                (GeglTileHandler *) buf,
+                (GeglTileHandler *) sub->buffer,
                 0, 0, 0,
                 ! (sub->can_discard_data &&
-                   gegl_rectangle_contains (&sub->full_roi, &buf->extent)));
+                   gegl_rectangle_contains (&sub->full_roi, &sub->buffer->extent)));
 
-              g_rec_mutex_unlock (&buf->tile_storage->mutex);
+              g_rec_mutex_unlock (&sub->buffer->tile_storage->mutex);
 
               if (sub->access_mode & GEGL_ACCESS_WRITE)
                 gegl_tile_lock (sub->linear_tile);
@@ -751,15 +747,14 @@ gegl_buffer_iterator_next (GeglBufferIterator *iter)
     {
       gint          index0  = access_order[0];
       SubIterState *sub0    = &priv->sub_iter[index0];
-      GeglBuffer   *primary = sub0->buffer;
 
-      if (g_object_get_data (G_OBJECT (primary), "is-linear") &&
-          primary->shift_x      == 0                          &&
-          primary->shift_y      == 0                          &&
-          sub0->full_roi.width  == primary->tile_width        &&
-          sub0->full_roi.height == primary->tile_height       &&
-          sub0->full_roi.x      == primary->extent.x          &&
-          sub0->full_roi.y      == primary->extent.y          &&
+      if (g_object_get_data (G_OBJECT (sub0->buffer), "is-linear") &&
+          sub0->buffer->shift_x      == 0                          &&
+          sub0->buffer->shift_y      == 0                          &&
+          sub0->full_roi.width  == sub0->buffer->tile_width        &&
+          sub0->full_roi.height == sub0->buffer->tile_height       &&
+          sub0->full_roi.x      == sub0->buffer->extent.x          &&
+          sub0->full_roi.y      == sub0->buffer->extent.y          &&
           FALSE) /* XXX: conditions are not strict enough, GIMPs TIFF
                        plug-in fails; but GEGLs buffer test suite passes
 
