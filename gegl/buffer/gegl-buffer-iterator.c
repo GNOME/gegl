@@ -259,7 +259,6 @@ retile_subs (GeglBufferIterator *iter,
 {
   GeglBufferIteratorPriv *priv        = iter->priv;
   GeglRectangle           current_roi = { 0 };
-  int index;
 
   int shift_x = priv->origin_tile.x;
   int shift_y = priv->origin_tile.y;
@@ -277,7 +276,7 @@ retile_subs (GeglBufferIterator *iter,
   gegl_rectangle_intersect (&iter->items[0].roi, &current_roi, &priv->sub_iter[0].full_roi);
   priv->sub_iter[0].current_roi = iter->items[0].roi;
 
-  for (index = 1; index < priv->used_slots; index++)
+  for (gint index = 1; index < priv->used_slots; index++)
     {
       SubIterState *lead_sub = &priv->sub_iter[0];
       SubIterState *sub      = &priv->sub_iter[index];
