@@ -244,6 +244,14 @@ release_tile (GeglBufferIterator *iter,
     }
 }
 
+/* Updates the 'current_roi' of each sub-iterator based on the given x, y
+ * coordinates. The coordinates are mapped to tiles in the first (sub0)
+ * sub-iterator. ROIs of the remaining sub-iterators are then matched with the
+ * first sub-iterator's ROI.
+ *
+ * If there is an offset between the whole ROI of the firstsub-iterator and
+ * another sub-iterator this respective offset is applied to the new
+ * 'current_roi' of the another sub-iterator. */
 static inline void
 retile_subs (GeglBufferIterator *iter,
              int                 x,
@@ -285,6 +293,9 @@ retile_subs (GeglBufferIterator *iter,
     }
 }
 
+/* Tries to move the ROI of the first sub-iterator forward (first by rows, then
+ * by columns) and based on the new coordinates re-tiles all sub-iterators. If
+ * there's no more area to cover, returns FALSE. */
 static inline gboolean
 increment_rects (GeglBufferIterator *iter)
 {
@@ -415,9 +426,11 @@ needs_indirect_read (GeglBufferIterator *iter,
   return FALSE;
 }
 
+/* If the content of a buffer was not retrieved indirectly and only a part of a
+ * tile was read, we want to iterate over the rest of the tile by rows. */
 static inline gboolean
 needs_rows (GeglBufferIterator *iter,
-            int        index)
+            int                 index)
 {
   GeglBufferIteratorPriv *priv = iter->priv;
   SubIterState           *sub  = &priv->sub_iter[index];
@@ -434,7 +447,7 @@ needs_rows (GeglBufferIterator *iter,
 
 /* Do the final setup of the iter struct */
 static inline void
-prepare_iteration (GeglBufferIterator *iter)
+prepare_iterator (GeglBufferIterator *iter)
 {
   GeglBufferIteratorPriv *priv = iter->priv;
   gint *access_order = get_access_order (iter);
@@ -562,6 +575,8 @@ prepare_iteration (GeglBufferIterator *iter)
     }
 }
 
+/* Loads data of all sub-iterators based on the currently set 'current_roi' of
+ * all sub-iterators. */
 static inline void
 load_rects (GeglBufferIterator *iter)
 {
@@ -680,7 +695,11 @@ gegl_buffer_iterator_stop (GeglBufferIterator *iter)
   gegl_scratch_free (iter);
 }
 
-static void linear_shortcut (GeglBufferIterator *iter)
+/* When encountering a linear GeglBuffer, there are no tiles to iterate through
+ * and therefore we can take a shortcut by getting the whole content of all the
+ * buffers at once. */
+static void
+linear_shortcut (GeglBufferIterator *iter)
 {
   GeglBufferIteratorPriv *priv         = iter->priv;
   const gint             *access_order = get_access_order (iter);
@@ -756,7 +775,7 @@ gegl_buffer_iterator_next (GeglBufferIterator *iter)
         return TRUE;
       }
 
-      prepare_iteration (iter);
+      prepare_iterator (iter);
 
       if (gegl_buffer_ext_flush)
         for (gint index = 0; index < priv->used_slots; index++)
