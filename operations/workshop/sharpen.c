@@ -58,103 +58,42 @@ process (GeglOperation       *op,
                                    GEGL_ACCESS_WRITE,
                                    GEGL_ABYSS_NONE, 10);
 
-  /* top left */
-  neighbor_rect.x = roi->x - 1;
-  neighbor_rect.y = roi->y - 1;
-  gegl_buffer_iterator_add (iter, input, &neighbor_rect, level, format,
-                            GEGL_ACCESS_READ, GEGL_ABYSS_CLAMP);
-
-  /* top center */
-  neighbor_rect.x = roi->x;
-  neighbor_rect.y = roi->y - 1;
-  gegl_buffer_iterator_add (iter, input, &neighbor_rect, level, format,
-                            GEGL_ACCESS_READ, GEGL_ABYSS_CLAMP);
-
-  /* top right */
-  neighbor_rect.x = roi->x + 1;
-  neighbor_rect.y = roi->y - 1;
-  gegl_buffer_iterator_add (iter, input, &neighbor_rect, level, format,
-                            GEGL_ACCESS_READ, GEGL_ABYSS_CLAMP);
-
-  /* center left */
-  neighbor_rect.x = roi->x - 1;
-  neighbor_rect.y = roi->y;
-  gegl_buffer_iterator_add (iter, input, &neighbor_rect, level, format,
-                            GEGL_ACCESS_READ, GEGL_ABYSS_CLAMP);
-
-  /* center */
-  gegl_buffer_iterator_add (iter, input, roi, level, format,
-                            GEGL_ACCESS_READ, GEGL_ABYSS_CLAMP);
-
-  /* center right */
-  neighbor_rect.x = roi->x + 1;
-  neighbor_rect.y = roi->y;
-  gegl_buffer_iterator_add (iter, input, &neighbor_rect, level, format,
-                            GEGL_ACCESS_READ, GEGL_ABYSS_CLAMP);
-
-  /* bottom left */
-  neighbor_rect.x = roi->x - 1;
-  neighbor_rect.y = roi->y + 1;
-  gegl_buffer_iterator_add (iter, input, &neighbor_rect, level, format,
-                            GEGL_ACCESS_READ, GEGL_ABYSS_CLAMP);
-
-  /* bottom center */
-  neighbor_rect.x = roi->x;
-  neighbor_rect.y = roi->y + 1;
-  gegl_buffer_iterator_add (iter, input, &neighbor_rect, level, format,
-                            GEGL_ACCESS_READ, GEGL_ABYSS_CLAMP);
-
-  /* bottom right */
-  neighbor_rect.x = roi->x + 1;
-  neighbor_rect.y = roi->y + 1;
+  gegl_rectangle_inset (&neighbor_rect, &neighbor_rect, -1, -1);
   gegl_buffer_iterator_add (iter, input, &neighbor_rect, level, format,
                             GEGL_ACCESS_READ, GEGL_ABYSS_CLAMP);
 
   while (gegl_buffer_iterator_next (iter))
     {
       gfloat *out_p = iter->items[0].data;
-      gfloat *tl    = iter->items[1].data;
-      gfloat *tc    = iter->items[2].data;
-      gfloat *tr    = iter->items[3].data;
-      gfloat *cl    = iter->items[4].data;
-      gfloat *cp    = iter->items[5].data;
-      gfloat *cr    = iter->items[6].data;
-      gfloat *bl    = iter->items[7].data;
-      gfloat *bc    = iter->items[8].data;
-      gfloat *br    = iter->items[9].data;
-      gint    i;
+      gfloat *in = iter->items[1].data;
 
-      for (i = 0; i < iter->length; i++)
+      for (gint i = 0; i < iter->length; i++)
         {
           gint c;
+          gint in_offset = (iter->items[1].roi.width * (i / iter->items[0].roi.width) + i % iter->items[0].roi.width) * channels_num;
+
+          #define K(x, y, c) in[in_offset + y * iter->items[1].roi.width * channels_num + x * channels_num + c]
 
           for (c = 0; c < channels_num - 1; c++)
             {
               gfloat neighbor_sum;
 
-              neighbor_sum = tl[c] + tc[c] + tr[c] +
-                             cl[c] +         cr[c] +
-                             bl[c] + bc[c] + br[c];
+              neighbor_sum = K(0, 0, c) + K(1, 0, c) + K(2, 0, c) +
+                             K(0, 1, c) +              K(2, 1, c) +
+                             K(0, 2, c) + K(2, 2, c) + K(2, 2, c);
 
-              out_p[c] = CLAMP ((cp[c] * center_weight) +
+              out_p[c] = CLAMP ((K(1, 1, c) * center_weight) +
                                 (neighbor_sum * neighbor_weight),
                                 0.0f, 1.0f);
             }
 
           /* copy alpha channel without modification */
-          out_p[3] = cp[3];
+          out_p[3] = K(1, 1, 3);
+
+          #undef K
 
           /* update to the next pixel location */
           out_p += 4;
-          tl    += 4;
-          tc    += 4;
-          tr    += 4;
-          cl    += 4;
-          cp    += 4;
-          cr    += 4;
-          bl    += 4;
-          bc    += 4;
-          br    += 4;
         }
     }
 
