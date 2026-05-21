@@ -560,11 +560,8 @@ prepare_iteration (GeglBufferIterator *iter)
                (abs(origin_offset_x - current_offset_x) % priv->origin_tile.width != 0) ||
                (abs(origin_offset_y - current_offset_y) % priv->origin_tile.height != 0))
         {
-          /* Check if the buffer is a linear buffer */
-          if ((buf->extent.x      == -buf->shift_x) &&
-              (buf->extent.y      == -buf->shift_y) &&
-              (buf->extent.width  == buf->tile_width) &&
-              (buf->extent.height == buf->tile_height))
+          /* Get the whole tile if the buffer is a linear buffer. */
+          if (g_object_get_data (G_OBJECT (buf), "is-linear"))
             {
               g_rec_mutex_lock (&buf->tile_storage->mutex);
 
@@ -766,14 +763,13 @@ gegl_buffer_iterator_next (GeglBufferIterator *iter)
       SubIterState *sub0    = &priv->sub_iter[index0];
       GeglBuffer   *primary = sub0->buffer;
 
-      if (primary->tile_width   == primary->extent.width  &&
-          primary->tile_height  == primary->extent.height &&
-          sub0->full_roi.width  == primary->tile_width    &&
-          sub0->full_roi.height == primary->tile_height   &&
-          sub0->full_roi.x      == primary->extent.x      &&
-          sub0->full_roi.y      == primary->extent.y      &&
-          primary->shift_x      == 0                      &&
-          primary->shift_y      == 0                      &&
+      if (g_object_get_data (G_OBJECT (primary), "is-linear") &&
+          primary->shift_x      == 0                          &&
+          primary->shift_y      == 0                          &&
+          sub0->full_roi.width  == primary->tile_width        &&
+          sub0->full_roi.height == primary->tile_height       &&
+          sub0->full_roi.x      == primary->extent.x          &&
+          sub0->full_roi.y      == primary->extent.y          &&
           FALSE) /* XXX: conditions are not strict enough, GIMPs TIFF
                        plug-in fails; but GEGLs buffer test suite passes
 
