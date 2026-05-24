@@ -245,9 +245,9 @@ release_tile (GeglBufferIterator *iter,
 }
 
 /* Updates the 'current_roi' of each sub-iterator based on the given x, y
- * coordinates. The coordinates are mapped to tiles in the first (sub0)
- * sub-iterator. ROIs of the remaining sub-iterators are then matched with the
- * first sub-iterator's ROI.
+ * coordinates. The coordinates are mapped to tiles in the first (order of
+ * addition) sub-iterator. ROIs of the remaining sub-iterators are then matched
+ * with the first sub-iterator's ROI.
  *
  * If there is an offset between the whole ROI of the firstsub-iterator and
  * another sub-iterator this respective offset is applied to the new
@@ -483,6 +483,8 @@ prepare_iterator (GeglBufferIterator *iter)
       }
   }
 
+  /* Go over all buffers starting with write buffers to set up aliases, see
+   * whether buffers are linear and if there's need for format conversion. */
   for (gint i = 0; i < priv->used_slots; i++)
     {
       gint          index = access_order[i];
@@ -571,7 +573,8 @@ prepare_iterator (GeglBufferIterator *iter)
 }
 
 /* Loads data of all sub-iterators based on the currently set 'current_roi' of
- * all sub-iterators. */
+ * all sub-iterators. Start with write buffers and in the order aliases have
+ * been set-up. */
 static inline void
 load_rects (GeglBufferIterator *iter)
 {
