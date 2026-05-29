@@ -149,6 +149,7 @@ if g_ir.found()
   )
 
   # Silence 'duplicate -rpath' and other noisy warnings from Xcode 15+
+  # See: https://github.com/mesonbuild/meson/commit/17d1cc60ed8246b8e7f0786421bf1cdf5cb19254
   gir_env = environment()
   gir_env.append('GEGL_BUILD', '1', separator: ' ')
   if os_osx
