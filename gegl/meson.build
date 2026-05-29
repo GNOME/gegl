@@ -148,6 +148,14 @@ if g_ir.found()
     'opencl' / 'gegl-cl-introspection-support.h',
   )
 
+  # Silence 'duplicate -rpath' and other noisy warnings from Xcode 15+
+  gir_env = environment()
+  gir_env.append('GEGL_BUILD', '1', separator: ' ')
+  if os_osx
+    gir_env.append('CFLAGS', '-Wno-unused-command-line-argument', separator: ' ')
+    gir_env.append('LDFLAGS', '-Wl,-w', separator: ' ')
+  endif
+
   if meson.version().version_compare('>=1.2')
     gegl_gir = gnome.generate_gir(gegl_lib,
       sources: introspection_sources,
@@ -160,7 +168,7 @@ if g_ir.found()
       dependencies: [babl],
       export_packages: 'gegl-' + api_version,
       install: true,
-      env: ['GEGL_BUILD=1'],
+      env: gir_env,
     )
   else
     gegl_gir = gnome.generate_gir(gegl_lib,
@@ -185,6 +193,7 @@ if g_ir.found()
                     make_typelib, gegl_gir,
                     meson.current_build_dir(), gegl_prefix, g_ir_compiler, 'nonreloc'
                   ],
+                  env: gir_env,
                   build_by_default: true)
   endif
 
