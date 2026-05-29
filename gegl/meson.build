@@ -194,7 +194,6 @@ if g_ir.found()
                     make_typelib, gegl_gir,
                     meson.current_build_dir(), gegl_prefix, g_ir_compiler, 'nonreloc'
                   ],
-                  env: gir_env,
                   build_by_default: true)
   endif
 
