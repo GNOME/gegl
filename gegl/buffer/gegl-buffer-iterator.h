@@ -33,9 +33,11 @@ typedef struct _GeglBufferIteratorPriv GeglBufferIteratorPriv;
 /***
  * GeglBufferIterator:
  *
- * GeglBufferIterator allows to iterate over one or more GeglBuffers.
- * In each iteration the new data is available as a linear chunk of
- * memory. See gegl_buffer_iterator_new() and gegl_buffer_iterator_next()
+ * [struct@Gegl.BufferIterator] allows to iterate over one or more
+ * [class@Gegl.Buffer]s. In each iteration the new data is available as a linear
+ * chunk of memory.
+ *
+ * See [ctor@Gegl.BufferIterator.new] and [method@Gegl.BufferIterator.next].
  */
 
 typedef struct GeglBufferIteratorItem
@@ -66,13 +68,16 @@ GeglBufferIterator *gegl_buffer_iterator_empty_new (int max_slots);
  * @roi: the rectangle to iterate over
  * @level: the level at which we are iterating, the roi will indicate the
  * extent at 1:1, x,y,width and height are/(2^level)
- * @format: the format we want to process this buffers data in, pass 0 to use the buffers format.
- * @access_mode: whether we need reading or writing to this buffer one of GEGL_BUFFER_READ, GEGL_BUFFER_WRITE and GEGL_BUFFER_READWRITE.
+ * @format: the format we want to process this buffers data in, pass 0 to use
+ * the buffers format.
+ * @access_mode: whether we need reading or writing to this buffer one of
+ *   [flags@Gegl.AccessMode.READ], [flags@Gegl.AccessMode.WRITE] and
+ *   [flags@Gegl.AccessMode.READWRITE].
  * @abyss_policy: how request outside the buffer extent are handled.
  *
  * Create a new buffer iterator, this buffer will be iterated through
  * in linear chunks, some chunks might be full tiles the coordinates, see
- * the documentation of gegl_buffer_iterator_next for how to use it and
+ * the documentation of [method@Gegl.BufferIterator.next] for how to use it and
  * destroy it.
  *
  * Returns: a new buffer iterator that can be used to iterate through the
@@ -102,17 +107,17 @@ GeglBufferIterator * gegl_buffer_iterator_new  (
  * Adds an additional buffer iterator that will be processed in sync with
  * the original one, if the buffer doesn't align with the other for tile access
  * the corresponding scans and regions will be serialized automatically using
- * gegl_buffer_get.
+ * [method@Gegl.Buffer.get].
  *
  * If the buffer shares its tiles with a previously-added buffer (in
  * particular, if the same buffer is added more than once), and at least one of
  * the buffers is accessed for writing, the corresponding iterated-over areas
  * should either completely overlap, or not overlap at all, in the coordinate-
  * system of the underlying tile storage (that is, after shifting each area by
- * the corresponding buffer's shift-x and shift-y properties).  If the areas
- * overlap, at most one of the buffers may be accessed for writing, and the
- * data pointers of the corresponding iterator items may refer to the same
- * data.
+ * the corresponding buffer's [property@Gegl.Buffer:shift-x] and
+ * [property@Gegl.Buffer:shift-y] properties).  If the areas overlap, at most
+ * one of the buffers may be accessed for writing, and the data pointers of the
+ * corresponding iterator items may refer to the same data.
  *
  * Returns: an integer handle refering to the indice in the iterator structure
  * of the added buffer.
