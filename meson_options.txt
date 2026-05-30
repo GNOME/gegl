@@ -2,7 +2,7 @@
 option('docs',
   type: 'combo',
   choices: ['auto', 'true', 'false'],
-  value: 'auto',
+  value: 'false',
   description: 'build documentation'
 )
 option('gtk-doc',
