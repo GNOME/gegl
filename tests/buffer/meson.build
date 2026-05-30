@@ -24,6 +24,8 @@ buffer_tests = [
   'buffer_iterator3sub',
   'buffer_iterator4',
   'buffer_iterator4sub',
+  'buffer_iterator_halo',
+  'buffer_iterator_order',
   'buffer_linear_copy',
   'buffer_linear_iter',
   'buffer_linear_iter2',
