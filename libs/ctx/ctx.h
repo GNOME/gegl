@@ -8924,7 +8924,7 @@ static inline float ctx_atof (const char *str)
 static inline void ctx_strncpy (char *dst, const char *src, size_t n)
 { strncpy (dst, src, n); }
 static inline void ctx_strcpy (char *dst, const char *src)
-{ strcpy (dst, src); }
+{ strncpy (dst, src, ctx_strlen (src) + 1); }
 static inline char *ctx_strchr (const char *haystack, char needle)
 { return strchr (haystack, needle); }
 static inline char *ctx_strrchr (const char *haystack, char needle)
