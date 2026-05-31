@@ -59,6 +59,7 @@ fedora-x86_64:
     - cd babl && meson _build && ninja -C _build && ninja -C _build install && cd ..
     - meson --buildtype debug
             --fatal-meson-warnings
+            -Ddocs=true
             --default-library=both
             _build
     - ninja -C _build
