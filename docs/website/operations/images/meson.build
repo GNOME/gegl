@@ -64,6 +64,16 @@ exclude += [
   'gegl:lcms-from-profile',
   'gegl:mblur',
   'gegl:json:grey2',
+  'gegl:transform',
+  'gegl:fill-path',
+  'gegl:svg-huerotate',
+  'gegl:svg-matrix',
+  'gegl:svg-saturate',
+  'gegl:box-blur',
+  'gegl:c2g',
+  'gegl:noise-reduction',
+  'gegl:stress',
+  'gegl:mosaic',
 ]
 # Crashing - workshop
 exclude += [

@@ -24,11 +24,11 @@ include:
     # If you are hacking on them or need a them to rebuild, its enough
     # to change any part of the string of the image you want.
     ###
-    FDO_DISTRIBUTION_TAG: '2025-10-03.0'
+    FDO_DISTRIBUTION_TAG: '2026-05-30.0'
     FDO_DISTRIBUTION_VERSION: '42'
     FDO_DISTRIBUTION_PACKAGES: >
       meson ninja-build gcc g++ git gettext glib2-devel libjpeg-turbo-devel
-      libpng-devel json-glib-devel lcms2-devel diffutils shellcheck devscripts
+      libpng-devel json-glib-devel lcms2-devel diffutils shellcheck devscripts asciidoc
     FDO_UPSTREAM_REPO: $CI_PROJECT_PATH
     # Enable colorful output when supported (e.g. ninja)
     CLICOLOR_FORCE: "1"
@@ -62,7 +62,7 @@ fedora-x86_64:
             -Ddocs=true
             --default-library=both
             _build
-    - ninja -C _build
+    - ninja -C _build --verbose
   artifacts:
     name: "gegl-${CI_JOB_NAME}-${CI_COMMIT_REF_NAME}"
     when: always
