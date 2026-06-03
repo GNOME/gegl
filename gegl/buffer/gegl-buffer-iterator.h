@@ -131,8 +131,13 @@ GeglBufferIterator * gegl_buffer_iterator_new  (GeglBuffer          *buffer,
  * The iterator prioritizes accessing tile data of @buffer directly but if the
  * @buffer doesn't align with the first one for tile access the corresponding
  * scans and regions will be serialized automatically using
- * [method@Gegl.Buffer.get]. The @roi of all buffer sub-iterators added after
- * the first one will have their dimensions set to the first one.
+ * [method@Gegl.Buffer.get]. If the @roi of the new sub-iterator is smaller or
+ * larger (and not just offset) the difference in size compared to the ROI of
+ * the first sub-iterator will be retained across the linear chunks of memory
+ * provided by [method@Gegl.BufferIterator.next]. For larger ROIs the abyss
+ * policy is taken into account for padding. For smaller ROIs the assurance is
+ * that the linear chunk of memory will always be at least one pixel tall and
+ * wide.
  *
  * If @buffer shares its tiles with a previously-added [class@Gegl.Buffer] (in
  * particular, if the same [class@Gegl.Buffer] is added more than once), and at
