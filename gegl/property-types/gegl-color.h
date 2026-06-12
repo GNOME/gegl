@@ -124,7 +124,7 @@ void         gegl_color_set_rgba               (GeglColor   *color,
  * @green: (out): green return location.
  * @blue: (out): blue return location.
  * @alpha: (out): alpha return location.
- * @space: RGB space.
+ * @space: (nullable): RGB space.
  *
  * Retrieves the current set color stored as @space.
  * If @space is %NULL, this is equivalent to requesting color in sRGB.
@@ -143,7 +143,7 @@ void         gegl_color_get_rgba_with_space    (GeglColor   *color,
  * @green: green value
  * @blue: blue value
  * @alpha: alpha value
- * @space: RGB space.
+ * @space: (nullable): RGB space.
  *
  * Set color as RGBA data stored as @space. If @space is %NULL, this is
  * equivalent to storing as sRGB.
