@@ -102,17 +102,15 @@ else
   simd_extra_def = []
 endif
 
-if not os_osx
-  gegl_def = custom_target('gegl.def',
-    input: [
-      'gegl-generic.def',
-      simd_extra_def,
-    ],
-    output: [ 'gegl.def', ],
-    command: [python, '-c', 'import sys; data="".join(open(f).read() for f in sys.argv[2:]); open(sys.argv[1],"w").write(data)', '@OUTPUT@', '@INPUT@'],
-    build_by_default: true,
-  )
-endif
+gegl_def = custom_target('gegl.def',
+  input: [
+    'gegl-generic.def',
+    simd_extra_def,
+  ],
+  output: [ 'gegl.def', ],
+  command: [python, '-c', 'import sys; data="".join(open(f).read() for f in sys.argv[2:]); open(sys.argv[1],"w").write(data)', '@OUTPUT@', '@INPUT@'],
+  build_by_default: true,
+)
 
 gegl_lib_args = {
   'sources': gegl_sources,

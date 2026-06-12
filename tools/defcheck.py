@@ -24,7 +24,7 @@ the respective libraries.
 Invoke in the build directory and pass the name
 of the built .def files on the command-line.
 
-Needs the tool "nm", "objdump" or "dumpbin" to work
+Needs the tool "nm", "objdump", "dumpbin" or "dyld_info" to work
 
 """
 
@@ -60,7 +60,8 @@ libextension   = ".so"
 command        = getenv("NM", default="nm") + " -D "
 libprefix      = "lib"
 platform_linux = True
-
+platform_win32 = False
+platform_macos = False
 if sys.platform in ['win32', 'cygwin']:
    libextension   = ".dll"
    command        = "objdump -p "
@@ -68,6 +69,14 @@ if sys.platform in ['win32', 'cygwin']:
      command      = "dumpbin /EXPORTS "
      libprefix    = ""
    platform_linux = False
+   platform_win32 = True
+   platform_macos = False
+elif sys.platform == 'darwin':
+   libextension   = ".dylib"
+   command        = "dyld_info -exports "
+   platform_linux = False
+   platform_win32 = False
+   platform_macos = True
 
 for df in def_files:
    directory, name = path.split (df)
@@ -122,7 +131,7 @@ for df in def_files:
             #If the address is omitted for certain sections
             nmsymbols += " 0 0 " + parts[1].split('@')[0]
 
-   elif not shutil.which("dumpbin"): # Windows MSYS2
+   elif platform_win32 and not shutil.which("dumpbin"): # Windows MSYS2
       # remove parts of objdump output we don't need: anything up to a few lines
       # after Export Table: ' Ordinal      RVA  Name'
 
@@ -140,7 +149,7 @@ for df in def_files:
             nmsymbols += " 0 0 " + s.split()[-1] # Keep the [2::3] logic happy
          # else: skip this line
 
-   else: # Windows MSVC
+   elif platform_win32: # Windows MSVC
 
       dbin = nm.split(sep='\n')
 
@@ -154,6 +163,17 @@ for df in def_files:
             if len(parts) >= 4:
                nmsymbols += " 0 0 " + parts[3] # Keep the [2::3] logic happy
          # else: skip this line
+
+   elif platform_macos:
+      lines = nm.split(sep='\n')
+
+      for line in lines:
+         parts = line.split()
+         if parts and parts[0].startswith("0x"):
+            symbol = parts[-1]
+            if symbol.startswith('_'):
+               symbol = symbol[1:]
+            nmsymbols += " 0 0 " + symbol # Keep the [2::3] logic happy
 
    nmsymbols = nmsymbols.split()[2::3]
    nmsymbols = [s for s in nmsymbols if s[0] != '_']
