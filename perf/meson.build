@@ -4,6 +4,7 @@ perf_tests = [
   'bcontrast-minichunk',
   'bcontrast',
   'blur',
+  'compression',
   'gegl-buffer-access',
   'init',
   'rotate',
