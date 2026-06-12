@@ -613,7 +613,7 @@ build_reference = get_option('gtk-doc') or build_gi_docgen
 # Ideally meson should take care of it automatically.
 # See: https://github.com/mesonbuild/meson/issues/12977
 if os_win32 and debugging_format == 'Native' and cc.get_argument_syntax() != 'msvc'
-  install_win_debug_script = find_program('./meson_install_win_debug.py')
+  install_win_debug_script = find_program('tools/meson_install_win_debug.py')
   meson.add_install_script(install_win_debug_script)
 endif
 
