@@ -176,7 +176,7 @@ for df in def_files:
             nmsymbols += " 0 0 " + symbol # Keep the [2::3] logic happy
 
    nmsymbols = nmsymbols.split()[2::3]
-   nmsymbols = [s for s in nmsymbols if s[0] != '_']
+   nmsymbols = [s for s in nmsymbols if s[0] != '_' and not s.startswith("OBJC_")]
 
    missing_defs = [s for s in nmsymbols  if s not in defsymbols and s not in exclude_symbols]
    missing_nms  = [s for s in defsymbols if s not in nmsymbols  and s not in exclude_symbols]
