@@ -285,7 +285,13 @@ if os_osx
   add_languages('objc', native: true)
   osx_ldflags = ['-Wl,-framework,Foundation', '-Wl,-framework,AppKit']
   add_project_link_arguments(osx_ldflags, language : ['objc', 'c'])
-  add_project_arguments('-xobjective-c', language : 'c')
+  osx_cflags = ['-xobjective-c']
+  min_os_flag = '-Werror=unguarded-availability-new'
+  if cc.has_argument(min_os_flag)
+    #needed to allow targeting older macOS while building on newer macOS (like on MS Windows)
+    osx_cflags += [min_os_flag]
+  endif
+  add_project_arguments(osx_cflags, language : 'c')
 endif
 
 # Build relocatable GEGL
