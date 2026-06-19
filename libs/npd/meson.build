@@ -32,6 +32,7 @@ gegl_npd_lib_args = {
   'include_directories': geglInclude,
   'link_with': [ gegl_lib ],
   'install': true,
+  'vs_module_defs': gegl_npd_def,
 }
 #FIXME: For some mystical reason, GNU compilers create a libgegl-*npd.dll that
 #crashes, even it being mostly identical to the one with vs_module_defs (the

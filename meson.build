@@ -237,6 +237,10 @@ endif
 
 if os_win32
   cflags_common += '-D_FILE_OFFSET_BITS=64'
+  if cc.has_link_argument('-Wl,--no-undefined')
+    lflags_common += '-Wl,--no-undefined'
+  endif
+else
 
   if cc.get_id() == 'clang'
     # Workaround to get colored output

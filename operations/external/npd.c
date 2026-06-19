@@ -222,14 +222,19 @@ finalize (GObject *object)
     {
       NPDProperties *props   = o->user_data;
       NPDModel      *model   = props->model;
-      NPDDisplay    *display = model->display;
-
-      g_free (display);
-      g_free (model->reference_image);
-      if (!o->preserve_model)
+      NPDDisplay    *display = model ? model->display : NULL;
+      
+      if (display)
+        g_free (display);
+      if (model)
         {
-          npd_destroy_model (model);
-          g_free (model);
+          if (model->reference_image)
+            g_free (model->reference_image);
+          if (!o->preserve_model)
+            {
+              npd_destroy_model (model);
+              g_free (model);
+            }
         }
 
       o->user_data = NULL;
