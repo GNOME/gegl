@@ -180,9 +180,10 @@ process (GeglOperation       *operation,
 
       model->display = display;
       props->first_run = FALSE;
+      g_free (input_image);
     }
 
-  if (have_model)
+  if (have_model && model->display)
     {
       display = model->display;
 
@@ -206,9 +207,9 @@ process (GeglOperation       *operation,
 
       npd_deform_model (model, o->rigidity);
       npd_draw_model_into_image (model, &display->image);
+      
+      gegl_buffer_linear_close (display->image.gegl_buffer, display->image.buffer_f);
     }
-
-  gegl_buffer_linear_close (display->image.gegl_buffer, display->image.buffer_f);
 
   return TRUE;
 }
