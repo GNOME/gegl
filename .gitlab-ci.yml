@@ -76,6 +76,7 @@ meson-health:
       #commits pushed by GNOME Translation Robot do not need this job
       when: never
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      interruptible: true
       changes:
         paths:
           - "**/*.build"
