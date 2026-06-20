@@ -5,7 +5,7 @@
 
 # CHECK SCRIPTS RUNNED BY MESON (ALL OSes)
 printf "\e[0Ksection_start:`date +%s`:nonunix_test[collapsed=false]\r\e[0KChecking for non-Unix compatibility\n"
-diff=$(git diff -U0 --no-color "${newest_common_ancestor_sha}" \
+diff=$(git diff -U0 --no-color --submodule=diff "${newest_common_ancestor_sha}" \
   | awk '
     /^diff --git a\/.*\.(build|py)/ {
       sub(/^diff --git a\//, "", $0)
@@ -179,7 +179,7 @@ printf "\e[0Ksection_end:`date +%s`:nonunix_test\r\e[0K\n"
 # 1) contain bash shebang or are called by bash;
 # 2) contain bashisms.
 printf "\e[0Ksection_start:`date +%s`:unix_test[collapsed=false]\r\e[0KChecking for Unix portability (optional)\n"
-diff=$(git diff -U0 --no-color "${newest_common_ancestor_sha}" \
+diff=$(git diff -U0 --no-color --submodule=diff "${newest_common_ancestor_sha}" \
   | awk '
     /^diff --git a\// {
       sub(/^diff --git a\//, "", $0)
