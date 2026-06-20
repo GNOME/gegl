@@ -3,8 +3,13 @@ workflow:
     on_new_commit: interruptible
 
 include:
+  #needed by docker-image and other jobs
   - project: Infrastructure/freedesktop-ci-templates
     file: templates/fedora.yml
+  #needed by check-commit-log job
+  - project: Infrastructure/freedesktop-ci-templates
+    file: templates/ci-fairy.yml
+    ref: aec7a6ce7bb38902c70641526f6611e27141784a
 
 
 ##################################################
@@ -47,16 +52,25 @@ include:
     # If you are hacking on them or need a them to rebuild, its enough
     # to change any part of the string of the image you want.
     ###
-    FDO_DISTRIBUTION_TAG: '2025-10-03.0'
+    FDO_DISTRIBUTION_TAG: '2026-06-20.0'
     FDO_DISTRIBUTION_VERSION: '42'
     FDO_DISTRIBUTION_PACKAGES: >
       meson ninja-build gcc g++ git gettext glib2-devel libjpeg-turbo-devel
       libpng-devel json-glib-devel lcms2-devel diffutils shellcheck devscripts
+      clang-tools-extra
     FDO_UPSTREAM_REPO: $CI_PROJECT_PATH
     # Enable colorful output when supported (e.g. ninja)
     CLICOLOR_FORCE: "1"
     # Disable timestamps on CI logs
     FF_TIMESTAMPS: false
+  artifacts:
+    name: "${CI_PROJECT_NAME}-${CI_JOB_NAME}-${CI_COMMIT_REF_NAME}"
+    when: always
+
+.artifacts_durations:
+  deps_duration: &short_expire "4 hours"
+  build_duration: &mid_expire "2 days"
+  dist_duration: &long_expire "8 days"
 
 stages:
   - dependencies
@@ -85,14 +99,45 @@ fedora-x86_64:
                   _build
     - ninja -C _build
   artifacts:
-    name: "${CI_PROJECT_NAME}-${CI_JOB_NAME}-${CI_COMMIT_REF_NAME}"
-    when: always
     paths:
       - "_build/meson-logs"
-    expire_in: 8 days
+    expire_in: *long_expire
 
 
 ## Analysis ##
+
+clang-format:
+  extends: .default
+  rules:
+    - <<: *CI_MERGE
+  stage: analysis
+  script:
+    - sh .gitlab/run_style_check_diff.sh
+  allow_failure: true #.clang-format file can be imperfect and produce false positives
+  artifacts:
+    when: on_failure
+    paths:
+      - fetch_upstream.log
+      - fetch_origin.log
+    expire_in: *mid_expire
+
+check-commit-log:
+  extends:
+    - .default
+    - .fdo.ci-fairy
+  rules:
+    - <<: *CI_MERGE
+  stage: analysis
+  variables:
+    GIT_DEPTH: "100"
+    JUNIT_REPORT: commit-message-junit-report.xml
+  script:
+    - touch "$JUNIT_REPORT"
+    - ci-fairy check-commits --textwidth 80 --rules-file=.gitlab/commit-rules.yml --junit-xml=$JUNIT_REPORT
+  artifacts:
+    reports:
+      junit: $JUNIT_REPORT
+    expire_in: *mid_expire
 
 meson-health:
   extends: .default
