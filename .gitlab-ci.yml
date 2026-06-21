@@ -5,7 +5,7 @@ workflow:
 include:
   #needed by docker-image and other jobs
   - project: Infrastructure/freedesktop-ci-templates
-    file: templates/fedora.yml
+    file: templates/debian.yml
   #needed by check-commit-log job
   - project: Infrastructure/freedesktop-ci-templates
     file: templates/ci-fairy.yml
@@ -37,7 +37,7 @@ include:
 
 
   # Common jobs behavior
-  extends: .fdo.distribution-image@fedora
+  extends: .fdo.distribution-image@debian
   rules:
     #Similar logic of gimp gitlab-ci.yml. See: https://gitlab.gnome.org/GNOME/babl/-/work_items/119
     - <<: *CI_MERGE
@@ -52,12 +52,11 @@ include:
     # If you are hacking on them or need a them to rebuild, its enough
     # to change any part of the string of the image you want.
     ###
-    FDO_DISTRIBUTION_TAG: '2026-06-20.0'
-    FDO_DISTRIBUTION_VERSION: '42'
+    FDO_DISTRIBUTION_TAG: '2026-06-21.0'
+    FDO_DISTRIBUTION_VERSION: 'stable'
     FDO_DISTRIBUTION_PACKAGES: >
-      meson ninja-build gcc g++ git gettext glib2-devel libjpeg-turbo-devel
-      libpng-devel json-glib-devel lcms2-devel diffutils shellcheck devscripts
-      clang-tools-extra
+      git diffutils curl shellcheck devscripts meson build-essential clang-format
+      liblcms2-dev libglib2.0-dev libjpeg-dev libpng-dev libjson-glib-dev gettext
     FDO_UPSTREAM_REPO: $CI_PROJECT_PATH
     # Enable colorful output when supported (e.g. ninja)
     CLICOLOR_FORCE: "1"
@@ -81,13 +80,13 @@ stages:
 docker-image:
   extends:
     - .default
-    - .fdo.container-build@fedora
+    - .fdo.container-build@debian
   needs: []
   stage: dependencies
   variables:
     GIT_STRATEGY: none
 
-fedora-x86_64:
+debian-x86_64:
   extends: .default
   stage: build
   script:
