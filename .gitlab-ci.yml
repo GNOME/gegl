@@ -112,6 +112,12 @@ clang-format:
     - <<: *CI_MERGE
   stage: analysis
   script:
+    - curl -sL "https://gitlab.gnome.org/GNOME/gimp/-/raw/master/.gitlab/search-common-ancestor.sh" -o /tmp/search-common-ancestor.sh
+    - if [ $(diff .gitlab/search-common-ancestor.sh /tmp/search-common-ancestor.sh | wc -l) -ne 0 ]; then printf '\033[31m(ERROR)\033[0m search-common-ancestor.sh differs from upstream GIMP. Please sync.\n'; exit 1; fi
+    - curl -sL "https://gitlab.gnome.org/GNOME/gimp/-/raw/master/.gitlab/run_style_check_diff.sh" -o /tmp/run_style_check_diff.sh
+    - if [ $(diff .gitlab/run_style_check_diff.sh /tmp/run_style_check_diff.sh | wc -l) -ne 0 ]; then printf '\033[31m(ERROR)\033[0m run_style_check_diff.sh differs from upstream GIMP. Please sync.\n'; exit 1; fi
+    - curl -sL "https://gitlab.gnome.org/GNOME/gimp/-/raw/master/.clang-format" -o /tmp/.clang-format
+    - if [ $(diff .clang-format /tmp/.clang-format | wc -l) -ne 0 ]; then printf '\033[31m(ERROR)\033[0m .clang-format differs from upstream GIMP. Please sync.\n'; exit 1; fi
     - sh .gitlab/run_style_check_diff.sh
   allow_failure: true #.clang-format file can be imperfect and produce false positives
   artifacts:
@@ -132,6 +138,8 @@ check-commit-log:
     GIT_DEPTH: "100"
     JUNIT_REPORT: commit-message-junit-report.xml
   script:
+    - curl -sL "https://gitlab.gnome.org/GNOME/gimp/-/raw/master/.gitlab/commit-rules.yml" -o /tmp/commit-rules.yml
+    - if [ $(diff .gitlab/commit-rules.yml /tmp/commit-rules.yml | wc -l) -ne 0 ]; then printf '\033[31m(ERROR)\033[0m commit-rules.yml differs from upstream GIMP. Please sync.\n'; exit 1; fi
     - touch "$JUNIT_REPORT"
     - ci-fairy check-commits --textwidth 80 --rules-file=.gitlab/commit-rules.yml --junit-xml=$JUNIT_REPORT
   artifacts:
@@ -159,6 +167,10 @@ meson-health:
     - <<: *CI_COMMIT #fallback, runs even without changes
   stage: analysis
   script:
+    - curl -sL "https://gitlab.gnome.org/GNOME/gimp/-/raw/master/.gitlab/search-common-ancestor.sh" -o /tmp/search-common-ancestor.sh
+    - if [ $(diff .gitlab/search-common-ancestor.sh /tmp/search-common-ancestor.sh | wc -l) -ne 0 ]; then printf '\033[31m(ERROR)\033[0m search-common-ancestor.sh differs from upstream GIMP. Please sync.\n'; exit 1; fi
+    - curl -sL "https://gitlab.gnome.org/GNOME/gimp/-/raw/master/.gitlab/run_meson_health_diff.sh" -o /tmp/run_meson_health_diff.sh
+    - if [ $(diff .gitlab/run_meson_health_diff.sh /tmp/run_meson_health_diff.sh | wc -l) -ne 0 ]; then printf '\033[31m(ERROR)\033[0m run_meson_health_diff.sh differs from upstream GIMP. Please sync.\n'; exit 1; fi
     - sh .gitlab/run_meson_health_diff.sh
   allow_failure: true #run_meson_health_diff.sh is not that smart, produce false positives
 
@@ -174,5 +186,7 @@ branches-check:
   variables:
     GIT_DEPTH: "0"
   script:
+    - curl -sL "https://gitlab.gnome.org/GNOME/gimp/-/raw/master/.gitlab/check_dead_branches.sh" -o /tmp/check_dead_branches.sh
+    - if [ $(diff -I 'if echo "$branch_name"' .gitlab/check_dead_branches.sh /tmp/check_dead_branches.sh | wc -l) -ne 0 ]; then printf '\033[31m(ERROR)\033[0m check_dead_branches.sh differs from upstream GIMP. Please sync.\n'; exit 1; fi
     - sh .gitlab/check_dead_branches.sh
   allow_failure: true #check_dead_branches.sh checks even the branches not created by the commiter
