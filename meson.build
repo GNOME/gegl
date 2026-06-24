@@ -227,9 +227,9 @@ if buildtype == 'debug' or buildtype == 'debugoptimized'
     # DWARF symbols for GCC and LLDB on Windows (fallback)
     debugging_format = 'DWARF'
     if cc.get_id() == 'clang'
-      # Optimize DWARF symbols to Dr. Mingw
+      # Optimize DWARF symbols to Dr. Mingw (not needed anymore)
       # https://github.com/jrfonseca/drmingw/issues/42
-      cflags_common += '-gdwarf-aranges'
+      #cflags_common += '-gdwarf-aranges'
     endif
   endif
 endif
