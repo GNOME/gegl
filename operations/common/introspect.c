@@ -133,6 +133,20 @@ gegl_introspect_load_cache (GeglProperties *op_introspect)
 }
 
 static void
+gegl_introspect_prepare (GeglOperation  *operation)
+{
+  GeglProperties *o = GEGL_PROPERTIES (operation);
+
+  gegl_introspect_load_cache (o);
+
+  if (o->user_data)
+    {
+      const Babl *format = gegl_buffer_get_format (o->user_data);
+      gegl_operation_set_format (operation, "output", format);
+    }
+}
+
+static void
 gegl_introspect_dispose (GObject *object)
 {
   GeglProperties *o = GEGL_PROPERTIES (object);
@@ -214,6 +228,7 @@ gegl_op_class_init (GeglOpClass *klass)
 
   object_class->dispose             = gegl_introspect_dispose;
 
+  operation_class->prepare          = gegl_introspect_prepare;
   operation_class->process          = gegl_introspect_process;
   operation_class->get_bounding_box = gegl_introspect_get_bounding_box;
   operation_class->is_available     = gegl_introspect_is_available;
