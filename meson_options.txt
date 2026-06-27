@@ -63,7 +63,7 @@ option('graphviz',      type: 'feature', value: 'auto')
 option('jasper',        type: 'feature', value: 'auto')
 option('lcms',          type: 'feature', value: 'auto')
 option('lensfun',       type: 'feature', value: 'auto')
-option('libav',         type: 'feature', value: 'auto')
+option('libav',         type: 'feature', value: 'disabled') #see: issue 324
 option('libraw',        type: 'feature', value: 'auto')
 option('librsvg',       type: 'feature', value: 'auto')
 option('libspiro',      type: 'feature', value: 'auto')
