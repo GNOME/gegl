@@ -38,7 +38,8 @@ property_enum (metric, _("Metric"),
 
 property_enum (edge_handling, _("Edge handling"), GeglDistanceTransformPolicy,
                gegl_distance_transform_policy, GEGL_DT_ABYSS_BELOW)
-  description (_("How areas outside the input are considered when calculating distance"))
+  description (_("How areas outside the input are considered when calculating distance. "
+                 "Also known as: boundary conditions."))
 
 property_double (threshold_lo, _("Threshold low"), 0.0001)
   value_range (0.0, 1.0)
@@ -514,7 +515,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "      <param name='color1'>rgb(0.25,0.25,0.25)</param>"
     "      <param name='color2'>rgb(0.75,0.75,0.75)</param>"
     "    </params>"
-    "  </node>"    
+    "  </node>"
     "</gegl>";
 
   operation_class = GEGL_OPERATION_CLASS (klass);
