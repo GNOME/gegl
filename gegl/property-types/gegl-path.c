@@ -681,6 +681,12 @@ gegl_path_insert_node (GeglPath           *vector,
   GeglPathList *prev = NULL;
   InstructionInfo *info = lookup_instruction_info (knot->type);
 
+  if (info == NULL)
+    {
+      g_warning ("Unsupported path instruction type: '%c'", knot->type);
+      return;
+    }
+
   gint count=0;
   for (iter = priv->path; iter; iter=iter->next)
     {
