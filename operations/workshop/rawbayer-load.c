@@ -47,19 +47,31 @@ load_buffer (GeglProperties *op_raw_load)
   if (!op_raw_load->user_data)
     {
       FILE  *pfp;
-      gchar *command;
 
       gint width, height, val_max;
       char newline;
 
-      command = g_strdup_printf ("dcraw -j -d -4 -c '%s'\n", op_raw_load->path);
-      pfp = popen (command, PIPE_MODE);
-      g_free (command);
+      gchar *command[] = { "dcraw", "-j", "-d", "-4", "-c",
+                           (gchar *)op_raw_load->path, NULL };
+      GPid pid = 0;
+      gint stdout_fd = -1;
+      GError *error = NULL;
+      if (!g_spawn_async_with_pipes (NULL, command, NULL,
+                                     G_SPAWN_SEARCH_PATH | G_SPAWN_STDERR_TO_DEV_NULL,
+                                     NULL, NULL, &pid, NULL, &stdout_fd, NULL, &error))
+        {
+          g_warning ("dcraw spawn failed: %s", error->message);
+          g_clear_error (&error);
+          return;
+        }
+      pfp = fdopen (stdout_fd, PIPE_MODE);
 
       if (fscanf (pfp, "P6 %d %d %d %c",
                   &width, &height, &val_max, &newline) != 4)
         {
-          pclose (pfp);
+          fclose (pfp);
+          waitpid (pid, NULL, 0);
+          g_spawn_close_pid (pid);
           g_warning ("not able to aquire raw data");
           return;
         }
