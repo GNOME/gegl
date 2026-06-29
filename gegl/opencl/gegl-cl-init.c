@@ -34,6 +34,9 @@
 #ifdef _WIN32
 #define strdup _strdup
 #endif
+#ifdef __APPLE__
+#include <dlfcn.h>
+#endif
 #include <stdio.h>
 
 #include "gegl/gegl-debug.h"
@@ -302,6 +305,7 @@ gegl_cl_has_extension (const char *extension_name)
 #define CL_LIBRARY_NAME "libOpenCL.so.1"
 #endif
 
+#ifndef __APPLE__
 #define CL_LOAD_FUNCTION(func)                                                    \
 G_STMT_START                                                                      \
   {                                                                               \
@@ -325,6 +329,19 @@ G_STMT_START                                                                    
       }                                                                           \
   }                                                                               \
 G_STMT_END
+#else
+#define CL_LOAD_FUNCTION(func)                                                    \
+G_STMT_START                                                                      \
+  {                                                                               \
+    gegl_##func = dlsym (module, #func);                                          \
+    if (gegl_##func == NULL)                                                      \
+      {                                                                           \
+        GEGL_NOTE (GEGL_DEBUG_OPENCL, "symbol gegl_##func is NULL");              \
+        return FALSE;                                                             \
+      }                                                                           \
+  }                                                                               \
+G_STMT_END
+#endif
 
 #define CL_LOAD_EXTENSION_FUNCTION(func)                                          \
 G_STMT_START                                                                      \
@@ -353,7 +370,11 @@ gegl_cl_init (void)
 static gboolean
 gegl_cl_init_load_functions (void)
 {
+#ifndef __APPLE__
   GModule *module = g_module_open (CL_LIBRARY_NAME, G_MODULE_BIND_LAZY);
+#else
+  void *module = dlopen(CL_LIBRARY_NAME, RTLD_LAZY / RTLD_LOCAL);
+#endif
   if (!module)
     {
       GEGL_NOTE (GEGL_DEBUG_OPENCL, "Unable to load OpenCL library %s", CL_LIBRARY_NAME);
