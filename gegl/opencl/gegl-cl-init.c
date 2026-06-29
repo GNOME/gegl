@@ -400,18 +400,26 @@ gegl_cl_init_load_functions (void)
   CL_LOAD_FUNCTION (clGetContextInfo);
   CL_LOAD_FUNCTION (clReleaseContext);
   CL_LOAD_FUNCTION (clRetainContext);
+#ifndef __APPLE__
   CL_LOAD_FUNCTION (clSetContextDestructorCallback);
+#endif
 
   /* Command-Queues */
+#ifndef __APPLE__
   CL_LOAD_FUNCTION (clCreateCommandQueueWithProperties);
+#endif
   CL_LOAD_FUNCTION (clGetCommandQueueInfo);
   CL_LOAD_FUNCTION (clReleaseCommandQueue);
   CL_LOAD_FUNCTION (clRetainCommandQueue);
+#ifndef __APPLE__
   CL_LOAD_FUNCTION (clSetDefaultDeviceCommandQueue);
+#endif
 
   /* Buffer Objects */
   CL_LOAD_FUNCTION (clCreateBuffer);
+#ifndef __APPLE__
   CL_LOAD_FUNCTION (clCreateBufferWithProperties);
+#endif
   CL_LOAD_FUNCTION (clCreateSubBuffer);
   CL_LOAD_FUNCTION (clEnqueueReadBuffer);
   CL_LOAD_FUNCTION (clEnqueueWriteBuffer);
@@ -424,7 +432,9 @@ gegl_cl_init_load_functions (void)
 
   /* Image Objects */
   CL_LOAD_FUNCTION (clCreateImage);
+#ifndef __APPLE__
   CL_LOAD_FUNCTION (clCreateImageWithProperties);
+#endif
   CL_LOAD_FUNCTION (clEnqueueReadImage);
   CL_LOAD_FUNCTION (clEnqueueWriteImage);
   CL_LOAD_FUNCTION (clEnqueueCopyImage);
@@ -444,7 +454,9 @@ gegl_cl_init_load_functions (void)
   CL_LOAD_FUNCTION (clSetMemObjectDestructorCallback);
 
   /* Sampler Objects */
+#ifndef __APPLE__
   CL_LOAD_FUNCTION (clCreateSamplerWithProperties);
+#endif
   CL_LOAD_FUNCTION (clReleaseSampler);
   CL_LOAD_FUNCTION (clRetainSampler);
   CL_LOAD_FUNCTION (clGetSamplerInfo);
@@ -455,28 +467,38 @@ gegl_cl_init_load_functions (void)
   CL_LOAD_FUNCTION (clCreateProgramWithSource);
   CL_LOAD_FUNCTION (clCreateProgramWithBinary);
   CL_LOAD_FUNCTION (clCreateProgramWithBuiltInKernels);
+#ifndef __APPLE__
   CL_LOAD_FUNCTION (clCreateProgramWithIL);
+#endif
   CL_LOAD_FUNCTION (clGetProgramBuildInfo);
   CL_LOAD_FUNCTION (clGetProgramInfo);
   CL_LOAD_FUNCTION (clLinkProgram);
   CL_LOAD_FUNCTION (clReleaseProgram);
   CL_LOAD_FUNCTION (clRetainProgram);
+#ifndef __APPLE__
   CL_LOAD_FUNCTION (clSetProgramSpecializationConstant);
+#endif
   CL_LOAD_FUNCTION (clUnloadPlatformCompiler);
 
   /* Kernel Objects */
+#ifndef __APPLE__
   CL_LOAD_FUNCTION (clCloneKernel);
+#endif
   CL_LOAD_FUNCTION (clCreateKernel);
   CL_LOAD_FUNCTION (clCreateKernelsInProgram);
   CL_LOAD_FUNCTION (clGetKernelInfo);
   CL_LOAD_FUNCTION (clGetKernelArgInfo);
+#ifndef __APPLE__
   CL_LOAD_FUNCTION (clGetKernelSubGroupInfo);
+#endif
   CL_LOAD_FUNCTION (clGetKernelWorkGroupInfo);
   CL_LOAD_FUNCTION (clReleaseKernel);
   CL_LOAD_FUNCTION (clRetainKernel);
   CL_LOAD_FUNCTION (clSetKernelArg);
+#ifndef __APPLE__
   CL_LOAD_FUNCTION (clSetKernelArgSVMPointer);
   CL_LOAD_FUNCTION (clSetKernelExecInfo);
+#endif
 
   /* Executing Kernels */
   CL_LOAD_FUNCTION (clEnqueueNDRangeKernel);
@@ -496,19 +518,26 @@ gegl_cl_init_load_functions (void)
   CL_LOAD_FUNCTION (clEnqueueMarkerWithWaitList);
 
   /* Profiling Operations on Memory Objects and Kernels */
+#ifndef __APPLE__
   CL_LOAD_FUNCTION (clGetDeviceAndHostTimer);
+#endif
   CL_LOAD_FUNCTION (clGetEventProfilingInfo);
+#ifndef __APPLE__
   CL_LOAD_FUNCTION (clGetHostTimer);
+#endif
 
   /* Flush and Finish */
   CL_LOAD_FUNCTION (clFlush);
   CL_LOAD_FUNCTION (clFinish);
 
   /* Pipes */
+#ifndef __APPLE__
   CL_LOAD_FUNCTION (clCreatePipe);
   CL_LOAD_FUNCTION (clGetPipeInfo);
+#endif
 
   /* Shared Virtual Memory (SVM) */
+#ifndef __APPLE__
   CL_LOAD_FUNCTION (clSVMAlloc);
   CL_LOAD_FUNCTION (clSVMFree);
   CL_LOAD_FUNCTION (clEnqueueSVMFree);
@@ -517,6 +546,7 @@ gegl_cl_init_load_functions (void)
   CL_LOAD_FUNCTION (clEnqueueSVMMemFill);
   CL_LOAD_FUNCTION (clEnqueueSVMMigrateMem);
   CL_LOAD_FUNCTION (clEnqueueSVMUnmap);
+#endif
 
   /* Optional Extensions */
   CL_LOAD_FUNCTION (clGetExtensionFunctionAddressForPlatform);
