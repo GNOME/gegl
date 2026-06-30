@@ -56,7 +56,7 @@ struct _GeglPadClass
 };
 
 
-GType            gegl_pad_get_type                  (void) G_GNUC_CONST;
+GType            gegl_pad_get_type                  (void);
 
 const gchar    * gegl_pad_get_name                  (GeglPad        *self);
 void             gegl_pad_set_name                  (GeglPad        *self,

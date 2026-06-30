@@ -58,7 +58,7 @@ struct _GeglTileHandlerClass
   GeglTileSourceClass parent_class;
 };
 
-GType   gegl_tile_handler_get_type   (void) G_GNUC_CONST;
+GType   gegl_tile_handler_get_type   (void);
 
 void    gegl_tile_handler_set_source (GeglTileHandler *handler,
                                       GeglTileSource  *source);

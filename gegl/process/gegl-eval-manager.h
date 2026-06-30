@@ -61,7 +61,7 @@ struct _GeglEvalManagerClass
 };
 
 
-GType             gegl_eval_manager_get_type (void) G_GNUC_CONST;
+GType             gegl_eval_manager_get_type (void);
 
 void              gegl_eval_manager_prepare  (GeglEvalManager     *self);
 GeglRectangle     gegl_eval_manager_get_bounding_box (GeglEvalManager     *self);

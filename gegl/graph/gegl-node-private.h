@@ -104,7 +104,7 @@ struct _GeglNodeClass
 
 /* functions below are internal to gegl */
 
-GType         gegl_node_get_type            (void) G_GNUC_CONST;
+GType         gegl_node_get_type            (void);
 
 void          gegl_node_add_pad             (GeglNode      *self,
                                              GeglPad       *pad);

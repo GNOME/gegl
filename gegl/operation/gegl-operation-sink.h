@@ -58,7 +58,7 @@ struct _GeglOperationSinkClass
   gpointer              pad[4];
 };
 
-GType    gegl_operation_sink_get_type   (void) G_GNUC_CONST;
+GType    gegl_operation_sink_get_type   (void);
 
 gboolean gegl_operation_sink_needs_full (GeglOperation *operation);
 

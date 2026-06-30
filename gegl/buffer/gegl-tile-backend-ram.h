@@ -49,7 +49,7 @@ struct _GeglTileBackendRamClass
   GeglTileBackendClass parent_class;
 };
 
-GType gegl_tile_backend_ram_get_type (void) G_GNUC_CONST;
+GType gegl_tile_backend_ram_get_type (void);
 
 void  gegl_tile_backend_ram_stats    (void);
 

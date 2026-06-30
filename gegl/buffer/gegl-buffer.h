@@ -773,7 +773,7 @@ gegl_buffer_flush_ext (GeglBuffer *buffer, const GeglRectangle *rect);
 #include "gegl-scratch.h"
 
 
-GType gegl_buffer_get_type  (void) G_GNUC_CONST;
+GType gegl_buffer_get_type  (void);
 #define GEGL_TYPE_BUFFER    (gegl_buffer_get_type ())
 #define GEGL_BUFFER(obj)    (G_TYPE_CHECK_INSTANCE_CAST ((obj), GEGL_TYPE_BUFFER, GeglBuffer))
 #define GEGL_IS_BUFFER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GEGL_TYPE_BUFFER))

@@ -60,7 +60,7 @@ typedef enum {
                                  GEGL_BUFFER_FILTER_BOX),
 } GeglAbyssPolicy;
 
-GType gegl_abyss_policy_get_type (void) G_GNUC_CONST;
+GType gegl_abyss_policy_get_type (void);
 
 #define GEGL_TYPE_ABYSS_POLICY (gegl_abyss_policy_get_type ())
 
@@ -71,7 +71,7 @@ typedef enum {
   GEGL_ACCESS_READWRITE = (GEGL_ACCESS_READ | GEGL_ACCESS_WRITE)
 } GeglAccessMode;
 
-GType gegl_access_mode_get_type (void) G_GNUC_CONST;
+GType gegl_access_mode_get_type (void);
 
 #define GEGL_TYPE_ACCESS_MODE (gegl_access_mode_get_type ())
 
@@ -83,7 +83,7 @@ typedef enum {
   GEGL_SAMPLER_LOHALO
 } GeglSamplerType;
 
-GType gegl_sampler_type_get_type (void) G_GNUC_CONST;
+GType gegl_sampler_type_get_type (void);
 
 #define GEGL_TYPE_SAMPLER_TYPE (gegl_sampler_type_get_type ())
 
@@ -93,7 +93,7 @@ typedef enum {
   GEGL_RECTANGLE_ALIGNMENT_NEAREST
 } GeglRectangleAlignment;
 
-GType gegl_rectangle_alignment_get_type (void) G_GNUC_CONST;
+GType gegl_rectangle_alignment_get_type (void);
 
 #define GEGL_TYPE_RECTANGLE_ALIGNMENT (gegl_rectangle_alignment_get_type ())
 

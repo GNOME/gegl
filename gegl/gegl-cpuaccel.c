@@ -39,7 +39,7 @@
 #include "gegl-cpuaccel-private.h"
 
 
-static GeglCpuAccelFlags  cpu_accel (void) G_GNUC_CONST;
+static GeglCpuAccelFlags  cpu_accel (void);
 
 
 static gboolean  use_cpu_accel = TRUE;

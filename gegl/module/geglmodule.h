@@ -92,7 +92,7 @@ struct _GeglModuleClass
 };
 
 
-GType         gegl_module_get_type         (void) G_GNUC_CONST;
+GType         gegl_module_get_type         (void);
 
 GeglModule  * gegl_module_new              (const gchar     *filename,
                                             gboolean         load_inhibit,

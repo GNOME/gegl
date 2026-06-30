@@ -53,7 +53,7 @@ struct _GeglCallbackVisitorClass
 };
 
 
-GType         gegl_callback_visitor_get_type (void) G_GNUC_CONST;
+GType         gegl_callback_visitor_get_type (void);
 
 GeglVisitor * gegl_callback_visitor_new      (GeglCallbackVisitorCallback callback,
                                               gpointer                    data);

@@ -28,7 +28,7 @@ struct _OpScaleClass
   OpTransformClass parent_class;
 };
 
-GType op_scale_get_type (void) G_GNUC_CONST;
+GType op_scale_get_type (void);
 
 G_END_DECLS
 

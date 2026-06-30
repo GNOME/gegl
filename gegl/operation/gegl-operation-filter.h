@@ -63,7 +63,7 @@ struct _GeglOperationFilterClass
   gpointer                                  pad[3];
 };
 
-GType gegl_operation_filter_get_type (void) G_GNUC_CONST;
+GType gegl_operation_filter_get_type (void);
 
 G_DEFINE_AUTOPTR_CLEANUP_FUNC (GeglOperationFilter, g_object_unref)
 

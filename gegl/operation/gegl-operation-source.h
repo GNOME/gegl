@@ -53,7 +53,7 @@ struct _GeglOperationSourceClass
   gpointer              pad[4];
 };
 
-GType gegl_operation_source_get_type (void) G_GNUC_CONST;
+GType gegl_operation_source_get_type (void);
 
 G_DEFINE_AUTOPTR_CLEANUP_FUNC (GeglOperationSource, g_object_unref)
 

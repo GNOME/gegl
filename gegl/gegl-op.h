@@ -318,7 +318,7 @@ static const gchar *gegl_op_gettext_package G_GNUC_UNUSED = NULL;
 #endif
 
 #define enum_start(enum_name)          \
-static GType enum_name ## _get_type (void) G_GNUC_CONST; \
+static GType enum_name ## _get_type (void); \
 static GType enum_name ## _get_type (void)               \
 {                                                 \
   static GType etype = 0;                         \

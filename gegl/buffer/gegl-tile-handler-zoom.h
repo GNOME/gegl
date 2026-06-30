@@ -60,7 +60,7 @@ struct _GeglTileHandlerZoomClass
   GeglTileHandlerClass  parent_class;
 };
 
-GType             gegl_tile_handler_zoom_get_type (void) G_GNUC_CONST;
+GType             gegl_tile_handler_zoom_get_type (void);
 
 GeglTileHandler * gegl_tile_handler_zoom_new      (GeglTileBackend *backend);
 

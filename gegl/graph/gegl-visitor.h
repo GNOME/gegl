@@ -50,7 +50,7 @@ struct _GeglVisitorClass
 };
 
 
-GType      gegl_visitor_get_type                     (void) G_GNUC_CONST;
+GType      gegl_visitor_get_type                     (void);
 
 gboolean   gegl_visitor_visit_pad                    (GeglVisitor   *self,
                                                       GeglPad       *pad);

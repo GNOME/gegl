@@ -54,7 +54,7 @@ struct _GeglOperationComposer3Class
   const char           *aux2_description;
 };
 
-GType gegl_operation_composer3_get_type (void) G_GNUC_CONST;
+GType gegl_operation_composer3_get_type (void);
 
 G_DEFINE_AUTOPTR_CLEANUP_FUNC (GeglOperationComposer3, g_object_unref)
 

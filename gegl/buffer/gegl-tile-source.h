@@ -59,7 +59,7 @@ struct _GeglTileSourceClass
   gpointer      padding[4];
 };
 
-GType      gegl_tile_source_get_type (void) G_GNUC_CONST;
+GType      gegl_tile_source_get_type (void);
 
 static inline gpointer
 gegl_tile_source_command (GeglTileSource  *source,

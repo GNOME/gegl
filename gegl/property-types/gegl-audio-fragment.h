@@ -107,7 +107,7 @@ struct _GeglAudioFragmentClass
   GObjectClass parent_class;
 };
 
-GType gegl_audio_fragment_get_type (void) G_GNUC_CONST;
+GType gegl_audio_fragment_get_type (void);
 
 GeglAudioFragment *  gegl_audio_fragment_new (int sample_rate, int channels, int channel_layout, int max_samples);
 
@@ -131,7 +131,7 @@ int gegl_audio_fragment_get_channel_layout (GeglAudioFragment *audio);
 #define GEGL_TYPE_PARAM_AUDIO_FRAGMENT  (gegl_param_audio_fragment_get_type ())
 #define GEGL_IS_PARAM_SPEC_AUDIO_FRAGMENT(pspec) (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), GEGL_TYPE_PARAM_AUDIO_FRAGMENT))
 
-GType        gegl_param_audio_fragment_get_type         (void) G_GNUC_CONST;
+GType        gegl_param_audio_fragment_get_type         (void);
 
 /**
  * gegl_param_spec_audio_fragment:

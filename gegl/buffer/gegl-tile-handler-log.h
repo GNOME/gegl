@@ -48,7 +48,7 @@ struct _GeglTileHandlerLogClass
   GeglTileHandlerClass  parent_class;
 };
 
-GType gegl_tile_handler_log_get_type (void) G_GNUC_CONST;
+GType gegl_tile_handler_log_get_type (void);
 
 G_END_DECLS
 

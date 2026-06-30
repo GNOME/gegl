@@ -51,7 +51,7 @@ struct _GeglOperationMetaClass
 };
 
 
-GType gegl_operation_meta_get_type         (void) G_GNUC_CONST;
+GType gegl_operation_meta_get_type         (void);
 
 void  gegl_operation_meta_redirect         (GeglOperation     *operation,
                                             const gchar       *name,

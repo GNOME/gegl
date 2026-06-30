@@ -63,7 +63,7 @@ struct _GeglTileStorageClass
   GeglTileHandlerChainClass parent_class;
 };
 
-GType gegl_tile_storage_get_type (void) G_GNUC_CONST;
+GType gegl_tile_storage_get_type (void);
 
 GeglTileStorage *
 gegl_tile_storage_new (GeglTileBackend *backend,

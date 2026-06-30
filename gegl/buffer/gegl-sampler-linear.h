@@ -44,7 +44,7 @@ struct _GeglSamplerLinearClass
   GeglSamplerClass parent_class;
 };
 
-GType gegl_sampler_linear_get_type (void) G_GNUC_CONST;
+GType gegl_sampler_linear_get_type (void);
 
 G_END_DECLS
 

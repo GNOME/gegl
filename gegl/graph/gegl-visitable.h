@@ -40,7 +40,7 @@ struct _GeglVisitableClass
 };
 
 
-GType      gegl_visitable_get_type       (void) G_GNUC_CONST;
+GType      gegl_visitable_get_type       (void);
 
 gboolean   gegl_visitable_accept         (GeglVisitable *interface,
                                           GeglVisitor   *visitor);

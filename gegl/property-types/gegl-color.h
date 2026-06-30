@@ -44,7 +44,7 @@ struct _GeglColorClass
   GObjectClass parent_class;
 };
 
-GType        gegl_color_get_type               (void) G_GNUC_CONST;
+GType        gegl_color_get_type               (void);
 
 
 /***
@@ -346,7 +346,7 @@ gegl_color_cmp (GeglColor *color1, GeglColor *color2);
 #define GEGL_TYPE_PARAM_COLOR           (gegl_param_color_get_type ())
 #define GEGL_IS_PARAM_SPEC_COLOR(pspec) (G_TYPE_CHECK_INSTANCE_TYPE ((pspec), GEGL_TYPE_PARAM_COLOR))
 
-GType        gegl_param_color_get_type         (void) G_GNUC_CONST;
+GType        gegl_param_color_get_type         (void);
 
 /**
  * gegl_param_spec_color:

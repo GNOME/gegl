@@ -47,7 +47,7 @@ struct _GeglPath
   GObject parent_instance;
 };
 
-GType                gegl_path_get_type       (void) G_GNUC_CONST;
+GType                gegl_path_get_type       (void);
 
 /* Internally the following structures are used, parts
  * of the internal implementation are exposed through
@@ -413,7 +413,7 @@ GParamSpec         *  gegl_param_spec_path    (const gchar *name,
 
 #define GEGL_TYPE_PARAM_PATH    (gegl_param_path_get_type ())
 #define GEGL_IS_PARAM_PATH(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GEGL_TYPE_PARAM_PATH))
-GType                 gegl_param_path_get_type (void) G_GNUC_CONST;
+GType                 gegl_param_path_get_type (void);
 
 /**
  * gegl_path_add_type:

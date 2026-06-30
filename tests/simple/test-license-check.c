@@ -36,7 +36,7 @@ typedef struct
   GeglOperationClass  parent_class;
 } GeglTestOperationGPL2Class;
 
-GType   gegl_test_operation_gpl2_get_type (void) G_GNUC_CONST;
+GType   gegl_test_operation_gpl2_get_type (void);
 
 G_DEFINE_TYPE (GeglTestOperationGPL2, gegl_test_operation_gpl2,
                GEGL_TYPE_OPERATION);
@@ -68,7 +68,7 @@ typedef struct
   GeglOperationClass  parent_class;
 } GeglTestOperationGPL2PlusClass;
 
-GType   gegl_test_operation_gpl2_plus_get_type (void) G_GNUC_CONST;
+GType   gegl_test_operation_gpl2_plus_get_type (void);
 
 G_DEFINE_TYPE (GeglTestOperationGPL2Plus, gegl_test_operation_gpl2_plus,
                GEGL_TYPE_OPERATION);
@@ -100,7 +100,7 @@ typedef struct
   GeglOperationClass  parent_class;
 } GeglTestOperationGPL3Class;
 
-GType   gegl_test_operation_gpl3_get_type (void) G_GNUC_CONST;
+GType   gegl_test_operation_gpl3_get_type (void);
 
 G_DEFINE_TYPE (GeglTestOperationGPL3, gegl_test_operation_gpl3,
                GEGL_TYPE_OPERATION);
@@ -132,7 +132,7 @@ typedef struct
   GeglOperationClass  parent_class;
 } GeglTestOperationGPL3PlusClass;
 
-GType   gegl_test_operation_gpl3_plus_get_type (void) G_GNUC_CONST;
+GType   gegl_test_operation_gpl3_plus_get_type (void);
 
 G_DEFINE_TYPE (GeglTestOperationGPL3Plus, gegl_test_operation_gpl3_plus,
                GEGL_TYPE_OPERATION);
@@ -164,7 +164,7 @@ typedef struct
   GeglOperationClass  parent_class;
 } GeglTestOperationFooClass;
 
-GType   gegl_test_operation_foo_get_type (void) G_GNUC_CONST;
+GType   gegl_test_operation_foo_get_type (void);
 
 G_DEFINE_TYPE (GeglTestOperationFoo, gegl_test_operation_foo,
                GEGL_TYPE_OPERATION);
@@ -196,7 +196,7 @@ typedef struct
   GeglOperationClass  parent_class;
 } GeglTestOperationBarClass;
 
-GType   gegl_test_operation_bar_get_type (void) G_GNUC_CONST;
+GType   gegl_test_operation_bar_get_type (void);
 
 G_DEFINE_TYPE (GeglTestOperationBar, gegl_test_operation_bar,
                GEGL_TYPE_OPERATION);

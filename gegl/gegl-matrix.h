@@ -47,7 +47,7 @@ typedef struct {
  * Returns: the #GType for GeglMatrix3 objects
  *
  **/
-GType         gegl_matrix3_get_type     (void) G_GNUC_CONST;
+GType         gegl_matrix3_get_type     (void);
 
 /**
  * gegl_matrix3_new:

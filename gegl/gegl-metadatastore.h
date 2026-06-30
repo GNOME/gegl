@@ -717,7 +717,7 @@ void          gegl_metadata_store_notify        (GeglMetadataStore *self,
                                                  gboolean shadow);
 
 #define GEGL_TYPE_RESOLUTION_UNIT       gegl_resolution_unit_get_type ()
-GType         gegl_resolution_unit_get_type     (void) G_GNUC_CONST;
+GType         gegl_resolution_unit_get_type     (void);
 
 G_END_DECLS
 

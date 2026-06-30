@@ -104,7 +104,7 @@ struct _GeglSamplerClass
                                             GeglBuffer  *buffer);
 };
 
-GType gegl_sampler_get_type    (void) G_GNUC_CONST;
+GType gegl_sampler_get_type    (void);
 
 /* virtual method invokers */
 void  gegl_sampler_prepare             (GeglSampler *self);

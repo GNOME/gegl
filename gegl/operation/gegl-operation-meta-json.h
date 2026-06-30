@@ -49,7 +49,7 @@ struct _GeglOperationMetaJsonClass
   gpointer           pad[4];
 };
 
-GType gegl_operation_meta_json_get_type         (void) G_GNUC_CONST;
+GType gegl_operation_meta_json_get_type         (void);
 
 G_DEFINE_AUTOPTR_CLEANUP_FUNC (GeglOperationMetaJson, g_object_unref)
 

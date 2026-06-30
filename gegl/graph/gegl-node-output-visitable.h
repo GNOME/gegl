@@ -46,7 +46,7 @@ struct _GeglNodeOutputVisitableClass
 };
 
 
-GType           gegl_node_output_visitable_get_type (void) G_GNUC_CONST;
+GType           gegl_node_output_visitable_get_type (void);
 
 GeglVisitable * gegl_node_output_visitable_new      (GeglNode *node);
 

@@ -34,7 +34,7 @@ struct _OpTransformClass
   GeglAbyssPolicy (* get_abyss_policy) (OpTransform *transform);
 };
 
-GType op_transform_get_type (void) G_GNUC_CONST;
+GType op_transform_get_type (void);
 
 G_END_DECLS
 

@@ -48,7 +48,7 @@ struct _GeglTileHandlerChainClass
   GeglTileHandlerClass parent_class;
 };
 
-GType         gegl_tile_handler_chain_get_type   (void) G_GNUC_CONST;
+GType         gegl_tile_handler_chain_get_type   (void);
 
 /**
  * gegl_tile_handler_chain_add:

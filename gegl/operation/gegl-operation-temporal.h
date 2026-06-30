@@ -56,7 +56,7 @@ struct _GeglOperationTemporalClass
   gpointer              pad[4];
 };
 
-GType gegl_operation_temporal_get_type (void) G_GNUC_CONST;
+GType gegl_operation_temporal_get_type (void);
 
 void gegl_operation_temporal_set_history_length (GeglOperation *op,
                                                  gint           history_length);

@@ -50,7 +50,7 @@ typedef enum {
   GEGL_DITHER_BLUE_NOISE_COVARIANT,
 } GeglDitherMethod;
 
-GType gegl_dither_method_get_type (void) G_GNUC_CONST;
+GType gegl_dither_method_get_type (void);
 
 #define GEGL_TYPE_DITHER_METHOD (gegl_dither_method_get_type ())
 
@@ -60,7 +60,7 @@ typedef enum {
   GEGL_DISTANCE_METRIC_CHEBYSHEV
 } GeglDistanceMetric;
 
-GType gegl_distance_metric_get_type (void) G_GNUC_CONST;
+GType gegl_distance_metric_get_type (void);
 
 #define GEGL_TYPE_DISTANCE_METRIC (gegl_distance_metric_get_type ())
 
@@ -70,7 +70,7 @@ typedef enum {
   GEGL_ORIENTATION_VERTICAL
 } GeglOrientation;
 
-GType gegl_orientation_get_type (void) G_GNUC_CONST;
+GType gegl_orientation_get_type (void);
 
 #define GEGL_TYPE_ORIENTATION (gegl_orientation_get_type ())
 
@@ -98,7 +98,7 @@ enum _GeglBablVariant
 };
 typedef enum _GeglBablVariant GeglBablVariant;
 
-GType gegl_babl_variant_get_type (void) G_GNUC_CONST;
+GType gegl_babl_variant_get_type (void);
 
 #define GEGL_TYPE_BABL_VARIANT (gegl_babl_variant_get_type ())
 
@@ -109,7 +109,7 @@ typedef enum {
   GEGL_CACHE_POLICY_ALWAYS
 } GeglCachePolicy;
 
-GType gegl_cache_policy_get_type (void) G_GNUC_CONST;
+GType gegl_cache_policy_get_type (void);
 
 #define GEGL_TYPE_CACHE_POLICY (gegl_cache_policy_get_type ())
 

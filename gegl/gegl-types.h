@@ -50,13 +50,13 @@ typedef enum
 
 
 typedef struct _GeglConfig GeglConfig;
-GType gegl_config_get_type (void) G_GNUC_CONST;
+GType gegl_config_get_type (void);
 #define GEGL_TYPE_CONFIG            (gegl_config_get_type ())
 #define GEGL_CONFIG(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), GEGL_TYPE_CONFIG, GeglConfig))
 #define GEGL_IS_CONFIG(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GEGL_TYPE_CONFIG))
 
 typedef struct _GeglStats GeglStats;
-GType gegl_stats_get_type (void) G_GNUC_CONST;
+GType gegl_stats_get_type (void);
 #define GEGL_TYPE_STATS             (gegl_stats_get_type ())
 #define GEGL_STATS(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), GEGL_TYPE_STATS, GeglStats))
 #define GEGL_IS_STATS(obj)          (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GEGL_TYPE_STATS))
@@ -69,28 +69,28 @@ typedef struct _GeglAudioFragment GeglAudioFragment;
 typedef struct _GeglOperationContext GeglOperationContext;
 
 typedef struct _GeglOperation  GeglOperation;
-GType gegl_operation_get_type  (void) G_GNUC_CONST;
+GType gegl_operation_get_type  (void);
 #define GEGL_TYPE_OPERATION    (gegl_operation_get_type ())
 #define GEGL_OPERATION(obj)    (G_TYPE_CHECK_INSTANCE_CAST ((obj), GEGL_TYPE_OPERATION, GeglOperation))
 #define GEGL_IS_OPERATION(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GEGL_TYPE_OPERATION))
 G_DEFINE_AUTOPTR_CLEANUP_FUNC (GeglOperation, g_object_unref)
 
 typedef struct _GeglNode  GeglNode;
-GType gegl_node_get_type  (void) G_GNUC_CONST;
+GType gegl_node_get_type  (void);
 #define GEGL_TYPE_NODE    (gegl_node_get_type())
 #define GEGL_NODE(obj)    (G_TYPE_CHECK_INSTANCE_CAST ((obj), GEGL_TYPE_NODE, GeglNode))
 #define GEGL_IS_NODE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GEGL_TYPE_NODE))
 G_DEFINE_AUTOPTR_CLEANUP_FUNC (GeglNode, g_object_unref)
 
 typedef struct _GeglProcessor  GeglProcessor;
-GType gegl_processor_get_type  (void) G_GNUC_CONST;
+GType gegl_processor_get_type  (void);
 #define GEGL_TYPE_PROCESSOR    (gegl_processor_get_type())
 #define GEGL_PROCESSOR(obj)    (G_TYPE_CHECK_INSTANCE_CAST ((obj), GEGL_TYPE_PROCESSOR, GeglProcessor))
 #define GEGL_IS_PROCESSOR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GEGL_TYPE_PROCESSOR))
 G_DEFINE_AUTOPTR_CLEANUP_FUNC (GeglProcessor, g_object_unref)
 
 typedef struct _GeglRandom  GeglRandom;
-GType gegl_random_get_type  (void) G_GNUC_CONST;
+GType gegl_random_get_type  (void);
 #define GEGL_TYPE_RANDOM    (gegl_random_get_type())
 
 #include <gegl-buffer.h>

@@ -50,7 +50,7 @@ struct _GeglCacheClass
   GeglBufferClass  parent_class;
 };
 
-GType    gegl_cache_get_type    (void) G_GNUC_CONST;
+GType    gegl_cache_get_type    (void);
 void     gegl_cache_invalidate  (GeglCache           *self,
                                  const GeglRectangle *roi);
 void     gegl_cache_computed    (GeglCache           *self,

@@ -64,7 +64,7 @@ struct _GeglOperationPointComposer3Class
   gpointer           pad[4];
 };
 
-GType gegl_operation_point_composer3_get_type (void) G_GNUC_CONST;
+GType gegl_operation_point_composer3_get_type (void);
 
 G_DEFINE_AUTOPTR_CLEANUP_FUNC (GeglOperationPointComposer3, g_object_unref)
 

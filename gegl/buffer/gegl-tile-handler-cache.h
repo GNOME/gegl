@@ -54,7 +54,7 @@ struct _GeglTileHandlerCacheClass
   GeglTileHandlerClass parent_class;
 };
 
-GType             gegl_tile_handler_cache_get_type           (void) G_GNUC_CONST;
+GType             gegl_tile_handler_cache_get_type           (void);
 
 GeglTileHandler * gegl_tile_handler_cache_new                (void);
 

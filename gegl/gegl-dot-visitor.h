@@ -47,7 +47,7 @@ struct _GeglDotVisitorClass
 };
 
 
-GType   gegl_dot_visitor_get_type             (void) G_GNUC_CONST;
+GType   gegl_dot_visitor_get_type             (void);
 
 void    gegl_dot_visitor_set_string_to_append (GeglDotVisitor *dot_visitor,
                                                GString        *string_to_append);

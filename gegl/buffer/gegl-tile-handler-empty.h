@@ -55,7 +55,7 @@ struct _GeglTileHandlerEmptyClass
   GeglTileHandlerClass parent_class;
 };
 
-GType             gegl_tile_handler_empty_get_type (void) G_GNUC_CONST;
+GType             gegl_tile_handler_empty_get_type (void);
 
 GeglTileHandler * gegl_tile_handler_empty_new      (GeglTileBackend *backend,
                                                     gboolean         initialized);

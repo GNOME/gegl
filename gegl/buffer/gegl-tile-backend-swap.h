@@ -46,7 +46,7 @@ struct _GeglTileBackendSwap
   GHashTable      *index;
 };
 
-GType      gegl_tile_backend_swap_get_type               (void) G_GNUC_CONST;
+GType      gegl_tile_backend_swap_get_type               (void);
 
 guint64    gegl_tile_backend_swap_get_total              (void);
 guint64    gegl_tile_backend_swap_get_total_uncompressed (void);

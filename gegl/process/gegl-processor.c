@@ -66,7 +66,7 @@ static void      gegl_processor_set_node     (GeglProcessor         *processor,
                                               GeglNode              *node);
 static void      gegl_processor_constructed  (GObject               *object);
 static gdouble   gegl_processor_progress     (GeglProcessor         *processor);
-static gint      gegl_processor_get_band_size(gint                   size) G_GNUC_CONST;
+static gint      gegl_processor_get_band_size(gint                   size);
 
 
 struct _GeglProcessor

@@ -47,7 +47,7 @@ struct _GeglTileBackendBufferClass
   GeglTileBackendClass parent_class;
 };
 
-GType             gegl_tile_backend_buffer_get_type (void) G_GNUC_CONST;
+GType             gegl_tile_backend_buffer_get_type (void);
 
 GeglTileBackend * gegl_tile_backend_buffer_new      (GeglBuffer *buffer);
 

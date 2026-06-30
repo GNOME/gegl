@@ -147,7 +147,7 @@ gpointer gegl_tile_backend_command (GeglTileBackend *backend,
                                     gint             z,
                                     gpointer         data);
 
-GType gegl_tile_backend_get_type (void) G_GNUC_CONST;
+GType gegl_tile_backend_get_type (void);
 
 /**
  * gegl_tile_backend_unlink_swap:

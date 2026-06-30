@@ -72,7 +72,7 @@ struct _GeglTileBackendFileClass
   GeglTileBackendClass parent_class;
 };
 
-GType gegl_tile_backend_file_get_type (void) G_GNUC_CONST;
+GType gegl_tile_backend_file_get_type (void);
 
 void  gegl_tile_backend_file_stats    (void);
 

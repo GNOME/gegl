@@ -64,7 +64,7 @@ struct _GeglParamSpecDouble
   gint             ui_digits;
 };
 
-GType        gegl_param_double_get_type (void) G_GNUC_CONST;
+GType        gegl_param_double_get_type (void);
 
 /**
  * gegl_param_spec_double:
@@ -123,7 +123,7 @@ struct _GeglParamSpecInt
   gint          ui_step_big;
 };
 
-GType        gegl_param_int_get_type (void) G_GNUC_CONST;
+GType        gegl_param_int_get_type (void);
 
 /**
  * gegl_param_spec_int:
@@ -174,7 +174,7 @@ struct _GeglParamSpecString
   guint            null_ok     : 1;
 };
 
-GType        gegl_param_string_get_type (void) G_GNUC_CONST;
+GType        gegl_param_string_get_type (void);
 
 /**
  * gegl_param_spec_string:
@@ -217,7 +217,7 @@ struct _GeglParamSpecFilePath
   guint            null_ok     : 1;
 };
 
-GType        gegl_param_file_path_get_type (void) G_GNUC_CONST;
+GType        gegl_param_file_path_get_type (void);
 
 /**
  * gegl_param_spec_file_path:
@@ -260,7 +260,7 @@ struct _GeglParamSpecEnum
   GSList         *excluded_values;
 };
 
-GType        gegl_param_enum_get_type     (void) G_GNUC_CONST;
+GType        gegl_param_enum_get_type     (void);
 
 /**
  * gegl_param_spec_enum:
@@ -303,7 +303,7 @@ struct _GeglParamSpecSeed
   guint          ui_maximum;
 };
 
-GType        gegl_param_seed_get_type (void) G_GNUC_CONST;
+GType        gegl_param_seed_get_type (void);
 
 /**
  * gegl_param_spec_seed:
@@ -334,7 +334,7 @@ struct _GeglParamSpecFormat
   GParamSpecPointer parent_instance;
 };
 
-GType        gegl_param_format_get_type (void) G_GNUC_CONST;
+GType        gegl_param_format_get_type (void);
 
 /**
  * gegl_param_spec_format:
@@ -372,7 +372,7 @@ struct _GeglParamSpecUri
   guint            null_ok     : 1;
 };
 
-GType        gegl_param_uri_get_type (void) G_GNUC_CONST;
+GType        gegl_param_uri_get_type (void);
 
 /**
  * gegl_param_spec_uri:

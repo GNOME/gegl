@@ -172,7 +172,7 @@ struct _GeStateClass {
   GObjectClass parent;
 };
 
-GType       ge_state_get_type      (void) G_GNUC_CONST;
+GType       ge_state_get_type      (void);
 GeState*    ge_state_new           (void);
 const char *ge_state_get_path      (GeState *state, int no);
 int         ge_state_get_n_paths   (GeState *state);

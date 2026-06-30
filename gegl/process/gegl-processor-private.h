@@ -35,7 +35,7 @@ struct _GeglProcessorClass
 };
 
 
-GType          gegl_processor_get_type      (void) G_GNUC_CONST;
+GType          gegl_processor_get_type      (void);
 
 GeglProcessor *gegl_node_new_processor      (GeglNode            *node,
                                              const GeglRectangle *rectangle);
