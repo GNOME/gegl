@@ -70,7 +70,6 @@ load_buffer (GeglProperties *op_raw_load)
                   &width, &height, &val_max, &newline) != 4)
         {
           fclose (pfp);
-          waitpid (pid, NULL, 0);
           g_spawn_close_pid (pid);
           g_warning ("not able to aquire raw data");
           return;
