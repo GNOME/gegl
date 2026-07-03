@@ -29,9 +29,12 @@ upstream_opencl_headers = files (
   'CL/opencl.hpp',
 )
 
-install_headers(upstream_opencl_headers,
-  subdir: api_name / 'opencl' / 'CL'
-)
+if not opencl.found()
+  #vendored opencl headers as fallback
+  install_headers(upstream_opencl_headers,
+    subdir: api_name / 'opencl' / 'CL'
+  )
+endif
 
 gegl_opencl_headers = files(
   'gegl-cl-color.h',

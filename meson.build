@@ -49,6 +49,7 @@ dep_ver = {
   'json-glib'       : '>=1.0.0',
   'poly2tri-c'      : '>=0.0.0',
   'libnsgif'        : '>=1.0.0',
+  'opencl'          : '>=3.0',
 }
 
 # Core - optional
@@ -388,6 +389,12 @@ ctx_h     = cc.has_header('ctx.h')
 if not ctx_h
   #see libs/ctx/meson.build
   message('using built-in ctx headers')
+endif
+#we set 'required:' to false since we provide vendored OpenCL as fallback
+opencl    = dependency('OpenCL-Headers', version: dep_ver.get('opencl'), required: false)
+if not opencl.found()
+  #see gegl/opencl/meson.build
+  message('using built-in OpenCL headers')
 endif
 
 # Required libraries eventually provided in subprojects/ subdir
