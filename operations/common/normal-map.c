@@ -126,6 +126,8 @@ process (GeglOperation       *operation,
   gfloat             *bottom       = NULL;
   gfloat             *left         = NULL;
   gfloat             *right        = NULL;
+  gsize               width_size   = 0;
+  gsize               height_size  = 0;
   gint                x_component  = o->x_component;
   gint                y_component  = o->y_component;
   gint                z_component  = 2;
@@ -148,18 +150,25 @@ process (GeglOperation       *operation,
       const gfloat        *in     = iter->items[1].data;
       gfloat              *out    = iter->items[0].data;
       const GeglRectangle *roi    = &iter->items[0].roi;
+      gsize                width  = 2 * roi->width;
+      gsize                height = 2 * roi->height;
       gint                 stride = 2 * roi->width;
       gint                 x;
       gint                 y;
 
-      if (! top)
-        top = g_newa (gfloat, 2 * roi->width);
-      if (! bottom)
-        bottom = g_newa (gfloat, 2 * roi->width);
-      if (! left)
-        left = g_newa (gfloat, 2 * roi->height);
-      if (! right)
-        right = g_newa (gfloat, 2 * roi->height);
+      if (width_size < width)
+        {
+          top        = g_renew (gfloat, top, width);
+          bottom     = g_renew (gfloat, bottom, width);
+          width_size = width;
+        }
+
+      if (height_size < height)
+        {
+          left        = g_renew (gfloat, left, height);
+          right       = g_renew (gfloat, right, height);
+          height_size = height;
+        }
 
       gegl_buffer_get (input,
                        GEGL_RECTANGLE (roi->x, roi->y - 1,
@@ -232,6 +241,11 @@ process (GeglOperation       *operation,
             }
         }
     }
+
+  g_free (top);
+  g_free (bottom);
+  g_free (left);
+  g_free (right);
 
   return TRUE;
 }

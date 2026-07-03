@@ -111,10 +111,12 @@ process (GeglOperation       *operation,
 #endif
      )
     {
-      gfloat *coords_top    = NULL;
-      gfloat *coords_bottom = NULL;
-      gfloat *coords_left   = NULL;
-      gfloat *coords_right  = NULL;
+      gfloat *coords_top         = NULL;
+      gfloat *coords_bottom      = NULL;
+      gfloat *coords_left        = NULL;
+      gfloat *coords_right       = NULL;
+      gsize   coords_width_size  = 0;
+      gsize   coords_height_size = 0;
 
       it = gegl_buffer_iterator_new (output, result, level, format_io,
                                      GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE, 3);
@@ -188,16 +190,23 @@ process (GeglOperation       *operation,
             }
           else
             {
-              gint   stride = 2 * roi->width;
+              gsize coords_width  = 2 * roi->width;
+              gsize coords_height = 2 * roi->height;
+              gint  stride        = 2 * roi->width;
 
-              if (! coords_top)
-                coords_top = g_newa (gfloat, 2 * roi->width);
-              if (! coords_bottom)
-                coords_bottom = g_newa (gfloat, 2 * roi->width);
-              if (! coords_left)
-                coords_left = g_newa (gfloat, 2 * roi->height);
-              if (! coords_right)
-                coords_right = g_newa (gfloat, 2 * roi->height);
+              if (coords_width_size < coords_width)
+                {
+                  coords_top    = g_renew (gfloat, coords_top, coords_width);
+                  coords_bottom = g_renew (gfloat, coords_bottom, coords_width);
+                  coords_width_size = coords_width;
+                }
+
+              if (coords_height_size < coords_height)
+                {
+                  coords_left  = g_renew (gfloat, coords_left, coords_height);
+                  coords_right = g_renew (gfloat, coords_right, coords_height);
+                  coords_height_size = coords_height;
+                }
 
               gegl_buffer_get (aux,
                                GEGL_RECTANGLE (roi->x, roi->y - 1,
@@ -322,6 +331,11 @@ process (GeglOperation       *operation,
                 }
             }
         }
+
+      g_free (coords_top);
+      g_free (coords_bottom);
+      g_free (coords_left);
+      g_free (coords_right);
     }
   else
     {
