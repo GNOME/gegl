@@ -384,6 +384,11 @@ json_glib = dependency('json-glib-1.0',
 )
 libjpeg   = dependency(['libjpeg', 'libjpeg-turbo'], version: dep_ver.get('libjpeg'))
 libpng    = dependency('libpng',      version: dep_ver.get('libpng'))
+ctx_h     = cc.has_header('ctx.h')
+if not ctx_h
+  #see libs/ctx/meson.build
+  message('using built-in ctx headers')
+endif
 
 # Required libraries eventually provided in subprojects/ subdir
 poly2tri_c = dependency('poly2tri-c',

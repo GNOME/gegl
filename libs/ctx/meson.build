@@ -12,9 +12,8 @@ gegl_ctx_lib_sources = [
   'gegl_ctx.c',
 ]
 libgegl_ctx_include = [rootInclude]
-if not cc.has_header('ctx.h')
-  #vendored ctx.h (on libgegl_ctx subdir to avoid unconditional including)
-  message('using built-in ctx.h')
+if not ctx_h
+  #vendored ctx.h as fallback (on libgegl_ctx subdir to avoid unconditional including)
   gegl_ctx_lib_sources += ['libgegl_ctx/ctx.h']
   libgegl_ctx_include += ['./libgegl_ctx']
 endif
