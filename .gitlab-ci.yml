@@ -97,6 +97,7 @@ debian-x86_64:
                   --default-library=both
                   _build
     - ninja -C _build
+    - ninja -C _build test
   artifacts:
     paths:
       - "_build/meson-logs"

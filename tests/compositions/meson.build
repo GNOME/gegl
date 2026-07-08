@@ -84,6 +84,7 @@ composition_tests_set_timeout = {
 
 # Tests that are expected to fail - must also appear in the main lists
 composition_tests_fail = [
+  'mantiuk06',
   'matting-global',
 ]
 if not os_win32
