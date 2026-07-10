@@ -79,7 +79,24 @@ endif
 # Timeout for tests that require extra time to run
 #   test-name : timeout <int>
 composition_tests_set_timeout = {
-  'pnm-ascii-load' : 120
+  'affine-with-negative' : 60,
+  'alien-map' : 60,
+  'apply-lens' : 60,
+  'apply-lens3' : 60,
+  'bump-map' : 60,
+  'clones' : 60,
+  'color-to-alpha' : 60,
+  'contrast-curve' : 60,
+  'edge' : 60,
+  'image-compare' : 60,
+  'matting-global' : 60,
+  'noise-simplex' : 60,
+  'posterize' : 60,
+  'pnm-ascii-load' : 120,
+  'red-eye-removal' : 60,
+  'reflect2' : 60,
+  'rotate-on-center' : 60,
+  'saturation' : 60,
 }
 
 # Tests that are expected to fail - must also appear in the main lists

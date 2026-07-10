@@ -67,14 +67,18 @@ buffer_tests = [
 ]
 
 buffer_test = find_program('buffer-test.py')
+buffer_test_c_args = []
+if cc.has_argument('-Wno-unused-function')
+  buffer_test_c_args += '-Wno-unused-function'
+endif
+
 foreach _test : buffer_tests
   _test_exe = executable(_test,
     'buffer-test-wrapper.c',
     include_directories: gegl_test_includes,
     link_with: gegl_lib,
     dependencies: gegl_test_deps,
-    c_args: [
-      '-Wno-unused-function',
+    c_args: buffer_test_c_args + [
       '-DTEST_NAME="@0@"'.format(_test),
       '-DTEST_INCLUDE="@0@"'.format('tests' / _test + '.c'),
     ],

@@ -15,7 +15,7 @@ TEST ()
   const Babl     *format = babl_format ("Y float");
   GeglRectangle   query_rect = {-10, -10, 20, 20};
   GeglRectangle   buffer_rect = {0, 0, 0, 0};
-  gfloat          buf[query_rect.width * query_rect.height * sizeof(gfloat)];
+  gfloat          *buf = g_new (gfloat, query_rect.width * query_rect.height);
 
   test_start ();
   buffer  = gegl_buffer_new (&buffer_rect, format);
@@ -33,6 +33,7 @@ TEST ()
 
   g_object_unref (buffer);
   g_object_unref (buffer2);
+  g_free (buf);
 
   test_end ();
 }

@@ -106,8 +106,11 @@ test_unaligned_fill (FillFunc fill_func)
   GeglBuffer         *buffer;
   GeglBufferIterator *iter;
   GeglColor          *color;
-  guchar              pixel1[bpp];
-  guchar              pixel2[bpp];
+  guchar             *pixel1;
+  guchar             *pixel2;
+
+  pixel1 = g_malloc (bpp);
+  pixel2 = g_malloc (bpp);
 
   buffer = gegl_buffer_new (NULL, format);
 
@@ -163,6 +166,8 @@ test_unaligned_fill (FillFunc fill_func)
     }
 
   g_object_unref (buffer);
+  g_free (pixel2);
+  g_free (pixel1);
 
   return result;
 }

@@ -50,7 +50,9 @@ test_path_calc_values (GeglPath *path, int num_samples,
                        gdouble *exp_x, gdouble *exp_y)
 {
   int i=0;
-  gdouble x[num_samples], y[num_samples];
+  gdouble *x      = g_new (gdouble, num_samples);
+  gdouble *y      = g_new (gdouble, num_samples);
+  int      result = TRUE;
   //gdouble length;
   /* gegl_path_calc_values:
    * Compute @num_samples for a path into the provided arrays @xs and @ys
@@ -68,9 +70,14 @@ test_path_calc_values (GeglPath *path, int num_samples,
       for ( i=0;i<NSMP;i++)
         printf("Sample %d : x=%f exp_x=%f  y=%f exp_y=%f\n",
                 i, x[i], exp_x[i], y[i], exp_y[i]);
-      return FALSE;
+      result = FALSE;
+      break;
     }
-  return TRUE;
+
+  g_free (y);
+  g_free (x);
+
+  return result;
 }
 
 static int 

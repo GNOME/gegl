@@ -6,7 +6,7 @@ TEST ()
   const Babl     *format = babl_format ("Y float");
   GeglRectangle   query_rect = {0, 0, 13, 13};
   GeglRectangle   buffer_rect = {0, 0, 12, 12};
-  gfloat          buf[query_rect.width * query_rect.height * sizeof(gfloat)];
+  gfloat         *buf = g_new (gfloat, query_rect.width * query_rect.height);
 
   gint x_offsets[] = {-query_rect.width - 6, -query_rect.width - 0,
                       -query_rect.width + 1, -query_rect.width + 6,
@@ -43,6 +43,7 @@ TEST ()
 
   g_object_unref (buffer);
   g_object_unref (buffer2);
+  g_free (buf);
 
   test_end ();
 }
