@@ -125,7 +125,13 @@ const char *gegl_cl_errstring(cl_int err) {
   return strings[-err];
 }
 
-gboolean _gegl_cl_is_accelerated;
+static gboolean _gegl_cl_is_accelerated;
+
+gboolean
+gegl_cl_is_accelerated (void)
+{
+  return _gegl_cl_is_accelerated;
+}
 
 typedef struct
 {

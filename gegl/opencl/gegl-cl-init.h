@@ -25,6 +25,14 @@
 
 G_BEGIN_DECLS
 
+#ifndef GEGL_VAR
+#if defined(_MSC_VER) && ! defined(GEGL_COMPILATION)
+#define GEGL_VAR extern __declspec (dllimport)
+#else
+#define GEGL_VAR extern
+#endif
+#endif
+
 const char *      gegl_cl_errstring(cl_int err);
 
 gboolean          gegl_cl_init (void);
@@ -69,10 +77,6 @@ typedef struct
 GeglClRunData *   gegl_cl_compile_and_build (const char *program_source,
                                              const char *kernel_name[]);
 
-extern gboolean _gegl_cl_is_accelerated;
-
-#define gegl_cl_is_accelerated()   _gegl_cl_is_accelerated
-
 #define GEGL_CL_CHUNK_SIZE 1024 * 1024
 
 #ifdef __GEGL_CL_INIT_MAIN__
@@ -81,7 +85,7 @@ extern gboolean _gegl_cl_is_accelerated;
 
 #else
 
-#define _GEGL_CL_WRAP_FUNCTION(cl_func) extern cl_func##_fn gegl_##cl_func;
+#define _GEGL_CL_WRAP_FUNCTION(cl_func) GEGL_VAR cl_func##_fn gegl_##cl_func;
 
 #endif
 

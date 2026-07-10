@@ -1,7 +1,4 @@
 EXPORTS
-  _gegl_cl_is_accelerated
-  _gegl_float_epsilon_equal
-  _gegl_float_epsilon_zero
   gegl_abyss_policy_get_type
   gegl_access_mode_get_type
   gegl_apply_op
@@ -45,8 +42,8 @@ EXPORTS
   gegl_buffer_create_sub_buffer
   gegl_buffer_dup
   gegl_buffer_emit_changed_signal
-  gegl_buffer_ext_flush
-  gegl_buffer_ext_invalidate
+  gegl_buffer_ext_flush DATA
+  gegl_buffer_ext_invalidate DATA
   gegl_buffer_flush
   gegl_buffer_flush_ext
   gegl_buffer_freeze_changed
@@ -114,7 +111,7 @@ EXPORTS
   gegl_cache_get_type
   gegl_cache_invalidate
   gegl_cache_policy_get_type
-  gegl_cache_signals
+  gegl_cache_signals DATA
   gegl_callback_visitor_get_type
   gegl_callback_visitor_new
   gegl_calloc
@@ -138,122 +135,123 @@ EXPORTS
   gegl_cl_has_extension
   gegl_cl_has_gl_sharing
   gegl_cl_init
+  gegl_cl_is_accelerated
   gegl_cl_load_random_data
   gegl_cl_random_cleanup
   gegl_cl_random_get_ushort4
   gegl_cl_set_default_device_type
   gegl_cl_set_kernel_args
   gegl_cl_set_profiling
-  gegl_clBuildProgram
-  gegl_clCloneKernel
-  gegl_clCompileProgram
-  gegl_clCreateBuffer
-  gegl_clCreateBufferWithProperties
-  gegl_clCreateCommandQueueWithProperties
-  gegl_clCreateContext
-  gegl_clCreateContextFromType
-  gegl_clCreateFromGLBuffer
-  gegl_clCreateFromGLRenderbuffer
-  gegl_clCreateFromGLTexture
-  gegl_clCreateImage
-  gegl_clCreateImageWithProperties
-  gegl_clCreateKernel
-  gegl_clCreateKernelsInProgram
-  gegl_clCreatePipe
-  gegl_clCreateProgramWithBinary
-  gegl_clCreateProgramWithBuiltInKernels
-  gegl_clCreateProgramWithIL
-  gegl_clCreateProgramWithSource
-  gegl_clCreateSamplerWithProperties
-  gegl_clCreateSubBuffer
-  gegl_clCreateSubDevices
-  gegl_clCreateUserEvent
-  gegl_clEnqueueAcquireGLObjects
-  gegl_clEnqueueBarrierWithWaitList
-  gegl_clEnqueueCopyBuffer
-  gegl_clEnqueueCopyBufferRect
-  gegl_clEnqueueCopyBufferToImage
-  gegl_clEnqueueCopyImage
-  gegl_clEnqueueCopyImageToBuffer
-  gegl_clEnqueueFillBuffer
-  gegl_clEnqueueFillImage
-  gegl_clEnqueueMapBuffer
-  gegl_clEnqueueMapImage
-  gegl_clEnqueueMarkerWithWaitList
-  gegl_clEnqueueMigrateMemObjects
-  gegl_clEnqueueNativeKernel
-  gegl_clEnqueueNDRangeKernel
-  gegl_clEnqueueReadBuffer
-  gegl_clEnqueueReadBufferRect
-  gegl_clEnqueueReadImage
-  gegl_clEnqueueReleaseGLObjects
-  gegl_clEnqueueSVMFree
-  gegl_clEnqueueSVMMap
-  gegl_clEnqueueSVMMemcpy
-  gegl_clEnqueueSVMMemFill
-  gegl_clEnqueueSVMMigrateMem
-  gegl_clEnqueueSVMUnmap
-  gegl_clEnqueueUnmapMemObject
-  gegl_clEnqueueWriteBuffer
-  gegl_clEnqueueWriteBufferRect
-  gegl_clEnqueueWriteImage
-  gegl_clFinish
-  gegl_clFlush
-  gegl_clGetCommandQueueInfo
-  gegl_clGetContextInfo
-  gegl_clGetDeviceAndHostTimer
-  gegl_clGetDeviceIDs
-  gegl_clGetDeviceInfo
-  gegl_clGetEventInfo
-  gegl_clGetEventProfilingInfo
-  gegl_clGetExtensionFunctionAddressForPlatform
-  gegl_clGetGLContextInfoKHR
-  gegl_clGetGLObjectInfo
-  gegl_clGetGLTextureInfo
-  gegl_clGetHostTimer
-  gegl_clGetImageInfo
-  gegl_clGetKernelArgInfo
-  gegl_clGetKernelInfo
-  gegl_clGetKernelSubGroupInfo
-  gegl_clGetKernelWorkGroupInfo
-  gegl_clGetMemObjectInfo
-  gegl_clGetPipeInfo
-  gegl_clGetPlatformIDs
-  gegl_clGetPlatformInfo
-  gegl_clGetProgramBuildInfo
-  gegl_clGetProgramInfo
-  gegl_clGetSamplerInfo
-  gegl_clGetSupportedImageFormats
-  gegl_clLinkProgram
-  gegl_clReleaseCommandQueue
-  gegl_clReleaseContext
-  gegl_clReleaseDevice
-  gegl_clReleaseEvent
-  gegl_clReleaseKernel
-  gegl_clReleaseMemObject
-  gegl_clReleaseProgram
-  gegl_clReleaseSampler
-  gegl_clRetainCommandQueue
-  gegl_clRetainContext
-  gegl_clRetainDevice
-  gegl_clRetainEvent
-  gegl_clRetainKernel
-  gegl_clRetainMemObject
-  gegl_clRetainProgram
-  gegl_clRetainSampler
-  gegl_clSetContextDestructorCallback
-  gegl_clSetDefaultDeviceCommandQueue
-  gegl_clSetEventCallback
-  gegl_clSetKernelArg
-  gegl_clSetKernelArgSVMPointer
-  gegl_clSetKernelExecInfo
-  gegl_clSetMemObjectDestructorCallback
-  gegl_clSetProgramSpecializationConstant
-  gegl_clSetUserEventStatus
-  gegl_clSVMAlloc
-  gegl_clSVMFree
-  gegl_clUnloadPlatformCompiler
-  gegl_clWaitForEvents
+  gegl_clBuildProgram DATA
+  gegl_clCloneKernel DATA
+  gegl_clCompileProgram DATA
+  gegl_clCreateBuffer DATA
+  gegl_clCreateBufferWithProperties DATA
+  gegl_clCreateCommandQueueWithProperties DATA
+  gegl_clCreateContext DATA
+  gegl_clCreateContextFromType DATA
+  gegl_clCreateFromGLBuffer DATA
+  gegl_clCreateFromGLRenderbuffer DATA
+  gegl_clCreateFromGLTexture DATA
+  gegl_clCreateImage DATA
+  gegl_clCreateImageWithProperties DATA
+  gegl_clCreateKernel DATA
+  gegl_clCreateKernelsInProgram DATA
+  gegl_clCreatePipe DATA
+  gegl_clCreateProgramWithBinary DATA
+  gegl_clCreateProgramWithBuiltInKernels DATA
+  gegl_clCreateProgramWithIL DATA
+  gegl_clCreateProgramWithSource DATA
+  gegl_clCreateSamplerWithProperties DATA
+  gegl_clCreateSubBuffer DATA
+  gegl_clCreateSubDevices DATA
+  gegl_clCreateUserEvent DATA
+  gegl_clEnqueueAcquireGLObjects DATA
+  gegl_clEnqueueBarrierWithWaitList DATA
+  gegl_clEnqueueCopyBuffer DATA
+  gegl_clEnqueueCopyBufferRect DATA
+  gegl_clEnqueueCopyBufferToImage DATA
+  gegl_clEnqueueCopyImage DATA
+  gegl_clEnqueueCopyImageToBuffer DATA
+  gegl_clEnqueueFillBuffer DATA
+  gegl_clEnqueueFillImage DATA
+  gegl_clEnqueueMapBuffer DATA
+  gegl_clEnqueueMapImage DATA
+  gegl_clEnqueueMarkerWithWaitList DATA
+  gegl_clEnqueueMigrateMemObjects DATA
+  gegl_clEnqueueNativeKernel DATA
+  gegl_clEnqueueNDRangeKernel DATA
+  gegl_clEnqueueReadBuffer DATA
+  gegl_clEnqueueReadBufferRect DATA
+  gegl_clEnqueueReadImage DATA
+  gegl_clEnqueueReleaseGLObjects DATA
+  gegl_clEnqueueSVMFree DATA
+  gegl_clEnqueueSVMMap DATA
+  gegl_clEnqueueSVMMemcpy DATA
+  gegl_clEnqueueSVMMemFill DATA
+  gegl_clEnqueueSVMMigrateMem DATA
+  gegl_clEnqueueSVMUnmap DATA
+  gegl_clEnqueueUnmapMemObject DATA
+  gegl_clEnqueueWriteBuffer DATA
+  gegl_clEnqueueWriteBufferRect DATA
+  gegl_clEnqueueWriteImage DATA
+  gegl_clFinish DATA
+  gegl_clFlush DATA
+  gegl_clGetCommandQueueInfo DATA
+  gegl_clGetContextInfo DATA
+  gegl_clGetDeviceAndHostTimer DATA
+  gegl_clGetDeviceIDs DATA
+  gegl_clGetDeviceInfo DATA
+  gegl_clGetEventInfo DATA
+  gegl_clGetEventProfilingInfo DATA
+  gegl_clGetExtensionFunctionAddressForPlatform DATA
+  gegl_clGetGLContextInfoKHR DATA
+  gegl_clGetGLObjectInfo DATA
+  gegl_clGetGLTextureInfo DATA
+  gegl_clGetHostTimer DATA
+  gegl_clGetImageInfo DATA
+  gegl_clGetKernelArgInfo DATA
+  gegl_clGetKernelInfo DATA
+  gegl_clGetKernelSubGroupInfo DATA
+  gegl_clGetKernelWorkGroupInfo DATA
+  gegl_clGetMemObjectInfo DATA
+  gegl_clGetPipeInfo DATA
+  gegl_clGetPlatformIDs DATA
+  gegl_clGetPlatformInfo DATA
+  gegl_clGetProgramBuildInfo DATA
+  gegl_clGetProgramInfo DATA
+  gegl_clGetSamplerInfo DATA
+  gegl_clGetSupportedImageFormats DATA
+  gegl_clLinkProgram DATA
+  gegl_clReleaseCommandQueue DATA
+  gegl_clReleaseContext DATA
+  gegl_clReleaseDevice DATA
+  gegl_clReleaseEvent DATA
+  gegl_clReleaseKernel DATA
+  gegl_clReleaseMemObject DATA
+  gegl_clReleaseProgram DATA
+  gegl_clReleaseSampler DATA
+  gegl_clRetainCommandQueue DATA
+  gegl_clRetainContext DATA
+  gegl_clRetainDevice DATA
+  gegl_clRetainEvent DATA
+  gegl_clRetainKernel DATA
+  gegl_clRetainMemObject DATA
+  gegl_clRetainProgram DATA
+  gegl_clRetainSampler DATA
+  gegl_clSetContextDestructorCallback DATA
+  gegl_clSetDefaultDeviceCommandQueue DATA
+  gegl_clSetEventCallback DATA
+  gegl_clSetKernelArg DATA
+  gegl_clSetKernelArgSVMPointer DATA
+  gegl_clSetKernelExecInfo DATA
+  gegl_clSetMemObjectDestructorCallback DATA
+  gegl_clSetProgramSpecializationConstant DATA
+  gegl_clSetUserEventStatus DATA
+  gegl_clSVMAlloc DATA
+  gegl_clSVMFree DATA
+  gegl_clUnloadPlatformCompiler DATA
+  gegl_clWaitForEvents DATA
   gegl_color_cmp
   gegl_color_duplicate
   gegl_color_get_bytes
@@ -315,8 +313,8 @@ EXPORTS
   gegl_curve_set_point
   gegl_datafiles_check_extension
   gegl_datafiles_read_directories
-  gegl_debug_flags
-  gegl_debug_keys
+  gegl_debug_flags DATA
+  gegl_debug_keys DATA
   gegl_distance_metric_get_type
   gegl_dither_method_get_type
   gegl_dot_node_to_png
@@ -326,7 +324,7 @@ EXPORTS
   gegl_dot_util_add_node_sink_edges
   gegl_dot_visitor_get_type
   gegl_dot_visitor_set_string_to_append
-  gegl_downscale_2x2
+  gegl_downscale_2x2 DATA
   gegl_downscale_2x2_generic
   gegl_downscale_2x2_get_fun_generic
   gegl_downscale_2x2_nearest_generic
@@ -363,7 +361,7 @@ EXPORTS
   gegl_has_operation
   gegl_init
   gegl_instrument_enable
-  gegl_instrument_enabled
+  gegl_instrument_enabled DATA
   gegl_instrument_utf8
   gegl_is_main_thread
   gegl_list_operations
@@ -371,9 +369,9 @@ EXPORTS
   gegl_lookup_free
   gegl_lookup_new
   gegl_lookup_new_full
-  gegl_lut_u16_to_u8
-  gegl_lut_u8_to_u16
-  gegl_lut_u8_to_u16f
+  gegl_lut_u16_to_u8 DATA
+  gegl_lut_u8_to_u16 DATA
+  gegl_lut_u8_to_u16f DATA
   gegl_malloc
   gegl_matrix3_copy
   gegl_matrix3_copy_into
@@ -712,7 +710,7 @@ EXPORTS
   gegl_path_remove_node
   gegl_path_replace_node
   gegl_path_set_matrix
-  gegl_path_signals
+  gegl_path_signals DATA
   gegl_path_thaw
   gegl_path_to_string
   gegl_processor_get_buffer
@@ -732,7 +730,7 @@ EXPORTS
   gegl_random_int_range
   gegl_random_new
   gegl_random_new_with_seed
-  gegl_random_primes
+  gegl_random_primes DATA
   gegl_random_set_seed
   gegl_rectangle_align
   gegl_rectangle_align_to_buffer
@@ -775,11 +773,11 @@ EXPORTS
   gegl_region_xor
   gegl_render_op
   gegl_render_op_valist
-  gegl_resample_bilinear
+  gegl_resample_bilinear DATA
   gegl_resample_bilinear_generic
-  gegl_resample_boxfilter
+  gegl_resample_boxfilter DATA
   gegl_resample_boxfilter_generic
-  gegl_resample_nearest
+  gegl_resample_nearest DATA
   gegl_resample_nearest_generic
   gegl_reset_stats
   gegl_resolution_unit_get_type
@@ -857,7 +855,7 @@ EXPORTS
   gegl_tile_get_rev
   gegl_tile_handler_cache_connect
   gegl_tile_handler_cache_disconnect
-  gegl_tile_handler_cache_ext_flush
+  gegl_tile_handler_cache_ext_flush DATA
   gegl_tile_handler_cache_get_hits
   gegl_tile_handler_cache_get_misses
   gegl_tile_handler_cache_get_tile
@@ -910,7 +908,7 @@ EXPORTS
   gegl_tile_storage_get_type
   gegl_tile_storage_new
   gegl_tile_storage_remove_handler
-  gegl_tile_storage_signals
+  gegl_tile_storage_signals DATA
   gegl_tile_storage_steal_hot_tile
   gegl_tile_storage_take_hot_tile
   gegl_tile_storage_try_steal_hot_tile

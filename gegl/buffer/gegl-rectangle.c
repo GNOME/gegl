@@ -443,18 +443,3 @@ gegl_rectangle_get_type (void)
                                              (GBoxedFreeFunc) g_free);
   return our_type;
 }
-
-gint
-_gegl_float_epsilon_zero (float value)
-{
-  return value > -GEGL_FLOAT_EPSILON && value < GEGL_FLOAT_EPSILON;
-}
-
-gint
-_gegl_float_epsilon_equal (float v1, float v2)
-{
-  register float diff = v1 - v2;
-
-  return diff > -GEGL_FLOAT_EPSILON && diff < GEGL_FLOAT_EPSILON;
-}
-

@@ -112,10 +112,10 @@ gegl_def = custom_target('gegl.def',
   build_by_default: true,
 )
 
-gegl_lib_args = {
-  'sources': gegl_sources,
-  'include_directories': [rootInclude, geglInclude],
-  'dependencies': [
+gegl_lib = library(api_name,
+  gegl_sources,
+  include_directories: [rootInclude, geglInclude],
+  dependencies: [
     babl,
     glib,
     gio,
@@ -123,20 +123,14 @@ gegl_lib_args = {
     gmodule,
     gegl_operations_opencl_dep,
   ],
-  'c_args': gegl_cflags,
-
-  'link_with': simd_extra,
-  'link_args': gegl_ldflags,
-  'install': true,
-  'version': so_version,
-  'darwin_versions': darwin_versions,
-}
-#FIXME: some symbols are unreliable on Windows GNU compilers. See: #445
-if cc.get_argument_syntax() == 'msvc'
-  gegl_lib_args += {'vs_module_defs': gegl_def}
-endif
-gegl_lib = library(api_name,
-  kwargs: gegl_lib_args
+  # GEGL_COMPILATION makes exported data declarations avoid importing from the library itself.
+  c_args: gegl_cflags + ['-DGEGL_COMPILATION'],
+  vs_module_defs: gegl_def,
+  link_with: simd_extra,
+  link_args: gegl_ldflags,
+  install: true,
+  version: so_version,
+  darwin_versions: darwin_versions,
 )
 
 

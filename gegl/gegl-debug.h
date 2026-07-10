@@ -5,7 +5,15 @@
 
 G_BEGIN_DECLS
 
-extern guint gegl_debug_flags;
+#ifndef GEGL_VAR
+#if defined(_MSC_VER) && ! defined(GEGL_COMPILATION)
+#define GEGL_VAR extern __declspec (dllimport)
+#else
+#define GEGL_VAR extern
+#endif
+#endif
+
+GEGL_VAR guint gegl_debug_flags;
 
 typedef enum {
   GEGL_DEBUG_PROCESS         = 1 << 0,
@@ -48,7 +56,7 @@ const GDebugKey gegl_debug_keys[] = {
                      GEGL_DEBUG_LICENSE},
 };
 #else
-extern GDebugKey gegl_debug_keys[];
+GEGL_VAR GDebugKey gegl_debug_keys[];
 #endif /* __GEGL_INIT_C */
 
 #if (defined(__cplusplus) && defined(GEGL_ISO_CXX_VARIADIC_MACROS)) || __STDC_VERSION__ >= 199901L

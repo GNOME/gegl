@@ -8,7 +8,7 @@ EXPORTS
   npd_cut_edges
   npd_deform_model
   npd_destroy_model
-  npd_draw_line
+  npd_draw_line DATA
   npd_draw_mesh
   npd_draw_model_into_image
   npd_equal_floats
@@ -21,7 +21,7 @@ EXPORTS
   npd_gegl_set_pixel_color
   npd_get_control_point_at
   npd_get_control_point_with_radius_at
-  npd_get_pixel_color
+  npd_get_pixel_color DATA
   npd_init_model
   npd_is_color_transparent
   npd_print_bone
@@ -29,7 +29,7 @@ EXPORTS
   npd_print_model
   npd_print_overlapping_points
   npd_print_point
-  npd_process_pixel
+  npd_process_pixel DATA
   npd_process_pixel_bilinear
   npd_remove_all_control_points
   npd_remove_control_point
@@ -37,5 +37,5 @@ EXPORTS
   npd_SED
   npd_set_control_point_weight
   npd_set_deformation_type
-  npd_set_pixel_color
+  npd_set_pixel_color DATA
   npd_set_point_coordinates

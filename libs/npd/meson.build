@@ -26,21 +26,15 @@ gegl_npd_def = configure_file(
   copy: true
 )
 
-gegl_npd_lib_args = {
-  'sources': gegl_npd_sources,
-  'dependencies': [ glib, babl, math ],
-  'include_directories': geglInclude,
-  'link_with': [ gegl_lib ],
-  'install': true,
-}
-#FIXME: For some mystical reason, GNU compilers create a libgegl-*npd.dll that
-#crashes, even it being mostly identical to the one with vs_module_defs (the
-#only difference is one line of .buildid, so let's use the .def conditionally)
-if cc.get_argument_syntax() == 'msvc'
-  gegl_npd_lib_args += {'vs_module_defs': gegl_npd_def}
-endif
 gegl_npd_lib = library(meson.project_name() + '-npd-' + api_version,
-  kwargs: gegl_npd_lib_args
+  gegl_npd_sources,
+  dependencies: [ glib, babl, math ],
+  include_directories: geglInclude,
+  link_with: [ gegl_lib ],
+  # NPD_COMPILATION makes exported data declarations avoid importing from the library itself.
+  c_args: ['-DNPD_COMPILATION'],
+  vs_module_defs: gegl_npd_def,
+  install: true,
 )
 
 libnpd = declare_dependency(

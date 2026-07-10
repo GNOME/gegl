@@ -333,12 +333,24 @@ void     gegl_rectangle_dump              (const GeglRectangle *rectangle);
 
 
 #define GEGL_FLOAT_EPSILON            (1e-5)
-#define GEGL_FLOAT_IS_ZERO(value)     (_gegl_float_epsilon_zero ((value)))
-#define GEGL_FLOAT_EQUAL(v1, v2)      (_gegl_float_epsilon_equal ((v1), (v2)))
 
-gint        _gegl_float_epsilon_zero  (float     value);
-gint        _gegl_float_epsilon_equal (float     v1,
-                                              float     v2);
+static inline gint
+gegl_float_epsilon_zero (float value)
+{
+  return value > -GEGL_FLOAT_EPSILON && value < GEGL_FLOAT_EPSILON;
+}
+
+static inline gint
+gegl_float_epsilon_equal (float v1,
+                          float v2)
+{
+  float diff = v1 - v2;
+
+  return diff > -GEGL_FLOAT_EPSILON && diff < GEGL_FLOAT_EPSILON;
+}
+
+#define GEGL_FLOAT_IS_ZERO(value)     (gegl_float_epsilon_zero ((value)))
+#define GEGL_FLOAT_EQUAL(v1, v2)      (gegl_float_epsilon_equal ((v1), (v2)))
 
 
 

@@ -24,6 +24,14 @@
 
 #include "npd_common.h"
 
+#ifndef NPD_VAR
+#if defined(_MSC_VER) && ! defined(NPD_COMPILATION)
+#define NPD_VAR extern __declspec (dllimport)
+#else
+#define NPD_VAR extern
+#endif
+#endif
+
 struct _NPDColor
 {
   union {
@@ -55,12 +63,12 @@ void            npd_draw_model_into_image         (NPDModel   *model,
 void            npd_draw_mesh                     (NPDModel   *model,
                                                    NPDDisplay *display);
 gboolean        npd_is_color_transparent          (NPDColor   *color);
-extern void   (*npd_draw_line)                    (NPDDisplay *display,
+NPD_VAR void  (*npd_draw_line)                    (NPDDisplay *display,
                                                    gfloat      x0,
                                                    gfloat      y0,
                                                    gfloat      x1,
                                                    gfloat      y1);
-extern void   (*npd_process_pixel)                (NPDImage   *input_image,
+NPD_VAR void  (*npd_process_pixel)                (NPDImage   *input_image,
                                                    gfloat      ix,
                                                    gfloat      iy,
                                                    NPDImage   *output_image,
@@ -74,11 +82,11 @@ void            npd_process_pixel_bilinear        (NPDImage   *input_image,
                                                    gfloat      ox,
                                                    gfloat      oy,
                                                    NPDSettings settings);
-extern void   (*npd_get_pixel_color)              (NPDImage   *image,
+NPD_VAR void  (*npd_get_pixel_color)              (NPDImage   *image,
                                                    gint        x,
                                                    gint        y,
                                                    NPDColor   *color);
-extern void   (*npd_set_pixel_color)              (NPDImage   *image,
+NPD_VAR void  (*npd_set_pixel_color)              (NPDImage   *image,
                                                    gint        x,
                                                    gint        y,
                                                    NPDColor   *color);
