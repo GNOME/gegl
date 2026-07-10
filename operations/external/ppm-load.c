@@ -249,7 +249,6 @@ static void
 ppm_load_read_image(GInputStream *stream,
                     pnm_struct *img)
 {
-    GDataInputStream *dstream = g_data_input_stream_new (stream);
     guint i;
 
     if (img->type == PIXMAP_RAW || img->type == PIXMAP_RAW_GRAY)
@@ -302,7 +301,6 @@ ppm_load_read_image(GInputStream *stream,
             g_warning ("%s: Programmer stupidity error", G_STRLOC);
           }
       }
-    g_object_unref (dstream);
 }
 
 static GeglRectangle
@@ -311,6 +309,7 @@ get_bounding_box (GeglOperation *operation)
   GeglProperties   *o = GEGL_PROPERTIES (operation);
   GeglRectangle result = {0,0,0,0};
   GInputStream *stream = NULL;
+  GInputStream     *buffered = NULL;
   GFile *file = NULL;
   pnm_struct    img;
 
@@ -320,7 +319,9 @@ get_bounding_box (GeglOperation *operation)
   if (!stream)
     return result;
 
-  if (!ppm_load_read_header (stream, &img))
+  buffered = g_buffered_input_stream_new_sized (stream, 65536);
+
+  if (! ppm_load_read_header (buffered, &img))
     goto out;
 
   if (img.bpc == 1)
@@ -348,11 +349,13 @@ get_bounding_box (GeglOperation *operation)
   result.height = img.height;
 
  out:
-  g_object_unref (stream);
-  if (file)
-    g_object_unref (file);
+   if (buffered)
+     g_object_unref (buffered);
+   g_object_unref (stream);
+   if (file)
+     g_object_unref (file);
 
-  return result;
+   return result;
 }
 
 static gboolean
@@ -366,6 +369,7 @@ process (GeglOperation       *operation,
   GeglRectangle rect = {0,0,0,0};
   gboolean      ret = FALSE;
   GInputStream *stream = NULL;
+  GInputStream     *buffered = NULL;
   GFile *file = NULL;
 
   img.bpc = 1;
@@ -374,7 +378,9 @@ process (GeglOperation       *operation,
   if (!stream)
     return FALSE;
 
-  if (!ppm_load_read_header (stream, &img))
+  buffered = g_buffered_input_stream_new_sized (stream, 65536);
+
+  if (! ppm_load_read_header (buffered, &img))
     goto out;
 
   /* Allocating Array Size */
@@ -416,7 +422,7 @@ process (GeglOperation       *operation,
   else
     g_warning ("%s: Programmer stupidity error", G_STRLOC);
 
-  ppm_load_read_image (stream, &img);
+  ppm_load_read_image (buffered, &img);
 
   if (img.bpc == 1)
     {
@@ -444,11 +450,13 @@ process (GeglOperation       *operation,
   ret = TRUE;
 
  out:
-    g_object_unref (stream);
-    if (file)
-        g_object_unref (file);
+   if (buffered)
+     g_object_unref (buffered);
+   g_object_unref (stream);
+   if (file)
+     g_object_unref (file);
 
-  return ret;
+   return ret;
 }
 
 static GeglRectangle

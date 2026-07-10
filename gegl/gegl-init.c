@@ -417,7 +417,7 @@ static gchar    *cmd_gegl_chunk_size       = NULL;
 static gchar    *cmd_gegl_quality          = NULL;
 static gchar    *cmd_gegl_tile_size        = NULL;
 static gchar    *cmd_gegl_threads          = NULL;
-static gboolean *cmd_gegl_disable_opencl   = NULL;
+static gboolean  cmd_gegl_disable_opencl   = FALSE;
 
 static const GOptionEntry cmd_entries[]=
 {
@@ -480,7 +480,7 @@ gegl_get_option_group (void)
   return group;
 }
 
-static void 
+static void
 gegl_config_parse_env (GeglConfig *config)
 {
   if (g_getenv ("GEGL_MIPMAP_RENDERING"))
@@ -609,13 +609,13 @@ gegl_stats (void)
   return stats;
 }
 
-void 
+void
 gegl_reset_stats (void)
 {
   gegl_stats_reset (gegl_stats ());
 }
 
-void 
+void
 gegl_temp_buffer_free (void);
 
 void
@@ -729,12 +729,12 @@ gegl_get_default_module_paths(void)
     {
       char  dylib_path[PATH_MAX];
       char *dylib_dir;
-  
+
       /* Get the parent directory containing the .dylib (e.g. <foobar>\Frameworks\,
          does not matter the parent dir, this is packaging-agnostic) */
       strlcpy(dylib_path, info.dli_fname, sizeof(dylib_path));
       dylib_dir = dirname(dylib_path);
-          
+
       /* Construct the gegl dir on the parent dir (e.g. <foobar>\Frameworks\{GEGL_LIBRARY}) */
       module_path = g_build_filename(dylib_dir, GEGL_LIBRARY, NULL);
     }
