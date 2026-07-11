@@ -96,6 +96,7 @@ dep_ver += {
   'poppler'         : '>=0.71.0',
   'sdl1'            : '>=1.2.0',
   'sdl2'            : '>=2.0.5',
+  'sdl3'            : '>=3.2.0',
   'libavcodec'      : '>=55.69.100',
   'libavformat'     : '>=55.48.100',
   'libavutil'       : '>=55.92.100',
@@ -538,6 +539,10 @@ sdl2      = dependency(['sdl2', 'SDL2'],
   version: dep_ver.get('sdl2'),
   required: get_option('sdl2')
 )
+sdl3      = dependency(['sdl3', 'SDL3'],
+  version: dep_ver.get('sdl3'),
+  required: get_option('sdl3')
+)
 
 # AV libs
 libavcodec = dependency('libavcodec',
@@ -814,6 +819,7 @@ summary(
     'rsvg'              : librsvg.found(),
     'SDL1'              : sdl1.found(),
     'SDL2'              : sdl2.found(),
+    'SDL3'              : sdl3.found(),
     'spiro'             : libspiro.found(),
     'TIFF'              : libtiff.found(),
     'umfpack'           : libumfpack.found(),

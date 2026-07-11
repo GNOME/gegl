@@ -80,7 +80,8 @@ option('pango',         type: 'feature', value: 'auto')
 option('pangocairo',    type: 'feature', value: 'auto')
 option('poppler',       type: 'feature', value: 'auto')
 option('pygobject',     type: 'feature', value: 'auto')
-option('sdl1',          type: 'feature', value: 'disabled')
-option('sdl2',          type: 'feature', value: 'auto')
+option('sdl1',          type: 'feature', value: 'auto')
+option('sdl2',          type: 'feature', value: 'disabled') #see: issue 184
+option('sdl3',          type: 'feature', value: 'disabled') #see: issue 184
 option('umfpack',       type: 'feature', value: 'auto')
 option('webp',          type: 'feature', value: 'auto')
