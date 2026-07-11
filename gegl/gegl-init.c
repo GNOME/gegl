@@ -149,6 +149,10 @@ gegl_config_use_opencl_notify (GObject    *gobject,
   if (cfg->use_opencl)
     {
        gegl_cl_init ();
+
+       /* ported from tools/detect_opencl for clarity, see issues #85 and 148 */
+       if (!gegl_cl_is_accelerated())
+          g_warning ("OpenCL option is enabled but initilization failed. Please use GEGL_DEBUG=opencl");
     }
   else
     {
