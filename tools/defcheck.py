@@ -91,7 +91,6 @@ for df in def_files:
    directory, name = path.split (df)
    basename, extension = name.split (".")
    libname = path.join(os.getcwd(), directory, libprefix + basename + "-*" + libextension)
-
    matches = glob.glob(libname)
    lib_is_win32 = platform_win32
    if matches:
@@ -114,6 +113,7 @@ for df in def_files:
    except IOError as message:
       print(message)
       sys.exit (-1)
+
    doublesymbols = []
    for i in range (len (defsymbols)-1, 0, -1):
       if defsymbols[i] in defsymbols[:i]:
