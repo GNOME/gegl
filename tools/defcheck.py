@@ -45,10 +45,11 @@ def read_def_symbols(filename):
          symbols.append(parts[0])
    return symbols
 
-#gegl_glX* symbols are Linux-specific
+#gegl_glX* symbols are Linux-specific and gegl_clCreateCommandQueue macOS-specific
 exclude_symbols = [
     "gegl_glXGetCurrentContext",
     "gegl_glXGetCurrentDisplay",
+    "gegl_clCreateCommandQueue"
 ]
 
 # Some .def files are concatenated, which can result in an unsorted error.

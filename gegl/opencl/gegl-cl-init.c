@@ -413,6 +413,8 @@ gegl_cl_init_load_functions (void)
   /* Command-Queues */
 #ifndef __APPLE__
   CL_LOAD_FUNCTION (clCreateCommandQueueWithProperties);
+#else
+  CL_LOAD_FUNCTION (clCreateCommandQueue);
 #endif
   CL_LOAD_FUNCTION (clGetCommandQueueInfo);
   CL_LOAD_FUNCTION (clReleaseCommandQueue);
@@ -720,7 +722,11 @@ gegl_cl_init_common (cl_device_type requested_device_type)
 
   if (!cl_state.is_loaded)
     {
+#ifndef __APPLE__
       cl_queue_properties queue_props[] = { CL_QUEUE_PROPERTIES, 0, 0 };
+#else
+      cl_command_queue_properties command_queue_flags = 0;
+#endif
       cl_context          ctx           = NULL;
 
       if (!gegl_cl_init_load_functions ())
@@ -745,10 +751,21 @@ gegl_cl_init_common (cl_device_type requested_device_type)
 
       cl_state.ctx = ctx;
 
+#ifdef __APPLE__
+      command_queue_flags = 0;
+#endif
       if (cl_state.enable_profiling)
+#ifndef __APPLE__
         queue_props[1] = CL_QUEUE_PROFILING_ENABLE;
+#else
+        command_queue_flags |= CL_QUEUE_PROFILING_ENABLE;
+#endif
 
+#ifndef __APPLE__
       cl_state.cq = gegl_clCreateCommandQueueWithProperties (cl_state.ctx, cl_state.device, (const cl_queue_properties *)&queue_props, &err);
+#else
+      cl_state.cq = gegl_clCreateCommandQueue (cl_state.ctx, cl_state.device, command_queue_flags, &err);
+#endif
 
       if (err != CL_SUCCESS)
         {
@@ -768,7 +785,7 @@ gegl_cl_init_common (cl_device_type requested_device_type)
     }
 
   if (cl_state.is_loaded)
-    _gegl_cl_is_accelerated = TRUE;
+      _gegl_cl_is_accelerated = TRUE;
 
   {
     gegl_buffer_ext_flush = (void*)gegl_buffer_cl_cache_flush;

@@ -112,6 +112,10 @@ _GEGL_CL_WRAP_FUNCTION (clSetContextDestructorCallback);
 
 /* Command-Queues */
 _GEGL_CL_WRAP_FUNCTION (clCreateCommandQueueWithProperties);
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+_GEGL_CL_WRAP_FUNCTION (clCreateCommandQueue);
+#pragma GCC diagnostic pop
 _GEGL_CL_WRAP_FUNCTION (clGetCommandQueueInfo);
 _GEGL_CL_WRAP_FUNCTION (clReleaseCommandQueue);
 _GEGL_CL_WRAP_FUNCTION (clRetainCommandQueue);
