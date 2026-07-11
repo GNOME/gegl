@@ -35,20 +35,17 @@ def_files = sys.argv[1:]
 
 def read_def_symbols(filename):
    symbols = []
-
    with open(filename, encoding="utf-8") as def_file:
       for line in def_file:
          line = line.split(";", 1)[0].strip()
-
          if not line or line == "EXPORTS":
             continue
-
          # DATA marks variable exports in .def files and is not part of the symbol name.
          parts = line.split()
          symbols.append(parts[0])
-
    return symbols
 
+#gegl_glX* symbols are Linux-specific
 exclude_symbols = [
     "gegl_glXGetCurrentContext",
     "gegl_glXGetCurrentDisplay",
