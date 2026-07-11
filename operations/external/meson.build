@@ -70,6 +70,10 @@ if sdl2.found()
   operations += { 'name': 'sdl2-display', 'deps': sdl2 }
 endif
 
+if sdl3.found()
+  operations += { 'name': 'sdl3-display', 'deps': sdl3 }
+endif
+
 if libraw.found()
   operations += { 'name': 'raw-load', 'deps': libraw }
 endif

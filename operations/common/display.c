@@ -31,7 +31,7 @@ property_string  (window_title, _("Window title"), "window_title")
 
 /* gegl:display
  * Meta operation for displaying the output of a buffer.
- * Will use one of several well-known display operations 
+ * Will use one of several well-known display operations
  * to actually display the output. */
 
 struct _GeglOp
@@ -58,8 +58,7 @@ set_display_handler (GeglOperation *operation)
 {
   GeglProperties  *o    = GEGL_PROPERTIES (operation);
   GeglOp   *self = GEGL_OP (operation);
-  const gchar *known_handlers[] = {"gegl-gtk3:display", 
-                                   "gegl-gtk2:display",
+  const gchar *known_handlers[] = {"gegl:sdl3-display",
                                    "gegl:sdl2-display",
                                    "gegl:sdl-display"};
   char *handler = NULL;
