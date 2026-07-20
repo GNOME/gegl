@@ -60,6 +60,8 @@ property_boolean (tileable, _("Tileable"), FALSE)
 #define GEGL_OP_NAME     normal_map
 #define GEGL_OP_C_SOURCE normal-map.c
 
+#define KERNEL_SIZE 1
+
 #include "gegl-op.h"
 
 static void
@@ -74,7 +76,7 @@ prepare (GeglOperation *operation)
   area->left   =
   area->right  =
   area->top    =
-  area->bottom = 1;
+  area->bottom = KERNEL_SIZE;
 
   in_format  = babl_format_with_space ("Y'A float", format);
   out_format = babl_format_with_space ("R'G'B'A float", format);
@@ -110,28 +112,29 @@ static gboolean
 process (GeglOperation       *operation,
          GeglBuffer          *input,
          GeglBuffer          *output,
-         const GeglRectangle *result,
+         const GeglRectangle *roi,
          gint                 level)
 {
-  GeglProperties     *o            = GEGL_PROPERTIES (operation);
-  const Babl         *in_format    = gegl_operation_get_format (operation, "input");
-  const Babl         *out_format   = gegl_operation_get_format (operation, "output");
-  GeglAbyssPolicy     abyss_policy = get_abyss_policy (operation, NULL);
-  gfloat              scale        = o->scale / 2.0;
-  gfloat              x_scale      = (o->flip_x ? -0.5 : +0.5);
-  gfloat              y_scale      = (o->flip_y ? -0.5 : +0.5);
-  gfloat              z_scale      = (o->full_z ? +1.0 : +0.5);
-  gfloat              z_base       = (o->full_z ?  0.0 :  0.5);
-  gfloat             *top          = NULL;
-  gfloat             *bottom       = NULL;
-  gfloat             *left         = NULL;
-  gfloat             *right        = NULL;
-  gsize               width_size   = 0;
-  gsize               height_size  = 0;
-  gint                x_component  = o->x_component;
-  gint                y_component  = o->y_component;
-  gint                z_component  = 2;
-  GeglBufferIterator *iter;
+  GeglProperties  *o              = GEGL_PROPERTIES (operation);
+  const Babl      *in_format      = gegl_operation_get_format (operation, "input");
+  const Babl      *out_format     = gegl_operation_get_format (operation, "output");
+  const gint       in_components  = babl_format_get_n_components (in_format);
+  const gint       out_components = babl_format_get_n_components (out_format);
+  GeglAbyssPolicy  abyss_policy   = get_abyss_policy (operation, NULL);
+  GeglRectangle    in_roi         = {
+    roi->x - KERNEL_SIZE,
+    roi->y - KERNEL_SIZE,
+    roi->width  + KERNEL_SIZE * 2,
+    roi->height + KERNEL_SIZE * 2,
+  };
+  gfloat           scale          = o->scale / 2.0;
+  gfloat           x_scale        = (o->flip_x ? -0.5 : +0.5);
+  gfloat           y_scale        = (o->flip_y ? -0.5 : +0.5);
+  gfloat           z_scale        = (o->full_z ? +1.0 : +0.5);
+  gfloat           z_base         = (o->full_z ?  0.0 :  0.5);
+  gint             x_component    = o->x_component;
+  gint             y_component    = o->y_component;
+  gint             z_component    = 2;
 
   while (y_component == x_component)
     y_component = (y_component + 1) % 3;
@@ -139,94 +142,34 @@ process (GeglOperation       *operation,
   while (z_component == x_component || z_component == y_component)
     z_component = (z_component + 1) % 3;
 
-  iter = gegl_buffer_iterator_new (output, result, 0, out_format,
-                                   GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE, 2);
-
-  gegl_buffer_iterator_add (iter, input, result, 0, in_format,
+  GeglBufferIterator *iter = gegl_buffer_iterator_new (
+      output, roi, 0, out_format, GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE, 2);
+  gegl_buffer_iterator_add (iter, input, &in_roi, 0, in_format,
                             GEGL_ACCESS_READ, abyss_policy);
 
   while (gegl_buffer_iterator_next (iter))
     {
-      const gfloat        *in     = iter->items[1].data;
-      gfloat              *out    = iter->items[0].data;
-      const GeglRectangle *roi    = &iter->items[0].roi;
-      gsize                width  = 2 * roi->width;
-      gsize                height = 2 * roi->height;
-      gint                 stride = 2 * roi->width;
-      gint                 x;
-      gint                 y;
+      const gfloat *in  = iter->items[1].data;
+      gfloat       *out = iter->items[0].data;
 
-      if (width_size < width)
+      for (gint y = 0; y < iter->items[0].roi.height; y++)
         {
-          top        = g_renew (gfloat, top, width);
-          bottom     = g_renew (gfloat, bottom, width);
-          width_size = width;
-        }
+          gint y_offset = (y + KERNEL_SIZE) * iter->items[1].roi.width;
 
-      if (height_size < height)
-        {
-          left        = g_renew (gfloat, left, height);
-          right       = g_renew (gfloat, right, height);
-          height_size = height;
-        }
-
-      gegl_buffer_get (input,
-                       GEGL_RECTANGLE (roi->x, roi->y - 1,
-                                       roi->width, 1),
-                       1.0, in_format, top,
-                       GEGL_AUTO_ROWSTRIDE, abyss_policy);
-      gegl_buffer_get (input,
-                       GEGL_RECTANGLE (roi->x, roi->y + roi->height,
-                                       roi->width, 1),
-                       1.0, in_format, bottom,
-                       GEGL_AUTO_ROWSTRIDE, abyss_policy);
-      gegl_buffer_get (input,
-                       GEGL_RECTANGLE (roi->x - 1, roi->y,
-                                       1, roi->height),
-                       1.0, in_format, left,
-                       GEGL_AUTO_ROWSTRIDE, abyss_policy);
-      gegl_buffer_get (input,
-                       GEGL_RECTANGLE (roi->x + roi->width, roi->y,
-                                       1, roi->height),
-                       1.0, in_format, right,
-                       GEGL_AUTO_ROWSTRIDE, abyss_policy);
-
-      for (y = 0; y < roi->height; y++)
-        {
-          for (x = 0; x < roi->width; x++)
+          for (gint x = 0; x < iter->items[0].roi.width; x++)
             {
-              gfloat l;
-              gfloat r;
-              gfloat t;
-              gfloat b;
-              gfloat nx;
-              gfloat ny;
-              gfloat nz;
+              #define KERNEL(dx, dy, c) in[((y_offset + (dy * iter->items[1].roi.width)) + \
+                                           (KERNEL_SIZE + x + dx)) * in_components + c]
+              gfloat l = KERNEL(-1, 0, 0);
+              gfloat r = KERNEL(1, 0, 0);
+              gfloat t = KERNEL(0, -1, 0);
+              gfloat b = KERNEL(0, 1, 0);
+              gfloat a = KERNEL(0, 0, 1);
+              #undef KERNEL
 
-              if (x > 0)
-                l = in[-2];
-              else
-                l = left[2 * y];
-
-              if (x < roi->width - 1)
-                r = in[2];
-              else
-                r = right[2 * y];
-
-              if (y > 0)
-                t = in[-stride];
-              else
-                t = top[2 * x];
-
-              if (y < roi->height - 1)
-                b = in[stride];
-              else
-                b = bottom[2 * x];
-
-              nx = scale * (l - r);
-              ny = scale * (t - b);
-
-              nz = 1.0f / sqrtf (nx * nx + ny * ny + 1.0f);
+              gfloat nx = scale * (l - r);
+              gfloat ny = scale * (t - b);
+              gfloat nz = 1.0f / sqrtf (nx * nx + ny * ny + 1.0f);
 
               nx *= nz;
               ny *= nz;
@@ -234,18 +177,12 @@ process (GeglOperation       *operation,
               out[x_component] = 0.5f   + x_scale * nx;
               out[y_component] = 0.5f   + y_scale * ny;
               out[z_component] = z_base + z_scale * nz;
-              out[3]           = in[1];
+              out[3]           = a;
 
-              in  += 2;
-              out += 4;
+              out += out_components;
             }
         }
     }
-
-  g_free (top);
-  g_free (bottom);
-  g_free (left);
-  g_free (right);
 
   return TRUE;
 }
