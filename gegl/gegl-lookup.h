@@ -40,7 +40,7 @@ typedef struct GeglLookup
 
 
 /**
- * gegl_lookup_new_full: (skip)
+ * gegl_lookup_new_full: (skip) (attributes skip-reason=unknown_since_0b302ba5)
  * @function: The function to build a lookup for
  * @data: A user data pointer passed to lookup calls
  * @start: Lower bound of the lookup
@@ -55,7 +55,7 @@ GeglLookup *gegl_lookup_new_full  (GeglLookupFunction  function,
                                    gfloat              end,
                                    gfloat              precision);
 /**
- * gegl_lookup_new: (skip)
+ * gegl_lookup_new: (skip) (attributes skip-reason=unknown_since_0b302ba5)
  * @function: The function to build a lookup for
  * @data: A user data pointer passed to lookup calls
  *
@@ -65,7 +65,7 @@ GeglLookup *gegl_lookup_new       (GeglLookupFunction  function,
                                    gpointer            data);
 
 /**
- * gegl_lookup_free: (skip)
+ * gegl_lookup_free: (skip) (attributes skip-reason=unknown_since_0b302ba5)
  * @lookup: #GeglLookup to free
  */
 void        gegl_lookup_free      (GeglLookup         *lookup);

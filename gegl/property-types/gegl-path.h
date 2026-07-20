@@ -245,7 +245,7 @@ gboolean             gegl_path_calc           (GeglPath     *path,
                                                gdouble      *y);
 
 /**
- * gegl_path_calc_values: (skip)
+ * gegl_path_calc_values: (skip) (attributes skip-reason=unknown_since_97dfba53)
  * @path: a #GeglPath
  * @num_samples: number of samples to compute
  * @xs: (out caller-allocates) (array length=num_samples): return location for x coordinates
@@ -430,8 +430,8 @@ void                  gegl_path_add_type      (gchar        type,
                                                const gchar *description);
 
 /***
- * GeglPathList: (skip)
- *  
+ * GeglPathList: (skip) (attributes skip-reason=unknown_since_9e8f617e)
+ *
  * Linked list used internally, and for the plug-in API for new path
  * interpolators.
  */
@@ -448,11 +448,11 @@ typedef struct GeglPathList
  * @...: additional #GeglPathList items to append
  *
  * Appends to path list, if head is NULL a new list is created
- */ 
+ */
 GeglPathList *     gegl_path_list_append   (GeglPathList *head, ...);
 
 /**
- * gegl_path_list_destroy: (skip)
+ * gegl_path_list_destroy: (skip) (attributes skip-reason=unknown_since_9e8f617e)
  * @path: A #GeglPathList
  *
  * Frees up a path list
@@ -461,14 +461,14 @@ GeglPathList *     gegl_path_list_destroy  (GeglPathList *path);
 
 
 /***
- * GeglFlattenerFunc: (skip)
+ * GeglFlattenerFunc: (skip) (attributes skip-reason=unknown_since_9e8f617e)
  *
  * prototype of function passed to gegl_path_add_flattener()
  */
 typedef GeglPathList *(*GeglFlattenerFunc) (GeglPathList *original);
 
-/** 
- * gegl_path_add_flattener: (skip)
+/**
+ * gegl_path_add_flattener: (skip) (attributes skip-reason=unknown_since_9e8f617e)
  * @func: a #GeglFlattenerFunc
  *
  * Add a new flattener, the flattener should produce a type of path that
@@ -480,7 +480,7 @@ void           gegl_path_add_flattener (GeglFlattenerFunc func);
 
 
 /**
- * gegl_path_get_path: (skip)
+ * gegl_path_get_path: (skip) (attributes skip-reason=unknown_since_9e8f617e)
  * @path: a #GeglPath
  *
  * Return the internal untouched #GeglPathList
@@ -488,7 +488,7 @@ void           gegl_path_add_flattener (GeglFlattenerFunc func);
 GeglPathList * gegl_path_get_path (GeglPath *path);
 
 /**
- * gegl_path_get_flat_path: (skip)
+ * gegl_path_get_flat_path: (skip) (attributes skip-reason=unknown_since_9e8f617e)
  * @path: a #GeglPath
  *
  * Return a polyline version of @path
@@ -496,11 +496,11 @@ GeglPathList * gegl_path_get_path (GeglPath *path);
 GeglPathList * gegl_path_get_flat_path (GeglPath *path);
 
 /***
- * GeglPathPoint: (skip)
+ * GeglPathPoint: (skip) (attributes skip-reason=unknown_since_9e8f617e)
  */
 
 /**
- * gegl_path_point_lerp: (skip)
+ * gegl_path_point_lerp: (skip) (attributes skip-reason=unknown_since_9e8f617e)
  * @dest: return location for the result
  * @a: origin GeglPathPoint
  * @b: destination GeglPathPoint
@@ -514,7 +514,7 @@ void           gegl_path_point_lerp    (GeglPathPoint *dest,
                                         gfloat         t);
 
 /**
- * gegl_path_point_dist: (skip)
+ * gegl_path_point_dist: (skip) (attributes skip-reason=unknown_since_9e8f617e)
  * @a: an arbitrary GeglPathPoint
  * @b: an arbitrary GeglPathPoint
  *

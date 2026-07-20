@@ -278,7 +278,7 @@ void          gegl_node_get_valist       (GeglNode      *node,
  */
 
 /**
- * gegl_node_blit: (skip)
+ * gegl_node_blit: (skip) (attributes skip-reason=babl_since_7dcbb732)
  * @node: a #GeglNode
  * @scale: the scale to render at 1.0 is default, other values changes the
  * width/height of the sampled region.
@@ -450,7 +450,7 @@ GParamSpec  * gegl_node_find_property    (GeglNode      *node,
 
 
 /**
- * gegl_node_get_bounding_box: (skip)
+ * gegl_node_get_bounding_box: (skip) (attributes skip-reason=provided_by_gegl_node_introspectable_get_bounding_box)
  * @node: a #GeglNode
  *
  * Returns the position and dimensions of a rectangle spanning the area
@@ -633,7 +633,7 @@ GeglNode     * gegl_node_create_child    (GeglNode      *parent,
 
 
 /**
- * gegl_node_get_property: (skip)
+ * gegl_node_get_property: (skip) (attributes skip-reason=provided_by_gegl_node_introspectable_get_property)
  * @node: the node to get a property from
  * @property_name: the name of the property to get
  * @value: (out): pointer to a GValue where the value of the property should be stored

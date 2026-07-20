@@ -277,7 +277,7 @@ void         gegl_color_set_hsla               (GeglColor   *color,
                                                 const Babl  *space);
 
 /**
- * gegl_color_set_pixel: (skip)
+ * gegl_color_set_pixel: (skip) (attributes skip-reason=babl_since_2cbfa885)
  * @color: a #GeglColor
  * @format: a babl pixel format
  * @pixel: (not nullable): pointer to a pixel
@@ -289,7 +289,7 @@ void         gegl_color_set_pixel              (GeglColor   *color,
                                                 const void  *pixel);
 
 /**
- * gegl_color_get_pixel: (skip)
+ * gegl_color_get_pixel: (skip) (attributes skip-reason=babl_since_2cbfa885)
  * @color: a #GeglColor
  * @format: a babl pixel format
  * @pixel: pointer to a pixel

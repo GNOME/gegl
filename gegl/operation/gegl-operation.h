@@ -281,7 +281,7 @@ gboolean gegl_can_do_inplace_processing      (GeglOperation       *operation,
                                               const GeglRectangle *result);
 
 /**
- * gegl_object_set_has_forked: (skip)
+ * gegl_object_set_has_forked: (skip) (attributes skip-reason=unknown_since_744fdc8c)
  * @object: Object to mark
  *
  * Mark an object as "forked", indicating that it should not be modified
@@ -291,7 +291,7 @@ gboolean gegl_can_do_inplace_processing      (GeglOperation       *operation,
 void     gegl_object_set_has_forked       (GObject *object);
 
 /**
- * gegl_object_get_has_forked: (skip)
+ * gegl_object_get_has_forked: (skip) (attributes skip-reason=unknown_since_744fdc8c)
  * @object: Object to check
  *
  * Returns TRUE if the object has been marked as "forked".

@@ -53,7 +53,7 @@ typedef struct GeglBufferIterator
 
 
 /**
- * gegl_buffer_iterator_empty_new: (skip)
+ * gegl_buffer_iterator_empty_new: (skip) (attributes skip-reason=unknown_since_f0408f3f)
  * Create a new buffer iterator without adding any buffers.
  *
  * Returns: a new buffer iterator.
@@ -61,7 +61,7 @@ typedef struct GeglBufferIterator
 GeglBufferIterator *gegl_buffer_iterator_empty_new (int max_slots);
 
 /**
- * gegl_buffer_iterator_new: (skip)
+ * gegl_buffer_iterator_new: (skip) (attributes skip-reason=babl_since_7dcbb732)
  * @buffer: a #GeglBuffer
  * @roi: the rectangle to iterate over
  * @level: the level at which we are iterating, the roi will indicate the
@@ -89,7 +89,7 @@ GeglBufferIterator * gegl_buffer_iterator_new  (
 
 
 /**
- * gegl_buffer_iterator_add: (skip)
+ * gegl_buffer_iterator_add: (skip) (attributes skip-reason=babl_since_7dcbb732)
  * @iterator: a #GeglBufferIterator
  * @buffer: a #GeglBuffer
  * @roi: the rectangle to iterate over
@@ -126,7 +126,7 @@ gint                 gegl_buffer_iterator_add  (GeglBufferIterator  *iterator,
                                                 GeglAbyssPolicy      abyss_policy);
 
 /**
- * gegl_buffer_iterator_stop: (skip)
+ * gegl_buffer_iterator_stop: (skip) (attributes skip-reason=unknown_since_f0408f3f)
  * @iterator: a GeglBufferIterator
  *
  * Cancels the current iteration, freeing up any temporary resources. The
@@ -135,7 +135,7 @@ gint                 gegl_buffer_iterator_add  (GeglBufferIterator  *iterator,
 void                 gegl_buffer_iterator_stop  (GeglBufferIterator *iterator);
 
 /**
- * gegl_buffer_iterator_next: (skip)
+ * gegl_buffer_iterator_next: (skip) (attributes skip-reason=unknown_since_f0408f3f)
  * @iterator: a #GeglBufferIterator
  *
  * Do an iteration, this causes a new set of iterator->data[] to become

@@ -22,7 +22,7 @@
 G_BEGIN_DECLS
 
 /**
- * gegl_scratch_alloc: (skip)
+ * gegl_scratch_alloc: (skip) (attributes skip-reason=unknown_since_b99032d7)
  * @size: the number of bytes to allocte.
  *
  * Allocates @size bytes of scratch memory.
@@ -32,7 +32,7 @@ G_BEGIN_DECLS
 gpointer   gegl_scratch_alloc  (gsize    size) G_GNUC_MALLOC;
 
 /**
- * gegl_scratch_alloc0: (skip)
+ * gegl_scratch_alloc0: (skip) (attributes skip-reason=unknown_since_b99032d7)
  * @size: the number of bytes to allocte.
  *
  * Allocates @size bytes of scratch memory, initialized to zero.
@@ -42,7 +42,7 @@ gpointer   gegl_scratch_alloc  (gsize    size) G_GNUC_MALLOC;
 gpointer   gegl_scratch_alloc0 (gsize    size) G_GNUC_MALLOC;
 
 /**
- * gegl_scratch_free: (skip)
+ * gegl_scratch_free: (skip) (attributes skip-reason=unknown_since_b99032d7)
  * @ptr: the memory to free.
  *
  * Frees the memory pointed to by @ptr.
@@ -57,7 +57,7 @@ void       gegl_scratch_free   (gpointer ptr);
   (G_LIKELY ((y) <= G_MAXSIZE / (x)) ? (x) * (y) : G_MAXSIZE)
 
 /**
- * gegl_scratch_new: (skip)
+ * gegl_scratch_new: (skip) (attributes skip-reason=not_exported)
  * @type: the type of the elements to allocate
  * @n: the number of elements to allocate
  *
@@ -78,7 +78,7 @@ void       gegl_scratch_free   (gpointer ptr);
                                                     (gsize) (n)))))
 
 /**
- * gegl_scratch_new0: (skip)
+ * gegl_scratch_new0: (skip) (attributes skip-reason=not_exported)
  * @type: the type of the elements to allocate
  * @n: the number of elements to allocate
  *

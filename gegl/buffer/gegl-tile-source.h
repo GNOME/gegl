@@ -91,9 +91,9 @@ gegl_tile_source_get_tile (GeglTileSource *source,
                            gint            y,
                            gint            z)
 {
-  
+
   GeglTile *tile;
-  
+
 
   tile = (GeglTile *) gegl_tile_source_command (source, GEGL_TILE_GET,
                                                 x, y, z, NULL);
@@ -103,7 +103,7 @@ gegl_tile_source_get_tile (GeglTileSource *source,
 
 
 /**
- * gegl_buffer_get_tile: (skip)
+ * gegl_buffer_get_tile: (skip) (attributes skip-reason=unknown_since_f603efd0)
  */
 
 GeglTile *
