@@ -711,6 +711,7 @@ if host_machine.system() != 'emscripten'
   custom_target('check-def-files',
     input: [
       gegl_def,
+      g_ir.found() ? gegl_gir : [],
       gegl_npd_def,
       gegl_sc_def,
     ],
