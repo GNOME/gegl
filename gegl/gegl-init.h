@@ -58,7 +58,7 @@ G_BEGIN_DECLS
 void          gegl_init                  (gint          *argc,
                                           gchar       ***argv);
 /**
- * gegl_get_option_group: (skip)
+ * gegl_get_option_group: (skip) (attributes skip-reason=unknown_since_eb99c24a)
  *
  * Returns a GOptionGroup for the commandline arguments recognized
  * by GEGL. You should add this group to your GOptionContext

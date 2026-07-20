@@ -162,7 +162,7 @@ gdouble      gegl_curve_calc_value     (GeglCurve   *curve,
                                         gdouble      x);
 
 /**
- * gegl_curve_calc_values: (skip)
+ * gegl_curve_calc_values: (skip) (attributes skip-reason=unknown_since_4dad6048)
  * @curve: a #GeglCurve.
  * @x_min: the minimum value to compute for
  * @x_max: the maximum value to compute for

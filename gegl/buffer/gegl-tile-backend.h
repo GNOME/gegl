@@ -75,7 +75,7 @@ gint        gegl_tile_backend_get_tile_width (GeglTileBackend *tile_backend);
 gint        gegl_tile_backend_get_tile_height (GeglTileBackend *tile_backend);
 
 /**
- * gegl_tile_backend_get_format: (skip)
+ * gegl_tile_backend_get_format: (skip) (attributes skip-reason=unknown_since_77919c44)
  * @tile_backend: a #GeglTileBackend
  *
  * Gets pixel format of @tile_backend
@@ -108,7 +108,7 @@ void  gegl_tile_backend_set_extent    (GeglTileBackend     *tile_backend,
 
 
 /**
- * gegl_tile_backend_get_extent: (skip)
+ * gegl_tile_backend_get_extent: (skip) (attributes skip-reason=unknown_since_a6a6ba6f)
  * @tile_backend: a #GeglTileBackend
  */
 GeglRectangle gegl_tile_backend_get_extent (GeglTileBackend *tile_backend);

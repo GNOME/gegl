@@ -27,7 +27,7 @@ G_BEGIN_DECLS
  */
 
 /**
- * gegl_malloc: (skip)
+ * gegl_malloc: (skip) (attributes skip-reason=unknown_since_9e8f617e)
  * @n_bytes: the number of bytes to allocte.
  *
  * Allocates @n_bytes of memory. If @n_bytes is 0, returns NULL.
@@ -37,7 +37,7 @@ G_BEGIN_DECLS
 gpointer   gegl_malloc         (gsize         n_bytes) G_GNUC_MALLOC;
 
 /**
- * gegl_try_malloc: (skip)
+ * gegl_try_malloc: (skip) (attributes skip-reason=unknown_since_2c3f2475)
  * @n_bytes: the number of bytes to allocte.
  *
  * Allocates @n_bytes of memory. If allocation fails, or if @n_bytes is 0,
@@ -48,7 +48,7 @@ gpointer   gegl_malloc         (gsize         n_bytes) G_GNUC_MALLOC;
 gpointer   gegl_try_malloc     (gsize         n_bytes) G_GNUC_MALLOC;
 
 /**
- * gegl_free: (skip)
+ * gegl_free: (skip) (attributes skip-reason=unknown_since_b4913381)
  * @mem: the memory to free.
  *
  * Frees the memory pointed to by @mem. If @mem is NULL, does nothing.
@@ -56,7 +56,7 @@ gpointer   gegl_try_malloc     (gsize         n_bytes) G_GNUC_MALLOC;
 void       gegl_free           (gpointer      mem);
 
 /**
- * gegl_calloc: (skip)
+ * gegl_calloc: (skip) (attributes skip-reason=unknown_since_b4913381)
  * @size: size of items to allocate
  * @n_memb: number of members
  *
@@ -66,7 +66,7 @@ gpointer   gegl_calloc         (gsize         size,
                                 gint          n_memb) G_GNUC_MALLOC;
 
 /**
- * gegl_memeq_zero: (skip)
+ * gegl_memeq_zero: (skip) (attributes skip-reason=unknown_since_b0c68ce4)
  * @ptr: pointer to the memory block
  * @size: block size
  *
@@ -79,7 +79,7 @@ gboolean   gegl_memeq_zero     (gconstpointer ptr,
                                 gsize         size);
 
 /**
- * gegl_memset_pattern: (skip)
+ * gegl_memset_pattern: (skip) (attributes skip-reason=unknown_since_bf597a18)
  * @dst_ptr: pointer to copy to
  * @src_ptr: pointer to copy from
  * @pattern_size: the length of @src_ptr

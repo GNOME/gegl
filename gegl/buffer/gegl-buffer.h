@@ -55,7 +55,7 @@ struct _GeglRectangle
  */
 
 /**
- * gegl_buffer_new: (skip)
+ * gegl_buffer_new: (skip) (attributes skip-reason=provided_by_gegl_buffer_introspectable_new)
  * @extent: the geometry of the buffer (origin, width and height) a
  * GeglRectangle.
  * @format: the Babl pixel format to be used, create one with babl_format("RGBA
@@ -241,7 +241,7 @@ gboolean          gegl_buffer_set_abyss      (GeglBuffer          *buffer,
 #define gegl_buffer_get_pixel_count(buffer) (gegl_buffer_get_width(buffer) * gegl_buffer_get_height(buffer))
 
 /**
- * gegl_buffer_get: (skip)
+ * gegl_buffer_get: (skip) (attributes skip-reason=provided_by_gegl_buffer_introspectable_get)
  * @buffer: the buffer to retrieve data from.
  * @rect: the coordinates we want to retrieve data from, and width/height of
  * destination buffer, if NULL equal to the extent of the buffer. The
@@ -277,7 +277,7 @@ void            gegl_buffer_get               (GeglBuffer          *buffer,
                                                GeglAbyssPolicy      repeat_mode);
 
 /**
- * gegl_buffer_set: (skip)
+ * gegl_buffer_set: (skip) (attributes skip-reason=provided_by_gegl_buffer_introspectable_set)
  * @buffer: the buffer to modify.
  * @rect: the coordinates we want to change the data of and the width/height of
  * the linear buffer being set.
@@ -335,7 +335,7 @@ void            gegl_buffer_set_pattern       (GeglBuffer          *buffer,
                                                gint                 y_offset);
 
 /**
- * gegl_buffer_get_format: (skip)
+ * gegl_buffer_get_format: (skip) (attributes skip-reason=unknown_since_77919c44)
  * @buffer: a #GeglBuffer
  *
  * Get the babl format of the buffer, this might not be the format the buffer
@@ -350,7 +350,7 @@ const Babl *    gegl_buffer_get_format        (GeglBuffer           *buffer);
 
 
 /**
- * gegl_buffer_set_format: (skip)
+ * gegl_buffer_set_format: (skip) (attributes skip-reason=babl_since_7dcbb732)
  * @buffer: a #GeglBuffer
  * @format: the new babl format, must have same bpp as original format.
  *
@@ -414,7 +414,7 @@ GeglBuffer *    gegl_buffer_dup               (GeglBuffer       *buffer);
 
 
 /**
- * gegl_buffer_sample_at_level: (skip)
+ * gegl_buffer_sample_at_level: (skip) (attributes skip-reason=babl_since_f603efd0)
  * @buffer: the GeglBuffer to sample from
  * @x: x coordinate to sample in buffer coordinates
  * @y: y coordinate to sample in buffer coordinates
@@ -452,7 +452,7 @@ void              gegl_buffer_sample_at_level (GeglBuffer        *buffer,
                                                GeglAbyssPolicy    repeat_mode);
 
 /**
- * gegl_buffer_sample: (skip)
+ * gegl_buffer_sample: (skip) (attributes skip-reason=babl_since_f603efd0)
  * @buffer: the GeglBuffer to sample from
  * @x: x coordinate to sample in buffer coordinates
  * @y: y coordinate to sample in buffer coordinates
@@ -508,7 +508,7 @@ typedef void (*GeglSamplerGetFun)  (GeglSampler       *self,
                                     GeglAbyssPolicy    repeat_mode);
 
 /**
- * gegl_sampler_get_fun: (skip)
+ * gegl_sampler_get_fun: (skip) (attributes skip-reason=unknown_since_f603efd0)
  *
  * Get the raw sampler function, the raw sampler function does not do
  * additional NaN / inifinity checks on passed in coordinates.
@@ -517,7 +517,7 @@ GeglSamplerGetFun gegl_sampler_get_fun (GeglSampler *sampler);
 
 
 /**
- * gegl_buffer_sampler_new: (skip)
+ * gegl_buffer_sampler_new: (skip) (attributes skip-reason=babl_since_7dcbb732)
  * @buffer: buffer to create a new sampler for
  * @format: format we want data back in
  * @sampler_type: the sampler type to use,
@@ -536,7 +536,7 @@ GeglSampler *    gegl_buffer_sampler_new      (GeglBuffer       *buffer,
                                                GeglSamplerType   sampler_type);
 
 /**
- * gegl_buffer_sampler_new_at_level: (skip)
+ * gegl_buffer_sampler_new_at_level: (skip) (attributes skip-reason=babl_since_f603efd0)
  * @buffer: buffer to create a new sampler for
  * @format: format we want data back in
  * @sampler_type: the sampler type to use,
@@ -617,7 +617,7 @@ void              gegl_sampler_get            (GeglSampler       *sampler,
 const GeglRectangle * gegl_sampler_get_context_rect (GeglSampler *sampler);
 
 /**
- * gegl_buffer_linear_new: (skip)
+ * gegl_buffer_linear_new: (skip) (attributes skip-reason=babl_since_7dcbb732)
  * @extent: dimensions of buffer.
  * @format: desired pixel format.
  *
@@ -631,7 +631,7 @@ GeglBuffer *  gegl_buffer_linear_new          (const GeglRectangle *extent,
                                                const Babl          *format);
 
 /**
- * gegl_buffer_linear_new_from_data: (skip)
+ * gegl_buffer_linear_new_from_data: (skip) (attributes skip-reason=babl_since_7dcbb732)
  * @data: a pointer to a linear buffer in memory.
  * @format: the format of the data in memory
  * @extent: the dimensions (and upper left coordinates) of linear buffer.
@@ -656,7 +656,7 @@ GeglBuffer * gegl_buffer_linear_new_from_data (const gpointer       data,
                                                gpointer             destroy_fn_data);
 
 /**
- * gegl_buffer_linear_open: (skip)
+ * gegl_buffer_linear_open: (skip) (attributes skip-reason=babl_since_7dcbb732)
  * @buffer: a #GeglBuffer.
  * @extent: (nullable): region to open, pass NULL for entire buffer.
  * @rowstride: (out) (optional): return location for rowstride.
