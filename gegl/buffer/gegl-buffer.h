@@ -335,7 +335,7 @@ void            gegl_buffer_set_pattern       (GeglBuffer          *buffer,
                                                gint                 y_offset);
 
 /**
- * gegl_buffer_get_format: (skip) (attributes skip-reason=unknown_since_77919c44)
+ * gegl_buffer_get_format: (skip) (attributes skip-reason=babl_since_77919c44)
  * @buffer: a #GeglBuffer
  *
  * Get the babl format of the buffer, this might not be the format the buffer
