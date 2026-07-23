@@ -52,11 +52,17 @@ include:
     # If you are hacking on them or need a them to rebuild, its enough
     # to change any part of the string of the image you want.
     ###
-    FDO_DISTRIBUTION_TAG: '2026-06-21.0'
+    FDO_DISTRIBUTION_TAG: '2026-07-22.1'
     FDO_DISTRIBUTION_VERSION: 'stable'
     FDO_DISTRIBUTION_PACKAGES: >
-      git diffutils curl shellcheck devscripts meson build-essential clang-format
+      git diffutils curl shellcheck devscripts meson build-essential lsb-release
       liblcms2-dev libglib2.0-dev libjpeg-dev libpng-dev libjson-glib-dev gettext
+    #FIXME: remove this hack when we use FDO_DISTRIBUTION_VERSION with newer LLVM
+    LLVM_VERSION: 22
+    FDO_DISTRIBUTION_EXEC: >
+      bash -c "$(curl -fsSL https://apt.llvm.org/llvm.sh)" _ ${LLVM_VERSION};
+      apt-get install -y clang-format-${LLVM_VERSION};
+      ln -s /usr/bin/clang-format-${LLVM_VERSION} /usr/bin/clang-format; ln -s /usr/bin/clang-format-diff-${LLVM_VERSION} /usr/bin/clang-format-diff
     FDO_UPSTREAM_REPO: $CI_PROJECT_PATH
     # Enable colorful output when supported (e.g. ninja)
     CLICOLOR_FORCE: "1"
