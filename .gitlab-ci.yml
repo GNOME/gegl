@@ -147,7 +147,11 @@ check-commit-log:
     - curl -sL "https://gitlab.gnome.org/GNOME/gimp/-/raw/master/.gitlab/commit-rules.yml" -o /tmp/commit-rules.yml || true
     - if [ $(diff .gitlab/commit-rules.yml /tmp/commit-rules.yml | wc -l) -ne 0 ]; then printf '\033[31m(ERROR)\033[0m commit-rules.yml differs from upstream GIMP. Please sync.\n'; exit 1; fi
     - touch "$JUNIT_REPORT"
-    - ci-fairy check-commits --textwidth 80 --rules-file=.gitlab/commit-rules.yml --junit-xml=$JUNIT_REPORT
+    - if ! ci-fairy check-commits --textwidth 80 --rules-file=.gitlab/commit-rules.yml --junit-xml=$JUNIT_REPORT; then
+        exit 1;
+      else
+        printf '(INFO) commit messages are alright regarding being style-compliant.\n';
+      fi
   artifacts:
     reports:
       junit: $JUNIT_REPORT
