@@ -52,10 +52,10 @@ include:
     # If you are hacking on them or need a them to rebuild, its enough
     # to change any part of the string of the image you want.
     ###
-    FDO_DISTRIBUTION_TAG: '2026-07-22.1'
+    FDO_DISTRIBUTION_TAG: '2026-07-25.0'
     FDO_DISTRIBUTION_VERSION: 'stable'
     FDO_DISTRIBUTION_PACKAGES: >
-      git diffutils curl shellcheck devscripts meson build-essential lsb-release
+      git diffutils curl shellcheck devscripts meson build-essential lsb-release colordiff
       liblcms2-dev libglib2.0-dev libjpeg-dev libpng-dev libjson-glib-dev gettext
     #FIXME: remove this hack when we use FDO_DISTRIBUTION_VERSION with newer LLVM
     LLVM_VERSION: 22
