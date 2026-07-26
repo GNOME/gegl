@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl-master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2026-06-27 17:49+0000\n"
-"PO-Revision-Date: 2026-06-28 08:06+0800\n"
+"POT-Creation-Date: 2026-07-11 20:14+0000\n"
+"PO-Revision-Date: 2026-07-26 10:00+0800\n"
 "Last-Translator: lumingzh <lumingzh@qq.com>\n"
 "Language-Team: Chinese (China) <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
@@ -28,7 +28,7 @@ msgstr ""
 #: bin/gegl.c:184
 #, c-format
 msgid "Unable to read file: %s"
-msgstr "无法读取文件: %s"
+msgstr "无法读取文件：%s"
 
 #: bin/gegl.c:232
 #, c-format
@@ -110,7 +110,7 @@ msgstr ""
 #: bin/gegl-options.c:86
 #, c-format
 msgid "ERROR: '%s' option expected argument\n"
-msgstr "错误: “%s”选项需要参数\n"
+msgstr "错误：“%s”选项需要参数\n"
 
 #: bin/gegl-options.c:125
 msgid "Display on screen"
@@ -144,11 +144,11 @@ msgid ""
 "\t\n"
 msgstr ""
 "解析的命令行：\n"
-"\t模式:   %s\n"
-"\t文件:   %s\n"
-"\txml:    %s\n"
-"\t输出:   %s\n"
-"\t其他:   %s\n"
+"\t模式：   %s\n"
+"\t文件：   %s\n"
+"\txml：   %s\n"
+"\t输出：   %s\n"
+"\t其他：   %s\n"
 "\t\n"
 
 #: bin/gegl-options.c:358
@@ -353,47 +353,47 @@ msgstr "永不"
 msgid "Always"
 msgstr "总是"
 
-#: gegl/gegl-init.c:427
+#: gegl/gegl-init.c:431
 msgid "Where GEGL stores its swap"
 msgstr "GEGL 存储其交换区的位置"
 
-#: gegl/gegl-init.c:432
+#: gegl/gegl-init.c:436
 msgid "Compression algorithm used for data stored in the swap"
 msgstr "用于交换区中数据存储的压缩算法"
 
-#: gegl/gegl-init.c:437
+#: gegl/gegl-init.c:441
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr "多少内存（近似值）用于缓存图像"
 
-#: gegl/gegl-init.c:442
+#: gegl/gegl-init.c:446
 msgid "Default size of tiles in GeglBuffers"
 msgstr "GeglBuffers 中默认平铺大小"
 
-#: gegl/gegl-init.c:447
+#: gegl/gegl-init.c:451
 msgid "The count of pixels to compute simultaneously"
 msgstr "同时计算的像素数量"
 
-#: gegl/gegl-init.c:452
+#: gegl/gegl-init.c:456
 msgid ""
 "The quality of rendering, a value between 0.0 (fast) and 1.0 (reference)"
 msgstr "渲染质量， 0.0（快速）和 1.0（参考）之间的一个值"
 
-#: gegl/gegl-init.c:457
+#: gegl/gegl-init.c:461
 msgid "The number of concurrent processing threads to use"
 msgstr "使用并行处理线程的数量"
 
-#: gegl/gegl-init.c:462
+#: gegl/gegl-init.c:466
 msgid "Disable OpenCL"
 msgstr "禁用 OpenCL"
 
-#: gegl/gegl-init.c:474
+#: gegl/gegl-init.c:478
 msgid "Show GEGL Options"
 msgstr "显示 GEGL 选项"
 
 #: gegl/gegl-serialize.c:227 gegl/gegl-serialize.c:231
 #, c-format
 msgid "%s does not have a pad called %s"
-msgstr "%s 没有名叫 %s 的绘图板"
+msgstr "“%s”没有名叫“%s”的平板"
 
 #: gegl/gegl-serialize.c:323
 #, c-format
@@ -408,12 +408,12 @@ msgstr "操作“%s”未找到，相似匹配："
 #: gegl/gegl-serialize.c:588
 #, c-format
 msgid "%s has no %s property."
-msgstr "%s 没有 %s 属性。"
+msgstr "“%s”没有“%s”属性。"
 
 #: gegl/gegl-serialize.c:594
 #, c-format
 msgid "%s has no %s property, properties: "
-msgstr "%s 没有 %s 属性，属性："
+msgstr "“%s”没有“%s”属性，属性："
 
 #: gegl/gegl-serialize.c:826
 #, c-format
@@ -647,7 +647,7 @@ msgstr "保持透明值在一个特定范围内"
 
 #: operations/common/bevel.c:49
 msgid "Chamfer"
-msgstr "倒角"
+msgstr "斜切"
 
 #: operations/common/bevel.c:51
 msgid "Bump"
@@ -655,11 +655,11 @@ msgstr "凹凸"
 
 #: operations/common/bevel.c:54
 msgid "Bevel type"
-msgstr "斜面类型"
+msgstr "倒角类型"
 
 #: operations/common/bevel.c:57
 msgid "The family of bevel to use"
-msgstr "要使用的斜面类型"
+msgstr "要使用的倒角类型"
 
 #: operations/common/bevel.c:61
 msgid "None (for use with GIMPs blending options)"
@@ -716,7 +716,7 @@ msgstr "距离映射设置"
 msgid ""
 "Distance Map is unique to chamfer bevel and has three settings that alter "
 "the structure of the chamfer."
-msgstr "距离映射对于倒角斜面是唯一的且具有三种改变倒角结构的设置。"
+msgstr "距离映射对于斜切倒角是唯一的且具有三种改变斜切结构的设置。"
 
 #: operations/common/bevel.c:86 operations/common/bloom.c:35
 #: operations/common/box-blur.c:25 operations/common/c2g.c:28
@@ -747,7 +747,7 @@ msgstr "海拔"
 
 #: operations/common/bevel.c:95
 msgid "Elevation angle of the Bevel."
-msgstr "斜面的高度角。"
+msgstr "倒角的高度角。"
 
 #. An issue with this filter is that emboss depth= above 15 does nothing on chamfer bevel , but works great on bump bevel.
 #. so I made an extra node just for it that only updates emboss depth=, as a result depth and sharpness' are co-existing properties.
@@ -761,7 +761,7 @@ msgstr "深度"
 
 #: operations/common/bevel.c:106
 msgid "Emboss depth - Brings out depth and detail of the bump bevel."
-msgstr "凸起深度 - 显示凹凸斜面的深度和细节。"
+msgstr "凸起深度 - 显示凹凸倒角的深度和细节。"
 
 #: operations/common/bevel.c:110
 msgid "Light angle"
@@ -769,11 +769,11 @@ msgstr "光照角度"
 
 #: operations/common/bevel.c:111
 msgid "Direction of a light source illuminating and shading the bevel."
-msgstr "光源照明和着色斜面的方向。"
+msgstr "光源照明和荫蔽倒角的方向。"
 
 #: operations/common/bevel.c:294
 msgid "Bevel"
-msgstr "斜面"
+msgstr "倒角"
 
 #: operations/common/bevel.c:296
 msgid ""
@@ -782,13 +782,13 @@ msgid ""
 "emboss covering a blur. Both bevels benefit from color filled alpha defined "
 "shapes."
 msgstr ""
-"同一位置的两个斜面效果：倒角 - 模拟倒角 3D 边缘的光照；凹凸 - 第二个通过覆盖"
-"一层模糊的凸起形成一种 3D 膨胀效果。两种斜面都得益于透明定义形状所填充的颜"
+"同一位置的两个倒角效果：斜切 - 模拟斜切 3D 边缘的光照；凹凸 - 第二个通过覆盖"
+"一层模糊的凸起形成一种 3D 膨胀效果。两种倒角都得益于透明定义形状所填充的颜"
 "色。"
 
 #: operations/common/bevel.c:298
 msgid "Bevel..."
-msgstr "斜面…"
+msgstr "倒角…"
 
 #: operations/common/bilateral-filter.c:26
 #: operations/common/domain-transform.c:29 operations/common/dropshadow.c:46
@@ -803,7 +803,7 @@ msgstr "模糊半径"
 #: operations/common-gpl3+/gaussian-blur-selective.c:30
 #: operations/workshop/bilateral-filter-fast.c:44
 msgid "Radius of square pixel region, (width and height will be radius*2+1)."
-msgstr "方形像素区域的半径，（宽度和高度为 半径*2+1）。"
+msgstr "方形像素区域的半径，（宽度和高度为“半径*2+1”）。"
 
 #: operations/common/bilateral-filter.c:32
 #: operations/common/domain-transform.c:34
@@ -877,7 +877,7 @@ msgstr "在明亮区域周围添加辉光"
 #: operations/common/box-blur.c:26 operations/common/snn-mean.c:27
 #: operations/workshop/boxblur.c:25
 msgid "Radius of square pixel region, (width and height will be radius*2+1)"
-msgstr "方形像素区域的半径，(宽度和高度为 半径*2+1)"
+msgstr "方形像素区域的半径，(宽度和高度为“半径*2+1”)"
 
 #: operations/common/box-blur.c:404
 msgid "Box Blur"
@@ -1011,7 +1011,7 @@ msgid ""
 "Color to grayscale conversion, uses envelopes formed with the STRESS "
 "approach to perform local color-difference preserving grayscale generation."
 msgstr ""
-"彩色至灰阶的转换，使用通过着重方法形成的封装以执行局部色差保存灰阶生成。"
+"彩色至灰度的转换，使用通过着重方法形成的封装以执行局部色差保存灰度生成。"
 
 #: operations/common/checkerboard.c:26 operations/common/grid.c:24
 #: operations/common/little-planet.c:43
@@ -1129,7 +1129,7 @@ msgstr "颜色"
 #. TRANSLATORS: the string 'black' should not be translated
 #: operations/common/color.c:26
 msgid "The color to render (defaults to 'black')"
-msgstr "要渲染的颜色（默认为“黑色”）"
+msgstr "要渲染的颜色（默认为 'black' 黑色）"
 
 #: operations/common/color.c:91
 msgid ""
@@ -1181,8 +1181,8 @@ msgid ""
 "produces the illusion that the grayscale grid cells themselves also have "
 "color."
 msgstr ""
-"转换图像为灰阶并叠加一层过饱和网格——通过发生在人类视觉系统中的颜色同化，为一"
-"些网格成比例绘制产生这些灰阶网格单元自身也有颜色的幻象。"
+"转换图像为灰度并叠加一层过饱和网格——通过发生在人类视觉系统中的颜色同化，为一"
+"些网格成比例绘制产生这些灰度网格单元自身也有颜色的幻象。"
 
 #: operations/common/color-enhance.c:276
 msgid "Color Enhance"
@@ -1605,7 +1605,7 @@ msgstr "对比度曲线"
 msgid ""
 "Adjusts the contrast of a grayscale image with a curve specifying contrast "
 "for intensity."
-msgstr "使用指定对比度强度的曲线调整灰阶图像的对比度。"
+msgstr "使用指定对比度强度的曲线调整灰度图像的对比度。"
 
 #: operations/common/convolution-matrix.c:25
 msgid "(1,1)"
@@ -1800,11 +1800,11 @@ msgstr "窗口标题"
 msgid "Title to be given to output window"
 msgstr "指定输出窗口的标题"
 
-#: operations/common/display.c:142
+#: operations/common/display.c:141
 msgid "Display"
 msgstr "显示"
 
-#: operations/common/display.c:144
+#: operations/common/display.c:143
 msgid "Display the input buffer in a window."
 msgstr "在一个窗口中显示输入缓冲区。"
 
@@ -1986,7 +1986,7 @@ msgstr "在模糊前扩张阴影的距离；负值则会收缩阴影"
 #. TRANSLATORS: the string 'black' should not be translated
 #: operations/common/dropshadow.c:69
 msgid "The shadow's color (defaults to 'black')"
-msgstr "阴影的颜色（默认为“黑色”）"
+msgstr "阴影的颜色（默认为 'black' 黑色）"
 
 #. We used to permit opacity values > 1.0, similar results can in many cases be
 #. * achieved with grow_radius.
@@ -2103,7 +2103,7 @@ msgstr "细节增强的渐变阈值"
 
 #: operations/common/fattal02.c:35
 msgid "Beta"
-msgstr "Beta"
+msgstr "贝塔"
 
 #: operations/common/fattal02.c:36
 msgid "Strength of local detail enhancement"
@@ -2202,7 +2202,7 @@ msgstr "高斯模糊"
 msgid ""
 "Performs an averaging of neighboring pixels with the normal distribution as "
 "weighting"
-msgstr "以正态分布为权重对相邻像素进行均化"
+msgstr "以正态分布为权重对相邻像素进行平均"
 
 #: operations/common/gblur-1d.c:44 operations/common-cxx/warp.cc:37
 #: operations/external/text.c:32
@@ -2296,7 +2296,7 @@ msgstr "变成灰色"
 
 #: operations/common/grey.c:141
 msgid "Turns the image grayscale"
-msgstr "将图像转为灰阶"
+msgstr "将图像转为灰度"
 
 #: operations/common/grid.c:50
 msgid "Line width"
@@ -2564,7 +2564,7 @@ msgstr "源"
 
 #: operations/common/layer.c:50
 msgid "Source image file path (png, jpg, raw, svg, bmp, tif, ...)"
-msgstr "源图像文件路径（png，jpg，raw，svg，bmp，tif…）"
+msgstr "源图像文件路径（png、jpg、raw、svg、bmp、tif…）"
 
 #: operations/common/layer.c:264
 msgid "Layer"
@@ -3160,7 +3160,7 @@ msgstr "比率"
 
 #: operations/common/mix.c:26
 msgid "Mixing ratio, read as amount of aux, 0=input 0.5=half 1.0=aux"
-msgstr "混合比率，读取为辅助用量，0=输入 0.5=各半 1.0=辅助"
+msgstr "混合比率，读取为辅助用量，0=输入，0.5=各半，1.0=辅助"
 
 #: operations/common/mix.c:112
 msgid "Mix"
@@ -3168,7 +3168,7 @@ msgstr "混合"
 
 #: operations/common/mix.c:116
 msgid "Do a lerp, linear interpolation (lerp) between input and aux"
-msgstr "做一个插值，在输入和辅助之间的线性插值 (lerp)"
+msgstr "做一个插值，在输入和辅助之间的线性插值（lerp）"
 
 #: operations/common/mono-mixer.c:24 operations/common-gpl3+/channel-mixer.c:30
 msgid "Preserve luminosity"
@@ -3468,11 +3468,11 @@ msgstr "CMYK"
 
 #: operations/common/newsprint.c:39
 msgid "Color Model"
-msgstr "颜色模式"
+msgstr "色彩模型"
 
 #: operations/common/newsprint.c:41
 msgid "How many inks to use just black, rg, rgb (additive), or cmyk"
-msgstr "要使用的仅黑色、RG、RGB（附加）或 CMYK 油墨"
+msgstr "要使用的仅黑色、RG、RGB（附加）或 CMYK 油墨量"
 
 #: operations/common/newsprint.c:44
 msgid "Red and cyan pattern"
@@ -3930,11 +3930,11 @@ msgstr "可平铺"
 msgid "Generate a tileable map"
 msgstr "生成可平铺映射"
 
-#: operations/common/normal-map.c:257
+#: operations/common/normal-map.c:271
 msgid "Normal Map"
 msgstr "法线映射"
 
-#: operations/common/normal-map.c:260
+#: operations/common/normal-map.c:274
 msgid "Generate a normal map from a height map"
 msgstr "从高度映射生成法线映射"
 
@@ -4599,7 +4599,7 @@ msgstr "轮廓颜色"
 
 #: operations/common/styles.c:131
 msgid "Color of the outline (defaults to 'black') "
-msgstr "轮廓的颜色（默认为“black”）"
+msgstr "轮廓的颜色（默认为 'black' 黑色）"
 
 #: operations/common/styles.c:136
 msgid "Shadow/Glow opacity"
@@ -4632,7 +4632,7 @@ msgstr "阴影/辉光颜色"
 #. TRANSLATORS: the string 'black' should not be translated
 #: operations/common/styles.c:164
 msgid "The shadow’s color (defaults to 'black')"
-msgstr "阴影的颜色（默认为“black”）"
+msgstr "阴影的颜色（默认为 'black' 黑色）"
 
 #: operations/common/styles.c:167
 msgid "Shadow/Glow grow radius"
@@ -4659,85 +4659,85 @@ msgstr "启用倒角"
 
 #: operations/common/styles.c:192
 msgid "Whether to add a bevel effect"
-msgstr "是否添加斜面效果"
+msgstr "是否添加倒角效果"
 
 #: operations/common/styles.c:209
 msgid "Bevel blend mode"
-msgstr "斜面混合模式"
+msgstr "倒角混合模式"
 
 #: operations/common/styles.c:210
 msgid "Blend mode of the bevel"
-msgstr "倒角斜面的混合模式"
+msgstr "倒角的混合模式"
 
 #: operations/common/styles.c:218
 msgid "Chamfer Bevel"
-msgstr "斜切斜面"
+msgstr "斜切倒角"
 
 #: operations/common/styles.c:220
 msgid "Bump Bevel"
-msgstr "凹凸斜面"
+msgstr "凹凸倒角"
 
 #: operations/common/styles.c:223
 msgid "Select Bevel"
-msgstr "选择斜面"
+msgstr "选择倒角"
 
 #: operations/common/styles.c:226
 msgid "Type of bevel "
-msgstr "斜面类型"
+msgstr "倒角类型"
 
 #: operations/common/styles.c:232
 msgid "Bevel depth"
-msgstr "斜面深度"
+msgstr "倒角深度"
 
 #: operations/common/styles.c:233
 msgid "Emboss depth for the bevel"
-msgstr "倒角斜面的浮雕深度"
+msgstr "倒角的凸起深度"
 
 #: operations/common/styles.c:239
 msgid "Bevel elevation"
-msgstr "斜面海拔"
+msgstr "倒角海拔"
 
 #: operations/common/styles.c:240
 msgid "Emboss elevation of the bevel"
-msgstr "倒角斜面的浮雕海拔高度"
+msgstr "倒角的凸起海拔高度"
 
 #: operations/common/styles.c:247
 msgid "Bevel azimuth"
-msgstr "斜面方位角"
+msgstr "倒角方位角"
 
 #: operations/common/styles.c:248
 msgid "Emboss azimuth of the bevel"
-msgstr "倒角斜面的浮雕方位角"
+msgstr "倒角的凸起方位角"
 
 #: operations/common/styles.c:255
 msgid "Bevel radius (bump only)"
-msgstr "斜面半径（仅凹凸可用）"
+msgstr "倒角半径（仅凹凸）"
 
 #: operations/common/styles.c:259
 msgid ""
 "Internal gaussian blur to inflate the bump bevel. This option does not work "
 "on chamfer"
-msgstr "使凹凸斜面膨胀的内部高斯模糊。该选项对斜切斜面无效"
+msgstr "使凹凸倒角膨胀的内部高斯模糊。该选项对斜切无效"
 
 #: operations/common/styles.c:265
 msgid "Levels low output lighting for Bevel"
-msgstr "为斜面平整低输出光照"
+msgstr "用于倒角的色阶低输出光照"
 
 #: operations/common/styles.c:266
 msgid "Levels low output as a light adjustment for the bevel"
-msgstr "将低输出作为斜面的光照调整进行平整"
+msgstr "将色阶低输出作为倒角的光照调整"
 
 #: operations/common/styles.c:274
 msgid "Levels high output lighting for Bevel"
-msgstr "为斜面平整高输出光照"
+msgstr "用于倒角的色阶高输出光照"
 
 #: operations/common/styles.c:275
 msgid "Levels high output as a light adjustment for the bevel"
-msgstr "将高输出作为斜面的光照调整进行平整"
+msgstr "将色阶高输出作为倒角的光照调整"
 
 #: operations/common/styles.c:283
 msgid "Dark Bevel/ignore image mode"
-msgstr "深色斜面/忽略图像模式"
+msgstr "深色倒角/忽略图像模式"
 
 #: operations/common/styles.c:284
 msgid ""
@@ -4746,9 +4746,8 @@ msgid ""
 "darker colors. The effect is noticeable on bump bevel but barely effects "
 "chamfer bevel"
 msgstr ""
-"如果有图像文件叠加在斜面下方该选项将使斜面忽略图像细节。当用户选择较深颜色时"
-"它也可让倒角获得更好效果。这个效果在凹凸斜面上较为明显但在斜切斜面上几乎没有"
-"区别"
+"如果有图像文件叠加在下方该选项将使倒角忽略图像细节。当用户选择较深颜色时它也"
+"可让倒角获得更好效果。这个效果在凹凸倒角上较为明显但在斜切倒角上几乎没有区别"
 
 #. This operation is extremely important for bevels with image file overlays
 #. Inner Glow GUI options begin here
@@ -4762,7 +4761,7 @@ msgstr "是否添加内发光效果"
 
 #: operations/common/styles.c:304
 msgid "Normal"
-msgstr "标准"
+msgstr "正常"
 
 #: operations/common/styles.c:306
 msgid "Overlay"
@@ -4877,43 +4876,43 @@ msgstr "开启轮廓的倒角能力"
 
 #: operations/common/styles.c:426
 msgid "Outline Bevel blend mode"
-msgstr "轮廓斜面混合模式"
+msgstr "轮廓倒角混合模式"
 
 #: operations/common/styles.c:427
 msgid "Blend mode of the outline bevel"
-msgstr "轮廓斜面的混合模式"
+msgstr "轮廓倒角的混合模式"
 
 #: operations/common/styles.c:434
 msgid "Outline Bevel depth"
-msgstr "轮廓斜面深度"
+msgstr "轮廓倒角深度"
 
 #: operations/common/styles.c:435
 msgid "Emboss depth for the outline bevel"
-msgstr "轮廓斜面的浮雕深度"
+msgstr "轮廓倒角的凸起深度"
 
 #: operations/common/styles.c:440
 msgid "Outline Bevel elevation"
-msgstr "轮廓斜面海拔"
+msgstr "轮廓倒角海拔"
 
 #: operations/common/styles.c:441
 msgid "Emboss elevation for the outline bevel"
-msgstr "轮廓斜面的浮雕海拔高度"
+msgstr "轮廓倒角的凸起海拔高度"
 
 #: operations/common/styles.c:447
 msgid "Outline Bevel azimuth"
-msgstr "轮廓斜面方位角"
+msgstr "轮廓倒角方位角"
 
 #: operations/common/styles.c:448
 msgid "Emboss azimuth for the outline bevel"
-msgstr "轮廓斜面的浮雕方位角"
+msgstr "轮廓倒角的凸起方位角"
 
 #: operations/common/styles.c:455
 msgid "Outline Bevel radius"
-msgstr "轮廓斜面半径"
+msgstr "轮廓倒角半径"
 
 #: operations/common/styles.c:456
 msgid "Internal gaussian blur to inflate the outline bevel"
-msgstr "使轮廓斜面膨胀的内部高斯模糊"
+msgstr "使轮廓倒角膨胀的内部高斯模糊"
 
 #: operations/common/styles.c:464
 msgid "Enable image upload on Outline (requires advanced options)"
@@ -4939,23 +4938,23 @@ msgstr "轮廓图像不透明度调整"
 
 #: operations/common/styles.c:481
 msgid "Levels low output lighting for Outline Bevel"
-msgstr "为轮廓斜面平整低输出光照"
+msgstr "用于轮廓倒角的色阶低输出光照"
 
 #: operations/common/styles.c:482
 msgid "Levels low output as a light adjustment for the outline bevel"
-msgstr "将低输出作为轮廓斜面的光照调整进行平整"
+msgstr "将色阶低输出作为轮廓倒角的光照调整"
 
 #: operations/common/styles.c:489
 msgid "Levels high output lighting for Outline Bevel"
-msgstr "为轮廓斜面平整高输出光照"
+msgstr "用于轮廓倒角的色阶高输出光照"
 
 #: operations/common/styles.c:490
 msgid "Levels high output as a light adjustment for the outline bevel"
-msgstr "将高输出作为轮廓斜面的光照调整进行平整"
+msgstr "将色阶高输出作为轮廓倒角的光照调整"
 
 #: operations/common/styles.c:498
 msgid "Outline Dark Bevel/ignore image mode"
-msgstr "轮廓深色斜面/忽略图像模式"
+msgstr "轮廓深色倒角/忽略图像模式"
 
 #: operations/common/styles.c:499
 msgid ""
@@ -4963,8 +4962,8 @@ msgid ""
 "image file overlay below it. It also allows outline bevel to work better "
 "when the user selects darker colors."
 msgstr ""
-"如果有图像文件叠加在轮廓斜面下方该选项将使斜面忽略图像细节。当用户选择较深颜"
-"色时它也可让轮廓倒角获得更好效果。"
+"如果有图像文件叠加在下方该选项将使轮廓倒角忽略图像细节。当用户选择较深颜色时"
+"它也可让轮廓倒角获得更好效果。"
 
 #: operations/common/styles.c:1267
 msgid "GEGL Styles"
@@ -4975,7 +4974,7 @@ msgid ""
 "An engine to style text and add popular effects to alpha channel images. "
 "Effects include outline, bevel, shadow, and inner glow all in one place."
 msgstr ""
-"使文字风格化并对透明通道图像添加流行效果的引擎。包括轮廓、倒角、阴影和内发光"
+"使文本风格化并对透明通道图像添加流行效果的引擎。包括轮廓、倒角、阴影和内发光"
 "等效果都在一个地方。"
 
 #: operations/common/styles.c:1273
@@ -5131,7 +5130,7 @@ msgstr "晕影形状"
 msgid ""
 "Defaults to 'black', you can use transparency here to erase portions of an "
 "image"
-msgstr "默认为“black”（黑色），您可以使用透明度擦除部分图像"
+msgstr "默认为 'black' 黑色，您可以使用透明度擦除部分图像"
 
 #: operations/common/vignette.c:41
 msgid "How far out vignetting goes as portion of half image diagonal"
@@ -5163,7 +5162,7 @@ msgid ""
 "inf:1, this is applied after proportion is taken into account, to directly "
 "use squeeze factor as proportions, set proportion to 0.0."
 msgstr ""
-"要使用的宽高比，-0.5 = 1:2, 0.0 = 1:1, 0.5 = 2:1, -1.0 = 1:inf 1.0 = inf:1，"
+"要使用的宽高比，-0.5 = 1:2，0.0 = 1:1，0.5 = 2:1，-1.0 = 1:inf，1.0 = inf:1，"
 "将在比例量纳入考虑后应用，要直接使用压缩系数作为比例量，设置比例量为 0.0。"
 
 #: operations/common/vignette.c:75 operations/common-cxx/focus-blur.c:102
@@ -5327,11 +5326,11 @@ msgstr "阈值高"
 
 #: operations/common-cxx/distance-transform.cc:50
 msgid "Grayscale averaging"
-msgstr "灰阶均化"
+msgstr "灰度平均"
 
 #: operations/common-cxx/distance-transform.cc:51
 msgid "Number of computations for grayscale averaging"
-msgstr "用于灰阶均化的计算数量"
+msgstr "用于灰度平均的计算量"
 
 #: operations/common-cxx/distance-transform.cc:57
 msgid "Normalize output to range 0.0 to 1.0."
@@ -6805,7 +6804,7 @@ msgstr "随机颜色变化的量值"
 
 #: operations/common-gpl3+/mosaic.c:64
 msgid "Color averaging"
-msgstr "色彩均化"
+msgstr "色彩平均"
 
 #: operations/common-gpl3+/mosaic.c:65
 msgid "Tile color based on average of subsumed pixels"
@@ -6950,7 +6949,7 @@ msgstr "像素方圆的半径，也可以通过辅助平板上的缓冲区按像
 msgid ""
 "Exponent for processing; controls smoothness - can be scaled per pixel with "
 "a buffer on the aux2 pad."
-msgstr "用于处理的指数；控制平滑度——可以使用辅助平板上的缓冲区按像素缩放。"
+msgstr "用于处理的指数；控制平滑度 - 可以使用辅助平板上的缓冲区按像素缩放。"
 
 #: operations/common-gpl3+/oilify.c:40
 msgid "Number of intensities"
@@ -7832,7 +7831,7 @@ msgstr "名称"
 
 #: operations/core/cast-space.c:26 operations/core/convert-space.c:26
 msgid "One of: sRGB, Adobish, Rec2020, ProPhoto, Apple, ACEScg, ACES2065-1"
-msgstr "其中之一：sRGB，Adobish，Rec2020，ProPhoto，Apple，ACEScg，ACES2065-1"
+msgstr "其中之一：sRGB、Adobish、Rec2020、ProPhoto、Apple、ACEScg、ACES2065-1"
 
 #: operations/core/cast-space.c:27 operations/core/convert-space.c:27
 msgid "Pointer"
@@ -7935,11 +7934,11 @@ msgstr ""
 #: operations/external/svg-load.c:31 operations/external/tiff-load.c:38
 #: operations/external/webp-load.c:30
 msgid "URI"
-msgstr "网址"
+msgstr "URI"
 
 #: operations/core/load.c:39
 msgid "URI of file to load."
-msgstr "要加载文件的网址。"
+msgstr "要加载文件的 URI。"
 
 #: operations/core/load.c:376
 msgid ""
@@ -8178,7 +8177,7 @@ msgstr "frame-delay"
 
 #: operations/external/gif-load.c:44
 msgid "Delay in ms for last decoded frame"
-msgstr "解码的上一帧的延迟时间（ms）"
+msgstr "解码的上一帧的延迟时间（毫秒）"
 
 #: operations/external/gif-load.c:249
 msgid "GIF File Loader"
@@ -8212,12 +8211,12 @@ msgstr "无法将图像转换为 sRGB 色彩空间"
 #: operations/external/jp2-load.c:158
 #, c-format
 msgid "Unsupported non-RGB JPEG 2000 file with %d components"
-msgstr "不支持带 %d 分量的非 RGB JPEG 2000 文件"
+msgstr "不支持带“%d”分量的非 RGB JPEG 2000 文件"
 
 #: operations/external/jp2-load.c:170
 #, c-format
 msgid "Unsupported JPEG 2000 file with depth %d"
-msgstr "不支持深度为 %d 的 JPEG 2000 文件"
+msgstr "不支持深度为“%d”的 JPEG 2000 文件"
 
 #: operations/external/jp2-load.c:196
 msgid "Components of JPEG 2000 input don't match"
@@ -8247,7 +8246,7 @@ msgstr "一个或多个 R、G、B 分量含有符号数据"
 #: operations/external/jp2-load.c:391
 #, c-format
 msgid "Error reading row %d component %d"
-msgstr "读取第 %d 行分量 %d 出错"
+msgstr "读取第 %d 行分量“%d”时出错"
 
 #: operations/external/jp2-load.c:526
 msgid "JPEG 2000 File Loader"
@@ -8304,11 +8303,11 @@ msgstr "创建渐进式 JPEG 图像"
 
 #: operations/external/jpg-save.c:47
 msgid "Grayscale"
-msgstr "灰阶"
+msgstr "灰度"
 
 #: operations/external/jpg-save.c:48
 msgid "Create a grayscale (monochrome) image"
-msgstr "创建灰阶（单色）图像"
+msgstr "创建灰度（单色）图像"
 
 #: operations/external/jpg-save.c:524
 msgid "JPEG File Saver"
@@ -8478,7 +8477,7 @@ msgstr "NumPy 文件保存器"
 
 #: operations/external/npy-save.c:219
 msgid "NumPy (Numerical Python) image saver"
-msgstr "NumPy (Numerical Python) 图像保存器"
+msgstr "NumPy（Numerical Python）图像保存器"
 
 #: operations/external/path.c:26
 msgid "Fill Color"
@@ -8524,7 +8523,7 @@ msgstr "填充规则"
 
 #: operations/external/path.c:45
 msgid "How to determine what to fill (nonzero|evenodd)"
-msgstr "如何决定填充的区域 (nonzero|evenodd)"
+msgstr "如何决定填充的区域（nonzero|evenodd）"
 
 #: operations/external/path.c:48
 msgid "SVG style description of transform"
@@ -8598,7 +8597,7 @@ msgstr "用来解密 PDF 的密码，或为无密码保持空白"
 
 #: operations/external/pdf-load.c:242
 msgid "pdf loader"
-msgstr "pdf 加载器"
+msgstr "PDF 加载器"
 
 #: operations/external/pdf-load.c:244
 msgid "PDF page decoder"
@@ -8659,13 +8658,13 @@ msgstr "使用 libpng 的 PNG 图像保存器"
 
 #: operations/external/ppm-load.c:34
 msgid "URI of image to load."
-msgstr "要加载图像的网址。"
+msgstr "要加载图像的 URI。"
 
-#: operations/external/ppm-load.c:476
+#: operations/external/ppm-load.c:484
 msgid "PPM File Loader"
 msgstr "PPM 文件加载器"
 
-#: operations/external/ppm-load.c:478
+#: operations/external/ppm-load.c:486
 msgid "PPM image loader."
 msgstr "PPM 图像加载器。"
 
@@ -8792,11 +8791,11 @@ msgstr "使用 librsvg 加载 SVG 文件"
 
 #: operations/external/text.c:25
 msgid "Text"
-msgstr "文字"
+msgstr "文本"
 
 #: operations/external/text.c:26
 msgid "String to display (utf8)"
-msgstr "要显示的字符串 (utf8)"
+msgstr "要显示的字符串（utf8）"
 
 #: operations/external/text.c:29
 msgid "Font family"
@@ -8804,7 +8803,7 @@ msgstr "字体族"
 
 #: operations/external/text.c:30
 msgid "Font family (utf8)"
-msgstr "字体族 (utf8)"
+msgstr "字体族（utf8）"
 
 #: operations/external/text.c:33
 msgid "Font size in pixels."
@@ -8813,7 +8812,7 @@ msgstr "字体大小（像素）。"
 #. TRANSLATORS: the string 'black' should not be translated
 #: operations/external/text.c:39
 msgid "Color for the text (defaults to 'black')"
-msgstr "文字的颜色（默认为 'black' 黑色）"
+msgstr "文本的颜色（默认为 'black' 黑色）"
 
 #: operations/external/text.c:41
 msgid "Wrap width"
@@ -8861,7 +8860,7 @@ msgstr "渲染的高度（像素）。（只读）"
 
 #: operations/external/text.c:383
 msgid "Render Text"
-msgstr "渲染文字"
+msgstr "渲染文本"
 
 #: operations/external/text.c:387
 msgid "Display a string of text using pango and cairo."
@@ -8889,7 +8888,7 @@ msgstr "使用 libtiff 的 TIFF 图像加载器"
 
 #: operations/external/tiff-save.c:34
 msgid "-1, 8, 16, 32 and 64 are the currently accepted values, -1 means auto"
-msgstr "-1，8，16，32 和 64 是当前可接受的数值，-1 代表自动"
+msgstr "-1、8、16、32 和 64 是当前可接受的数值，-1 代表自动"
 
 #: operations/external/tiff-save.c:36
 msgid "use floating point"
@@ -8950,7 +8949,7 @@ msgstr "填充规则。"
 
 #: operations/external/vector-fill.c:35
 msgid "how to determine what to fill (nonzero|evenodd)"
-msgstr "如何决定填充的区域 (nonzero|evenodd)"
+msgstr "如何决定填充的区域（nonzero|evenodd）"
 
 #: operations/external/vector-fill.c:38 operations/external/vector-stroke.c:39
 msgid "svg style description of transform."
@@ -9543,7 +9542,7 @@ msgstr "双向滤镜的快速近似值，使用盒子滤镜代替高斯模糊。
 
 #: operations/workshop/boxblur-1d.c:28
 msgid "Radius of row pixel region, (size will be radius*2+1)"
-msgstr "行像素区域的半径，（大小为半径*2+1）"
+msgstr "行像素区域的半径，（大小为“半径*2+1”）"
 
 #: operations/workshop/boxblur-1d.c:466
 msgid "1D Box Blur"
@@ -9616,7 +9615,7 @@ msgstr "使用双中值插值去马赛克"
 msgid ""
 "Performs a grayscale2color demosaicing of an image, using bimedian "
 "interpolation."
-msgstr "用双中值插值对图像执行灰阶至彩色去马赛克处理。"
+msgstr "用双中值插值对图像执行灰度至彩色去马赛克处理。"
 
 #: operations/workshop/demosaic-simple.c:152
 msgid "Demosaic Without Interpolation"
@@ -9625,7 +9624,7 @@ msgstr "无插值去马赛克"
 #: operations/workshop/demosaic-simple.c:155
 msgid ""
 "Performs a naive grayscale2color demosaicing of an image, no interpolation."
-msgstr "不用插值对图像执行简单的灰阶至彩色去马赛克处理。"
+msgstr "不用插值对图像执行简单的灰度至彩色去马赛克处理。"
 
 #: operations/workshop/ditto.c:117
 msgid "Ditto"
@@ -10097,14 +10096,14 @@ msgstr "积分图像"
 msgid "Compute integral and squared integral image"
 msgstr "计算积分和平方积分图像"
 
-#: operations/workshop/rawbayer-load.c:156
+#: operations/workshop/rawbayer-load.c:167
 msgid ""
 "Raw image loader, wrapping dcraw with pipes, provides the raw bayer grid as "
 "grayscale, if the fileformat is .rawbayer it will use this loader instead of "
 "the normal dcraw loader, if the fileformat is .rawbayerS it will swap the "
 "returned 16bit numbers (the pnm loader is apparently buggy)"
 msgstr ""
-"Raw 图像加载器，是带管道的 dcraw 封装，提供了 raw 拜耳网格作为灰阶，如果文件"
+"Raw 图像加载器，是带管道的 dcraw 封装，提供了 raw 拜耳网格作为灰度，如果文件"
 "格式为 .rawbayer 将使用该加载器代替正常的 dcraw 加载器，如果文件格式"
 "为 .rawbayerS 则交换返回的 16 位数值（pnm 加载器显然有不少缺陷）"
 
