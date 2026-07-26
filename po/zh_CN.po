@@ -15,7 +15,7 @@ msgstr ""
 "Project-Id-Version: gegl-master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
 "POT-Creation-Date: 2026-07-11 20:14+0000\n"
-"PO-Revision-Date: 2026-07-26 10:00+0800\n"
+"PO-Revision-Date: 2026-07-26 10:32+0800\n"
 "Last-Translator: lumingzh <lumingzh@qq.com>\n"
 "Language-Team: Chinese (China) <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
@@ -1579,7 +1579,7 @@ msgstr "提取分量"
 
 #: operations/common/component-extract.c:263
 msgid "Extract a color model component"
-msgstr "提取颜色模型分量"
+msgstr "提取色彩模型分量"
 
 #: operations/common/contrast-curve.c:25
 msgid "Sample points"
