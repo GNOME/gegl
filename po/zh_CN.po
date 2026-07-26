@@ -15,7 +15,7 @@ msgstr ""
 "Project-Id-Version: gegl-master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
 "POT-Creation-Date: 2026-07-11 20:14+0000\n"
-"PO-Revision-Date: 2026-07-26 10:32+0800\n"
+"PO-Revision-Date: 2026-07-26 11:05+0800\n"
 "Last-Translator: lumingzh <lumingzh@qq.com>\n"
 "Language-Team: Chinese (China) <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
@@ -1059,11 +1059,11 @@ msgstr "单元像素的竖直宽度"
 #: operations/seamless-clone/seamless-clone.c:26
 #: operations/seamless-clone/seamless-clone-compose.c:25
 msgid "Offset X"
-msgstr "位移 X"
+msgstr "X 偏移"
 
 #: operations/common/checkerboard.c:43 operations/common/grid.c:39
 msgid "Horizontal offset (from origin) for start of grid"
-msgstr "对于网格开始处的水平位移（从原点）"
+msgstr "对于网格开始处的水平偏移（从原点）"
 
 #: operations/common/checkerboard.c:48 operations/common/grid.c:44
 #: operations/common/mirrors.c:52 operations/common/pixelize.c:58
@@ -1073,11 +1073,11 @@ msgstr "对于网格开始处的水平位移（从原点）"
 #: operations/seamless-clone/seamless-clone.c:32
 #: operations/seamless-clone/seamless-clone-compose.c:31
 msgid "Offset Y"
-msgstr "位移 Y"
+msgstr "Y 偏移"
 
 #: operations/common/checkerboard.c:49 operations/common/grid.c:45
 msgid "Vertical offset (from origin) for start of grid"
-msgstr "对于网格开始处的竖直位移（从原点）"
+msgstr "对于网格开始处的竖直偏移（从原点）"
 
 #: operations/common/checkerboard.c:54 operations/common-gpl3+/sinus.c:57
 #: operations/common-gpl3+/spiral.c:80 operations/workshop/gradient-map.c:25
@@ -4266,7 +4266,7 @@ msgstr "插值色彩空间"
 #: operations/common/saturation.c:37
 msgid ""
 "Set at Native if uncertain, the CIE based spaces might introduce hue shifts."
-msgstr "若不确定则设为原生，基于 CIE 的色彩空间可能会引起色相偏移。"
+msgstr "若不确定则设为原生，基于 CIE 的色彩空间可能会引起色相位移。"
 
 #: operations/common/saturation.c:409
 msgid "Changes the saturation"
@@ -6073,7 +6073,7 @@ msgstr "锐利边缘数量（蓝色）"
 
 #: operations/common-gpl3+/diffraction-patterns.c:66
 msgid "Brightness and shifting/fattening of contours"
-msgstr "等高线的亮度和偏移/膨胀"
+msgstr "等高线的亮度和位移/膨胀"
 
 #: operations/common-gpl3+/diffraction-patterns.c:69
 msgid "Scattering"
@@ -6382,20 +6382,20 @@ msgstr "在分形空间中缩放"
 #: operations/common-gpl3+/fractal-explorer.c:64
 #: operations/common-gpl3+/lens-distortion.c:45
 msgid "Shift X"
-msgstr "X 平移"
+msgstr "X 位移"
 
 #: operations/common-gpl3+/fractal-explorer.c:65
 msgid "X shift in the fractal space"
-msgstr "在分形空间中 X 平移"
+msgstr "在分形空间中 X 位移"
 
 #: operations/common-gpl3+/fractal-explorer.c:68
 #: operations/common-gpl3+/lens-distortion.c:49
 msgid "Shift Y"
-msgstr "Y 平移"
+msgstr "Y 位移"
 
 #: operations/common-gpl3+/fractal-explorer.c:69
 msgid "Y shift in the fractal space"
-msgstr "在分形空间中 Y 平移"
+msgstr "在分形空间中 Y 位移"
 
 #: operations/common-gpl3+/fractal-explorer.c:72
 msgid "CX"
@@ -7198,19 +7198,19 @@ msgstr "提亮阴影和压暗高光"
 
 #: operations/common-gpl3+/shift.c:26 operations/common-gpl3+/shift.c:144
 msgid "Shift"
-msgstr "平移"
+msgstr "位移"
 
 #: operations/common-gpl3+/shift.c:27
 msgid "Maximum amount to shift"
-msgstr "平移的最大量值"
+msgstr "位移的最大量值"
 
 #: operations/common-gpl3+/shift.c:31
 msgid "Shift direction"
-msgstr "平移方向"
+msgstr "位移方向"
 
 #: operations/common-gpl3+/shift.c:148
 msgid "Shift each row or column of pixels by a random amount"
-msgstr "按随机的量值平移各行或各列像素"
+msgstr "按随机的量值位移各行或各列像素"
 
 #: operations/common-gpl3+/sinus.c:32
 msgid "Scale value for x axis"
@@ -9215,7 +9215,7 @@ msgstr "用于插值网格的最大精细点比例"
 #: operations/seamless-clone/seamless-clone.c:33
 #: operations/seamless-clone/seamless-clone-compose.c:26
 msgid "How much horizontal offset should applied to the paste"
-msgstr "该粘贴应该应用多少水平位移"
+msgstr "该粘贴应该应用多少水平偏移"
 
 #: operations/seamless-clone/seamless-clone.c:38
 #: operations/seamless-clone/seamless-clone-compose.c:37
@@ -9254,7 +9254,7 @@ msgstr "用于插值网格的最大精细点数量"
 
 #: operations/seamless-clone/seamless-clone-compose.c:32
 msgid "How much vertical offset should applied to the paste"
-msgstr "该粘贴应该应用多少竖直位移"
+msgstr "该粘贴应该应用多少竖直偏移"
 
 #: operations/transform/border-align.c:25
 msgid "Horizontal justification 0.0 is left 0.5 centered and 1.0 right."
@@ -9330,7 +9330,7 @@ msgstr "在中心旋转"
 
 #: operations/transform/rotate-on-center.c:169
 msgid "Rotate the buffer around its center, taking care of possible offsets."
-msgstr "围绕其中心旋转缓冲区，处理可能的位移。"
+msgstr "围绕其中心旋转缓冲区，处理可能的偏移。"
 
 #: operations/transform/scale-ratio.c:26
 msgid "Horizontal scale factor"
