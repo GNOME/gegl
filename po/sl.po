@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2026-06-27 17:49+0000\n"
-"PO-Revision-Date: 2026-06-28 11:04+0200\n"
+"POT-Creation-Date: 2026-07-28 22:32+0000\n"
+"PO-Revision-Date: 2026-07-29 08:22+0200\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language: sl_SI\n"
@@ -352,42 +352,42 @@ msgstr "Nikoli"
 msgid "Always"
 msgstr "Vedno"
 
-#: gegl/gegl-init.c:427
+#: gegl/gegl-init.c:431
 msgid "Where GEGL stores its swap"
 msgstr "Kje GEGL hrani svojo vmesno datoteko"
 
-#: gegl/gegl-init.c:432
+#: gegl/gegl-init.c:436
 msgid "Compression algorithm used for data stored in the swap"
 msgstr ""
 "Uporabljeni algoritem stiskanja za podatke, shranjene v izmenjalni datoteki."
 
-#: gegl/gegl-init.c:437
+#: gegl/gegl-init.c:441
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr "Koliko pomnilnika (približno) uporabiti za predpomnenje podob"
 
-#: gegl/gegl-init.c:442
+#: gegl/gegl-init.c:446
 msgid "Default size of tiles in GeglBuffers"
 msgstr "Privzeta velikost tlakovcev za GeglBuffer"
 
-#: gegl/gegl-init.c:447
+#: gegl/gegl-init.c:451
 msgid "The count of pixels to compute simultaneously"
 msgstr "Število slikovnih točk, ki naj se izračunajo hkrati"
 
-#: gegl/gegl-init.c:452
+#: gegl/gegl-init.c:456
 msgid ""
 "The quality of rendering, a value between 0.0 (fast) and 1.0 (reference)"
 msgstr ""
 "Kakovost izrisovanja, vrednost med 0,0 (hitro) in 1,0 (referenčna kakovost)"
 
-#: gegl/gegl-init.c:457
+#: gegl/gegl-init.c:461
 msgid "The number of concurrent processing threads to use"
 msgstr "Število uporabljenih vzporednih procesnih niti."
 
-#: gegl/gegl-init.c:462
+#: gegl/gegl-init.c:466
 msgid "Disable OpenCL"
 msgstr "Onemogoči OpenCL"
 
-#: gegl/gegl-init.c:474
+#: gegl/gegl-init.c:478
 msgid "Show GEGL Options"
 msgstr "Pokaži možnosti GEGL"
 
@@ -1823,20 +1823,20 @@ msgstr ""
 "Gaussovih zabrisanj."
 
 #: operations/common/display.c:23 operations/external/sdl2-display.c:28
-#: operations/external/sdl-display.c:25
+#: operations/external/sdl3-display.c:28 operations/external/sdl-display.c:25
 msgid "Window title"
 msgstr "Naslov okna"
 
 #: operations/common/display.c:24 operations/external/sdl2-display.c:29
-#: operations/external/sdl-display.c:26
+#: operations/external/sdl3-display.c:29 operations/external/sdl-display.c:26
 msgid "Title to be given to output window"
 msgstr "Naslov za izhodno okno."
 
-#: operations/common/display.c:142
+#: operations/common/display.c:141
 msgid "Display"
 msgstr "Zaslon"
 
-#: operations/common/display.c:144
+#: operations/common/display.c:143
 msgid "Display the input buffer in a window."
 msgstr "Prikaži vhodni medpomnilnik v oknu."
 
@@ -4034,11 +4034,11 @@ msgstr "Tlakovalnost"
 msgid "Generate a tileable map"
 msgstr "Ustvari poslikavo s tlakovci"
 
-#: operations/common/normal-map.c:257
+#: operations/common/normal-map.c:271
 msgid "Normal Map"
 msgstr "Navadna preslikava"
 
-#: operations/common/normal-map.c:260
+#: operations/common/normal-map.c:274
 msgid "Generate a normal map from a height map"
 msgstr "Ustvari navadno poslikavo iz višinske poslikave"
 
@@ -8889,11 +8889,11 @@ msgstr "Shranjevalnik slik PNG z uporabo libpng"
 msgid "URI of image to load."
 msgstr "URI slike za nalaganje."
 
-#: operations/external/ppm-load.c:476
+#: operations/external/ppm-load.c:484
 msgid "PPM File Loader"
 msgstr "Nalagalnik slik PPM"
 
-#: operations/external/ppm-load.c:478
+#: operations/external/ppm-load.c:486
 msgid "PPM image loader."
 msgstr "Nalagalnik slik PPM."
 
@@ -8980,6 +8980,14 @@ msgid ""
 msgstr ""
 "Prikaže vhodni medpomnilnik v oknu SDL2 (omejeno na en prikaz op/postopka "
 "zaradi težav z izvedbo SDL2)."
+
+#: operations/external/sdl3-display.c:207
+msgid "SDL3 Display"
+msgstr "Zaslon SDL3"
+
+#: operations/external/sdl3-display.c:210
+msgid "Displays the input buffer in an SDL3 window."
+msgstr "Prikaži vhodni medpomnilnik v oknu SDL3."
 
 #: operations/external/sdl-display.c:27
 msgid "Icon title"
@@ -10388,7 +10396,7 @@ msgstr "Integralna slika"
 msgid "Compute integral and squared integral image"
 msgstr "Izračunaj integralno in kvadratno integralno sliko"
 
-#: operations/workshop/rawbayer-load.c:156
+#: operations/workshop/rawbayer-load.c:167
 msgid ""
 "Raw image loader, wrapping dcraw with pipes, provides the raw bayer grid as "
 "grayscale, if the fileformat is .rawbayer it will use this loader instead of "
