@@ -6,8 +6,8 @@
 msgid ""
 msgstr "Project-Id-Version: GEGL master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2026-06-27 17:49+0000\n"
-"PO-Revision-Date: 2026-06-28 11:35+0200\n"
+"POT-Creation-Date: 2026-07-28 22:32+0000\n"
+"PO-Revision-Date: 2026-07-28 10:59+0200\n"
 "Last-Translator: Dick Groskamp <dikgro@yahoo.co.uk>\n"
 "Language-Team: Dutch <gnome-nl-list@gnome.org>\n"
 "Language: nl\n"
@@ -15,7 +15,7 @@ msgstr "Project-Id-Version: GEGL master\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: OmegaT 6.1.0 \n"
+"X-Generator: OmegaT 6.2.0 \n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: bin/gegl.c:184
@@ -343,40 +343,40 @@ msgstr "Nooit"
 msgid "Always"
 msgstr "Altijd"
 
-#: gegl/gegl-init.c:427
+#: gegl/gegl-init.c:431
 msgid "Where GEGL stores its swap"
 msgstr "Waar GEGL het wisselbestand plaatst"
 
-#: gegl/gegl-init.c:432
+#: gegl/gegl-init.c:436
 msgid "Compression algorithm used for data stored in the swap"
 msgstr "Compressiemethode voor data in het wisselbestand"
 
-#: gegl/gegl-init.c:437
+#: gegl/gegl-init.c:441
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr "Hoeveel geheugen gebruiken (ruwweg) om afbeeldingen te cachen"
 
-#: gegl/gegl-init.c:442
+#: gegl/gegl-init.c:446
 msgid "Default size of tiles in GeglBuffers"
 msgstr "Standaardgrootte van tegels in GeglBuffers"
 
-#: gegl/gegl-init.c:447
+#: gegl/gegl-init.c:451
 msgid "The count of pixels to compute simultaneously"
 msgstr "Aantal pixels om simultaan te verwerken"
 
-#: gegl/gegl-init.c:452
+#: gegl/gegl-init.c:456
 msgid ""
 "The quality of rendering, a value between 0.0 (fast) and 1.0 (reference)"
 msgstr "Renderkwaliteit, een waarde tussen 0,0 (snel) en 1,0 (referentie)"
 
-#: gegl/gegl-init.c:457
+#: gegl/gegl-init.c:461
 msgid "The number of concurrent processing threads to use"
 msgstr "Aantal te gebruiken threads"
 
-#: gegl/gegl-init.c:462
+#: gegl/gegl-init.c:466
 msgid "Disable OpenCL"
 msgstr "OpenCL uitschakelen"
 
-#: gegl/gegl-init.c:474
+#: gegl/gegl-init.c:478
 msgid "Show GEGL Options"
 msgstr "GEGL-opties tonen"
 
@@ -1771,20 +1771,20 @@ msgid ""
 msgstr "Randherkenning op basis van randdikte, gebaseerd op het verschil tussen twee gaussiaanse vervagingen"
 
 #: operations/common/display.c:23 operations/external/sdl2-display.c:28
-#: operations/external/sdl-display.c:25
+#: operations/external/sdl3-display.c:28 operations/external/sdl-display.c:25
 msgid "Window title"
 msgstr "Venstertitel"
 
 #: operations/common/display.c:24 operations/external/sdl2-display.c:29
-#: operations/external/sdl-display.c:26
+#: operations/external/sdl3-display.c:29 operations/external/sdl-display.c:26
 msgid "Title to be given to output window"
 msgstr "Titel van het uitvoervenster"
 
-#: operations/common/display.c:142
+#: operations/common/display.c:141
 msgid "Display"
 msgstr "Weergave"
 
-#: operations/common/display.c:144
+#: operations/common/display.c:143
 msgid "Display the input buffer in a window."
 msgstr "Toon de invoerbuffer in een venster."
 
@@ -3896,11 +3896,11 @@ msgstr "Tegelbaar"
 msgid "Generate a tileable map"
 msgstr "Genereer een tegelbare kaart"
 
-#: operations/common/normal-map.c:257
+#: operations/common/normal-map.c:271
 msgid "Normal Map"
 msgstr "Genormaliseerde kaart"
 
-#: operations/common/normal-map.c:260
+#: operations/common/normal-map.c:274
 msgid "Generate a normal map from a height map"
 msgstr "Genereer een map met randdetectie vanuit een hoogtemap"
 
@@ -8575,11 +8575,11 @@ msgstr "PNG bestandsopslag, met gebruikmaking van libpng"
 msgid "URI of image to load."
 msgstr "URI van te laden bestand."
 
-#: operations/external/ppm-load.c:476
+#: operations/external/ppm-load.c:484
 msgid "PPM File Loader"
 msgstr "PPM bestandslader"
 
-#: operations/external/ppm-load.c:478
+#: operations/external/ppm-load.c:486
 msgid "PPM image loader."
 msgstr "PPM bestandslader."
 
@@ -8664,7 +8664,15 @@ msgstr "SDL2-venster"
 msgid ""
 "Displays the input buffer in an SDL2 window (restricted to one display op/"
 "process, due to SDL2 implementation issues)."
-msgstr "Toont de invoerbuffer in een SDL2-venster (beperkt tot één weergave op/proces als gevolg van SDL2 implementatieproblemen)."
+msgstr "Geeft de invoerbuffer weer in een SDL2-venster (beperkt tot één weergave op/proces als gevolg van SDL2 implementatieproblemen)."
+
+#: operations/external/sdl3-display.c:207
+msgid "SDL3 Display"
+msgstr "SDL3-venster"
+
+#: operations/external/sdl3-display.c:210
+msgid "Displays the input buffer in an SDL3 window."
+msgstr "Geeft de invoerbuffer weer in een SDL3-venster."
 
 #: operations/external/sdl-display.c:27
 msgid "Icon title"
@@ -9951,7 +9959,7 @@ msgstr "Integrale afbeelding"
 msgid "Compute integral and squared integral image"
 msgstr "Bereken integrale en kwadratisch integrale afbeelding"
 
-#: operations/workshop/rawbayer-load.c:156
+#: operations/workshop/rawbayer-load.c:167
 msgid ""
 "Raw image loader, wrapping dcraw with pipes, provides the raw bayer grid as "
 "grayscale, if the fileformat is .rawbayer it will use this loader instead of "
