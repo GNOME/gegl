@@ -19,6 +19,7 @@
 
 
 #define EPSILON 1e-6
+#define KERNEL_SIZE 1
 
         static void
 prepare (GeglOperation *operation)
@@ -48,10 +49,10 @@ get_required_for_output (GeglOperation       *operation,
 
       if (o->sampler_type != GEGL_SAMPLER_NEAREST)
         {
-          rect.x      -= 1;
-          rect.y      -= 1;
-          rect.width  += 2;
-          rect.height += 2;
+          rect.x      -= KERNEL_SIZE;
+          rect.y      -= KERNEL_SIZE;
+          rect.width  += 2 * KERNEL_SIZE;
+          rect.height += 2 * KERNEL_SIZE;
         }
 
       return rect;
@@ -75,10 +76,10 @@ get_invalidated_by_change (GeglOperation       *operation,
 
       if (o->sampler_type != GEGL_SAMPLER_NEAREST)
         {
-          rect.x      -= 1;
-          rect.y      -= 1;
-          rect.width  += 2;
-          rect.height += 2;
+          rect.x      -= KERNEL_SIZE;
+          rect.y      -= KERNEL_SIZE;
+          rect.width  += 2 * KERNEL_SIZE;
+          rect.height += 2 * KERNEL_SIZE;
         }
 
       return rect;
@@ -93,17 +94,20 @@ process (GeglOperation       *operation,
          const GeglRectangle *result,
          gint                 level)
 {
-  GeglProperties     *o = GEGL_PROPERTIES (operation);
-  const Babl         *format_io, *format_coords;
-  GeglSampler        *sampler;
-  GeglBufferIterator *it;
-  gint                index_in, index_out, index_coords;
+  GeglProperties     *o                 = GEGL_PROPERTIES (operation);
+  const Babl         *format_io         = gegl_operation_get_format (operation, "output");
+  const Babl         *format_coords     = babl_format_n (babl_type ("float"), 2);
+  const gint          io_components     = babl_format_get_n_components (format_io);
+  const gint          coords_components = babl_format_get_n_components (format_coords);
+  const GeglRectangle in_roi            = {
+    result->x - KERNEL_SIZE,
+    result->y - KERNEL_SIZE,
+    result->width + KERNEL_SIZE * 2,
+    result->height + KERNEL_SIZE * 2,
+  };
 
-  format_io = gegl_operation_get_format (operation, "output");
-  format_coords = babl_format_n (babl_type ("float"), 2);
-
-  sampler = gegl_buffer_sampler_new_at_level (input, format_io,
-                                              o->sampler_type, level);
+  GeglSampler *sampler = gegl_buffer_sampler_new_at_level (input, format_io,
+                                                           o->sampler_type, level);
 
   if (aux != NULL
 #ifdef MAP_RELATIVE
@@ -111,66 +115,55 @@ process (GeglOperation       *operation,
 #endif
      )
     {
-      gfloat *coords_top         = NULL;
-      gfloat *coords_bottom      = NULL;
-      gfloat *coords_left        = NULL;
-      gfloat *coords_right       = NULL;
-      gsize   coords_width_size  = 0;
-      gsize   coords_height_size = 0;
-
-      it = gegl_buffer_iterator_new (output, result, level, format_io,
-                                     GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE, 3);
-      index_out = 0;
-
-      index_coords = gegl_buffer_iterator_add (it, aux, result, level, format_coords,
-                                               GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
-      index_in = gegl_buffer_iterator_add (it, input, result, level, format_io,
-                                           GEGL_ACCESS_READ, o->abyss_policy);
+      GeglBufferIterator *it           = gegl_buffer_iterator_new (output, result, level, format_io,
+                                                                   GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE, 3);
+      gint                index_out    = 0;
+      gint                index_in     = gegl_buffer_iterator_add (it, input, &in_roi, level, format_io,
+                                                                   GEGL_ACCESS_READ, o->abyss_policy);
+      gint                index_coords = gegl_buffer_iterator_add (it, aux, &in_roi, level, format_coords,
+                                                                   GEGL_ACCESS_READ, GEGL_ABYSS_CLAMP);
 
       while (gegl_buffer_iterator_next (it))
         {
-          gint        c;
-          gint        r;
-          gfloat      x;
-          gfloat      y;
 #ifdef MAP_RELATIVE
           gdouble     scaling = GEGL_PROPERTIES (operation)->scaling;
           gdouble     scaling_2 = scaling / 2.0;
 #endif
-          gfloat     *in = it->items[index_in].data;
-          gfloat     *out = it->items[index_out].data;
-          gfloat     *coords = it->items[index_coords].data;
-          GeglRectangle *roi = &it->items[0].roi;
+          const GeglRectangle *out_roi    = &it->items[index_out].roi;
+          const GeglRectangle *in_roi     = &it->items[index_in].roi;
+          const GeglRectangle *coords_roi = &it->items[index_coords].roi;
+          const gfloat        *in         = it->items[index_in].data;
+          const gfloat        *coords     = it->items[index_coords].data;
+          gfloat              *out        = it->items[index_out].data;
 
-          y = roi->y + 0.5; /* initial y coordinate */
+#define IN_KERNEL(dc, dr, ch) in[(((KERNEL_SIZE + r + dr) * in_roi->width) + (KERNEL_SIZE + c + dc)) * io_components + ch]
+#define COORDS_KERNEL(dc, dr, ch) coords[(((KERNEL_SIZE + r + dr) * coords_roi->width) + (KERNEL_SIZE + c + dc)) * coords_components + ch]
 
           if (o->sampler_type == GEGL_SAMPLER_NEAREST)
             {
-              for (r = 0; r < roi->height; r++, y++)
-                {
-                  x = roi->x + 0.5; /* initial x coordinate */
+              gfloat y = out_roi->y + 0.5; /* initial y coordinate */
 
-                  for (c = 0; c < roi->width; c++, x++)
+              for (gint r = 0; r < out_roi->height; r++, y++)
+                {
+                  gfloat x = out_roi->x + 0.5; /* initial x coordinate */
+
+                  for (gint c = 0; c < out_roi->width; c++, x++)
                     {
                       /* if the coordinate asked is an exact pixel, we
-                       * fetch it directly
-                       */
+                       * fetch it directly */
+                      gdouble coords_x = COORDS_KERNEL(0, 0, 0);
+                      gdouble coords_y = COORDS_KERNEL(0, 0, 1);
 #ifdef MAP_RELATIVE
-                      if (coords[0] == 0.0f && coords[1] == 0.0f)
+                      if (coords_x == 0.0f && coords_y == 0.0f)
 #else
-                      if (coords[0] == x    && coords[1] == y)
+                      if (coords_x == x    && coords_y == y)
 #endif
                         {
-                          out[0] = in[0];
-                          out[1] = in[1];
-                          out[2] = in[2];
-                          out[3] = in[3];
+                          for (int i = 0; i < 4; ++i)
+                            out[i] = IN_KERNEL(0, 0, i);
                         }
                       else
                         {
-                          gdouble coords_x = coords[0];
-                          gdouble coords_y = coords[1];
-
 #ifdef MAP_RELATIVE
                           coords_x = x + coords_x * scaling;
                           coords_y = y + coords_y * scaling;
@@ -182,104 +175,29 @@ process (GeglOperation       *operation,
                                             o->abyss_policy);
                         }
 
-                      coords += 2;
-                      in += 4;
-                      out += 4;
+                      out += io_components;
                     }
                 }
             }
           else
             {
-              gsize coords_width  = 2 * roi->width;
-              gsize coords_height = 2 * roi->height;
-              gint  stride        = 2 * roi->width;
+              gfloat y = out_roi->y + 0.5; /* initial y coordinate */
 
-              if (coords_width_size < coords_width)
+              for (gint r = 0; r < out_roi->height; r++, y++)
                 {
-                  coords_top    = g_renew (gfloat, coords_top, coords_width);
-                  coords_bottom = g_renew (gfloat, coords_bottom, coords_width);
-                  coords_width_size = coords_width;
-                }
+                  gfloat x = out_roi->x + 0.5; /* initial x coordinate */
 
-              if (coords_height_size < coords_height)
-                {
-                  coords_left  = g_renew (gfloat, coords_left, coords_height);
-                  coords_right = g_renew (gfloat, coords_right, coords_height);
-                  coords_height_size = coords_height;
-                }
-
-              gegl_buffer_get (aux,
-                               GEGL_RECTANGLE (roi->x, roi->y - 1,
-                                               roi->width, 1),
-                               1.0, format_coords, coords_top,
-                               GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_CLAMP);
-              gegl_buffer_get (aux,
-                               GEGL_RECTANGLE (roi->x, roi->y + roi->height,
-                                               roi->width, 1),
-                               1.0, format_coords, coords_bottom,
-                               GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_CLAMP);
-              gegl_buffer_get (aux,
-                               GEGL_RECTANGLE (roi->x - 1, roi->y,
-                                               1, roi->height),
-                               1.0, format_coords, coords_left,
-                               GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_CLAMP);
-              gegl_buffer_get (aux,
-                               GEGL_RECTANGLE (roi->x + roi->width, roi->y,
-                                               1, roi->height),
-                               1.0, format_coords, coords_right,
-                               GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_CLAMP);
-
-              for (r = 0; r < roi->height; r++, y++)
-                {
-                  x = roi->x + 0.5; /* initial x coordinate */
-
-                  for (c = 0; c < roi->width; c++, x++)
+                  for (gint c = 0; c < out_roi->width; c++, x++)
                     {
                       GeglBufferMatrix2 scale;
 
-                      if (c < roi->width - 1)
-                        {
-                          scale.coeff[0][0] = coords[2];
-                          scale.coeff[1][0] = coords[3];
-                        }
-                      else
-                        {
-                          scale.coeff[0][0] = coords_right[2 * r + 0];
-                          scale.coeff[1][0] = coords_right[2 * r + 1];
-                        }
+                      // left coords subtracted from right coords
+                      scale.coeff[0][0] = COORDS_KERNEL (1, 0, 0) - COORDS_KERNEL (-1, 0, 0);
+                      scale.coeff[1][0] = COORDS_KERNEL (1, 0, 1) - COORDS_KERNEL (-1, 0, 1);
 
-                      if (c > 0)
-                        {
-                          scale.coeff[0][0] -= coords[-2];
-                          scale.coeff[1][0] -= coords[-1];
-                        }
-                      else
-                        {
-                          scale.coeff[0][0] -= coords_left[2 * r + 0];
-                          scale.coeff[1][0] -= coords_left[2 * r + 1];
-                        }
-
-                      if (r < roi->height - 1)
-                        {
-                          scale.coeff[0][1] = coords[stride + 0];
-                          scale.coeff[1][1] = coords[stride + 1];
-                        }
-                      else
-                        {
-                          scale.coeff[0][1] = coords_bottom[2 * c + 0];
-                          scale.coeff[1][1] = coords_bottom[2 * c + 1];
-                        }
-
-                      if (r > 0)
-                        {
-                          scale.coeff[0][1] -= coords[-stride + 0];
-                          scale.coeff[1][1] -= coords[-stride + 1];
-                        }
-                      else
-                        {
-                          scale.coeff[0][1] -= coords_top[2 * c + 0];
-                          scale.coeff[1][1] -= coords_top[2 * c + 1];
-                        }
+                      // top coords subtracted from bottom coords
+                      scale.coeff[0][1] = COORDS_KERNEL (0, 1, 0) - COORDS_KERNEL (0, -1, 0);
+                      scale.coeff[1][1] = COORDS_KERNEL (0, 1, 1) - COORDS_KERNEL (0, -1, 1);
 
 #ifdef MAP_RELATIVE
                       scale.coeff[0][0] = scale.coeff[0][0] * scaling_2 + 1.0;
@@ -294,25 +212,21 @@ process (GeglOperation       *operation,
 #endif
 
                       /* if the coordinate asked is an exact pixel, we fetch it
-                       * directly, to avoid the blur of sampling
-                       */
+                       * directly, to avoid the blur of sampling */
+                      gdouble coords_x = COORDS_KERNEL(0, 0, 0);
+                      gdouble coords_y = COORDS_KERNEL(0, 0, 1);
 #ifdef MAP_RELATIVE
-                      if (coords[0] == 0.0f && coords[1] == 0.0f &&
+                      if (coords_x == 0.0f && coords_y == 0.0f &&
 #else
-                      if (coords[0] == x    && coords[1] == y    &&
+                      if (coords_x == x    && coords_y == y    &&
 #endif
                           gegl_buffer_matrix2_is_identity (&scale))
                         {
-                          out[0] = in[0];
-                          out[1] = in[1];
-                          out[2] = in[2];
-                          out[3] = in[3];
+                          for (int i = 0; i < 4; ++i)
+                            out[i] = IN_KERNEL(0, 0, i);
                         }
                       else
                         {
-                          gdouble coords_x = coords[0];
-                          gdouble coords_y = coords[1];
-
 #ifdef MAP_RELATIVE
                           coords_x = x + coords_x * scaling;
                           coords_y = y + coords_y * scaling;
@@ -324,18 +238,13 @@ process (GeglOperation       *operation,
                                             o->abyss_policy);
                         }
 
-                      coords += 2;
-                      in += 4;
-                      out += 4;
+                      out += io_components;
                     }
                 }
             }
         }
-
-      g_free (coords_top);
-      g_free (coords_bottom);
-      g_free (coords_left);
-      g_free (coords_right);
+#undef IN_KERNEL
+#undef COORDS_KERNEL
     }
   else
     {
