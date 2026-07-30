@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2026-04-06 19:44+0000\n"
-"PO-Revision-Date: 2026-04-08 13:00+0200\n"
+"POT-Creation-Date: 2026-07-28 22:32+0000\n"
+"PO-Revision-Date: 2026-07-30 20:07+0200\n"
 "Last-Translator: Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.8\n"
+"X-Generator: Poedit 3.9\n"
 
 #: bin/gegl.c:184
 #, c-format
@@ -354,41 +354,41 @@ msgstr "Aldrig"
 msgid "Always"
 msgstr "Alltid"
 
-#: gegl/gegl-init.c:427
+#: gegl/gegl-init.c:431
 msgid "Where GEGL stores its swap"
 msgstr "Var GEGL lagrar sin växlingsfil"
 
-#: gegl/gegl-init.c:432
+#: gegl/gegl-init.c:436
 msgid "Compression algorithm used for data stored in the swap"
 msgstr "Komprimeringsalgoritm som används för data lagrad i växlingsfilen"
 
-#: gegl/gegl-init.c:437
+#: gegl/gegl-init.c:441
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr "Hur mycket minne (uppskattningsvis) som används för att cacha bilder"
 
-#: gegl/gegl-init.c:442
+#: gegl/gegl-init.c:446
 msgid "Default size of tiles in GeglBuffers"
 msgstr "Standardstorlekar för plattor i GeglBuffers"
 
-#: gegl/gegl-init.c:447
+#: gegl/gegl-init.c:451
 msgid "The count of pixels to compute simultaneously"
 msgstr "Antalet pixlar att beräkna samtidigt"
 
-#: gegl/gegl-init.c:452
+#: gegl/gegl-init.c:456
 msgid ""
 "The quality of rendering, a value between 0.0 (fast) and 1.0 (reference)"
 msgstr ""
 "Kvaliteten på renderingen, ett värde mellan 0,0 (snabbt) och 1,0 (referens)"
 
-#: gegl/gegl-init.c:457
+#: gegl/gegl-init.c:461
 msgid "The number of concurrent processing threads to use"
 msgstr "Antalet samtidiga behandlingstrådar som ska användas"
 
-#: gegl/gegl-init.c:462
+#: gegl/gegl-init.c:466
 msgid "Disable OpenCL"
 msgstr "Inaktivera OpenCL"
 
-#: gegl/gegl-init.c:474
+#: gegl/gegl-init.c:478
 msgid "Show GEGL Options"
 msgstr "Visa GEGL-alternativ"
 
@@ -1046,7 +1046,7 @@ msgstr ""
 #: operations/common-gpl3+/maze.c:42 operations/common-gpl3+/noise-solid.c:63
 #: operations/common-gpl3+/plasma.c:54 operations/common-gpl3+/sinus.c:75
 #: operations/common-gpl3+/spiral.c:86 operations/core/crop.c:35
-#: operations/external/svg-load.c:30 operations/external/text.c:61
+#: operations/external/svg-load.c:34 operations/external/text.c:61
 #: operations/external/v4l.c:28 operations/external/vector-stroke.c:30
 #: operations/workshop/external/line-profile.c:39
 #: operations/workshop/external/v4l2.c:26
@@ -1065,7 +1065,7 @@ msgstr "Horisontell bredd på cellers bildpunkter"
 #: operations/common-gpl3+/engrave.c:31 operations/common-gpl3+/maze.c:50
 #: operations/common-gpl3+/noise-solid.c:71 operations/common-gpl3+/plasma.c:62
 #: operations/common-gpl3+/sinus.c:83 operations/common-gpl3+/spiral.c:94
-#: operations/core/crop.c:40 operations/external/svg-load.c:32
+#: operations/core/crop.c:40 operations/external/svg-load.c:36
 #: operations/external/text.c:63 operations/external/v4l.c:31
 #: operations/workshop/external/line-profile.c:41
 #: operations/workshop/external/v4l2.c:28
@@ -1772,7 +1772,7 @@ msgid "Alpha channel"
 msgstr "Alfakanal"
 
 #: operations/common/convolution-matrix.c:64
-#: operations/common-cxx/distance-transform.cc:55
+#: operations/common-cxx/distance-transform.cc:56
 #: operations/workshop/connected-components.c:41
 msgid "Normalize"
 msgstr "Normalisera"
@@ -1833,20 +1833,20 @@ msgstr ""
 "två gaussiska oskärpningar"
 
 #: operations/common/display.c:23 operations/external/sdl2-display.c:28
-#: operations/external/sdl-display.c:25
+#: operations/external/sdl3-display.c:28 operations/external/sdl-display.c:25
 msgid "Window title"
 msgstr "Fönstertitel"
 
 #: operations/common/display.c:24 operations/external/sdl2-display.c:29
-#: operations/external/sdl-display.c:26
+#: operations/external/sdl3-display.c:29 operations/external/sdl-display.c:26
 msgid "Title to be given to output window"
 msgstr "Titel som ges för utdatafönstret"
 
-#: operations/common/display.c:142
+#: operations/common/display.c:141
 msgid "Display"
 msgstr "Visa"
 
-#: operations/common/display.c:144
+#: operations/common/display.c:143
 msgid "Display the input buffer in a window."
 msgstr "Visa indatabufferten i ett fönster."
 
@@ -1920,8 +1920,8 @@ msgstr ""
 "(färg och alfa). Olika färgutjämningsmetoder kan anges för att motverka "
 "bandning introducerad av kvantisering."
 
-#: operations/common/domain-transform.c:24 operations/external/jpg-save.c:28
-#: operations/external/webp-save.c:28
+#: operations/common/domain-transform.c:24 operations/external/jpg-save.c:34
+#: operations/external/webp-save.c:31
 msgid "Quality"
 msgstr "Kvalitet"
 
@@ -2096,35 +2096,35 @@ msgstr "Sobel-kantdetektering"
 msgid "Specialized direction-dependent edge detection"
 msgstr "Specialiserad riktningsberoende kantdetektering"
 
-#: operations/common/exp-combine.c:25
+#: operations/common/exp-combine.c:28
 msgid "Exposure values"
 msgstr "Exponeringsvärden"
 
-#: operations/common/exp-combine.c:26
+#: operations/common/exp-combine.c:29
 msgid "Relative brightness of each exposure in EV"
 msgstr "Relativ ljushet för varje exponering i EV"
 
-#: operations/common/exp-combine.c:28
+#: operations/common/exp-combine.c:31
 msgid "Discretization bits"
 msgstr "Diskretiseringsbitar"
 
-#: operations/common/exp-combine.c:29
+#: operations/common/exp-combine.c:32
 msgid "Log2 of source's discretization steps"
 msgstr "Log2 av källans diskretiseringssteg"
 
-#: operations/common/exp-combine.c:32
+#: operations/common/exp-combine.c:35
 msgid "Weight sigma"
 msgstr "Viktsigma"
 
-#: operations/common/exp-combine.c:33
+#: operations/common/exp-combine.c:36
 msgid "Weight distribution sigma controlling response contributions"
 msgstr "Viktfördelningssigma som styr svarsbidrag"
 
-#: operations/common/exp-combine.c:1270
+#: operations/common/exp-combine.c:1263
 msgid "Combine Exposures"
 msgstr "Kombinera exponeringar"
 
-#: operations/common/exp-combine.c:1273
+#: operations/common/exp-combine.c:1266
 msgid "Combine multiple scene exposures into one high dynamic range image."
 msgstr ""
 "Kombinera flera scenexponeringar till en bild med stort dynamiskt omfång."
@@ -2284,18 +2284,18 @@ msgstr "1D-gaussisk oskärpa"
 
 #: operations/common/gegl-buffer-load-op.c:24
 #: operations/common/gegl-buffer-save-op.c:24 operations/common/icc-load.c:24
-#: operations/common/icc-save.c:25 operations/common/magick-load.c:26
+#: operations/common/icc-save.c:27 operations/common/magick-load.c:26
 #: operations/common/open-buffer.c:25 operations/common/save.c:26
-#: operations/core/load.c:29 operations/external/exr-save.cc:24
+#: operations/core/load.c:36 operations/external/exr-save.cc:24
 #: operations/external/ff-load.c:30 operations/external/ff-save.c:30
-#: operations/external/gif-load.c:34 operations/external/jp2-load.c:25
-#: operations/external/jpg-load.c:29 operations/external/jpg-save.c:25
-#: operations/external/npy-save.c:31 operations/external/png-load.c:37
-#: operations/external/png-save.c:31 operations/external/ppm-load.c:25
+#: operations/external/gif-load.c:37 operations/external/jp2-load.c:28
+#: operations/external/jpg-load.c:34 operations/external/jpg-save.c:31
+#: operations/external/npy-save.c:35 operations/external/png-load.c:41
+#: operations/external/png-save.c:34 operations/external/ppm-load.c:31
 #: operations/external/ppm-save.c:25 operations/external/rgbe-load.c:26
-#: operations/external/rgbe-save.c:26 operations/external/svg-load.c:25
-#: operations/external/tiff-load.c:29 operations/external/tiff-save.c:25
-#: operations/external/webp-load.c:25 operations/external/webp-save.c:25
+#: operations/external/rgbe-save.c:26 operations/external/svg-load.c:29
+#: operations/external/tiff-load.c:36 operations/external/tiff-save.c:31
+#: operations/external/webp-load.c:28 operations/external/webp-save.c:28
 #: operations/workshop/external/gluas.c:37
 #: operations/workshop/rawbayer-load.c:25
 msgid "File"
@@ -2435,10 +2435,10 @@ msgstr "Nyans-krominans"
 msgid "Adjust LCH Hue, Chroma, and Lightness"
 msgstr "Justera LCH nyans, krominans och ljushet"
 
-#: operations/common/icc-load.c:25 operations/external/gif-load.c:35
-#: operations/external/jp2-load.c:26 operations/external/jpg-load.c:30
-#: operations/external/svg-load.c:26 operations/external/tiff-load.c:30
-#: operations/external/webp-load.c:26
+#: operations/common/icc-load.c:25 operations/external/gif-load.c:38
+#: operations/external/jp2-load.c:29 operations/external/jpg-load.c:35
+#: operations/external/svg-load.c:30 operations/external/tiff-load.c:37
+#: operations/external/webp-load.c:29
 msgid "Path of file to load"
 msgstr "Sökväg till en fil att läsa in"
 
@@ -2450,7 +2450,7 @@ msgstr "ICC-filinläsare"
 msgid "ICC profile loader."
 msgstr "ICC-profilinläsare."
 
-#: operations/common/icc-save.c:26
+#: operations/common/icc-save.c:28
 msgid "Target path and filename"
 msgstr "Målsökväg och filnamn"
 
@@ -2568,7 +2568,7 @@ msgstr "Inre glöd…"
 msgid "Node"
 msgstr "Nod"
 
-#: operations/common/introspect.c:224
+#: operations/common/introspect.c:239
 msgid "GEGL graph visualizer."
 msgstr "Visualiserare för GEGL-graf."
 
@@ -2976,8 +2976,8 @@ msgstr "Lång skugga"
 msgid "Creates a long-shadow effect"
 msgstr "Skapar en lång skuggeffekt"
 
-#: operations/common/magick-load.c:27 operations/core/load.c:30
-#: operations/external/png-load.c:38 operations/external/ppm-load.c:26
+#: operations/common/magick-load.c:27 operations/core/load.c:37
+#: operations/external/png-load.c:42 operations/external/ppm-load.c:32
 #: operations/external/raw-load.c:37 operations/external/rgbe-load.c:27
 #: operations/workshop/rawbayer-load.c:26
 msgid "Path of file to load."
@@ -4038,11 +4038,11 @@ msgstr "Plattläggningsbar"
 msgid "Generate a tileable map"
 msgstr "Skapa en plattläggningsbar mappning"
 
-#: operations/common/normal-map.c:248
+#: operations/common/normal-map.c:271
 msgid "Normal Map"
 msgstr "Normalmappning"
 
-#: operations/common/normal-map.c:251
+#: operations/common/normal-map.c:274
 msgid "Generate a normal map from a height map"
 msgstr "Skapa en normalmappning från en höjdmappning"
 
@@ -4400,16 +4400,16 @@ msgstr "Ändringar i mättnad"
 msgid "Path of file to save."
 msgstr "Sökväg för fil som ska sparas."
 
-#: operations/common/save.c:28 operations/core/load.c:33
-#: operations/external/jpg-save.c:44 operations/external/png-load.c:41
-#: operations/external/png-save.c:39 operations/external/tiff-load.c:39
-#: operations/external/tiff-save.c:34
+#: operations/common/save.c:28 operations/core/load.c:40
+#: operations/external/jpg-save.c:50 operations/external/png-load.c:45
+#: operations/external/png-save.c:42 operations/external/tiff-load.c:46
+#: operations/external/tiff-save.c:40
 msgid "Metadata"
 msgstr "Metadata"
 
-#: operations/common/save.c:29 operations/core/load.c:34
-#: operations/external/jpg-save.c:45 operations/external/png-load.c:42
-#: operations/external/png-save.c:40
+#: operations/common/save.c:29 operations/core/load.c:41
+#: operations/external/jpg-save.c:51 operations/external/png-load.c:46
+#: operations/external/png-save.c:43
 msgid "Object providing image metadata"
 msgstr "Objekt som tillhandahåller bildmetadata"
 
@@ -5399,12 +5399,12 @@ msgstr "flagga"
 msgid "Pointer to flag value for unlabelled pixels"
 msgstr "Pekare till flaggvärde för ej etiketterade bildpunkter"
 
-#: operations/common/watershed-transform.c:490
+#: operations/common/watershed-transform.c:492
 msgid "Watershed Transform"
 msgstr "Vattendelningstransform"
 
 # TODO: labellized -> labelled?
-#: operations/common/watershed-transform.c:493
+#: operations/common/watershed-transform.c:495
 msgid ""
 "Labels propagation by watershed transformation. Output buffer will keep the "
 "input format. Unlabelled pixels are marked with a given flag value (by "
@@ -5481,34 +5481,38 @@ msgid "Edge handling"
 msgstr "Kanthantering"
 
 #: operations/common-cxx/distance-transform.cc:41
-msgid "How areas outside the input are considered when calculating distance"
-msgstr "Hur områden utanför indata betraktas vid beräkning av avstånd"
+msgid ""
+"How areas outside the input are considered when calculating distance. Also "
+"known as: boundary conditions."
+msgstr ""
+"Hur områden utanför indata betraktas vid beräkning av avstånd. Även känt "
+"som: randvillkor."
 
-#: operations/common-cxx/distance-transform.cc:43
+#: operations/common-cxx/distance-transform.cc:44
 msgid "Threshold low"
 msgstr "Tröskelvärde lågt"
 
-#: operations/common-cxx/distance-transform.cc:46
+#: operations/common-cxx/distance-transform.cc:47
 msgid "Threshold high"
 msgstr "Tröskelvärde högt"
 
-#: operations/common-cxx/distance-transform.cc:49
+#: operations/common-cxx/distance-transform.cc:50
 msgid "Grayscale averaging"
 msgstr "Medelvärdesbildning för gråskala"
 
-#: operations/common-cxx/distance-transform.cc:50
+#: operations/common-cxx/distance-transform.cc:51
 msgid "Number of computations for grayscale averaging"
 msgstr "Antal beräkningar för gråskalemedelvärde"
 
-#: operations/common-cxx/distance-transform.cc:56
+#: operations/common-cxx/distance-transform.cc:57
 msgid "Normalize output to range 0.0 to 1.0."
 msgstr "Normalisera utdata till intervallet 0,0 till 1,0."
 
-#: operations/common-cxx/distance-transform.cc:532
+#: operations/common-cxx/distance-transform.cc:533
 msgid "Distance Transform"
 msgstr "Avståndstransform"
 
-#: operations/common-cxx/distance-transform.cc:536
+#: operations/common-cxx/distance-transform.cc:537
 msgid "Calculate a distance transform"
 msgstr "Beräkna en avståndstransform"
 
@@ -8139,20 +8143,20 @@ msgstr ""
 "och inget ansluts på aux används begränsningsrutan på den producerande änden "
 "av inmatningskedjan."
 
-#: operations/core/load.c:31 operations/external/jp2-load.c:27
-#: operations/external/jpg-load.c:31 operations/external/pdf-load.c:27
-#: operations/external/png-load.c:39 operations/external/ppm-load.c:27
-#: operations/external/svg-load.c:27 operations/external/tiff-load.c:31
-#: operations/external/webp-load.c:27
+#: operations/core/load.c:38 operations/external/jp2-load.c:30
+#: operations/external/jpg-load.c:36 operations/external/pdf-load.c:27
+#: operations/external/png-load.c:43 operations/external/ppm-load.c:33
+#: operations/external/svg-load.c:31 operations/external/tiff-load.c:38
+#: operations/external/webp-load.c:30
 msgid "URI"
 msgstr "URI"
 
-#: operations/core/load.c:32
+#: operations/core/load.c:39
 msgid "URI of file to load."
 msgstr "URI för fil att läsa in."
 
 # sebras: convert här refererar alltså till kommandoradsprogrammet convert, inte ordet konvertering.
-#: operations/core/load.c:372
+#: operations/core/load.c:376
 msgid ""
 "Multipurpose file loader, that uses other native handlers, and fallback "
 "conversion using Image Magick's convert."
@@ -8184,7 +8188,7 @@ msgstr "Sökväg för fil att läsa in"
 msgid "Frame number"
 msgstr "Bildrutenummer"
 
-#: operations/external/ff-load.c:37 operations/external/gif-load.c:38
+#: operations/external/ff-load.c:37 operations/external/gif-load.c:41
 msgid "frames"
 msgstr "bilder"
 
@@ -8231,7 +8235,7 @@ msgstr "FFmpegs bildläsare"
 msgid "FFmpeg video frame importer."
 msgstr "FFmpegs videobildsimportör."
 
-#: operations/external/ff-save.c:31 operations/external/png-save.c:32
+#: operations/external/ff-save.c:31 operations/external/png-save.c:35
 #: operations/external/ppm-save.c:26 operations/external/rgbe-save.c:27
 msgid "Target path and filename, use '-' for stdout."
 msgstr "Målsökväg och filnamn, använd ”-” för standard ut."
@@ -8380,161 +8384,161 @@ msgstr "FFmpegs bildsparare"
 msgid "FFmpeg video output sink"
 msgstr "FFmpeg utdatautgång för video"
 
-#: operations/external/gif-load.c:36
+#: operations/external/gif-load.c:39
 msgid "frame"
 msgstr "bildruta"
 
-#: operations/external/gif-load.c:37
+#: operations/external/gif-load.c:40
 msgid "frame number to decode"
 msgstr "bildrutenummer att avkoda"
 
-#: operations/external/gif-load.c:39
+#: operations/external/gif-load.c:42
 msgid "Number of frames in gif animation"
 msgstr "Antal bildrutor i gif-animation"
 
-#: operations/external/gif-load.c:40
+#: operations/external/gif-load.c:43
 msgid "frame-delay"
 msgstr "bildfördröjning"
 
-#: operations/external/gif-load.c:41
+#: operations/external/gif-load.c:44
 msgid "Delay in ms for last decoded frame"
 msgstr "Fördröjning i ms för sista avkodad bildruta"
 
-#: operations/external/gif-load.c:248
+#: operations/external/gif-load.c:249
 msgid "GIF File Loader"
 msgstr "GIF-filinläsare"
 
-#: operations/external/gif-load.c:250
+#: operations/external/gif-load.c:251
 msgid "GIF image loader."
 msgstr "GIF-bildläsare."
 
-#: operations/external/jp2-load.c:28 operations/external/svg-load.c:28
-#: operations/external/tiff-load.c:32 operations/external/webp-load.c:28
+#: operations/external/jp2-load.c:31 operations/external/svg-load.c:32
+#: operations/external/tiff-load.c:39 operations/external/webp-load.c:31
 msgid "URI for file to load"
 msgstr "URI för fil att läsa in"
 
-#: operations/external/jp2-load.c:128
+#: operations/external/jp2-load.c:129
 msgid "Unknown JPEG 2000 image format"
 msgstr "Okänt JPEG2000-bildformat"
 
-#: operations/external/jp2-load.c:135
+#: operations/external/jp2-load.c:136
 msgid "Unable to open JPEG 2000 image"
 msgstr "Kan inte öppna JPEG2000-bild"
 
-#: operations/external/jp2-load.c:142
+#: operations/external/jp2-load.c:143
 msgid "Unable to create output color profile"
 msgstr "Kan inte skapa färgprofil för utdata"
 
-#: operations/external/jp2-load.c:150
+#: operations/external/jp2-load.c:151
 msgid "Unable to convert image to sRGB color space"
 msgstr "Kan inte konvertera bild till sRGB-färgrymd"
 
-#: operations/external/jp2-load.c:157
+#: operations/external/jp2-load.c:158
 #, c-format
 msgid "Unsupported non-RGB JPEG 2000 file with %d components"
 msgstr "Icke-RGB JPEG2000-fil med %d komponenter stöds inte"
 
-#: operations/external/jp2-load.c:169
+#: operations/external/jp2-load.c:170
 #, c-format
 msgid "Unsupported JPEG 2000 file with depth %d"
 msgstr "JPEG2000-fil med djup %d stöds inte"
 
-#: operations/external/jp2-load.c:195
+#: operations/external/jp2-load.c:196
 msgid "Components of JPEG 2000 input don't match"
 msgstr "Komponenter för JPEG2000-indata matchar inte"
 
-#: operations/external/jp2-load.c:257
+#: operations/external/jp2-load.c:258
 msgid "could not create a new Jasper stream"
 msgstr "kunde inte skapa en ny Jasper-ström"
 
-#: operations/external/jp2-load.c:277 operations/external/jp2-load.c:279
+#: operations/external/jp2-load.c:278 operations/external/jp2-load.c:280
 #, c-format
 msgid "failed to open JPEG 2000 from %s"
 msgstr "misslyckades med att öppna JPEG2000 från %s"
 
-#: operations/external/jp2-load.c:293
+#: operations/external/jp2-load.c:294
 msgid "could not query JPEG 2000 file"
 msgstr "kunde inte fråga JPEG2000-fil"
 
-#: operations/external/jp2-load.c:349
+#: operations/external/jp2-load.c:350
 msgid "One or more of R, G, B components are missing"
 msgstr "En eller flera av komponenterna R, G, och B saknas"
 
-#: operations/external/jp2-load.c:357
+#: operations/external/jp2-load.c:358
 msgid "One or more of R, G, B components have signed data"
 msgstr "En eller flera av komponenterna R, G och B har data med tecken"
 
-#: operations/external/jp2-load.c:390
+#: operations/external/jp2-load.c:391
 #, c-format
 msgid "Error reading row %d component %d"
 msgstr "Fel vid läsning av rad %d komponent %d"
 
-#: operations/external/jp2-load.c:525
+#: operations/external/jp2-load.c:526
 msgid "JPEG 2000 File Loader"
 msgstr "JPEG2000-filinläsare"
 
-#: operations/external/jp2-load.c:527
+#: operations/external/jp2-load.c:528
 msgid "JPEG 2000 image loader using jasper."
 msgstr "JPEG2000-bildläsare som använder jasper."
 
-#: operations/external/jpg-load.c:32
+#: operations/external/jpg-load.c:37
 msgid "URI of file to load"
 msgstr "URI för fil att läsa in"
 
-#: operations/external/jpg-load.c:395
+#: operations/external/jpg-load.c:397
 msgid "JPEG File Loader"
 msgstr "JPEG-filinläsare"
 
-#: operations/external/jpg-load.c:397
+#: operations/external/jpg-load.c:399
 msgid "JPEG image loader using libjpeg"
 msgstr "JPEG-bildläsare som använder libjpeg"
 
-#: operations/external/jpg-save.c:26 operations/external/npy-save.c:32
-#: operations/external/tiff-save.c:26 operations/external/webp-save.c:26
+#: operations/external/jpg-save.c:32 operations/external/npy-save.c:36
+#: operations/external/tiff-save.c:32 operations/external/webp-save.c:29
 msgid "Target path and filename, use '-' for stdout"
 msgstr "Målsökväg och filnamn, använd ”-” för standard ut"
 
-#: operations/external/jpg-save.c:29
+#: operations/external/jpg-save.c:35
 msgid "JPEG compression quality (between 1 and 100)"
 msgstr "JPEG-komprimeringskvalitet (mellan 1 och 100)"
 
-#: operations/external/jpg-save.c:32
+#: operations/external/jpg-save.c:38
 msgid "Smoothing"
 msgstr "Utjämning"
 
-#: operations/external/jpg-save.c:33
+#: operations/external/jpg-save.c:39
 msgid "Smoothing factor from 1 to 100; 0 disables smoothing"
 msgstr "Utjämningsfaktor från 1 till 100; 0 inaktiverar utjämning"
 
-#: operations/external/jpg-save.c:36
+#: operations/external/jpg-save.c:42
 msgid "Optimize"
 msgstr "Optimera"
 
-#: operations/external/jpg-save.c:37
+#: operations/external/jpg-save.c:43
 msgid "Use optimized huffman tables"
 msgstr "Använd optimerade huffman-tabeller"
 
-#: operations/external/jpg-save.c:38
+#: operations/external/jpg-save.c:44
 msgid "Progressive"
 msgstr "Progressiv"
 
-#: operations/external/jpg-save.c:39
+#: operations/external/jpg-save.c:45
 msgid "Create progressive JPEG images"
 msgstr "Skapa progressiva JPEG-bilder"
 
-#: operations/external/jpg-save.c:41
+#: operations/external/jpg-save.c:47
 msgid "Grayscale"
 msgstr "Gråskala"
 
-#: operations/external/jpg-save.c:42
+#: operations/external/jpg-save.c:48
 msgid "Create a grayscale (monochrome) image"
 msgstr "Skapa en (monokrom) gråskalebild"
 
-#: operations/external/jpg-save.c:521
+#: operations/external/jpg-save.c:524
 msgid "JPEG File Saver"
 msgstr "JPEG-filsparare"
 
-#: operations/external/jpg-save.c:523
+#: operations/external/jpg-save.c:526
 msgid "JPEG image saver, using libjpeg"
 msgstr "JPEG-bildsparare, använder libjpeg"
 
@@ -8694,11 +8698,11 @@ msgstr "Samplare som används internt"
 msgid "Performs n-point image deformation"
 msgstr "Utför n-punkters bilddeformering"
 
-#: operations/external/npy-save.c:215
+#: operations/external/npy-save.c:217
 msgid "NumPy File Saver"
 msgstr "NumPy-filsparare"
 
-#: operations/external/npy-save.c:217
+#: operations/external/npy-save.c:219
 msgid "NumPy (Numerical Python) image saver"
 msgstr "NumPy-bildsparare (numerisk python.)"
 
@@ -8846,52 +8850,52 @@ msgstr "GdkPixbuf-källa"
 msgid "Uses the GdkPixbuf located at the memory location in <em>pixbuf</em>."
 msgstr "Använder GdkPixbuf i minnesplatsen i <em>pixbuf</em>."
 
-#: operations/external/png-load.c:40
+#: operations/external/png-load.c:44
 msgid "URI for file to load."
 msgstr "URI för fil att läsa in."
 
-#: operations/external/png-load.c:694
+#: operations/external/png-load.c:696
 msgid "PNG File Loader"
 msgstr "PNG-filinläsare"
 
-#: operations/external/png-load.c:696
+#: operations/external/png-load.c:698
 msgid "PNG image loader."
 msgstr "PNG-bildläsare."
 
-#: operations/external/png-save.c:33
+#: operations/external/png-save.c:36
 msgid "Compression"
 msgstr "Komprimering"
 
-#: operations/external/png-save.c:34
+#: operations/external/png-save.c:37
 msgid "PNG compression level from 1 to 9"
 msgstr "PNG-komprimeringsnivå från 1 till 9"
 
-#: operations/external/png-save.c:36 operations/external/ppm-save.c:29
-#: operations/external/tiff-save.c:27
+#: operations/external/png-save.c:39 operations/external/ppm-save.c:29
+#: operations/external/tiff-save.c:33
 msgid "Bitdepth"
 msgstr "Bitdjup"
 
-#: operations/external/png-save.c:37 operations/external/ppm-save.c:30
+#: operations/external/png-save.c:40 operations/external/ppm-save.c:30
 msgid "8 and 16 are the currently accepted values."
 msgstr "8 och 16 är de värden som accepteras för närvarande."
 
-#: operations/external/png-save.c:454
+#: operations/external/png-save.c:455
 msgid "PNG File Saver"
 msgstr "PNG-filsparare"
 
-#: operations/external/png-save.c:456
+#: operations/external/png-save.c:457
 msgid "PNG image saver, using libpng"
 msgstr "PNG-bildsparare, använder libpng"
 
-#: operations/external/ppm-load.c:28
+#: operations/external/ppm-load.c:34
 msgid "URI of image to load."
 msgstr "URI för bild att läsa in."
 
-#: operations/external/ppm-load.c:474
+#: operations/external/ppm-load.c:484
 msgid "PPM File Loader"
 msgstr "PPM-filinläsare"
 
-#: operations/external/ppm-load.c:476
+#: operations/external/ppm-load.c:486
 msgid "PPM image loader."
 msgstr "PPM-bildläsare."
 
@@ -8979,6 +8983,14 @@ msgstr ""
 "Visar indatabufferten i ett SDL2-fönster (begränsat till en visningsåtgärd/"
 "process, p.g.a. implementationsproblem i SDL2)."
 
+#: operations/external/sdl3-display.c:207
+msgid "SDL3 Display"
+msgstr "SDL3-visning"
+
+#: operations/external/sdl3-display.c:210
+msgid "Displays the input buffer in an SDL3 window."
+msgstr "Visar indatabufferten i ett SDL3-fönster."
+
 #: operations/external/sdl-display.c:27
 msgid "Icon title"
 msgstr "Ikontitel"
@@ -8999,22 +9011,22 @@ msgstr ""
 "Visar indatabufferten i ett SDL-fönster (begränsat till en visningsåtgärd/"
 "process, p.g.a. implementationsproblem i SDL)."
 
-#: operations/external/svg-load.c:31 operations/external/v4l.c:29
+#: operations/external/svg-load.c:35 operations/external/v4l.c:29
 #: operations/workshop/external/v4l2.c:27
 msgid "Width for rendered image"
 msgstr "Bredd för renderad bild"
 
-#: operations/external/svg-load.c:33 operations/external/v4l.c:32
+#: operations/external/svg-load.c:37 operations/external/v4l.c:32
 #: operations/workshop/external/v4l2.c:29
 msgid "Height for rendered image"
 msgstr "Höjd för renderad bild"
 
-#: operations/external/svg-load.c:308
+#: operations/external/svg-load.c:309
 msgid "SVG File Loader"
 msgstr "SVG-filinläsare"
 
 #. not hidden because it has extra API
-#: operations/external/svg-load.c:310
+#: operations/external/svg-load.c:311
 msgid "Load an SVG file using librsvg"
 msgstr "Läs in en SVG-fil med hjälp av librsvg"
 
@@ -9099,46 +9111,46 @@ msgstr "Rendera text"
 msgid "Display a string of text using pango and cairo."
 msgstr "Visa en textsträng med pango och cairo."
 
-#: operations/external/tiff-load.c:34
+#: operations/external/tiff-load.c:41
 msgid "Directory"
 msgstr "Katalog"
 
-#: operations/external/tiff-load.c:35
+#: operations/external/tiff-load.c:42
 msgid "Image file directory (subfile)"
 msgstr "Bildfilskatalog (underfil)"
 
-#: operations/external/tiff-load.c:40 operations/external/tiff-save.c:35
+#: operations/external/tiff-load.c:47 operations/external/tiff-save.c:41
 msgid "Object to receive image metadata"
 msgstr "Objekt för att ta emot bildmetadata"
 
-#: operations/external/tiff-load.c:1036
+#: operations/external/tiff-load.c:1039
 msgid "TIFF File Loader"
 msgstr "TIFF-filinläsare"
 
-#: operations/external/tiff-load.c:1038
+#: operations/external/tiff-load.c:1041
 msgid "TIFF image loader using libtiff"
 msgstr "TIFF-bildläsare som använder libtiff"
 
-#: operations/external/tiff-save.c:28
+#: operations/external/tiff-save.c:34
 msgid "-1, 8, 16, 32 and 64 are the currently accepted values, -1 means auto"
 msgstr ""
 "-1, 8, 16, 32 och 64 är de värden som accepteras för närvarande, -1 betyder "
 "automatiskt"
 
-#: operations/external/tiff-save.c:30
+#: operations/external/tiff-save.c:36
 msgid "use floating point"
 msgstr "använd flyttal"
 
-#: operations/external/tiff-save.c:31
+#: operations/external/tiff-save.c:37
 msgid "floating point -1 means auto, 0 means integer, 1 means float."
 msgstr ""
 "flyttal -1 betyder automatiskt, 0 betyder heltal och 1 betyder flyttal."
 
-#: operations/external/tiff-save.c:825
+#: operations/external/tiff-save.c:828
 msgid "TIFF File Saver"
 msgstr "TIFF-filsparare"
 
-#: operations/external/tiff-save.c:827
+#: operations/external/tiff-save.c:830
 msgid "TIFF image saver using libtiff"
 msgstr "TIFF-bildsparare som använder libtiff"
 
@@ -9225,23 +9237,23 @@ msgstr "Vektorstreck"
 msgid "Renders a vector stroke"
 msgstr "Renderar ett vektorstreck"
 
-#: operations/external/webp-load.c:346
+#: operations/external/webp-load.c:347
 msgid "WebP File Loader"
 msgstr "WebP-filinläsare"
 
-#: operations/external/webp-load.c:348
+#: operations/external/webp-load.c:349
 msgid "WebP image loader."
 msgstr "WebP-bildläsare."
 
-#: operations/external/webp-save.c:29
+#: operations/external/webp-save.c:32
 msgid "WebP compression quality"
 msgstr "WebP-komprimeringskvalitet"
 
-#: operations/external/webp-save.c:192
+#: operations/external/webp-save.c:193
 msgid "WebP File Saver"
 msgstr "WebP-filsparare"
 
-#: operations/external/webp-save.c:194
+#: operations/external/webp-save.c:195
 msgid "WebP image saver"
 msgstr "WebP-bildsparare"
 
@@ -10258,11 +10270,11 @@ msgstr "Renderar ett spirografmönster"
 msgid "video device path"
 msgstr "sökväg för videoenhet"
 
-#: operations/workshop/external/v4l2.c:774
+#: operations/workshop/external/v4l2.c:773
 msgid "Video4Linux2 Frame Source"
 msgstr "Video4Linux2-bildkälla"
 
-#: operations/workshop/external/v4l2.c:776
+#: operations/workshop/external/v4l2.c:775
 msgid "Video4Linux2 input, webcams framegrabbers and similar devices."
 msgstr "Video4Linux2-indata, webbkameror, bildfångare och liknande enheter."
 
@@ -10391,7 +10403,7 @@ msgstr "Integrerad bild"
 msgid "Compute integral and squared integral image"
 msgstr "Beräkna integralbild och kvadrerad integralbild"
 
-#: operations/workshop/rawbayer-load.c:156
+#: operations/workshop/rawbayer-load.c:167
 msgid ""
 "Raw image loader, wrapping dcraw with pipes, provides the raw bayer grid as "
 "grayscale, if the fileformat is .rawbayer it will use this loader instead of "
@@ -10488,9 +10500,6 @@ msgid ""
 msgstr ""
 "Växlar bildpunkter, och kvantisering med grannar för att optimera "
 "färgutjämning, genom att växla intilliggande bildpunkter."
-
-#~ msgid "Std. Dev."
-#~ msgstr "Standardavvikelse"
 
 #~ msgid "X Scale"
 #~ msgstr "X-skala"
