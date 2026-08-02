@@ -268,7 +268,11 @@ rgbe_header_read_variables (rgbe_file *file,
             }
           else
             {
-              file->header.exposure *= exposure;
+              /* OpenImage writes HDR files with GAMMA=1 EXPOSURE=0.
+               * For now ignore exposure if it is 0, but eventually we
+               * should also handle gamma values that are not 1. */
+              if (exposure != 0.0)
+                file->header.exposure *= exposure;
             }
         }
 
