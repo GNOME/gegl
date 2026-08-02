@@ -652,7 +652,7 @@ rgbe_read_new_rle (const rgbe_file *file,
   data     = (guint8 *)g_mapped_file_get_contents (file->file) + *cursor;
   g_return_val_if_fail (data[OFFSET_R] == 2 && data[OFFSET_G] == 2, FALSE);
   linesize = (data[OFFSET_B] << 8) | data[OFFSET_E];
-  max_size = file->header.x_axis.size * file->header.y_axis.size * RGBE_NUM_RGBE;
+  max_size = file->header.x_axis.size * RGBE_NUM_RGBE;
 
   if (RGBE_NUM_RGBE * linesize > max_size)
     {
@@ -684,13 +684,13 @@ rgbe_read_new_rle (const rgbe_file *file,
 
           data++;
 
-          /* Check if there's enought space in the buffer to avoid OOB */
-          if (length > (pixels + RGBE_NUM_RGBE * linesize - pixoffset[component]) / RGBE_NUM_RGBE)
+          /* Check if there's enough space in the buffer to avoid OOB */
+          if (length * RGBE_NUM_RGBE - component > pixels + max_size - pixoffset[component])
             {
               g_warning ("Buffer overflow detected.");
               return FALSE;
             }
-        
+
           /* A compressed run */
           if (rle)
             {
