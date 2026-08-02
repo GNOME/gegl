@@ -617,7 +617,8 @@ rgbe_read_old_rle (const rgbe_file *file,
   g_return_val_if_fail (cursor && *cursor > 0, FALSE);
   g_return_val_if_fail (pixels,                FALSE);
 
-  g_return_val_if_reached (FALSE);
+  g_warning ("Loading hdr images using old style rle is unsupported.");
+  return FALSE;
 }
 
 
