@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
 "POT-Creation-Date: 2026-07-28 22:32+0000\n"
-"PO-Revision-Date: 2026-08-05 17:03+0200\n"
+"PO-Revision-Date: 2026-08-10 13:41+0200\n"
 "Last-Translator: Kolbjørn Stuestøl <kolbjoern@stuestoel.no>\n"
 "Language-Team: Norwegian Nynorsk <l10n-no@lister.huftis.org>\n"
 "Language: nn\n"
@@ -588,7 +588,7 @@ msgstr "Behald grøn komponent"
 
 #: operations/common/alien-map.c:98
 msgid "Keep saturation component"
-msgstr "Behald metning-komponent"
+msgstr "Behald metting-komponent"
 
 #: operations/common/alien-map.c:100
 msgid "Keep component 3"
@@ -1310,7 +1310,7 @@ msgstr "Gråterskel"
 
 #: operations/common/color-rotate.c:67
 msgid "Colors with a saturation less than this will treated as gray"
-msgstr "Fargar med ei metning mindre enn dette vert handsama som grå"
+msgstr "Fargar med ei metting mindre enn dette vert handsama som grå"
 
 #: operations/common/color-rotate.c:71
 msgid "Gray mode"
@@ -1323,8 +1323,8 @@ msgid ""
 "Change to this: Change gray colors to this hue and saturation"
 msgstr ""
 "Handsam som dette: Grå fargar frå kjeldeområdet ovanfor vert handsama som om "
-"dei hadde denne fargen og metninga\n"
-"Endra til dette: Endra gråfargar til denne fargetonen og metninga"
+"dei hadde denne fargen og mettinga\n"
+"Endra til dette: Endra gråfargar til denne fargetonen og mettinga"
 
 #: operations/common/color-rotate.c:79 operations/common/component-extract.c:28
 #: operations/common/hue-chroma.c:25 operations/common/noise-cie-lch.c:35
@@ -1510,7 +1510,7 @@ msgstr "RGB blå"
 
 #: operations/common/component-extract.c:29
 msgid "HSV Saturation"
-msgstr "HSV-metning"
+msgstr "HSV-metting"
 
 #: operations/common/component-extract.c:30
 msgid "HSV Value"
@@ -1518,7 +1518,7 @@ msgstr "HSV-verdi"
 
 #: operations/common/component-extract.c:31
 msgid "HSL Saturation"
-msgstr "HSV-metning"
+msgstr "HSV-metting"
 
 #: operations/common/component-extract.c:32
 msgid "HSL Lightness"
@@ -2157,7 +2157,7 @@ msgstr "Styrken på lokal detaljforbetring"
 
 #: operations/common/fattal02.c:40 operations/common/mantiuk06.c:34
 msgid "Global color saturation factor"
-msgstr "Global fargemetningsfaktor"
+msgstr "Global fargemettingsfaktor"
 
 #: operations/common/fattal02.c:43
 msgid "Noise"
@@ -3854,7 +3854,7 @@ msgstr "Legg til HSV-støy"
 
 #: operations/common/noise-hsv.c:280
 msgid "Randomize hue, saturation and value independently"
-msgstr "Gjer kulør, metning og verdi tilfeldige uavhengig av kvarandre"
+msgstr "Gjer kulør, metting og verdi tilfeldige uavhengig av kvarandre"
 
 #: operations/common/noise-hurl.c:31 operations/common/noise-pick.c:32
 #: operations/common-gpl3+/noise-slur.c:34
@@ -4395,7 +4395,7 @@ msgstr ""
 
 #: operations/common/saturation.c:409
 msgid "Changes the saturation"
-msgstr "Endra metninga"
+msgstr "Endra mettinga"
 
 #: operations/common/save.c:27
 msgid "Path of file to save."
@@ -5167,7 +5167,7 @@ msgstr "SVG-fargematriseoperasjonen svg_matrix"
 
 #: operations/common/svg-saturate.c:128
 msgid "SVG Saturate"
-msgstr "SVG-metning"
+msgstr "SVG-metting"
 
 #: operations/common/svg-saturate.c:129
 msgid "SVG color matrix operation svg_saturate"
@@ -5272,15 +5272,15 @@ msgstr "Justering av fargeforsterking (kroma)"
 
 #: operations/common/vibrance.c:31
 msgid "Saturation scale factor"
-msgstr "Skaleringsfaktor for metning"
+msgstr "Skaleringsfaktor for metting"
 
 #: operations/common/vibrance.c:79
 msgid "Adjusts the saturation and vibrance of the image."
-msgstr "Justerer metninga og livskrafta for biletet"
+msgstr "Justerer mettinga og livskrafta for biletet"
 
 #: operations/common/vignette.c:32
 msgid "Vignette shape"
-msgstr "Vihnettform"
+msgstr "Vihgettform"
 
 #. TRANSLATORS: the string 'black' should not be translated
 #: operations/common/vignette.c:38
@@ -7363,7 +7363,7 @@ msgstr "Fargejustering i skuggane"
 #: operations/common-gpl3+/shadows-highlights.c:50
 #: operations/common-gpl3+/shadows-highlights-correction.c:46
 msgid "Adjust saturation of shadows"
-msgstr "Juster metninga i skuggane"
+msgstr "Juster mettinga i skuggane"
 
 #: operations/common-gpl3+/shadows-highlights.c:53
 #: operations/common-gpl3+/shadows-highlights-correction.c:49
@@ -7373,7 +7373,7 @@ msgstr "Juster fargane i høglysa"
 #: operations/common-gpl3+/shadows-highlights.c:54
 #: operations/common-gpl3+/shadows-highlights-correction.c:50
 msgid "Adjust saturation of highlights"
-msgstr "Juster metninga i høglysa"
+msgstr "Juster mettinga i høglysa"
 
 #: operations/common-gpl3+/shadows-highlights.c:242
 msgid "Shadows-Highlights"
@@ -10435,15 +10435,15 @@ msgstr "Breidd på kulørintervall "
 
 #: operations/workshop/selective-hue-saturation.c:39
 msgid "Saturation adjustment"
-msgstr "Justering av metning"
+msgstr "Justering av metting"
 
 #: operations/workshop/selective-hue-saturation.c:170
 msgid "Selective Hue-Saturation"
-msgstr "Selektiv kulør-metning"
+msgstr "Selektiv kulør-metting"
 
 #: operations/workshop/selective-hue-saturation.c:173
 msgid "Selective adjust Hue, Saturation and Lightness"
-msgstr "Selektiv justering av kulør, metning og lysverdi"
+msgstr "Selektiv justering av kulør, metting og lysverdi"
 
 #: operations/workshop/shuffle-search.c:32
 msgid "How many times to run optimization"
