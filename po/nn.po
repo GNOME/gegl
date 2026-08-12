@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2026-07-28 22:32+0000\n"
-"PO-Revision-Date: 2026-08-10 13:41+0200\n"
+"POT-Creation-Date: 2026-08-11 11:36+0000\n"
+"PO-Revision-Date: 2026-08-12 22:08+0200\n"
 "Last-Translator: Kolbjørn Stuestøl <kolbjoern@stuestoel.no>\n"
 "Language-Team: Norwegian Nynorsk <l10n-no@lister.huftis.org>\n"
 "Language: nn\n"
@@ -4526,7 +4526,7 @@ msgstr "Kuleforma topp-vinkel, som ein brøkdel av samsynsvinkelen"
 #. * arbitrary.
 #.
 #: operations/common/spherize.c:52 operations/common/unsharp-mask.c:31
-#: operations/common-gpl3+/edge.c:42
+#: operations/common-gpl3+/edge.c:42 operations/workshop/sharpen.c:9
 msgid "Amount"
 msgstr "Mengd"
 
@@ -5276,7 +5276,7 @@ msgstr "Skaleringsfaktor for metting"
 
 #: operations/common/vibrance.c:79
 msgid "Adjusts the saturation and vibrance of the image."
-msgstr "Justerer mettinga og livskrafta for biletet"
+msgstr "Justerer mettinga og livskrafta for biletet."
 
 #: operations/common/vignette.c:32
 msgid "Vignette shape"
@@ -10444,6 +10444,22 @@ msgstr "Selektiv kulør-metting"
 #: operations/workshop/selective-hue-saturation.c:173
 msgid "Selective adjust Hue, Saturation and Lightness"
 msgstr "Selektiv justering av kulør, metting og lysverdi"
+
+#: operations/workshop/sharpen.c:10
+msgid "Controls the amount of sharpness applied to an image"
+msgstr "Kontrollerar kor mykje biletet skal skjerpast"
+
+#: operations/workshop/sharpen.c:175 operations/workshop/sharpen.c:181
+msgid "Sharpen"
+msgstr "Gjer skarpare"
+
+#: operations/workshop/sharpen.c:177
+msgid ""
+"Sharpens the image by enhancing edge contrast using a standard 3x3 "
+"convolution kernel."
+msgstr ""
+"Gjer biletet skarpare ved å forbetra kantkontrasten ved å bruka ei standard "
+"3 × 3 konturutjamningskjerne."
 
 #: operations/workshop/shuffle-search.c:32
 msgid "How many times to run optimization"
