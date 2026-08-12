@@ -162,7 +162,7 @@ check-commit-log:
 meson-health:
   extends: .default
   rules:
-    - if: '$CI_COMMIT_MESSAGE =~ /^Update.*translation.*/'
+    - if: '$CI_COMMIT_MESSAGE =~ /^Update.*translation.*/ || $CI_COMMIT_MESSAGE =~ /^.*:\s*Update.*translation.*/'
       #commits pushed by GNOME Translation Robot do not need this job
       when: never
     - <<: *CI_MERGE
@@ -189,7 +189,7 @@ meson-health:
 branches-check:
   extends: .default
   rules:
-    - if: '$CI_COMMIT_MESSAGE =~ /^Update.*translation.*/'
+    - if: '$CI_COMMIT_MESSAGE =~ /^Update.*translation.*/ || $CI_COMMIT_MESSAGE =~ /^.*:\s*Update.*translation.*/'
       #commits pushed by GNOME Translation Robot do not need this job
       when: never
     - if: '$CI_PIPELINE_SOURCE == "push" && $CI_OPEN_MERGE_REQUESTS == null && $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH'
