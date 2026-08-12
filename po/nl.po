@@ -6,8 +6,8 @@
 msgid ""
 msgstr "Project-Id-Version: GEGL master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2026-07-28 22:32+0000\n"
-"PO-Revision-Date: 2026-07-28 10:59+0200\n"
+"POT-Creation-Date: 2026-08-11 11:36+0000\n"
+"PO-Revision-Date: 2026-08-12 10:59+0200\n"
 "Last-Translator: Dick Groskamp <dikgro@yahoo.co.uk>\n"
 "Language-Team: Dutch <gnome-nl-list@gnome.org>\n"
 "Language: nl\n"
@@ -4358,7 +4358,7 @@ msgstr "Bolkap van de tophoek, as fractie van de co-kijkhoek"
 #. * arbitrary.
 #.
 #: operations/common/spherize.c:52 operations/common/unsharp-mask.c:31
-#: operations/common-gpl3+/edge.c:42
+#: operations/common-gpl3+/edge.c:42 operations/workshop/sharpen.c:9
 msgid "Amount"
 msgstr "Hoeveelheid"
 
@@ -10016,9 +10016,23 @@ msgstr "Selectieve Tint/Verzadiging"
 msgid "Selective adjust Hue, Saturation and Lightness"
 msgstr "Tint, verzadiging en lichtheid selectief aanpassen"
 
+#: operations/workshop/sharpen.c:10
+msgid "Controls the amount of sharpness applied to an image"
+msgstr "Beheert de hoeveelheid scherpte die wordt toegepast op een afbeelding."
+
+#: operations/workshop/sharpen.c:175 operations/workshop/sharpen.c:181
+msgid "Sharpen"
+msgstr "Verscherpen"
+
+#: operations/workshop/sharpen.c:177
+msgid ""
+"Sharpens the image by enhancing edge contrast using a standard 3x3 "
+"convolution kernel."
+msgstr "Verscherpt de afbeelding door het contrast van de rand te verbeteren met een standaard 3x3 convolutiekernel."
+
 #: operations/workshop/shuffle-search.c:32
 msgid "How many times to run optimization"
-msgstr "Hoe vaak de optimalisatie moet wordne uitgevoerd"
+msgstr "Hoe vaak de optimalisatie moet worden uitgevoerd"
 
 #: operations/workshop/shuffle-search.c:38
 msgid "Chance"
