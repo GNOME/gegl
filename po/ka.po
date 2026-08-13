@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2026-07-28 22:32+0000\n"
-"PO-Revision-Date: 2026-07-29 07:11+0200\n"
+"POT-Creation-Date: 2026-08-11 11:36+0000\n"
+"PO-Revision-Date: 2026-08-13 07:20+0200\n"
 "Last-Translator: Ekaterine Papava <papava.e@gtu.ge>\n"
 "Language-Team: Georgian <(nothing)>\n"
 "Language: ka\n"
@@ -4301,7 +4301,7 @@ msgstr ""
 #. * arbitrary.
 #.
 #: operations/common/spherize.c:52 operations/common/unsharp-mask.c:31
-#: operations/common-gpl3+/edge.c:42
+#: operations/common-gpl3+/edge.c:42 operations/workshop/sharpen.c:9
 msgid "Amount"
 msgstr "რაოდენობა"
 
@@ -8600,7 +8600,6 @@ msgid ""
 msgstr ""
 
 #: operations/external/sdl3-display.c:207
-#| msgid "Display"
 msgid "SDL3 Display"
 msgstr "SDL3-ის ჩვენება"
 
@@ -9839,11 +9838,11 @@ msgstr ""
 
 #: operations/workshop/gradient-map.c:26
 msgid "Stop 1"
-msgstr ""
+msgstr "გაჩერება 1"
 
 #: operations/workshop/gradient-map.c:28
 msgid "Stop 2"
-msgstr ""
+msgstr "გაჩერება 2"
 
 #: operations/workshop/gradient-map.c:29
 msgid "Color 3"
@@ -9851,7 +9850,7 @@ msgstr "ფერი 3"
 
 #: operations/workshop/gradient-map.c:30
 msgid "Stop 3"
-msgstr ""
+msgstr "გაჩერება 3"
 
 #: operations/workshop/gradient-map.c:31
 msgid "Color 4"
@@ -9859,7 +9858,7 @@ msgstr "ფერი 4"
 
 #: operations/workshop/gradient-map.c:32
 msgid "Stop 4"
-msgstr ""
+msgstr "გაჩერება 4"
 
 #: operations/workshop/gradient-map.c:33
 msgid "Color 5"
@@ -9867,7 +9866,7 @@ msgstr "ფერი 5"
 
 #: operations/workshop/gradient-map.c:34
 msgid "Stop 5"
-msgstr ""
+msgstr "გაჩერება 5"
 
 #: operations/workshop/gradient-map.c:240
 msgid "Gradient Map"
@@ -9948,6 +9947,20 @@ msgstr ""
 
 #: operations/workshop/selective-hue-saturation.c:173
 msgid "Selective adjust Hue, Saturation and Lightness"
+msgstr ""
+
+#: operations/workshop/sharpen.c:10
+msgid "Controls the amount of sharpness applied to an image"
+msgstr ""
+
+#: operations/workshop/sharpen.c:175 operations/workshop/sharpen.c:181
+msgid "Sharpen"
+msgstr "გამკვეთრება"
+
+#: operations/workshop/sharpen.c:177
+msgid ""
+"Sharpens the image by enhancing edge contrast using a standard 3x3 "
+"convolution kernel."
 msgstr ""
 
 #: operations/workshop/shuffle-search.c:32
