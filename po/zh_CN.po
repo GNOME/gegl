@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl-master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2026-07-28 22:32+0000\n"
-"PO-Revision-Date: 2026-08-03 11:02+0800\n"
+"POT-Creation-Date: 2026-08-11 11:36+0000\n"
+"PO-Revision-Date: 2026-08-13 12:54+0800\n"
 "Last-Translator: lumingzh <lumingzh@qq.com>\n"
 "Language-Team: Chinese (China) <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
@@ -4398,7 +4398,7 @@ msgstr "球冠的顶点角度，作为视图协同角度的一部分"
 #. * arbitrary.
 #.
 #: operations/common/spherize.c:52 operations/common/unsharp-mask.c:31
-#: operations/common-gpl3+/edge.c:42
+#: operations/common-gpl3+/edge.c:42 operations/workshop/sharpen.c:9
 msgid "Amount"
 msgstr "量值"
 
@@ -10163,6 +10163,20 @@ msgstr "选择性色相-饱和度"
 #: operations/workshop/selective-hue-saturation.c:173
 msgid "Selective adjust Hue, Saturation and Lightness"
 msgstr "选择性调整色相、饱和度和亮度"
+
+#: operations/workshop/sharpen.c:10
+msgid "Controls the amount of sharpness applied to an image"
+msgstr "控制应用至图像的锐化量"
+
+#: operations/workshop/sharpen.c:175 operations/workshop/sharpen.c:181
+msgid "Sharpen"
+msgstr "锐化"
+
+#: operations/workshop/sharpen.c:177
+msgid ""
+"Sharpens the image by enhancing edge contrast using a standard 3x3 "
+"convolution kernel."
+msgstr "通过使用标准 3x3 卷积内核的增强边缘对比度来锐化图像。"
 
 #: operations/workshop/shuffle-search.c:32
 msgid "How many times to run optimization"
