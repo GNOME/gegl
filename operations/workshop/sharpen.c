@@ -28,6 +28,19 @@ prepare (GeglOperation *operation)
                              babl_format_with_space ("R'G'B'A float", space));
 }
 
+static GeglRectangle
+get_required_for_output (GeglOperation       *operation,
+                         const gchar         *input_pad,
+                         const GeglRectangle *roi)
+{
+  GeglRectangle ret = *roi;
+  ret.x -= 1;
+  ret.y -= 1;
+  ret.width += 2;
+  ret.height += 2;
+  return ret;
+}
+
 static gboolean
 process (GeglOperation       *op,
          GeglBuffer          *input,
@@ -167,6 +180,8 @@ gegl_op_class_init (GeglOpClass *klass)
   GeglOperationClass       *operation_class = GEGL_OPERATION_CLASS (klass);
   GeglOperationFilterClass *filter_class    = GEGL_OPERATION_FILTER_CLASS (klass);
 
+  operation_class->get_required_for_output   = get_required_for_output;
+  operation_class->get_invalidated_by_change = get_required_for_output;
   operation_class->prepare        = prepare;
   filter_class->process           = process;
 
@@ -181,5 +196,5 @@ gegl_op_class_init (GeglOpClass *klass)
                                  "gimp:menu-label", _("Sharpen"),
                                  NULL);
 }
-
 #endif
+
