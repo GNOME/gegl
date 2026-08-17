@@ -1,14 +1,14 @@
 # Japanese translation for GEGL.
 # Copyright (C) 2025 gegl's COPYRIGHT HOLDER
 # This file is distributed under the same license as the GEGL package.
-# YOSHIDA Shigeto <shigep640509@gmail.com>, 2025.
+# YOSHIDA Shigeto <shigep640509@gmail.com>, 2025-2026.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2026-02-28 17:23+0000\n"
-"PO-Revision-Date: 2026-03-03 09:00+0900\n"
+"POT-Creation-Date: 2026-08-14 12:15+0000\n"
+"PO-Revision-Date: 2026-08-17 07:00+0900\n"
 "Last-Translator: YOSHIDA Shigeto <shigep640509@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.gnome.org/teams/ja/>\n"
 "Language: ja\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 3.8\n"
+"X-Generator: Poedit 3.9\n"
 
 #: bin/gegl.c:184
 #, c-format
@@ -350,40 +350,40 @@ msgstr "常にしない"
 msgid "Always"
 msgstr "常にする"
 
-#: gegl/gegl-init.c:427
+#: gegl/gegl-init.c:431
 msgid "Where GEGL stores its swap"
 msgstr "GEGL がスワップファイルを保管する場所"
 
-#: gegl/gegl-init.c:432
+#: gegl/gegl-init.c:436
 msgid "Compression algorithm used for data stored in the swap"
 msgstr "スワップファイル内に格納されるデータの圧縮アルゴリズム"
 
-#: gegl/gegl-init.c:437
+#: gegl/gegl-init.c:441
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr "画像のキャッシュ用に (およそ) どのくらいのメモリを使用するか"
 
-#: gegl/gegl-init.c:442
+#: gegl/gegl-init.c:446
 msgid "Default size of tiles in GeglBuffers"
 msgstr "GeglBuffer におけるタイルのデフォルトサイズ"
 
-#: gegl/gegl-init.c:447
+#: gegl/gegl-init.c:451
 msgid "The count of pixels to compute simultaneously"
 msgstr "同時に計算するピクセルの数"
 
-#: gegl/gegl-init.c:452
+#: gegl/gegl-init.c:456
 msgid ""
 "The quality of rendering, a value between 0.0 (fast) and 1.0 (reference)"
 msgstr "レンダリングの品質は 0.0 (高速) から1.0 (基準) までの値です。"
 
-#: gegl/gegl-init.c:457
+#: gegl/gegl-init.c:461
 msgid "The number of concurrent processing threads to use"
 msgstr "使用する並列処理スレッドの数"
 
-#: gegl/gegl-init.c:462
+#: gegl/gegl-init.c:466
 msgid "Disable OpenCL"
 msgstr "OpenCL を無効"
 
-#: gegl/gegl-init.c:474
+#: gegl/gegl-init.c:478
 msgid "Show GEGL Options"
 msgstr "GEGL オプションを表示"
 
@@ -660,7 +660,7 @@ msgid "Bump"
 msgstr "バンプ"
 
 #: operations/common/bevel.c:54
-msgid "Bevel Type"
+msgid "Bevel type"
 msgstr "ベベルの種類"
 
 #: operations/common/bevel.c:57
@@ -702,7 +702,7 @@ msgid "Add"
 msgstr "追加"
 
 #: operations/common/bevel.c:76 operations/common-gpl3+/sinus.c:67
-msgid "Blend Mode"
+msgid "Blend mode"
 msgstr "合成モード"
 
 #: operations/common/bevel.c:79
@@ -716,7 +716,7 @@ msgstr ""
 "配置したり、GIMP のブレンドオプションと一緒に使用したりします。"
 
 #: operations/common/bevel.c:81
-msgid "Distance Map Setting"
+msgid "Distance map setting"
 msgstr "距離マップの設定"
 
 #: operations/common/bevel.c:83
@@ -773,7 +773,7 @@ msgid "Emboss depth - Brings out depth and detail of the bump bevel."
 msgstr "エンボスの深さ ― バンプベベルの奥行きとディテールを強調します。"
 
 #: operations/common/bevel.c:110
-msgid "Light Angle"
+msgid "Light angle"
 msgstr "光源の角度"
 
 #: operations/common/bevel.c:111
@@ -1048,7 +1048,7 @@ msgstr ""
 #: operations/common-gpl3+/maze.c:42 operations/common-gpl3+/noise-solid.c:63
 #: operations/common-gpl3+/plasma.c:54 operations/common-gpl3+/sinus.c:75
 #: operations/common-gpl3+/spiral.c:86 operations/core/crop.c:35
-#: operations/external/svg-load.c:30 operations/external/text.c:61
+#: operations/external/svg-load.c:34 operations/external/text.c:61
 #: operations/external/v4l.c:28 operations/external/vector-stroke.c:30
 #: operations/workshop/external/line-profile.c:39
 #: operations/workshop/external/v4l2.c:26
@@ -1067,7 +1067,7 @@ msgstr "セルの水平方向のピクセル幅です"
 #: operations/common-gpl3+/engrave.c:31 operations/common-gpl3+/maze.c:50
 #: operations/common-gpl3+/noise-solid.c:71 operations/common-gpl3+/plasma.c:62
 #: operations/common-gpl3+/sinus.c:83 operations/common-gpl3+/spiral.c:94
-#: operations/core/crop.c:40 operations/external/svg-load.c:32
+#: operations/core/crop.c:40 operations/external/svg-load.c:36
 #: operations/external/text.c:63 operations/external/v4l.c:31
 #: operations/workshop/external/line-profile.c:41
 #: operations/workshop/external/v4l2.c:28
@@ -1081,7 +1081,9 @@ msgstr "セルの垂直方向のピクセル幅です"
 
 #: operations/common/checkerboard.c:42 operations/common/grid.c:38
 #: operations/common/mirrors.c:46 operations/common/pixelize.c:51
+#: operations/common-gpl3+/bayer-matrix.c:73
 #: operations/common-gpl3+/bump-map.c:62
+#: operations/common-gpl3+/linear-sinusoid.c:81
 #: operations/seamless-clone/seamless-clone.c:26
 #: operations/seamless-clone/seamless-clone-compose.c:25
 msgid "Offset X"
@@ -1093,7 +1095,9 @@ msgstr "グリッドの開始位置における水平方向のオフセット (�
 
 #: operations/common/checkerboard.c:48 operations/common/grid.c:44
 #: operations/common/mirrors.c:52 operations/common/pixelize.c:58
+#: operations/common-gpl3+/bayer-matrix.c:80
 #: operations/common-gpl3+/bump-map.c:68
+#: operations/common-gpl3+/linear-sinusoid.c:88
 #: operations/seamless-clone/seamless-clone.c:32
 #: operations/seamless-clone/seamless-clone-compose.c:31
 msgid "Offset Y"
@@ -1141,7 +1145,7 @@ msgstr "市松模様 (チェック模様) を描画"
 #: operations/common/color.c:24 operations/common/color.c:87
 #: operations/common/color-overlay.c:26 operations/common/dropshadow.c:67
 #: operations/common/grid.c:64 operations/common/inner-glow.c:80
-#: operations/common/long-shadow.c:83 operations/common/rectangle.c:48
+#: operations/common/long-shadow.c:85 operations/common/rectangle.c:48
 #: operations/common/vignette.c:36 operations/common-gpl3+/color-to-alpha.c:29
 #: operations/common-gpl3+/supernova.c:60
 #: operations/common-gpl3+/tile-paper.c:31
@@ -1184,7 +1188,7 @@ msgstr "彩度"
 
 #. FIXME: With a large angle, we lose AreaFilter's flavours
 #: operations/common/color-assimilation-grid.c:35
-#: operations/common/long-shadow.c:49 operations/common/motion-blur-linear.c:32
+#: operations/common/long-shadow.c:55 operations/common/motion-blur-linear.c:32
 #: operations/common/newsprint.c:158
 #: operations/common-gpl3+/linear-sinusoid.c:65
 #: operations/common-gpl3+/motion-blur-circular.c:51
@@ -1771,7 +1775,7 @@ msgid "Alpha channel"
 msgstr "アルファチャンネル"
 
 #: operations/common/convolution-matrix.c:64
-#: operations/common-cxx/distance-transform.cc:55
+#: operations/common-cxx/distance-transform.cc:56
 #: operations/workshop/connected-components.c:41
 msgid "Normalize"
 msgstr "標準化"
@@ -1831,20 +1835,20 @@ msgstr ""
 "2 つのガウスぼかしの差に基づき、エッジの太さを調整できるエッジ検出を行います"
 
 #: operations/common/display.c:23 operations/external/sdl2-display.c:28
-#: operations/external/sdl-display.c:25
+#: operations/external/sdl3-display.c:28 operations/external/sdl-display.c:25
 msgid "Window title"
 msgstr "ウィンドウの題名"
 
 #: operations/common/display.c:24 operations/external/sdl2-display.c:29
-#: operations/external/sdl-display.c:26
+#: operations/external/sdl3-display.c:29 operations/external/sdl-display.c:26
 msgid "Title to be given to output window"
 msgstr "出力ウィンドウに付ける名前です"
 
-#: operations/common/display.c:142
+#: operations/common/display.c:141
 msgid "Display"
 msgstr "ディスプレイ"
 
-#: operations/common/display.c:144
+#: operations/common/display.c:143
 msgid "Display the input buffer in a window."
 msgstr "入力バッファーをウィンドウに表示します。"
 
@@ -1918,8 +1922,8 @@ msgstr ""
 "子化によるバンディング (縞模様) を抑えるために、さまざまなディザリング手法を"
 "指定できます。"
 
-#: operations/common/domain-transform.c:24 operations/external/jpg-save.c:28
-#: operations/external/webp-save.c:28
+#: operations/common/domain-transform.c:24 operations/external/jpg-save.c:34
+#: operations/external/webp-save.c:31
 msgid "Quality"
 msgstr "品質"
 
@@ -2075,7 +2079,7 @@ msgid "Performs edge detection using a Gaussian derivative method"
 msgstr "ガウス関数の微分を使ってエッジ検出を行います"
 
 #: operations/common/edge-sobel.c:31
-msgid "Keep Sign"
+msgid "Keep sign"
 msgstr "符号を保持"
 
 #: operations/common/edge-sobel.c:32
@@ -2094,35 +2098,35 @@ msgstr "ソーベル法によるエッジ検出"
 msgid "Specialized direction-dependent edge detection"
 msgstr "特定の方向に依存したエッジ検出を行います"
 
-#: operations/common/exp-combine.c:25
+#: operations/common/exp-combine.c:28
 msgid "Exposure values"
 msgstr "露出値"
 
-#: operations/common/exp-combine.c:26
+#: operations/common/exp-combine.c:29
 msgid "Relative brightness of each exposure in EV"
 msgstr "各露出の相対的な明度 (EV 単位)"
 
-#: operations/common/exp-combine.c:28
+#: operations/common/exp-combine.c:31
 msgid "Discretization bits"
 msgstr "離散化のビット数"
 
-#: operations/common/exp-combine.c:29
+#: operations/common/exp-combine.c:32
 msgid "Log2 of source's discretization steps"
 msgstr "ソースの離散化ステップの Log₂ (2 を底とする対数)"
 
-#: operations/common/exp-combine.c:32
+#: operations/common/exp-combine.c:35
 msgid "Weight sigma"
 msgstr "重みのシグマ (標準偏差)"
 
-#: operations/common/exp-combine.c:33
+#: operations/common/exp-combine.c:36
 msgid "Weight distribution sigma controlling response contributions"
 msgstr "レスポンス (反応) の寄与を制御する重み分布のシグマ"
 
-#: operations/common/exp-combine.c:1270
+#: operations/common/exp-combine.c:1263
 msgid "Combine Exposures"
 msgstr "複数の露出を合成"
 
-#: operations/common/exp-combine.c:1273
+#: operations/common/exp-combine.c:1266
 msgid "Combine multiple scene exposures into one high dynamic range image."
 msgstr ""
 "複数の露出で撮影されたシーンを合成して 1 枚のハイダイナミックレンジ (HDR) 画"
@@ -2281,18 +2285,18 @@ msgstr "1D ガウスぼかし"
 
 #: operations/common/gegl-buffer-load-op.c:24
 #: operations/common/gegl-buffer-save-op.c:24 operations/common/icc-load.c:24
-#: operations/common/icc-save.c:25 operations/common/magick-load.c:26
+#: operations/common/icc-save.c:27 operations/common/magick-load.c:26
 #: operations/common/open-buffer.c:25 operations/common/save.c:26
-#: operations/core/load.c:29 operations/external/exr-save.cc:24
+#: operations/core/load.c:36 operations/external/exr-save.cc:24
 #: operations/external/ff-load.c:30 operations/external/ff-save.c:30
-#: operations/external/gif-load.c:34 operations/external/jp2-load.c:25
-#: operations/external/jpg-load.c:24 operations/external/jpg-save.c:25
-#: operations/external/npy-save.c:31 operations/external/png-load.c:32
-#: operations/external/png-save.c:26 operations/external/ppm-load.c:25
+#: operations/external/gif-load.c:37 operations/external/jp2-load.c:28
+#: operations/external/jpg-load.c:34 operations/external/jpg-save.c:31
+#: operations/external/npy-save.c:35 operations/external/png-load.c:41
+#: operations/external/png-save.c:34 operations/external/ppm-load.c:31
 #: operations/external/ppm-save.c:25 operations/external/rgbe-load.c:26
-#: operations/external/rgbe-save.c:26 operations/external/svg-load.c:25
-#: operations/external/tiff-load.c:29 operations/external/tiff-save.c:25
-#: operations/external/webp-load.c:25 operations/external/webp-save.c:25
+#: operations/external/rgbe-save.c:26 operations/external/svg-load.c:29
+#: operations/external/tiff-load.c:36 operations/external/tiff-save.c:31
+#: operations/external/webp-load.c:28 operations/external/webp-save.c:28
 #: operations/workshop/external/gluas.c:37
 #: operations/workshop/rawbayer-load.c:25
 msgid "File"
@@ -2386,7 +2390,7 @@ msgid "Grid renderer"
 msgstr "グリッドを描画します"
 
 #: operations/common/high-pass.c:24
-msgid "Std. Dev."
+msgid "Standard deviation"
 msgstr "標準偏差"
 
 #: operations/common/high-pass.c:31
@@ -2434,10 +2438,10 @@ msgstr "色相-彩度"
 msgid "Adjust LCH Hue, Chroma, and Lightness"
 msgstr "LCH の色相・彩度・明度を調整します"
 
-#: operations/common/icc-load.c:25 operations/external/gif-load.c:35
-#: operations/external/jp2-load.c:26 operations/external/jpg-load.c:25
-#: operations/external/svg-load.c:26 operations/external/tiff-load.c:30
-#: operations/external/webp-load.c:26
+#: operations/common/icc-load.c:25 operations/external/gif-load.c:38
+#: operations/external/jp2-load.c:29 operations/external/jpg-load.c:35
+#: operations/external/svg-load.c:30 operations/external/tiff-load.c:37
+#: operations/external/webp-load.c:29
 msgid "Path of file to load"
 msgstr "読み込むファイルのパス"
 
@@ -2449,7 +2453,7 @@ msgstr "ICC ファイルを読み込み"
 msgid "ICC profile loader."
 msgstr "ICC プロファイルの読み込み処理です。"
 
-#: operations/common/icc-save.c:26
+#: operations/common/icc-save.c:28
 msgid "Target path and filename"
 msgstr "保存先のパスとファイル"
 
@@ -2568,7 +2572,7 @@ msgstr "光彩 (内側)..."
 msgid "Node"
 msgstr "ノード"
 
-#: operations/common/introspect.c:224
+#: operations/common/introspect.c:239
 msgid "GEGL graph visualizer."
 msgstr "GEGLグラフ可視化ツールです。"
 
@@ -2925,65 +2929,65 @@ msgstr "シャドウのみ"
 msgid "Shadow minus image"
 msgstr "シャドウ - 画像"
 
-#: operations/common/long-shadow.c:44 operations/common-gpl3+/wind.c:45
+#: operations/common/long-shadow.c:50 operations/common-gpl3+/wind.c:45
 msgid "Style"
 msgstr "種類"
 
-#: operations/common/long-shadow.c:47
+#: operations/common/long-shadow.c:53
 msgid "Shadow style"
 msgstr "シャドウの種類"
 
-#: operations/common/long-shadow.c:50
+#: operations/common/long-shadow.c:56
 msgid "Shadow angle"
 msgstr "シャドウの角度"
 
-#: operations/common/long-shadow.c:55 operations/common/motion-blur-linear.c:25
+#: operations/common/long-shadow.c:61 operations/common/motion-blur-linear.c:25
 msgid "Length"
 msgstr "長さ"
 
-#: operations/common/long-shadow.c:56
+#: operations/common/long-shadow.c:62
 msgid "Shadow length"
 msgstr "シャドウの長さ"
 
-#: operations/common/long-shadow.c:66 operations/common/long-shadow.c:81
+#: operations/common/long-shadow.c:70 operations/common/long-shadow.c:83
 #: operations/common-cxx/focus-blur.c:95
 msgid "Midpoint"
 msgstr "中間点"
 
-#: operations/common/long-shadow.c:67
+#: operations/common/long-shadow.c:71
 msgid "Shadow fade midpoint"
 msgstr "シャドウのフェード中間点"
 
-#: operations/common/long-shadow.c:72
+#: operations/common/long-shadow.c:76
 msgid "Midpoint (relative)"
 msgstr "中間点 (相対的)"
 
-#: operations/common/long-shadow.c:73
+#: operations/common/long-shadow.c:77
 msgid "Shadow fade midpoint, as a factor of the shadow length"
 msgstr "シャドウのフェード中間点をシャドウの長さに対する比率で指定します"
 
-#: operations/common/long-shadow.c:84
+#: operations/common/long-shadow.c:86
 msgid "Shadow color"
 msgstr "シャドウの色"
 
-#: operations/common/long-shadow.c:87
+#: operations/common/long-shadow.c:89
 msgid "Composition"
 msgstr "合成"
 
-#: operations/common/long-shadow.c:90
+#: operations/common/long-shadow.c:92
 msgid "Output composition"
 msgstr "出力の合成方法"
 
-#: operations/common/long-shadow.c:1646
+#: operations/common/long-shadow.c:1648
 msgid "Long Shadow"
 msgstr "ロングシャドウ"
 
-#: operations/common/long-shadow.c:1650
+#: operations/common/long-shadow.c:1652
 msgid "Creates a long-shadow effect"
 msgstr "長い影の効果を作成します"
 
-#: operations/common/magick-load.c:27 operations/core/load.c:30
-#: operations/external/png-load.c:33 operations/external/ppm-load.c:26
+#: operations/common/magick-load.c:27 operations/core/load.c:37
+#: operations/external/png-load.c:42 operations/external/ppm-load.c:32
 #: operations/external/raw-load.c:37 operations/external/rgbe-load.c:27
 #: operations/workshop/rawbayer-load.c:26
 msgid "Path of file to load."
@@ -3271,15 +3275,15 @@ msgid "Preserve luminosity"
 msgstr "輝度を保持する"
 
 #: operations/common/mono-mixer.c:26
-msgid "Red Channel Multiplier"
+msgid "Red channel multiplier"
 msgstr "赤チャンネルの倍率"
 
 #: operations/common/mono-mixer.c:30
-msgid "Green Channel Multiplier"
+msgid "Green channel multiplier"
 msgstr "緑チャンネルの倍率"
 
 #: operations/common/mono-mixer.c:34
-msgid "Blue Channel Multiplier"
+msgid "Blue channel multiplier"
 msgstr "青チャンネルの倍率"
 
 #: operations/common/mono-mixer.c:113
@@ -3769,7 +3773,7 @@ msgstr ""
 "周波の異常を回避します"
 
 #: operations/common/newsprint.c:178
-msgid "Angle Boost"
+msgid "Angle boost"
 msgstr "角度を強調"
 
 #: operations/common/newsprint.c:180
@@ -4011,7 +4015,7 @@ msgid "The amount by which to scale the height values"
 msgstr "高さの値をどれだけスケーリングするかの量"
 
 #: operations/common/normal-map.c:35
-msgid "X Component"
+msgid "X component"
 msgstr "X 成分 (X 方向の要素)"
 
 #: operations/common/normal-map.c:38
@@ -4019,7 +4023,7 @@ msgid "The component used for the X coordinates"
 msgstr "X 座標に使用する成分"
 
 #: operations/common/normal-map.c:40
-msgid "Y Component"
+msgid "Y component"
 msgstr "Y 成分 (Y 方向の要素)"
 
 #: operations/common/normal-map.c:43
@@ -4043,7 +4047,7 @@ msgid "Flip the Y coordinates"
 msgstr "Y 座標を反転する"
 
 #: operations/common/normal-map.c:51
-msgid "Full Z Range"
+msgid "Full Z range"
 msgstr "Z 範囲をフルに使用"
 
 #: operations/common/normal-map.c:52
@@ -4059,12 +4063,12 @@ msgstr "タイル可能"
 msgid "Generate a tileable map"
 msgstr "継ぎ目のない (タイル可能な) マップを生成"
 
-#: operations/common/normal-map.c:248
+#: operations/common/normal-map.c:271
 msgid "Normal Map"
 msgstr "法線マップ"
 
 #  ツールチップのメッセージ
-#: operations/common/normal-map.c:251
+#: operations/common/normal-map.c:274
 msgid "Generate a normal map from a height map"
 msgstr "高さマップから法線マップを生成します"
 
@@ -4196,7 +4200,7 @@ msgstr "各ブロック内のピクセルの垂直方向のサイズ比です"
 #: operations/common/pixelize.c:75 operations/common-gpl3+/apply-lens.c:44
 #: operations/common-gpl3+/cubism.c:39
 #: operations/common-gpl3+/lens-distortion.c:57
-#: operations/common-gpl3+/tile-paper.c:76
+#: operations/common-gpl3+/maze.c:71 operations/common-gpl3+/tile-paper.c:76
 msgid "Background color"
 msgstr "背景色"
 
@@ -4344,12 +4348,12 @@ msgstr "明るさへの順応"
 msgid "Adaptation to light variation across the image"
 msgstr "画像全体にわたる明るさの変化に適応します"
 
-#: operations/common/reinhard05.c:317
+#: operations/common/reinhard05.c:318
 msgid "Reinhard 2005 Tone Mapping"
 msgstr "Reinhard 2005 トーンマッピング"
 
 #  ツールチップのメッセージ
-#: operations/common/reinhard05.c:322
+#: operations/common/reinhard05.c:323
 msgid ""
 "Adapt an image, which may have a high dynamic range, for presentation using "
 "a low dynamic range. This is an efficient global operator derived from "
@@ -4422,16 +4426,16 @@ msgstr "彩度を変更します"
 msgid "Path of file to save."
 msgstr "保存するファイルのパスです。"
 
-#: operations/common/save.c:28 operations/core/load.c:33
-#: operations/external/jpg-save.c:44 operations/external/png-load.c:36
-#: operations/external/png-save.c:34 operations/external/tiff-load.c:39
-#: operations/external/tiff-save.c:34
+#: operations/common/save.c:28 operations/core/load.c:40
+#: operations/external/jpg-save.c:50 operations/external/png-load.c:45
+#: operations/external/png-save.c:42 operations/external/tiff-load.c:46
+#: operations/external/tiff-save.c:40
 msgid "Metadata"
 msgstr "メタデータ"
 
-#: operations/common/save.c:29 operations/core/load.c:34
-#: operations/external/jpg-save.c:45 operations/external/png-load.c:37
-#: operations/external/png-save.c:35
+#: operations/common/save.c:29 operations/core/load.c:41
+#: operations/external/jpg-save.c:51 operations/external/png-load.c:46
+#: operations/external/png-save.c:43
 msgid "Object providing image metadata"
 msgstr "画像メタデータを提供するオブジェクト"
 
@@ -4550,7 +4554,7 @@ msgstr "球面キャップ (頂部) の角度 (視野角の余角に対する割
 #. * arbitrary.
 #.
 #: operations/common/spherize.c:52 operations/common/unsharp-mask.c:31
-#: operations/common-gpl3+/edge.c:42
+#: operations/common-gpl3+/edge.c:42 operations/workshop/sharpen.c:9
 msgid "Amount"
 msgstr "量"
 
@@ -5396,7 +5400,7 @@ msgstr "空間正規化"
 
 #: operations/common/waterpixels.c:49
 msgid ""
-"trade-off between superpixel regularity and adherence to object boundaries"
+"Trade-off between superpixel regularity and adherence to object boundaries"
 msgstr "スーパーピクセルの規則性とオブジェクトの輪郭への追従性とのトレードオフ"
 
 #: operations/common/waterpixels.c:52
@@ -5430,11 +5434,11 @@ msgstr "フラグ"
 msgid "Pointer to flag value for unlabelled pixels"
 msgstr "ラベルなしピクセル用のフラグ値へのポインター"
 
-#: operations/common/watershed-transform.c:489
+#: operations/common/watershed-transform.c:492
 msgid "Watershed Transform"
 msgstr "ウォーターシェッド変換"
 
-#: operations/common/watershed-transform.c:492
+#: operations/common/watershed-transform.c:495
 msgid ""
 "Labels propagation by watershed transformation. Output buffer will keep the "
 "input format. Unlabelled pixels are marked with a given flag value (by "
@@ -5509,35 +5513,38 @@ msgid "Edge handling"
 msgstr "エッジの取り扱い"
 
 #: operations/common-cxx/distance-transform.cc:41
-msgid "How areas outside the input are considered when calculating distance"
-msgstr "距離を計算する際に、入力の外側の領域をどのように扱うかです"
+msgid ""
+"How areas outside the input are considered when calculating distance. Also "
+"known as: boundary conditions."
+msgstr ""
+"距離を計算する際に、入力の外側の領域をどのように扱うかです。別名: 境界条件"
 
-#: operations/common-cxx/distance-transform.cc:43
+#: operations/common-cxx/distance-transform.cc:44
 msgid "Threshold low"
 msgstr "しきい値 (低)"
 
-#: operations/common-cxx/distance-transform.cc:46
+#: operations/common-cxx/distance-transform.cc:47
 msgid "Threshold high"
 msgstr "しきい値 (高)"
 
-#: operations/common-cxx/distance-transform.cc:49
-msgid "Grayscale Averaging"
+#: operations/common-cxx/distance-transform.cc:50
+msgid "Grayscale averaging"
 msgstr "グレースケールの平均化"
 
-#: operations/common-cxx/distance-transform.cc:50
+#: operations/common-cxx/distance-transform.cc:51
 msgid "Number of computations for grayscale averaging"
 msgstr "グレースケール平均化のための計算回数"
 
-#: operations/common-cxx/distance-transform.cc:56
+#: operations/common-cxx/distance-transform.cc:57
 msgid "Normalize output to range 0.0 to 1.0."
 msgstr "出力を 0.0 から 1.0 の範囲に正規化します。"
 
-#: operations/common-cxx/distance-transform.cc:532
+#: operations/common-cxx/distance-transform.cc:533
 msgid "Distance Transform"
 msgstr "距離変換"
 
 #  ツールチップのメッセージ
-#: operations/common-cxx/distance-transform.cc:536
+#: operations/common-cxx/distance-transform.cc:537
 msgid "Calculate a distance transform"
 msgstr "距離変換を計算します"
 
@@ -5810,7 +5817,7 @@ msgid "Number of subdivisions"
 msgstr "細分化の回数"
 
 #: operations/common-gpl3+/bayer-matrix.c:29 operations/common-gpl3+/sinus.c:31
-msgid "X Scale"
+msgid "Scale X"
 msgstr "X 方向のスケール (拡大率)"
 
 #: operations/common-gpl3+/bayer-matrix.c:30
@@ -5818,12 +5825,12 @@ msgid "Horizontal pattern scale"
 msgstr "パターンの水平方向スケール"
 
 #: operations/common-gpl3+/bayer-matrix.c:36 operations/common-gpl3+/sinus.c:38
-msgid "Y Scale"
+msgid "Scale Y"
 msgstr "Y 方向のスケール (拡大率)"
 
 #: operations/common-gpl3+/bayer-matrix.c:37
 msgid "Vertical pattern scale"
-msgstr "垂直パターンのスケール"
+msgstr "パターンの垂直方向スケール"
 
 #: operations/common-gpl3+/bayer-matrix.c:44
 msgid "0°"
@@ -5879,20 +5886,10 @@ msgstr "指数"
 msgid "Value exponent (logarithmic scale)"
 msgstr "値の指数 (対数スケール)"
 
-#: operations/common-gpl3+/bayer-matrix.c:73
-#: operations/common-gpl3+/linear-sinusoid.c:81
-msgid "X Offset"
-msgstr "X 方向のオフセット (ずらし量)"
-
 #: operations/common-gpl3+/bayer-matrix.c:74
 #: operations/common-gpl3+/linear-sinusoid.c:82
 msgid "Offset for X axis"
 msgstr "X 軸のオフセット"
-
-#: operations/common-gpl3+/bayer-matrix.c:80
-#: operations/common-gpl3+/linear-sinusoid.c:88
-msgid "Y Offset"
-msgstr "Y 方向のオフセット (ずらし量)"
 
 #: operations/common-gpl3+/bayer-matrix.c:81
 #: operations/common-gpl3+/linear-sinusoid.c:89
@@ -5961,7 +5958,7 @@ msgid "Ambient lighting factor"
 msgstr "環境光 (アンビエントライティング) 係数"
 
 #: operations/common-gpl3+/bump-map.c:472
-msgid "Height Map"
+msgid "Height map"
 msgstr "高さマップ"
 
 #: operations/common-gpl3+/bump-map.c:476
@@ -5981,11 +5978,12 @@ msgstr ""
 "し、見栄えの良いエンボス効果を生成します。『Graphics GEMS IV』(John Schlag "
 "著、ISBN 0-12-336155-9) に掲載されています。"
 
-#: operations/common-gpl3+/cartoon.c:28
+#: operations/common-gpl3+/cartoon.c:28 operations/common-gpl3+/oilify.c:28
+#: operations/common-gpl3+/photocopy.c:26
 msgid "Mask radius"
 msgstr "マスクの半径"
 
-#: operations/common-gpl3+/cartoon.c:31
+#: operations/common-gpl3+/cartoon.c:31 operations/common-gpl3+/photocopy.c:32
 msgid "Percent black"
 msgstr "黒の割合"
 
@@ -6091,7 +6089,7 @@ msgstr ""
 "元の色成分からの相対的な寄与率を定義して、色を再構成 (リミックス) します。"
 
 #: operations/common-gpl3+/color-exchange.c:31
-msgid "From Color"
+msgid "From color"
 msgstr "色から"
 
 #: operations/common-gpl3+/color-exchange.c:32
@@ -6099,7 +6097,7 @@ msgid "The color to change."
 msgstr "置き換えられる色です。"
 
 #: operations/common-gpl3+/color-exchange.c:34
-msgid "To Color"
+msgid "To color"
 msgstr "色へ"
 
 #: operations/common-gpl3+/color-exchange.c:35
@@ -6107,7 +6105,7 @@ msgid "Replacement color."
 msgstr "置き換える色です。"
 
 #: operations/common-gpl3+/color-exchange.c:37
-msgid "Red Threshold"
+msgid "Red threshold"
 msgstr "赤のしきい値"
 
 #: operations/common-gpl3+/color-exchange.c:38
@@ -6115,7 +6113,7 @@ msgid "Red threshold of the input color"
 msgstr "入力色の赤のしきい値"
 
 #: operations/common-gpl3+/color-exchange.c:41
-msgid "Green Threshold"
+msgid "Green threshold"
 msgstr "緑のしきい値"
 
 #: operations/common-gpl3+/color-exchange.c:42
@@ -6123,7 +6121,7 @@ msgid "Green threshold of the input color"
 msgstr "入力色の緑のしきい値"
 
 #: operations/common-gpl3+/color-exchange.c:45
-msgid "Blue Threshold"
+msgid "Blue threshold"
 msgstr "青のしきい値"
 
 #: operations/common-gpl3+/color-exchange.c:46
@@ -6522,7 +6520,7 @@ msgid "Bumpmap (preserve original colors)"
 msgstr "バンプマップ (元の色を保持)"
 
 #: operations/common-gpl3+/emboss.c:30
-msgid "Emboss Type"
+msgid "Emboss type"
 msgstr "エンボスの種類"
 
 #: operations/common-gpl3+/emboss.c:32
@@ -6893,7 +6891,7 @@ msgid "Adds a lens flare effect."
 msgstr "レンズフレア効果を追加します。"
 
 #: operations/common-gpl3+/linear-sinusoid.c:25
-msgid "X Period"
+msgid "Period X"
 msgstr "X 方向の周期"
 
 #: operations/common-gpl3+/linear-sinusoid.c:26
@@ -6901,7 +6899,7 @@ msgid "Period for X axis"
 msgstr "X 軸の周期"
 
 #: operations/common-gpl3+/linear-sinusoid.c:32
-msgid "Y Period"
+msgid "Period Y"
 msgstr "Y 方向の周期"
 
 #: operations/common-gpl3+/linear-sinusoid.c:33
@@ -6909,7 +6907,7 @@ msgid "Period for Y axis"
 msgstr "Y 軸の周期"
 
 #: operations/common-gpl3+/linear-sinusoid.c:39
-msgid "X Amplitude"
+msgid "Amplitude X"
 msgstr "X 方向の振幅"
 
 #: operations/common-gpl3+/linear-sinusoid.c:40
@@ -6917,7 +6915,7 @@ msgid "Amplitude for X axis (logarithmic scale)"
 msgstr "X 軸の振幅 (対数スケール)"
 
 #: operations/common-gpl3+/linear-sinusoid.c:45
-msgid "Y Amplitude"
+msgid "Amplitude Y"
 msgstr "Y 方向の振幅"
 
 #: operations/common-gpl3+/linear-sinusoid.c:46
@@ -6925,7 +6923,7 @@ msgid "Amplitude for Y axis (logarithmic scale)"
 msgstr "Y 軸の振幅 (対数スケール)"
 
 #: operations/common-gpl3+/linear-sinusoid.c:51
-msgid "X Phase"
+msgid "Phase X"
 msgstr "X 方向の位相"
 
 #: operations/common-gpl3+/linear-sinusoid.c:52
@@ -6933,7 +6931,7 @@ msgid "Phase for X axis"
 msgstr "X 軸方向の位相"
 
 #: operations/common-gpl3+/linear-sinusoid.c:58
-msgid "Y Phase"
+msgid "Phase Y"
 msgstr "Y 方向の位相"
 
 #: operations/common-gpl3+/linear-sinusoid.c:59
@@ -6979,16 +6977,12 @@ msgid "Maze algorithm type"
 msgstr "迷路アルゴリズムの種類"
 
 #: operations/common-gpl3+/maze.c:67
-msgid "Foreground Color"
+msgid "Foreground color"
 msgstr "描画色"
 
 #: operations/common-gpl3+/maze.c:68
 msgid "The foreground color"
 msgstr "前景色"
-
-#: operations/common-gpl3+/maze.c:71
-msgid "Background Color"
-msgstr "背景色"
 
 #: operations/common-gpl3+/maze.c:72
 msgid "The background color"
@@ -7026,7 +7020,8 @@ msgstr "タイルの形状"
 msgid "What shape to use for tiles"
 msgstr "タイルに使用すべき形状"
 
-#: operations/common-gpl3+/mosaic.c:51
+#: operations/common-gpl3+/mosaic.c:51 operations/common-gpl3+/tile-glass.c:34
+#: operations/common-gpl3+/tile-paper.c:47
 msgid "Tile height"
 msgstr "タイルの高さ"
 
@@ -7155,7 +7150,7 @@ msgstr ""
 "一部のピクセルを不規則に下方向へずらします (溶けるような効果になります)"
 
 #: operations/common-gpl3+/noise-solid.c:36
-msgid "X Size"
+msgid "X size"
 msgstr "X 方向のサイズ (幅)"
 
 #: operations/common-gpl3+/noise-solid.c:37
@@ -7163,7 +7158,7 @@ msgid "Horizontal texture size"
 msgstr "テクスチャーの水平方向サイズ"
 
 #: operations/common-gpl3+/noise-solid.c:43
-msgid "Y Size"
+msgid "Y size"
 msgstr "Y 方向のサイズ (幅)"
 
 #: operations/common-gpl3+/noise-solid.c:44
@@ -7195,10 +7190,6 @@ msgstr "ソリッドノイズ"
 msgid "Create a random cloud-like texture"
 msgstr "不規則な雲のようなテクスチャーを作成します"
 
-#: operations/common-gpl3+/oilify.c:28 operations/common-gpl3+/photocopy.c:26
-msgid "Mask Radius"
-msgstr "マスクの半径"
-
 #: operations/common-gpl3+/oilify.c:29
 msgid ""
 "Radius of circle around pixel, can also be scaled per pixel by a buffer on "
@@ -7225,7 +7216,7 @@ msgid "Histogram size"
 msgstr "ヒストグラムの大きさ"
 
 #: operations/common-gpl3+/oilify.c:44
-msgid "Intensity Mode"
+msgid "Intensity mode"
 msgstr "輝度モード"
 
 #: operations/common-gpl3+/oilify.c:45
@@ -7266,12 +7257,8 @@ msgstr "油絵風"
 msgid "Emulate an oil painting"
 msgstr "油絵風の見た目を再現します"
 
-#: operations/common-gpl3+/photocopy.c:32
-msgid "Percent Black"
-msgstr "黒の割合"
-
 #: operations/common-gpl3+/photocopy.c:35
-msgid "Percent White"
+msgid "Percent white"
 msgstr "白の割合"
 
 #  ツールチップのメッセージ
@@ -7698,13 +7685,8 @@ msgstr ""
 
 #: operations/common-gpl3+/tile-glass.c:28
 #: operations/common-gpl3+/tile-paper.c:40
-msgid "Tile Width"
+msgid "Tile width"
 msgstr "タイルの幅"
-
-#: operations/common-gpl3+/tile-glass.c:34
-#: operations/common-gpl3+/tile-paper.c:47
-msgid "Tile Height"
-msgstr "タイルの高さ"
 
 #: operations/common-gpl3+/tile-glass.c:228
 msgid "Tile Glass"
@@ -8073,7 +8055,7 @@ msgid "Direction of the effect"
 msgstr "効果の方向"
 
 #: operations/common-gpl3+/wind.c:55
-msgid "Edge Affected"
+msgid "Edge affected"
 msgstr "エッジへの影響"
 
 #: operations/common-gpl3+/wind.c:58
@@ -8249,19 +8231,19 @@ msgstr ""
 "設定され、補助パッドに何も接続されていない場合は、入力チェーンの末端にある"
 "ノードのバウンディングボックスが使用されます。"
 
-#: operations/core/load.c:31 operations/external/jp2-load.c:27
-#: operations/external/jpg-load.c:26 operations/external/pdf-load.c:27
-#: operations/external/png-load.c:34 operations/external/ppm-load.c:27
-#: operations/external/svg-load.c:27 operations/external/tiff-load.c:31
-#: operations/external/webp-load.c:27
+#: operations/core/load.c:38 operations/external/jp2-load.c:30
+#: operations/external/jpg-load.c:36 operations/external/pdf-load.c:27
+#: operations/external/png-load.c:43 operations/external/ppm-load.c:33
+#: operations/external/svg-load.c:31 operations/external/tiff-load.c:38
+#: operations/external/webp-load.c:30
 msgid "URI"
 msgstr "URI"
 
-#: operations/core/load.c:32
+#: operations/core/load.c:39
 msgid "URI of file to load."
 msgstr "読み込むファイルの URI です。"
 
-#: operations/core/load.c:372
+#: operations/core/load.c:376
 msgid ""
 "Multipurpose file loader, that uses other native handlers, and fallback "
 "conversion using Image Magick's convert."
@@ -8293,7 +8275,7 @@ msgstr "読み込む動画ファイルのパス"
 msgid "Frame number"
 msgstr "フレーム番号"
 
-#: operations/external/ff-load.c:37 operations/external/gif-load.c:38
+#: operations/external/ff-load.c:37 operations/external/gif-load.c:41
 msgid "frames"
 msgstr "フレーム数"
 
@@ -8342,7 +8324,7 @@ msgid "FFmpeg video frame importer."
 msgstr ""
 "FFmpeg 動画フレームインポーター (動画からフレームを読み込む処理) です。"
 
-#: operations/external/ff-save.c:31 operations/external/png-save.c:27
+#: operations/external/ff-save.c:31 operations/external/png-save.c:35
 #: operations/external/ppm-save.c:26 operations/external/rgbe-save.c:27
 msgid "Target path and filename, use '-' for stdout."
 msgstr "対象のパスとファイル名です。標準出力には '-' を使用します。"
@@ -8496,161 +8478,161 @@ msgstr "FFmpeg ファイルを保存"
 msgid "FFmpeg video output sink"
 msgstr "FFmpeg 動画出力シンク (動画の出力先としての処理)"
 
-#: operations/external/gif-load.c:36
+#: operations/external/gif-load.c:39
 msgid "frame"
 msgstr "フレーム"
 
-#: operations/external/gif-load.c:37
+#: operations/external/gif-load.c:40
 msgid "frame number to decode"
 msgstr "デコードするフレーム番号"
 
-#: operations/external/gif-load.c:39
+#: operations/external/gif-load.c:42
 msgid "Number of frames in gif animation"
 msgstr "GIF アニメーションのフレーム数"
 
-#: operations/external/gif-load.c:40
+#: operations/external/gif-load.c:43
 msgid "frame-delay"
 msgstr "フレーム遅延"
 
-#: operations/external/gif-load.c:41
+#: operations/external/gif-load.c:44
 msgid "Delay in ms for last decoded frame"
 msgstr "最後にデコードされたフレームの遅延 (ミリ秒)"
 
-#: operations/external/gif-load.c:248
+#: operations/external/gif-load.c:249
 msgid "GIF File Loader"
 msgstr "GIF ファイルを読み込み"
 
-#: operations/external/gif-load.c:250
+#: operations/external/gif-load.c:251
 msgid "GIF image loader."
 msgstr "GIF ファイルのローダー (読み込み処理) です。"
 
-#: operations/external/jp2-load.c:28 operations/external/svg-load.c:28
-#: operations/external/tiff-load.c:32 operations/external/webp-load.c:28
+#: operations/external/jp2-load.c:31 operations/external/svg-load.c:32
+#: operations/external/tiff-load.c:39 operations/external/webp-load.c:31
 msgid "URI for file to load"
 msgstr "読み込むファイルの URI"
 
-#: operations/external/jp2-load.c:128
+#: operations/external/jp2-load.c:129
 msgid "Unknown JPEG 2000 image format"
 msgstr "不明な JPEG 2000 画像形式"
 
-#: operations/external/jp2-load.c:135
+#: operations/external/jp2-load.c:136
 msgid "Unable to open JPEG 2000 image"
 msgstr "JPEG 2000 画像を開けません"
 
-#: operations/external/jp2-load.c:142
+#: operations/external/jp2-load.c:143
 msgid "Unable to create output color profile"
 msgstr "出力用のカラープロファイルを作成できません"
 
-#: operations/external/jp2-load.c:150
+#: operations/external/jp2-load.c:151
 msgid "Unable to convert image to sRGB color space"
 msgstr "画像を sRGB 色空間に変換できません"
 
-#: operations/external/jp2-load.c:157
+#: operations/external/jp2-load.c:158
 #, c-format
 msgid "Unsupported non-RGB JPEG 2000 file with %d components"
 msgstr "未対応の非 RGB JPEG 2000 ファイル (%d 成分)"
 
-#: operations/external/jp2-load.c:169
+#: operations/external/jp2-load.c:170
 #, c-format
 msgid "Unsupported JPEG 2000 file with depth %d"
 msgstr "未対応の JPEG 2000 ファイル (深度 %d)"
 
-#: operations/external/jp2-load.c:195
+#: operations/external/jp2-load.c:196
 msgid "Components of JPEG 2000 input don't match"
 msgstr "JPEG 2000 の入力コンポーネントが一致しません"
 
-#: operations/external/jp2-load.c:257
+#: operations/external/jp2-load.c:258
 msgid "could not create a new Jasper stream"
 msgstr "新しい Jasper ストリームを作成できませんでした"
 
-#: operations/external/jp2-load.c:277 operations/external/jp2-load.c:279
+#: operations/external/jp2-load.c:278 operations/external/jp2-load.c:280
 #, c-format
 msgid "failed to open JPEG 2000 from %s"
 msgstr "%s から JPEG 2000 を開くのに失敗しました"
 
-#: operations/external/jp2-load.c:293
+#: operations/external/jp2-load.c:294
 msgid "could not query JPEG 2000 file"
 msgstr "JPEG 2000 ファイルを取得できませんでした"
 
-#: operations/external/jp2-load.c:349
+#: operations/external/jp2-load.c:350
 msgid "One or more of R, G, B components are missing"
 msgstr "R、G、B のどれかまたは複数の成分が欠けています"
 
-#: operations/external/jp2-load.c:357
+#: operations/external/jp2-load.c:358
 msgid "One or more of R, G, B components have signed data"
 msgstr "R、G、B のどれかまたは複数の成分が符号付きデータです"
 
-#: operations/external/jp2-load.c:390
+#: operations/external/jp2-load.c:391
 #, c-format
 msgid "Error reading row %d component %d"
 msgstr "行 %d、コンポーネント %d の読み取りエラー"
 
-#: operations/external/jp2-load.c:525
+#: operations/external/jp2-load.c:526
 msgid "JPEG 2000 File Loader"
 msgstr "JPEG 2000 ファイルを読み込み"
 
-#: operations/external/jp2-load.c:527
+#: operations/external/jp2-load.c:528
 msgid "JPEG 2000 image loader using jasper."
 msgstr "Jasper を使用した JPEG 2000 画像ローダーです。"
 
-#: operations/external/jpg-load.c:27
+#: operations/external/jpg-load.c:37
 msgid "URI of file to load"
 msgstr "読み込むファイルの URI"
 
-#: operations/external/jpg-load.c:390
+#: operations/external/jpg-load.c:397
 msgid "JPEG File Loader"
 msgstr "JPEG ファイルを読み込み"
 
-#: operations/external/jpg-load.c:392
+#: operations/external/jpg-load.c:399
 msgid "JPEG image loader using libjpeg"
 msgstr "libjpeg ライブラリを使って JPEG 画像を読み込みます"
 
-#: operations/external/jpg-save.c:26 operations/external/npy-save.c:32
-#: operations/external/tiff-save.c:26 operations/external/webp-save.c:26
+#: operations/external/jpg-save.c:32 operations/external/npy-save.c:36
+#: operations/external/tiff-save.c:32 operations/external/webp-save.c:29
 msgid "Target path and filename, use '-' for stdout"
 msgstr "対象のパスとファイル名。標準出力には '-' を使用"
 
-#: operations/external/jpg-save.c:29
+#: operations/external/jpg-save.c:35
 msgid "JPEG compression quality (between 1 and 100)"
 msgstr "JPEG 圧縮品質 (1 から 100 の範囲)"
 
-#: operations/external/jpg-save.c:32
+#: operations/external/jpg-save.c:38
 msgid "Smoothing"
 msgstr "スムージング"
 
-#: operations/external/jpg-save.c:33
+#: operations/external/jpg-save.c:39
 msgid "Smoothing factor from 1 to 100; 0 disables smoothing"
 msgstr "平滑化係数 (1 から 100)。0 を指定すると平滑化を無効にします"
 
-#: operations/external/jpg-save.c:36
+#: operations/external/jpg-save.c:42
 msgid "Optimize"
 msgstr "最適化"
 
-#: operations/external/jpg-save.c:37
+#: operations/external/jpg-save.c:43
 msgid "Use optimized huffman tables"
 msgstr "最適化されたハフマンテーブルを使用する"
 
-#: operations/external/jpg-save.c:38
+#: operations/external/jpg-save.c:44
 msgid "Progressive"
 msgstr "プログレッシブ"
 
-#: operations/external/jpg-save.c:39
+#: operations/external/jpg-save.c:45
 msgid "Create progressive JPEG images"
 msgstr "プログレッシブ JPEG 画像を作成"
 
-#: operations/external/jpg-save.c:41
+#: operations/external/jpg-save.c:47
 msgid "Grayscale"
 msgstr "グレースケール"
 
-#: operations/external/jpg-save.c:42
+#: operations/external/jpg-save.c:48
 msgid "Create a grayscale (monochrome) image"
 msgstr "グレースケール (モノクロ) 画像を作成する"
 
-#: operations/external/jpg-save.c:521
+#: operations/external/jpg-save.c:524
 msgid "JPEG File Saver"
 msgstr "JPEG ファイルを保存"
 
-#: operations/external/jpg-save.c:523
+#: operations/external/jpg-save.c:526
 msgid "JPEG image saver, using libjpeg"
 msgstr "libjpeg ライブラリを使って JPEG 画像を保存します"
 
@@ -8662,7 +8644,6 @@ msgstr "入力元のプロファイル"
 msgid "The cmsHPROFILE corresponding to the ICC profile for the input data."
 msgstr "入力データの ICC プロファイルに対応する cmsHPROFILE です。"
 
-#  カラー管理のレンダリング意図の一つ
 #: operations/external/lcms-from-profile.c:33
 msgid "Relative Colorimetric"
 msgstr "相対的な色域を維持"
@@ -8815,11 +8796,11 @@ msgstr "内部で使用されるサンプラー"
 msgid "Performs n-point image deformation"
 msgstr "N 点変形ツールを実行します"
 
-#: operations/external/npy-save.c:215
+#: operations/external/npy-save.c:217
 msgid "NumPy File Saver"
 msgstr "NumPy (ナムパイ) ファイルを保存"
 
-#: operations/external/npy-save.c:217
+#: operations/external/npy-save.c:219
 msgid "NumPy (Numerical Python) image saver"
 msgstr "NumPy (Numerical Python) 画像保存処理"
 
@@ -8969,58 +8950,58 @@ msgstr "GdkPixbuf ソース"
 msgid "Uses the GdkPixbuf located at the memory location in <em>pixbuf</em>."
 msgstr "<em>pixbuf</em> のメモリ位置にある GdkPixbuf を使用します。"
 
-#: operations/external/png-load.c:35
+#: operations/external/png-load.c:44
 msgid "URI for file to load."
 msgstr "読み込むファイルの URI です。"
 
-#: operations/external/png-load.c:680
+#: operations/external/png-load.c:696
 msgid "PNG File Loader"
 msgstr "PNG ファイルを読み込み"
 
-#: operations/external/png-load.c:682
+#: operations/external/png-load.c:698
 msgid "PNG image loader."
 msgstr "PNG ファイルのローダー (読み込み処理) です。"
 
-#: operations/external/png-save.c:28
+#: operations/external/png-save.c:36
 msgid "Compression"
 msgstr "圧縮"
 
-#: operations/external/png-save.c:29
+#: operations/external/png-save.c:37
 msgid "PNG compression level from 1 to 9"
 msgstr "PNG の圧縮レベルで値は 0 から 9 までです"
 
-#: operations/external/png-save.c:31 operations/external/ppm-save.c:29
-#: operations/external/tiff-save.c:27
+#: operations/external/png-save.c:39 operations/external/ppm-save.c:29
+#: operations/external/tiff-save.c:33
 msgid "Bitdepth"
 msgstr "ビット深度"
 
-#: operations/external/png-save.c:32 operations/external/ppm-save.c:30
+#: operations/external/png-save.c:40 operations/external/ppm-save.c:30
 msgid "8 and 16 are the currently accepted values."
 msgstr "現在受け入れられる値は 8 と 16 です。"
 
-#: operations/external/png-save.c:434
+#: operations/external/png-save.c:455
 msgid "PNG File Saver"
 msgstr "PNG ファイルを保存"
 
-#: operations/external/png-save.c:436
+#: operations/external/png-save.c:457
 msgid "PNG image saver, using libpng"
 msgstr "libpng を使って PNG ファイルを保存"
 
-#: operations/external/ppm-load.c:28
+#: operations/external/ppm-load.c:34
 msgid "URI of image to load."
 msgstr "読み込む画像の URI です。"
 
-#: operations/external/ppm-load.c:473
+#: operations/external/ppm-load.c:484
 msgid "PPM File Loader"
 msgstr "PPM ファイルを読み込み"
 
-#: operations/external/ppm-load.c:475
+#: operations/external/ppm-load.c:486
 msgid "PPM image loader."
 msgstr "PPM ファイルを読み込みます。"
 
 #: operations/external/ppm-save.c:28
 msgid "Raw format"
-msgstr "Raw 形式"
+msgstr "RAW 形式"
 
 #: operations/external/ppm-save.c:201
 msgid "PPM File Saver"
@@ -9103,6 +9084,14 @@ msgstr ""
 "入力バッファーを SDL2 ウィンドウに表示します (SDL2 の実装上の制限により、表示"
 "処理は 1 つのオペレーションかプロセスに限定されます)。"
 
+#: operations/external/sdl3-display.c:207
+msgid "SDL3 Display"
+msgstr "SDL3 ディスプレイ"
+
+#: operations/external/sdl3-display.c:210
+msgid "Displays the input buffer in an SDL3 window."
+msgstr "入力バッファーを SDL3 ウィンドウに表示します。"
+
 #: operations/external/sdl-display.c:27
 msgid "Icon title"
 msgstr "アイコンの題名"
@@ -9123,22 +9112,22 @@ msgstr ""
 "入力バッファーを SDL ウィンドウに表示します (SDL の実装上の制限により、表示処"
 "理は 1 つのオペレーションかプロセスに限定されます)。"
 
-#: operations/external/svg-load.c:31 operations/external/v4l.c:29
+#: operations/external/svg-load.c:35 operations/external/v4l.c:29
 #: operations/workshop/external/v4l2.c:27
 msgid "Width for rendered image"
 msgstr "描画する画像の幅"
 
-#: operations/external/svg-load.c:33 operations/external/v4l.c:32
+#: operations/external/svg-load.c:37 operations/external/v4l.c:32
 #: operations/workshop/external/v4l2.c:29
 msgid "Height for rendered image"
 msgstr "描画画像の高さ"
 
-#: operations/external/svg-load.c:308
+#: operations/external/svg-load.c:309
 msgid "SVG File Loader"
 msgstr "SVG ファイルを読み込み"
 
 #. not hidden because it has extra API
-#: operations/external/svg-load.c:310
+#: operations/external/svg-load.c:311
 msgid "Load an SVG file using librsvg"
 msgstr "librsvg を使って SVG ファイルを読み込む"
 
@@ -9223,43 +9212,43 @@ msgstr "テキストを描画する"
 msgid "Display a string of text using pango and cairo."
 msgstr "Pango と Cairo を使ってテキスト文字列を表示します。"
 
-#: operations/external/tiff-load.c:34
+#: operations/external/tiff-load.c:41
 msgid "Directory"
 msgstr "ディレクトリ"
 
-#: operations/external/tiff-load.c:35
+#: operations/external/tiff-load.c:42
 msgid "Image file directory (subfile)"
 msgstr "画像ファイルディレクトリ (サブファイル)"
 
-#: operations/external/tiff-load.c:40 operations/external/tiff-save.c:35
+#: operations/external/tiff-load.c:47 operations/external/tiff-save.c:41
 msgid "Object to receive image metadata"
 msgstr "画像メタデータを受け取るオブジェクト"
 
-#: operations/external/tiff-load.c:1036
+#: operations/external/tiff-load.c:1039
 msgid "TIFF File Loader"
 msgstr "TIFF ファイルを読み込み"
 
-#: operations/external/tiff-load.c:1038
+#: operations/external/tiff-load.c:1041
 msgid "TIFF image loader using libtiff"
 msgstr "libtiff ライブラリを使って TIFF ファイルを読み込み"
 
-#: operations/external/tiff-save.c:28
+#: operations/external/tiff-save.c:34
 msgid "-1, 8, 16, 32 and 64 are the currently accepted values, -1 means auto"
 msgstr "現在受け入れられる値は -1、8、16、32、64 で -1 は自動設定を意味します"
 
-#: operations/external/tiff-save.c:30
+#: operations/external/tiff-save.c:36
 msgid "use floating point"
 msgstr "浮動小数点を使用"
 
-#: operations/external/tiff-save.c:31
+#: operations/external/tiff-save.c:37
 msgid "floating point -1 means auto, 0 means integer, 1 means float."
 msgstr "浮動小数点指定: -1 は自動、0 は整数、1 は浮動小数点。"
 
-#: operations/external/tiff-save.c:825
+#: operations/external/tiff-save.c:828
 msgid "TIFF File Saver"
 msgstr "TIFF ファイルを保存"
 
-#: operations/external/tiff-save.c:827
+#: operations/external/tiff-save.c:830
 msgid "TIFF image saver using libtiff"
 msgstr "libtiff ライブラリを使って TIFF ファイルを保存"
 
@@ -9346,23 +9335,23 @@ msgstr "ベクターストローク"
 msgid "Renders a vector stroke"
 msgstr "ベクター線を描画する"
 
-#: operations/external/webp-load.c:346
+#: operations/external/webp-load.c:347
 msgid "WebP File Loader"
 msgstr "WebP ファイルを読み込み"
 
-#: operations/external/webp-load.c:348
+#: operations/external/webp-load.c:349
 msgid "WebP image loader."
 msgstr "WebP ファイルのローダー (読み込み処理) です。"
 
-#: operations/external/webp-save.c:29
+#: operations/external/webp-save.c:32
 msgid "WebP compression quality"
 msgstr "WebP の圧縮品質"
 
-#: operations/external/webp-save.c:192
+#: operations/external/webp-save.c:193
 msgid "WebP File Saver"
 msgstr "WebP ファイルを保存"
 
-#: operations/external/webp-save.c:194
+#: operations/external/webp-save.c:195
 msgid "WebP image saver"
 msgstr "WebP ファイルを保存"
 
@@ -10296,15 +10285,12 @@ msgid "EPITROCHOID"
 msgstr "エピトロコイド"
 
 #: operations/workshop/external/spyrograph.c:31
-msgid "Curve Type"
-msgstr "カーブの種類"
-
 #: operations/workshop/external/spyrograph.c:34
 msgid "Curve type"
 msgstr "カーブの種類"
 
 #: operations/workshop/external/spyrograph.c:36
-msgid "Fixed Gear Teeth"
+msgid "Fixed gear teeth"
 msgstr "固定歯車の歯数"
 
 #: operations/workshop/external/spyrograph.c:37
@@ -10312,7 +10298,7 @@ msgid "Number of teeth in fixed gear."
 msgstr "固定歯車の歯数を指定します。"
 
 #: operations/workshop/external/spyrograph.c:40
-msgid "Moving Gear Teeth"
+msgid "Moving gear teeth"
 msgstr "動く歯車の歯数"
 
 #: operations/workshop/external/spyrograph.c:41
@@ -10325,7 +10311,7 @@ msgstr ""
 "数の比によって決まります。"
 
 #: operations/workshop/external/spyrograph.c:46
-msgid "Hole Percent"
+msgid "Hole percent"
 msgstr "穴の割合 (%)"
 
 #: operations/workshop/external/spyrograph.c:47
@@ -10364,11 +10350,11 @@ msgstr "スピログラフパターンを描画します"
 msgid "video device path"
 msgstr "ビデオデバイスへのパス"
 
-#: operations/workshop/external/v4l2.c:774
+#: operations/workshop/external/v4l2.c:773
 msgid "Video4Linux2 Frame Source"
 msgstr "Video4Linux2 のフレームソース"
 
-#: operations/workshop/external/v4l2.c:776
+#: operations/workshop/external/v4l2.c:775
 msgid "Video4Linux2 input, webcams framegrabbers and similar devices."
 msgstr ""
 "Video4Linux2 入力 (ウェブカメラやフレームグラバーなどのデバイス) です。"
@@ -10493,7 +10479,7 @@ msgstr "積分画像"
 msgid "Compute integral and squared integral image"
 msgstr "積分画像および二乗積分画像を計算する"
 
-#: operations/workshop/rawbayer-load.c:156
+#: operations/workshop/rawbayer-load.c:167
 msgid ""
 "Raw image loader, wrapping dcraw with pipes, provides the raw bayer grid as "
 "grayscale, if the fileformat is .rawbayer it will use this loader instead of "
@@ -10557,6 +10543,22 @@ msgstr "選択的色相・彩度"
 msgid "Selective adjust Hue, Saturation and Lightness"
 msgstr "色相・彩度・明度を選択的に調整"
 
+#: operations/workshop/sharpen.c:10
+msgid "Controls the amount of sharpness applied to an image"
+msgstr "画像に適用されるシャープネスの量を制御します。"
+
+#: operations/workshop/sharpen.c:190 operations/workshop/sharpen.c:196
+msgid "Sharpen"
+msgstr "シャープ"
+
+#: operations/workshop/sharpen.c:192
+msgid ""
+"Sharpens the image by enhancing edge contrast using a standard 3x3 "
+"convolution kernel."
+msgstr ""
+"標準的な 3×3 の畳み込みカーネルを用いてエッジのコントラストを強調することで、"
+"画像をシャープにします。"
+
 #: operations/workshop/shuffle-search.c:32
 msgid "How many times to run optimization"
 msgstr "最適化を実行する回数"
@@ -10592,6 +10594,3 @@ msgid ""
 msgstr ""
 "隣接するピクセルをシャッフルすることでディザ処理を最適化し、ピクセルの並び替"
 "えと周辺との量子化を行います。"
-
-#~ msgid "Object to supply image metadata"
-#~ msgstr "画像メタデータを提供するオブジェクト"
