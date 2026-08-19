@@ -17,15 +17,18 @@ property_double (amount, _("Amount"), 10.0)
 #define GEGL_OP_NAME     sharpen
 #define GEGL_OP_C_SOURCE sharpen.c
 
+#define KERNEL_SIZE 1
+
 #include "gegl-op.h"
 
 static void
 prepare (GeglOperation *operation)
 {
-  const Babl *space = gegl_operation_get_source_space (operation, "input");
+  const Babl *space  = gegl_operation_get_source_space (operation, "input");
+  const Babl *format = babl_format_with_space ("R'G'B'A float", space);
 
-  gegl_operation_set_format (operation, "output",
-                             babl_format_with_space ("R'G'B'A float", space));
+  gegl_operation_set_format (operation, "output", format);
+  gegl_operation_set_format (operation, "input", format);
 }
 
 static GeglRectangle
@@ -34,10 +37,10 @@ get_required_for_output (GeglOperation       *operation,
                          const GeglRectangle *roi)
 {
   GeglRectangle ret = *roi;
-  ret.x -= 1;
-  ret.y -= 1;
-  ret.width += 2;
-  ret.height += 2;
+  ret.x -= KERNEL_SIZE;
+  ret.y -= KERNEL_SIZE;
+  ret.width  += KERNEL_SIZE * 2;
+  ret.height += KERNEL_SIZE * 2;
   return ret;
 }
 
@@ -48,126 +51,64 @@ process (GeglOperation       *op,
          const GeglRectangle *roi,
          gint                 level)
 {
-  GeglProperties     *o               = GEGL_PROPERTIES (op);
-  const Babl         *format          = babl_format_with_space ("R'G'B'A float",
-                                                                gegl_operation_get_source_space (op, "input"));
-  GeglRectangle       neighbor_rect   = *roi;
-  gfloat              percentage      = o->amount;
-  gfloat              fact            = 1.0f - (percentage / 100.0f);
-  gint                channels_num    = babl_format_get_n_components (format);
-  GeglBufferIterator *iter;
-  gfloat              center_weight;
-  gfloat              neighbor_weight;
+  GeglProperties     *o          = GEGL_PROPERTIES (op);
+  // The input and output pads use the same format.
+  const Babl         *format  = gegl_operation_get_format (op, "input");
+  const GeglRectangle in_roi     = {
+    roi->x - KERNEL_SIZE,
+    roi->y - KERNEL_SIZE,
+    roi->width  + KERNEL_SIZE * 2,
+    roi->height + KERNEL_SIZE * 2,
+  };
+  const gint          channels_num = babl_format_get_n_components (format);
+  gfloat              percentage   = o->amount;
+  gfloat              fact         = 1.0f - (percentage / 100.0f);
 
   /* In the legacy version, the center was (800/fact) and neighbors were
    * (pos - i*8)/8. In normalized float math, we set the center weight and
    * distribute the negative remainder among the 8 neighbors to preserve
    * overall brightness.
    */
-  center_weight   = 1.0f / fact;
-  neighbor_weight = (1.0f - center_weight) / 8.0f;
+  gfloat center_weight   = 1.0f / fact;
+  gfloat neighbor_weight = (1.0f - center_weight) / 8.0f;
 
-  iter = gegl_buffer_iterator_new (output, roi, level, format,
-                                   GEGL_ACCESS_WRITE,
-                                   GEGL_ABYSS_NONE, 10);
-
-  /* top left */
-  neighbor_rect.x = roi->x - 1;
-  neighbor_rect.y = roi->y - 1;
-  gegl_buffer_iterator_add (iter, input, &neighbor_rect, level, format,
-                            GEGL_ACCESS_READ, GEGL_ABYSS_CLAMP);
-
-  /* top center */
-  neighbor_rect.x = roi->x;
-  neighbor_rect.y = roi->y - 1;
-  gegl_buffer_iterator_add (iter, input, &neighbor_rect, level, format,
-                            GEGL_ACCESS_READ, GEGL_ABYSS_CLAMP);
-
-  /* top right */
-  neighbor_rect.x = roi->x + 1;
-  neighbor_rect.y = roi->y - 1;
-  gegl_buffer_iterator_add (iter, input, &neighbor_rect, level, format,
-                            GEGL_ACCESS_READ, GEGL_ABYSS_CLAMP);
-
-  /* center left */
-  neighbor_rect.x = roi->x - 1;
-  neighbor_rect.y = roi->y;
-  gegl_buffer_iterator_add (iter, input, &neighbor_rect, level, format,
-                            GEGL_ACCESS_READ, GEGL_ABYSS_CLAMP);
-
-  /* center */
-  gegl_buffer_iterator_add (iter, input, roi, level, format,
-                            GEGL_ACCESS_READ, GEGL_ABYSS_CLAMP);
-
-  /* center right */
-  neighbor_rect.x = roi->x + 1;
-  neighbor_rect.y = roi->y;
-  gegl_buffer_iterator_add (iter, input, &neighbor_rect, level, format,
-                            GEGL_ACCESS_READ, GEGL_ABYSS_CLAMP);
-
-  /* bottom left */
-  neighbor_rect.x = roi->x - 1;
-  neighbor_rect.y = roi->y + 1;
-  gegl_buffer_iterator_add (iter, input, &neighbor_rect, level, format,
-                            GEGL_ACCESS_READ, GEGL_ABYSS_CLAMP);
-
-  /* bottom center */
-  neighbor_rect.x = roi->x;
-  neighbor_rect.y = roi->y + 1;
-  gegl_buffer_iterator_add (iter, input, &neighbor_rect, level, format,
-                            GEGL_ACCESS_READ, GEGL_ABYSS_CLAMP);
-
-  /* bottom right */
-  neighbor_rect.x = roi->x + 1;
-  neighbor_rect.y = roi->y + 1;
-  gegl_buffer_iterator_add (iter, input, &neighbor_rect, level, format,
+  GeglBufferIterator *iter = gegl_buffer_iterator_new (output, roi, level, format,
+                                                       GEGL_ACCESS_WRITE,
+                                                       GEGL_ABYSS_NONE, 10);
+  gegl_buffer_iterator_add (iter, input, &in_roi, level, format,
                             GEGL_ACCESS_READ, GEGL_ABYSS_CLAMP);
 
   while (gegl_buffer_iterator_next (iter))
     {
-      gfloat *out_p = iter->items[0].data;
-      gfloat *tl    = iter->items[1].data;
-      gfloat *tc    = iter->items[2].data;
-      gfloat *tr    = iter->items[3].data;
-      gfloat *cl    = iter->items[4].data;
-      gfloat *cp    = iter->items[5].data;
-      gfloat *cr    = iter->items[6].data;
-      gfloat *bl    = iter->items[7].data;
-      gfloat *bc    = iter->items[8].data;
-      gfloat *br    = iter->items[9].data;
-      gint    i;
+      const GeglRectangle *out_roi = &iter->items[0].roi;
+      const GeglRectangle *in_roi  = &iter->items[1].roi;
+      const gfloat        *in      = iter->items[1].data;
+      gfloat              *out     = iter->items[0].data;
 
-      for (i = 0; i < iter->length; i++)
+      for (gint y = 0; y < out_roi->height; y++)
         {
-          gint c;
-
-          for (c = 0; c < channels_num - 1; c++)
+          for (gint x = 0; x < out_roi->width; x++)
             {
-              gfloat neighbor_sum;
+#define KERNEL(dx, dy, c) in[(((KERNEL_SIZE + y + dy) * in_roi->width) + (KERNEL_SIZE + x + dx)) * channels_num + c]
+              for (gint c = 0; c < channels_num - 1; c++)
+                {
+                  gfloat neighbor_sum;
 
-              neighbor_sum = tl[c] + tc[c] + tr[c] +
-                             cl[c] +         cr[c] +
-                             bl[c] + bc[c] + br[c];
+                  neighbor_sum = KERNEL(-1, -1, c) + KERNEL(0, -1, c) + KERNEL(1, -1, c) +
+                                 KERNEL(-1,  0, c) +                    KERNEL(1,  0, c) +
+                                 KERNEL(-1,  1, c) + KERNEL(0 , 1, c) + KERNEL(1,  1, c);
 
-              out_p[c] = CLAMP ((cp[c] * center_weight) +
-                                (neighbor_sum * neighbor_weight),
-                                0.0f, 1.0f);
+                  out[c] = CLAMP ((KERNEL(0, 0, c) * center_weight) +
+                                  (neighbor_sum * neighbor_weight),
+                                  0.0f, 1.0f);
+                }
+
+              /* copy alpha channel without modification */
+              out[3] = KERNEL(0, 0, 3);
+#undef KERNEL
+              /* update to the next pixel location */
+              out += channels_num;
             }
-
-          /* copy alpha channel without modification */
-          out_p[3] = cp[3];
-
-          /* update to the next pixel location */
-          out_p += 4;
-          tl    += 4;
-          tc    += 4;
-          tr    += 4;
-          cl    += 4;
-          cp    += 4;
-          cr    += 4;
-          bl    += 4;
-          bc    += 4;
-          br    += 4;
         }
     }
 
