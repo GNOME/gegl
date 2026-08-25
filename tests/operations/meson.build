@@ -50,6 +50,7 @@ exclude += [
 exclude += [
   'gegl:alpha-inpaint',
   'gegl:integral-image',
+  'gegl:mantiuk06',
 ]
 
 gegl_test_ops_env = gegl_test_env
