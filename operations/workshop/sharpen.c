@@ -186,13 +186,14 @@ gegl_op_class_init (GeglOpClass *klass)
   filter_class->process           = process;
 
   gegl_operation_class_set_keys (operation_class,
-                                 "name",        "gegl:sharpen",
-                                 "title",       _("Sharpen"),
-                                 "categories",  "enhance",
-                                 "description", _("Sharpens the image by enhancing "
-                                                  "edge contrast using a standard "
-                                                  "3x3 convolution kernel."),
-                                 "gimp:menu-path", "<Image>/Filters/Enhance",
+                                 "name",            "gegl:sharpen",
+                                 "title",           _("Sharpen"),
+                                 "categories",      "enhance",
+                                 "description",     _("Sharpens the image by enhancing "
+                                                      "edge contrast using a standard "
+                                                      "3x3 convolution kernel."),
+                                 "reference-hash",  "3a12de8755d7385a0e89bbf6a4258cfe",
+                                 "gimp:menu-path",  "<Image>/Filters/Enhance",
                                  "gimp:menu-label", _("Sharpen"),
                                  NULL);
 }
