@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2026-07-28 22:32+0000\n"
-"PO-Revision-Date: 2026-07-30 20:07+0200\n"
+"POT-Creation-Date: 2026-08-14 12:15+0000\n"
+"PO-Revision-Date: 2026-08-29 14:48+0200\n"
 "Last-Translator: Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -654,7 +654,7 @@ msgstr "Behåll alfavärden inom ett visst intervall"
 # gegl op initially named "bevel".
 #: operations/common/bevel.c:49
 msgid "Chamfer"
-msgstr "Chamfer-avfasning"
+msgstr "Fasett"
 
 #: operations/common/bevel.c:51
 msgid "Bump"
@@ -726,8 +726,8 @@ msgid ""
 "Distance Map is unique to chamfer bevel and has three settings that alter "
 "the structure of the chamfer."
 msgstr ""
-"Avståndskartan är unik för chamfer-avfasning och har tre inställningar som "
-"ändrar avfasningens struktur."
+"Avståndskartan är unik för fasettavfasning och har tre inställningar som "
+"ändrar fasettens struktur."
 
 #: operations/common/bevel.c:86 operations/common/bloom.c:35
 #: operations/common/box-blur.c:25 operations/common/c2g.c:28
@@ -793,8 +793,8 @@ msgid ""
 "emboss covering a blur. Both bevels benefit from color filled alpha defined "
 "shapes."
 msgstr ""
-"Två avfasningseffekter på ett ställe, Chamfer-avfasning som simulerar ljus "
-"på avfasade 3D-kanter, och Gupp - den senare gör en 3D-uppblåsningseffekt på "
+"Två avfasningseffekter på ett ställe, Fasett som simulerar ljus på "
+"fasetterade 3D-kanter, och Gupp - den senare gör en 3D-uppblåsningseffekt på "
 "en ciselering som täcker oskärpa. Båda avfasningarna drar nytta av "
 "färgfyllda alfadefinierade former."
 
@@ -4525,7 +4525,7 @@ msgstr "Vinkel för sfärisk ändtopp, som en bråkdel av komplementvinkeln för
 #. * arbitrary.
 #.
 #: operations/common/spherize.c:52 operations/common/unsharp-mask.c:31
-#: operations/common-gpl3+/edge.c:42
+#: operations/common-gpl3+/edge.c:42 operations/workshop/sharpen.c:9
 msgid "Amount"
 msgstr "Mängd"
 
@@ -4809,7 +4809,7 @@ msgstr "Sammansättningsläge för avfasningen"
 # gegl op initially named "bevel".
 #: operations/common/styles.c:218
 msgid "Chamfer Bevel"
-msgstr "Chamfer-avfasning"
+msgstr "Fasettavfasning"
 
 #: operations/common/styles.c:220
 msgid "Bump Bevel"
@@ -4857,7 +4857,7 @@ msgid ""
 "on chamfer"
 msgstr ""
 "Intern gaussisk oskärpa för att blåsa upp guppnivån. Detta alternativ "
-"fungerar inte på chamfer-avfasning"
+"fungerar inte på fasettavfasning"
 
 #: operations/common/styles.c:265
 msgid "Levels low output lighting for Bevel"
@@ -4889,7 +4889,7 @@ msgstr ""
 "Detta instruerar avfasningen att ignorera bilddetaljer om det finns en "
 "bildfilsöverlagring under den. Det tillåter också avfasning att fungera "
 "bättre när användaren väljer mörkare färger. Effekten är märkbar på "
-"guppavfasning men påverkar knappt chamfer-avfasning"
+"guppavfasning men påverkar knappt fasettavfasning"
 
 #. This operation is extremely important for bevels with image file overlays
 #. Inner Glow GUI options begin here
@@ -10464,6 +10464,22 @@ msgstr "Selektiv nyans-mättnad"
 #: operations/workshop/selective-hue-saturation.c:173
 msgid "Selective adjust Hue, Saturation and Lightness"
 msgstr "Justera selektivt nyans, mättnad och ljushet"
+
+#: operations/workshop/sharpen.c:10
+msgid "Controls the amount of sharpness applied to an image"
+msgstr "Styr mängden skärpa som tillämpas på en bild"
+
+#: operations/workshop/sharpen.c:190 operations/workshop/sharpen.c:196
+msgid "Sharpen"
+msgstr "Gör skarpare"
+
+#: operations/workshop/sharpen.c:192
+msgid ""
+"Sharpens the image by enhancing edge contrast using a standard 3x3 "
+"convolution kernel."
+msgstr ""
+"Gör bilden skarpare genom att förbättra kantkontrast med en 3x3-"
+"standardfaltningskärna."
 
 #: operations/workshop/shuffle-search.c:32
 msgid "How many times to run optimization"
