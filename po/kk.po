@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2026-07-28 22:32+0000\n"
-"PO-Revision-Date: 2026-07-29 13:14+0500\n"
+"POT-Creation-Date: 2026-08-14 12:15+0000\n"
+"PO-Revision-Date: 2026-08-29 11:54+0500\n"
 "Last-Translator: Baurzhan Muftakhidinov <baurthefirst@gmail.com>\n"
 "Language-Team: Kazakh <kk_KZ@googlegroups.com>\n"
 "Language: kk\n"
@@ -4542,7 +4542,7 @@ msgstr ""
 #. * since their upper-bound, wrt the angle of view, is
 #. * arbitrary.
 #: operations/common/spherize.c:52 operations/common/unsharp-mask.c:31
-#: operations/common-gpl3+/edge.c:42
+#: operations/common-gpl3+/edge.c:42 operations/workshop/sharpen.c:9
 msgid "Amount"
 msgstr "Мөлшер"
 
@@ -10508,6 +10508,22 @@ msgstr "Таңдамалы реңк-қанықтылық"
 #: operations/workshop/selective-hue-saturation.c:173
 msgid "Selective adjust Hue, Saturation and Lightness"
 msgstr "Реңк, қанықтылық және ашықтықты таңдамалы реттеу"
+
+#: operations/workshop/sharpen.c:10
+msgid "Controls the amount of sharpness applied to an image"
+msgstr "Суретке іске асырылатын айқындық шамасын басқарады"
+
+#: operations/workshop/sharpen.c:190 operations/workshop/sharpen.c:196
+msgid "Sharpen"
+msgstr "Айқындау"
+
+#: operations/workshop/sharpen.c:192
+msgid ""
+"Sharpens the image by enhancing edge contrast using a standard 3x3 "
+"convolution kernel."
+msgstr ""
+"Стандартты 3x3 оралым ядросын қолданып, жиектер контрастын арттыру арқылы "
+"суретті айқындайды."
 
 #: operations/workshop/shuffle-search.c:32
 msgid "How many times to run optimization"
