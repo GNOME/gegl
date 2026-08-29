@@ -82,7 +82,7 @@ typedef struct GeglBufferIterator
 GeglBufferIterator *gegl_buffer_iterator_empty_new (int max_slots);
 
 /**
- * gegl_buffer_iterator_new: (skip)
+ * gegl_buffer_iterator_new: (skip) (attributes skip-reason=babl_since_7dcbb732)
  * @buffer: a [class@Gegl.Buffer] to iterate over
  * @roi: the region in @buffer to iterate over
  * @level: the level at which we are iterating. The @roi will indicate the
@@ -114,7 +114,7 @@ GeglBufferIterator * gegl_buffer_iterator_new  (GeglBuffer          *buffer,
                                                 gint                 max_slots);
 
 /**
- * gegl_buffer_iterator_add: (skip)
+ * gegl_buffer_iterator_add: (skip) (attributes skip-reason=babl_since_7dcbb732)
  * @iterator: a [struct@Gegl.BufferIterator]
  * @buffer: a [class@Gegl.Buffer] to iterate over
  * @roi: the region in @buffer to iterate over
@@ -157,7 +157,7 @@ gint                 gegl_buffer_iterator_add  (GeglBufferIterator  *iterator,
                                                 GeglAbyssPolicy      abyss_policy);
 
 /**
- * gegl_buffer_iterator_stop: (skip)
+ * gegl_buffer_iterator_stop: (skip) (attributes skip-reason=unknown_since_f0408f3f)
  * @iterator: a #GeglBufferIterator
  *
  * Cancels the current iteration and invalidates the [struct@Gegl.BufferIterator].
