@@ -22,7 +22,7 @@
 #include <glib-object.h>
 
 #include "gegl-cl-version.h"
-#include "CL/opencl.h"
+#include <CL/opencl.h>
 
 G_BEGIN_DECLS
 
