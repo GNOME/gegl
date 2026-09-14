@@ -25,6 +25,21 @@
 #define CTX_RASTERIZER           1
 #define CTX_AUDIO                0
 
+/* ctx.h is not really in-GEGL, being actually outside our control on GitLab. So,
+   don't let -Werror fail on weekly GIMP GNUClang/ClangCL/AppelClang builds */
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Weverything"
+#elif defined(_MSC_VER)
+#pragma warning(push, 0)
+#endif
+
 #include "ctx.h"
+
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#elif defined(_MSC_VER)
+#pragma warning(pop)
+#endif
 
 
