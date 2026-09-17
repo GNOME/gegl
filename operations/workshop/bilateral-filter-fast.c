@@ -278,6 +278,8 @@ bilateral_filter (GeglBuffer          *src,
   g_free (smoothed);
 }
 
+
+#if 0
 #include "opencl/gegl-cl.h"
 #include "gegl-buffer-cl-iterator.h"
 #include "opencl/bilateral-filter-fast.cl.h"
@@ -438,7 +440,6 @@ error:
   return TRUE;
 }
 
-#if 0
 static gboolean
 bilateral_cl_process (GeglOperation       *operation,
                       GeglBuffer          *input,
