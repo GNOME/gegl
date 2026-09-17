@@ -931,80 +931,82 @@ static GList *list_randomize (GList *input)
   return g_list_sort (input, random_compare);
 }
 
-static inline void pixel_duster_fill (PixelDuster *duster)
+static inline void
+pixel_duster_fill (PixelDuster *duster)
 {
-  GeglProperties *o = duster->o;
-  gint missing = 1;
-  gint total = 0;
-  gint runs = 0;
+  GeglProperties *o       = duster->o;
+  gint            missing = 1;
+#ifndef NDEBUG
+  gint            total   = 0;
+#endif
+  gint            runs    = 0;
 
-  gint max_probes = g_hash_table_size (duster->probes_ht);
+  gint            max_probes = g_hash_table_size (duster->probes_ht);
   if (max_probes > 10000)
-  gegl_operation_progress (duster->op, 0.0, "this may take some time");
+    gegl_operation_progress (duster->op, 0.0, "this may take some time");
   else
-  gegl_operation_progress (duster->op, 0.0, "pixel duster");
+    gegl_operation_progress (duster->op, 0.0, "pixel duster");
 
-  while (  (((missing >0) /* && (missing != old_missing) */) ||
-           (runs < o->min_iter)) &&
-           runs < o->max_iter)
-  {
-    GList *values;
-
-    runs++;
-    total = 0;
-    missing = 0;
-
-    values = g_hash_table_get_values (duster->probes_ht);
-
-  values = list_randomize (values);
-
-  for (GList *p= values; p; p= p->next)
-  {
-    Probe *probe = p->data;
-    gint try_replace;
-
-    if (probe->score == INITIAL_SCORE)
+  while ((((missing > 0) /* && (missing != old_missing) */) ||
+          (runs < o->min_iter)) &&
+         runs < o->max_iter)
     {
-      missing ++;
-      try_replace =  0;
-    }
-    else
-    {
-      try_replace = ((rand()%1000)/1000.0) < o->chance_retry;
-    }
-    total ++;
+      runs++;
+#ifndef NDEBUG
+      total   = 0;
+#endif
+      missing = 0;
 
-    if (probe->score == INITIAL_SCORE || try_replace)
-    {
-      if ((rand()%1000)/1000.0 < o->chance_try)
-      {
-        if (probe->score != INITIAL_SCORE ||
-            (probe_neighbors (duster, duster->output, probe, o->min_neighbors) >= o->min_neighbors))
+      GList *values = g_hash_table_get_values (duster->probes_ht);
+      values        = list_randomize (values);
+
+      for (GList *p = values; p; p = p->next)
         {
-          probe_improve (duster, probe);
-          pixel_duster_trim (duster);
+          Probe *probe = p->data;
+          gint   try_replace;
+
+          if (probe->score == INITIAL_SCORE)
+            {
+              missing++;
+              try_replace = 0;
+            }
+          else
+            {
+              try_replace = ((rand () % 1000) / 1000.0) < o->chance_retry;
+            }
+#ifndef NDEBUG
+          total++;
+#endif
+
+          if (probe->score == INITIAL_SCORE || try_replace)
+            {
+              if ((rand () % 1000) / 1000.0 < o->chance_try)
+                {
+                  if (probe->score != INITIAL_SCORE ||
+                      (probe_neighbors (duster, duster->output, probe, o->min_neighbors) >= o->min_neighbors))
+                    {
+                      probe_improve (duster, probe);
+                      pixel_duster_trim (duster);
+                    }
+                }
+            }
         }
+
+      g_list_free (values);
+
+      {
+        double progress = (max_probes - missing) * 1.0 / max_probes;
+        if (duster->op)
+          gegl_operation_progress (duster->op, progress, "finding suitable pixels");
+#ifndef NDEBUG
+        fprintf (stderr, "\r%i/%i %2.2f%% run#:%i  ", total-missing, total, 100 * progress, runs);
+#endif
       }
     }
-  }
-
-  g_list_free (values);
-
-
-  {
-     double progress = (max_probes-missing ) * 1.0 /     max_probes;
-  if (duster->op)
-    gegl_operation_progress (duster->op, progress, "finding suitable pixels");
-#if 0
-
-  fprintf (stderr, "\r%i/%i %2.2f%% run#:%i  ", total-missing, total, 100 * progress, runs);
-#endif
-  }
-  }
 
   if (duster->op)
     gegl_operation_progress (duster->op, 1.0, "done");
-#if 0
+#ifndef NDEBUG
   fprintf (stderr, "\n");
 #endif
 }
@@ -1125,7 +1127,6 @@ process (GeglOperation       *operation,
   while (gegl_buffer_iterator_next (i))
   {
     gint x = i->items[0].roi.x;
-    gint y = i->items[0].roi.y;
     gint n_pixels  = i->items[0].roi.width * i->items[0].roi.height;
     float *in_pix = i->items[0].data;
     float *out_pix = i->items[1].data;
@@ -1146,7 +1147,6 @@ process (GeglOperation       *operation,
       if (x >= i->items[0].roi.x + i->items[0].roi.width)
       {
         x = i->items[0].roi.x;
-        y++;
       }
     }
   }
