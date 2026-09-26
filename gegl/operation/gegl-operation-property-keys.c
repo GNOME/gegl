@@ -23,7 +23,7 @@
 
 #include "gegl.h"
 #include "gegl-operation.h"
-#include "gegl-operations.h"
+#include "gegl-operations-private.h"
 #include "gegl-operation-property-keys.h"
 
 static GHashTable *

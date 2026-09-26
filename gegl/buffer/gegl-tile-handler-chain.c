@@ -22,8 +22,8 @@
 
 #include "gegl-buffer.h"
 #include "gegl-buffer-types.h"
-#include "gegl-tile-handler-chain.h"
-#include "gegl-tile-handler-cache.h"
+#include "gegl-tile-handler-chain-private.h"
+#include "gegl-tile-handler-cache-private.h"
 #include "gegl-tile-handler-private.h"
 
 

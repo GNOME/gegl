@@ -28,7 +28,7 @@
 #include "gegl.h"
 #include "gegl-types-internal.h"
 #include "gegl-config.h"
-#include "gegl-buffer-config.h"
+#include "gegl-buffer-config-private.h"
 
 #include "opencl/gegl-cl.h"
 

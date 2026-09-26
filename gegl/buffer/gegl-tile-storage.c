@@ -23,9 +23,9 @@
 
 #include "gegl-buffer.h"
 #include "gegl-buffer-types.h"
-#include "gegl-tile-storage.h"
-#include "gegl-tile-handler-empty.h"
-#include "gegl-tile-handler-zoom.h"
+#include "gegl-tile-storage-private.h"
+#include "gegl-tile-handler-empty-private.h"
+#include "gegl-tile-handler-zoom-private.h"
 #include "gegl-tile-handler-private.h"
 
 

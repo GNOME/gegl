@@ -32,11 +32,11 @@
 #include "graph/gegl-node-private.h"
 
 #include "operation/gegl-operation.h"
-#include "operation/gegl-operations.h"
+#include "operation/gegl-operations-private.h"
 #include "operation/gegl-operation-meta.h"
 #include "operation/gegl-operation-point-filter.h"
 
-#include "process/gegl-eval-manager.h"
+#include "process/gegl-eval-manager-private.h"
 #include "process/gegl-processor.h"
 
 

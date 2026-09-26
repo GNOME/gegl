@@ -22,7 +22,7 @@
 
 #include "gegl.h"
 #include "gegl-types-internal.h"
-#include "gegl-callback-visitor.h"
+#include "gegl-callback-visitor-private.h"
 
 
 static void       gegl_callback_visitor_class_init (GeglCallbackVisitorClass *klass);

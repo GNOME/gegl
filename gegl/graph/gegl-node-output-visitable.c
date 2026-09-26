@@ -23,12 +23,12 @@
 #include "gegl-types-internal.h"
 
 #include "gegl.h"
-#include "gegl-connection.h"
-#include "gegl-node-output-visitable.h"
+#include "gegl-connection-private.h"
+#include "gegl-node-output-visitable-private.h"
 #include "gegl-node-private.h"
-#include "gegl-pad.h"
-#include "gegl-visitable.h"
-#include "gegl-visitor.h"
+#include "gegl-pad-private.h"
+#include "gegl-visitable-private.h"
+#include "gegl-visitor-private.h"
 
 
 static void       gegl_node_output_visitable_class_init           (GeglNodeOutputVisitableClass *klass);

@@ -24,7 +24,7 @@
 #include "gegl.h"
 #include "gegl-types-internal.h"
 #include "gegl-debug.h"
-#include "gegl-region.h"
+#include "gegl-region-private.h"
 #include "graph/gegl-node-private.h"
 
 #include "operation/gegl-operation-context.h"
@@ -35,9 +35,9 @@
 #include "gegl-processor.h"
 #include "gegl-processor-private.h"
 
-#include "graph/gegl-visitor.h"
-#include "graph/gegl-callback-visitor.h"
-#include "graph/gegl-visitable.h"
+#include "graph/gegl-visitor-private.h"
+#include "graph/gegl-callback-visitor-private.h"
+#include "graph/gegl-visitable-private.h"
 
 #include "opencl/gegl-cl.h"
 

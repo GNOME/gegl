@@ -116,7 +116,7 @@
 
 #include "gegl-buffer.h"
 #include "gegl-buffer-formats.h"
-#include "gegl-sampler-lohalo.h"
+#include "gegl-sampler-lohalo-private.h"
 
 /*
  * Macros set up so the likely winner in in the first argument

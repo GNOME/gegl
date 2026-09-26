@@ -31,7 +31,7 @@
 #include "gegl-buffer-iterator.h"
 #include "gegl-buffer-iterator-private.h"
 #include "gegl-buffer-private.h"
-#include "gegl-tile-storage.h"
+#include "gegl-tile-storage-private.h"
 
 typedef enum {
   GeglIteratorState_Start,

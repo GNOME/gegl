@@ -20,8 +20,8 @@
 #define __GEGL_TILE_STORAGE_H__
 
 #include "gegl-buffer.h"
-#include "gegl-tile-handler-chain.h"
-#include "gegl-tile-handler-cache.h"
+#include "gegl-tile-handler-chain-private.h"
+#include "gegl-tile-handler-cache-private.h"
 
 G_BEGIN_DECLS
 

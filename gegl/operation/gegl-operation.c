@@ -34,9 +34,9 @@
 #include "gegl-operations-util.h"
 #include "gegl-operation-meta.h"
 #include "graph/gegl-node-private.h"
-#include "graph/gegl-connection.h"
-#include "graph/gegl-pad.h"
-#include "gegl-operations.h"
+#include "graph/gegl-connection-private.h"
+#include "graph/gegl-pad-private.h"
+#include "gegl-operations-private.h"
 
 
 #define GEGL_OPERATION_MIN_PIXELS_PER_PIXEL_TIME_UPDATE ( 32 *  32)

@@ -19,7 +19,7 @@
 #ifndef __GEGL_DOT_VISITOR_H__
 #define __GEGL_DOT_VISITOR_H__
 
-#include "graph/gegl-visitor.h"
+#include "graph/gegl-visitor-private.h"
 
 G_BEGIN_DECLS
 

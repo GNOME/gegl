@@ -27,7 +27,7 @@
 #include "gegl-types-internal.h"
 #include "gegl-debug.h"
 #include "gegl-operation.h"
-#include "gegl-operations.h"
+#include "gegl-operations-private.h"
 #include "gegl-operation-context.h"
 
 static gchar     **accepted_licenses       = NULL;

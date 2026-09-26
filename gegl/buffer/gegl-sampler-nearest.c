@@ -24,9 +24,9 @@
 #include "gegl-buffer-types.h"
 #include "gegl-buffer.h"
 #include "gegl-buffer-private.h"
-#include "gegl-tile-storage.h"
+#include "gegl-tile-storage-private.h"
 #include "gegl-tile-backend.h"
-#include "gegl-sampler-nearest.h"
+#include "gegl-sampler-nearest-private.h"
 
 enum
 {

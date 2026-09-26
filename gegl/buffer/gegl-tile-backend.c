@@ -27,7 +27,7 @@
 #include "gegl-buffer-private.h"
 #include "gegl-tile-source.h"
 #include "gegl-tile-backend.h"
-#include "gegl-buffer-config.h"
+#include "gegl-buffer-config-private.h"
 
 G_DEFINE_TYPE_WITH_PRIVATE (GeglTileBackend, gegl_tile_backend,
                             GEGL_TYPE_TILE_SOURCE)

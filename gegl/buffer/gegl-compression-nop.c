@@ -18,8 +18,8 @@
 
 #include <string.h>
 
-#include "gegl-compression.h"
-#include "gegl-compression-nop.h"
+#include "gegl-compression-private.h"
+#include "gegl-compression-nop-private.h"
 
 
 /*  local function prototypes  */

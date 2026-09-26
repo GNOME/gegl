@@ -20,7 +20,7 @@
 #include <glib-object.h>
 #include "gegl-plugin.h"
 #include "geglmodule.h"
-#include "geglmoduledb.h"
+#include "geglmoduledb-private.h"
 #include "gegldatafiles.h"
 #include "gegl-cpuaccel.h"
 #include "gegl-config.h"

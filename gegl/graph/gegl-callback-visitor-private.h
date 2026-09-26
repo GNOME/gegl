@@ -19,7 +19,7 @@
 #ifndef __GEGL_CALLBACK_VISITOR_H__
 #define __GEGL_CALLBACK_VISITOR_H__
 
-#include "gegl-visitor.h"
+#include "gegl-visitor-private.h"
 
 G_BEGIN_DECLS
 

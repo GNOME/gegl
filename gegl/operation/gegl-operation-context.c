@@ -32,7 +32,7 @@
 #include "gegl-operation-context-private.h"
 #include "gegl-node-private.h"
 #include "gegl-buffer-private.h"
-#include "gegl-tile-backend-buffer.h"
+#include "gegl-tile-backend-buffer-private.h"
 #include "gegl-config.h"
 
 #include "operation/gegl-operation.h"

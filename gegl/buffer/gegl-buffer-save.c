@@ -40,9 +40,9 @@
 #include "gegl-buffer-types.h"
 #include "gegl-buffer-private.h"
 #include "gegl-debug.h"
-#include "gegl-tile-storage.h"
+#include "gegl-tile-storage-private.h"
 #include "gegl-tile.h"
-#include "gegl-buffer-index.h"
+#include "gegl-buffer-index-private.h"
 
 #ifdef _WIN32
 #define BINARY_FLAG O_BINARY

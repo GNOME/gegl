@@ -26,8 +26,8 @@
 #include <babl/babl.h>
 
 #include "gegl-types-internal.h"
-#include "gegl-cache.h"
-#include "gegl-region.h"
+#include "gegl-cache-private.h"
+#include "gegl-region-private.h"
 #include "gegl-buffer.h" /* for GeglRectangle XXX ... */
 
 enum

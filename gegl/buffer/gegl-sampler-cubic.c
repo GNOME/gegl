@@ -24,7 +24,7 @@
 
 #include "gegl-buffer.h"
 #include "gegl-buffer-formats.h"
-#include "gegl-sampler-cubic.h"
+#include "gegl-sampler-cubic-private.h"
 
 enum
 {

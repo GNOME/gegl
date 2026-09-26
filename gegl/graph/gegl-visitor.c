@@ -25,9 +25,9 @@
 
 #include "gegl.h"
 #include "graph/gegl-node-private.h"
-#include "graph/gegl-pad.h"
-#include "gegl-visitor.h"
-#include "gegl-visitable.h"
+#include "graph/gegl-pad-private.h"
+#include "gegl-visitor-private.h"
+#include "gegl-visitable-private.h"
 
 
 static void       gegl_visitor_class_init                        (GeglVisitorClass  *klass);

@@ -30,7 +30,7 @@
 #include "gegl-buffer-cl-iterator.h"
 #include "gegl-buffer-cl-cache.h"
 #include "gegl-buffer-private.h"
-#include "gegl-tile-storage.h"
+#include "gegl-tile-storage-private.h"
 
 #include "opencl/gegl-cl.h"
 

@@ -23,7 +23,7 @@
 
 #include "gegl-buffer.h"
 #include "gegl-buffer-formats.h"
-#include "gegl-sampler-linear.h"
+#include "gegl-sampler-linear-private.h"
 
 enum
 {

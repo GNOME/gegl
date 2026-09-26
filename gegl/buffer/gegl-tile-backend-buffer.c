@@ -26,9 +26,9 @@
 #include "gegl-buffer-backend.h"
 #include "gegl-buffer-private.h"
 #include "gegl-tile-backend.h"
-#include "gegl-tile-backend-buffer.h"
-#include "gegl-tile-handler-cache.h"
-#include "gegl-tile-storage.h"
+#include "gegl-tile-backend-buffer-private.h"
+#include "gegl-tile-handler-cache-private.h"
+#include "gegl-tile-storage-private.h"
 
 
 enum

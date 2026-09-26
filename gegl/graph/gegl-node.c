@@ -30,24 +30,24 @@
 #include "gegl.h"
 #include "gegl-debug.h"
 #include "gegl-node-private.h"
-#include "gegl-connection.h"
-#include "gegl-pad.h"
-#include "gegl-visitable.h"
+#include "gegl-connection-private.h"
+#include "gegl-pad-private.h"
+#include "gegl-visitable-private.h"
 #include "gegl-config.h"
 
-#include "gegl-region.h"
+#include "gegl-region-private.h"
 
-#include "graph/gegl-visitor.h"
-#include "graph/gegl-callback-visitor.h"
-#include "graph/gegl-node-output-visitable.h"
+#include "graph/gegl-visitor-private.h"
+#include "graph/gegl-callback-visitor-private.h"
+#include "graph/gegl-node-output-visitable-private.h"
 
 #include "operation/gegl-operation.h"
 #include "operation/gegl-operation-private.h"
 #include "operation/gegl-operation-context-private.h"
-#include "operation/gegl-operations.h"
+#include "operation/gegl-operations-private.h"
 #include "operation/gegl-operation-meta.h"
 
-#include "process/gegl-eval-manager.h"
+#include "process/gegl-eval-manager-private.h"
 
 enum
 {

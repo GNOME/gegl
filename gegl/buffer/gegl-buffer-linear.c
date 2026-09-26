@@ -10,8 +10,8 @@
 #include "gegl-buffer-types.h"
 #include "gegl-rectangle.h"
 #include "gegl-buffer-private.h"
-#include "gegl-tile-storage.h"
-#include "gegl-tile-handler-cache.h"
+#include "gegl-tile-storage-private.h"
+#include "gegl-tile-handler-cache-private.h"
 
 GeglBuffer *
 gegl_buffer_linear_new (const GeglRectangle *extent,

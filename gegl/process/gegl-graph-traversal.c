@@ -24,18 +24,18 @@
 #include "gegl-types-internal.h"
 #include "gegl.h"
 #include "gegl-debug.h"
-#include "gegl-instrument.h"
+#include "gegl-instrument-private.h"
 
-#include "gegl-region.h"
+#include "gegl-region-private.h"
 
 #include "graph/gegl-node-private.h"
-#include "graph/gegl-pad.h"
-#include "graph/gegl-visitor.h"
-#include "graph/gegl-callback-visitor.h"
-#include "graph/gegl-visitable.h"
-#include "graph/gegl-connection.h"
-
+#include "graph/gegl-pad-private.h"
+#include "graph/gegl-visitor-private.h"
+#include "graph/gegl-callback-visitor-private.h"
+#include "graph/gegl-visitable-private.h"
+#include "graph/gegl-connection-private.h"
 #include "process/gegl-graph-traversal.h"
+
 #include "process/gegl-graph-traversal-private.h"
 
 #include "operation/gegl-operation.h"
@@ -101,7 +101,7 @@ _gegl_graph_do_build (GeglGraphTraversal *path, GeglNode *node)
 /**
  * gegl_graph_build:
  * @node: The node to build a traversal for
- * 
+ *
  * Build a traversal for @node.
  *
  * Return value: A new #GeglGraphTraversal
@@ -122,7 +122,7 @@ gegl_graph_build (GeglNode *node)
  * gegl_graph_rebuild:
  * @path: The traversal object to reuse
  * @node: The node to build a traversal for
- * 
+ *
  * Build a traversal for @node, reusing the scratch objects
  * from @path where possible.
  */
@@ -149,7 +149,7 @@ gegl_graph_free (GeglGraphTraversal *path)
 /**
  * gegl_graph_get_bounding_box:
  * @path: The traversal path
- * 
+ *
  * Get output bounding box for this graph, which is the
  * have rect of the final node.
  *
@@ -287,7 +287,7 @@ gegl_graph_prepare_request (GeglGraphTraversal  *path,
     gegl_operation_context_set_need_rect (context, &new_need);
     gegl_operation_context_set_result_rect (context, &new_need);
   }
-  
+
   /* Iterate over all the nodes and propagate the requested rectangle */
   for (list_iter = g_queue_peek_tail_link (&path->path);
        list_iter;
@@ -298,10 +298,10 @@ gegl_graph_prepare_request (GeglGraphTraversal  *path,
       GeglOperationContext *context;
       GeglRectangle        *request;
       GSList               *input_pads;
-      
+
       context = g_hash_table_lookup (path->contexts, node);
       g_return_if_fail (context);
-      
+
       request = gegl_operation_context_get_need_rect (context);
 
       if (request->width == 0 || request->height == 0)
@@ -309,7 +309,7 @@ gegl_graph_prepare_request (GeglGraphTraversal  *path,
           gegl_operation_context_set_result_rect (context, &empty_rect);
           continue;
         }
-      
+
       if (node->cache)
         {
           gint i;
@@ -380,16 +380,16 @@ gegl_graph_get_connected_output_contexts (GeglGraphTraversal *path,
     {
       GeglNode *target_node = gegl_connection_get_sink_node (targets_iter->data);
       GeglOperationContext *target_context = g_hash_table_lookup (path->contexts, target_node);
-      
+
       /* Only include this target if it's part of the current path */
       if (target_context)
         {
           const gchar *target_pad_name = gegl_pad_get_name (gegl_connection_get_sink_pad (targets_iter->data));
-          
+
           ContextConnection *result_element = g_new0 (ContextConnection, 1);
           result_element->name    = target_pad_name;
           result_element->context = target_context;
-          
+
           result = g_list_prepend (result, result_element);
         }
     }
@@ -441,14 +441,14 @@ gegl_graph_process (GeglGraphTraversal *path,
       GeglOperation *operation = node->operation;
       g_return_val_if_fail (node, NULL);
       g_return_val_if_fail (operation, NULL);
-      
+
       GEGL_INSTRUMENT_START();
 
       operation_result = NULL;
 
       if (last_context)
         gegl_operation_context_purge (last_context);
-      
+
       context = g_hash_table_lookup (path->contexts, node);
       g_return_val_if_fail (context, NULL);
 
@@ -456,7 +456,7 @@ gegl_graph_process (GeglGraphTraversal *path,
                  "Will process %s result_rect = %d, %d %d×%d",
                  gegl_node_get_debug_name (node),
                  context->result_rect.x, context->result_rect.y, context->result_rect.width, context->result_rect.height);
-      
+
       if (context->need_rect.width > 0 && context->need_rect.height > 0)
         {
           if (context->cached)

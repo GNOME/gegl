@@ -26,7 +26,7 @@
 
 #include "gegl.h"
 #include "property-types/gegl-paramspecs.h"
-#include "gegl-instrument.h"
+#include "gegl-instrument-private.h"
 #include "gegl-xml.h"
 #include "gegl-audio-fragment.h"
 

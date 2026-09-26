@@ -27,12 +27,12 @@
 #include "gegl.h"
 #include "gegl-types-internal.h"
 #include "graph/gegl-node-private.h"
-#include "graph/gegl-pad.h"
-#include "graph/gegl-connection.h"
-#include "graph/gegl-visitable.h"
-#include "graph/gegl-visitor.h"
+#include "graph/gegl-pad-private.h"
+#include "graph/gegl-connection-private.h"
+#include "graph/gegl-visitable-private.h"
+#include "graph/gegl-visitor-private.h"
 #include "gegl-dot.h"
-#include "gegl-dot-visitor.h"
+#include "gegl-dot-visitor-private.h"
 #include "gegl.h"
 
 void

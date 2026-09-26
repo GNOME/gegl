@@ -16,7 +16,7 @@
  */
 #include "gegl.h"
 #include "gegl-buffer-backend.h"
-#include "gegl-tile-backend-file.h"
+#include "gegl-tile-backend-file-private.h"
 
 #include <glib/gstdio.h>
 

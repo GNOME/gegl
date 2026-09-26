@@ -20,7 +20,7 @@
 #ifndef __GEGL_NODE_PRIVATE_H__
 #define __GEGL_NODE_PRIVATE_H__
 
-#include "gegl-cache.h"
+#include "gegl-cache-private.h"
 #include "gegl-types-internal.h"
 #include "gegl-node.h"
 

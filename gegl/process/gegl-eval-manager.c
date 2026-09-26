@@ -24,8 +24,8 @@
 
 #include "gegl.h"
 #include "gegl-types-internal.h"
-#include "gegl-eval-manager.h"
-#include "gegl-instrument.h"
+#include "gegl-eval-manager-private.h"
+#include "gegl-instrument-private.h"
 
 #include "graph/gegl-node-private.h"
 

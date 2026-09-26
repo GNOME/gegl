@@ -22,7 +22,7 @@
 
 #include "gegl-buffer.h"
 #include "gegl-buffer-private.h"
-#include "gegl-tile-handler-empty.h"
+#include "gegl-tile-handler-empty-private.h"
 
 G_DEFINE_TYPE (GeglTileHandlerEmpty, gegl_tile_handler_empty,
                GEGL_TYPE_TILE_HANDLER)

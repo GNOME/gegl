@@ -18,8 +18,8 @@
 
 #include <string.h>
 
-#include "gegl-compression.h"
-#include "gegl-compression-rle.h"
+#include "gegl-compression-private.h"
+#include "gegl-compression-rle-private.h"
 
 
 #define RLE_COMPRESS_VERBATIM_UNROLL    4

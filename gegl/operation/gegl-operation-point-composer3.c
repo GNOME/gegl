@@ -28,7 +28,7 @@
 #include "gegl-types-internal.h"
 #include "gegl-config.h"
 #include "gegl-buffer-private.h"
-#include "gegl-tile-storage.h"
+#include "gegl-tile-storage-private.h"
 #include <sys/types.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
