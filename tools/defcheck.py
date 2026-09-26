@@ -28,14 +28,17 @@ Needs the tool "nm", "objdump", "dumpbin" or "dyld_info" to work
 
 """
 
-import os, sys, subprocess, shutil, glob
+import os, sys, subprocess, shutil, glob, fnmatch
 from os import getenv, path
+import re
 import xml.etree.ElementTree as ET
 
 def_files = sys.argv[1:]
+src_root  = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 def read_def_symbols(filename):
    symbols = []
+   data_symbols = set()
    with open(filename, encoding="utf-8") as def_file:
       for line in def_file:
          line = line.split(";", 1)[0].strip()
@@ -44,8 +47,18 @@ def read_def_symbols(filename):
          # DATA marks variable exports in .def files and is not part of the symbol name.
          parts = line.split()
          symbols.append(parts[0])
-   return symbols
+         if len(parts) > 1 and parts[1] == "DATA":
+            data_symbols.add(parts[0])
+   return symbols, data_symbols
 
+have_errors = 0
+
+
+# PROJECT-SPECIFIC CONFIGURATION
+# This script is synced between BABL, GEGL and GIMP. Everything that differs
+# lives in this block, the rest should stay identical for easier maintenance
+
+# Symbols to ignore only when checking the .def files.
 #gegl_glX* symbols are Linux-specific and gegl_clCreateCommandQueue macOS-specific
 exclude_symbols = [
     "gegl_glXGetCurrentContext",
@@ -63,7 +76,35 @@ ignore_sorting_errors = [
    "AdvancingFront_set_head",
 ]
 
-have_errors = 0
+# Symbols to ignore only when checking the .gir files.
+gir_exclude_symbols = [
+    #hardware-related symbols
+    "gegl_cl*",
+    "gegl_cpu_accel*",
+    "gegl_downscale*",
+    "gegl_resample*",
+    #obscure symbols (not clearly splitted between public and private)
+    "gegl_bt",
+    "gegl_buffer*",
+    "gegl_temp_buffer*",
+    "gegl_tile*",
+    "gegl_extension*",
+    "gegl_object*",
+    "gegl_operation*",
+    "gegl_can_do_inplace_processing",
+    "gegl_graph*"
+]
+
+# Regex matching the project prefix to find the functions in private headers
+symbol_prefix = "(gegl)"
+
+# Headers not named *-private.h which are nonetheless not stable public API
+special_cased = {
+   'gegl': [ 'module/gegldatafiles.h', 'module/geglmodule.h', 'gegl-config.h', 'gegl-debug.h', 'gegl-dot.h' ]
+}
+
+# Directories of the libraries with no associated .gir file as an exception
+not_introspected = [ "libs/npd", "seamless-clone" ]
 
 
 #READ LIBRARY SYMBOLS
@@ -116,7 +157,7 @@ for df in def_files:
 
    filename = df
    try:
-      defsymbols = read_def_symbols (filename)
+      defsymbols, def_data_symbols = read_def_symbols (filename)
    except IOError as message:
       print(message)
       sys.exit (-1)
@@ -215,40 +256,78 @@ for df in def_files:
    #READ GIR/TYPELIB SYMBOLS
    girsymbols = {}
    gir_mode = any(arg.endswith(".gir") for arg in sys.argv[1:])
+   gir_filename = None
    if gir_mode:
       current_idx = sys.argv.index(df)
-      if current_idx + 1 < len(sys.argv) and sys.argv[current_idx + 1].endswith(".gir"):
-         gir_filename = sys.argv[current_idx + 1]
+      for i in range(current_idx + 1, len(sys.argv)):
+         if sys.argv[i].endswith(".gir"):
+           gir_filename = sys.argv[i]
+           break
+      if gir_filename is not None:
          try:
             tree = ET.parse(gir_filename)
             for elem in tree.iter():
-               c_id = None
+               c_id            = None
+               introspectable  = False
+               has_skip_reason = False
                for k, v in elem.attrib.items():
                   if k == 'c:identifier' or k.endswith('}identifier'):
                      c_id = v
-               if c_id and not elem.tag.endswith('function-macro'):
-                  if any(child.tag.endswith('varargs') or child.get('name') == 'va_list' for child in elem.iter()):
-                     continue
+                     break
+                  elif k.endswith('}get-type'):
+                     # The *_get_type() functions are not introspected
+                     # the same way as other functions.
+                     c_id = v
+                     introspectable = True
+                     break
+               if c_id is None or c_id not in nmsymbols:
+                  continue
+               if not introspectable and not elem.tag.endswith('function-macro'):
                   introspectable = elem.get('introspectable') != '0'
-                  has_skip_reason = False
-                  for child in elem:
-                     if child.tag == 'attribute' or child.tag.endswith('}attribute'):
-                        if child.get('name') == 'skip-reason':
-                           has_skip_reason = True
-                  girsymbols[c_id] = (introspectable, has_skip_reason)
+                  if any(child.tag.endswith('varargs') or child.get('name') == 'va_list' for child in elem.iter()):
+                     # Variable arguments functions don't need a reason.
+                     # They are just not introspected by nature.
+                     has_skip_reason = True
+                  else:
+                     has_skip_reason = False
+                     for child in elem:
+                        if child.tag == 'attribute' or child.tag.endswith('}attribute'):
+                           if child.get('name') == 'skip-reason':
+                              has_skip_reason = True
+               girsymbols[c_id] = (introspectable, has_skip_reason)
          except Exception as e:
             print("trouble reading {} - {}".format(gir_filename, e))
             have_errors = -1
             continue
+      elif directory in not_introspected:
+         # This library is on its own. It is not part of any library
+         # collection sharing a .gir file, and is not introspected.
+         gir_mode = False
+      else:
+         print(f'No associated GIR file with {df}.')
+         print(f'Make sure a GIR file is set AFTER {df} in meson.build, or add')
+         print(f'{directory} to not_introspected in {os.path.basename(__file__)}.')
+         have_errors = -1
+         continue
 
-   missing_gir = []
-   #missing_gir = [s for s in nmsymbols if s not in girsymbols and s not in exclude_symbols] if gir_mode else []
-   missing_introspect = []
-   #missing_introspect = [s for s in nmsymbols if s in girsymbols and not girsymbols[s][0] and not girsymbols[s][1]] if gir_mode else []
-   missing_skip = [s for s, (intro, skip) in girsymbols.items() if not intro and not skip and s not in missing_introspect] if gir_mode else []
+   fun_def_pattern = re.compile("\\b(" + symbol_prefix + "_[a-z0-9_]*)\\s*\\(")
+   for filename in [os.path.relpath(os.path.join(root, f), os.path.join(src_root, directory)) for root, _, files in os.walk(os.path.join(src_root, directory)) for f in files]:
+      private_equivalent = special_cased[directory] if directory in special_cased else [ ]
+      if filename.endswith('-private.h') or filename in private_equivalent:
+         priv_header = os.path.join(src_root, directory, filename)
+         with open(priv_header) as fd:
+           for line in fd:
+             m = fun_def_pattern.search(line)
+             if m is not None:
+                gir_exclude_symbols += [m.group(1)]
+   def is_gir_excluded(symbol):
+      return symbol in def_data_symbols or any(fnmatch.fnmatchcase(symbol, pattern) for pattern in gir_exclude_symbols)
+
+   missing_gir = [s for s in nmsymbols if s not in girsymbols and not is_gir_excluded(s)] if gir_mode else []
+   missing_introspect = [s for s in nmsymbols if s in girsymbols and not girsymbols[s][0] and not girsymbols[s][1]] if gir_mode else []
 
 
-   if missing_defs or missing_nms or doublesymbols or not sortok or missing_gir or missing_introspect or missing_skip:
+   if missing_defs or missing_nms or doublesymbols or not sortok:
       print()
       print("Problem found in", filename)
 
@@ -278,28 +357,26 @@ for df in def_files:
             if s != "":
                print("     * ", s)
 
-      #if missing_gir:
-      #   print("  the following symbols are in the library,")
-      #   print("  but are not listed in the .gir-file:")
-      #   for s in missing_gir:
-      #      print("     +", s)
-      #   print("  Please add GI annotations on the pertinent headers.")
-      #   print()
+      have_errors = -1
 
-      #if missing_introspect:
-      #   print("  the following symbols are in both library and gir,")
-      #   print("  but are implied as non-introspectable in the .gir-file:")
-      #   for s in missing_introspect:
-      #      print("     !", s)
-      #   print("  Please add explicit `(skip)` on the pertinent headers.")
-      #   print()
+   if missing_gir or missing_introspect:
+      print()
+      print("Problem found in", gir_filename)
 
-      if missing_skip:
-         print("  the following symbols are marked as non-introspectable,")
-         print("  but do not have a skip-reason attribute, which is ambiguous:")
-         for s in missing_skip:
-            print("     ?", s)
-         print("  Please add `skip-reason` on the pertinent headers.")
+      if missing_gir:
+         print(f"  the following symbols are in the library {os.path.basename(libname)},")
+         print("  but are not listed in the .gir-file:")
+         for s in missing_gir:
+            print("     +", s)
+         print("  Please add GI annotations on the pertinent headers.")
+         print()
+
+      if missing_introspect:
+         print("  the following symbols are in both library and gir,")
+         print("  but are implied as non-introspectable in the .gir-file:")
+         for s in missing_introspect:
+            print("     !", s)
+         print("  Please either fix the annotations or add explicit `(skip)` and a skip-reason attribute on the pertinent headers.")
          print()
 
       have_errors = -1
