@@ -134,7 +134,7 @@ rgbe_mapped_file_remaining (GMappedFile *f,
                             const void  *data)
 {
   g_return_val_if_fail (f, 0);
-  g_return_val_if_fail (GPOINTER_TO_UINT (data) >
+  g_return_val_if_fail (GPOINTER_TO_UINT (data) >=
                         GPOINTER_TO_UINT (g_mapped_file_get_contents (f)), 0);
 
   return GPOINTER_TO_UINT (data) -
@@ -595,6 +595,9 @@ rgbe_read_uncompressed (const rgbe_file *file,
 
   data = (guint8 *)g_mapped_file_get_contents (file->file) + *cursor;
 
+  if (rgbe_mapped_file_remaining (file->file, data) < (gsize) file->header.x_axis.size * RGBE_NUM_RGBE)
+    return FALSE;
+
   for (i = 0; i < file->header.x_axis.size; ++i)
     {
       rgbe_rgbe_to_float (file, data, pixels);
@@ -665,6 +668,8 @@ rgbe_read_new_rle (const rgbe_file *file,
                  RGBE_NUM_RGBE * linesize, max_size);
       return FALSE;
     }
+  else if (rgbe_mapped_file_remaining (file->file, data) < (gsize) RGBE_NUM_RGBE * linesize)
+    return FALSE;
 
   data += RGBE_NUM_RGBE;
 
@@ -1032,7 +1037,7 @@ rgbe_get_size (rgbe_file *file,
 gfloat *
 rgbe_read_scanlines (rgbe_file *file)
 {
-  guint     i;
+  guint     rows    = 0;
   gboolean  success = FALSE;
   gfloat   *pixels  = NULL,
            *pixel_cursor;
@@ -1051,9 +1056,17 @@ rgbe_read_scanlines (rgbe_file *file)
   offset = GPOINTER_TO_UINT (file->scanlines) -
            GPOINTER_TO_UINT (g_mapped_file_get_contents (file->file));
 
-  for (i = 0; i < file->header.y_axis.size; ++i)
+  for (guint i = 0; i < file->header.y_axis.size; ++i)
     {
       const gchar *data = g_mapped_file_get_contents (file->file);
+
+      if (rgbe_mapped_file_remaining (file->file, data) < offset + OFFSET_B)
+        {
+          success = FALSE;
+          g_warning ("Unable to parse rgbe scanlines, fail at row %u\n", i);
+          goto cleanup;
+        }
+      
 
       if (data[offset + OFFSET_R] == 1 &&
           data[offset + OFFSET_G] == 1 &&
@@ -1070,13 +1083,14 @@ rgbe_read_scanlines (rgbe_file *file)
           g_warning ("Unable to parse rgbe scanlines, fail at row %u\n", i);
           goto cleanup;
         }
+      rows++;
       pixel_cursor += file->header.x_axis.size * RGBE_NUM_RGBE;
     }
 
   success = TRUE;
 
 cleanup:
-  if (!success)
+  if (!success && rows == 0)
     {
       g_free (pixels);
       pixels = NULL;
