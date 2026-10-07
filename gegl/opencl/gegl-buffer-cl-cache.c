@@ -87,7 +87,7 @@ free_cache_entry (gpointer data)
   gegl_clReleaseMemObject (entry->tex);
   g_object_unref (entry->buffer);
 
-  g_slice_free (CacheEntry, data);
+  g_free (data);
   cache_entries = g_list_remove (cache_entries, data);
 }
 
@@ -146,7 +146,7 @@ gegl_buffer_cl_cache_new (GeglBuffer            *buffer,
                           const GeglRectangle   *roi,
                           cl_mem                 tex)
 {
-  CacheEntry *e = g_slice_new (CacheEntry);
+  CacheEntry *e = g_new0 (CacheEntry, 1);
 
   e->buffer        = buffer;
   e->roi           = *roi;
