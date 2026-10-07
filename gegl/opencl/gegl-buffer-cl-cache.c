@@ -41,7 +41,6 @@ typedef struct
 } CacheEntry;
 
 static GList *cache_entries = NULL;
-
 static GRecMutex cache_mutex = { 0, };
 
 static gboolean
@@ -163,6 +162,33 @@ gegl_buffer_cl_cache_new (GeglBuffer            *buffer,
 }
 
 static inline gboolean
+map_and_set_buffer_from_cl_mem (CacheEntry *entry)
+{
+  const Babl *format = gegl_buffer_get_format (entry->buffer);
+
+  size_t size;
+  gegl_cl_color_babl (format, &size);
+
+  cl_int   cl_err = CL_SUCCESS;
+  gpointer data   = gegl_clEnqueueMapBuffer (gegl_cl_get_command_queue (),
+                                             entry->tex, CL_TRUE, CL_MAP_READ,
+                                             0, entry->roi.width * entry->roi.height * size,
+                                             0, NULL, NULL, &cl_err);
+  CL_CHECK;
+
+  gegl_buffer_set (entry->buffer, &entry->roi, 0, format, data, GEGL_AUTO_ROWSTRIDE);
+
+  cl_err = gegl_clEnqueueUnmapMemObject (gegl_cl_get_command_queue (),
+                                         entry->tex, data,
+                                         0, NULL, NULL);
+  CL_CHECK;
+
+  return TRUE;
+error:
+  return FALSE;
+}
+
+static inline gboolean
 _gegl_buffer_cl_cache_flush2 (GeglTileHandlerCache *cache,
                               const GeglRectangle  *roi)
 {
@@ -180,30 +206,18 @@ _gegl_buffer_cl_cache_flush2 (GeglTileHandlerCache *cache,
       if (entry->valid && entry->buffer->tile_storage->cache == cache
           && (!roi || gegl_rectangle_intersect (&tmp, roi, &entry->roi)))
         {
-          const Babl *format = gegl_buffer_get_format (entry->buffer);
-          size_t      size;
-
           need_cl = TRUE;
 
           /* Flush moves (not just copies) the content of a buffer from an
              OpenCL device to the host and marks that entry as invalid. */
+          /* Refcount needs to be increased in case another thread tries to
+           * invalidate the same cache entry before the flush can finish. And
+           * regardless of the result of the following OpenCL operations, it
+           * also needs to be again decreased. */
           g_atomic_ref_count_inc (&entry->refcount);
           entry->valid = FALSE;
 
-          gegl_cl_color_babl (format, &size);
-
-          data = gegl_clEnqueueMapBuffer (gegl_cl_get_command_queue (),
-                                          entry->tex, CL_TRUE, CL_MAP_READ,
-                                          0, entry->roi.width * entry->roi.height * size,
-                                          0, NULL, NULL, &cl_err);
-          CL_CHECK;
-
-          gegl_buffer_set (entry->buffer, &entry->roi, 0, format, data, GEGL_AUTO_ROWSTRIDE);
-
-          cl_err = gegl_clEnqueueUnmapMemObject (gegl_cl_get_command_queue (),
-                                                 entry->tex, data,
-                                                 0, NULL, NULL);
-          CL_CHECK;
+          map_and_set_buffer_from_cl_mem (entry);
 
           g_atomic_ref_count_dec (&entry->refcount);
         }
@@ -228,7 +242,6 @@ error:
 
   g_rec_mutex_unlock (&cache_mutex);
 
-  /* XXX : result is corrupted */
   return FALSE;
 }
 
