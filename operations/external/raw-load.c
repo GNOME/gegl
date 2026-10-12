@@ -169,7 +169,7 @@ prepare (GeglOperation *operation)
           }
           else
           {
-            p->cached_path = strdup (o->path);
+            p->cached_path = g_strdup (o->path);
           }
         }
     }
