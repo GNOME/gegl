@@ -43,6 +43,7 @@ extern "C" {
 /* ignore deprecated warnings from OpenEXR headers */
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated"
+#pragma GCC diagnostic ignored "-Wignored-attributes"
 
 #include <ImfTiledOutputFile.h>
 #include <ImfOutputFile.h>
