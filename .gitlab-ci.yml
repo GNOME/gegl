@@ -101,6 +101,7 @@ debian-x86_64:
     - meson setup --buildtype debug
                   --fatal-meson-warnings
                   --default-library=both
+                  -Dworkshop=true
                   _build
     - ninja -C _build
     - ninja -C _build test
