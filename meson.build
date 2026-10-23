@@ -323,6 +323,18 @@ void main(void) { X ("%d", 42); Y ("%d"); }
   )
 )
 
+config.set(
+  'GEGL_ISO_CXX_VARIADIC_MACROS',
+  cpp.compiles(
+    '''
+int a(int p1, int p2, int p3);
+#define call_a(...) a(1,__VA_ARGS__)
+call_a(2,3);
+    ''',
+    name: 'ISO C99 variadic macros in C++'
+  )
+)
+
 ################################################################################
 # Build Utilities
 
