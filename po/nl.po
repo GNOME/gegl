@@ -6,10 +6,10 @@
 msgid ""
 msgstr "Project-Id-Version: GEGL master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2026-08-11 11:36+0000\n"
-"PO-Revision-Date: 2026-08-12 10:59+0200\n"
-"Last-Translator: Dick Groskamp <dikgro@yahoo.co.uk>\n"
-"Language-Team: Dutch <gnome-nl-list@gnome.org>\n"
+"POT-Creation-Date: 2026-10-22 16:20+0000\n"
+"PO-Revision-Date: 2026-10-30 15:25+0100\n"
+"Last-Translator: Dick Groskamp <dikgro@ziggo.uk>\n"
+"Language-Team: GNOME-NL https://matrix.to/#/#nl:gnome.org\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2437,12 +2437,12 @@ msgstr "Uitvoermodus"
 msgid "Output Mode"
 msgstr "Uitvoermodus"
 
-#: operations/common/image-gradient.c:224
+#: operations/common/image-gradient.c:180
 msgid "Image Gradient"
 msgstr "Kleurverloop"
 
 # differentialen? - pm
-#: operations/common/image-gradient.c:227
+#: operations/common/image-gradient.c:183
 msgid "Compute gradient magnitude and/or direction by central differences"
 msgstr "Bereken de grootte en/of richting van het kleurverloop door centrale verschillen"
 
@@ -3896,11 +3896,11 @@ msgstr "Tegelbaar"
 msgid "Generate a tileable map"
 msgstr "Genereer een tegelbare kaart"
 
-#: operations/common/normal-map.c:271
+#: operations/common/normal-map.c:203
 msgid "Normal Map"
 msgstr "Genormaliseerde kaart"
 
-#: operations/common/normal-map.c:274
+#: operations/common/normal-map.c:206
 msgid "Generate a normal map from a height map"
 msgstr "Genereer een map met randdetectie vanuit een hoogtemap"
 
@@ -4035,7 +4035,7 @@ msgstr "Kleur om de achtergrond te vullen"
 
 #: operations/common/pixelize.c:692
 msgid "Pixelize"
-msgstr "Pixeliseren"
+msgstr "Verpixelen"
 
 #: operations/common/pixelize.c:694
 msgid "Simplify image into an array of solid-colored rectangles"
@@ -9405,11 +9405,11 @@ msgstr "Gladheid"
 msgid "Level of smoothness"
 msgstr "Mate van gladheid"
 
-#: operations/workshop/bilateral-filter-fast.c:505
+#: operations/workshop/bilateral-filter-fast.c:506
 msgid "Bilateral Box Filter"
 msgstr "Bilateraal boxfilter"
 
-#: operations/workshop/bilateral-filter-fast.c:508
+#: operations/workshop/bilateral-filter-fast.c:509
 msgid ""
 "A fast approximation of bilateral filter, using a box-filter instead of a "
 "gaussian blur."
@@ -10020,11 +10020,11 @@ msgstr "Tint, verzadiging en lichtheid selectief aanpassen"
 msgid "Controls the amount of sharpness applied to an image"
 msgstr "Beheert de hoeveelheid scherpte die wordt toegepast op een afbeelding."
 
-#: operations/workshop/sharpen.c:175 operations/workshop/sharpen.c:181
+#: operations/workshop/sharpen.c:132 operations/workshop/sharpen.c:139
 msgid "Sharpen"
 msgstr "Verscherpen"
 
-#: operations/workshop/sharpen.c:177
+#: operations/workshop/sharpen.c:134
 msgid ""
 "Sharpens the image by enhancing edge contrast using a standard 3x3 "
 "convolution kernel."
