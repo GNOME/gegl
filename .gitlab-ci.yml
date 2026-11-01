@@ -97,7 +97,7 @@ debian-x86_64:
   stage: build
   script:
     - git clone --depth 1 https://gitlab.gnome.org/GNOME/babl.git
-    - cd babl && meson _build && ninja -C _build && ninja -C _build install && cd ..
+    - cd babl && meson setup _build && ninja -C _build && ninja -C _build install && cd ..
     - meson setup --buildtype debug
                   --fatal-meson-warnings
                   --default-library=both
