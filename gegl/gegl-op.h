@@ -271,33 +271,33 @@ gegl_module_register (GTypeModule *module)
 
 
 #define description(blurb)
-#define value_range(min,max)
-#define ui_range(min,max)
-#define ui_gamma(gamma)
-#define ui_steps(small_increment, big_increment)
-#define ui_meta(key,val)
 #define ui_digits(digits)
+#define ui_gamma(gamma)
+#define ui_meta(key,val)
+#define ui_range(min,max)
+#define ui_steps(small_increment, big_increment)
+#define value_range(min,max)
 
 #define ITEM(name,label,def_val, type)
 #define ITEM2(name,label,def_val,type) ITEM(name,label,def_val,type)
 
 /* enum registration */
 
-#define property_double(name, label, def_val)     ITEM(name,label,def_val,double)
-#define property_int(name, label, def_val)        ITEM(name,label,def_val,int)
-#define property_string(name, label, def_val)     ITEM(name,label,def_val,string)
-#define property_file_path(name, label, def_val)  ITEM(name,label,def_val,string)
-#define property_uri(name, label, def_val)        ITEM(name,label,def_val,string)
-#define property_boolean(name, label, def_val)    ITEM(name,label,def_val,boolean)
-#define property_pointer(name, label, def_val)    ITEM(name,label,def_val,pointer)
-#define property_object(name, label, def_val)     ITEM2(name,label,def_val,object)
-#define property_enum(name, label, enm, enum_name, def_val)  ITEM(name,label,def_val,pointer)
-#define property_seed(name, label, rand_name)     ITEM(name,label,def_val,uint)
-#define property_format(name, label, def_val)     ITEM(name,label,def_val,pointer)
-#define property_curve(name, label, def_val)      ITEM2(name,label,def_val,object)
-#define property_path(name, label, def_val)       ITEM2(name,label,def_val,object)
-#define property_color(name, label, def_val)      ITEM2(name,label,def_val,object)
-#define property_audio_fragment(name, label, def_val)      ITEM2(name,label,NULL,object)
+#define property_audio_fragment(name, label, def_val)       ITEM2 (name, label, NULL, object)
+#define property_boolean(name, label, def_val)              ITEM (name, label, def_val, boolean)
+#define property_color(name, label, def_val)                ITEM2 (name, label, def_val, object)
+#define property_curve(name, label, def_val)                ITEM2 (name, label, def_val, object)
+#define property_double(name, label, def_val)               ITEM (name, label, def_val, double)
+#define property_enum(name, label, enm, enum_name, def_val) ITEM (name, label, def_val, pointer)
+#define property_file_path(name, label, def_val)            ITEM (name, label, def_val, string)
+#define property_format(name, label, def_val)               ITEM (name, label, def_val, pointer)
+#define property_int(name, label, def_val)                  ITEM (name, label, def_val, int)
+#define property_object(name, label, def_val)               ITEM2 (name, label, def_val, object)
+#define property_path(name, label, def_val)                 ITEM2 (name, label, def_val, object)
+#define property_pointer(name, label, def_val)              ITEM (name, label, def_val, pointer)
+#define property_seed(name, label, rand_name)               ITEM (name, label, def_val, uint)
+#define property_string(name, label, def_val)               ITEM (name, label, def_val, string)
+#define property_uri(name, label, def_val)                  ITEM (name, label, def_val, string)
 
 #define enum_start(enum_name)   typedef enum {
 #define enum_value(value, nick, name)    value ,
@@ -348,25 +348,27 @@ static GType enum_name ## _get_type (void)               \
 
 #include GEGL_OP_C_FILE
 
-#undef property_double
-#undef property_int
-#undef property_string
-#undef property_boolean
-#undef property_file_path
-#undef property_uri
-#undef property_object
-#undef property_pointer
-#undef property_format
-#undef property_enum
-#undef property_seed
-#undef property_curve
-#undef property_color
 #undef property_audio_fragment
+#undef property_boolean
+#undef property_color
+#undef property_curve
+#undef property_double
+#undef property_enum
+#undef property_file_path
+#undef property_format
+#undef property_int
+#undef property_object
 #undef property_path
+#undef property_pointer
+#undef property_seed
+#undef property_string
+#undef property_uri
+
 #undef enum_start
 #undef enum_value
 #undef enum_value_skip
 #undef enum_end
+
 #define enum_start(enum_name)
 #define enum_value(value, nick, name)
 #define enum_value_skip(value)
@@ -377,40 +379,41 @@ static GType enum_name ## _get_type (void)               \
 struct GEGL_OP_STRUCT_NAME(_GeglProperties, GEGL_OP_NAME)
 {
   gpointer user_data; /* for use by the op implementation */
-#define property_double(name, label, def_val)          gdouble     name;
-#define property_int(name, label, def_val)             gint        name;
-#define property_string(name, label, def_val)          gchar      *name;
-#define property_boolean(name, label, def_val)         gboolean    name;
-#define property_file_path(name, label, def_val)       gchar      *name;
-#define property_uri(name, label, def_val)             gchar      *name;
-#define property_object(name, label, def_val)          GObject    *name;
-#define property_curve(name, label, def_val)           GeglCurve  *name;
-#define property_color(name, label, def_val)           GeglColor  *name;
-#define property_audio_fragment(name, label, def_val)  GeglAudioFragment  *name;
-#define property_path(name, label, def_val)            GeglPath   *name; gulong path_changed_handler;
-#define property_pointer(name, label, def_val)         gpointer    name;
-#define property_format(name, label, def_val)          gpointer    name;
-#define property_enum(name, label, enum, enum_name, def_val) enum        name;
-#define property_seed(name, label, rand_name)          guint       name;\
-                                                       GeglRandom *rand_name;
+#define property_audio_fragment(name, label, def_val)        GeglAudioFragment *name;
+#define property_boolean(name, label, def_val)               gboolean           name;
+#define property_color(name, label, def_val)                 GeglColor         *name;
+#define property_curve(name, label, def_val)                 GeglCurve         *name;
+#define property_double(name, label, def_val)                gdouble            name;
+#define property_enum(name, label, enum, enum_name, def_val) enum               name;
+#define property_file_path(name, label, def_val)             gchar             *name;
+#define property_format(name, label, def_val)                gpointer           name;
+#define property_int(name, label, def_val)                   gint               name;
+#define property_object(name, label, def_val)                GObject           *name;
+#define property_string(name, label, def_val)                gchar             *name;
+#define property_uri(name, label, def_val)                   gchar             *name;
+#define property_path(name, label, def_val)                  GeglPath          *name;                 \
+                                                             gulong             path_changed_handler;
+#define property_pointer(name, label, def_val)               gpointer           name;
+#define property_seed(name, label, rand_name)                guint              name;                 \
+                                                             GeglRandom        *rand_name;
 
 #include GEGL_OP_C_FILE
 
-#undef property_double
-#undef property_int
-#undef property_string
-#undef property_boolean
-#undef property_file_path
-#undef property_uri
-#undef property_object
-#undef property_pointer
-#undef property_format
-#undef property_enum
-#undef property_seed
-#undef property_curve
-#undef property_color
 #undef property_audio_fragment
+#undef property_boolean
+#undef property_color
+#undef property_curve
+#undef property_double
+#undef property_enum
+#undef property_file_path
+#undef property_format
+#undef property_int
+#undef property_object
 #undef property_path
+#undef property_pointer
+#undef property_seed
+#undef property_string
+#undef property_uri
 };
 
 #define GEGL_OP_OPERATION(obj) ((Operation*)(obj))
@@ -420,24 +423,24 @@ enum
   PROP_0,
 
 #undef ITEM
-#define ITEM(name,label,def_val, type)             PROP_##name,
-#define ITEM2(name,label,def_val, type)            ITEM(name,label,def_val,type)
+#define ITEM(name, label, def_val, type)  PROP_##name,
+#define ITEM2(name, label, def_val, type) ITEM (name, label, def_val, type)
 
-#define property_double(name, label, def_val)     ITEM(name,label,def_val,double)
-#define property_int(name, label, def_val)        ITEM(name,label,def_val,int)
-#define property_string(name, label, def_val)     ITEM(name,label,def_val,string)
-#define property_file_path(name, label, def_val)  ITEM(name,label,def_val,string)
-#define property_uri(name, label, def_val)        ITEM(name,label,def_val,string)
-#define property_boolean(name, label, def_val)    ITEM(name,label,def_val,boolean)
-#define property_object(name, label, def_val)     ITEM2(name,label,def_val,object)
-#define property_curve(name, label, def_val)      ITEM2(name,label,def_val,object)
-#define property_color(name, label, def_val)      ITEM2(name,label,def_val,object)
-#define property_audio_fragment(name, label, def_val) ITEM2(name,label,def_val,object)
-#define property_path(name, label, def_val)       ITEM2(name,label,def_val,object)
-#define property_pointer(name, label, def_val)    ITEM(name,label,def_val,pointer)
-#define property_format(name, label, def_val)     ITEM(name,label,def_val,pointer)
-#define property_enum(name, label, enm, enum_name, def_val) ITEM(name,label,def_val,enum)
-#define property_seed(name, label, rand_name)     ITEM(name,label,def_val,uint)
+#define property_audio_fragment(name, label, def_val)       ITEM2 (name, label, def_val, object)
+#define property_boolean(name, label, def_val)              ITEM (name, label, def_val, boolean)
+#define property_color(name, label, def_val)                ITEM2 (name, label, def_val, object)
+#define property_curve(name, label, def_val)                ITEM2 (name, label, def_val, object)
+#define property_double(name, label, def_val)               ITEM (name, label, def_val, double)
+#define property_enum(name, label, enm, enum_name, def_val) ITEM (name, label, def_val, enum)
+#define property_format(name, label, def_val)               ITEM (name, label, def_val, pointer)
+#define property_file_path(name, label, def_val)            ITEM (name, label, def_val, string)
+#define property_int(name, label, def_val)                  ITEM (name, label, def_val, int)
+#define property_object(name, label, def_val)               ITEM2 (name, label, def_val, object)
+#define property_path(name, label, def_val)                 ITEM2 (name, label, def_val, object)
+#define property_pointer(name, label, def_val)              ITEM (name, label, def_val, pointer)
+#define property_seed(name, label, rand_name)               ITEM (name, label, def_val, uint)
+#define property_string(name, label, def_val)               ITEM (name, label, def_val, string)
+#define property_uri(name, label, def_val)                  ITEM (name, label, def_val, string)
 
 #include GEGL_OP_C_FILE
 
@@ -466,21 +469,21 @@ get_property (GObject      *gobject,
 
 #include GEGL_OP_C_FILE
 
-#undef property_double
-#undef property_int
-#undef property_string
-#undef property_boolean
-#undef property_file_path
-#undef property_uri
-#undef property_object
-#undef property_pointer
-#undef property_format
-#undef property_enum
-#undef property_seed
-#undef property_curve
-#undef property_color
 #undef property_audio_fragment
+#undef property_boolean
+#undef property_color
+#undef property_curve
+#undef property_double
+#undef property_enum
+#undef property_file_path
+#undef property_format
+#undef property_int
+#undef property_object
 #undef property_path
+#undef property_pointer
+#undef property_seed
+#undef property_string
+#undef property_uri
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (gobject, property_id, pspec);
       break;
@@ -494,59 +497,55 @@ set_property (GObject      *gobject,
               const GValue *value,
               GParamSpec   *pspec)
 {
-  GeglProperties *properties;
-
-  properties = GEGL_PROPERTIES(gobject);
+  GeglProperties *properties = GEGL_PROPERTIES (gobject);
 
   switch (property_id)
   {
-#define property_double(name, label, def_val)                         \
+#define property_audio_fragment(name, label, def_val)                 \
     case PROP_##name:                                                 \
-      properties->name = g_value_get_double (value);                  \
-      break;
-#define property_int(name, label, def_val)                            \
-    case PROP_##name:                                                 \
-      properties->name = g_value_get_int (value);                     \
-      break;
-#define property_string(name, label, def_val)                         \
-    case PROP_##name:                                                 \
-      g_free (properties->name);                                      \
-      properties->name = g_value_dup_string (value);                  \
+      g_clear_object (&properties->name);                             \
+      properties->name =                                              \
+        GEGL_AUDIO_FRAGMENT (g_value_dup_object (value));             \
       break;
 #define property_boolean(name, label, def_val)                        \
     case PROP_##name:                                                 \
       properties->name = g_value_get_boolean (value);                 \
-      break;
-#define property_file_path(name, label, def_val)                      \
-    case PROP_##name:                                                 \
-      g_free (properties->name);                                      \
-      properties->name = g_value_dup_string (value);                  \
-      break;
-#define property_uri(name, label, def_val)                            \
-    case PROP_##name:                                                 \
-      g_free (properties->name);                                      \
-      properties->name = g_value_dup_string (value);                  \
-      break;
-#define property_object(name, label, def_val)                         \
-    case PROP_##name:                                                 \
-      g_clear_object (&properties->name);                             \
-      properties->name = G_OBJECT (g_value_dup_object (value));       \
-      break;
-#define property_curve(name, label, def_val)                          \
-    case PROP_##name:                                                 \
-      g_clear_object (&properties->name);                             \
-      properties->name = GEGL_CURVE (g_value_dup_object (value));     \
       break;
 #define property_color(name, label, def_val)                          \
     case PROP_##name:                                                 \
       g_clear_object (&properties->name);                             \
       properties->name = GEGL_COLOR (g_value_dup_object (value));     \
       break;
-#define property_audio_fragment(name, label, def_val)                 \
+#define property_curve(name, label, def_val)                          \
     case PROP_##name:                                                 \
       g_clear_object (&properties->name);                             \
-      properties->name =                                              \
-        GEGL_AUDIO_FRAGMENT (g_value_dup_object (value));              \
+      properties->name = GEGL_CURVE (g_value_dup_object (value));     \
+      break;
+#define property_double(name, label, def_val)                         \
+    case PROP_##name:                                                 \
+      properties->name = g_value_get_double (value);                  \
+      break;
+#define property_enum(name, label, enum, enum_name, def_val)          \
+    case PROP_##name:                                                 \
+      properties->name = (enum) g_value_get_enum (value);             \
+      break;
+#define property_file_path(name, label, def_val)                      \
+    case PROP_##name:                                                 \
+      g_free (properties->name);                                      \
+      properties->name = g_value_dup_string (value);                  \
+      break;
+#define property_format(name, label, def_val)                         \
+    case PROP_##name:                                                 \
+      properties->name = g_value_get_pointer (value);                 \
+      break;
+#define property_int(name, label, def_val)                            \
+    case PROP_##name:                                                 \
+      properties->name = g_value_get_int (value);                     \
+      break;
+#define property_object(name, label, def_val)                         \
+    case PROP_##name:                                                 \
+      g_clear_object (&properties->name);                             \
+      properties->name = G_OBJECT (g_value_dup_object (value));       \
       break;
 #define property_path(name, label, def_val)                           \
     case PROP_##name:                                                 \
@@ -570,14 +569,6 @@ set_property (GObject      *gobject,
     case PROP_##name:                                                 \
       properties->name = g_value_get_pointer (value);                 \
       break;
-#define property_format(name, label, def_val)                         \
-    case PROP_##name:                                                 \
-      properties->name = g_value_get_pointer (value);                 \
-      break;
-#define property_enum(name, label, enum, enum_name, def_val)          \
-    case PROP_##name:                                                 \
-      properties->name = (enum) g_value_get_enum (value);             \
-      break;
 #define property_seed(name, label, rand_name)                         \
     case PROP_##name:                                                 \
       properties->name = g_value_get_uint (value);                     \
@@ -586,24 +577,34 @@ set_property (GObject      *gobject,
       else                                                            \
         gegl_random_set_seed (properties->rand_name, properties->name);\
       break;
+#define property_string(name, label, def_val)                         \
+    case PROP_##name:                                                 \
+      g_free (properties->name);                                      \
+      properties->name = g_value_dup_string (value);                  \
+      break;
+#define property_uri(name, label, def_val)                            \
+    case PROP_##name:                                                 \
+      g_free (properties->name);                                      \
+      properties->name = g_value_dup_string (value);                  \
+      break;
 
 #include GEGL_OP_C_FILE
 
-#undef property_double
-#undef property_int
-#undef property_string
-#undef property_boolean
-#undef property_file_path
-#undef property_uri
-#undef property_object
-#undef property_pointer
-#undef property_curve
-#undef property_color
 #undef property_audio_fragment
-#undef property_path
-#undef property_format
+#undef property_boolean
+#undef property_color
+#undef property_curve
+#undef property_double
 #undef property_enum
+#undef property_file_path
+#undef property_format
+#undef property_int
+#undef property_object
+#undef property_path
+#undef property_pointer
 #undef property_seed
+#undef property_string
+#undef property_uri
 
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (gobject, property_id, pspec);
@@ -617,47 +618,39 @@ static void gegl_op_destroy_notify (gpointer data)
 {
   GeglProperties *properties = GEGL_PROPERTIES (data);
 
-#define property_double(name, label, def_val)
-#define property_int(name, label, def_val) 
-#define property_string(name, label, ...)      \
-  g_clear_pointer (&properties->name, g_free);
+#define property_audio_fragment(name, label, def_val) g_clear_object (&properties->name);
 #define property_boolean(name, label, def_val)
-#define property_file_path(name, label, def_val)    \
-  g_clear_pointer (&properties->name, g_free);
-#define property_uri(name, label, def_val)          \
-  g_clear_pointer (&properties->name, g_free);
-#define property_object(name, label, def_val)       \
-  g_clear_object (&properties->name);
-#define property_curve(name, label, def_val)       \
-  g_clear_object (&properties->name);
-#define property_color(name, label, def_val)       \
-  g_clear_object (&properties->name);
-#define property_audio_fragment(name, label, def_val) \
-  g_clear_object (&properties->name);
-#define property_path(name, label, def_val)         \
-  g_clear_object (&properties->name);
-#define property_pointer(name, label, ...)
-#define property_format(name, label, ...)
+#define property_color(name, label, def_val)          g_clear_object (&properties->name);
+#define property_curve(name, label, def_val)          g_clear_object (&properties->name);
+#define property_double(name, label, def_val)
 #define property_enum(name, label, ...)
+#define property_file_path(name, label, def_val)      g_clear_pointer (&properties->name, g_free);
+#define property_format(name, label, ...)
+#define property_int(name, label, def_val)
+#define property_object(name, label, def_val)         g_clear_object (&properties->name);
+#define property_path(name, label, def_val)           g_clear_object (&properties->name);
+#define property_pointer(name, label, ...)
 #define property_seed(name, label, ...)
+#define property_string(name, label, ...)             g_clear_pointer (&properties->name, g_free);
+#define property_uri(name, label, def_val)            g_clear_pointer (&properties->name, g_free);
 
 #include GEGL_OP_C_FILE
 
-#undef property_double
-#undef property_int
-#undef property_string
-#undef property_boolean
-#undef property_file_path
-#undef property_uri
-#undef property_object
-#undef property_pointer
-#undef property_format
-#undef property_enum
-#undef property_seed
-#undef property_curve
-#undef property_color
 #undef property_audio_fragment
+#undef property_boolean
+#undef property_color
+#undef property_curve
+#undef property_double
+#undef property_enum
+#undef property_file_path
+#undef property_format
+#undef property_int
+#undef property_object
 #undef property_path
+#undef property_pointer
+#undef property_seed
+#undef property_string
+#undef property_uri
 
   g_slice_free (GeglProperties, properties);
 }
@@ -676,45 +669,50 @@ gegl_op_constructor (GType                  type,
   /* create dummy colors and vectors */
   properties = GEGL_PROPERTIES (obj);
 
-#define property_double(name, label, def_val)
-#define property_int(name, label, def_val)
-#define property_string(name, label, def_val)
+#define property_audio_fragment(name, label, def_val)                \
+  if (properties->name == NULL)                                      \
+    {                                                                \
+      properties->name = gegl_audio_fragment_new(48000, 2, 0, 8192); \
+    }
 #define property_boolean(name, label, def_val)
-#define property_file_path(name, label, def_val)
-#define property_uri(name, label, def_val)
-#define property_object(name, label, def_val)
-#define property_pointer(name, label, def_val)
-#define property_format(name, label, def_val)
+#define property_color(name, label, def_val)                         \
+  if (properties->name == NULL)                                      \
+    {                                                                \
+      properties->name = gegl_color_new(def_val?def_val:"black");    \
+    }
 #define property_curve(name, label, def_val)
-#define property_audio_fragment(name, label, def_val)\
-    if (properties->name == NULL)                   \
-    {properties->name = gegl_audio_fragment_new(48000, 2, 0, 8192);}
-#define property_color(name, label, def_val)\
-    if (properties->name == NULL)                   \
-    {properties->name = gegl_color_new(def_val?def_val:"black");}
-#define property_path(name, label, def_val)
+#define property_double(name, label, def_val)
 #define property_enum(name, ...)
-#define property_seed(name, label, rand_name)    \
-    if (properties->rand_name == NULL)              \
-      {properties->rand_name = gegl_random_new_with_seed (0);}
-
+#define property_file_path(name, label, def_val)
+#define property_format(name, label, def_val)
+#define property_int(name, label, def_val)
+#define property_object(name, label, def_val)
+#define property_path(name, label, def_val)
+#define property_pointer(name, label, def_val)
+#define property_seed(name, label, rand_name)                        \
+  if (properties->rand_name == NULL)                                 \
+    {                                                                \
+      properties->rand_name = gegl_random_new_with_seed (0);         \
+    }
+#define property_string(name, label, def_val)
+#define property_uri(name, label, def_val)
 #include GEGL_OP_C_FILE
 
-#undef property_double
-#undef property_int
-#undef property_string
-#undef property_boolean
-#undef property_file_path
-#undef property_uri
-#undef property_object
-#undef property_pointer
-#undef property_format
-#undef property_enum
-#undef property_seed
-#undef property_curve
-#undef property_color
 #undef property_audio_fragment
+#undef property_boolean
+#undef property_color
+#undef property_curve
+#undef property_double
+#undef property_enum
+#undef property_file_path
+#undef property_format
+#undef property_int
+#undef property_object
 #undef property_path
+#undef property_pointer
+#undef property_seed
+#undef property_string
+#undef property_uri
 
   g_object_set_data_full (obj, "chant-data", obj, gegl_op_destroy_notify);
   if (properties) {}; /* silence compiler warnings */
@@ -857,11 +855,11 @@ gegl_op_class_intern_init (gpointer klass)
 
 #undef description
 #undef value_range
-#undef ui_range
-#undef ui_steps
+#undef ui_digits
 #undef ui_gamma
 #undef ui_meta
-#undef ui_digits
+#undef ui_range
+#undef ui_steps
 
 #define REGISTER_IF_ANY \
     if (pspec && current_prop >=0) {\
@@ -876,40 +874,24 @@ gegl_op_class_intern_init (gpointer klass)
 #define value_range(min,max) \
     vpspec->minimum = min; vpspec->maximum = max; \
     upspec->ui_minimum = min; upspec->ui_maximum = max;
+#define ui_digits(digits) \
+    upspec->ui_digits = digits; \
+    ui_digits_set = TRUE;
+#define ui_gamma(gamma) \
+    upspec->ui_gamma = gamma;
+#define ui_meta(key,val) \
+    gegl_param_spec_set_property_key(pspec, key, val);
 #define ui_range(min,max) \
     upspec->ui_minimum = min; upspec->ui_maximum = max;\
     ui_range_set = TRUE;
 #define ui_steps(step_small,step_big) \
     upspec->ui_step_small = step_small; upspec->ui_step_big = step_big; \
     ui_steps_set = TRUE;
-#define ui_gamma(gamma) \
-    upspec->ui_gamma = gamma;
-#define ui_meta(key,val) \
-    gegl_param_spec_set_property_key(pspec, key, val);
-#define ui_digits(digits) \
-    upspec->ui_digits = digits; \
-    ui_digits_set = TRUE;
 
-#define property_double(name, label, def_val) \
+#define property_audio_fragment(name, label, def_val) \
     REGISTER_IF_ANY  \
   }{ GParamSpec *pspec = \
-       gegl_param_spec_double (#name, label, NULL,-G_MAXDOUBLE,G_MAXDOUBLE,def_val,-100,100,1.0,flags);\
-     GeglParamSpecDouble *upspec G_GNUC_UNUSED = GEGL_PARAM_SPEC_DOUBLE (pspec);\
-     GParamSpecDouble    *vpspec G_GNUC_UNUSED = G_PARAM_SPEC_DOUBLE (pspec);\
-     current_prop = PROP_##name ;
-
-#define property_int(name, label, def_val) \
-    REGISTER_IF_ANY  \
-  }{ GParamSpec *pspec = \
-       gegl_param_spec_int (#name, label, NULL,G_MININT,G_MAXINT,def_val,-100,100,1.0,flags);\
-     GeglParamSpecInt *upspec G_GNUC_UNUSED = GEGL_PARAM_SPEC_INT (pspec);\
-     GParamSpecInt    *vpspec G_GNUC_UNUSED = G_PARAM_SPEC_INT (pspec);\
-     current_prop = PROP_##name ;
-
-#define property_string(name, label, def_val) \
-    REGISTER_IF_ANY  \
-  }{ GParamSpec *pspec = \
-       g_param_spec_string (#name, label, NULL, def_val, flags);\
+       gegl_param_spec_audio_fragment (#name, label, NULL, flags);\
      current_prop = PROP_##name ;
 
 #define property_boolean(name, label, def_val) \
@@ -918,22 +900,10 @@ gegl_op_class_intern_init (gpointer klass)
        g_param_spec_boolean (#name, label, NULL, def_val, flags);\
      current_prop = PROP_##name ;
 
-#define property_file_path(name, label, def_val) \
+#define property_color(name, label, def_val) \
     REGISTER_IF_ANY  \
   }{ GParamSpec *pspec = \
-       gegl_param_spec_file_path (#name, label, NULL, FALSE, FALSE, def_val, flags);\
-     current_prop = PROP_##name ;
-
-#define property_uri(name, label, def_val) \
-    REGISTER_IF_ANY  \
-  }{ GParamSpec *pspec = \
-       gegl_param_spec_uri (#name, label, NULL, FALSE, FALSE, def_val, flags);\
-     current_prop = PROP_##name ;
-
-#define property_object(name, label, type) \
-    REGISTER_IF_ANY  \
-  }{ GParamSpec *pspec = \
-       g_param_spec_object (#name, label, NULL, type, flags);\
+       gegl_param_spec_color_from_string (#name, label, NULL, def_val, flags);\
      current_prop = PROP_##name ;
 
 #define property_curve(name, label, def_val) \
@@ -944,16 +914,43 @@ gegl_op_class_intern_init (gpointer klass)
      current_prop = PROP_##name ;\
      g_object_unref (_gegl_op_default_curve);\
 
-#define property_color(name, label, def_val) \
+#define property_double(name, label, def_val) \
     REGISTER_IF_ANY  \
   }{ GParamSpec *pspec = \
-       gegl_param_spec_color_from_string (#name, label, NULL, def_val, flags);\
+       gegl_param_spec_double (#name, label, NULL,-G_MAXDOUBLE,G_MAXDOUBLE,def_val,-100,100,1.0,flags);\
+     GeglParamSpecDouble *upspec G_GNUC_UNUSED = GEGL_PARAM_SPEC_DOUBLE (pspec);\
+     GParamSpecDouble    *vpspec G_GNUC_UNUSED = G_PARAM_SPEC_DOUBLE (pspec);\
      current_prop = PROP_##name ;
 
-#define property_audio_fragment(name, label, def_val) \
+#define property_enum(name, label, enum, enum_name, def_val)                   \
+    REGISTER_IF_ANY  \
+  }{ GParamSpec *pspec = gegl_param_spec_enum (#name, label, NULL, enum_name ##_get_type(), def_val, flags);       \
+    current_prop = PROP_##name ;
+
+#define property_file_path(name, label, def_val) \
     REGISTER_IF_ANY  \
   }{ GParamSpec *pspec = \
-       gegl_param_spec_audio_fragment (#name, label, NULL, flags);\
+       gegl_param_spec_file_path (#name, label, NULL, FALSE, FALSE, def_val, flags);\
+     current_prop = PROP_##name ;
+
+#define property_format(name, label, def_val) \
+    REGISTER_IF_ANY  \
+  }{ GParamSpec *pspec = \
+       gegl_param_spec_format (#name, label, NULL, flags);\
+     current_prop = PROP_##name ;
+
+#define property_int(name, label, def_val) \
+    REGISTER_IF_ANY  \
+  }{ GParamSpec *pspec = \
+       gegl_param_spec_int (#name, label, NULL,G_MININT,G_MAXINT,def_val,-100,100,1.0,flags);\
+     GeglParamSpecInt *upspec G_GNUC_UNUSED = GEGL_PARAM_SPEC_INT (pspec);\
+     GParamSpecInt    *vpspec G_GNUC_UNUSED = G_PARAM_SPEC_INT (pspec);\
+     current_prop = PROP_##name ;
+
+#define property_object(name, label, type) \
+    REGISTER_IF_ANY  \
+  }{ GParamSpec *pspec = \
+       g_param_spec_object (#name, label, NULL, type, flags);\
      current_prop = PROP_##name ;
 
 #define property_path(name, label, def_val) \
@@ -968,21 +965,23 @@ gegl_op_class_intern_init (gpointer klass)
        g_param_spec_pointer (#name, label, NULL, flags);\
      current_prop = PROP_##name ;
 
-#define property_format(name, label, def_val) \
-    REGISTER_IF_ANY  \
-  }{ GParamSpec *pspec = \
-       gegl_param_spec_format (#name, label, NULL, flags);\
-     current_prop = PROP_##name ;
-
-#define property_enum(name, label, enum, enum_name, def_val)                   \
-    REGISTER_IF_ANY  \
-  }{ GParamSpec *pspec = gegl_param_spec_enum (#name, label, NULL, enum_name ##_get_type(), def_val, flags);       \
-    current_prop = PROP_##name ;
-
 #define property_seed(name, label, rand_name)    \
     REGISTER_IF_ANY  \
   }{ GParamSpec *pspec = gegl_param_spec_seed (#name, label, NULL, flags);       \
     current_prop = PROP_##name ;
+
+#define property_string(name, label, def_val) \
+    REGISTER_IF_ANY  \
+  }{ GParamSpec *pspec = \
+       g_param_spec_string (#name, label, NULL, def_val, flags);\
+     current_prop = PROP_##name ;
+
+#define property_uri(name, label, def_val) \
+    REGISTER_IF_ANY  \
+  }{ GParamSpec *pspec = \
+       gegl_param_spec_uri (#name, label, NULL, FALSE, FALSE, def_val, flags);\
+     current_prop = PROP_##name ;
+
 
 #include GEGL_OP_C_FILE
 
@@ -992,22 +991,26 @@ gegl_op_class_intern_init (gpointer klass)
 #undef REGISTER_IF_ANY
 #undef description
 #undef value_range
-#undef ui_range
-#undef ui_steps
+#undef ui_digits
 #undef ui_gamma
 #undef ui_meta
-#undef property_double
-#undef property_int
-#undef property_string
-#undef property_enum
-#undef property_seed
-#undef property_pointer
-#undef property_path
-#undef property_curve
-#undef property_color
+#undef ui_range
+#undef ui_steps
 #undef property_audio_fragment
-#undef property_object
+#undef property_boolean
+#undef property_color
+#undef property_curve
+#undef property_double
+#undef property_enum
+#undef property_file_path
 #undef property_format
+#undef property_int
+#undef property_object
+#undef property_path
+#undef property_pointer
+#undef property_seed
+#undef property_string
+#undef property_uri
 
 }
 
