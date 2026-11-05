@@ -29,6 +29,7 @@ buffer_tests = [
   'buffer_iterator_halo_symm_big',
   'buffer_iterator_halo_symm_small',
   'buffer_iterator_order',
+  'buffer_iterator_zero_roi',
   'buffer_linear_copy',
   'buffer_linear_iter',
   'buffer_linear_iter2',
