@@ -100,6 +100,9 @@ GeglBufferIterator *gegl_buffer_iterator_empty_new (int max_slots);
  * [struct@Gegl.BufferIterator] takes care of accessing the given buffers in
  * the most optimal ways.
  *
+ * The dimensions of the @roi need to be larger than 0 otherwise the iterator
+ * will be invalid.
+ *
  * See the documentation of [method.Gegl.BufferIterator.add] and
  * [method.Gegl.BufferIterator.next].
  *
