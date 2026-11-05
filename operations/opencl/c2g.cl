@@ -149,7 +149,7 @@ __kernel void c2g(const __global float4 *src_buf,
 
     nominator   = sqrt(nominator);
     denominator = sqrt(denominator);
-    denominator+= nominator + denominator;
+    denominator = nominator + denominator;
 
     dst_buf[dst_offset].x = (denominator > 0.000f)
                              ? (nominator / denominator) : 0.5f;
