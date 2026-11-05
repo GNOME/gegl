@@ -156,6 +156,12 @@ gegl_buffer_iterator_add (GeglBufferIterator  *iter,
       sub->format_bpp         = babl_format_get_bytes_per_pixel (format);
       sub->full_roi           = *roi;
 
+      if (roi->width == 0 && roi->height == 0)
+        {
+          sub->full_roi.width  = priv->sub_iter[0].full_roi.width;
+          sub->full_roi.height = priv->sub_iter[0].full_roi.height;
+        }
+
       sub->current_row_stride = 0;
       sub->level              = level;
 
