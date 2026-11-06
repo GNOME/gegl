@@ -17,54 +17,51 @@
  */
 
 #include "config.h"
+
+#include <gegl.h>
 #include <glib/gi18n-lib.h>
 
 #ifdef GEGL_PROPERTIES
 property_string  (window_title, _("Window title"), "window_title")
     description(_("Title to be given to output window"))
+
+property_user_data (DisplayOpData, display_op_data_new, g_free)
 #else
 
-#define GEGL_OP_NAME     display
-#define GEGL_OP_C_SOURCE display.c
+typedef struct DisplayOpData {
+  GeglNode *input; /* The node to show the output of. */
+  GeglNode *display; /* The node actually acting as the display op. */
+} DisplayOpData;
 
-#include "gegl-plugin.h"
+static DisplayOpData*
+display_op_data_new ()
+{
+  return g_new0 (DisplayOpData, 1);
+}
+
+#define GEGL_OP_SINK
+#define GEGL_OP_NAME        display
+#define GEGL_OP_C_SOURCE    display.c
+#include "gegl-op.h"
 
 /* gegl:display
  * Meta operation for displaying the output of a buffer.
  * Will use one of several well-known display operations
  * to actually display the output. */
 
-struct _GeglOp
-{
-  GeglOperationSink parent_instance;
-  gpointer          properties;
-
-  GeglNode *input; /* The node to show the output of. */
-  GeglNode *display; /* The node actually acting as the display op. */
-};
-
-typedef struct
-{
-  GeglOperationSinkClass parent_class;
-} GeglOpClass;
-
-
-#include "gegl-op.h"
-GEGL_DEFINE_DYNAMIC_OPERATION(GEGL_TYPE_OPERATION_SINK)
-
 /* Set the correct display handler operation. */
 static void
 set_display_handler (GeglOperation *operation)
 {
-  GeglProperties  *o    = GEGL_PROPERTIES (operation);
-  GeglOp   *self = GEGL_OP (operation);
   const gchar *known_handlers[] = {"gegl:sdl3-display",
                                    "gegl:sdl2-display",
                                    "gegl:sdl-display"};
-  char *handler = NULL;
-  gchar **operations = NULL;
-  guint   n_operations;
-  gint i, j;
+  GeglProperties  *props            = GEGL_PROPERTIES (operation);
+  DisplayOpData   *data             = (DisplayOpData *) (props->user_data);
+  char            *handler          = NULL;
+  gchar          **operations       = NULL;
+  guint            n_operations;
+  gint             i, j;
 
   /* FIXME: Allow operations to register as a display handler. */
   operations = gegl_list_operations (&n_operations);
@@ -82,8 +79,8 @@ set_display_handler (GeglOperation *operation)
     }
 
   if (handler)
-      gegl_node_set (self->display, "operation", handler,
-                     "window-title", o->window_title, NULL);
+      gegl_node_set (data->display, "operation", handler,
+                     "window-title", props->window_title, NULL);
   else
       g_warning ("No display handler operation found for gegl:display");
 
@@ -95,16 +92,19 @@ set_display_handler (GeglOperation *operation)
 static void
 attach (GeglOperation *operation)
 {
-  GeglOp   *self = GEGL_OP (operation);
+  GeglProperties *props = GEGL_PROPERTIES (operation);
+  DisplayOpData  *data  = (DisplayOpData *) (props->user_data);
 
-  g_assert (!self->input);
-  g_assert (!self->display);
+  data = props->user_data;
 
-  self->input   = gegl_node_get_input_proxy (operation->node, "input");
-  self->display = gegl_node_new_child (operation->node,
-                                       "operation", "gegl:nop",
-                                       NULL);
-  gegl_node_link (self->input, self->display);
+  g_assert (!data->input);
+  g_assert (!data->display);
+
+  data->input   = gegl_node_get_input_proxy (operation->node, "input");
+  data->display = gegl_node_new_child (operation->node,
+                                            "operation", "gegl:nop",
+                                            NULL);
+  gegl_node_link (data->input, data->display);
 
   set_display_handler (operation);
 }
@@ -118,9 +118,10 @@ process (GeglOperation        *operation,
          const GeglRectangle  *roi,
          gint                  level)
 {
-  GeglOp   *self = GEGL_OP (operation);
+  GeglProperties *props = GEGL_PROPERTIES (operation);
+  DisplayOpData  *data  = (DisplayOpData *) (props->user_data);
 
-  return gegl_operation_process (gegl_node_get_gegl_operation (self->display),
+  return gegl_operation_process (gegl_node_get_gegl_operation (data->display),
                                  context, output_pad, roi, level);
 }
 
@@ -128,7 +129,7 @@ static void
 gegl_op_class_init (GeglOpClass *klass)
 {
   GeglOperationClass     *operation_class = GEGL_OPERATION_CLASS (klass);
-  GeglOperationSinkClass *sink_class = GEGL_OPERATION_SINK_CLASS (klass);
+  GeglOperationSinkClass *sink_class      = GEGL_OPERATION_SINK_CLASS (klass);
 
   operation_class->attach  = attach;
   operation_class->process = process;

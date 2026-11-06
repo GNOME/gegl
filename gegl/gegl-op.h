@@ -298,6 +298,7 @@ gegl_module_register (GTypeModule *module)
 #define property_seed(name, label, rand_name)               ITEM (name, label, def_val, uint)
 #define property_string(name, label, def_val)               ITEM (name, label, def_val, string)
 #define property_uri(name, label, def_val)                  ITEM (name, label, def_val, string)
+#define property_user_data(name, new_func, free_func)
 
 #define enum_start(enum_name)   typedef enum {
 #define enum_value(value, nick, name)    value ,
@@ -363,6 +364,7 @@ static GType enum_name ## _get_type (void)               \
 #undef property_seed
 #undef property_string
 #undef property_uri
+#undef property_user_data
 
 #undef enum_start
 #undef enum_value
@@ -378,7 +380,7 @@ static GType enum_name ## _get_type (void)               \
 
 struct GEGL_OP_STRUCT_NAME(_GeglProperties, GEGL_OP_NAME)
 {
-  gpointer user_data; /* for use by the op implementation */
+  gpointer user_data; /* for use by the op implementation or using property_user_data */
 #define property_audio_fragment(name, label, def_val)        GeglAudioFragment *name;
 #define property_boolean(name, label, def_val)               gboolean           name;
 #define property_color(name, label, def_val)                 GeglColor         *name;
@@ -396,6 +398,7 @@ struct GEGL_OP_STRUCT_NAME(_GeglProperties, GEGL_OP_NAME)
 #define property_pointer(name, label, def_val)               gpointer           name;
 #define property_seed(name, label, rand_name)                guint              name;                 \
                                                              GeglRandom        *rand_name;
+#define property_user_data(name, init_func, free_func)
 
 #include GEGL_OP_C_FILE
 
@@ -414,6 +417,7 @@ struct GEGL_OP_STRUCT_NAME(_GeglProperties, GEGL_OP_NAME)
 #undef property_seed
 #undef property_string
 #undef property_uri
+#undef property_user_data
 };
 
 #define GEGL_OP_OPERATION(obj) ((Operation*)(obj))
@@ -441,6 +445,7 @@ enum
 #define property_seed(name, label, rand_name)               ITEM (name, label, def_val, uint)
 #define property_string(name, label, def_val)               ITEM (name, label, def_val, string)
 #define property_uri(name, label, def_val)                  ITEM (name, label, def_val, string)
+#define property_user_data(name, new_func, free_func)
 
 #include GEGL_OP_C_FILE
 
@@ -484,6 +489,7 @@ get_property (GObject      *gobject,
 #undef property_seed
 #undef property_string
 #undef property_uri
+#undef property_user_data
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (gobject, property_id, pspec);
       break;
@@ -587,6 +593,7 @@ set_property (GObject      *gobject,
       g_free (properties->name);                                      \
       properties->name = g_value_dup_string (value);                  \
       break;
+#define property_user_data(name, new_func, free_func)
 
 #include GEGL_OP_C_FILE
 
@@ -605,6 +612,7 @@ set_property (GObject      *gobject,
 #undef property_seed
 #undef property_string
 #undef property_uri
+#undef property_user_data
 
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (gobject, property_id, pspec);
@@ -633,6 +641,7 @@ static void gegl_op_destroy_notify (gpointer data)
 #define property_seed(name, label, ...)
 #define property_string(name, label, ...)             g_clear_pointer (&properties->name, g_free);
 #define property_uri(name, label, def_val)            g_clear_pointer (&properties->name, g_free);
+#define property_user_data(name, new_func, free_func) g_clear_pointer (&properties->user_data, free_func);
 
 #include GEGL_OP_C_FILE
 
@@ -651,6 +660,7 @@ static void gegl_op_destroy_notify (gpointer data)
 #undef property_seed
 #undef property_string
 #undef property_uri
+#undef property_user_data
 
   g_slice_free (GeglProperties, properties);
 }
@@ -696,6 +706,11 @@ gegl_op_constructor (GType                  type,
     }
 #define property_string(name, label, def_val)
 #define property_uri(name, label, def_val)
+#define property_user_data(name, new_func, free_func)                \
+  if (properties->user_data == NULL)                                 \
+    {                                                                \
+      properties->user_data = new_func ();                           \
+    }
 #include GEGL_OP_C_FILE
 
 #undef property_audio_fragment
@@ -713,6 +728,7 @@ gegl_op_constructor (GType                  type,
 #undef property_seed
 #undef property_string
 #undef property_uri
+#undef property_user_data
 
   g_object_set_data_full (obj, "chant-data", obj, gegl_op_destroy_notify);
   if (properties) {}; /* silence compiler warnings */
@@ -982,6 +998,7 @@ gegl_op_class_intern_init (gpointer klass)
        gegl_param_spec_uri (#name, label, NULL, FALSE, FALSE, def_val, flags);\
      current_prop = PROP_##name ;
 
+#define property_user_data(name, new_func, free_func)
 
 #include GEGL_OP_C_FILE
 
@@ -1011,6 +1028,7 @@ gegl_op_class_intern_init (gpointer klass)
 #undef property_seed
 #undef property_string
 #undef property_uri
+#undef property_user_data
 
 }
 
@@ -1018,6 +1036,67 @@ static void
 gegl_op_init_properties (GeglOp *self)
 {
   self->properties = g_slice_new0 (GeglProperties);
+
+#define description(blurb)
+#define value_range(min,max)
+#define ui_digits(digits)
+#define ui_gamma(gamma)
+#define ui_meta(key,val)
+#define ui_range(min,max)
+#define ui_steps(small_increment, big_increment)
+#define enum_start(enum_name)
+#define enum_value(value, nick, name)
+#define enum_value_skip(value)
+#define enum_end(enum)
+
+#define property_audio_fragment(name, label, def_val)
+#define property_boolean(name, label, def_val)
+#define property_color(name, label, def_val)
+#define property_curve(name, label, def_val)
+#define property_double(name, label, def_val)
+#define property_enum(name, label, ...)
+#define property_file_path(name, label, def_val)
+#define property_format(name, label, ...)
+#define property_int(name, label, def_val)
+#define property_object(name, label, def_val)
+#define property_path(name, label, def_val)
+#define property_pointer(name, label, ...)
+#define property_seed(name, label, ...)
+#define property_string(name, label, ...)
+#define property_uri(name, label, def_val)
+#define property_user_data(name, new_func, free_func) \
+  GEGL_PROPERTIES(self)->user_data = new_func ();
+
+#include GEGL_OP_C_FILE
+
+#undef property_audio_fragment
+#undef property_boolean
+#undef property_color
+#undef property_curve
+#undef property_double
+#undef property_enum
+#undef property_file_path
+#undef property_format
+#undef property_int
+#undef property_object
+#undef property_path
+#undef property_pointer
+#undef property_seed
+#undef property_string
+#undef property_uri
+#undef property_user_data
+
+#undef description
+#undef value_range
+#undef ui_digits
+#undef ui_gamma
+#undef ui_meta
+#undef ui_range
+#undef ui_steps
+#undef enum_start
+#undef enum_value
+#undef enum_value_skip
+#undef enum_end
 }
 
 #ifndef BABL_ICC_INTENT_DEFAULT
