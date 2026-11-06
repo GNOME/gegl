@@ -343,20 +343,20 @@ fattal02_solve_pde_multigrid (gfloat              *F,
       }
   }
 
-  RHS = g_new (gfloat*, levels + 1);
-   IU = g_new (gfloat*, levels + 1);
-   VF = g_new (gfloat*, levels + 1);
+  RHS = g_new0 (gfloat*, levels + 1);
+   IU = g_new0 (gfloat*, levels + 1);
+   VF = g_new0 (gfloat*, levels + 1);
 
   RHS[0] = F;
-   VF[0] = g_new (gfloat, xmax * ymax);
-   IU[0] = g_new (gfloat, xmax * ymax);
+   VF[0] = g_new0 (gfloat, xmax * ymax);
+   IU[0] = g_new0 (gfloat, xmax * ymax);
   fattal02_copy_array (U, xmax * ymax, IU[0]);
 
   for (k = 0; k < levels; ++k)
     {
-      RHS[k + 1] = g_new (gfloat, LEVEL_SIZE (extent_f, k + 1));
-       IU[k + 1] = g_new (gfloat, LEVEL_SIZE (extent_f, k + 1));
-       VF[k + 1] = g_new (gfloat, LEVEL_SIZE (extent_f, k + 1));
+      RHS[k + 1] = g_new0 (gfloat, LEVEL_SIZE (extent_f, k + 1));
+       IU[k + 1] = g_new0 (gfloat, LEVEL_SIZE (extent_f, k + 1));
+       VF[k + 1] = g_new0 (gfloat, LEVEL_SIZE (extent_f, k + 1));
 
       /* restrict from level k to level k+1 (coarser-grid) */
       fattal02_restrict (RHS[k    ], &LEVEL_EXTENT (extent_f, k     ),
@@ -409,7 +409,7 @@ fattal02_solve_pde_multigrid (gfloat              *F,
               /* 8. calculate defect at level
                *    d[k2] = Lh * ~u[k2] - f[k2]
                */
-              D = g_new (gfloat, LEVEL_SIZE (extent_f, k2));
+              D = g_new0 (gfloat, LEVEL_SIZE (extent_f, k2));
               fattal02_calculate_defect (     D, &LEVEL_EXTENT (extent_f, k2),
                                          IU[k2], &LEVEL_EXTENT (extent_f, k2),
                                          VF[k2], &LEVEL_EXTENT (extent_f, k2));
@@ -435,7 +435,7 @@ fattal02_solve_pde_multigrid (gfloat              *F,
               /* 12. interpolate correction from last coarser-grid to finer-grid
                *     iu[k2+1] -> cor
                */
-              gfloat *C = g_new (gfloat, LEVEL_SIZE (extent_f, k2));
+              gfloat *C = g_new0 (gfloat, LEVEL_SIZE (extent_f, k2));
               fattal02_prolongate (IU[k2 + 1], &LEVEL_EXTENT (extent_f, k2 + 1),
                                             C, &LEVEL_EXTENT (extent_f, k2    ));
 
@@ -596,12 +596,12 @@ linbcg (guint   rows,
   /* To remove warning about potetial uninitialized use */
   bkden = 1;
 
-  p  = g_new (gfloat, n);
-  pp = g_new (gfloat, n);
-  r  = g_new (gfloat, n);
-  rr = g_new (gfloat, n);
-  z  = g_new (gfloat, n);
-  zz = g_new (gfloat, n);
+  p  = g_new0 (gfloat, n);
+  pp = g_new0 (gfloat, n);
+  r  = g_new0 (gfloat, n);
+  rr = g_new0 (gfloat, n);
+  z  = g_new0 (gfloat, n);
+  zz = g_new0 (gfloat, n);
 
   *iter=0;
   atimes (rows, cols, x, r, 0);
@@ -793,7 +793,7 @@ fattal02_gaussian_blur (const gfloat        *input,
   g_return_if_fail (output);
   g_return_if_fail (size > 0);
 
-  temp   = g_new (gfloat, size);
+  temp   = g_new0 (gfloat, size);
 
   /* horizontal blur */
   for (y = 0; y < height; ++y)
@@ -846,7 +846,7 @@ fattal02_create_gaussian_pyramids (const gfloat         *zero,
   GeglRectangle  level_extent = *extent;
 
   /* Copy the first level of the pyramid into place */
-  pyramid[0] = g_new (gfloat, level_extent.width * level_extent.height);
+  pyramid[0] = g_new0 (gfloat, level_extent.width * level_extent.height);
   for (i = 0; i < level_extent.width * level_extent.height; ++i)
     {
       pyramid[0][i] = zero[i];
@@ -855,7 +855,7 @@ fattal02_create_gaussian_pyramids (const gfloat         *zero,
   /* Establish a temporary blur buffer. The allocated memory will be used for
    * progressively smaller levels, and we don't free this until the end.
    */
-  blur = g_new (gfloat, level_extent.width * level_extent.height);
+  blur = g_new0 (gfloat, level_extent.width * level_extent.height);
   fattal02_gaussian_blur (pyramid[0], &level_extent, blur);
 
   for (i = 1; i < levels; ++i)
@@ -867,7 +867,7 @@ fattal02_create_gaussian_pyramids (const gfloat         *zero,
       g_return_if_fail (level_extent.height >= MINIMUM_PYRAMID);
 
       /* Downsample the blurred buffer into the pyramid */
-      pyramid[i] = g_new (gfloat, LEVEL_SIZE (extent, i));
+      pyramid[i] = g_new0 (gfloat, LEVEL_SIZE (extent, i));
       fattal02_downsample (blur, &LEVEL_EXTENT (extent, i - 1), pyramid[i]);
 
       /* Blur the current level over the blur buffer */
@@ -963,9 +963,9 @@ fattal02_FI_matrix (gfloat               *FI,
   level_extent.width  = LEVEL_WIDTH  (extent, levels - 1);
   level_extent.height = LEVEL_HEIGHT (extent, levels - 1);
 
-  fi = g_new (gfloat*, levels);
+  fi = g_new0 (gfloat*, levels);
 
-  fi[levels - 1] = g_new (gfloat, level_extent.width * level_extent.height);
+  fi[levels - 1] = g_new0 (gfloat, level_extent.width * level_extent.height);
 
   for (i = 0; i < level_extent.width * level_extent.height; ++i)
     {
@@ -997,7 +997,7 @@ fattal02_FI_matrix (gfloat               *FI,
           level_extent.width  = LEVEL_WIDTH  (extent, i - 1);
           level_extent.height = LEVEL_HEIGHT (extent, i - 1);
 
-          fi[i - 1] = g_new (gfloat,
+          fi[i - 1] = g_new0 (gfloat,
                              level_extent.width * level_extent.height);
         }
       else
@@ -1053,7 +1053,7 @@ fattal02_find_percentiles (const gfloat *array,
   g_return_if_fail (min_percent >= 0.0f && min_percent <= 1.0f);
   g_return_if_fail (max_percent >= 0.0f && max_percent <= 1.0f);
 
-  sorting = g_new (gfloat, size);
+  sorting = g_new0 (gfloat, size);
   for (i = 0; i < size; ++i)
     {
       sorting[i] = array[i];
@@ -1098,7 +1098,7 @@ fattal02_tonemap (const gfloat        *input,   /* Y */
       }
     g_return_if_fail (min_input <= max_input);
 
-    H = g_new (gfloat, size);
+    H = g_new0 (gfloat, size);
     for (i = 0; i < size; ++i)
       {
         H[i] = log (100.0f * input[i] / max_input + 1e-4f);
@@ -1122,17 +1122,17 @@ fattal02_tonemap (const gfloat        *input,   /* Y */
         levels = 1;
       }
 
-    pyramid = g_new (gfloat*, levels);
+    pyramid = g_new0 (gfloat*, levels);
     fattal02_create_gaussian_pyramids (H, extent, pyramid, levels);
   }
 
   /* calculate gradients and its average values on pyramid levels */
-  gradient = g_new (gfloat*, levels);
-  averages = g_new (gfloat,  levels);
+  gradient = g_new0 (gfloat*, levels);
+  averages = g_new0 (gfloat,  levels);
 
   for (i = 0; i < levels; ++i)
     {
-      gradient[i] = g_new (gfloat, LEVEL_SIZE (extent, i));
+      gradient[i] = g_new0 (gfloat, LEVEL_SIZE (extent, i));
       averages[i] = fattal02_calculate_gradients (pyramid[i],
                                                   &LEVEL_EXTENT (extent, i),
                                                   gradient[i],
@@ -1140,13 +1140,13 @@ fattal02_tonemap (const gfloat        *input,   /* Y */
     }
 
   /* calculate fi matrix */
-  FI = g_new (gfloat, size);
+  FI = g_new0 (gfloat, size);
   fattal02_FI_matrix (FI, extent, gradient, averages, levels,
                       alfa, beta, noise);
 
   /* attenuate gradients */
-  Gx = g_new (gfloat, size);
-  Gy = g_new (gfloat, size);
+  Gx = g_new0 (gfloat, size);
+  Gy = g_new0 (gfloat, size);
 
   for (y = 0; y < extent->height; ++y)
     {
@@ -1165,7 +1165,7 @@ fattal02_tonemap (const gfloat        *input,   /* Y */
   GEGL_NOTE (GEGL_DEBUG_PROCESS, "compressing gradients");
 
   /* calculate divergence */
-  divergence = g_new (gfloat, size);
+  divergence = g_new0 (gfloat, size);
   for (y = 0; y < height; ++y)
     {
       for (x = 0; x < width; ++x)
@@ -1179,7 +1179,7 @@ fattal02_tonemap (const gfloat        *input,   /* Y */
   GEGL_NOTE (GEGL_DEBUG_PROCESS, "recovering image");
 
   /* solve pde and exponentiate (ie recover compressed image) */
-  U = g_new (gfloat, size);
+  U = g_new0 (gfloat, size);
   fattal02_solve_pde_multigrid (divergence, extent, U, extent);
 
   for (i = 0; i < size; ++i)
@@ -1286,13 +1286,13 @@ fattal02_process (GeglOperation       *operation,
     }
 
   /* Obtain the pixel data */
-  lum_in  = g_new (gfloat, result->width * result->height);
-  lum_out = g_new (gfloat, result->width * result->height);
+  lum_in  = g_new0 (gfloat, result->width * result->height);
+  lum_out = g_new0 (gfloat, result->width * result->height);
 
   gegl_buffer_get (input, result, 1.0, babl_format_with_space ("Y float", space),
                    lum_in, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
 
-  pix = g_new (gfloat, result->width * result->height * pix_stride);
+  pix = g_new0 (gfloat, result->width * result->height * pix_stride);
   gegl_buffer_get (input, result, 1.0, out_format,
                    pix, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
 
