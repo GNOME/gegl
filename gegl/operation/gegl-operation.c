@@ -889,7 +889,8 @@ gegl_operation_use_threading (GeglOperation *operation,
     GeglOperationClass       *op_class;
     op_class = GEGL_OPERATION_GET_CLASS (operation);
 
-    if (op_class->opencl_support && gegl_cl_is_accelerated ())
+    /* prevent OpenCL code from being executed on several threads */
+    if (op_class->opencl_support && gegl_operation_use_opencl (operation))
       return FALSE;
 
     if (op_class->threaded &&
