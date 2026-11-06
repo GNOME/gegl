@@ -379,7 +379,7 @@ gegl_cl_init_load_functions (void)
 #ifndef __APPLE__
   GModule *module = g_module_open (CL_LIBRARY_NAME, G_MODULE_BIND_LAZY);
 #else
-  void *module = dlopen(CL_LIBRARY_NAME, RTLD_LAZY / RTLD_LOCAL);
+  void *module = dlopen(CL_LIBRARY_NAME, RTLD_LAZY | RTLD_LOCAL);
 #endif
   if (!module)
     {
