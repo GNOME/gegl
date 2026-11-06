@@ -24,7 +24,6 @@
 #include "config.h"
 #include <glib/gi18n-lib.h>
 
-
 #ifdef GEGL_PROPERTIES
 
 property_string(composite_op, _("Operation"), "gegl:over")
@@ -49,15 +48,14 @@ property_double(scale, _("Scale"), 1.0)
 property_file_path(src, _("Source"), "")
     description (_("Source image file path (png, jpg, raw, svg, bmp, tif, ...)"))
 
+property_user_data(LayerOpData, layer_op_data_new, g_free)
+
 #else
 
-#include <gegl-plugin.h>
-struct _GeglOp
-{
-  GeglOperationMeta parent_instance;
-  gpointer          properties;
+#include <gegl.h>
 
-  GeglNode *self;
+typedef struct _LayerOpData
+{
   GeglNode *input;
   GeglNode *aux;
   GeglNode *output;
@@ -75,148 +73,147 @@ struct _GeglOp
   gdouble p_x;
   gdouble p_y;
   gchar  *p_composite_op;
-};
+} LayerOpData;
 
-typedef struct
+static LayerOpData*
+layer_op_data_new ()
 {
-  GeglOperationMetaClass parent_class;
-} GeglOpClass;
+  return g_new0 (LayerOpData, 1);
+}
 
-#define GEGL_OP_NAME     layer
-#define GEGL_OP_C_SOURCE layer.c
+#define GEGL_OP_META
+#define GEGL_OP_NAME        layer
+#define GEGL_OP_C_SOURCE    layer.c
 #include "gegl-op.h"
-GEGL_DEFINE_DYNAMIC_OPERATION(GEGL_TYPE_OPERATION_META)
 
 #include <glib/gprintf.h>
 
 static void
 update_graph (GeglOperation *operation)
 {
-  GeglProperties *o = GEGL_PROPERTIES (operation);
-  GeglOp         *self = GEGL_OP (operation);
+  GeglProperties *props = GEGL_PROPERTIES (operation);
+  LayerOpData     *data  = (LayerOpData *) props->user_data;
 
   /* If the src is NULL, and we previously used a source, clear what we have
    * cached and directly link the input and output. We don't need a composite
    * operation if we don't have a source, so don't continue preparing.
    */
-  if (o->src[0] == 0)
+  if (props->src[0] == 0)
+  {
+    if (data->cached_path != NULL)
     {
-      if (self->cached_path != NULL)
-        {
-          gegl_node_link (self->input, self->output);
-          g_clear_pointer (&self->cached_path, g_free);
-        }
-
-      return;
+      gegl_node_link (data->input, data->output);
+      g_clear_pointer (&data->cached_path, g_free);
     }
+
+    return;
+  }
 
   /* Check if the composite operation we're using has changed from that which
    * is already in use.
    */
-  if (!self->p_composite_op || strcmp (self->p_composite_op, o->composite_op))
-    {
-      gegl_node_set (self->composite_op,
-                     "operation", o->composite_op,
-                     NULL);
-      g_free (self->p_composite_op);
-      self->p_composite_op = g_strdup (o->composite_op);
-    }
+  if (!data->p_composite_op || strcmp (data->p_composite_op, props->composite_op))
+  {
+    gegl_node_set (data->composite_op,
+                   "operation", props->composite_op,
+                   NULL);
+    g_free (data->p_composite_op);
+    data->p_composite_op = g_strdup (props->composite_op);
+  }
 
   /* Load a src image, and relink the input/composite/output chain, as it
    * will currently be set to an input/output chain without a composite
    * source.
    */
 
-  if (self->cached_path == NULL || strcmp (o->src, self->cached_path))
-    {
-      gegl_node_set (self->load,
-          "operation", "gegl:load",
-          NULL);
-      gegl_node_set (self->load,
-          "path",  o->src,
-          NULL);
+  if (data->cached_path == NULL || strcmp (props->src, data->cached_path))
+  {
+    gegl_node_set (data->load,
+                   "operation", "gegl:load",
+                   NULL);
+    gegl_node_set (data->load,
+                   "path", props->src,
+                   NULL);
 
-      /* Currently not using the composite op, reinsert it */
-      if (!self->cached_path)
-        gegl_node_link_many (self->input, self->composite_op, self->output, NULL);
+    /* Currently not using the composite op, reinsert it */
+    if (!data->cached_path)
+      gegl_node_link_many (data->input, data->composite_op, data->output, NULL);
 
-      g_free (self->cached_path);
-      self->cached_path = g_strdup (o->src);
-    }
+    g_free (data->cached_path);
+    data->cached_path = g_strdup (props->src);
+  }
 
-  if (o->scale != self->p_scale)
-    {
-      gegl_node_set (self->scale,
-                     "x",  o->scale,
-                     "y",  o->scale,
-                     NULL);
-      self->p_scale= o->scale;
-    }
+  if (props->scale != data->p_scale)
+  {
+    gegl_node_set (data->scale,
+                   "x",  props->scale,
+                   "y",  props->scale,
+                   NULL);
+    data->p_scale= props->scale;
+  }
 
-  if (o->opacity != self->p_opacity)
-    {
-      gegl_node_set (self->opacity,
-                     "value",  o->opacity,
-                     NULL);
-      self->p_opacity = o->opacity;
-    }
+  if (props->opacity != data->p_opacity)
+  {
+    gegl_node_set (data->opacity,
+                   "value",  props->opacity,
+                   NULL);
+    data->p_opacity = props->opacity;
+  }
 
-  if (o->x != self->p_x ||
-      o->y != self->p_y)
-    {
-      gegl_node_set (self->translate,
-                     "x",  o->x,
-                     "y",  o->y,
-                     NULL);
-      self->p_x = o->x;
-      self->p_y = o->y;
-    }
+  if (props->x != data->p_x ||
+    props->y != data->p_y)
+  {
+    gegl_node_set (data->translate,
+                   "x",  props->x,
+                   "y",  props->y,
+                   NULL);
+    data->p_x = props->x;
+    data->p_y = props->y;
+  }
 
 
 }
 
 static void attach (GeglOperation *operation)
 {
-  GeglOp         *self = GEGL_OP (operation);
-  GeglProperties *o    = GEGL_PROPERTIES (operation);
-  GeglNode *gegl;
+  GeglProperties *props = GEGL_PROPERTIES (operation);
+  GeglNode       *gegl  = GEGL_NODE (operation);
+  LayerOpData    *data  = (LayerOpData *) (props->user_data);
 
-  self->self = GEGL_OPERATION (self)->node;
-  gegl = self->self;
+  g_assert (data != NULL);
 
-  self->input = gegl_node_get_input_proxy (gegl, "input");
-  self->aux = gegl_node_get_input_proxy (gegl, "aux");
-  self->output = gegl_node_get_output_proxy (gegl, "output");
+  data->input  = gegl_node_get_input_proxy (gegl, "input");
+  data->aux    = gegl_node_get_input_proxy (gegl, "aux");
+  data->output = gegl_node_get_output_proxy (gegl, "output");
 
-  self->composite_op = gegl_node_new_child (gegl,
-                                         "operation", o->composite_op,
-                                         NULL);
+  data->composite_op = gegl_node_new_child (gegl,
+                                            "operation", props->composite_op,
+                                            NULL);
 
-  self->translate = gegl_node_new_child (gegl, "operation", "gegl:translate", NULL);
-  self->scale = gegl_node_new_child (gegl, "operation", "gegl:scale-ratio", NULL);
-  self->opacity = gegl_node_new_child (gegl, "operation", "gegl:opacity", NULL);
+  data->translate = gegl_node_new_child (gegl, "operation", "gegl:translate", NULL);
+  data->scale     = gegl_node_new_child (gegl, "operation", "gegl:scale-ratio", NULL);
+  data->opacity   = gegl_node_new_child (gegl, "operation", "gegl:opacity", NULL);
 
-  self->load = gegl_node_new_child (gegl,
+  data->load = gegl_node_new_child (gegl,
                                     "operation", "gegl:text",
                                     "string", "Load operation placeholder",
                                     NULL);
 
-  gegl_node_link_many (self->load, self->scale, self->opacity, self->translate,
+  gegl_node_link_many (data->load, data->scale, data->opacity, data->translate,
                        NULL);
-  gegl_node_link_many (self->input, self->composite_op, self->output, NULL);
-  gegl_node_connect (self->composite_op, "aux", self->translate, "output");
+  gegl_node_link_many (data->input, data->composite_op, data->output, NULL);
+  gegl_node_connect (data->composite_op, "aux", data->translate, "output");
 }
 
-
 static void
-finalize (GObject *object)
+dispose (GObject *object)
 {
-  GeglOp *self = GEGL_OP (object);
+  GeglProperties *props = GEGL_PROPERTIES (GEGL_OPERATION (object));
+  LayerOpData    *data  = (LayerOpData *) (props->user_data);
 
-  g_free (self->cached_path);
-  g_free (self->p_composite_op);
+  g_clear_pointer (&data->cached_path, g_free);
 
-  G_OBJECT_CLASS (gegl_op_parent_class)->finalize (object);
+  G_OBJECT_CLASS (gegl_op_parent_class)->dispose (object);
 }
 
 static void
@@ -249,14 +246,15 @@ gegl_op_class_init (GeglOpClass *klass)
     "  </node>"    
     "</gegl>";
 
-
   object_class         = G_OBJECT_CLASS (klass);
   operation_class      = GEGL_OPERATION_CLASS (klass);
   operation_meta_class = GEGL_OPERATION_META_CLASS (klass);
 
-  object_class->finalize       = finalize;
+  object_class->dispose = dispose;
+
+  operation_class->attach = attach;
+
   operation_meta_class->update = update_graph;
-  operation_class->attach      = attach;
 
   gegl_operation_class_set_keys (operation_class,
     "name",                  "gegl:layer",

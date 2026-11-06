@@ -21,6 +21,8 @@
  */
 
 #include "config.h"
+
+#include <gegl.h>
 #include <glib/gi18n-lib.h>
 
 #ifdef GEGL_PROPERTIES
@@ -54,61 +56,58 @@ property_double (highlights_ccorrect, _("Highlights color adjustment"), 50.0)
     description (_("Adjust saturation of highlights"))
     value_range (0.0, 100.0)
 
+property_user_data (ShadowsHighlightsOpData, shadows_highlights_op_data_new, g_free)
 #else
 
+typedef struct ShadowsHighlightsOpData
+{
+  const Babl *blur_format;
+  GeglNode   *blur_convert;
+  GeglNode   *input;
+  GeglNode   *output;
+} ShadowsHighlightsOpData;
+
+static ShadowsHighlightsOpData*
+shadows_highlights_op_data_new ()
+{
+  return g_new0 (ShadowsHighlightsOpData, 1);
+}
+
+#define GEGL_OP_META
 #define GEGL_OP_NAME     shadows_highlights
 #define GEGL_OP_C_SOURCE shadows-highlights.c
-
-#include <gegl-plugin.h>
-
-struct _GeglOp
-{
-  GeglOperationMeta parent_instance;
-  gpointer          properties;
-
-  const Babl *blur_format;
-  GeglNode *blur_convert;
-  GeglNode *input;
-  GeglNode *output;
-};
-
-typedef struct
-{
-  GeglOperationMetaClass parent_class;
-} GeglOpClass;
-
 #include "gegl-op.h"
-GEGL_DEFINE_DYNAMIC_OPERATION(GEGL_TYPE_OPERATION_META)
 
 static gboolean
 is_operation_a_nop (GeglOperation *operation)
 {
-  GeglProperties *o = GEGL_PROPERTIES (operation);
+  GeglProperties *props = GEGL_PROPERTIES (operation);
 
-  return GEGL_FLOAT_EQUAL (o->shadows, 0.0) &&
-         GEGL_FLOAT_EQUAL (o->highlights, 0.0) &&
-         GEGL_FLOAT_EQUAL (o->whitepoint, 0.0);
+  return GEGL_FLOAT_EQUAL (props->shadows, 0.0) &&
+         GEGL_FLOAT_EQUAL (props->highlights, 0.0) &&
+         GEGL_FLOAT_EQUAL (props->whitepoint, 0.0);
 }
 
 static void
 do_setup (GeglOperation *operation)
 {
-  GeglOp *self = GEGL_OP (operation);
-  GSList *children = NULL;
-  GSList *l;
+  GeglProperties          *props = GEGL_PROPERTIES (operation);
+  ShadowsHighlightsOpData *data  = (ShadowsHighlightsOpData *) (props->user_data);
+  GSList                  *children = NULL;
+  GSList                  *l;
 
   g_return_if_fail (GEGL_IS_NODE (operation->node));
-  g_return_if_fail (GEGL_IS_NODE (self->input));
-  g_return_if_fail (GEGL_IS_NODE (self->output));
+  g_return_if_fail (GEGL_IS_NODE (data->input));
+  g_return_if_fail (GEGL_IS_NODE (data->output));
 
-  self->blur_convert = NULL;
+  data->blur_convert = NULL;
 
   children = gegl_node_get_children (operation->node);
   for (l = children; l != NULL; l = l->next)
     {
       GeglNode *node = GEGL_NODE (l->data);
 
-      if (node == self->input || node == self->output)
+      if (node == data->input || node == data->output)
         continue;
 
       g_object_unref (node);
@@ -116,7 +115,7 @@ do_setup (GeglOperation *operation)
 
   if (is_operation_a_nop (operation))
     {
-      gegl_node_link (self->input, self->output);
+      gegl_node_link (data->input, data->output);
     }
   else
     {
@@ -128,20 +127,20 @@ do_setup (GeglOperation *operation)
                                   "abyss-policy", 1,
                                   NULL);
 
-      if (self->blur_format == NULL)
-        self->blur_format = babl_format ("YaA float");
+      if (data->blur_format == NULL)
+        data->blur_format = babl_format ("YaA float");
 
-      self->blur_convert = gegl_node_new_child (operation->node,
+      data->blur_convert = gegl_node_new_child (operation->node,
                                                 "operation", "gegl:convert-format",
-                                                "format",    self->blur_format,
+                                                "format",    data->blur_format,
                                                 NULL);
 
       shprocess = gegl_node_new_child (operation->node,
                                        "operation", "gegl:shadows-highlights-correction",
                                        NULL);
 
-      gegl_node_link_many (self->input, self->blur_convert, blur, NULL);
-      gegl_node_link_many (self->input, shprocess, self->output, NULL);
+      gegl_node_link_many (data->input, data->blur_convert, blur, NULL);
+      gegl_node_link_many (data->input, shprocess, data->output, NULL);
 
       gegl_node_connect (blur, "output", shprocess, "aux");
 
@@ -161,12 +160,13 @@ do_setup (GeglOperation *operation)
 static void
 attach (GeglOperation *operation)
 {
-  GeglOp *self = GEGL_OP (operation);
-  GeglNode *gegl;
+  GeglProperties          *props = GEGL_PROPERTIES (operation);
+  ShadowsHighlightsOpData *data  = (ShadowsHighlightsOpData *) (props->user_data);
+  GeglNode                *gegl  = NULL;
 
   gegl   = operation->node;
-  self->input  = gegl_node_get_input_proxy (gegl, "input");
-  self->output = gegl_node_get_output_proxy (gegl, "output");
+  data->input  = gegl_node_get_input_proxy (gegl, "input");
+  data->output = gegl_node_get_output_proxy (gegl, "output");
 
   do_setup (operation);
 }
@@ -174,9 +174,10 @@ attach (GeglOperation *operation)
 static void
 prepare (GeglOperation *operation)
 {
-  GeglOp *self = GEGL_OP (operation);
-  const Babl *blur_format = NULL;
-  const Babl *input_format;
+  GeglProperties          *props = GEGL_PROPERTIES (operation);
+  ShadowsHighlightsOpData *data  = (ShadowsHighlightsOpData *) (props->user_data);
+  const Babl              *blur_format = NULL;
+  const Babl              *input_format;
 
   input_format = gegl_operation_get_source_format (operation, "input");
   if (input_format == NULL)
@@ -193,11 +194,11 @@ prepare (GeglOperation *operation)
  out:
   g_return_if_fail (blur_format != NULL);
 
-  if (self->blur_format != blur_format)
+  if (data->blur_format != blur_format)
     {
-      self->blur_format = blur_format;
-      if (self->blur_convert != NULL)
-        gegl_node_set (self->blur_convert, "format", self->blur_format, NULL);
+      data->blur_format = blur_format;
+      if (data->blur_convert != NULL)
+        gegl_node_set (data->blur_convert, "format", data->blur_format, NULL);
     }
 }
 
@@ -207,9 +208,9 @@ my_set_property (GObject      *gobject,
                  const GValue *value,
                  GParamSpec   *pspec)
 {
-  GeglOperation *operation = GEGL_OPERATION (gobject);
-  gboolean       is_nop;
-  gboolean       was_nop;
+  GeglOperation           *operation = GEGL_OPERATION (gobject);
+  gboolean                 is_nop;
+  gboolean                 was_nop;
 
   was_nop = is_operation_a_nop (operation);
 
