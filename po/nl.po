@@ -6,9 +6,9 @@
 msgid ""
 msgstr "Project-Id-Version: GEGL master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues/\n"
-"POT-Creation-Date: 2026-10-22 16:20+0000\n"
-"PO-Revision-Date: 2026-11-02 14:01+0100\n"
-"Last-Translator: Dick Groskamp <dikgro@ziggo.uk>\n"
+"POT-Creation-Date: 2026-11-06 01:03+0000\n"
+"PO-Revision-Date: 2026-11-08 16:32+0100\n"
+"Last-Translator: Dick Groskamp <dikgro@ziggo.nl>\n"
 "Language-Team: GNOME-NL https://matrix.to/#/#nl:gnome.org\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
@@ -694,7 +694,7 @@ msgid ""
 "What blending mode the bevel's emboss will be. Light Map is a special blend "
 "mode that allows users to extract the filters output as a light map which "
 "should be put on a layer above or be used with Gimp's blending options."
-msgstr "Welke mengmodus het embossen van de schuine rand zal hebben. Lichtkaart is een speciale mengmodus die gebruikers in staat stelt om de uitvoer van filters uit te nemen als een lichtkaart die bovenop een laag zou moeten worden geplaatst of moet worden gebruikt met de mengopties van Gimp."
+msgstr "Welke mengmodus het embossen van de schuine rand zal hebben. Lichtkaart is een speciale mengmodus die gebruikers in staat stelt om de uitvoer van filters uit te nemen als een lichtkaart die bovenop een laag zou moeten worden geplaatst of moet worden gebruikt met de mengopties van GIMP."
 
 #: operations/common/bevel.c:81
 msgid "Distance map setting"
@@ -1092,7 +1092,7 @@ msgstr "Het babl-formaat van de uitvoer"
 
 #: operations/common/checkerboard.c:348
 msgid "Checkerboard"
-msgstr "Schaakbord"
+msgstr "Dambord"
 
 #: operations/common/checkerboard.c:351
 msgid "Render a checkerboard pattern"
