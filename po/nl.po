@@ -593,7 +593,7 @@ msgstr "Behoud helderheidscomponent"
 
 #: operations/common/alien-map.c:260
 msgid "Alien Map"
-msgstr "Alien map"
+msgstr "Kleurverschuivingen"
 
 #: operations/common/alien-map.c:263
 msgid ""
