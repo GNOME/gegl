@@ -25,22 +25,32 @@ G_BEGIN_DECLS
 
 static inline float gegl_fabsf (float x)
 {
+#ifdef __GNUC__
+  /* see: #480 */
+  return __builtin_fabsf (x);
+#else
   union {
    float f;
    guint32 i;
   } u = {x};
   u.i &= 0x7fffffff;
   return u.f;
+#endif
 }
 
 static inline double gegl_fabs (double x)
 {
+#ifdef __GNUC__
+  /* see: #480 */
+  return __builtin_fabs (x);
+#else
   union {
    double d;
    guint64 i;
   } u = {x};
   u.i &= 0x7fffffffffffffff;
   return u.d;
+#endif
 }
 
 static inline float gegl_floorf (float x)

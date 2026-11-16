@@ -134,7 +134,7 @@ gegl_sampler_cubic_init (GeglSamplerCubic *self)
   self->b=0.5;  /* 0.0 = sharp, but with anomaly of issue #167
                    1.0 = fuzzy cubic, without anomaly
                    0.5 is a compromise against issue #145 */
- 
+
   /*
    * This ensures that the spline is a Keys spline. The c of
    * BC-splines is the alpha of Keys.
@@ -283,9 +283,14 @@ set_property (GObject      *object,
 
 static inline gfloat int_fabsf (const gfloat x)
 {
+#ifdef __GNUC__
+  /* see: #480 */
+  return __builtin_fabsf (x);
+#else
   union {gfloat f; guint32 i;} u = {x};
   u.i &= 0x7fffffff;
   return u.f;
+#endif
 }
 
 static inline gfloat

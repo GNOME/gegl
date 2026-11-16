@@ -56,9 +56,14 @@ prepare (GeglOperation *self)
 
 static inline gfloat int_fabsf (const gfloat x)
 {
+#ifdef __GNUC__
+  /* see: #480 */
+  return __builtin_fabsf (x);
+#else
   union {gfloat f; guint32 i;} u = {x};
   u.i &= 0x7fffffff;
   return u.f;
+#endif
 }
 
 static void
