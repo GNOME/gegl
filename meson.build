@@ -66,6 +66,7 @@ dep_ver += {
 # GEGL binary - optional
 dep_ver += {
   'gexiv2'          : '>=0.14.0',
+  'gexiv2-0.16'     : '>=0.16.0',
   'luajit'          : '>=2.0.4',
   'mrg'             : '>=0.0.0',
 }
@@ -453,10 +454,16 @@ if g_ir.found() and get_option('default_library') == 'static'
 endif
 
 # GEGL binary
-gexiv2    = dependency('gexiv2',
-  version: dep_ver.get('gexiv2'),
-  required: get_option('gexiv2')
+gexiv2    = dependency('gexiv2-0.16',
+  version: dep_ver.get('gexiv2-0.16'),
+  required: false
 )
+if not gexiv2.found()
+  gexiv2    = dependency('gexiv2',
+    version: [dep_ver.get('gexiv2'), '<0.15.0'],
+    required: get_option('gexiv2')
+  )
+endif
 config.set('HAVE_GEXIV2', gexiv2.found())
 lua       = dependency('luajit',
   version: dep_ver.get('luajit'),

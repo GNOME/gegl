@@ -23,6 +23,12 @@ enum
 
 #define  COMBINER_INPUT_PREFIX  "exposure-"
 
+#if GEXIV2_CHECK_VERSION (0, 16, 0) != TRUE
+#define gexiv2_metadata_get_exposure_time gexiv2_metadata_try_get_exposure_time
+#define gexiv2_metadata_get_fnumber       gexiv2_metadata_try_get_fnumber
+#define gexiv2_metadata_has_tag           gexiv2_metadata_try_has_tag
+#define gexiv2_metadata_get_iso_speed     gexiv2_metadata_try_get_iso_speed
+#endif
 
 static void
 check_usage (gint argc, gchar **argv)
@@ -66,15 +72,15 @@ expcombine_get_file_ev (const gchar *path)
 
   {
     gint nom, den;
-    gexiv2_metadata_try_get_exposure_time (e2m, &nom, &den, &error);
+    gexiv2_metadata_get_exposure_time (e2m, &nom, &den, &error);
     time = nom * 1.0f / den;
   }
-  aperture = gexiv2_metadata_try_get_fnumber (e2m, &error);
+  aperture = gexiv2_metadata_get_fnumber (e2m, &error);
 
   /* iso */
-  if (gexiv2_metadata_try_has_tag (e2m, "Exif.Image.ISOSpeedRatings", &error))
+  if (gexiv2_metadata_has_tag (e2m, "Exif.Image.ISOSpeedRatings", &error))
     {
-      gain = gexiv2_metadata_try_get_iso_speed (e2m, &error) / 100.0f;
+      gain = gexiv2_metadata_get_iso_speed (e2m, &error) / 100.0f;
     }
   else
     {

@@ -124,6 +124,14 @@ GeState *global_state;
 
 G_DEFINE_TYPE (GeState, ge_state, G_TYPE_OBJECT)
 
+#if GEXIV2_CHECK_VERSION (0, 16, 0) != TRUE
+#define gexiv2_metadata_has_tag         gexiv2_metadata_try_has_tag
+#define gexiv2_metadata_clear_tag       gexiv2_metadata_try_clear_tag
+#define gexiv2_metadata_set_tag_string  gexiv2_metadata_try_set_tag_string
+#define gexiv2_metadata_get_tag_string  gexiv2_metadata_try_get_tag_string
+#define gexiv2_metadata_get_orientation gexiv2_metadata_try_get_orientation
+#endif
+
 enum
 {
     PROP_0,
@@ -611,8 +619,8 @@ static int order_exif_time (gconstpointer a, gconstpointer b)
   gexiv2_metadata_open_path (e2m_a, a, &error);
   gexiv2_metadata_open_path (e2m_b, b, &error);
 
-  val_a = gexiv2_metadata_try_get_tag_string (e2m_a, "Exif.Photo.DateTimeOriginal", &error);
-  val_b = gexiv2_metadata_try_get_tag_string (e2m_b, "Exif.Photo.DateTimeOriginal", &error);
+  val_a = gexiv2_metadata_get_tag_string (e2m_a, "Exif.Photo.DateTimeOriginal", &error);
+  val_b = gexiv2_metadata_get_tag_string (e2m_b, "Exif.Photo.DateTimeOriginal", &error);
   if (error)
     ret = 0;
   else
@@ -6987,10 +6995,10 @@ gegl_meta_set (const char *path,
   }
   else
   {
-    if (gexiv2_metadata_try_has_tag (e2m, "Xmp.xmp.GEGL", &error))
-      gexiv2_metadata_try_clear_tag (e2m, "Xmp.xmp.GEGL", &error);
+    if (gexiv2_metadata_has_tag (e2m, "Xmp.xmp.GEGL", &error))
+      gexiv2_metadata_clear_tag (e2m, "Xmp.xmp.GEGL", &error);
 
-    gexiv2_metadata_try_set_tag_string (e2m, "Xmp.xmp.GEGL", meta_data, &error);
+    gexiv2_metadata_set_tag_string (e2m, "Xmp.xmp.GEGL", meta_data, &error);
     gexiv2_metadata_save_file (e2m, path, &error);
     if (error)
       g_warning ("%s", error->message);
@@ -7006,7 +7014,7 @@ gegl_meta_get (const char *path)
   GExiv2Metadata *e2m = gexiv2_metadata_new ();
   gexiv2_metadata_open_path (e2m, path, &error);
   if (!error)
-    ret = gexiv2_metadata_try_get_tag_string (e2m, "Xmp.xmp.GEGL", &error);
+    ret = gexiv2_metadata_get_tag_string (e2m, "Xmp.xmp.GEGL", &error);
   /*else
     g_warning ("%s", error->message);*/
   g_object_unref (e2m);
@@ -7020,7 +7028,7 @@ GExiv2Orientation path_get_orientation (const char *path)
   GExiv2Metadata *e2m = gexiv2_metadata_new ();
   gexiv2_metadata_open_path (e2m, path, &error);
   if (!error)
-    ret = gexiv2_metadata_try_get_orientation (e2m, &error);
+    ret = gexiv2_metadata_get_orientation (e2m, &error);
   /*else
     g_warning ("%s", error->message);*/
   g_object_unref (e2m);
