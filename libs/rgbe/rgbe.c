@@ -129,7 +129,7 @@ static const gchar *RGBE_FORMAT_STRINGS[] =
  *
  * Calculates the number of bytes remaining to be read in a mapped file.
  **/
-static guint
+static gsize
 rgbe_mapped_file_remaining (GMappedFile *f,
                             const void  *data)
 {
@@ -137,9 +137,14 @@ rgbe_mapped_file_remaining (GMappedFile *f,
   g_return_val_if_fail (GPOINTER_TO_UINT (data) >=
                         GPOINTER_TO_UINT (g_mapped_file_get_contents (f)), 0);
 
-  return GPOINTER_TO_UINT (data) -
-         GPOINTER_TO_UINT (g_mapped_file_get_contents (f)) -
-         g_mapped_file_get_length (f);
+  goffset start = (goffset) g_mapped_file_get_contents (f);
+  goffset len   = g_mapped_file_get_length (f);
+  goffset pos   = (goffset) data;
+
+  if (pos >= start + len)
+    return 0;
+  else
+    return start + len - pos;
 }
 
 static void
@@ -668,8 +673,6 @@ rgbe_read_new_rle (const rgbe_file *file,
                  RGBE_NUM_RGBE * linesize, max_size);
       return FALSE;
     }
-  else if (rgbe_mapped_file_remaining (file->file, data) < (gsize) RGBE_NUM_RGBE * linesize)
-    return FALSE;
 
   data += RGBE_NUM_RGBE;
 
