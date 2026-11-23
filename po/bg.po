@@ -611,7 +611,7 @@ msgid ""
 "color values."
 msgstr ""
 "Силно изкривяване на цветовете на изображението чрез прилагане на "
-"тригонометрични функции за съпоставяне на цветовите стойности."
+"тригонометрични функции за съответствие на цветовите стойности."
 
 #: operations/common/alpha-clip.c:26 operations/common/alpha-clip.c:27
 #: operations/common/rgb-clip.c:26 operations/common/rgb-clip.c:27
@@ -2179,7 +2179,7 @@ msgstr "Праг на градиента за намаляване на подо
 
 #: operations/common/fattal02.c:1361
 msgid "Fattal et al. 2002 Tone Mapping"
-msgstr "Тонално съпоставяне по Fattal и др., 2002"
+msgstr "Тонално съответсвие по Fattal и др., 2002"
 
 #: operations/common/fattal02.c:1365
 msgid ""
@@ -2192,7 +2192,7 @@ msgstr ""
 "Адаптиране на изображение, което може да е с висок динамичен диапазон, за "
 "показване с нисък динамичен диапазон. Този оператор отслабва големината на "
 "локалните градиенти на изображението и дава яркост в интервала 0,0–1,0. Този "
-"подход за тонално съпоставяне е представен първоначално от Raanan Fattal в "
+"подход за тонално съответствие е представен първоначално от Raanan Fattal в "
 "статията от SIGGRAPH 2002: Gradient Domain High Dynamic Range Compression."
 
 #: operations/common/gaussian-blur.c:25 operations/common/gblur-1d.c:40
@@ -2805,7 +2805,7 @@ msgid ""
 "Do the inverse mapping, useful for touching up zenith, nadir or other parts "
 "of panorama."
 msgstr ""
-"Извършване на обратното съпоставяне, полезно за поправяне на зенита, надира "
+"Извършване на обратното съответствие, полезно за поправяне на зенита, надира "
 "или други части на панорамата."
 
 #. XXX: needs better ui type
@@ -2903,15 +2903,15 @@ msgstr "Безкрайна"
 
 #: operations/common/long-shadow.c:29
 msgid "Fading"
-msgstr "Заглъхваща"
+msgstr "Избледняваща"
 
 #: operations/common/long-shadow.c:30
 msgid "Fading (fixed length)"
-msgstr "Заглъхваща (с постоянна дължина)"
+msgstr "Избледняваща (с постоянна дължина)"
 
 #: operations/common/long-shadow.c:32
 msgid "Fading (fixed rate)"
-msgstr "Заглъхваща (с постоянна скорост)"
+msgstr "Избледняваща (с постоянна скорост)"
 
 #: operations/common/long-shadow.c:39
 msgid "Shadow plus image"
@@ -2952,7 +2952,7 @@ msgstr "Средна точка"
 
 #: operations/common/long-shadow.c:71
 msgid "Shadow fade midpoint"
-msgstr "Средна точка на заглъхването на сянката"
+msgstr "Средна точка на избледвяването на сянката"
 
 #: operations/common/long-shadow.c:76
 msgid "Midpoint (relative)"
@@ -2960,7 +2960,7 @@ msgstr "Средна точка (относителна)"
 
 #: operations/common/long-shadow.c:77
 msgid "Shadow fade midpoint, as a factor of the shadow length"
-msgstr "Средна точка на заглъхването на сянката като част от дължината ѝ"
+msgstr "Средна точка на избледняването на сянката като част от дължината ѝ"
 
 #: operations/common/long-shadow.c:86
 msgid "Shadow color"
@@ -3007,7 +3007,7 @@ msgstr "Ниво на наблягане на детайлите на гради
 
 #: operations/common/mantiuk06.c:1642
 msgid "Mantiuk 2006 Tone Mapping"
-msgstr "Тонално съпоставяне по Mantiuk, 2006"
+msgstr "Тонално съответствие по Mantiuk, 2006"
 
 #: operations/common/mantiuk06.c:1646
 msgid ""
@@ -3021,7 +3021,7 @@ msgstr ""
 
 #: operations/common/map-absolute.c:61
 msgid "Map Absolute"
-msgstr "Абсолютно съпоставяне"
+msgstr "Абсолютно съответствие"
 
 #: operations/common/map-absolute.c:65
 msgid ""
@@ -3041,11 +3041,11 @@ msgid ""
 "relative mapping value of 1.0 corresponds to."
 msgstr ""
 "коефициент на мащабиране на изместването — показва на какво пространствено "
-"изместване съответства относителна стойност на съпоставянето 1,0."
+"изместване съответства относителна стойност на съответствието 1,0."
 
 #: operations/common/map-relative.c:80
 msgid "Map Relative"
-msgstr "Относително съпоставяне"
+msgstr "Относително съответствие"
 
 #: operations/common/map-relative.c:83
 msgid ""
@@ -4143,7 +4143,7 @@ msgid ""
 "Do panorama viewer rendering mapping or its inverse for an equirectangular "
 "input image. (2:1 ratio containing 360x180 degree panorama)."
 msgstr ""
-"Съпоставяне за изобразяване в преглед на панорами или обратното му за входно "
+"Съответствие за изобразяване в преглед на панорами или обратното му за входно "
 "изображение в равноъгълна проекция (с отношение 2:1, съдържащо панорама от "
 "360×180 градуса)."
 
@@ -4287,18 +4287,18 @@ msgstr "Брой повторения"
 
 #: operations/common/recursive-transform.c:40
 msgid "Fade color"
-msgstr "Цвят на заглъхването"
+msgstr "Цвят на избледняване"
 
 #: operations/common/recursive-transform.c:41
 msgid ""
 "Color to fade transformed images towards, with a rate depending on its alpha"
 msgstr ""
-"Цвят, към който преобразуваните изображения заглъхват, със скорост според "
+"Цвят, към който преобразуваните изображения избледняват, със скорост според "
 "прозрачността му"
 
 #: operations/common/recursive-transform.c:44
 msgid "Fade opacity"
-msgstr "Плътност на заглъхването"
+msgstr "Плътност на избледняването"
 
 #: operations/common/recursive-transform.c:45
 msgid "Amount by which to scale the opacity of each transformed image"
@@ -4349,7 +4349,7 @@ msgstr "Адаптация към промяната на светлината �
 
 #: operations/common/reinhard05.c:318
 msgid "Reinhard 2005 Tone Mapping"
-msgstr "Тонално съпоставяне по Reinhard, 2005"
+msgstr "Тонално съответствие по Reinhard, 2005"
 
 #: operations/common/reinhard05.c:323
 msgid ""
@@ -5769,7 +5769,7 @@ msgstr "Измятане"
 
 #: operations/common-cxx/warp.cc:989
 msgid "Compute a relative displacement mapping from a stroke"
-msgstr "Изчисляване на относително съпоставяне на изместването от щрих"
+msgstr "Изчисляване на относително съответствие на изместването от щрих"
 
 #: operations/common-gpl3+/antialias.c:293
 msgid "Scale3X Antialiasing"
@@ -7268,7 +7268,7 @@ msgstr "Ъгъл на отместване"
 
 #: operations/common-gpl3+/polar-coordinates.c:43
 msgid "Map backwards"
-msgstr "Съпоставяне наобратно"
+msgstr "Обратно съответствие"
 
 #: operations/common-gpl3+/polar-coordinates.c:44
 msgid "Start from the right instead of the left"
@@ -7276,7 +7276,7 @@ msgstr "Начало отдясно вместо отляво"
 
 #: operations/common-gpl3+/polar-coordinates.c:46
 msgid "Map from top"
-msgstr "Съпоставяне отгоре"
+msgstr "Съответствие отгоре"
 
 #: operations/common-gpl3+/polar-coordinates.c:47
 msgid "Put the top row in the middle and the bottom row on the outside"
@@ -7288,7 +7288,7 @@ msgstr "Към полярни"
 
 #: operations/common-gpl3+/polar-coordinates.c:50
 msgid "Map the image to a circle"
-msgstr "Съпоставяне на изображението в кръг"
+msgstr "Съответствие на изображението в кръг"
 
 #: operations/common-gpl3+/polar-coordinates.c:53
 #: operations/common-gpl3+/polar-coordinates.c:60
