@@ -125,6 +125,26 @@ random_move (gint             tile_x,
   *y = (gint) (radius * sin (angle));
 }
 
+static inline gint
+get_clamped_tile_width (GeglProperties      *o,
+                        const GeglRectangle *rect)
+{
+  if (o->tile_width > rect->width)
+    return rect->width;
+  else
+    return o->tile_width;
+}
+
+static inline gint
+get_clamped_tile_height (GeglProperties      *o,
+                         const GeglRectangle *rect)
+{
+  if (o->tile_height > rect->height)
+    return rect->height;
+  else
+    return o->tile_height;
+}
+
 static void
 randomize_tiles (GeglProperties      *o,
                  const GeglRectangle *rect,
@@ -135,28 +155,30 @@ randomize_tiles (GeglProperties      *o,
                  gint                 n_tiles,
                  Tile                *tiles)
 {
-  Tile  *t = tiles;
-  gint   move_max_pixels = o->move_rate * o->tile_width / 100;
+  Tile  *t               = tiles;
+  gint   tile_width      = get_clamped_tile_width (o, rect);
+  gint   tile_height     = get_clamped_tile_height (o, rect);
+  gint   move_max_pixels = o->move_rate * tile_width / 100;
   gint   x;
   gint   y;
 
   for (y = 0; y < division_y; y++)
     {
-      gint srcy = offset_y + o->tile_height * y;
+      gint srcy = offset_y + tile_height * y;
 
       for (x = 0; x < division_x; x++, t++)
         {
-          gint srcx = offset_x + o->tile_width * x;
+          gint srcx = offset_x + tile_width * x;
 
           if (srcx < 0)
             {
               t->x     = 0;
-              t->width = srcx + o->tile_width;
+              t->width = srcx + tile_width;
             }
-          else if (srcx + o->tile_width < rect->width)
+          else if (srcx + tile_width < rect->width)
             {
               t->x     = srcx;
-              t->width = o->tile_width;
+              t->width = tile_width;
             }
           else
             {
@@ -167,12 +189,12 @@ randomize_tiles (GeglProperties      *o,
           if (srcy < 0)
             {
               t->y      = 0;
-              t->height = srcy + o->tile_height;
+              t->height = srcy + tile_height;
             }
-          else if (srcy + o->tile_height < rect->height)
+          else if (srcy + tile_height < rect->height)
             {
               t->y      = srcy;
-              t->height = o->tile_height;
+              t->height = tile_height;
             }
           else
             {
@@ -202,7 +224,8 @@ draw_tiles (GeglProperties      *o,
   gint        i;
 
   format = babl_format ("RGBA float");
-  tile_buffer = g_new0 (gfloat, 4 * o->tile_width * o->tile_height);
+  tile_buffer = g_new0 (gfloat, (gsize) 4 * get_clamped_tile_width (o, rect) *
+                        get_clamped_tile_height (o, rect));
 
   if (o->wrap_around)
     {
@@ -300,10 +323,13 @@ set_background (GeglProperties      *o,
 
       if (o->fractional_type == GEGL_FRACTIONAL_TYPE_IGNORE)
         {
+          gint tile_width  = get_clamped_tile_width (o, rect);
+          gint tile_height = get_clamped_tile_height (o, rect);
+
           clear.x      = offset_x;
           clear.y      = offset_y;
-          clear.width  = o->tile_width * (rect->width / o->tile_width);
-          clear.height = o->tile_height * (rect->height / o->tile_height);
+          clear.width  = tile_width * (rect->width / tile_width);
+          clear.height = tile_height * (rect->height / tile_height);
         }
 
       iter = gegl_buffer_iterator_new (input, &clear, 0, format,
@@ -342,9 +368,11 @@ process (GeglOperation       *operation,
   gint            division_x;
   gint            division_y;
   gint            n_tiles;
+  gint            tile_width  = get_clamped_tile_width (o, result);
+  gint            tile_height = get_clamped_tile_height (o, result);
 
-  division_x = result->width / o->tile_width;
-  division_y = result->height / o->tile_height;
+  division_x = result->width / tile_width;
+  division_y = result->height / tile_height;
 
   offset_x = 0;
   offset_y = 0;
@@ -353,16 +381,16 @@ process (GeglOperation       *operation,
     {
       if (o->centering)
         {
-          if (1 < result->width % o->tile_width)
+          if (1 < result->width % tile_width)
             {
               division_x++;
-              offset_x = (result->width % o->tile_width) / 2 - o->tile_width;
+              offset_x = (result->width % tile_width) / 2 - tile_width;
             }
 
-          if (1 < result->height % o->tile_height)
+          if (1 < result->height % tile_height)
             {
               division_y++;
-              offset_y = (result->height % o->tile_height) / 2 - o->tile_height;
+              offset_y = (result->height % tile_height) / 2 - tile_height;
             }
         }
     }
@@ -370,8 +398,8 @@ process (GeglOperation       *operation,
     {
       if (o->centering)
         {
-          offset_x = (result->width  % o->tile_width) / 2;
-          offset_y = (result->height % o->tile_height) / 2;
+          offset_x = (result->width  % tile_width) / 2;
+          offset_y = (result->height % tile_height) / 2;
         }
     }
 
